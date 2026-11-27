@@ -58,38 +58,28 @@ namespace RackCad.UI.VentanaRackCad
     }
 
     /// <summary>
-    /// The page «Nuevo › Larguero» of the RackCad window (I-64 A-14, line D, quinta tanda, part «lg»): a DRAFT IN CONSTRUCTION (LG-03 of the
-    /// Owner: «Déjalo WIP»). It makes a larguero from a section and a ménsula (LG-01): the section is chosen in ONE page with a filter by
+    /// The page «Nuevo › Larguero» of the RackCad window (I-64 A-14, line D; quinta tanda, part «lg», LG-01 to LG-03; sexta tanda, part «lg»,
+    /// the answers of the Owner). It makes a larguero from a section and a ménsula (LG-01): the section is chosen in ONE page with a filter by
     /// catalog and by type (LG-02), from the largueros of RackCad (secciones.csv) and the AISC sections, and is called by its type; then the
-    /// peralte, the length to cut and the ménsula, and the summary with its bill of materials. It reads only the catalogs: nothing is saved,
-    /// nothing is written to the drawing and no command leaves it, apart from «Abrir el editor clásico», a gesture of the user that the window
-    /// runs as every classic card. The page is of the window, not of a drawing, and its work never vetoes the close of a drawing.
+    /// name, the peralte, the length to cut and the ménsula, and the summary with its bill of materials. T6 lg: it saves the larguero in the
+    /// library, opens one of it, exports its BOM, and inserts it in the drawing as a loose piece (or a bare AISC profile, as RACKSECCION) —
+    /// every command a gesture of the user, through the numbered door of the window. The page is of the window, not of a drawing, and its
+    /// work never vetoes the close of a drawing.
     /// </summary>
-    public sealed class LargueroWorkbenchViewModel : ObservableObject
+    public sealed partial class LargueroWorkbenchViewModel : ObservableObject // T6 lg: partial (.Piece.cs, .Library.cs)
     {
         internal const string AllKey = "";
         internal const string RackCadKey = "rackcad";
         internal const string AiscKey = "aisc";
         internal const string DefaultLengthText = "96";
 
-        /// <summary>What the page is, in its banner (LG-03).</summary>
-        public const string WipTitle = "Borrador en construcción";
-
-        public const string WipText =
-            "Esta página arma un larguero con una sección y una ménsula, y muestra su resumen. Todavía no lo guarda en la biblioteca ni lo "
-            + "dibuja: nada sale de aquí. Para guardar un larguero hoy, usa «Abrir el editor clásico».";
-
-        /// <summary>What is missing to finish the page (for the Owner, and on the page itself).</summary>
-        public static IReadOnlyList<string> PendingItems { get; } = new[]
-        {
-            "«Guardar en la biblioteca…»: el diseño del larguero solo guarda un larguero de RackCad (su id en secciones.csv); una sección AISC "
-            + "necesita guardar también su catálogo y su id, un cambio del formato del diseño.",
-            "Dibujarlo: no hay un bloque del larguero completo (el perfil y sus 2 ménsulas); falta decidir si se inserta como pieza suelta.",
-            "La vista del larguero (el alzado con el peralte y la ménsula a escala) y «Exportar el BOM» (Excel y CSV).",
-            "El nombre del larguero, con el automático («Larguero 96 in · P3»), y abrir aquí un larguero de la biblioteca (hoy abre el editor clásico).",
-            "Que Selectivo y Dinámico elijan un larguero hecho aquí (otra iniciativa).",
-            "Los nombres y los tipos de los largueros de RackCad salen de su nombre en secciones.csv; una columna «tipo» en el catálogo los fijaría.",
-        };
+        /// <summary>
+        /// What the page does, under its title. T6 lg (sexta tanda): the page is no longer a draft in construction (the banner «Borrador en
+        /// construcción» and the list «Lo que falta» of LG-03 went away with the answers of the Owner, points 1 to 6, built and tested).
+        /// </summary>
+        public const string IntroText =
+            "Arma un larguero con una sección y una ménsula, guárdalo en la biblioteca e insértalo en el dibujo como una pieza suelta. Con un "
+            + "perfil AISC también inserta el perfil solo, como RACKSECCION.";
 
         private readonly Func<RackCatalog> _rackCatalog;
         private readonly Func<StructuralSectionCatalog> _aiscCatalog;
@@ -120,14 +110,16 @@ namespace RackCad.UI.VentanaRackCad
         /// <param name="goHome">«Nuevo» of the crumb.</param>
         /// <param name="openClassic">«Abrir el editor clásico»: the classic card «Larguero» (RACKNUEVO Larguero), through the window.</param>
         /// <param name="failed">Says a contained failure of a gesture (the message of the window); without it the failure is rethrown.</param>
+        /// <param name="host">T6 lg: the window, for «Insertar en el dibujo…» (its door) and «Guardar en la biblioteca…»; without it neither is offered.</param>
         public LargueroWorkbenchViewModel(Func<RackCatalog> rackCatalog, Func<StructuralSectionCatalog> aiscCatalog, Action goHome = null, Action openClassic = null,
-            Action<Exception> failed = null)
+            Action<Exception> failed = null, ILargueroWorkbenchHost host = null)
         {
             _rackCatalog = rackCatalog ?? (() => new RackCatalog());
             _aiscCatalog = aiscCatalog ?? (() => null);
             _goHome = goHome;
             _openClassic = openClassic;
             _failed = failed;
+            _host = host; // T6 lg
             Apply(Read());
             ResetToDefaults();
         }
@@ -458,7 +450,7 @@ namespace RackCad.UI.VentanaRackCad
         public string MissingText => _summary == null || _summary.IsComplete ? string.Empty : "Falta: " + string.Join(" ", _summary.Missing);
 
         public string CompleteText => IsComplete
-            ? "El larguero está completo. Esta página todavía no lo guarda ni lo dibuja (borrador en construcción)."
+            ? "El larguero está completo: guárdalo en la biblioteca o insértalo en el dibujo." // T6 lg: the page saves and draws it
             : string.Empty;
 
         // ------------------------------------------------------------------ the gestures
@@ -472,6 +464,7 @@ namespace RackCad.UI.VentanaRackCad
             _length = DefaultLengthText;
             _mensulaChosen = false;
             _lostNotice = string.Empty;
+            ResetPiece(); // T6 lg: the name, what is inserted, its view and its detail, and the notice of a design of the library
             _section = null;
             _peralte = null;
             _mensula = null;
@@ -599,6 +592,7 @@ namespace RackCad.UI.VentanaRackCad
             OnPropertyChanged(nameof(IsComplete));
             OnPropertyChanged(nameof(MissingText));
             OnPropertyChanged(nameof(CompleteText));
+            RaisePiece(); // T6 lg: the plan, the sketch, «Insertar en el dibujo…», the name and «Exportar el BOM» follow the summary
         }
 
         private static string Count(int value) => value.ToString(CultureInfo.InvariantCulture);

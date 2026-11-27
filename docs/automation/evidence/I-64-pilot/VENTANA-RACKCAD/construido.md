@@ -4956,3 +4956,263 @@ tercero (`773f0a6e`), integradas en un segundo merge de la rama pb.
 
 - La validación del Owner de los supuestos de la quinta tanda y de O-5.
 - La limpieza de los worktrees y las ramas locales de la quinta tanda, con aviso al Owner.
+
+## Sexta tanda, lg: «Larguero» terminado, con el perfil estructural dentro (2026-11-27)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t6-lg`, sobre `f02f519b` (worktree `D:\w6lg`). Sin commit, sin push, sin AutoCAD.
+Parte de la sección «Quinta tanda, lg» y de su lista «Lo que falta para terminarlo». Mandan LG-01 a LG-03 y las respuestas del Owner del
+2026-11-27:
+- **punto 1, guardar:** «Un campo nuevo»;
+- **punto 2, dibujarlo:** «Pieza suelta»;
+- **punto 6, RACKSECCION:** «Sí, una sola página».
+
+Los puntos 3, 4 y 5 iban sin decisión pendiente. Los puntos 7, 8 y 10 no se hicieron, por orden del Owner (abajo).
+
+### Lo que se construyó
+
+**1. Guardar en la biblioteca, con un campo nuevo (punto 1).**
+- `LargueroDesign` gana dos campos:
+  - `SectionCatalog`: «AISC», constante `LargueroDesign.AiscCatalog`;
+  - `SectionId`: el id del catálogo neutral, por ejemplo `AISC-C-C10X15_3`.
+- **Un larguero de RackCad** sigue guardándose como hoy: `BeamProfileId`, con los dos campos nuevos en `null`.
+- **`LargueroDocument`** los lleva con los mismos nombres. Pasa de la versión `1.0` a la `1.1`, un menor aditivo (I-11):
+  - un archivo de hoy (1.0) se abre igual;
+  - los campos desconocidos se conservan al volver a guardar;
+  - un menor más nuevo no baja de versión.
+- **`RackDesignValidation.IsUsableLarguero`:** vale un `BeamProfileId`, o un `SectionCatalog` CON su `SectionId`. Media sección no vale: el
+  almacén la rechaza como incompleta.
+- **`LargueroBomBuilder.Build`:** con un larguero de AISC, lista la sección por su id.
+- **«Guardar en la biblioteca…»** es un botón de la cabecera de la página. Abre la línea de guardado de «Biblioteca de diseños», como «Más» ›
+  «Guardar en biblioteca…» de los editores:
+  - con el nombre del larguero;
+  - lo que no está completo se dice al pulsar «Guardar» («El larguero no está completo: …»);
+  - «Reemplazar» y «Cambiar el nombre», los de siempre;
+  - un larguero abierto de la biblioteca conserva al guardarse los campos desconocidos de su archivo (I-11).
+
+**2. Dibujarlo como pieza suelta, con su orden de la puerta numerada (punto 2).**
+- **«Insertar en el dibujo…»** es el botón principal de la página. Es un gesto del usuario por la puerta de la ventana: la petición numerada,
+  «Dejar de esperar», una sola petición a la vez para toda la ventana.
+- **La orden nueva, `RACKLARGUEROINSERTAR`,** está en `src/RackCad.Plugin/RackLargueroCommands.Ventana.cs`. Hace, en este orden:
+  1. toma la petición, y solo para el dibujo de la petición;
+  2. avisa de las unidades (I-05);
+  3. pide el punto ANTES de crear nada: un Esc no deja nada;
+  4. en UNA transacción, la definición del bloque y su referencia;
+  5. un `Commit` (un solo «U») y una regeneración;
+  6. responde. Desde el `Commit`, la respuesta dice que se insertó, aunque falle lo que viene después.
+- **El plan que se inserta es el MISMO objeto que dibujó la vista de la página** (como ADR-0022 §7 en RACKSECCION). La orden no calcula
+  geometría.
+- **Es una pieza suelta:** un bloque sin sobre ni identidad. No es un rack, no sale en la lista y no se edita desde ella.
+- **Con una sección AISC** usa la geometría de RACKSECCION (`StructuralSectionPlanBuilder`). Con la familia S, la advertencia de ADR-0023
+  sale siempre, sin interruptor:
+  - en la página;
+  - en la respuesta;
+  - en la línea de órdenes, con el texto de RACKSECCION y antes de la fidelidad.
+
+**3. La vista (punto 3).** Un alzado esquemático a UNA escala:
+- es el plan de la pieza, el que se inserta;
+- una pieza larga se corta por el centro: los dos extremos a escala, con la marca de corte, para que se lean el peralte y la ménsula;
+- debajo, el texto con el peralte, la longitud, el alto de la ménsula y dónde empieza el perfil;
+- control `LargueroSketchView`, que dibuja `LargueroPieceSketch` (puro, en Application).
+
+**4. «Exportar el BOM» en «Más» (punto 4).** «Exportar el BOM a Excel…» y «… a CSV…»:
+- con los exportadores del BOM de la ventana (`BomXlsxExporter`, `BomCsvExporter`);
+- lo que se exporta es la lista de materiales de la página (`LargueroDraftSummary.Bill`): el larguero, su perfil ×1 y sus ménsulas ×2, con
+  los nombres de la página;
+- el aviso, como el de la página del BOM: «Abrir», «Mostrar en la carpeta», «Guardar como…» y «Cerrar aviso».
+
+**5. El nombre, y abrir aquí un larguero de la biblioteca (punto 5).**
+- **«Nombre del larguero»:**
+  - vacío, toma el automático de LG-05 («Larguero 96 in · P3»), y lo dice;
+  - «Usar el nombre automático» lo escribe en el campo;
+  - el título del resumen, la línea de guardado y el larguero insertado usan ese nombre.
+- **«Abrir» de la biblioteca trae un larguero a esta página**, no al editor clásico:
+  - con su sección, su peralte, su longitud, su ménsula y su nombre;
+  - un aviso «Abierto de la biblioteca: «…»»;
+  - una sección que no está en el catálogo, o un catálogo que esta versión no conoce, se dice, y no se elige otra en su lugar.
+- **La nota de la biblioteca** para un larguero dice que se abre en «Nuevo › Larguero».
+
+**6. Una sola página: los perfiles sueltos de RACKSECCION (punto 6).**
+- Con una sección AISC, «Vista e inserción» ofrece «Solo el perfil (como RACKSECCION)», con «Vista del perfil» (Sección, Longitudinal X,
+  Longitudinal Y, Isométrica) y «Detalle» (Tabulada, Simplificada).
+- El plan es EXACTAMENTE el del inspector de RACKSECCION con esa sección, longitud, vista y detalle (prueba de firma). La orden lo materializa
+  con el adaptador de RACKSECCION (`StructuralSectionMaterializer`): es el mismo bloque `RACKCAD_SECCION_…`.
+- **El clásico se queda:**
+  - RACKSECCION y su ventana no se tocaron;
+  - la tarjeta «Perfil estructural» sigue;
+  - el mapa «Dónde quedó el menú clásico» añade que los perfiles AISC sueltos también salen de «Larguero en esta ventana».
+
+**La página deja de ser WIP.** Los seis puntos quedaron hechos y probados sin AutoCAD, así que se quitaron:
+- la ficha «En construcción»;
+- la banda «Borrador en construcción»;
+- la lista plegada «Lo que falta para terminar esta página»;
+- el «· en construcción» de la tarjeta de «Nuevo».
+
+La tarjeta se llama «Larguero en esta ventana». La página dice en una línea lo que hace (`LargueroWorkbenchViewModel.IntroText`). El
+smoke en AutoCAD sigue pendiente (abajo).
+
+**No se hizo, por orden del Owner:**
+- **punto 7:** que Selectivo y Dinámico elijan un larguero hecho aquí; es otra iniciativa;
+- **punto 8:** una columna `tipo` en `secciones.csv`; los datos del catálogo solo se escriben por dictado del Owner, y queda como pregunta;
+- **punto 10:** quitar la tarjeta clásica «Larguero»; el clásico se queda.
+
+### Supuestos para el Owner (prefijo T6lg-S)
+
+| Id | Supuesto | Dónde se cambia |
+|---|---|---|
+| T6lg-S1 | El campo nuevo son dos: `SectionCatalog` («AISC») y `SectionId`. `LargueroDocument` pasa a 1.1. Un larguero de AISC guarda su peralte como la profundidad de la sección y `BeamProfileId` en `null`. Una versión 1.0 de RackCad que abra un larguero de AISC lo rechaza como incompleto («no tiene datos válidos para el larguero»): no lo abre como otra cosa. La ménsula se escribe cuando el usuario la eligió, o siempre con AISC. Si sigue la de su fila, queda en blanco, como «(auto — según perfil)» del clásico | `LargueroDesign`, `LargueroDocument`, `RackDesignValidation`, `LargueroWorkbenchViewModel.BuildDesign` |
+| T6lg-S2 | Una sola orden, `RACKLARGUEROINSERTAR`, inserta el larguero y el perfil suelto, sin alias. La pieza no lleva sobre ni identidad: no es un rack, no sale en la lista y la ventana no la vuelve a leer | `RackLargueroCommands.Ventana.cs`, `LargueroDoorRules` |
+| T6lg-S3 | El perfil suelto es el plan del inspector de RACKSECCION con sus valores por defecto: alambre, sin eje ni envolvente, sin giro ni espejo. La página ofrece solo «Vista» y «Detalle». El giro, el espejo, el eje y la envolvente siguen en RACKSECCION | `LargueroPiecePlanner`, `LargueroWorkbenchViewModel.ViewOptions` |
+| T6lg-S4 | **Cómo se apoya la ménsula** (el Owner lo dejó [PENDIENTE]; se eligió lo más sencillo y coherente con los bloques que existen). El bloque FRONTAL de un larguero de RackCad tiene su origen en el troquel del poste y su perfil empieza en `INICIO_PERFIL` X (1 in, `connection-layout.csv`). Por eso: la ménsula es una placa en cada extremo, con su borde de fuera en la cara del poste (x = 0); el perfil empieza a `INICIO_PERFIL` X (1 in cuando el catálogo no lo da, como en toda sección AISC); la placa mide 2 in a lo largo (1 in fuera del perfil y 1 in sobre él) y tiene el alto de `mensulas.csv` (6 in si la fila no lo da); su borde de arriba va al ras del borde de arriba del perfil (y = 0, la superficie donde apoya la tarima). El punto de inserción es esa esquina: la cara del poste, arriba | `LargueroMensulaSeat` |
+| T6lg-S5 | Un larguero de RackCad se dibuja esquemático: el rectángulo de su longitud y su peralte, con sus ménsulas. No se usa el bloque FRONTAL de la biblioteca de bloques que coloca Selectivo, porque la pieza suelta, como el perfil estructural, no depende de la biblioteca (ver la pregunta 2) | `LargueroPiecePlanner.Build` |
+| T6lg-S6 | El alzado de un larguero de AISC es la vista Longitudinal X de RACKSECCION, movida a su asiento, con el detalle elegido | `LargueroPiecePlanner.Build` |
+| T6lg-S7 | La vista va a una sola escala. Una pieza vista a lo largo se corta por el centro cuando mide más de dos extremos y el hueco. Cada extremo muestra el mayor de 12 in y 4 veces el alto de la pieza; el hueco es de 3 in, con la marca de corte. La sección transversal y la isométrica no se cortan | `LargueroPieceSketch` |
+| T6lg-S8 | La advertencia de ADR-0023 (familia S) sale en la página mientras el plan es de geometría visual derivada, también antes de insertar. Sale además en la respuesta y en la línea de órdenes | `LargueroWorkbenchViewModel.AuthorityText`, `LargueroDoorRules` |
+| T6lg-S9 | «Exportar el BOM» escribe en Documentos, porque el larguero no es de un dibujo. El nombre es «Larguero - &lt;nombre&gt; - BOM.xlsx/.csv» y nunca reemplaza otro archivo: numera, como el BOM de un dibujo sin guardar. El CSV va en UTF-8 sin BOM, como el de la ventana. El BOM es el de la página, también cuando se elige «Solo el perfil»: lo que se exporta y se guarda es el larguero | `LargueroWorkbenchViewModel.ExportBom` |
+| T6lg-S10 | El nombre vacío toma el automático. El nombre del bloque sale del id, el peralte y la longitud (`RACKCAD_LARGUERO_<id>[_P<peralte>]_L<longitud>`), no del nombre: es un nombre, nunca una llave | `LargueroPiecePlanner.BlockBaseNameOf` |
+| T6lg-S11 | «Abrir» de la biblioteca reemplaza lo que muestra la página sin preguntar, porque la página no es un borrador (LG-S01). Lo dice en el aviso. «Volver a los valores por defecto» olvida el archivo: un larguero nuevo no hereda sus campos desconocidos | `RackCadWindowViewModel.Larguero.cs` (`OpenLargueroFromLibrary`), `LargueroWorkbenchViewModel.LoadDesign` |
+| T6lg-S12 | Sin la marca WIP. La tarjeta de «Nuevo» se llama «Larguero en esta ventana», con su texto nuevo. La tarjeta clásica «Larguero» y «Perfil estructural» siguen | `RackCadWindowView.xaml` (bloque `T5 lg`, una edición `T6 lg`), `LargueroWorkbenchView.xaml` |
+| T6lg-S13 | El editor clásico (`RackLargueroWindow`), al abrir un larguero de AISC, lo dice: «Este larguero usa la sección «…» del catálogo AISC: este editor solo edita largueros de RackCad. Ábrelo en «Nuevo › Larguero» de la ventana RackCad.». «Guardar» sigue pidiendo un perfil de RackCad, así que nunca escribe otra cosa encima en silencio | `RackLargueroWindow.LoadExisting` |
+| T6lg-S14 | La respuesta de la inserción la dice la página. El mensaje de la ventana la repite solo si la página no está a la vista. La espera usa el panel «Esperando a AutoCAD…» de la ventana, con su texto | `RackCadWindowViewModel.Larguero.cs`, `RackCadWindowViewModel.cs` (`WaitingText`) |
+
+### Preguntas para el Owner
+
+1. **(punto 8)** Los nombres y los tipos de los largueros de RackCad salen de su nombre en `secciones.csv` (LG-S03). ¿Se añade una columna
+   `tipo`, o se usa `family`? Es un dato del catálogo y solo se escribe por su dictado.
+2. **(T6lg-S5)** ¿Un larguero de RackCad suelto se dibuja con el bloque FRONTAL de la biblioteca de bloques, con LONGITUD y PERALTE, como en
+   Selectivo, en lugar del rectángulo esquemático?
+3. **(T6lg-S4)** ¿Es así como se apoya la ménsula: placa de 2 in, 1 in fuera del perfil y al ras de arriba? Si no, ¿cuál es la regla, y
+   sale del catálogo (por ménsula) o es fija?
+4. **(T6lg-S3)** ¿El perfil suelto de la página debe ofrecer también el giro, el espejo, el eje y la envolvente de RACKSECCION?
+5. **(T6lg-S9)** ¿El BOM del larguero va a Documentos, a la carpeta de la biblioteca o junto al dibujo activo?
+
+### Lo que comprobará el smoke en AutoCAD (pendiente de la sesión)
+
+- **«Larguero en esta ventana» › «Insertar en el dibujo…»:**
+  - aparece «Punto de insercion del larguero (cara del poste, arriba):»;
+  - el bloque `RACKCAD_LARGUERO_…` queda en el punto con el perfil y sus 2 ménsulas, a escala;
+  - un solo «U» lo deshace;
+  - un Esc no deja nada;
+  - la lista de racks no lo muestra.
+- **Con «Perfiles AISC» › C10X15.3:** el alzado, con el peso en la línea de órdenes.
+- **Con S10X25.4:** la ADVERTENCIA de ADR-0023 en la página, en la respuesta y en la línea de órdenes.
+- **«Solo el perfil» con W10X12, vista «Sección»:** el mismo bloque que RACKSECCION con los mismos valores. Comparar `RACKCAD_SECCION_…`
+  de los dos.
+- **«Guardar en la biblioteca…»:** guarda el larguero; luego «Abrir» de la biblioteca lo trae a la página.
+- **«Más» › «Exportar el BOM a Excel…»:** el archivo en Documentos, que se abre con Excel.
+- **La página en la paleta real:** los anchos, la vista y el desplazamiento.
+
+### Ediciones a archivos compartidos (marcadas `T6 lg`)
+
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`, seis sitios:
+  1. `IsLarguero` en `DoorRequest`;
+  2. el texto de una petición tomada, en `WaitingText`;
+  3. el texto de una petición sin tomar, en `WaitingText`;
+  4. el texto de una petición tomada, en `StopWaiting`;
+  5. la rama de la página, en `StopWaiting`;
+  6. la rama de la página, en `PruneDeadSessions`.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowView.xaml`: el bloque `T5 lg` de «Nuevo», con el texto y el nombre de la tarjeta.
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.Utilities.cs`:
+  - `OpensHere` y `OpenLibraryDesign`, el larguero a la página;
+  - `IsEditorAlive`, la página;
+  - dos filas de `ClassicMenuMap`.
+- `src/RackCad.UI/VentanaRackCad/RackCadLibraryViewModel.cs`: la nota de un larguero.
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs`: una línea de `Abandon`.
+- **Censos:**
+  - `CustomPropertiesCommandGuardTests`: `A14LargueroDoorCommands` en la base;
+  - `SelectiveEditorOpenTests`: el censo de órdenes del Plugin pasa de 70 a 71.
+- **Pruebas que fijaban la conducta anterior,** cada cambio con su nota:
+  - `PersistenceUniformityTests`: la versión 1.1;
+  - `RackCadUtilitiesTests`: el larguero ya no va al editor clásico;
+  - `RackCadLargueroWorkbenchTests`: sin la marca WIP y con el texto nuevo de la tarjeta.
+- **Roce con la parte ui (O-2, la lista de la ménsula):** no se tocaron las líneas de su `ComboBox` en `LargueroWorkbenchView.xaml`. El
+  resto de la vista sí cambió: cabecera, panel izquierdo y nombre.
+
+### Archivos nuevos
+
+- **Application:**
+  - `Systems/Larguero/LargueroPiece.cs`: `LargueroPieceKind`, `LargueroCurveRole`, `LargueroPieceCurve`, `LargueroMensulaSeat`,
+    `LargueroPiecePlan`, `LargueroPiecePlanner`, `LargueroSketchLine` y `LargueroPieceSketch`;
+  - `VentanaRackCad/LargueroDoor.cs`: `LargueroInsertRequest`, `LargueroInserted`, `IRackCadLargueroDoorPort` y `LargueroDoorRules`.
+- **Plugin:**
+  - `RackLargueroCommands.Ventana.cs`, la orden;
+  - `VentanaRackCad/RackCadRackDoorPort.Larguero.cs`, la puerta, sin transacción ni bloqueo;
+  - `Drawing/StructuralSections/LargueroPieceMaterializer.cs`, el adaptador, que no calcula nada.
+- **UI:** `LargueroWorkbenchViewModel.Piece.cs` y `.Library.cs` (partes de la clase, que pasa a `partial`) y `LargueroSketchView.cs`.
+- **Pruebas:**
+  - `tests/RackCad.Tests/LargueroPieceTests.cs` (Core, 16 casos);
+  - `tests/RackCad.UI.Tests/Workspace/RackCadLargueroPageTests.cs` (UI, 11 casos).
+
+### Las pruebas
+
+- **Core, `LargueroPieceTests`:**
+  - el formato: ida y vuelta de RackCad y de AISC; un archivo de hoy, literal, que se abre igual; los campos desconocidos y el menor nuevo
+    al volver a guardar; la validación, también con media sección y con el almacén;
+  - el BOM de AISC;
+  - el plan de un larguero de RackCad: asiento, alturas, bloque;
+  - el plan de un larguero de AISC: la firma de RACKSECCION y cada punto movido;
+  - el perfil suelto: la firma de RACKSECCION en 3 vistas × 2 detalles;
+  - la familia S con su advertencia, en las dos piezas y los dos detalles, y W sin ella;
+  - lo que falta;
+  - la vista cortada y entera;
+  - las reglas y los textos de la puerta;
+  - las guardas de la orden, leída como texto: el orden toma → Started → dibujo → regla → unidades → punto → cancelado → transacción →
+    definición → referencia → Commit → regeneración → respuesta; un solo `Commit` y un solo aviso de unidades; sin `NoUndoMarker`;
+    `catch (System.Exception ex)`;
+  - el adaptador no calcula ni usa la biblioteca de bloques;
+  - la puerta guarda la petición antes de entregarla, y `Abandon` la olvida.
+- **UI, `RackCadLargueroPageTests`, con el doble de la puerta:**
+  - la inserción es un gesto: nada sale al elegir, el plan enviado es el MISMO objeto de la página, la espera, la orden tomada, la respuesta
+    solo para su número, y el cancelado;
+  - sin puerta, sin dibujo, con otra petición en curso o incompleto, apagado y con su motivo;
+  - el rechazo de la puerta, «Dejar de esperar», una respuesta tardía y el dibujo cerrado;
+  - el perfil suelto con la firma del inspector de RACKSECCION;
+  - la advertencia de la familia S;
+  - guardar en la biblioteca y volver a abrir aquí, con el campo nuevo y el campo desconocido conservado al reemplazar;
+  - un larguero de hoy con la ménsula de su fila, una sección que no está y un catálogo desconocido;
+  - el BOM a Excel y CSV, la numeración, «Guardar como…» e incompleto;
+  - el nombre;
+  - la vista con WPF real (STA), sin errores de enlace: la escala, el texto, «Más», la exportación, el perfil solo con AISC, «Vista», la
+    advertencia, nombres de automatización únicos y sin «construcción»;
+  - el editor clásico con un larguero de AISC.
+- **Una mirada a la página:** con una prueba temporal, ya borrada, se dibujó la ventana con WPF real a 1290 px (RackCad, AISC con «Más»
+  abierto y S con el perfil solo) y a 700 px (`hs65\t6\lg\lg-*.png`, en el scratchpad de la sesión). Corrigió dos cosas: el título bajaba al
+  abrir «Más», y los botones de «Más» se estiraban.
+
+**Comprobación en rojo.** Dieciocho piezas rotas a propósito, una a una, con un script (`hs65\t6\lg\red.py`, en el scratchpad de la
+sesión; salida en `red-summary.txt` y `red-logs\`):
+- antes de cada rotura, el script copia el archivo FUERA del worktree (`hs65\t6\lg\red-backup\`);
+- tras cada pieza, compila y corre su clase focal: Core, `LargueroPieceTests` y `PersistenceUniformityTests`; UI, `RackCadLargueroPageTests`
+  y `RackCadLargueroWorkbenchTests`;
+- después restaura los bytes y comprueba su SHA-256: las 18 restauraciones, iguales.
+
+*El formato:*
+1. F1, `FromDomain` no copia el catálogo de la sección: fallan 2;
+2. F2, `ToDomain` no lee la sección: fallan 3;
+3. F3, la versión vuelve a 1.0: fallan 3;
+4. F4, media sección (catálogo sin id) vale: falla 1;
+5. F5, la validación vuelve a exigir `BeamProfileId`: fallan 3;
+6. F6, la página guarda una sección AISC como `BeamProfileId`, sin el campo nuevo: falla 1 (UI).
+
+*La inserción:*
+1. I1, la respuesta no mira el número de la petición: falla 1 (UI);
+2. I2, «Insertar» no espera a otra petición de la ventana: falla 1 (UI);
+3. I3, la orden no avisa de las unidades: falla 1;
+4. I4, un punto cancelado no se responde como cancelado: falla 1;
+5. I5, la puerta no guarda la petición antes de entregarla: falla 1;
+6. I6, el perfil no es el plan de RACKSECCION (con envolvente): fallan 2;
+7. I7, la ménsula de la izquierda no queda al ras de arriba: fallan 3;
+8. I8, «Dejar de esperar» no olvida la inserción en la puerta: falla 1;
+9. I9, la vista no corta una pieza larga: fallan 2;
+10. I10, «Exportar el BOM» reemplaza un archivo que ya estaba: falla 1 (UI);
+11. I11, «Abrir» de la biblioteca lleva el larguero al editor clásico: fallan 2 (UI);
+12. I12, «Dejar de esperar» no se dice en la página: falla 1 (UI).
+
+Después se buscaron restos en `git diff` y en los archivos nuevos (`if (false`, `true ||`, `document => { }`, `|| false`, los reemplazos
+del script): ninguno. Se escanearon los 30 archivos tocados: sin caracteres de control ni `CR CR`. La solución se recompiló con
+`--no-incremental` antes de las suites completas.
+
+**Los números,** con la solución recompilada con `--no-incremental` en Debug:
+- **UI completa:** 3121 correctas, 0 con error, 48 omitidas (3169): la base 3110 / 0 / 48 más las 11 nuevas.
+- **Core Full:** 19499 correctas, 0 con error, 403 omitidas (19902): la base 19483 / 0 / 403 más las 16 nuevas.
+- **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores.
+- Las dos suites corrieron a la vez sobre la solución recompilada (UI 47 min, Core 1 h 16 min, con la máquina compartida con otras partes).

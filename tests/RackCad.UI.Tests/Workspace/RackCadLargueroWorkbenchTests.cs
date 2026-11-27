@@ -104,7 +104,8 @@ namespace RackCad.UI.Tests
             Assert.Equal("MENSULA_3_REMACHES_CAL_10", workbench.SelectedMensula);
             Assert.Equal("Larguero 96 in · P3", workbench.ProposedName);
             Assert.True(workbench.IsComplete);
-            Assert.StartsWith("El larguero está completo. Esta página todavía no lo guarda ni lo dibuja", workbench.CompleteText);
+            // T6 lg: the page saves and draws the larguero now (no longer a draft in construction).
+            Assert.Equal("El larguero está completo: guárdalo en la biblioteca o insértalo en el dibujo.", workbench.CompleteText);
             Assert.Equal(string.Empty, workbench.CatalogNotice);
 
             // «Nuevo» of the crumb goes back to its home; the page keeps what was chosen while the window lives.
@@ -686,13 +687,13 @@ namespace RackCad.UI.Tests
                 Lay(view);
                 Assert.Equal(Visibility.Collapsed, view.LargueroPageHost.Visibility);
 
-                // «Nuevo»: the card, under «Componentes en esta ventana», says it is in construction and that the classic card saves it, never
-                // that the classic draws it (review, point 8).
+                // «Nuevo»: the card, under «Componentes en esta ventana». T6 lg: no longer «en construcción»; it says that the page saves and
+                // draws the larguero, and inserts loose AISC profiles too.
                 Assert.Contains("Componentes en esta ventana", ShownTexts(view.NuevoPage));
-                Assert.EndsWith("Todavía no lo guarda ni lo dibuja; para guardarlo, usa la tarjeta «Larguero».", view.LargueroHereText.Text,
-                    StringComparison.Ordinal);
-                Assert.DoesNotContain("para eso", view.LargueroHereText.Text, StringComparison.Ordinal);
-                Click(ButtonNamed(view.NuevoPage, "Larguero en esta ventana, en construcción"));
+                Assert.Equal("Arma un larguero con una sección (por catálogo y tipo) y una ménsula, guárdalo en la biblioteca e insértalo en el dibujo como pieza "
+                             + "suelta. También inserta perfiles AISC sueltos, como RACKSECCION.", view.LargueroHereText.Text);
+                Assert.DoesNotContain("construcción", string.Join(" ", ShownTexts(view.NuevoPage)), StringComparison.Ordinal);
+                Click(ButtonNamed(view.NuevoPage, "Larguero en esta ventana"));
                 Lay(view);
 
                 Assert.True(rig.Window.IsLargueroPage);
@@ -702,11 +703,10 @@ namespace RackCad.UI.Tests
                 var workbench = rig.Window.LargueroWorkbench!;
                 Assert.Same(workbench, page.DataContext);
 
-                // LG-03: what the page is, at the top.
+                // What the page is, at the top. T6 lg: the mark «En construcción» and the banner of LG-03 went away (the page is finished).
                 var texts = ShownTexts(page);
-                Assert.Contains("En construcción", texts);
-                Assert.Contains(LargueroWorkbenchViewModel.WipTitle, texts);
-                Assert.Contains(LargueroWorkbenchViewModel.WipText, texts);
+                Assert.Contains(LargueroWorkbenchViewModel.IntroText, texts);
+                Assert.DoesNotContain(texts, t => t.Contains("construcción", StringComparison.Ordinal));
                 Assert.Contains("Larguero 96 in · P3", texts);
                 // Review, point 6: the bill of materials says its names are the ones of this page, not of the classic BOM.
                 Assert.Equal("La receta del BOM de Selectivo (un perfil y 2 ménsulas por larguero), con los nombres de esta página.",

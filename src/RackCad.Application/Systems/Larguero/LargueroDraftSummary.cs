@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
 using RackCad.Application.StructuralSections;
 
@@ -31,13 +32,20 @@ namespace RackCad.Application.Systems.Larguero
         public const string UnknownMensulaText = "La ménsula elegida no está en el catálogo (mensulas.csv).";
 
         private LargueroDraftSummary(string proposedName, IReadOnlyList<LargueroSummaryLine> lines, IReadOnlyList<LargueroBomPreviewLine> bom,
-            IReadOnlyList<string> missing)
+            IReadOnlyList<string> missing, BillOfMaterials bill = null)
         {
             ProposedName = proposedName;
             Lines = lines;
             Bom = bom;
             Missing = missing;
+            Bill = bill ?? new BillOfMaterials(new List<BomComponent>());
         }
+
+        /// <summary>
+        /// T6 lg: the bill of materials of <see cref="Bom"/> as «Exportar el BOM» writes it (Excel and CSV, the exporters of the BOM of the
+        /// window): the same component, pieces, quantities and names that the page lists.
+        /// </summary>
+        public BillOfMaterials Bill { get; }
 
         /// <summary>
         /// The name the larguero would take: «Larguero 96 in · P3», or «Larguero 96 in · C10X15.3» with an AISC section (its designation, so it
@@ -139,7 +147,8 @@ namespace RackCad.Application.Systems.Larguero
                 : "Larguero " + LargueroSectionNaming.Number(length.Value) + " in · "
                   + (section.Source == LargueroSectionSource.Aisc ? section.Name : "P" + LargueroSectionNaming.Number(effectivePeralte.Value));
 
-            return new LargueroDraftSummary(name, lines, BomOf(section, effectivePeralte, length, mensula, catalog), missing);
+            var (bom, bill) = BomOf(section, effectivePeralte, length, mensula, catalog);
+            return new LargueroDraftSummary(name, lines, bom, missing, bill);
         }
 
         /// <summary>«Ménsula 3 remaches de cinta calibre 10 · 6 in de alto · calibre 10».</summary>
@@ -156,7 +165,7 @@ namespace RackCad.Application.Systems.Larguero
         // categories and the lengths come from it; the descriptions are the names of THIS page (the section by its type, the ménsula), not the
         // ones of the classic BOM (LargueroBomBuilder.DescribeBeam says the label of the row, «Larguero escalón … con ménsula …»). The larguero
         // is its section and « · P<peralte>» (review of part «lg», point 6).
-        private static IReadOnlyList<LargueroBomPreviewLine> BomOf(LargueroSectionOption section, double? peralte, double? length,
+        private static (IReadOnlyList<LargueroBomPreviewLine> Lines, BillOfMaterials Bill) BomOf(LargueroSectionOption section, double? peralte, double? length,
             MensulaCatalogEntry mensula, RackCatalog catalog)
         {
             var component = LargueroBomBuilder.Component(catalog, section.Id, length ?? 0.0, peralte ?? 0.0, mensula?.Id, quantity: 1);
@@ -168,19 +177,32 @@ namespace RackCad.Application.Systems.Larguero
             {
                 new LargueroBomPreviewLine(component.Category, described, lengthText, component.Quantity.ToString(CultureInfo.InvariantCulture), IsPiece: false)
             };
+            // T6 lg: what «Exportar el BOM» writes, with the names of the lines of the page.
+            var exportedPieces = new List<BomLine>();
+            var exported = new BomComponent
+            {
+                Category = component.Category, ProfileId = component.ProfileId, Description = described, Length = component.Length,
+                Quantity = component.Quantity,
+            };
 
             foreach (var piece in component.Pieces)
             {
                 var isMensula = piece.Category == LargueroBomBuilder.Mensula;
                 // With no ménsula chosen the recipe would fall back to the one of the row of a larguero of RackCad: the page lists none.
                 if (isMensula && mensula == null) continue;
+                var description = isMensula ? mensula?.Label ?? piece.Description : section.Name;
                 lines.Add(new LargueroBomPreviewLine(piece.Category,
-                    isMensula ? mensula?.Label ?? piece.Description : section.Name,
+                    description,
                     isMensula ? "—" : lengthText,
                     piece.Quantity.ToString(CultureInfo.InvariantCulture) + " por larguero", IsPiece: true));
+                exportedPieces.Add(new BomLine
+                {
+                    Category = piece.Category, ProfileId = piece.ProfileId, Length = piece.Length, Quantity = piece.Quantity, Description = description,
+                });
             }
 
-            return lines;
+            exported.Pieces = exportedPieces;
+            return (lines, new BillOfMaterials(new List<BomComponent> { exported }));
         }
     }
 }

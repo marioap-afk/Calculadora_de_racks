@@ -110,6 +110,14 @@ namespace RackCad.UI.Systems.Larguero
             LengthBox.Text = design.Length.ToString("0.###", CultureInfo.InvariantCulture);
             MensulaBox.SelectedValue = design.MensulaOverride ?? string.Empty;
             DrawPreview();
+
+            // T6 lg (I-64, sexta tanda): a larguero of another catalog (an AISC section, the new field of the design) is not a profile of this
+            // editor. It says so; «Guardar» keeps asking for a profile, so the file is never written over with something else in silence.
+            if (!string.IsNullOrWhiteSpace(design.SectionCatalog))
+            {
+                SetStatus("Este larguero usa la sección «" + design.SectionId + "» del catálogo " + design.SectionCatalog.Trim()
+                          + ": este editor solo edita largueros de RackCad. Ábrelo en «Nuevo › Larguero» de la ventana RackCad.", true);
+            }
         }
 
         private void ViewBom_Click(object sender, RoutedEventArgs e)

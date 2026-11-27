@@ -135,7 +135,8 @@ namespace RackCad.Tests
             var larguero = doc.RootElement.GetProperty("Larguero");
             Assert.True(larguero.TryGetProperty("SchemaVersion", out var version),
                 "Larguero payload must carry an explicit SchemaVersion (I-11).");
-            Assert.Equal("1.0", version.GetString());
+            // T6 lg (I-64, sexta tanda): 1.1, the additive minor of SectionCatalog and SectionId (LargueroDocument.CurrentSchemaVersion).
+            Assert.Equal("1.1", version.GetString());
             Assert.True(larguero.TryGetProperty("BeamProfileId", out _));
         }
 

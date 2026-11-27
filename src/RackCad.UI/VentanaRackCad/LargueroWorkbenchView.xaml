@@ -2,13 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:RackCad.UI.VentanaRackCad"
-             AutomationProperties.Name="Larguero, borrador en construcción"
+             AutomationProperties.Name="Larguero"
              FontFamily="Segoe UI"
              FontSize="12">
-    <!-- «Nuevo › Larguero» of the RackCad window (I-64 A-14, line D, quinta tanda, part «lg»): a DRAFT IN CONSTRUCTION (LG-03 of the Owner).
-         A larguero is made from a section and a ménsula (LG-01); the section is chosen in this one page with a filter by catalog and by type
-         (LG-02) and is called by its type. Its data context is LargueroWorkbenchViewModel. It reads only the catalogs: nothing is saved and
-         nothing is written to the drawing. -->
+    <!-- «Nuevo › Larguero» of the RackCad window (I-64 A-14, line D; quinta tanda, part «lg», LG-01 to LG-03; sexta tanda, part «lg», the answers
+         of the Owner). A larguero is made from a section and a ménsula (LG-01); the section is chosen in this one page with a filter by catalog
+         and by type (LG-02) and is called by its type. T6 lg: it is saved in the library («Guardar en la biblioteca…»), inserted in the drawing
+         as a loose piece («Insertar en el dibujo…», RACKLARGUEROINSERTAR) and, with an AISC section, inserted as a bare profile as RACKSECCION
+         does; its view is the sketch of the plan AutoCAD inserts, and «Más» exports its BOM. Its data context is LargueroWorkbenchViewModel. -->
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -31,34 +32,81 @@
                 <TextBlock Text=" › Larguero" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
             </WrapPanel>
 
-            <!-- One wrap for the title, its chip and the buttons: narrow, the buttons go to the next line and the title keeps its width. -->
+            <!-- One wrap for the title and the buttons: narrow, the buttons go to the next line and the title keeps its width. -->
             <WrapPanel>
-                <TextBlock Text="Larguero" Style="{StaticResource UtPageTitle}" Margin="0,0,10,4" VerticalAlignment="Center" />
-                <Border x:Name="LargueroWipChip" CornerRadius="10" BorderThickness="1" Padding="8,1" Margin="0,0,16,4" VerticalAlignment="Center"
-                        BorderBrush="{DynamicResource ShellStatusWarningBrush}" AutomationProperties.Name="En construcción">
-                    <TextBlock Text="En construcción" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                </Border>
-                <Button x:Name="LargueroResetButton" Content="Volver a los valores por defecto" Padding="10,3" Margin="0,0,8,4" VerticalAlignment="Center"
+                <TextBlock Text="Larguero" Style="{StaticResource UtPageTitle}" Margin="0,0,16,4" VerticalAlignment="Top" />
+                <Button x:Name="LargueroSaveButton" Content="Guardar en la biblioteca…" Padding="10,3" Margin="0,0,8,4" VerticalAlignment="Top"
+                        Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanSaveToLibrary}"
+                        AutomationProperties.Name="Guardar el larguero en la biblioteca de diseños" Click="OnSaveClick" />
+                <!-- «Más»: its entries open under the button, inline (no popup, O-D of the smoke of the fourth batch). -->
+                <StackPanel x:Name="LargueroMoreBlock" Margin="0,0,8,4" VerticalAlignment="Top">
+                    <Button x:Name="LargueroMoreButton" Content="Más" Padding="12,3" HorizontalAlignment="Left" Style="{StaticResource SecondaryButtonStyle}"
+                            AutomationProperties.Name="Más acciones del larguero" AutomationProperties.ItemStatus="{Binding MoreItemStatus}"
+                            Click="OnMoreClick" />
+                    <Border x:Name="LargueroMorePanel" Margin="0,4,0,0" Padding="6" BorderThickness="1" CornerRadius="4" MaxWidth="300"
+                            BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                            Visibility="{Binding IsMoreOpen, Converter={StaticResource UtFlagToVisibility}}">
+                        <StackPanel>
+                            <Button x:Name="LargueroExportExcelButton" Content="Exportar el BOM a Excel…" HorizontalAlignment="Left" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanExportBom}"
+                                    AutomationProperties.Name="Exportar a Excel el BOM del larguero" Click="OnExportExcelClick" />
+                            <Button x:Name="LargueroExportCsvButton" Content="Exportar el BOM a CSV…" HorizontalAlignment="Left" Padding="10,3"
+                                    Margin="0,4,0,0" Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanExportBom}"
+                                    AutomationProperties.Name="Exportar a CSV el BOM del larguero" Click="OnExportCsvClick" />
+                            <TextBlock x:Name="LargueroExportHint" Text="{Binding ExportBomHint}" Style="{StaticResource UtOptional}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <Button x:Name="LargueroResetButton" Content="Volver a los valores por defecto" Padding="10,3" Margin="0,0,8,4" VerticalAlignment="Top"
                         Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Volver el larguero a los valores por defecto"
                         Click="OnResetClick" />
-                <Button x:Name="LargueroClassicButton" Content="Abrir el editor clásico" Padding="10,3" Margin="0,0,8,4" VerticalAlignment="Center"
+                <Button x:Name="LargueroClassicButton" Content="Abrir el editor clásico" Padding="10,3" Margin="0,0,8,4" VerticalAlignment="Top"
                         Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Abrir el editor clásico del larguero"
-                        ToolTip="El editor de hoy (RACKNUEVO Larguero): el que guarda un larguero en la biblioteca." Click="OnClassicClick" />
+                        ToolTip="El editor de siempre (RACKNUEVO Larguero), que sigue disponible." Click="OnClassicClick" />
             </WrapPanel>
 
-            <!-- LG-03: the page says what it is, at the top. -->
-            <Border x:Name="LargueroWipBanner" Style="{StaticResource UtWarning}" AutomationProperties.Name="Borrador en construcción">
-                <StackPanel>
-                    <TextBlock x:Name="LargueroWipTitleText" Text="{x:Static local:LargueroWorkbenchViewModel.WipTitle}" FontWeight="SemiBold"
-                               Style="{StaticResource UtPlain}" />
-                    <TextBlock x:Name="LargueroWipText" Text="{x:Static local:LargueroWorkbenchViewModel.WipText}" Style="{StaticResource UtPlain}" />
-                </StackPanel>
+            <TextBlock x:Name="LargueroIntroText" Style="{StaticResource UtText}" Margin="0,0,0,8"
+                       Text="{x:Static local:LargueroWorkbenchViewModel.IntroText}" />
+
+            <!-- A larguero opened from the library: what it is, and what could not be kept. -->
+            <Border x:Name="LargueroLoadedPanel" Style="{StaticResource UtBanner}"
+                    Visibility="{Binding HasLoadedNotice, Converter={StaticResource UtFlagToVisibility}}">
+                <TextBlock x:Name="LargueroLoadedText" Text="{Binding LoadedNotice}" Style="{StaticResource UtPlain}" />
             </Border>
 
             <!-- A catalog that could not be read is said here, not simulated (dolor 7). -->
             <Border x:Name="LargueroCatalogNoticePanel" Style="{StaticResource UtWarning}"
                     Visibility="{Binding HasCatalogNotice, Converter={StaticResource UtFlagToVisibility}}">
                 <TextBlock x:Name="LargueroCatalogNoticeText" Text="{Binding CatalogNotice}" Style="{StaticResource UtPlain}" />
+            </Border>
+
+            <!-- «Exportar el BOM»: the file written, with «Abrir», «Mostrar en la carpeta» and «Guardar como…», as the BOM of the window. -->
+            <Border x:Name="LargueroExportedBanner" Visibility="{Binding HasExported, Converter={StaticResource UtFlagToVisibility}}">
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource UtBanner}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ExportedFailed}" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel>
+                    <TextBlock x:Name="LargueroExportedTitle" Text="{Binding ExportedTitle}" FontWeight="SemiBold" Style="{StaticResource UtPlain}" />
+                    <TextBlock x:Name="LargueroExportedDetail" Text="{Binding ExportedDetail}" Style="{StaticResource UtPlain}" />
+                    <WrapPanel Margin="0,6,0,0">
+                        <Button x:Name="LargueroOpenExportedButton" Content="Abrir" Padding="10,2" Margin="0,0,6,0" Style="{StaticResource SecondaryButtonStyle}"
+                                IsEnabled="{Binding CanOpenExported}" AutomationProperties.Name="Abrir el BOM exportado del larguero" Click="OnOpenExportedClick" />
+                        <Button x:Name="LargueroShowExportedButton" Content="Mostrar en la carpeta" Padding="10,2" Margin="0,0,6,0"
+                                Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanOpenExported}"
+                                AutomationProperties.Name="Mostrar en su carpeta el BOM exportado del larguero" Click="OnShowExportedClick" />
+                        <Button x:Name="LargueroSaveExportedAsButton" Content="Guardar como…" Padding="10,2" Margin="0,0,6,0"
+                                Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Guardar como el BOM exportado del larguero"
+                                Click="OnSaveExportedAsClick" />
+                        <Button x:Name="LargueroCloseExportedButton" Content="Cerrar aviso" Padding="10,2" Style="{StaticResource SecondaryButtonStyle}"
+                                AutomationProperties.Name="Cerrar el aviso del BOM exportado del larguero" Click="OnCloseExportedClick" />
+                    </WrapPanel>
+                </StackPanel>
             </Border>
 
             <!-- Wide, the summary goes beside the sections; narrow, below them (see OnLayoutSizeChanged). -->
@@ -72,7 +120,7 @@
                     <RowDefinition x:Name="SummaryRow" Height="0" />
                 </Grid.RowDefinitions>
 
-                <!-- LG-01 / LG-02: the section, by catalog and by type. -->
+                <!-- LG-01 / LG-02: the section, by catalog and by type; T6 lg: then its view and «Insertar en el dibujo…». -->
                 <StackPanel x:Name="LargueroSectionPanel" Grid.Column="0">
                     <TextBlock Text="Sección" Style="{StaticResource UtBlockTitle}" Margin="0,0,0,2" />
                     <TextBlock Style="{StaticResource UtText}"
@@ -135,11 +183,73 @@
                     </ListBox>
                     <TextBlock x:Name="LargueroNoMatchText" Text="{Binding NoMatchText}" Style="{StaticResource UtOptional}" />
                     <TextBlock x:Name="LargueroOutsideFilterText" Text="{Binding OutsideFilterText}" Style="{StaticResource UtOptional}" />
+
+                    <!-- T6 lg (points 2, 3 and 6): the view of what is inserted, and «Insertar en el dibujo…». -->
+                    <TextBlock Text="Vista e inserción" Style="{StaticResource UtBlockTitle}" Margin="0,12,0,2" />
+                    <WrapPanel>
+                        <RadioButton x:Name="LargueroPieceLarguero" GroupName="LargueroPiece" Content="El larguero, con sus 2 ménsulas" Margin="0,2,16,2"
+                                     AutomationProperties.Name="Insertar el larguero con sus dos ménsulas" IsChecked="{Binding IsLargueroPiece, Mode=TwoWay}" />
+                        <RadioButton x:Name="LargueroPieceProfile" GroupName="LargueroPiece" Content="Solo el perfil (como RACKSECCION)" Margin="0,2,16,2"
+                                     AutomationProperties.Name="Insertar solo el perfil, como RACKSECCION" IsEnabled="{Binding CanChooseProfile}"
+                                     IsChecked="{Binding IsProfilePiece, Mode=TwoWay}" />
+                    </WrapPanel>
+                    <TextBlock x:Name="LargueroProfileHint" Text="{Binding ProfileHint}" Style="{StaticResource UtOptional}" />
+                    <WrapPanel>
+                        <StackPanel Margin="0,4,10,4" Visibility="{Binding ShowViewChoice, Converter={StaticResource UtFlagToVisibility}}">
+                            <TextBlock Text="Vista del perfil" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <ComboBox x:Name="LargueroViewBox" MinWidth="150" Margin="0,2,0,0" AutomationProperties.Name="Vista del perfil"
+                                      ItemsSource="{x:Static local:LargueroWorkbenchViewModel.ViewOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
+                                      SelectedValue="{Binding SelectedView, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,4,10,4" Visibility="{Binding ShowDetailChoice, Converter={StaticResource UtFlagToVisibility}}">
+                            <TextBlock Text="Detalle" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <ComboBox x:Name="LargueroDetailBox" MinWidth="130" Margin="0,2,0,0" AutomationProperties.Name="Detalle de la sección"
+                                      ItemsSource="{x:Static local:LargueroWorkbenchViewModel.DetailOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
+                                      SelectedValue="{Binding SelectedDetail, Mode=TwoWay}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <Border Margin="0,4,0,0" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource ShellBorderBrush}"
+                            Background="{DynamicResource ShellSurfaceBrush}">
+                        <local:LargueroSketchView x:Name="LargueroSketch" Sketch="{Binding Sketch}" AutomationProperties.Name="Vista del larguero" />
+                    </Border>
+                    <TextBlock x:Name="LargueroSketchCaption" Text="{Binding SketchCaption}" Style="{StaticResource UtOptional}" />
+                    <Border x:Name="LargueroAuthorityPanel" Style="{StaticResource UtWarning}" Margin="0,4,0,4"
+                            Visibility="{Binding HasAuthorityText, Converter={StaticResource UtFlagToVisibility}}">
+                        <TextBlock x:Name="LargueroAuthorityText" Text="{Binding AuthorityText}" FontWeight="SemiBold" Style="{StaticResource UtPlain}" />
+                    </Border>
+                    <WrapPanel Margin="0,6,0,0">
+                        <Button x:Name="LargueroInsertButton" Content="Insertar en el dibujo…" Padding="14,4" Margin="0,0,10,4" VerticalAlignment="Top"
+                                Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanInsert}"
+                                AutomationProperties.Name="{Binding InsertAutomationName}" Click="OnInsertClick" />
+                        <TextBlock x:Name="LargueroInsertReason" Text="{Binding InsertReason}" Style="{StaticResource UtOptional}" MaxWidth="420"
+                                   VerticalAlignment="Center" />
+                    </WrapPanel>
+                    <TextBlock x:Name="LargueroInsertHint" Text="{Binding InsertHint}" Style="{StaticResource UtOptional}" />
+                    <TextBlock x:Name="LargueroInsertStatus" Text="{Binding InsertStatus}" Margin="0,4,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource UtOptional}">
+                                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding InsertFailed}" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
 
-                <!-- The peralte, the length to cut, the ménsula and the summary. -->
+                <!-- The name, the peralte, the length to cut, the ménsula and the summary. -->
                 <StackPanel x:Name="LargueroSummaryPanel" Grid.Column="1" Width="340" Margin="12,0,0,0">
-                    <TextBlock Text="Medidas y ménsula" Style="{StaticResource UtBlockTitle}" Margin="0,0,0,0" />
+                    <TextBlock Text="Nombre, medidas y ménsula" Style="{StaticResource UtBlockTitle}" Margin="0,0,0,0" />
+
+                    <TextBlock Text="Nombre del larguero" Style="{StaticResource LgFieldLabel}" />
+                    <TextBox x:Name="LargueroNameBox" Padding="4,3" AutomationProperties.Name="Nombre del larguero"
+                             Text="{Binding NameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock x:Name="LargueroNameHint" Text="{Binding NameHint}" Style="{StaticResource UtOptional}" />
+                    <Button x:Name="LargueroUseProposedButton" Content="Usar el nombre automático" Style="{StaticResource UtLinkButton}" HorizontalAlignment="Left"
+                            AutomationProperties.Name="Usar el nombre automático del larguero" Click="OnUseProposedClick"
+                            Visibility="{Binding CanUseProposedName, Converter={StaticResource UtFlagToVisibility}}" />
 
                     <TextBlock Text="Peralte (in)" Style="{StaticResource LgFieldLabel}" />
                     <ComboBox x:Name="LargueroPeralteBox" AutomationProperties.Name="Peralte del larguero"
@@ -170,7 +280,7 @@
                     <TextBlock x:Name="LargueroMensulaHint" Text="{Binding MensulaHint}" Style="{StaticResource UtOptional}" />
 
                     <TextBlock Text="Resumen" Style="{StaticResource UtBlockTitle}" />
-                    <TextBlock x:Name="LargueroProposedName" Text="{Binding ProposedName}" FontWeight="SemiBold" Style="{StaticResource UtPlain}" />
+                    <TextBlock x:Name="LargueroProposedName" Text="{Binding DisplayName}" FontWeight="SemiBold" Style="{StaticResource UtPlain}" />
                     <ItemsControl x:Name="LargueroSummaryLines" ItemsSource="{Binding SummaryLines}" Margin="0,4,0,0" Focusable="False"
                                   AutomationProperties.Name="Resumen del larguero">
                         <ItemsControl.ItemTemplate>
@@ -223,26 +333,6 @@
                     <TextBlock x:Name="LargueroCompleteText" Text="{Binding CompleteText}" Style="{StaticResource UtOptional}" Margin="0,6,0,0" />
                 </StackPanel>
             </Grid>
-
-            <!-- For the Owner: what is missing to finish this page. -->
-            <Expander x:Name="LargueroPendingExpander" Margin="0,12,0,0" AutomationProperties.Name="Lo que falta para terminar esta página">
-                <Expander.Header>
-                    <TextBlock Text="Lo que falta para terminar esta página" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                </Expander.Header>
-                <ItemsControl x:Name="LargueroPendingList" Margin="18,6,0,0" Focusable="False"
-                              ItemsSource="{x:Static local:LargueroWorkbenchViewModel.PendingItems}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <BulletDecorator Margin="0,0,0,4">
-                                <BulletDecorator.Bullet>
-                                    <TextBlock Text="•" Margin="0,0,6,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-                                </BulletDecorator.Bullet>
-                                <TextBlock Text="{Binding}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-                            </BulletDecorator>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Expander>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

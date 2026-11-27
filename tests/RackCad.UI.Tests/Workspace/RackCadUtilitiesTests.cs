@@ -433,7 +433,9 @@ namespace RackCad.UI.Tests
                          + "Cuando Cama llegue a la ventana, se abrirá aquí.", rig.Library.SelectionNote);
 
             Select(rig, "Larguero 96 in");
-            Assert.EndsWith("Un larguero no se inserta en el dibujo: su editor lo muestra y lo guarda.", rig.Library.SelectionNote);
+            // T6 lg (point 5): a larguero opens in the page «Larguero» of the window, which needs no drawing.
+            Assert.True(rig.Library.SelectionOpensHere);
+            Assert.StartsWith("Se abre en «Nuevo › Larguero», sin bloquear AutoCAD y sin dibujo", rig.Library.SelectionNote, StringComparison.Ordinal);
             Assert.Equal("archivo larguero.rackcad.json", rig.Library.Selected!.FileName);
         }
 
@@ -554,15 +556,14 @@ namespace RackCad.UI.Tests
             Select(rig, "Cama 48 in");
 
             rig.Library.OpenSelected();
-            Select(rig, "Larguero 96 in");
-            rig.Library.OpenSelected();
 
-            Assert.Equal(new[] { rig.File("Cama 48 in"), rig.File("archivo larguero") }, rig.Classic.LibraryOpens.Select(r => r.Path).ToArray());
-            Assert.Equal(new[] { 1L, 2L }, rig.Classic.LibraryOpens.Select(r => r.RequestId).ToArray());
+            // T6 lg (point 5): a larguero no longer goes to its classic editor: it opens in the page «Larguero» (RackCadLargueroPageTests).
+            Assert.Equal(new[] { rig.File("Cama 48 in") }, rig.Classic.LibraryOpens.Select(r => r.Path).ToArray());
+            Assert.Equal(new[] { 1L }, rig.Classic.LibraryOpens.Select(r => r.RequestId).ToArray());
             Assert.All(rig.Classic.LibraryOpens, r => Assert.Equal(new SessionId(7), r.Session));
             Assert.Null(RackCadLibraryDoorRules.RefusalOf(rig.Classic.LibraryOpens[0]));
             Assert.False(rig.Window.ActionFailed);
-            Assert.StartsWith("Se pidió a AutoCAD abrir «Larguero 96 in» en el editor clásico de Larguero, ya cargado.", rig.Window.ActionMessage);
+            Assert.StartsWith("Se pidió a AutoCAD abrir «Cama 48 in» en el editor clásico de Cama, ya cargado.", rig.Window.ActionMessage);
             Assert.Null(rig.Window.NewSelectiveEditor);
             Assert.Null(rig.Window.NewDynamicEditor);
 

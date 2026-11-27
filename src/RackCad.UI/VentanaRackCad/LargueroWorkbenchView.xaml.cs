@@ -5,7 +5,7 @@ using System.Windows.Controls;
 namespace RackCad.UI.VentanaRackCad
 {
     /// <summary>
-    /// «Nuevo › Larguero» of the RackCad window (part «lg», a draft in construction). It only passes the clicks of the user to its view-model
+    /// «Nuevo › Larguero» of the RackCad window (parts «lg» of the fifth and sixth batches). It only passes the clicks of the user to its view-model
     /// and places the summary beside the sections when there is room and below them when there is not. A failure is contained and said in
     /// the message of the window.
     /// </summary>
@@ -57,6 +57,27 @@ namespace RackCad.UI.VentanaRackCad
         private void OnResetClick(object sender, RoutedEventArgs e) => Contained(w => w.ResetToDefaults());
 
         private void OnClassicClick(object sender, RoutedEventArgs e) => Contained(w => w.OpenClassicEditor());
+
+        // T6 lg: the gestures of the finished page (the library, «Más», «Insertar en el dibujo…», the name).
+        private void OnSaveClick(object sender, RoutedEventArgs e) => Contained(w => w.SaveToLibrary());
+
+        private void OnMoreClick(object sender, RoutedEventArgs e) => Contained(w => w.ToggleMore());
+
+        private void OnExportExcelClick(object sender, RoutedEventArgs e) => Contained(w => w.ExportBom(excel: true));
+
+        private void OnExportCsvClick(object sender, RoutedEventArgs e) => Contained(w => w.ExportBom(excel: false));
+
+        private void OnOpenExportedClick(object sender, RoutedEventArgs e) => Contained(w => w.OpenExported());
+
+        private void OnShowExportedClick(object sender, RoutedEventArgs e) => Contained(w => w.ShowExportedInFolder());
+
+        private void OnSaveExportedAsClick(object sender, RoutedEventArgs e) => Contained(w => w.SaveExportedAs());
+
+        private void OnCloseExportedClick(object sender, RoutedEventArgs e) => Contained(w => w.CloseExported());
+
+        private void OnInsertClick(object sender, RoutedEventArgs e) => Contained(w => w.Insert());
+
+        private void OnUseProposedClick(object sender, RoutedEventArgs e) => Contained(w => w.UseProposedName());
 
         private void Contained(Action<LargueroWorkbenchViewModel> interaction)
         {

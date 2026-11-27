@@ -611,16 +611,16 @@
                                 <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
                                            Text="Paso intermedio: mientras se migran los editores, «Nuevo» abre la ventana actual de ese sistema. La meta es editarlo aquí, sin bloquear AutoCAD." />
                             </Border>
-                            <!-- T5 lg (LG-01 a LG-03): «Nuevo › Larguero», a draft in construction: a larguero from a section and a ménsula. -->
+                            <!-- T5 lg (LG-01 a LG-03): «Nuevo › Larguero»: a larguero from a section and a ménsula. T6 lg: finished, no longer «en construcción». -->
                             <TextBlock Text="Componentes en esta ventana" FontSize="14" FontWeight="SemiBold" Margin="0,4,0,4"
                                        Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                             <Button x:Name="LargueroHereButton" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6" MaxWidth="560"
                                     HorizontalContentAlignment="Left" Style="{StaticResource SecondaryButtonStyle}"
-                                    AutomationProperties.Name="Larguero en esta ventana, en construcción" Click="OnLargueroHereClick">
+                                    AutomationProperties.Name="Larguero en esta ventana" Click="OnLargueroHereClick">
                                 <StackPanel>
-                                    <TextBlock Text="Larguero en esta ventana · en construcción" FontWeight="SemiBold" />
+                                    <TextBlock Text="Larguero en esta ventana" FontWeight="SemiBold" />
                                     <TextBlock x:Name="LargueroHereText" TextWrapping="Wrap"
-                                               Text="Arma un larguero con una sección (por catálogo y tipo) y una ménsula, y ve su resumen. Todavía no lo guarda ni lo dibuja; para guardarlo, usa la tarjeta «Larguero»." />
+                                               Text="Arma un larguero con una sección (por catálogo y tipo) y una ménsula, guárdalo en la biblioteca e insértalo en el dibujo como pieza suelta. También inserta perfiles AISC sueltos, como RACKSECCION." />
                                 </StackPanel>
                             </Button>
                             <!-- T4 ut: the recent designs of the library, where the classic menu went and «Ver todas las órdenes» (in the window). -->

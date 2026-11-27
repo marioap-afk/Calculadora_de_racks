@@ -22,12 +22,15 @@ namespace RackCad.Application.Systems.Larguero
         /// <summary>The BOM of one larguero design: a single "Larguero" component expanding to its profile + ménsulas.</summary>
         public static BillOfMaterials Build(LargueroDesign design, RackCatalog catalog)
         {
-            if (design == null || string.IsNullOrWhiteSpace(design.BeamProfileId))
+            // T6 lg: a larguero made of a section of another catalog (AISC) lists that section by its id; it has no ménsula of its row.
+            var profileId = !string.IsNullOrWhiteSpace(design?.BeamProfileId) ? design.BeamProfileId
+                : !string.IsNullOrWhiteSpace(design?.SectionCatalog) ? design.SectionId : null;
+            if (string.IsNullOrWhiteSpace(profileId))
             {
                 return new BillOfMaterials(new List<BomComponent>());
             }
 
-            var component = Component(catalog, design.BeamProfileId, design.Length, design.Peralte, design.MensulaOverride, quantity: 1);
+            var component = Component(catalog, profileId.Trim(), design.Length, design.Peralte, design.MensulaOverride, quantity: 1);
             return new BillOfMaterials(new List<BomComponent> { component });
         }
 

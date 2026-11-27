@@ -313,6 +313,9 @@ namespace RackCad.UI.VentanaRackCad
             {
                 var row = Selected;
                 if (row == null) return string.Empty;
+                if (row.Kind == RackSystemKind.Larguero && _opensHere(row.Kind)) // T6 lg: the page «Larguero» (point 5)
+                    return "Se abre en «Nuevo › Larguero», sin bloquear AutoCAD y sin dibujo, con su sección, su ménsula y sus medidas. «Guardar en la "
+                           + "biblioteca…» lo vuelve a guardar; «Insertar en el dibujo…» lo dibuja como pieza suelta.";
                 if (_opensHere(row.Kind))
                     return "Se abre en «Nuevo» con el editor de " + row.KindLabel + " de la ventana, sin bloquear AutoCAD, como un rack nuevo con el nombre "
                            + "del diseño. No toca el dibujo hasta «Insertar en el dibujo…».";

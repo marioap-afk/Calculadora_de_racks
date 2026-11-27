@@ -113,7 +113,8 @@ namespace RackCad.UI.VentanaRackCad
         // was made for (at the time it was made, not when the answer arrives), for a write what was sent, and whether it is a Selectivo.
         private sealed record DoorRequest(long Id, bool IsWrite, SessionId Session, string RackId, string SentJson, string SentName, bool Started = false,
             bool IsSelective = false, bool IsCabecera = false, bool IsVariables = false, bool IsBom = false,
-            bool IsWarehouse = false, bool IsCama = false, bool IsCantilever = false, bool IsPushBack = false); // T5 pb: IsPushBack, a Push Back of the window. T5 ct: IsCantilever, a Cantilever line. T5 cm: IsCama, a cama of its own. T5 al: IsWarehouse, the page «Almacén». T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
+            bool IsWarehouse = false, bool IsCama = false, bool IsCantilever = false, bool IsPushBack = false,
+            bool IsLarguero = false); // T6 lg: IsLarguero, the insertion of the page «Larguero». T5 pb: IsPushBack, a Push Back of the window. T5 ct: IsCantilever, a Cantilever line. T5 cm: IsCama, a cama of its own. T5 al: IsWarehouse, the page «Almacén». T4 cb: IsCabecera, a cabecera of its own; T4 va: IsVariables, the page «Variables»; T4 bom: IsBom, the read of the page «BOM y lista de racks»
 
         private sealed class DraftKeyComparer : IEqualityComparer<(SessionId Session, string RackId)>
         {
@@ -366,10 +367,11 @@ namespace RackCad.UI.VentanaRackCad
             get
             {
                 if (_inFlight == null) return string.Empty;
-                if (_inFlight.Started) return _inFlight.IsVariables ? VariablesWriteTakenText : _inFlight.IsBom ? BomTakenText : _inFlight.IsWarehouse ? WarehouseTakenText : WriteTakenText; // T4 va, bom; T5 al
+                if (_inFlight.Started) return _inFlight.IsVariables ? VariablesWriteTakenText : _inFlight.IsBom ? BomTakenText : _inFlight.IsWarehouse ? WarehouseTakenText : _inFlight.IsLarguero ? LargueroTakenText : WriteTakenText; // T4 va, bom; T5 al; T6 lg
                 var what = _inFlight.IsVariables ? (_inFlight.IsWrite ? "Esperando a que AutoCAD escriba las variables." : "Esperando a que AutoCAD lea las variables.")
                     : _inFlight.IsWarehouse ? (_inFlight.IsWrite ? "Esperando a que AutoCAD coloque el layout." : "Esperando a que AutoCAD lea la planta y el sitio.") // T5 al
                     : _inFlight.IsBom ? "Esperando a que AutoCAD lea el dibujo para el BOM." // T4 bom
+                    : _inFlight.IsLarguero ? "Esperando a que AutoCAD inserte la pieza de «Larguero»." // T6 lg
                     : _inFlight.IsWrite ? "Esperando a que AutoCAD escriba el rack." : "Esperando a que AutoCAD lea el rack.";
                 return what + " Si no responde (por ejemplo, porque había texto a medio escribir en la línea de órdenes), pulsa «Dejar de esperar».";
             }
@@ -671,7 +673,7 @@ namespace RackCad.UI.VentanaRackCad
             if (request == null) return;
             if (request.Started)
             {
-                Say(request.IsBom ? BomTakenText : request.IsWarehouse ? WarehouseTakenText : WriteTakenText, failed: true); // T4 bom; T5 al
+                Say(request.IsBom ? BomTakenText : request.IsWarehouse ? WarehouseTakenText : request.IsLarguero ? LargueroTakenText : WriteTakenText, failed: true); // T4 bom; T5 al; T6 lg
                 return;
             }
 
@@ -708,6 +710,7 @@ namespace RackCad.UI.VentanaRackCad
                 BomStopped(); // T4 bom: the page says it
             }
             else if (request.IsWarehouse) WarehouseStopped(request); // T5 al: the page «Almacén» says it
+            else if (request.IsLarguero) LargueroStopped("Se dejó de esperar a AutoCAD: si la orden llega a correr, no insertará nada."); // T6 lg
             else if (!request.IsWrite)
             {
                 Say("Se dejó de esperar la lectura: si la orden llega a correr, no abrirá nada.", failed: false);
@@ -986,6 +989,7 @@ namespace RackCad.UI.VentanaRackCad
                 AbandonInFlight();
                 if (orphan.IsBom) BomStopped(); // T4 bom
                 else if (orphan.IsWarehouse) WarehouseStopped(orphan); // T5 al
+                else if (orphan.IsLarguero) LargueroStopped("Se cerró el dibujo de la inserción: no se insertó nada."); // T6 lg
                 else if (!orphan.IsWrite) Say("Se cerró el dibujo del rack que se estaba leyendo: no se abrió nada.", failed: true);
             }
 

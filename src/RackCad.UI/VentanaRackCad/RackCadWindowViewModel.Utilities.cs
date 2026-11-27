@@ -88,8 +88,8 @@ namespace RackCad.UI.VentanaRackCad
             new RackCadMenuPlace("Diseñar línea Cantilever", "Tarjeta «Cantilever»"),
             new RackCadMenuPlace("Diseñar cabecera", "Tarjeta «Cabecera»"),
             new RackCadMenuPlace("Diseñar cama de rodamiento", "«Cama en esta ventana» y la tarjeta «Cama» (editor clásico)"), // T5 cm
-            new RackCadMenuPlace("Diseñar larguero", "Tarjeta «Larguero»"),
-            new RackCadMenuPlace("Generar perfil estructural", "Tarjeta «Perfil estructural»"),
+            new RackCadMenuPlace("Diseñar larguero", "«Larguero en esta ventana» y la tarjeta «Larguero» (editor clásico)"), // T6 lg
+            new RackCadMenuPlace("Generar perfil estructural", "Tarjeta «Perfil estructural» y, con «Perfiles AISC», «Larguero en esta ventana»"), // T6 lg
             new RackCadMenuPlace("Abrir de la biblioteca de diseños", "Sección «Biblioteca de diseños», sin ventana aparte"),
             new RackCadMenuPlace("Biblioteca de bloques (.dwg): ruta, «Examinar…», «Restablecer»", "Sección «Configuración»"),
             new RackCadMenuPlace("Diseñar drive-in («Próximamente»)", "No aparece hasta que exista"),
@@ -103,13 +103,20 @@ namespace RackCad.UI.VentanaRackCad
             (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic)
             || (kind == RackSystemKind.Cama && CanStartNewCama) // T5 cm: a cama opens here as a draft too
             || (kind == RackSystemKind.Cantilever && CanStartNewCantilever) // T5 ct
-            || (kind == RackSystemKind.PushBack && CanStartNewPushBack); // T5 pb: a Push Back opens as a draft of the window
+            || (kind == RackSystemKind.PushBack && CanStartNewPushBack) // T5 pb: a Push Back opens as a draft of the window
+            || kind == RackSystemKind.Larguero; // T6 lg: a larguero opens in «Nuevo › Larguero», which needs no drawing (point 5)
 
         private void OpenLibraryDesign(RackCadLibraryRow row)
         {
             Contained(() =>
             {
                 if (row == null) return;
+                if (row.Kind == RackSystemKind.Larguero)
+                {
+                    OpenLargueroFromLibrary(row); // T6 lg: the page «Larguero», not a «Borrador N»
+                    return;
+                }
+
                 if (!OpensHere(row.Kind))
                 {
                     OpenLibraryDesignInClassicEditor(row);
@@ -248,7 +255,8 @@ namespace RackCad.UI.VentanaRackCad
         private bool IsEditorAlive(object editor) =>
             _selectiveDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor)) || _dynamicDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor))
             || IsCamaEditorAlive(editor) // T5 cm
-            || IsCantileverEditorAlive(editor); // T5 ct
+            || IsCantileverEditorAlive(editor) // T5 ct
+            || (editor != null && ReferenceEquals(editor, _largueroWorkbench)); // T6 lg: the page «Larguero» lives as long as the window
 
         // ------------------------------------------------------------------ «Ejecutar» of the help (UT-10)
 

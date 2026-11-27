@@ -29,11 +29,14 @@ namespace RackCad.Application.Persistence
         public static bool IsUsableFlowBed(FlowBedConfiguration bed)
             => bed != null && bed.LaneDepth > 0.0;
 
-        // Only the profile id is required: it is null on a "{}" larguero and always set on a real one. Length/peralte
+        // Only the profile is required: it is null on a "{}" larguero and always set on a real one. Length/peralte
         // are NOT required — a real larguero could legitimately be mid-edit with a 0 there, and rejecting it would hide
-        // it from the library.
+        // it from the library. T6 lg (I-64, sexta tanda, «Un campo nuevo» of the Owner): the profile is a larguero of RackCad
+        // (BeamProfileId) OR a section of another catalog (SectionCatalog AND SectionId); half of the second is still nothing.
         public static bool IsUsableLarguero(LargueroDesign larguero)
-            => larguero != null && !string.IsNullOrWhiteSpace(larguero.BeamProfileId);
+            => larguero != null
+               && (!string.IsNullOrWhiteSpace(larguero.BeamProfileId)
+                   || (!string.IsNullOrWhiteSpace(larguero.SectionCatalog) && !string.IsNullOrWhiteSpace(larguero.SectionId)));
 
         // A rack whose every front is EN BLANCO carries nothing (I-33). It is rejected here, never normalized: the check
         // is DynamicFrontActivation.HasActiveFront — the same canonical predicate the resolver throws on — so the two
