@@ -160,4 +160,26 @@ public class SelectiveSplitGuardTests
         // With no split, the guard has nothing to keep.
         Assert.True(SelectiveDraftEditor.CreateNew(Catalog).KeepTheSplits(SelectiveDraftEditor.CreateNew(Catalog).GuardSplits()));
     }
+
+    [Fact]
+    public void TheOpeningOfADesignWithSplitsThatDoNotFitSaysWhichAndChangesNothing()
+    {
+        // P-2 of the Owner (2026-11-27, «Sí, avisar al abrir»): the load notice of the draft names every split the resolver draws whole.
+        var design = Store.Deserialize(Json(SplitDraft(rest: 0.6, both: true)))!.ToDomain();
+        design.Bays[0].Segments[0].Length += 5.0;
+        design.Bays[1].Segments[0].Length += 5.0;
+        var draft = new SelectiveDraftEditor(Catalog);
+        Assert.True(draft.LoadFrom(design, null, "Selectivo"), draft.LastError);
+
+        Assert.Equal("Los medios frentes de F1 y F2 no caben con sus postes intermedios: se dibujan como frentes enteros.", draft.LoadNotice);
+        Assert.Equal(SelectiveSegmentFit.OpeningNotice(draft.System, draft.Catalog), draft.LoadNotice);
+        Assert.Equal(2, draft.Front(0, 0)!.Segments.Count); // nothing changes: the tramos stay
+        Assert.Equal(design.Bays[1].Segments[0].Length, draft.Front(0, 1)!.Segments[0].Length, 9);
+
+        // Every split fits: nothing to say.
+        var fits = new SelectiveDraftEditor(Catalog);
+        Assert.True(fits.LoadFrom(Store.Deserialize(Json(SplitDraft(rest: 0.6, both: true)))!.ToDomain(), null, "Selectivo"), fits.LastError);
+        Assert.Null(fits.LoadNotice);
+        Assert.Null(SelectiveSegmentFit.OpeningNotice(null, Catalog));
+    }
 }

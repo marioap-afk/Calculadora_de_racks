@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.VentanaRackCad
@@ -30,7 +28,7 @@ namespace RackCad.Application.VentanaRackCad
 
     /// <summary>
     /// T6 bom (PP-S10, the same defect as dolor 13 by another door): the resolver draws a «medio frente» whose tramos and intermediate posts
-    /// no longer fit its front as the WHOLE front, with no notice (<see cref="SelectiveMedioFrente"/>). DG-10 refuses such a
+    /// no longer fit its front as the WHOLE front, with no notice (<see cref="Systems.Selective.SelectiveMedioFrente"/>). DG-10 refuses such a
     /// split where the tramos are written (<see cref="SetSegments"/>), and the fifth batch (T5 pp) refused the two writes of the peralte of
     /// the rack that broke one. Every other write could still break it: the own peralte of a post (the troquel of the larguero slides with
     /// it), the larguero of a cell (the overhang of its ménsula), the pallet and its count, the tolerance or a manual length (the width of
@@ -41,6 +39,9 @@ namespace RackCad.Application.VentanaRackCad
     /// </summary>
     public sealed partial class SelectiveDraftEditor
     {
+        /// <summary>How the refusal of <see cref="KeepTheSplits"/> starts, for a caller that adds what it can do about it.</summary>
+        public const string BrokenSplitsRefusalStart = "No se aplicó el cambio: ";
+
         /// <summary>What a write must keep: call it BEFORE the write, with the draft recomposed (its last valid recomposition).</summary>
         public SelectiveSplitGuard GuardSplits()
         {
@@ -91,7 +92,7 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>«No se aplicó el cambio: el medio frente de F1 dejaría de caber. No cabe: … Ajusta antes sus tramos en «Matriz» (inspector del frente).»</summary>
         private static string BrokenSplitsText(IReadOnlyList<string> names, SelectiveSegmentFitResult first)
-            => "No se aplicó el cambio: "
+            => BrokenSplitsRefusalStart
                + (names.Count == 1
                    ? "el medio frente de " + names[0] + " dejaría de caber. "
                    : "los medios frentes de " + string.Join(", ", names.Take(names.Count - 1)) + " y " + names[names.Count - 1] + " dejarían de caber. En " + names[0] + ": ")

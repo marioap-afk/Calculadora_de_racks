@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using RackCad.Application.Bom;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.ProjectVariables;
 using RackCad.Application.Systems.Selective;
@@ -175,6 +177,96 @@ namespace RackCad.UI.Tests
                     Assert.Equal(42.0, StoredDepth(sent));
                 }
                 finally { if (window.IsVisible) window.Close(); }
+            });
+        }
+
+        // ------------------------------------------------------------------ point 2 of the review of 9dd5baa5: the other paths of the classic
+
+        private static string N(double value) => value.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture);
+
+        private static string Instance(HeaderBlockInstance i)
+            => string.Join("|", i.Role, i.PieceId, i.BlockName, i.View, N(i.Insertion.X), N(i.Insertion.Y), N(i.ConnectionAnchor.X), N(i.ConnectionAnchor.Y),
+                N(i.RotationRadians), i.MirroredX, i.MirroredY, i.Text,
+                string.Join(",", i.DynamicParameters.OrderBy(p => p.Key, StringComparer.Ordinal).Select(p => p.Key + "=" + N(p.Value))));
+
+        /// <summary>What the drawing reads of a system: every cut (its cabecera as the cut gives it, and its largueros), the planta and the frontal of
+        /// every fondo.</summary>
+        private static string Geometry(SelectiveRackSystem system, RackCatalog catalog)
+        {
+            var lines = new List<string>();
+            var frames = new RackFrameProjectStore();
+            foreach (var cut in new SelectiveLateralBuilder().Cortes(system, catalog))
+            {
+                lines.Add("corte " + cut.PostIndex + " " + N(cut.X) + " " + (cut.Cabecera == null ? "-" : frames.Serialize(cut.Cabecera))
+                          + " " + string.Join(";", cut.Largueros.Select(Instance)));
+            }
+
+            lines.Add("planta " + string.Join(";", new SelectivePlantaBuilder().Build(system, catalog).Select(Instance)));
+            for (var k = 0; k < SelectiveDepthLayout.Count(system); k++)
+            {
+                lines.Add("frontal " + k + " " + string.Join(";", new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, k), catalog).Select(Instance)));
+            }
+
+            return string.Join(Environment.NewLine, lines);
+        }
+
+        /// <summary>
+        /// What the classic hands to AutoCAD after <paramref name="button"/>: the design the user saw (42, its JSON as before), a system that
+        /// shares no custom cabecera with it, and the same geometry as a system resolved again from the JSON that is written.
+        /// </summary>
+        private static void SendsTheDesignTheUserSawWithTheSameGeometry(string button)
+        {
+            var window = SelectiveClassicShown.OpenShown(TwoFondosWithACustomCabeceraOutOfItsRule());
+            try
+            {
+                var before = Json(window.BuildDesignForTest(out _));
+                EditorWindowTestSupport.ClickByContent(window, button);
+
+                Assert.True(window.InsertRequested, "«" + button + "» no pidió dibujar.");
+                var sent = window.DesignToInsert!;
+                Assert.Equal(42.0, StoredDepth(sent));
+                Assert.Equal(before, Json(sent));
+                var system = window.SystemToInsert!;
+                for (var k = 0; k < SelectiveDepthLayout.Count(system); k++)
+                {
+                    for (var post = 0; post <= SelectiveDepthLayout.BaysOfFondo(system, k).Count; post++)
+                    {
+                        var stored = SelectiveCabeceraAuthority.CustomAt(sent, k, post);
+                        if (stored != null) Assert.NotSame(stored, SelectiveCabeceraAuthority.CustomAt(system, k, post));
+                    }
+                }
+
+                var catalog = window.Session.Catalog;
+                var written = new SelectiveGeometryResolver().Resolve(Store.Deserialize(before)!.ToDomain(), catalog);
+                Assert.Equal(Geometry(written, catalog), Geometry(system, catalog));
+                Assert.Equal(before, Json(sent)); // reading the geometry of the system did not reach the design
+            }
+            finally { if (window.IsVisible) window.Close(); }
+        }
+
+        [Fact]
+        public void ActualizarOfTheClassicSendsTheDesignTheUserSawWithTheSameGeometry()
+            => StaTestRunner.Run(() => SendsTheDesignTheUserSawWithTheSameGeometry("Actualizar"));
+
+        [Fact]
+        public void InsertarPlantaOfTheClassicSendsTheDesignTheUserSawWithTheSameGeometry()
+            => StaTestRunner.Run(() => SendsTheDesignTheUserSawWithTheSameGeometry("Insertar planta"));
+
+        [Fact]
+        public void ElementosDeSeguridadOfTheClassicOpenedAndCancelledChangesNoCustomCabecera()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var window = SelectiveClassicShown.OpenShown(TwoFondosWithACustomCabeceraOutOfItsRule());
+                try
+                {
+                    var before = Json(window.BuildDesignForTest(out _));
+                    SelectiveClassicShown.ClickWithDialog(window, "Elementos de seguridad…", dialog => Assert.IsType<RackCad.UI.SelectiveSafetyWindow>(dialog));
+                    var after = window.BuildDesignForTest(out _)!;
+                    Assert.Equal(42.0, StoredDepth(after));
+                    Assert.Equal(before, Json(after));
+                }
+                finally { window.Close(); }
             });
         }
     }

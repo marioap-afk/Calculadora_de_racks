@@ -5087,8 +5087,8 @@ seguridad…», «Actualizar» e «Insertar…». Ahí el sistema recibe una cop
 
 | Id | Decisión | Por qué |
 |---|---|---|
-| T6bom-S2 | El diálogo clásico «Tramos del frente n» rechaza un reparto que no cabe con sus postes intermedios, con el texto de la ventana. Por ejemplo, en un frente de 96 in: «No cabe: los tramos suman 94.25 in y el poste intermedio ocupa ≈ 3.5 in; el frente mide ≈ 96 in y no queda resto para el último tramo.» Si el rack tiene varios fondos, añade «en el fondo n». La línea en vivo descuenta el poste: con 91.5 in dice «Último tramo (calculado) ≈ 1 in del frente de 96 in; el poste intermedio ocupa ≈ 3.5 in.». Antes decía «≈ 4.5 in» | Es DG-10, la regla que el Owner aceptó para la ventana. El clásico la tenía como diferencia declarada (IN-11) |
-| T6bom-S3 | En la ventana, una edición que deje sin sitio un medio frente que cabía se rechaza entera, con este texto en el campo: «No se aplicó el cambio: el medio frente de F2 dejaría de caber. No cabe: … Ajusta antes sus tramos en «Matriz» (inspector del frente).». Si son varios, los nombra todos y explica el primero: «… los medios frentes de F1 y F2 dejarían de caber. En F1: No cabe: …» | Es PP-S10. Vale también para «Restaurar layout…»: si quitar los peraltes propios deja un medio frente sin sitio, no se restaura nada |
+| T6bom-S2 | El diálogo clásico «Tramos del frente n» rechaza un reparto que no cabe con sus postes intermedios, con el texto de la ventana. Por ejemplo, en un frente de 96 in: «No cabe: los tramos suman 94.25 in y el poste intermedio ocupa ≈ 3.5 in; el frente mide ≈ 96 in y no queda resto para el último tramo.» Si el rack tiene varios fondos, añade «en el fondo n». La línea en vivo descuenta el poste: con 91.5 in dice «Último tramo (calculado) ≈ 1 in del frente de 96 in; el poste intermedio ocupa ≈ 3.5 in.». Antes decía «≈ 4.5 in» | Es DG-10, la regla que el Owner aceptó para la ventana. El clásico la tenía como diferencia declarada (IN-11), y el 2026-11-27 el Owner aprobó «La ventana más estricta que el clásico (PB-S09, CT5-03, IN-11)»: «Sí, más estricta». Este arreglo va más allá en IN-11: iguala el diálogo del clásico a la ventana, solo a la entrada de los tramos (ver las correcciones sobre `9dd5baa5`) |
+| T6bom-S3 | En la ventana, una edición que deje sin sitio un medio frente que cabía se rechaza entera, con este texto en el campo: «No se aplicó el cambio: el medio frente de F2 dejaría de caber. No cabe: … Ajusta antes sus tramos en «Matriz» (inspector del frente).». Si son varios, los nombra todos y explica el primero: «… los medios frentes de F1 y F2 dejarían de caber. En F1: No cabe: …» | Es PP-S10. Vale también para «Restaurar layout…»: si lo que se quita (los peraltes propios, un largo manual) deja sin sitio un medio frente que no se quita con «Medio frente» (desmarcado, o en un fondo fuera del alcance), no se restaura nada, y el mensaje dice qué marcar (ver las correcciones sobre `9dd5baa5`) |
 
 **Pruebas.**
 - **UI, `SelectiveClassicMedioFrenteFitTests`:** `TheClassicDialogRefusesASplitTheDrawingWouldIgnoreAndAcceptsOneThatFits`.
@@ -5123,15 +5123,11 @@ tocó.
 
 ### 3. Preguntas para el Owner
 
-- **P-1 (el clásico y PP-S10).** En el editor clásico de Selectivo, cambiar el peralte de un poste, el larguero, la tarima o la holgura
-  puede dejar sin sitio un medio frente que cabía. Entonces se dibuja entero, sin aviso.
-  - El clásico no tiene, por escritura, la vuelta a la última recomposición válida de la ventana: recalcula a cada gesto sobre su estado.
-  - ¿Lo dejamos así, avisamos en la línea de estado («El medio frente de F2 ya no cabe: se dibuja como frente completo.») o rechazamos
-    cada edición como la ventana?
-  - Escenario: un rack de un fondo con F2 partido y 0.6 in de resto; se cambia el peralte propio de P2 de 3 a 4 in.
-- **P-2 (los dibujos antiguos).** Un rack que ya trae un medio frente que no cabe se abre y se dibuja entero en los dos editores, sin aviso
-  al abrir. La ventana solo lo dice en rojo si se elige ese frente en el inspector. ¿Avisamos al abrirlo?
-- **P-3.** La validación de T6bom-S1 a T6bom-S3.
+- **P-1 (el clásico y PP-S10): RESPONDIDA el 2026-11-27, «Dejarlo así».** La edición del clásico no se toca. Va con la decisión del
+  mismo día «La ventana más estricta que el clásico (PB-S09, CT5-03, IN-11)», «Sí, más estricta».
+- **P-2 (los dibujos antiguos): RESPONDIDA el 2026-11-27, «Sí, avisar al abrir».** Hecho en los dos editores, en las correcciones
+  sobre `9dd5baa5`.
+- **P-3.** La validación de T6bom-S1 a T6bom-S4.
 
 ### Archivos
 
@@ -5170,3 +5166,94 @@ Fuentes finales, Debug, con las fuentes restauradas tras las comprobaciones en r
   Antes de cortarlas, las dos corridas completas llevaban 19346 y 19327 correctas, con 0 errores.
 - **Build Debug:** la solución (Plugin incluido) compila con 0 errores. Las advertencias son las de antes: las MSB3277 de las referencias
   de AutoCAD y las de los analizadores de xUnit.
+
+### Correcciones de la revisión (sobre `9dd5baa5`)
+
+**Rama:** la misma, sobre `9dd5baa5` (el commit de la sesión con esta parte), sin commit ni push. Sin AutoCAD.
+
+La revisión independiente no encontró nada bloqueante ni importante. Esto atiende sus cuatro hallazgos menores y las respuestas del
+Owner del 2026-11-27.
+
+| Punto | Qué pasaba | Qué se hizo |
+|---|---|---|
+| P-1 (Owner: «Dejarlo así») | La edición del clásico de Selectivo (peralte, larguero, tarima, holgura) puede dejar sin sitio un medio frente que cabía | **No se toca.** La pregunta queda respondida en los términos de la decisión del Owner del mismo día: «La ventana más estricta que el clásico (PB-S09, CT5-03, IN-11)», «Sí, más estricta». Rechazar esas ediciones es la regla de la ventana (T6bom-S3); el clásico no la tiene, a propósito |
+| P-2 (Owner: «Sí, avisar al abrir») | Un rack que ya traía un medio frente que no cabe se abría y se dibujaba entero sin que ningún editor lo dijera | Los dos editores lo dicen al abrir, sin cambiar nada. Ver los textos debajo de la tabla y el supuesto T6bom-S4 |
+| 1 [MENOR] | Tras un rechazo de la guarda se perdía la política de cotas «cargada»: `RestoreLastValid` llamaba a `LoadState(Design)`, que sobrescribe `_loadedDimensionViews`, y `SetDimensionViews` compara con ella | `RestoreLastValid` la conserva, como ya conservaba `LoadNotice`. Escenario de la revisión (política `null`, desmarcar «Lateral», un peralte rechazado y volver a marcar «Lateral»): el editor queda «Limpio» y sin política, no con `{F,L,P}` explícito |
+| 2 [MENOR] | Faltaban pruebas de lo declarado | Pruebas nuevas: T6bom-S3 por «Restaurar layout…»; la ventana con dos fondos («F2 del fondo 2»); en el clásico, «Elementos de seguridad…», «Actualizar» e «Insertar planta». Las dos últimas comparan los cortes, la planta y el frontal de cada fondo de `SystemToInsert` con los de un sistema resuelto otra vez desde el JSON que se escribe |
+| 3 [MENOR] | El texto de T6bom-S3 daba por hecho que quitar los peraltes propios no restaura nada, y eso solo vale con «Medio frente» desmarcado, o con el fondo fuera del alcance | S3 precisado (abajo). Si el rechazo sale de «Restaurar layout…», el mensaje añade qué hacer, según el caso |
+| 4 [MENOR] | `using` sobrantes en `SelectiveDraftEditor.Splits.cs`; la salida de las corridas en rojo no se guardó | Quitados (`System.Globalization` y `RackCad.Application.Systems.Selective`; el `cref` va calificado). La salida de las corridas en rojo de esta corrección está en la carpeta de la parte, en el scratchpad (`red2\red-run1.txt` y `red2\red-run2.txt`), junto con el guion de sabotaje |
+
+**El aviso al abrir (P-2).**
+- **Qué dice:** «El medio frente de F2 no cabe con sus postes intermedios: se dibuja como frente entero.»
+  - Con más de un fondo, nombra el fondo: «El medio frente de F2 del fondo 2 no cabe…».
+  - Con varios, los nombra todos: «Los medios frentes de F1 y F2 del fondo 2 no caben con sus postes intermedios: se dibujan como frentes
+    enteros.»
+- **De dónde sale:** de un solo sitio, `SelectiveSegmentFit.OpeningNotice` (Application). Lee el sistema resuelto con la misma regla que
+  el dibujo (`SelectiveMedioFrente.Resolve`).
+- **En la ventana:** `SelectiveDraftEditor.LoadFrom` lo añade al aviso de la carga (`LoadNotice`). El editor lo muestra al abrir en su
+  línea de mensajes, como los demás avisos de la carga. Vale para un rack del dibujo y para un diseño de la biblioteca abierto como rack
+  nuevo (`OpenedText`).
+- **En el clásico:** `LoadDesign` marca la recomposición de la carga, y `RunRecompute` lo deja en la línea de estado, en rojo, junto a los
+  demás avisos de la carga (`LatchWarning`).
+  - Solo lo hace al abrir. Las ediciones siguen como estaban (P-1).
+- No cambia nada: los tramos se quedan, el editor queda «Limpio» y lo que se escribe es lo leído.
+
+**Los supuestos, corregidos y nuevo.**
+
+| Id | Decisión | Por qué |
+|---|---|---|
+| T6bom-S2 (precisado) | El diálogo clásico «Tramos del frente n» rechaza el reparto que no cabe, con el texto de la ventana | El 2026-11-27 el Owner aprobó «La ventana más estricta que el clásico (PB-S09, CT5-03, IN-11)», con un «Sí, más estricta». Este arreglo va más allá en IN-11: iguala el diálogo del clásico a la ventana, solo a la entrada de los tramos. Si el Owner prefiere que el clásico siga como antes, basta con no pasar `fit` en `EditTramos` |
+| T6bom-S3 (precisado) | En la ventana, una edición que deja sin sitio un medio frente que cabía se rechaza entera, con su texto en el campo | Con «Restaurar layout…», el rechazo solo puede salir de lo que se quita sin quitar los tramos: con «Medio frente» desmarcado, o con el frente en un fondo fuera del alcance (si la restauración sigue al selector de fondos). Entonces el mensaje añade: «Para restaurar igual, marca también «Medio frente»: quita esos tramos.» o «Para restaurar igual, elige «Todos los fondos»: «Medio frente» quita también esos tramos.» |
+| T6bom-S4 (nuevo) | El aviso al abrir nombra el fondo solo si el rack tiene más de uno. En la ventana va en la línea de mensajes, con el estilo de los avisos de la carga; en el clásico, en la línea de estado, en rojo | Es la forma de los demás textos de los dos editores. El Owner pidió «frente y fondo»: con un solo fondo, el fondo no distingue nada |
+
+**Pruebas nuevas: 8 de UI y 1 de Core.**
+- **`SelectiveSplitGuardWindowTests` (+4):**
+  - `WithTwoFondosTheRefusalNamesTheFrontAndItsFondo`;
+  - `TheOpeningOfARackWithASplitThatDoesNotFitSaysWhichAndChangesNothing`: con un fondo y con dos, y uno que cabe no dice nada;
+  - `RestaurarLayoutThatWouldLeaveASplitWithNoRoomIsRefusedAndSaysToCheckMedioFrente`: P2 tiene un peralte propio de 2 in, y F2 cabe con
+    0.6 in. Con «Peraltes propios» solo, se rechaza con el texto y nada cambia. Con «Medio frente» marcado también, se restaura;
+  - `ARefusedWriteKeepsThePolicyOfDimensionsThatWasRead` (punto 1).
+- **`SelectiveClassicMedioFrenteFitTests` (+1):** `TheClassicSaysAtTheOpeningWhichSplitDoesNotFitAndChangesNothing`, con un fondo, con dos
+  y con uno que cabe.
+- **`SelectiveClassicCustomCabeceraReadTests` (+3):**
+  - `ActualizarOfTheClassicSendsTheDesignTheUserSawWithTheSameGeometry`;
+  - `InsertarPlantaOfTheClassicSendsTheDesignTheUserSawWithTheSameGeometry`;
+  - `ElementosDeSeguridadOfTheClassicOpenedAndCancelledChangesNoCustomCabecera`.
+
+**Comprobación en rojo** (copias en el scratchpad, restauradas y comprobadas con SHA-256, sin restos en `git diff`).
+- **Corrida 1.** Se sabotearon cinco cosas a la vez, cada una con su prueba:
+  - sin el aviso de `LoadFrom`;
+  - sin el de `RunRecompute`;
+  - sin conservar `_loadedDimensionViews`;
+  - sin la sugerencia de «Restaurar layout…»;
+  - y sin `OwnCustomCabeceras`.
+
+  Fallan 8 de 14:
+  - las dos de apertura (ventana y clásico);
+  - la de «Restaurar layout…»;
+  - la de la política de cotas;
+  - y las cuatro del clásico que leen o envían el sistema (BOM, «Insertar varias…», «Actualizar» e «Insertar planta»).
+
+  «Elementos de seguridad…» pasa también en rojo: ese diálogo no lee los cortes ni la planta, así que no impone nada. La prueba guarda que
+  siga así.
+- **Corrida 2.** Con `KeepTheSplits` neutralizado, fallan 5 de las 7 pruebas de `SelectiveSplitGuardWindowTests`:
+  - `WithTwoFondosTheRefusalNamesTheFrontAndItsFondo`;
+  - las otras cuatro que esperan un rechazo.
+
+  Pasan, como deben, la de apertura y la de lo que no es motivo.
+
+**Más pruebas.**
+- **Core, `SelectiveSplitGuardTests` (+1):** `TheOpeningOfADesignWithSplitsThatDoNotFitSaysWhichAndChangesNothing`. Comprueba el texto en
+  plural de `LoadNotice`, que coincide con `OpeningNotice`, y que los tramos se quedan.
+- **Su comprobación en rojo** (corrida 3): sin el aviso de `LoadFrom`, falla esa prueba y pasan las otras cuatro.
+
+**Números** (fuentes finales, Debug, restauradas tras las corridas en rojo).
+- **Focales:**
+  - UI, `~Selective|~PostPeralte|~RackCadSelective`: 529 de 529, que son las 521 de antes más 8;
+  - Core, `~SelectiveSplitGuardTests|~SelectivePeralteForAllPostsTests|~SelectiveSegmentFitTests|~SelectiveCabeceraViewPurityTests|~SelectiveDoorInsertionTests`: 53 de 53.
+- **UI completa:** 3124 correctas, 0 con error y 48 omitidas (3172). Son las 3116 de `9dd5baa5` más las 8 nuevas.
+- **Core Full: no se repitió aquí.** Lo pidió la sesión tras la pausa del Owner, y la correrá ella sobre la rama integrada.
+  - Antes de la pausa, la parte sin `WorkspacePilotUpdateIntegrationGuardTests` dio 19368 / 0 / 399 (19767). Es la de `9dd5baa5` más la prueba nueva de Core.
+  - La clase lenta no llegó a terminar.
+- **Build Debug de la solución (Plugin incluido):** 0 errores. Las 70 advertencias son las de antes: MSB3277 de AutoCAD y los analizadores
+  de xUnit.

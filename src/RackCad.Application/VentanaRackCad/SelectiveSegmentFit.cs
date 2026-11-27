@@ -96,6 +96,37 @@ namespace RackCad.Application.VentanaRackCad
                    + " ≈ " + Num(fit.PostsTotal) + " in; el frente mide ≈ " + Num(fit.Width) + " in y no queda resto para el último tramo.";
         }
 
+        /// <summary>
+        /// T6 bom (P-2 of the Owner, 2026-11-27: «Sí, avisar al abrir»): what both editors of a Selectivo say when they open a rack with a
+        /// «medio frente» that does not fit with its intermediate posts, which the resolver draws as the whole front: which ones (the front, and
+        /// the fondo when the rack has more than one) and that. Null when every split fits, or with no system. It only says it: nothing changes.
+        /// </summary>
+        public static string OpeningNotice(SelectiveRackSystem system, RackCatalog catalog)
+        {
+            if (system == null) return null;
+            var fondos = SelectiveDepthLayout.Count(system);
+            var names = new List<string>();
+            for (var fondo = 0; fondo < fondos; fondo++)
+            {
+                var bays = SelectiveDepthLayout.BaysOfFondo(system, fondo);
+                for (var front = 0; bays != null && front < bays.Count; front++)
+                {
+                    var segments = bays[front].Segments;
+                    if (segments == null || segments.Count < 2) continue;
+                    var fit = Of(system, catalog, new[] { fondo }, front, segments.Take(segments.Count - 1).Select(s => s.Length).ToList(), segments.Count);
+                    if (fit.Fits) continue;
+                    names.Add("F" + (front + 1).ToString(CultureInfo.InvariantCulture)
+                              + (fondos > 1 ? " del fondo " + (fondo + 1).ToString(CultureInfo.InvariantCulture) : string.Empty));
+                }
+            }
+
+            if (names.Count == 0) return null;
+            return names.Count == 1
+                ? "El medio frente de " + names[0] + " no cabe con sus postes intermedios: se dibuja como frente entero."
+                : "Los medios frentes de " + string.Join(", ", names.Take(names.Count - 1)) + " y " + names[names.Count - 1]
+                  + " no caben con sus postes intermedios: se dibujan como frentes enteros.";
+        }
+
         // The last tramo as the resolver computes it. With every length written (> 0), the resolver itself decides: when it draws the split,
         // the remainder is the length it gives to the last tramo; when it does not, its same expression, ≤ 0, says how much is missing. While a
         // length is not written yet (blank or not a number) it counts 0, as the live estimate of the classic dialog did.

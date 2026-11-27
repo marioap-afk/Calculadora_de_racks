@@ -2783,11 +2783,18 @@ namespace RackCad.UI.Systems.Selective
                 postRects.Clear();
                 postLabels.Clear();
                 pendingWarning = null; // the validation error supersedes any latched input warning
+                sayUnfitSplitsOnRecompute = false; // T6 bom (P-2): a load that does not recompose says its error, not this
                 SetStatus(error, true);
                 return;
             }
 
             lastSystem = system;
+            if (sayUnfitSplitsOnRecompute) // T6 bom (P-2): only the recomposition of a load says it; it changes nothing
+            {
+                sayUnfitSplitsOnRecompute = false;
+                LatchWarning(global::RackCad.Application.VentanaRackCad.SelectiveSegmentFit.OpeningNotice(system, catalog));
+            }
+
             // The frontal preview shows the fondo being edited (each fondo has its own levels); fondo 0 is the default.
             lastInstances = builder.Build(SelectiveDepthLayout.FondoSystemView(system, selectedFondo), catalog);
             UpdateSummary();
@@ -3133,6 +3140,11 @@ namespace RackCad.UI.Systems.Selective
         /// SetStatus, so Recompute emits THIS instead of the generic success message when set.</summary>
         private string pendingWarning;
 
+        /// <summary>T6 bom (P-2 of the Owner, 2026-11-27): the recomposition of a rack just loaded says which «medio frente» does not fit
+        /// with its intermediate posts and is drawn as the whole front (<see cref="global::RackCad.Application.VentanaRackCad.SelectiveSegmentFit.OpeningNotice"/>).
+        /// Only the one of the load: the edits of this editor stay as they were (P-1, «Dejarlo así»).</summary>
+        private bool sayUnfitSplitsOnRecompute;
+
         /// <summary>
         /// Anade un aviso al de la operacion en curso en vez de pisarlo (I-43, gate 8.6H, R2-05).
         /// <para>
@@ -3155,6 +3167,7 @@ namespace RackCad.UI.Systems.Selective
             if (design == null || design.Bays.Count == 0) return;
 
             paddedEmptyFrentesOnLoad = 0;
+            sayUnfitSplitsOnRecompute = true; // T6 bom (P-2)
 
             // Assigning the toggles below (e.g. DrawBasePlateCheck) fires DrawToggle_Changed → Recompute on the
             // half-loaded state; defer so the whole load runs exactly ONE pipeline (the explicit call at the end).

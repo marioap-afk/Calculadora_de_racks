@@ -78,5 +78,55 @@ namespace RackCad.UI.Tests
                 finally { if (window.IsVisible) window.Close(); }
             });
         }
+
+        // ------------------------------------------------------------------ P-2 of the Owner (2026-11-27): «Sí, avisar al abrir»
+
+        // «design» with front «front» of fondo «fondo» split in two tramos and «rest» in left for the last one (a rest ≤ 0 does not fit).
+        private static SelectivePalletDesign Split(SelectivePalletDesign design, int fondo, int front, double rest)
+        {
+            var catalog = UiSupport.LoadCatalogSafe();
+            var system = new SelectiveGeometryResolver().Resolve(design, catalog);
+            var fit = SelectiveSegmentFit.Of(system, catalog, new[] { fondo }, front, new[] { 10.0 }, 2);
+            var bays = fondo == 0 ? design.Bays : design.ExtraFondoBays[fondo - 1];
+            bays[front].Segments.Add(new SelectiveSegment { Length = fit.Width - fit.PostOverhead - rest, Loaded = true });
+            bays[front].Segments.Add(new SelectiveSegment { Length = 0.0, Loaded = true });
+            return design;
+        }
+
+        private static string Status(Window window) => ((TextBlock)window.FindName("StatusText")).Text ?? string.Empty;
+
+        [Fact]
+        public void TheClassicSaysAtTheOpeningWhichSplitDoesNotFitAndChangesNothing()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // An old drawing whose F2 never fitted (half a post too long): the resolver draws it as the whole front.
+                var design = Split(Structure(), 0, 1, rest: -1.75);
+                var window = SelectiveClassicShown.OpenShown(design);
+                try
+                {
+                    Assert.Contains("El medio frente de F2 no cabe con sus postes intermedios: se dibuja como frente entero.", Status(window));
+                    var segments = window.BuildDesignForTest(out _)!.Bays[1].Segments;
+                    Assert.Equal(new[] { design.Bays[1].Segments[0].Length, 0.0 }, segments.Select(t => t.Length).ToArray()); // nothing changes
+                }
+                finally { window.Close(); }
+
+                // With two fondos it names the fondo.
+                window = SelectiveClassicShown.OpenShown(Split(TwoFondos(), 1, 1, rest: -0.4));
+                try
+                {
+                    Assert.Contains("El medio frente de F2 del fondo 2 no cabe con sus postes intermedios: se dibuja como frente entero.", Status(window));
+                }
+                finally { window.Close(); }
+
+                // A split that fits says nothing.
+                window = SelectiveClassicShown.OpenShown(Split(Structure(), 0, 1, rest: 0.6));
+                try
+                {
+                    Assert.DoesNotContain("medio frente", Status(window));
+                }
+                finally { window.Close(); }
+            });
+        }
     }
 }

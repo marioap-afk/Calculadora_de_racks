@@ -834,7 +834,11 @@ namespace RackCad.Application.VentanaRackCad
                 _linkedNames[pair.Key] = pair.Value;
             }
 
-            return Recompose();
+            // T6 bom (P-2 of the Owner): a «medio frente» that does not fit is said when the rack opens (the editor shows the load notice).
+            var recomposed = Recompose();
+            var splits = recomposed ? SelectiveSegmentFit.OpeningNotice(System, Catalog) : null;
+            if (splits != null) LoadNotice = string.IsNullOrWhiteSpace(LoadNotice) ? splits : LoadNotice + " " + splits;
+            return recomposed;
         }
 
         /// <summary>
@@ -911,8 +915,10 @@ namespace RackCad.Application.VentanaRackCad
         {
             if (Design == null) return false;
             var notice = LoadNotice;
+            var loadedViews = _loadedDimensionViews; // T6 bom: the policy of dimensions that was read stays the one of the opening
             LoadState(Design);
             LoadNotice = notice; // what the opening had to change still holds
+            _loadedDimensionViews = loadedViews;
             LastError = null;
             return true;
         }
