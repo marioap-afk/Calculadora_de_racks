@@ -157,7 +157,7 @@ namespace RackCad.UI.VentanaRackCad
                 // A design that cannot be recomposed still opens the editor, with the reason (the classic editor shows it too).
                 var draft = new PushBackDraftEditor(_catalog());
                 draft.LoadFrom(project.PushBackDesign, read.Name);
-                var editor = new PushBackEditorViewModel(draft, request.RackId, UpdatePushBack);
+                var editor = new PushBackEditorViewModel(draft, request.RackId, UpdatePushBack, readDesignJson: read.DesignJson);
                 editor.LoadProperties(read.Properties); // VA-07
                 WirePushBack(editor);
                 _pushBackDrafts[key] = new PushBackDraftEntry(request.Session, editor, RackList.ListedNameOf(request.RackId));
@@ -400,6 +400,10 @@ namespace RackCad.UI.VentanaRackCad
         private BillOfMaterials PushBackDraftBom(SessionId session, string rackId)
         {
             if (!_pushBackDrafts.TryGetValue((session, rackId), out var entry) || entry.Editor.IsNewRack || !entry.Editor.IsDirty) return null;
+
+            // The gate of the output (I-42, as OutputBlockedReason of the BOM of the drawing): a blocked draft, or one that cannot be
+            // recomposed, has no BOM to count (review of 24adfee7, point 2).
+            if (entry.Editor.Draft.IsOutputBlocked || !string.IsNullOrWhiteSpace(entry.Editor.Draft.LastError)) return null;
             var snapshot = entry.Editor.Draft.SnapshotForWrite();
             return snapshot?.System == null ? null : PushBackBomBuilder.Build(snapshot.System, entry.Editor.Draft.Catalog);
         }
@@ -429,6 +433,14 @@ namespace RackCad.UI.VentanaRackCad
                     return null;
                 }
 
+                // PB-S10 also here (review of 24adfee7, point 6): a design that keeps the dormant half of a side B (a library one, or the copy
+                // of «Duplicar») is outside the guarantee of the editable state, as the door refuses it.
+                if (IsOutsideTheGuarantee(design) || IsOutsideTheGuarantee(seed.Edit?.PushBackDesign))
+                {
+                    failure = DormantTailText;
+                    return null;
+                }
+
                 draft = new PushBackDraftEditor(_catalog());
                 if (!draft.LoadFrom(design, seed.Name))
                 {
@@ -449,6 +461,12 @@ namespace RackCad.UI.VentanaRackCad
             if (seed.Project != null) editor.Say(OpenedText(label, seed, null, null), error: false);
             return editor;
         }
+
+        // What the door says of a design with the dormant half of a side B (PushBackDoorRules.AnswerForOpen), for «Nuevo» from a design.
+        private const string DormantTailText = "Este Push Back guarda la mitad dormida de un lado B que la ventana todavía no edita." + PushBackDoorRules.UseClassicText;
+
+        private static bool IsOutsideTheGuarantee(RackCad.Domain.Systems.PushBack.PushBackDesign design)
+            => design != null && PushBackEditableState.SupportOf(design) == PushBackEditableSupport.DormantCompositeTail;
 
         private static RackCad.Domain.Systems.PushBack.PushBackDesign CopyOfPushBackDesign(RackCad.Domain.Systems.PushBack.PushBackDesign design)
         {

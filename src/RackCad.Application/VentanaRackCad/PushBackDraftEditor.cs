@@ -60,7 +60,7 @@ namespace RackCad.Application.VentanaRackCad
     /// back by the editor of the window with <see cref="Capture"/> and <see cref="Restore"/>: the state is a deep copy, so nothing is half
     /// written. Nothing here writes the drawing.
     /// </summary>
-    public sealed class PushBackDraftEditor
+    public sealed partial class PushBackDraftEditor
     {
         private static readonly double[] ClassicRearPeraltes = { 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0 };
 
@@ -292,20 +292,28 @@ namespace RackCad.Application.VentanaRackCad
         /// «En blanco» of a front in a side: it keeps its clear and its structure and holds no load. Null when it was written, or why not (the
         /// last active front of a one-way rack, or a slot that would exist in no side).
         /// </summary>
-        public string SetBlank(PushBackSide side, int front, bool blank)
+        public string SetBlank(PushBackSide side, int front, bool blank) => SetBlank(new[] { side }, front, blank);
+
+        /// <summary>
+        /// «En blanco» of a front in the sides the selection writes, by the path of the classic window (<c>SetFrontActive</c>, review of
+        /// 24adfee7, point 1): each side that changes goes through <see cref="PushBackCompositeEditorState.SetSlotPresent"/>, which lets a side
+        /// stay entirely blank while the other one holds the rack, and the gesture is written when ANY side took it (<c>applied |=</c>). Null when
+        /// it was written (or nothing had to change), or why not.
+        /// </summary>
+        public string SetBlank(IEnumerable<PushBackSide> sides, int front, bool blank)
         {
-            if (!IsTwoSided)
+            var needed = false;
+            var applied = false;
+            foreach (var side in (sides ?? Enumerable.Empty<PushBackSide>()).Distinct())
             {
-                return Side(PushBackSide.A).SetActive(front, !blank) ? null : "Al menos un frente debe permanecer activo.";
+                if (side == PushBackSide.B && !IsTwoSided) continue;
+                if (IsPresent(side, front) == !blank) continue;
+                needed = true;
+                applied |= Composite.SetSlotPresent(side, front, !blank);
             }
 
-            if (blank)
-            {
-                var why = Composite.WhySlotCannotBeRemoved(side, front);
-                if (why != null) return why;
-            }
-
-            return Composite.SetSlotPresent(side, front, !blank) ? null : "No se pudo cambiar el frente.";
+            if (!needed || applied) return null;
+            return IsTwoSided ? "Al menos un frente del rack debe permanecer activo." : "Al menos un frente debe permanecer activo.";
         }
 
         /// <summary>«Rack de dos sentidos (lado B)»: declares or removes the side B; removing it keeps its configuration dormant.</summary>
@@ -410,6 +418,9 @@ namespace RackCad.Application.VentanaRackCad
         public bool TopeDrawnAt(PushBackSide side, int front, int level)
         {
             if (!CellExists(side, front, level) || !Composite.RearTopeAt(side, front, level)) return false;
+
+            // A side whose tope is of type «Ninguno» places none (PushBackRearTopeConfig.Draws), as «Extremos» counts it (review of 24adfee7, point 4).
+            if (Side(side).RearTopeConfig().IsNone) return false;
             if (!IsTwoSided) return true;
             var applies = Composite.TopeApplicability(front, level);
             return side == PushBackSide.A ? applies.A : applies.B;

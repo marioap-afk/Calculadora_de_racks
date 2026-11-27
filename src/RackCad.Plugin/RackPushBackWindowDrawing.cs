@@ -27,7 +27,8 @@ namespace RackCad.Plugin
     /// <para>
     /// Declared (PB-S06): the half is repeated here, not extracted from <c>EditPushBack</c>, because about twenty source guards of F4B fix
     /// the text of that method; the two are joined when the classic editor is retired (end of I-64). The name of the views comes with the
-    /// system of the write (<c>PushBackDoorRules.Named</c>): this file never writes a name.
+    /// system of the write (<c>PushBackDoorRules.Named</c>): this file never writes a name. From the preflight to the end the body is the one
+    /// of <c>EditPushBack</c>, with four declared differences; <c>PushBackWindowDrawingMirrorGuardTests</c> ties the two (review of 24adfee7).
     /// </para>
     /// </summary>
     internal static class RackPushBackWindowDrawing
@@ -64,7 +65,10 @@ namespace RackCad.Plugin
                 blocks.Add((blockId, embed));
             }
 
-            // --- PREFLIGHT: everything below runs BEFORE the first redraw in place, rename, erase or regeneration ---
+            // --- PREFLIGHT: everything below runs BEFORE the first RedrawInPlace / rename / erase / regen ---
+
+            // Envelope preflight: every linked view must be a non-null Push Back envelope of THIS same GUID. A different
+            // kind, a foreign GUID or a corrupt envelope aborts the WHOLE edit with a visible message (no partial update).
             foreach (var viewBlock in blocks)
             {
                 if (viewBlock.Embed == null
@@ -76,6 +80,8 @@ namespace RackCad.Plugin
                 }
             }
 
+            // Inner-project preflight (I-11): an incompatible-MAJOR or wrong-kind inner design aborts the whole edit before
+            // any geometry change. This MUST run before the first RedrawInPlace.
             var preflight = RackCommandSupport.PreflightInnerSources(blocks, RackSystemKind.PushBack, project);
             if (preflight.Aborted)
             {
@@ -83,16 +89,19 @@ namespace RackCad.Plugin
                 return (0, 0);
             }
 
+            // View-descriptor preflight: validate EVERY envelope's (view, section) up front. A corrupt descriptor is NEVER
+            // silently coerced into another view — it aborts before geometry is touched.
             foreach (var viewBlock in blocks)
             {
-                var descriptor = RackCommandSupport.DecodeView(viewBlock.Embed);
-                if (!descriptor.HasAddress || descriptor.SystemKind != RackSystemKind.PushBack)
+                if (!IsValidPushBackDescriptor(viewBlock.Embed))
                 {
                     editor.WriteMessage("\nRackCad: una vista ligada de este rack tiene un descriptor de vista invalido (posible corrupcion). No se modifico ningun bloque.");
                     return (0, 0);
                 }
             }
 
+            // I-05: a NEW linked view is inserted only in the "!UpdateOnly" branch; warn once if the drawing is not in
+            // inches BEFORE any block is (re)drawn. A pure update must NOT warn.
             if (!updateOnly)
             {
                 RackUnitsGuard.WarnIfNotInches(document);
@@ -119,10 +128,11 @@ namespace RackCad.Plugin
             var updatedFrontalEntrada = 0;
             var updatedFrontalPosterior = 0;
             var updatedPlanta = 0;
-            var staleViewBlocks = new List<ObjectId>();
+            var staleViewBlocks = new System.Collections.Generic.List<ObjectId>();
             var catalog = LateralHeaderDrawService.LoadCatalog();
             var lateralCortes = new PushBackSystemLateralBuilder().Cortes(system, catalog);
-            var availabilityFacts = new PushBackViewAvailabilityFacts(lateralCortes.Select(item => item.PostIndex), system.IsComposite);
+            var availabilityFacts = new PushBackViewAvailabilityFacts(
+                lateralCortes.Select(item => item.PostIndex), system.IsComposite);
             foreach (var viewBlock in blocks)
             {
                 HeaderPlacementResult result;
@@ -139,9 +149,14 @@ namespace RackCad.Plugin
                 }
                 else if (decoded.Address.Kind == DimensionViewKind.Frontal)
                 {
-                    var end = decoded.Address.Variant.PushBackEnd == RackPushBackEnd.Posterior ? PushBackFrontalEnd.Posterior : PushBackFrontalEnd.EntradaSalida;
-                    var side = decoded.Address.Variant.PushBackSide == RackPushBackSide.B ? PushBackSide.B : PushBackSide.A;
-                    // I-42: the section is written again as it came (cut + side), never as the ordinal of the cut.
+                    var end = decoded.Address.Variant.PushBackEnd == RackPushBackEnd.Posterior
+                        ? PushBackFrontalEnd.Posterior
+                        : PushBackFrontalEnd.EntradaSalida;
+                    var side = decoded.Address.Variant.PushBackSide == RackPushBackSide.B
+                        ? PushBackSide.B
+                        : PushBackSide.A;
+                    // I-42: la seccion se RE-ESCRIBE tal cual venia (corte + lado), no como el ordinal del corte:
+                    // en un rack compuesto perder el lado mandaria los dos cortes de B al descriptor de A.
                     var payload = RackPushBackCommands.BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewFrontal, viewBlock.Embed.Section, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
                     result = new PushBackFrontalDrawService().RedrawInPlace(document, viewBlock.BlockId, system, end, payload, regen: false, side: side);
                     if (result != null && result.Success)
@@ -151,16 +166,25 @@ namespace RackCad.Plugin
                             viewBlock.BlockId,
                             RackViewBaseName.LinkedPushBackCut(
                                 baseName,
-                                end == PushBackFrontalEnd.Posterior ? RackPushBackEnd.Posterior : RackPushBackEnd.EntradaSalida,
+                                end == PushBackFrontalEnd.Posterior
+                                    ? RackPushBackEnd.Posterior
+                                    : RackPushBackEnd.EntradaSalida,
                                 side == PushBackSide.B ? RackPushBackSide.B : RackPushBackSide.A,
-                                system.IsComposite));
-                        if (end == PushBackFrontalEnd.Posterior) updatedFrontalPosterior++;
-                        else updatedFrontalEntrada++;
+                                system != null && system.IsComposite));
+                        if (end == PushBackFrontalEnd.Posterior)
+                        {
+                            updatedFrontalPosterior++;
+                        }
+                        else
+                        {
+                            updatedFrontalEntrada++;
+                        }
                     }
                 }
                 else
                 {
-                    // Lateral: a post that no longer exists becomes stale (never redraw it at another index).
+                    // Lateral: the descriptor preflight guarantees View == ViewLateral && Section >= 0. Redraw the cut for
+                    // THIS post index; a post that no longer exists becomes stale (never redraw it at another index).
                     var postIndex = decoded.Address.Variant.Index;
                     var availability = RackViewAvailability.Evaluate(decoded, availabilityFacts);
                     var corte = availability.Status == RackViewAvailabilityStatus.Available
@@ -176,7 +200,10 @@ namespace RackCad.Plugin
                     result = new PushBackSystemDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: false, postIndex: postIndex);
                     if (result != null && result.Success)
                     {
-                        RackBlockRenamer.SyncName(document, viewBlock.BlockId, RackViewBaseName.LinkedLateral(baseName, postIndex));
+                        RackBlockRenamer.SyncName(
+                            document,
+                            viewBlock.BlockId,
+                            RackViewBaseName.LinkedLateral(baseName, postIndex));
                         updatedLateral++;
                     }
                 }
@@ -184,14 +211,21 @@ namespace RackCad.Plugin
 
             // Stale lateral cuts: erase ONLY when some survive (never delete a rack's last remaining link).
             var survivors = blocks.Count - staleViewBlocks.Count;
-            var erased = staleViewBlocks.Count > 0 && survivors > 0 ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks) : 0;
+            var erasedPhantoms = staleViewBlocks.Count > 0 && survivors > 0
+                ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks)
+                : 0;
             if (staleViewBlocks.Count > 0 && survivors == 0)
             {
                 editor.WriteMessage("\nRackCad: todas las vistas Push Back quedaron obsoletas; no se elimino el ultimo vinculo del rack.");
             }
 
-            var redrawn = updatedLateral + updatedFrontalEntrada + updatedFrontalPosterior + updatedPlanta;
-            if (redrawn + erased > 0)
+            // SINGLE authority for "the drawing changed in place": erasing a stale cut IS a change, so an edit that only
+            // dropped obsolete cuts still regens AND still reports success with the full counts. The regen and the final
+            // message must never disagree. Exactly one explicit batch regen (each RedrawInPlace used regen:false); a NEW
+            // view inserted below regens through ViewBlockDraw.DrawAndPlace, so no extra manual regen wraps it.
+            var updatedFrontal = updatedFrontalEntrada + updatedFrontalPosterior;
+            var changedInPlace = updatedLateral + updatedFrontal + updatedPlanta + erasedPhantoms > 0;
+            if (changedInPlace)
             {
                 document.Editor.Regen();
             }
@@ -200,18 +234,25 @@ namespace RackCad.Plugin
             {
                 RackViewBatchExecution.Run(document, batchProducts, batchRequest,
                     _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
-                return (redrawn, erased);
+                return (updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms);
             }
 
-            editor.WriteMessage(redrawn + erased > 0
+            editor.WriteMessage(changedInPlace
                 ? "\nRackCad: sistema Push Back actualizado desde la ventana RackCad; vistas redibujadas (lateral x"
                     + updatedLateral.ToString(CultureInfo.InvariantCulture) + ", frontal entrada/salida x"
                     + updatedFrontalEntrada.ToString(CultureInfo.InvariantCulture) + ", frontal posterior x"
                     + updatedFrontalPosterior.ToString(CultureInfo.InvariantCulture) + ", planta x"
                     + updatedPlanta.ToString(CultureInfo.InvariantCulture) + "; cortes obsoletos eliminados x"
-                    + erased.ToString(CultureInfo.InvariantCulture) + ")."
+                    + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + ")."
                 : "\nRackCad: no se pudo actualizar el sistema Push Back.");
-            return (redrawn, erased);
+            return (updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms);
+        }
+
+        /// <summary>The same check of the descriptor of a view as <c>RackPushBackCommands.IsValidPushBackDescriptor</c> (a guard ties the two).</summary>
+        private static bool IsValidPushBackDescriptor(RackEmbedDocument embed)
+        {
+            var decoded = RackCommandSupport.DecodeView(embed);
+            return decoded.HasAddress && decoded.SystemKind == RackSystemKind.PushBack;
         }
     }
 }

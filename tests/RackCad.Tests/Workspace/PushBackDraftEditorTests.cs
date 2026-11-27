@@ -416,7 +416,7 @@ namespace RackCad.Tests
                      {
                          "RackEmbedDocument.KindPushBack, StringComparison.OrdinalIgnoreCase",
                          "PreflightInnerSources(blocks, RackSystemKind.PushBack, project)",
-                         "descriptor.SystemKind != RackSystemKind.PushBack",
+                         "!IsValidPushBackDescriptor(viewBlock.Embed)",
                          "batchProducts.PrepareAll(batchRequest",
                      })
             {

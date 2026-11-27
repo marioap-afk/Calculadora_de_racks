@@ -197,6 +197,9 @@ namespace RackCad.UI.VentanaRackCad
 
         public RackCadSafetyChoiceCell Boots { get; } = new RackCadSafetyChoiceCell();
 
+        /// <summary>T5 pb: the botas of side B of a Push Back of two sides (<see cref="Boots"/> is then side A).</summary>
+        public RackCadSafetyChoiceCell BootsB { get; } = new RackCadSafetyChoiceCell();
+
         public RackCadSafetyChoiceCell SideGuard { get; } = new RackCadSafetyChoiceCell();
 
         public RackCadSafetyLevelsCell Deflectors { get; } = new RackCadSafetyLevelsCell();

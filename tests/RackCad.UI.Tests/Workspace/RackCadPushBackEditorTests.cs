@@ -27,7 +27,7 @@ namespace RackCad.UI.Tests
     /// another drawing, the prune of a closed drawing and the veto of the close (D-08); the matrix with its one scope and the side over it;
     /// «Nuevo» › «Push Back en esta ventana» as a draft; and the views with real WPF (STA).
     /// </summary>
-    public class RackCadPushBackEditorTests
+    public partial class RackCadPushBackEditorTests // T5 pb: partial (RackCadPushBackEditorTests.Seg.cs: PB-S03 and the review)
     {
         private static readonly SessionId Session = new(7);
 

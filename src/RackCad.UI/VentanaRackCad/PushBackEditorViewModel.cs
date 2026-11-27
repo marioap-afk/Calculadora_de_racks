@@ -200,6 +200,9 @@ namespace RackCad.UI.VentanaRackCad
         private bool _confirmingClose;
         private bool _isNewRack;
         private string _baselineJson;
+
+        // The JSON read of a rack that could not be recomposed: what the draft «is» while it has no valid design of its own.
+        private string _readJson;
         private string _baselineName = string.Empty;
         private string _message = string.Empty;
         private bool _messageIsError;
@@ -228,9 +231,15 @@ namespace RackCad.UI.VentanaRackCad
         /// <param name="rackId">The identity of the rack in the drawing (or the one the window gave a new rack).</param>
         /// <param name="update">What «Actualizar» does with this editor (the host writes the drawing); null when it is not offered.</param>
         /// <param name="isNewRack">A new rack of the window: not in the drawing until «Insertar en el dibujo…» places it.</param>
-        public PushBackEditorViewModel(PushBackDraftEditor draft, string rackId, Action<PushBackEditorViewModel> update = null, bool isNewRack = false)
+        /// <param name="readDesignJson">
+        /// The JSON the draft was loaded from. When it could not be recomposed it is the base of «Modificado» and what «Descartar» loads again
+        /// (review of 24adfee7, point 3); a draft that recomposed takes its own design as the base.
+        /// </param>
+        public PushBackEditorViewModel(PushBackDraftEditor draft, string rackId, Action<PushBackEditorViewModel> update = null, bool isNewRack = false,
+            string readDesignJson = null)
         {
             _draft = draft ?? throw new ArgumentNullException(nameof(draft));
+            _readJson = draft.DesignJson() == null ? readDesignJson : null;
             RackId = rackId;
             _update = update;
             _isNewRack = isNewRack;
@@ -738,16 +747,11 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
-            string refusal = null;
             var front = _primary.Front;
             Apply(() =>
             {
-                foreach (var side in _draft.EditSides())
-                {
-                    if (_draft.IsPresent(side, front) == !blank) continue;
-                    refusal ??= _draft.SetBlank(side, front, blank);
-                }
-
+                // The path of the classic window, side by side, written when any side took it (review of 24adfee7, point 1).
+                var refusal = _draft.SetBlank(_draft.EditSides(), front, blank);
                 if (refusal != null) throw new InvalidOperationException(refusal);
             }, null, refusalOnThrow: true);
         }
@@ -772,7 +776,8 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
-            if (baseline != null) _draft.LoadFrom(baseline, _baselineName);
+            // Loaded again even when it does not recompose (a rack opened that way goes back to how it was read, review point 3).
+            if (baseline != null && !_draft.LoadFrom(baseline, _baselineName)) _readJson = _baselineJson;
             TakeBaseline();
             _propertiesTab?.Reset();
             _confirmingClose = false;
@@ -783,6 +788,7 @@ namespace RackCad.UI.VentanaRackCad
             NormalizeSelection();
             Rebuild();
             RaiseSides();
+            if (!string.IsNullOrWhiteSpace(_draft.LastError)) Say(_draft.LastError, error: true);
         }
 
         /// <summary>«Actualizar»: hands this editor to the host, which writes the drawing. Nothing happens when there is nothing to write.</summary>
@@ -896,9 +902,12 @@ namespace RackCad.UI.VentanaRackCad
 
         private string DesignJson() => _draft.DesignJson();
 
+        // What the draft is, compared with the base: its design, or the JSON it was read from while it has none that recomposes.
+        private string CurrentJson() => DesignJson() ?? _readJson;
+
         private void TakeBaseline()
         {
-            _baselineJson = DesignJson();
+            _baselineJson = CurrentJson();
             _baselineName = (_draft.Name ?? string.Empty).Trim();
             _dirty = false;
             RaiseState();
@@ -907,7 +916,7 @@ namespace RackCad.UI.VentanaRackCad
         // «Modificado» is a difference with what the drawing has (as last read or written), never a gesture.
         private void UpdateDirty()
         {
-            var dirty = !string.Equals(DesignJson(), _baselineJson, StringComparison.Ordinal)
+            var dirty = !string.Equals(CurrentJson(), _baselineJson, StringComparison.Ordinal)
                         || !string.Equals((_draft.Name ?? string.Empty).Trim(), _baselineName, StringComparison.Ordinal)
                         || PropertiesDirty;
             if (dirty == _dirty) return;
@@ -997,6 +1006,7 @@ namespace RackCad.UI.VentanaRackCad
             _modules = BuildModules();
             _structure = BuildStructure();
             _extremes = BuildExtremes();
+            RebuildSafetyPanel(); // PB-S03
             OnPropertyChanged(nameof(Calculated));
             OnPropertyChanged(nameof(Modules));
             OnPropertyChanged(nameof(ModulesSummary));
@@ -1505,13 +1515,6 @@ namespace RackCad.UI.VentanaRackCad
                 Line("Topes posteriores", topes),
             };
         }
-
-        /// <summary>
-        /// What the window does not edit yet of the safety (declared, PB-S03): the boots, the side guards, the deflectors and the forklift
-        /// defense keep what the drawing has; they are edited in RACKEDITAR until the table of the fourth batch reaches Push Back.
-        /// </summary>
-        public string SafetyPendingText => "Botas, protectores laterales, desviadores y defensa de montacargas se conservan como están en el dibujo. "
-                                          + "En la ventana todavía no se editan: usa RACKEDITAR › «Configurar seguridad…» (Entrada/Salida · Posterior, por lado).";
 
         private static string SideLetter(PushBackSide side) => side == PushBackSide.B ? "B" : "A";
 
