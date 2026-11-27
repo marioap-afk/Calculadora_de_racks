@@ -101,7 +101,8 @@ namespace RackCad.UI.VentanaRackCad
         // without their door) open in their classic editor.
         private bool OpensHere(RackSystemKind kind) =>
             (kind == RackSystemKind.SelectiveRack && CanStartNewSelective) || (kind == RackSystemKind.PalletFlow && CanStartNewDynamic)
-            || (kind == RackSystemKind.Cama && CanStartNewCama); // T5 cm: a cama opens here as a draft too
+            || (kind == RackSystemKind.Cama && CanStartNewCama) // T5 cm: a cama opens here as a draft too
+            || (kind == RackSystemKind.Cantilever && CanStartNewCantilever); // T5 ct
 
         private void OpenLibraryDesign(RackCadLibraryRow row)
         {
@@ -145,7 +146,8 @@ namespace RackCad.UI.VentanaRackCad
             var opening = OpenAsNewDraft(RackCadDraftSeed.FromLibrary(project, name, LibraryOrigin(name)));
             if (opening == null || !opening.Opened) return false;
 
-            object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor : project.Kind == RackSystemKind.Cama ? NewCamaEditor : NewDynamicEditor; // T5 cm
+            object editor = project.Kind == RackSystemKind.SelectiveRack ? NewSelectiveEditor : project.Kind == RackSystemKind.Cama ? NewCamaEditor // T5 cm
+                : project.Kind == RackSystemKind.Cantilever ? NewCantileverEditor : NewDynamicEditor; // T5 ct
             if (editor != null) _librarySources[editor] = project;
             return true;
         }
@@ -243,7 +245,8 @@ namespace RackCad.UI.VentanaRackCad
 
         private bool IsEditorAlive(object editor) =>
             _selectiveDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor)) || _dynamicDrafts.Values.Any(e => ReferenceEquals(e.Editor, editor))
-            || IsCamaEditorAlive(editor); // T5 cm
+            || IsCamaEditorAlive(editor) // T5 cm
+            || IsCantileverEditorAlive(editor); // T5 ct
 
         // ------------------------------------------------------------------ «Ejecutar» of the help (UT-10)
 

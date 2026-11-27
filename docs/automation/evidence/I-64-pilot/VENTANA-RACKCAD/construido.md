@@ -4150,3 +4150,229 @@ Después se buscaron restos en `git diff` y se recompiló la solución con `--no
 - **UI completa:** 2991 correctas, 0 con error, 48 omitidas (3039, 28 min): las 2986 de `bddc2203` más las 5 nuevas (3 en `CamaEditorTests` y 2 en `RackCadCamaWindowTests`; la del BOM y las dos cambiadas no añaden casos).
 - **Core, focales** (las clases de la cama y las guardas y censos de la ventana, la puerta, el Plugin, la persistencia y el códec de vistas): 567 correctas, 0 con error, 1 omitida (las 565 de la entrega más las 2 nuevas de Core: `PushbackDinamicaPushback…` y `AViewThatDoesNotDecode…`). Core Full no se volvió a correr (el encargo pide las focales); por cuenta, 19324 / 0 / 403.
 - **Build Debug de la solución (Plugin incluido), `--no-incremental`:** 0 errores.
+
+## Quinta tanda, ct: Cantilever en la ventana (2026-11-26)
+
+**Rama:** local `architecture/workspace-persistente-rackcad-t5-ct`, sobre `041e1799` (worktree `D:\w5ct`). Sin commit, sin push, sin AutoCAD.
+Prototipo `cantilever` (CT-01 a CT-12): el Owner aceptó las doce propuestas sin nota (`owner-decisions-2026-11-26.md`). No se borró código
+clásico: RCT, RACKCANTILEVER, RACKEDITAR y la tarjeta «Cantilever» de «Nuevo» (RACKNUEVO) siguen con el editor clásico, como pide el prototipo
+(«Cantilever (editor clásico)»).
+
+**Lo que se construyó:**
+- **El borrador** (`CantileverDraftEditor`, Application): una copia de `CantileverLineDesign` recalculada con LA autoridad del editor clásico
+  (`CantileverLineEditorAssembler`), así que la línea, su BOM y sus vistas son las del clásico; no cambia ningún cálculo.
+  - Una sola forma de confirmar: cada campo se comprueba por su regla (número, mínimo) y, si se rechaza, el borrador no cambia.
+  - Una línea que todavía no se resuelve sí es un borrador válido (la nueva abre «bloqueada», como en el clásico): no se escribe y
+    **«Para que la línea se resuelva»** (CT-05) dice qué falta y dónde, con «Ir a …»: la sección de columna, la de base, la longitud de base, la
+    sección y el corte del brazo por omisión, el claro entre niveles, los brazos de celda sin sección o sin corte, el tensor estructural sin
+    sección y la altura o la cantidad manual sin valor; si no falta ninguna de esas piezas y la línea sigue sin resolverse, los diagnósticos
+    bloqueantes del resolvedor.
+  - Los brazos de las celdas se escriben con la matriz de la línea (`CantileverLineArmMatrix`): una copia por celda, y una excepción igual al
+    brazo por omisión no se guarda. «Todo» escribe la excepción en todas las celdas (CT-06); el brazo por omisión no toca las excepciones.
+  - «Modificado» = el JSON del borrador difiere de su base (lo leído o lo último escrito; los valores por defecto o la biblioteca en una línea
+    nueva). «Actualizar» envía copias: el diseño copiado y la línea resuelta de esa copia (D-05 de Dinámico).
+- **La puerta** (`CantileverDoor.cs`, Application; `RackCadCantileverDoorCommands.cs` y `RackCadRackDoorPort.Cantilever.cs`, Plugin), con las
+  reglas de las otras puertas (número de petición, otro dibujo, «Dejar de esperar», `RequestStarted`, la comparación de vistas hermanas):
+  - `RACKCANTILEVERABRIR` (sin marca de Deshacer ni historial): el diseño de la línea y las propiedades del rack;
+  - `RACKCANTILEVERAPLICAR`: la mitad de dibujo de «Actualizar» de RACKEDITAR y después la pestaña «Propiedades»; un «U»;
+  - `RACKCANTILEVERINSERTAR`: «Insertar» de RACKEDITAR (el borrador en las vistas que hay y después las nuevas, decisión 10 de Dinámico);
+  - `RACKCANTILEVERNUEVO`: una línea nueva de la ventana por el despacho de «Nuevo», con el nombre automático de I-60.
+- **La mitad de dibujo de RACKEDITAR, extraída** (`RackCantileverCommands.ApplyCantileverEdit`): todo lo que `EditCantilever` hacía después de
+  cerrar su ventana, con el resultado del editor como argumento (`ICantileverEditOutcome`, que implementan la ventana clásica y
+  `CantileverDraftOutcome`), sin cambiar su cuerpo, como `ApplyDynamicEdit`. Devuelve cuántas vistas redibujó y cuántas laterales obsoletas
+  borró; RACKEDITAR no mira la respuesta.
+- **B-1 en Cantilever (CT-11):** `RackViewBatchProducts.Cantilever` prepara la vista nueva desde `RackInsertedViewSource.Edited(…)`, la regla de
+  Dinámico. Corrige también «Insertar» de RACKEDITAR con cambios.
+- **El editor de la ventana** (`CantileverEditorViewModel` y sus parciales `.Arms`, `.Bracing` y `.Window`; `CantileverEditorView`), sin modales:
+  - **Cabecera:** nombre, estado (Limpio, Modificado, Escribiendo; «Nueva, sin insertar»), «Actualizar» (o «Insertar en el dibujo…» de una
+    línea nueva), «Insertar vista…», «Descartar», «Restaurar layout…», «Cerrar el editor» con su pregunta en línea, «Más» › «Guardar en
+    biblioteca…», el motivo de un «Actualizar» apagado y la lista de lo que falta.
+  - **Línea:** «Lo esencial» (Estructura; Caras y altura, con los campos dormidos desactivados y su motivo, dolor 7; Piezas mínimas), «Calculado»
+    (altura común, intervalos, paneles por intervalo, separadores, tensores, brazos) y, plegados, «Niveles» (troquel del primer nivel contado
+    desde 1, CT-09; un claro para la línea, CT-12; factor superior) y «Dibujo» (brazos y tensores en la planta).
+  - **Brazos** (la pestaña inicial): la matriz compacta estación × nivel (× lado), con la longitud de corte en cada celda (CT-01), «E» de
+    excepción, «T» de placa con tope y «•» de cambiada en el borrador; «Ver detalle en celdas» añade la sección. Clic, Ctrl+clic, Mayús+clic,
+    «E1…», «N1…» y «Todo»; los segmentos Celda · Estación · Nivel · Lado · Todo ensanchan la selección. El inspector edita el brazo de la
+    selección (sección, arreglo, corte, pendiente, placa de montaje y de extremo) y ofrece «Volver al brazo por omisión». Los lados se llaman
+    «+Y» y «−Y» (CT-02).
+  - **Componentes** (CT-03): Columna y base · Brazo por omisión · Separador · Tensor, como paneles, sin Aceptar, Cancelar ni Restaurar propios,
+    con su «Receta» y su «Diagnóstico». La sección se busca en una lista dentro de la página (CT-04), con la designación del catálogo
+    («HSS4X4X1/4», «C4X4.5», dolor 6) y el id en la ayuda; la familia la fija la pieza (W, C, C o L; cualquiera para el brazo, C si es apareado).
+  - **Arriostramiento** (CT-10): cantidad automática o manual, alturas, lo derivado, la secuencia de un intervalo (de arriba abajo) y, en
+    «Avanzada», la tabla de tramos (Desde, Hasta, Alto, Con tensores, Dividir, Quitar, Agregar tramo arriba), que es un borrador hasta «Aplicar
+    secuencia»: mientras tanto «Actualizar» se niega y dice por qué. Volver a «Automática» pregunta en línea; volver a «Avanzada» ofrece
+    «Recuperar mis tramos» o «Empezar desde la regla» (dolor 17).
+  - **Propiedades** (VA-07), al final: la tabla de la pestaña de los otros editores; es parte del borrador y solo «Actualizar» la escribe.
+- **La ventana** (`RackCadWindowViewModel.Cantilever.cs`, `RackCadWindowView.Cantilever.cs`): «Editar aquí» de un Cantilever de la lista
+  (dolor 19), «Cantilever en esta ventana» de «Nuevo» como «Borrador N» (los seis métodos de los borradores), «Insertar vista…» con el panel
+  reutilizable (Frontal · Lateral por estación · Planta, DG-07), «Abrir» de la biblioteca como borrador (UT-03), «Guardar en biblioteca…»
+  (UT-04), el BOM del borrador en «BOM y lista de racks» (BM-02: el BOM del clásico sobre una copia), el veto de cierre (D-08) y la poda de un
+  dibujo cerrado.
+
+**Las decisiones y los supuestos** (prefijo CT5; cada uno en un sitio):
+
+| Id | Decisión o supuesto | Dónde se cambia |
+|---|---|---|
+| CT5-01 | **Supuesto.** La línea nueva abre con los valores del clásico (pregunta 5, aceptada). El clásico la abre con un claro de 0 in, que la estación rechaza («debe ser un numero positivo»): la lista de lo que falta lo nombra, y «Ir a «Línea» › «Niveles»» abre el grupo. Con un nivel y 24 in de claro la columna queda más corta que el arriostramiento y el resolvedor lo dice. No se cambió ningún cálculo | `CantileverDraftEditor.Missing` |
+| CT5-02 | Un valor que su campo rechaza no llega al borrador; una línea que no se resuelve sí es un borrador (no se escribe, y la lista lo dice) | `CantileverDraftEditor.Write`, `Edit` |
+| CT5-03 | **Diferencia declarada con el clásico.** Un factor de claro superior menor que 1/3 se rechaza en su campo (el clásico lo dejaba escribir y la línea quedaba bloqueada) | `CantileverDraftEditor.Write` |
+| CT5-04 | Las opciones son segmentos y la sección se elige en una lista de la página (como mucho 40 filas; se escribe para acotar), sin desplegables | `CantileverChoiceItem`, `CantileverSectionPickerItem` |
+| CT5-05 | «Aplicar secuencia» comprueba cada fila (números, «Hasta» sobre «Desde», al menos un tramo); si los tramos son un arriostramiento válido lo decide el resolvedor al recalcular, como en el clásico, y la lista lo dice | `CantileverDraftEditor.ApplySegments` |
+| CT5-06 | «Restaurar layout…» vuelve a la regla y conserva los valores como datos dormidos (la altura manual, la cantidad manual, los tramos), como los conserva el clásico | `CantileverDraftEditor.Restore` |
+| CT5-07 | **Corregido en la revisión (punto 4).** La regla de RACKEDITAR (`LoadExisting(…, embed.Name, …)`): el editor muestra y escribe el nombre del sobre; el nombre interior del diseño no se toca, y a un diseño sin nombre no se le escribe uno. Renombrar escribe los dos, como `Name_Changed` del clásico. Un diseño de la biblioteca toma el nombre de su entrada, como `LoadDesignForNew` | `CantileverDraftEditor.Name`, `Load`, `SetName`; `RackCadWindowViewModel.OnCantileverRead` |
+| CT5-08 | **No construido (pregunta 8):** «Insertar pieza suelta…» por RACKCANTILEVERPIEZA. El panel lo dice; la pieza suelta sigue en los configuradores del clásico (RCT). Reproducir las vistas de cada configurador (el brazo a 96 in y en el troquel 0, dolor 14) es una entrega propia | `CantileverEditorViewModel.PieceNote` |
+| CT5-09 | `ApplyCantileverEdit` es una extracción, no una copia (a diferencia de CB4-09): RACKEDITAR la llama con su ventana y su cuerpo no cambió | `RackCantileverCommands.cs` |
+| CT5-10 | Dolor 12, declarado como M-28 de Dinámico: cada vista se redibuja en su transacción y una que falla no detiene a las demás; toda la orden es un «U» | `ApplyCantileverEdit` |
+| CT5-11 | La selección abre en E1 · N1. El inspector va al lado de la matriz desde 900 px y, por debajo, debajo | `SelectFirstCell`, `CantileverEditorView.InspectorBesideWidth` |
+| CT5-12 | **Diferencia con el prototipo.** La matriz se desplaza entera, con sus rótulos, en lugar de dejarlos fijos | `CantileverEditorView.xaml`, `MatrixScroll` |
+| CT5-13 | «Guardar en biblioteca…» exige una línea resuelta (como el clásico) y guarda `RackProject.ForCantilever` del borrador con el nombre escrito y los metadatos de su origen (I-11) | `RackCadWindowViewModel.BuildCantileverProject` |
+| CT5-14 | El almacén de proyectos no lee una línea sin secciones (`RackDesignValidation.IsUsableCantilever`): la base del borrador se guarda también como diseño, y «Descartar» y «Duplicar» de una línea nueva no pasan por el JSON | `CantileverDraftEditor.BaselineDesign` |
+
+**Ediciones a archivos compartidos** (pequeñas y marcadas `T5 ct`):
+- `src/RackCad.UI/VentanaRackCad/RackCadWindowViewModel.cs`: `DoorRequest.IsCantilever`; el constructor (`WireCantileverDoor(door)`); `ShowPanel` y
+  `HasRackEditor`; una rama en `StopWaiting`, `OnDesignWritten`, `OnRequestStarted` y `DraftStateOf`; una condición en `OnDesignRead`; una
+  línea en `UnwrittenWorkOf`, `PruneDeadSessions`, `RaiseDynamic` y `RaiseNewDynamic`.
+- `RackCadWindowViewModel.Drafts.cs`: un caso en cada uno de los seis métodos por sistema.
+- `RackCadWindowViewModel.Ins.cs`: una línea en `RefreshInsertPanels`.
+- `RackCadWindowViewModel.Bom.cs`: una línea en `DraftBomOf`, `HasUnwrittenDraft` y `UnwrittenDraftsOf`.
+- `RackCadWindowViewModel.Utilities.cs`: `OpensHere`, el editor de `OpenDesignAsNewRack` e `IsEditorAlive`.
+- `RackCadDrafts.cs`: el nombre de un proyecto Cantilever en `NameOf`.
+- `RackCadWindowView.xaml`: tres bloques `<!-- T5 ct (n of 3) -->`: la oferta «Editar aquí» en la página del rack, el anfitrión del borrador en
+  la rejilla de páginas y el botón «Cantilever en esta ventana» de «Nuevo». No caben en uno: están en tres contenedores distintos, como los de
+  Dinámico y Selectivo.
+- `RackCadWindowView.xaml.cs`: dos nombres en `OnViewModelPropertyChanged`, una línea para el borrador nuevo y una en `ShowRackContent`.
+- `src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorPort.cs`: una línea en `Abandon`.
+- `src/RackCad.Plugin/RackCantileverCommands.cs`: la extracción de `ApplyCantileverEdit` (CT5-09).
+- `src/RackCad.Plugin/Views/RackViewBatchProducts.cs`: B-1 (CT-11).
+- `src/RackCad.UI/Systems/Cantilever/RackCantileverWindow.xaml.cs`: la clase implementa `ICantileverEditOutcome` (una palabra).
+- Archivos nuevos: `CantileverDraftEditor.cs` y `CantileverDoor.cs` (Application); `CantileverEditorItems.cs`, `CantileverEditorViewModel.cs`,
+  `.Arms.cs`, `.Bracing.cs`, `.Window.cs`, `CantileverEditorView.xaml(.cs)`, `RackCadWindowViewModel.Cantilever.cs`,
+  `RackCadWindowView.Cantilever.cs` y `Systems/Cantilever/ICantileverEditOutcome.cs` (UI); `RackCadCantileverDoorCommands.cs` y
+  `RackCadRackDoorPort.Cantilever.cs` (Plugin); y las dos clases de prueba.
+
+**Censos y guardas que cambian, con su nota:**
+- `SelectiveEditorOpenTests.GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA`: de 57 a 61.
+- `CustomPropertiesCommandGuardTests`: `A14CantileverDoorCommands` en la base.
+- `RackCadWindowListTests.TheFoldersOfTheWindowKeepTheirLayers`: `RackCadCantileverDoorCommands.cs` es un archivo de órdenes de la puerta, y
+  `ApplyCantileverEdit` entra en la lista de lo que ningún otro archivo de la puerta puede llamar.
+- Tres guardas leían el cuerpo de `EditCantilever`, que ahora delega en su mitad de dibujo, y leen también `ApplyCantileverEdit`, cada una con
+  su nota: `CantileverPluginSourceGuardTests.EditBody` (los dos cuerpos, en su orden), `I60RackNameWiringGuardTests` (un caso más) y
+  `RackEditPreflightCharacterizationTests` (el preflight de Cantilever). Su rojo: la primera pasada de las guardas de Core dio 5 fallos en
+  `CantileverPluginSourceGuardTests`, que esta nota corrige.
+
+**Las pruebas:**
+- `tests/RackCad.Tests/Workspace/CantileverDraftEditorTests.cs` (Core, nueva, 31 casos):
+  - la línea nueva es la del clásico y dice qué le falta y dónde; «Descartar» de una línea nueva vuelve a sus valores (CT5-14);
+  - «Lo esencial» da el mismo diseño, la misma línea y el mismo BOM que el clásico con los mismos valores;
+  - trece valores que su campo rechaza y no cambian el borrador;
+  - los campos dormidos y su modo; el troquel contado desde 1;
+  - los brazos de la selección, la excepción igual al brazo por omisión que no se guarda, «Varía», «Todo» (CT-06) y «Volver al brazo por
+    omisión»;
+  - el arreglo apareado, que exige canal en los dos sentidos; la placa de extremo; la base que sigue a la columna; el tensor estructural;
+  - la secuencia avanzada: materializar, aplicar, volver a la regla y recuperar los tramos;
+  - «Restaurar layout…» con sus cuatro casillas;
+  - la copia para escribir, que no sigue al borrador; lo escrito como base; el nombre;
+  - las reglas de la puerta;
+  - por la fuente: las cuatro órdenes (sin marca de Deshacer al leer, hermanas antes de `blocks[0]`, la respuesta por la regla), la extracción
+    de la mitad de dibujo y B-1, con la regla sobre un sobre de Cantilever.
+- `tests/RackCad.UI.Tests/Workspace/RackCadCantileverWindowTests.cs` (UI, nueva, 20):
+  - **la puerta:** la oferta solo con su puerta y la respuesta solo de su petición; «Actualizar» con copias, el editor bloqueado, la orden que
+    la tomó, la respuesta no escrita y la escrita (D-08); «Dejar de esperar» y la respuesta tardía; el borrador de otro dibujo y la poda;
+    «Cerrar el editor» con su pregunta;
+  - **el editor:** el valor rechazado que se queda en su campo; la matriz (clic, Ctrl, Mayús, cabeceras, «Todo», el alcance, «E», «•»), el
+    inspector y el brazo por omisión; la doble cara y el alcance «Lado»; los componentes, la lista de secciones por familia y «Ir a …»; la tabla
+    de tramos, que bloquea «Actualizar» hasta aplicarse, y sus preguntas; «Restaurar layout…»;
+  - **la ventana:** la línea nueva como «Borrador N», con su lista de lo que falta, insertada como rack nuevo con las vistas elegidas y el
+    nombre de I-60; «Insertar vista…» con las estaciones; el BOM del borrador y «Guardar en biblioteca…»; un diseño de la biblioteca como
+    borrador; «Propiedades» leída, editada y enviada por «Actualizar»; «Duplicar»;
+  - **con WPF real (STA), sin errores de enlace:**
+    - las cinco pestañas con «Brazos» primero;
+    - el clic en una celda, un segmento y la lista de secciones;
+    - nombres de automatización únicos;
+    - la línea nueva en estrecho, con el inspector debajo e «Ir a …»;
+    - la página del rack y «Nuevo», que alojan el editor.
+- **Comprobación en rojo:** catorce piezas rotas a propósito, una a una, con script (`S\hs65\t5\ct\red.py`; salidas en `red-out-1.txt` y
+  `red-log-r9.txt`). Antes de romper cada archivo se guarda una copia fuera del worktree; después vuelve a sus bytes con el mismo SHA-256 (lo
+  comprueba el script), y no quedó ningún resto en `git diff`.
+  - Las piezas y lo que fallaba con cada una:
+    1. un entero sin su mínimo: 4 de Core;
+    2. el brazo de una celda escrito en el brazo por omisión: 2;
+    3. la copia para escribir con el diseño vivo: 1;
+    4. sin el claro en lo que falta: 1 de Core y 2 de UI;
+    5. «Descartar» por el JSON de la base: 1;
+    6. la lectura de otro número: 1 de UI;
+    7. el veto sin las líneas Cantilever: 2;
+    8. «Actualizar» con tramos sin aplicar: 1;
+    9. la marca «E» de la celda: **sobrevivió**, porque las pruebas solo veían celdas con excepción y cambiadas a la vez. Se añadió el brazo
+       por omisión cambiado («•» sin «E»), y con eso falla 1;
+    10. la puerta que abre cualquier tipo: 1;
+    11. B-1 deshecho: 1;
+    12. RACKCANTILEVERABRIR con marca de Deshacer: 1;
+    13. el segmento de una opción que no escribe: 1;
+    14. «Actualizar» que envía el diseño vivo: 1.
+  - Después se recompiló la solución con `--no-incremental`.
+
+**Los números** (la solución en Debug, recompilada con `--no-incremental` sobre las fuentes finales):
+- **UI completa:** 2981 correctas, 0 con error y 48 omitidas (3029): la base, 2961/0/48, más las 20 nuevas.
+- **Core Full:** 19324 correctas, 0 con error y 403 omitidas (19727): la base, 19292/0/403, más las 31 de `CantileverDraftEditorTests` y el caso
+  nuevo de `I60RackNameWiringGuardTests`.
+- **Plugin Debug:** 0 errores; las 2 advertencias son las MSB3277 de las referencias de AutoCAD, que ya estaban.
+
+**Lo que queda abierto:**
+- **No construido:**
+  - «Insertar pieza suelta…» (RACKCANTILEVERPIEZA, pregunta 8, CT5-08);
+  - las cotas de nivel en «Calculado» y el diagrama dibujado de la secuencia, que hoy es una lista de tramos (el prototipo los dejaba
+    [PENDIENTE]);
+  - «Abrir en editor clásico» en la página del rack, que la ventana no tiene para ningún sistema (UT-S12).
+- **El smoke del Owner en AutoCAD:**
+  - que RACKCANTILEVERABRIR no deje paso en Deshacer;
+  - un solo «U» para RACKCANTILEVERAPLICAR;
+  - RACKCANTILEVERINSERTAR y RACKCANTILEVERNUEVO con el jig, el orden elegido y el nombre de I-60;
+  - B-1: una vista insertada con cambios que se vuelve a abrir igual que sus hermanas;
+  - que RACKEDITAR siga igual tras la extracción;
+  - el editor en la paleta: anchos, foco, ratón en la matriz y la lista de secciones.
+- **Para el Owner:** CT5-01, CT5-03, CT5-05 y CT5-12.
+- **Para integrar:**
+  - las otras partes también tocan `RackCadWindowViewModel.cs`, `.Drafts.cs`, `RackCadWindowView.xaml(.cs)` y `RackCadRackDoorPort.cs`; las
+    ediciones de esta parte son las de la lista de arriba;
+  - el censo de órdenes suma las 4 de esta parte a las de las demás.
+
+### Quinta tanda, ct: correcciones de la revisión
+
+Sobre `44c0a439` (el commit de la sesión con esta parte), en `D:\w5ct`. Sin commit, sin push y sin AutoCAD. Son los seis puntos de la
+revisión independiente; cada uno tiene su prueba, y los puntos 1 a 5 también su comprobación en rojo.
+
+| Punto | Qué se hizo | Prueba |
+|---|---|---|
+| 1 [MEDIA-ALTA] | «Aplicar secuencia» redondeaba cada cota a 4 decimales. Con un claro de 20 in (columna de 106.666… in), «Empezar desde la regla», un cambio de «Con tensores» y «Aplicar», el último tramo pasaba la punta por 1e-9 y la línea quedaba bloqueada. Ahora cada fila guarda sus cotas exactas (`CantileverSegmentRow.FromValue`, `ToValue`, desde `RowsOf`) y `CantileverDraftEditor.Keep` las usa mientras el texto siga siendo `Num(original)`, como `Keep` del clásico. «Dividir» y «Agregar tramo arriba» parten de las cotas exactas | Core: `ApplyingTheSequenceOfTheRuleKeepsItsExactElevationsAndTheLineStillResolves`. UI: `ApplyingTheSequenceOfTheRuleInTheTableKeepsTheLineResolved`, también con «Dividir» |
+| 2 [MEDIA-BAJA] | El factor de claro superior rechazaba «0.3333», el valor que su propio mensaje muestra. Ahora un texto cuyo redondeo de pantalla es `Num(1/3)` guarda 1/3 exacto; «0.3332» se sigue rechazando | Core: `TheTopClearFactorAcceptsTheThirdItShowsAndStoresItExact` |
+| 3 [BAJA] | Había dos «Espesor» en el inspector y dos en el brazo por omisión, y dos «Tipo» en «Componentes» (la placa de extremo y el tensor). Ahora: «Placa de montaje: espesor», «Placa de extremo: espesor», «Placa de extremo: tipo» y «Tipo de tensor» | UI: `EveryFieldAndButtonOfEachTabAndPanelHasAUniqueName`. Recorre cada pestaña y cada panel de «Componentes» con los expansores abiertos, y mira cada campo, casilla, lista y botón visibles (menos la pestaña «Propiedades», que es la vista compartida de `va`) |
+| 4 [BAJA] | CT5-07 corregido con la regla del clásico. El editor muestra y escribe el nombre del sobre (`LoadExisting(…, embed.Name, …)`) y no toca el nombre interior: a un diseño sin nombre no se le escribe uno. Renombrar escribe los dos, como `Name_Changed`. «Modificado» cuenta también el nombre, y «Descartar» lo devuelve. El supuesto CT5-07 queda al día en su tabla | Core: `TheNameIsTheOneOfTheEnvelopeAndTheInnerNameIsWrittenOnlyByARename`. UI: `TheEditorShowsAndWritesTheNameOfTheEnvelopeAndLeavesTheInnerNameAlone` |
+| 5 [BAJA] | «Duplicar» conservaba `Line.Id`. Ahora la copia se hace con `DuplicateWithNewIdentity()`, y su base toma la misma identidad nueva y queda sin nombre. Así la copia está «Modificado» exactamente cuando lo estaba su original | UI: `ADuplicateOfACantileverDraftIsAnotherDraftWithTheSameDesign`, ampliada: identidad nueva, y la copia de un borrador sin cambios (un diseño de la biblioteca) sale limpia |
+| 6 [COSMÉTICO] | «Guardar en biblioteca…» de «Más» quedaba centrado. Ahora usa la plantilla de fila de la vista (`RowButton`, alineado a la izquierda y con borde). Dinámico tiene lo mismo y no se tocó | La prueba de vista de siempre (nombres y enlaces) |
+
+**Comprobación en rojo** (`S\hs65\t5\ct\red.py`, piezas RV1 a RV5; salida en `red-log-rv.txt`): cinco piezas rotas a propósito, una a una,
+con una copia de cada original fuera del worktree. En todas falla al menos una prueba:
+- RV1, la cota que se guarda redondeada a 4 decimales: fallan 1 de Core y 1 de UI;
+- RV2, «0.3333» rechazado: falla 1 de Core;
+- RV3, los dos espesores del inspector con el mismo nombre: falla la de unicidad;
+- RV4, el nombre interior antes que el del sobre: falla 1 de UI;
+- RV5, la copia sin identidad nueva: falla 1 de UI.
+
+Cada archivo volvió a sus bytes (SHA-256 comprobado por el script), y no quedaron restos en `git diff`. Después se recompiló la solución con
+`--no-incremental`.
+
+**Archivos de las correcciones:**
+- `CantileverDraftEditor.cs` (Application);
+- en la UI: `CantileverEditorItems.cs`, `CantileverEditorViewModel.cs`, `.Arms.cs` y `.Bracing.cs`, `CantileverEditorView.xaml` y
+  `RackCadWindowViewModel.Cantilever.cs`;
+- las dos clases de prueba.
+
+Ningún archivo compartido cambia en esta vuelta.
+
+**Los números:**
+- **Clases focales de Core** (`CantileverDraftEditorTests`, que pasa de 31 a 34, y las guardas y censos que tocan esta parte):
+  217 de 217. Core Full no se volvió a correr (el encargo pide las focales): por cuenta, 19327 / 0 / 403 (19324 más las 3 nuevas).
+- **UI completa:** 2984 correctas, 0 con error y 48 omitidas (3032): las 2981 de la entrega más las 3 nuevas. `RackCadCantileverWindowTests` pasa de 20 a 23.
+- **Build Debug de la solución (Plugin incluido),** con `--no-incremental`: 0 errores. Las advertencias son las MSB3277 de las referencias de
+  AutoCAD y las de los analizadores de xunit, que ya estaban.

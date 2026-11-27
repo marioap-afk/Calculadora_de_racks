@@ -69,13 +69,24 @@ namespace RackCad.Tests
 
         private static string Menu => Read("RackMenuCommands.cs");
 
-        /// <summary>The body of <c>EditCantilever</c>, by brace matching — indices would be fragile as it grows.</summary>
+        /// <summary>
+        /// The body of <c>EditCantilever</c>, by brace matching — indices would be fragile as it grows. I-64, quinta tanda (ct): the drawing half
+        /// of RACKEDITAR moved, unchanged, to <c>ApplyCantileverEdit</c>, which <c>EditCantilever</c> calls once its window closed (as
+        /// <c>ApplyDynamicEdit</c> for Dinámico), so the edit is the body of both, in that order.
+        /// </summary>
         private static string EditBody()
         {
             var source = Commands;
-            var start = source.IndexOf("internal static void EditCantilever(", StringComparison.Ordinal);
+            var edit = BodyAt(source, "internal static void EditCantilever(");
+            Assert.Contains("ApplyCantileverEdit(document, blockId, embed, project, window);", edit, StringComparison.Ordinal);
+            return edit + "\n" + BodyAt(source, "internal static (int Redrawn, int Erased) ApplyCantileverEdit(");
+        }
 
-            Assert.True(start > 0, "No existe EditCantilever.");
+        private static string BodyAt(string source, string signature)
+        {
+            var start = source.IndexOf(signature, StringComparison.Ordinal);
+
+            Assert.True(start > 0, "No existe " + signature);
 
             var open = source.IndexOf('{', start);
             var depth = 0;
@@ -86,7 +97,7 @@ namespace RackCad.Tests
                 else if (source[i] == '}' && --depth == 0) return source.Substring(open, i - open + 1);
             }
 
-            throw new InvalidOperationException("Llaves desbalanceadas en EditCantilever.");
+            throw new InvalidOperationException("Llaves desbalanceadas en " + signature);
         }
 
         // ---- 1. The host never recomputes what the editor already computed -------------------------------------

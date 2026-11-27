@@ -31,7 +31,7 @@ namespace RackCad.UI.Systems.Cantilever
     /// It still computes nothing: it reads controls into a <see cref="CantileverLineDesign"/> and hands it to
     /// <see cref="CantileverLineEditorAssembler"/>.
     /// </summary>
-    public partial class RackCantileverWindow : Window
+    public partial class RackCantileverWindow : Window, ICantileverEditOutcome // T5 ct: the outcome of the drawing half (ApplyCantileverEdit)
     {
         /// <summary>The ONE display format of every decimal box, so writing and reading a field agree.</summary>
         private const string NumberFormat = "0.###";

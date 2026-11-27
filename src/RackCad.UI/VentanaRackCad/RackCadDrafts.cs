@@ -83,6 +83,7 @@ namespace RackCad.UI.VentanaRackCad
             {
                 case RackSystemKind.SelectiveRack: return project.SelectiveRack?.Name;
                 case RackSystemKind.PalletFlow: return project.DynamicSystem?.Name;
+                case RackSystemKind.Cantilever: return project.CantileverLineDesign?.Name; // T5 ct
                 default: return null;
             }
         }

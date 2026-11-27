@@ -123,8 +123,16 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] A14CamaDoorCommands = { "RACKCAMAABRIR", "RACKCAMAAPLICAR", "RACKCAMANUEVO" };
 
+        /// <summary>
+        /// Lo que la quinta tanda de I-64 (parte ct) anade, EXACTAMENTE: la puerta de la ventana a una linea Cantilever, que la lee sin marca de
+        /// Deshacer (RACKCANTILEVERABRIR), la redibuja con la mitad de dibujo de RACKEDITAR (RACKCANTILEVERAPLICAR), le inserta vistas
+        /// (RACKCANTILEVERINSERTAR) e inserta una linea nueva de la ventana (RACKCANTILEVERNUEVO), sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadCantileverDoorCommands.cs</c>. La base se fija de nuevo con estos cuatro nombres.
+        /// </summary>
+        internal static readonly string[] A14CantileverDoorCommands = { "RACKCANTILEVERABRIR", "RACKCANTILEVERAPLICAR", "RACKCANTILEVERINSERTAR", "RACKCANTILEVERNUEVO" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).Concat(A14CamaDoorCommands).ToArray(); // T5 al: A14WarehouseCommands; T5 cm: A14CamaDoorCommands
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).Concat(A14CamaDoorCommands).Concat(A14CantileverDoorCommands).ToArray(); // T5 al: A14WarehouseCommands; T5 cm: A14CamaDoorCommands; T5 ct: A14CantileverDoorCommands
 
         // ================================================================ censo
 

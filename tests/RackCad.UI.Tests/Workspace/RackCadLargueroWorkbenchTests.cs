@@ -92,7 +92,7 @@ namespace RackCad.UI.Tests
             Assert.False(rig.Window.ShowDraftsBar);
             // The side column marks «Nuevo»: the page is «Nuevo › Larguero», not a section of its own.
             Assert.Equal(new[] { RackCadWindowPage.Nuevo }, rig.Window.Sections.Where(s => s.IsActive).Select(s => s.Page).ToArray());
-            Assert.Equal(new[] { "Nuevo", "Variables", "BOM y lista de racks", "Biblioteca de diseños", "Configuración" },
+            Assert.Equal(new[] { "Nuevo", "Variables", "BOM y lista de racks", "Almacén", "Biblioteca de diseños", "Configuración" }, // T5 integration: «Almacén» (al) is a section
                 rig.Window.Sections.Select(s => s.Label).ToArray());
 
             // The defaults of the classic editor: the first larguero, peralte 3, 96 in and its ménsula.

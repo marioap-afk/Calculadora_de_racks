@@ -240,7 +240,7 @@ namespace RackCad.UI.VentanaRackCad
                 return snapshot?.System == null ? null : SystemBomBuilder.Build(snapshot.System, dynamic.Editor.Draft.Catalog);
             }
 
-            return CamaDraftBomOf(session, rackId); // T5 cm: a cama, the BOM of its handler on a copy (null otherwise)
+            return CamaDraftBomOf(session, rackId) ?? CantileverDraftBom(session, rackId); // T5 cm, ct: a cama, the BOM of its handler on a copy (null otherwise)
         }
 
         bool IRackBomPageHost.HasUnwrittenDraft(SessionId session, string rackId)
@@ -248,7 +248,8 @@ namespace RackCad.UI.VentanaRackCad
             if (string.IsNullOrWhiteSpace(rackId)) return false;
             if (_selectiveDrafts.TryGetValue((session, rackId), out var selective)) return !selective.Editor.IsNewRack && selective.Editor.IsDirty;
             if (HasUnwrittenCama(session, rackId) is bool cama) return cama; // T5 cm
-            return _dynamicDrafts.TryGetValue((session, rackId), out var dynamic) && !dynamic.Editor.IsNewRack && dynamic.Editor.IsDirty;
+            return (_dynamicDrafts.TryGetValue((session, rackId), out var dynamic) && !dynamic.Editor.IsNewRack && dynamic.Editor.IsDirty)
+                   || HasUnwrittenCantilever(session, rackId); // T5 ct
         }
 
         IReadOnlyList<(string RackId, string Name)> IRackBomPageHost.UnwrittenDraftsOf(SessionId session)
@@ -260,6 +261,7 @@ namespace RackCad.UI.VentanaRackCad
                     .Where(p => p.Key.Session == session && !p.Value.Editor.IsNewRack && p.Value.Editor.IsDirty)
                     .Select(p => (p.Key.RackId, !string.IsNullOrWhiteSpace(p.Value.Editor.Name) ? p.Value.Editor.Name.Trim() : RackList.NameOf(p.Key.RackId))))
                 .Concat(UnwrittenCamaDraftsOf(session)) // T5 cm
+                .Concat(UnwrittenCantileverDrafts(session)) // T5 ct
                 .OrderBy(d => d.Item2, RackListViewModel.NaturalNameComparer.Instance)
                 .ToList();
             return drafts;

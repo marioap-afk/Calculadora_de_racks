@@ -290,10 +290,13 @@ public class RackCadWindowListTests
             // in their own command context too, as those of the door to a rack; the port of the cabecera does not reach those helpers.
             // Cuarta tanda (va): the commands of the page «Variables» (RackCadVariablesDoorCommands) are commands of the door too; they read
             // the register through RackSelectivoCommands.ReadProjectVariables and report through RackCommandSupport, as the door to a rack.
+            // Quinta tanda (ct): the commands of the door of a Cantilever line (RackCadCantileverDoorCommands) are commands of the door too; the
+            // drawing half they call (ApplyCantileverEdit) is reached by no other file of the door.
             if (!path.EndsWith("RackCadRackDoorCommands.cs", StringComparison.Ordinal) && !path.EndsWith("RackCadCabeceraDoorCommands.cs", StringComparison.Ordinal)
                 && !path.EndsWith("RackCadVariablesDoorCommands.cs", StringComparison.Ordinal)
-                && !path.EndsWith("RackCadCamaDoorCommands.cs", StringComparison.Ordinal)) // T5 cm: the commands of the door of a cama, as those of the cabecera
-                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bApplyCabeceraUpdate\b|\bApplyCamaUpdate\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\[CommandMethod"), code); // T5 cm: ApplyCamaUpdate
+                && !path.EndsWith("RackCadCamaDoorCommands.cs", StringComparison.Ordinal) // T5 cm: the commands of the door of a cama, as those of the cabecera
+                && !path.EndsWith("RackCadCantileverDoorCommands.cs", StringComparison.Ordinal)) // T5 ct
+                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bApplyCabeceraUpdate\b|\bApplyCamaUpdate\b|\bApplyCantileverEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\[CommandMethod"), code); // T5 cm: ApplyCamaUpdate
         }
     }
 

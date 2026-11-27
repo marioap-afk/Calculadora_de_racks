@@ -137,9 +137,12 @@ namespace RackCad.Plugin.Views
                     return CantileverViewFrameAdapter.Resolve(resolved, plan, address);
                 },
                 (resolved, address) => RackViewProductNames.Cantilever(address, rackName));
+            var serialized = Project(RackProject.ForCantilever(design), innerSource);
+            // T5 ct (CT-11: B-1 also in Cantilever, the rule of Dinámico): a new view of a line of the drawing carries the identity, the name and
+            // the design that this edit writes in the views that exist (RACKEDITAR «Insertar», «Insertar vista…» of the window).
             return new RackViewBatchProductSession<CantileverLineDesign, CantileverLineAssembly, CantileverViewPlan>(
                 RackSystemKind.Cantilever, facts, preparer, RackAuthoredComparatorPorts.Cantilever(), comparison,
-                source, design, rackId, rackName, Project(RackProject.ForCantilever(design), innerSource),
+                RackInsertedViewSource.Edited(source, rackId, rackName, serialized), design, rackId, rackName, serialized,
                 product => RackViewPlacement.PlaceCantilever(document, product, regen: false));
         }
 
