@@ -17,6 +17,7 @@ namespace RackCad.Plugin
     /// RACKEDITAR does not change in this batch; a guard of source in Core fixes that both run the same steps in the same order (the views
     /// of the identity split into lateral and planta, the preflight of every inner design, the redraw in place of each one with the payload
     /// of its own envelope, the name of each block, and ONE regeneration).
+    /// T7 cab: and the drawing half of «Insertar», <see cref="ApplyCabeceraInsert"/>, which is NOT a copy: RACKEDITAR runs it too.
     /// </summary>
     public sealed partial class RackCabeceraCommands
     {
@@ -75,10 +76,13 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
-        /// T7 cab (I-64, séptima tanda; the Owner on 2026-11-27: «Las dos»): the drawing half of «Insertar» of RACKEDITAR on a cabecera (the
-        /// branch <c>!window.UpdateOnly</c> of <see cref="EditCabecera"/>), for RACKCABECERAINSERTAR («Insertar vista…» of the window), with
-        /// the cabecera of the window as its input instead of the classic window. It is a COPY of that branch, as <see cref="ApplyCabeceraUpdate"/>
-        /// is of the other one (CB4-09), so RACKEDITAR does not change; a guard of source in Core ties the two, step by step:
+        /// T7 cab (I-64, séptima tanda; the Owner on 2026-11-27: «Las dos»): the ONE drawing half of «Insertar» of a cabecera, run by RACKEDITAR
+        /// «Insertar» (<see cref="EditCabecera"/>, with the cabecera of the classic window) and by RACKCABECERAINSERTAR («Insertar vista…» of
+        /// the window, with the cabecera of the window). It is the branch <c>!window.UpdateOnly</c> of <c>EditCabecera</c> EXTRACTED as it
+        /// was (review of 258c16b1, I-1: the classic stays, so a copy would have been for good; <see cref="ApplyCabeceraUpdate"/> is still a
+        /// copy of the other branch, CB4-09). Its callers give it the identity by the rule of RACKEDITAR (the GUID of the envelope; the one of
+        /// the request, or of the classic window, only when the envelope has none) and the views to insert. Its steps, which a guard in Core
+        /// fixes with its three stops:
         /// <list type="bullet">
         /// <item>the authorized batch of AUTH-13 gives the views of the identity; the preflight of every inner design runs BEFORE any geometry;</item>
         /// <item>I-05 warns once, before the first redraw;</item>
@@ -91,18 +95,10 @@ namespace RackCad.Plugin
         /// It answers how many views it redrew and erased (none): zero and zero when it stopped before any geometry.
         /// </summary>
         internal static (int Redrawn, int Erased) ApplyCabeceraInsert(Document document, ObjectId blockId, RackEmbedDocument embed, RackProject project,
-            RackFrameConfiguration config, string rackId, string name, IReadOnlyList<RackViewAddress> insertViews)
+            RackFrameConfiguration config, string id, string name, IReadOnlyList<RackViewAddress> insertViews)
         {
             var editor = document.Editor;
-            if (config == null || insertViews == null || insertViews.Count == 0)
-            {
-                editor.WriteMessage("\nRackCad: la ventana RackCad no entrego una cabecera y sus vistas; no se modifico nada.");
-                return (0, 0);
-            }
-
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
-            // Identity: keep the GUID of the picked envelope; the one of the request is only a fallback. NEVER mint a new GUID on an edit.
-            var id = string.IsNullOrWhiteSpace(embed.Id) ? rackId : embed.Id;
             if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out var authorized)) return (0, 0);
 
             // Keep each block's own Embed (not just its id) so its per-view unknown metadata is preserved on redraw (I-11).
@@ -128,7 +124,7 @@ namespace RackCad.Plugin
             // I-05: a NEW linked view is inserted below; warn once if the drawing is not in inches, BEFORE any block is (re)drawn.
             RackUnitsGuard.WarnIfNotInches(document);
 
-            // B-1: the new views take the cabecera of the window, its identity and its name, as the views redrawn below.
+            // B-1: the new views take the cabecera that is written, its identity and its name, as the views redrawn below.
             var batchProducts = RackViewBatchProducts.Header(
                 document, config, id, name, embed, project, authorized.AuthoredInput);
             var batchRequest = RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration,

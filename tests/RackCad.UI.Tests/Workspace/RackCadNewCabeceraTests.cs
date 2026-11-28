@@ -37,8 +37,18 @@ namespace RackCad.UI.Tests
 
         // ------------------------------------------------------------------ the door
 
-        private sealed class CabeceraDoor : IRackCadCabeceraDoorPort, IRackCadShortcutPort
+        private sealed class CabeceraDoor : IRackCadCabeceraDoorPort, IRackCadShortcutPort, IRackCadUpdateAllDoorPort
         {
+            public List<UpdateAllWrite> UpdateAlls { get; } = new();
+
+            public event Action<UpdateAllWritten>? UpdateAllWritten { add { } remove { } }
+
+            public RackCadClassicResult RequestUpdateAll(UpdateAllWrite write)
+            {
+                UpdateAlls.Add(write);
+                return RackCadClassicResult.Started();
+            }
+
             public List<RackDoorRequest> CabeceraReads { get; } = new();
 
             public List<CabeceraDoorWrite> CabeceraWrites { get; } = new();
@@ -617,6 +627,89 @@ namespace RackCad.UI.Tests
             Assert.Contains("Borrador 1 (Cabecera nueva)", rig.Window.ActionMessage, StringComparison.Ordinal);
         }
 
+        // Review of 258c16b1, M-1 and M-5: «Actualizar todo» writes the cabecera with its tab «Propiedades», as its «Actualizar»; and the
+        // panel «Insertar vista…» that was open goes away for good once the request is handed over, also after «Dejar de esperar».
+        [Fact]
+        public void ActualizarTodoWritesTheTabOfTheCabeceraAndItsPanelDoesNotComeBackAfterDejarDeEsperar()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenExisting(Read((IdA, "Zona", "A")));
+            Change(editor);
+            editor.PropertiesTab.Properties[0].Value = "B";
+            editor.PropertiesTab.CommitProperties();
+            editor.InsertView();
+            Assert.NotNull(editor.InsertPanel);
+
+            rig.Window.RequestUpdateAll();
+            var write = Assert.Single(rig.Door.UpdateAlls);
+            var item = Assert.Single(write.Items);
+            Assert.Equal(UpdateAllSystem.Cabecera, item.System);
+            Assert.Equal(("CAB-1", false, false), (item.Cabecera!.RackId, item.Cabecera.NewRack, item.Cabecera.Inserts));
+            Assert.Equal("fp-cab", item.Cabecera.Properties!.Fingerprint);
+            Assert.Equal((IdA, "B"), (item.Cabecera.Properties.Entries.Single().Id, item.Cabecera.Properties.Entries.Single().Value));
+            Assert.Equal(BracingPattern.XBracing, item.Cabecera.Cabecera.BracingPanels[0].Arrangement);
+            Assert.True(editor.IsWriting);
+            Assert.Null(editor.InsertPanel);
+
+            rig.Window.StopWaiting();
+            Assert.False(editor.IsWriting);
+            Assert.True(editor.IsDirty);
+            Assert.Null(editor.InsertPanel); // handed over: the panel hidden while writing does not come back
+        }
+
+        // Review of 258c16b1, M-5: the two writes of the door that are only for a cabecera of the active drawing say so in another drawing
+        // and send nothing (the window and the panel say why first).
+        [Fact]
+        public void ANewCabeceraAndInsertarVistaOfAnotherDrawingAreNotWrittenInTheActiveOne()
+        {
+            var rig = new Rig();
+            var editor = rig.OpenExisting();
+            var draft = rig.StartNew();
+
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 8);
+            rig.Window.Refresh();
+            Assert.Empty(rig.Window.Drafts); // the drafts of «Nuevo» follow the drawing shown: the one of the drawing 7 waits for it
+            Assert.Equal(RackCadWindowViewModel.OtherDrawingWriteText, editor.InsertViewBlockedText);
+            Assert.Equal(RackCadWindowViewModel.OtherDrawingWriteText, draft.InsertViewBlockedText);
+
+            // The panels open and say why next to «Insertar N vistas»; nothing is sent (RACKCABECERAINSERTAR, RACKCABECERANUEVO).
+            var existingPanel = editor.InsertWith(Planta)!;
+            var newPanel = draft.InsertWith(Lateral)!;
+            Assert.Equal(RackCadWindowViewModel.OtherDrawingWriteText, existingPanel.Reason);
+            Assert.Equal(RackCadWindowViewModel.OtherDrawingWriteText, newPanel.Reason);
+            Assert.False(existingPanel.CanInsert);
+            Assert.False(newPanel.CanInsert);
+            Assert.Empty(rig.Door.CabeceraWrites);
+            Assert.False(editor.IsWriting);
+            Assert.False(draft.IsWriting);
+
+            // Back in its drawing, the draft is there and inserts.
+            rig.Host.Snapshot = WorkspacePanelFixtures.Ready(session: 7);
+            rig.Window.Refresh();
+            Assert.Single(rig.Window.Drafts);
+            Assert.Equal(string.Empty, newPanel.Reason);
+            Assert.True(newPanel.Insert());
+            Assert.True(Assert.Single(rig.Door.CabeceraWrites).NewRack);
+        }
+
+        // Review of 258c16b1, M-5: the request of a new cabecera that the dispatch of «Nuevo» draws (CabeceraDoorInsertion), by its behaviour.
+        [Fact]
+        public void TheRequestOfANewCabeceraCarriesTheCabeceraTheIdentityAndEveryViewInItsOrder()
+        {
+            var cabecera = new RackFrameConfigurationFactory(UiSupport.LoadCatalogSafe()).Build(RackFrameTemplateCatalog.FindStandardOrDefault(), PostId, 132.0, 42.0);
+            var request = Assert.IsType<RackCad.UI.Editor.HeaderInsertionRequest>(CabeceraDoorInsertion.NewRackRequest(IdA, cabecera, new[] { Planta, Lateral }));
+            Assert.Same(cabecera, request.Configuration);
+            Assert.Equal(IdA, request.RackId);
+            Assert.Null(request.SourceProject); // a new cabecera: no project of the library (T7cab-S9)
+            Assert.Equal(RackCad.Domain.Systems.Shared.RackSystemKind.Selective, request.Kind);
+            Assert.Equal(Planta, request.InitialAddress);
+            Assert.Equal(new[] { Planta, Lateral }, request.Views.ToArray());
+
+            Assert.Null(CabeceraDoorInsertion.NewRackRequest(IdA, cabecera, Array.Empty<RackViewAddress>()));
+            Assert.Null(CabeceraDoorInsertion.NewRackRequest(IdA, cabecera, null!));
+            Assert.Null(CabeceraDoorInsertion.NewRackRequest(IdA, null!, new[] { Lateral }));
+        }
+
         // ------------------------------------------------------------------ the view (WPF, STA)
 
         private sealed class BindingErrors : TraceListener
@@ -685,6 +778,7 @@ namespace RackCad.UI.Tests
                     Assert.Same(editor, hosted.ViewModel);
                     Assert.Equal(Visibility.Visible, view.NewCabeceraRackHost.Visibility);
                     Assert.Equal("Insertar en el dibujo…", hosted.InsertViewButton.Content);
+                    Assert.Equal(CabeceraEditorViewModel.NewRackInsertToolTip, hosted.InsertViewButton.ToolTip); // M-4: no views to write yet
                     Assert.True(hosted.InsertViewButton.IsEnabled);
                     Assert.False(hosted.UpdateButton.IsEnabled);
                     Assert.Equal(Visibility.Visible, hosted.RackPropertiesTabItem.Visibility);
@@ -708,6 +802,7 @@ namespace RackCad.UI.Tests
                     Assert.Null(view.NewCabeceraRackHost.Content); // a view has one parent
                     Assert.Same(hosted, view.RackPageHost.Content);
                     Assert.Equal("Insertar vista…", hosted.InsertViewButton.Content);
+                    Assert.Equal(CabeceraEditorViewModel.InsertViewsToolTip, hosted.InsertViewButton.ToolTip);
                     Assert.True(hosted.UpdateButton.Visibility == Visibility.Visible);
                     Assert.Empty(errors.Messages);
                 }

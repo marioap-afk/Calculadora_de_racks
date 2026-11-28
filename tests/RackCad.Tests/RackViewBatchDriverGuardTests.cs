@@ -45,8 +45,10 @@ namespace RackCad.Tests
                 Read("src", "RackCad.Plugin", "RackDinamicoCommands.cs"),
                 Read("src", "RackCad.Plugin", "RackPushBackCommands.cs"),
                 Read("src", "RackCad.Plugin", "RackCantileverCommands.cs"),
-                Read("src", "RackCad.Plugin", "RackCabeceraCommands.cs")
+                // T7 cab (review of 258c16b1, I-1): the «Insertar» of EditCabecera is ApplyCabeceraInsert now, in the .Door.cs partial.
+                Read("src", "RackCad.Plugin", "RackCabeceraCommands.Door.cs")
             }), "authorized.Blocks"));
+            Assert.DoesNotContain("authorized.Blocks", Read("src", "RackCad.Plugin", "RackCabeceraCommands.cs")); // one half, not two
         }
 
         [Fact]

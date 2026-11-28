@@ -163,6 +163,15 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>The button of the head (a cabecera of its own only).</summary>
         public string InsertViewLabel => _isNewRack ? "Insertar en el dibujo…" : "Insertar vista…";
 
+        /// <summary>The help of the button (review of 258c16b1, M-4, T7cab-S14): a new cabecera has no views to write yet.</summary>
+        public string InsertViewToolTip => _isNewRack ? NewRackInsertToolTip : InsertViewsToolTip;
+
+        internal const string NewRackInsertToolTip =
+            "Coloca la cabecera nueva en el dibujo con las vistas que elijas, en su orden; si no le pones nombre, toma el automático.";
+
+        internal const string InsertViewsToolTip =
+            "Escribe la cabecera en las vistas del dibujo y después inserta las vistas que elijas, enlazadas a la misma cabecera.";
+
         public bool CanInsertView => string.IsNullOrEmpty(InsertViewBlockedText);
 
         /// <summary>Why the views cannot be inserted now; empty when they can (the panel says it next to «Insertar N vistas»).</summary>
@@ -299,6 +308,7 @@ namespace RackCad.UI.VentanaRackCad
         {
             OnPropertyChanged(nameof(IsNewRack));
             OnPropertyChanged(nameof(InsertViewLabel));
+            OnPropertyChanged(nameof(InsertViewToolTip));
             OnPropertyChanged(nameof(CanInsertView));
             OnPropertyChanged(nameof(InsertViewBlockedText));
             OnPropertyChanged(nameof(CanOpenInsertPanel));

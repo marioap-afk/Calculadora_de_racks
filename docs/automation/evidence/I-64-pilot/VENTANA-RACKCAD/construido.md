@@ -8157,13 +8157,81 @@ Sobre las fuentes finales, con la solución recompilada en Debug con `--no-incre
 9. **«Actualizar todo»** con una cabecera modificada y un borrador de cabecera nueva modificado: «Actualizar todo (1)»; el borrador no entra.
 10. **Cerrar el dibujo** con un borrador de cabecera modificado: el veto lo nombra («Borrador N (Cabecera nueva)»).
 
-### Preguntas para el Owner
+### Preguntas para el Owner (respondidas el 2026-11-27)
 
 1. **T7cab-S6, la pestaña «Propiedades» en las cabeceras del dibujo** (y RACKPROPIEDADES que la abre, en lugar de la ventana clásica):
-   ¿se queda? **Recomendación: sí**, porque una cabecera insertada desde la ventana ya tiene su pestaña, y al reabrirla debe tenerla igual.
+   ¿se queda? Recomendación: sí. **Respuesta del Owner: «Sí, también las existentes»**, como se construyó.
 2. **T7cab-S3, las vistas marcadas al abrir el panel de una cabecera nueva:** las dos (lateral y planta, la regla del panel en todos los
-   sistemas) o solo la lateral («Insertar en AutoCAD» del clásico). **Recomendación: las dos**, como los demás sistemas; se desmarca con un clic.
+   sistemas) o solo la lateral («Insertar en AutoCAD» del clásico). Recomendación: las dos. **Respuesta del Owner: aprobado**, lateral y
+   planta marcadas.
 3. **T7cab-S5, la tarjeta «Cabecera» de «Nuevo»:** que siga abriendo el configurador clásico (como las demás tarjetas) o que abra «Cabecera
-   en esta ventana». **Recomendación: como las demás**, el clásico sigue a mano.
-4. **T7cab-S9, un diseño de cabecera de la biblioteca:** que se abra también como borrador de la ventana. **Recomendación: sí, en otra
-   tanda**, con el transporte de los campos desconocidos (I-11) como hizo lib para los demás sistemas.
+   en esta ventana». Recomendación: como las demás. **Respuesta del Owner: aprobado**, la tarjeta sigue con el clásico y el botón va aparte.
+4. **T7cab-S9, un diseño de cabecera de la biblioteca:** que se abra también como borrador de la ventana. Recomendación: sí, en otra tanda.
+   **Respuesta del Owner: «Sí, en otra tanda»**: anotado en `docs/ideas-futuras.md` («I-64 séptima tanda, cab — lo que queda para otra
+   tanda»), sin construirlo.
+
+### Séptima tanda, cab: correcciones de la revisión (sobre 258c16b1)
+
+Sobre `258c16b1` (el commit de la sesión con esta parte), en `D:\w7cab`. Sin commit, sin push, sin AutoCAD. La revisión no tuvo bloqueantes.
+Las cuatro respuestas del Owner están arriba, en «Preguntas para el Owner».
+
+**I-1, la elección: EXTRAER.** La guarda espejo de la copia `ApplyCabeceraInsert` solo comprobaba veinte fragmentos en orden, y quitar el
+`return` tras un preflight rechazado o tras una cola de ID18 que no se preparó no la rompía. Como el clásico se queda, la copia habría sido
+para siempre. Se extrajo:
+- la rama `!window.UpdateOnly` de `EditCabecera` es ahora `ApplyCabeceraInsert(document, blockId, embed, project, config, id, name,
+  window.InsertViews); return;`, y `ApplyCabeceraInsert` es esa rama tal como era: el borde de AUTH-13, el preflight de I-11, el aviso de
+  unidades, la cola de ID18 desde el sobre de la vista elegida (B-1), el redibujo de las hermanas, una regeneración y la colocación con la
+  regla del redibujo incompleto (b1). Los mensajes y el orden no cambian;
+- lo que se quitó de la copia para que fuera idéntica: la comprobación de una cabecera o unas vistas nulas (el clásico no la tenía; en la
+  puerta ya la hacen `RefusalOf` y `PlanApply`) y el cálculo de la identidad, que hace ahora quien llama con la regla de RACKEDITAR (el GUID
+  del sobre; el de la petición, o el de la ventana clásica, solo si el sobre no tiene);
+- lo que queda en `EditCabecera` es «Actualizar» (sin cambios: los bloques `if (!window.UpdateOnly)` que había dentro nunca corrían en esa
+  rama). `ApplyCabeceraUpdate` sigue siendo una copia de esa rama (CB4-09), con su guarda;
+- **por qué se puede:** el cuerpo movido es el mismo código, con las mismas variables; el único cambio de forma es que la identidad llega
+  calculada. El clásico hace exactamente lo mismo que antes.
+- Esto sustituye lo dicho arriba de `ApplyCabeceraInsert` como «una COPIA de la rama `!window.UpdateOnly` de `EditCabecera`».
+
+| Punto | Qué se hizo | Prueba |
+|---|---|---|
+| I-1 | Extracción (arriba). Guardas reapuntadas con la misma dureza: `RackUnitsGuardSourceTests` (en `RackCabeceraCommands.cs` 2 avisos: `RackCabeceraClassic`, sin llamador, y QUICKCABECERA; en `.Door.cs` 1; la prueba de «Insertar» de `EditCabecera` pasa a una propia: la llamada es la rama de `!window.UpdateOnly`, «Actualizar» no avisa y la mitad avisa antes del primer redibujo); `G9bInsertWiringGuardTests` y `RackViewBatchDriverGuardTests` (el borde de AUTH-13 y `authorized.Blocks` están en `.Door.cs`; el segundo comprueba además que no siguen en `RackCabeceraCommands.cs`); `InsertRedrawCompletenessTests` (la fila de `EditCabecera` se va, la de `ApplyCabeceraInsert` cubre las dos órdenes, y una prueba nueva fija que `EditCabecera` no tiene cola propia); `PushBackCabeceraInsertedViewDesignTests` (`EditCabecera` llama a la mitad con su sobre; la cola, con el sobre, se comprueba en la mitad) | Core: `CabeceraDoorTests.RackEditarInsertarAndInsertarVistaOfTheWindowRunTheOneDrawingHalfOfInsertar` (la llamada exacta y su sitio, nada de «Insertar» en lo que queda de `EditCabecera`, la identidad en la puerta, y los únicos llamadores); `TheDrawingHalfOfInsertarStopsBeforeAnyGeometryWhenTheEdgeThePreflightOrTheQueueRefuse` (las tres paradas exactas con su `return (0, 0)`, antes del primer redibujo; los pasos en orden; ningún otro `return`; y que la guarda muerde con cuatro mutaciones: sin cada `return` y sin el aviso de unidades); `InsertRedrawCompletenessTests.TheInsertarOfACabeceraIsItsOneDrawingHalf`; `RackUnitsGuardSourceTests.EditCabeceraInsert_IsGatedByUpdateOnly_AndItsHalfWarnsBeforeTheFirstRedraw` |
+| M-1 | `HandedOverOf` de «Actualizar todo» entrega también la cabecera (`WriteHandedOver`) | UI: `RackCadNewCabeceraTests.ActualizarTodoWritesTheTabOfTheCabeceraAndItsPanelDoesNotComeBackAfterDejarDeEsperar` |
+| M-2 | El comentario de `RackCabeceraClassic` dice que no tiene llamador y por qué el clásico sigue alcanzable (RACKMENU › «Diseñar cabecera» y la tarjeta «Cabecera», por `HeaderEditorModule` y `DispatchInsertion`); `RackUnitsGuardSourceTests` lo anota junto a su recuento. No se borró | — (comentarios) |
+| M-3 | Una línea en `docs/guias/generacion-cabecera-lateral.md`, `catalogos-y-plantillas.md`, `validacion-manual-autocad.md` y `README.md`: RACKCABECERA abre la ventana en «Nuevo» › «Cabecera en esta ventana»; el configurador, en RACKMENU › «Diseñar cabecera» | — (documentación) |
+| M-4 | La ayuda emergente del botón sale de `InsertViewToolTip`: en una cabecera nueva, «Coloca la cabecera nueva en el dibujo con las vistas que elijas, en su orden; si no le pones nombre, toma el automático.» (T7cab-S14); en una del dibujo, la de antes. Push Back tiene lo mismo: no se tocó, anotado en `docs/ideas-futuras.md` | UI: la vista en STA (`NuevoOffersCabeceraEnEstaVentana…`), antes y después de insertarla |
+| M-5 | Pruebas nuevas: «otro dibujo» para «Insertar en el dibujo…» y para «Insertar vista…» (el panel lo dice, no se envía nada, y de vuelta en su dibujo el borrador inserta); el comportamiento de `CabeceraDoorInsertion.NewRackRequest` (la cabecera, la identidad, sin proyecto, la primera vista y todas en su orden; `null` sin vistas o sin cabecera); y en rojo `RackCadUpdateAllCommands.cs` (la pestaña) y el lado UI de «Actualizar todo» | UI: `ANewCabeceraAndInsertarVistaOfAnotherDrawingAreNotWrittenInTheActiveOne`, `TheRequestOfANewCabeceraCarriesTheCabeceraTheIdentityAndEveryViewInItsOrder`, `ActualizarTodoWritesTheTabOfTheCabecera…`; Core: `UpdateAllRunTests` (ya estaba) |
+| M-6 | El texto de T7 cab de `A14CabeceraDoorCommands` entra en su `<summary>`; el historial del censo de `SelectiveEditorOpenTests` gana la línea de 71 a 73 | — (comentarios) |
+
+**Supuesto nuevo:**
+
+| Id | Supuesto | Dónde se cambia |
+|---|---|---|
+| T7cab-S14 | La ayuda emergente de «Insertar en el dibujo…» de una cabecera nueva: «Coloca la cabecera nueva en el dibujo con las vistas que elijas, en su orden; si no le pones nombre, toma el automático.» | `CabeceraEditorViewModel.NewRackInsertToolTip` |
+
+**Comprobación en rojo:** once piezas, una a una, con `S\hs65\t7\cab\red2.py` (la mecánica de `red.py`: copia fuera del worktree, cambio
+exacto, clases focales y restauración con el mismo SHA-256; las de Core leen el texto sin recompilar, sobre binarios limpios). Salida en
+`red2-out.txt`. Todas fallan:
+
+| Pieza | Qué se rompió | Fallan |
+|---|---|---|
+| X1 | «Insertar» sigue tras un preflight rechazado (sin su `return`) | 1: `TheDrawingHalfOfInsertarStopsBeforeAnyGeometry…` |
+| X2 | «Insertar» sigue tras una cola de ID18 que no se preparó | 1: la misma |
+| X3 | «Insertar» sigue tras el rechazo del borde de AUTH-13 | 1: la misma |
+| X4 | RACKEDITAR «Insertar» ya no llama a la mitad compartida (cae en «Actualizar») | 4: `RackEditarInsertarAndInsertarVista…`, `TheInsertarOfACabeceraIsItsOneDrawingHalf`, la de B-1 y la de unidades |
+| X5 | RACKCABECERAINSERTAR toma la identidad de la petición y no la del sobre | 2: `InsertarVistaTakesItsRequest…` y `RackEditarInsertarAndInsertarVista…` |
+| X6 | RACKACTUALIZARTODO escribe la cabecera sin su pestaña | 1: `UpdateAllRunTests.TheCommandIsOneCommandWithUndo…` |
+| Y1 | «Actualizar todo» no entrega la cabecera | 1: `ActualizarTodoWritesTheTabOfTheCabecera…` |
+| Y2 | el elemento de «Actualizar todo» de la cabecera sin su pestaña | 1: la misma |
+| Y3 | la ayuda del botón de una cabecera nueva habla de las vistas del dibujo | 1: la vista en STA |
+| Y4 | la petición de una cabecera nueva lleva solo la primera vista | 1: `TheRequestOfANewCabeceraCarries…` |
+| Y5 | el editor no sabe que su borrador es de otro dibujo (el panel no lo dice) | 1: `ANewCabeceraAndInsertarVistaOfAnotherDrawingAreNotWrittenInTheActiveOne` |
+
+Tras la última pieza, `git diff` sin restos y la solución recompilada con `--no-incremental`.
+
+**Los números** (fuentes finales, solución recompilada en Debug con `--no-incremental` tras la comprobación en rojo):
+- **UI completa:** 3393 correctas, 0 con error, 48 omitidas (3441); 22 min. Las 3390 de `258c16b1` más las 3 nuevas de `RackCadNewCabeceraTests`.
+- **Core Full:** 19648 correctas, 0 con error, 403 omitidas (20051); 14 min. Las 19647 de `258c16b1`, menos la guarda espejo retirada, más
+  las dos de I-1 en `CabeceraDoorTests`; en `RackUnitsGuardSourceTests` e `InsertRedrawCompletenessTests` una fila de teoría sale y entra
+  una prueba propia (el número no cambia).
+- **La solución en Debug (Plugin incluido):** 0 errores. **En Release:** 0 errores y ninguna advertencia `MSB`, `CS`, `NU` ni `NETSDK` (las
+  82 que quedan son de los analizadores de xUnit, de antes).
+- Los archivos tocados, sin caracteres de control y con CRLF en todo el archivo; `git diff --check`, limpio.

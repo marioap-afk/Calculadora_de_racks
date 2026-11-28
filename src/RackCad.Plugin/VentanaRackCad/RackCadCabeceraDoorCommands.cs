@@ -191,8 +191,9 @@ namespace RackCad.Plugin.VentanaRackCad
                 // The name of the blocks is the rule of RACKCABECERAAPLICAR and of EditCabecera (the inner one, else the one of the envelope).
                 var cabecera = pending.Write.Cabecera;
                 var name = string.IsNullOrWhiteSpace(cabecera.Name) ? embed.Name : cabecera.Name;
-                var (redrawn, erased) = RackCabeceraCommands.ApplyCabeceraInsert(document, blockId, embed, plan.Project, cabecera, pending.RackId, name,
-                    pending.Write.InsertViews);
+                // The identity by the rule of RACKEDITAR «Insertar»: the GUID of the envelope; the one of the request only as a fallback.
+                var id = string.IsNullOrWhiteSpace(embed.Id) ? pending.RackId : embed.Id;
+                var (redrawn, erased) = RackCabeceraCommands.ApplyCabeceraInsert(document, blockId, embed, plan.Project, cabecera, id, name, pending.Write.InsertViews);
                 var inserted = System.Math.Max(0, RackCommandSupport.FindRackBlocks(document, pending.RackId).Count - (blocks.Count - erased));
                 door?.AnswerWrite(RackDoorRules.AnswerForInsert(pending.RequestId, pending.RackId, redrawn, erased, inserted));
             }

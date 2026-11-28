@@ -152,7 +152,8 @@ El dibujo (`RackCad.Plugin/Headers/`) **ya está cableado**:
    que falten desde un DWG biblioteca (`blocks-library.dwg`, junto a los catálogos; ruta configurable). Se lee
    en una base lateral sin abrirlo en AutoCAD; los bloques que tampoco existan en la biblioteca se omiten.
 4. ✅ **Comandos y botón**: `QUICKCABECERA` pide la cabecera por línea de comandos (poste/fondo/alto);
-   `RACKCABECERA` abre el configurador. El **botón
+   `RACKCABECERA` abría el configurador; desde la séptima tanda de I-64 abre la ventana RackCad en «Nuevo» › «Cabecera en esta
+   ventana», y el configurador sigue en el menú clásico (`RACKMENU` › «Diseñar cabecera») y en la tarjeta «Cabecera» de «Nuevo». El **botón
    "Insertar en AutoCAD"** dibuja la cabecera **que el usuario configuró**.
 5. ✅ **Round-trip**: la cabecera se **embebe** en la definición del bloque y `RACKEDITAR` la reabre y la
    **redefine en sitio** (`LateralHeaderDrawService.RedrawInPlace` → `RedefineSystemBlock` + `Regen`), de modo

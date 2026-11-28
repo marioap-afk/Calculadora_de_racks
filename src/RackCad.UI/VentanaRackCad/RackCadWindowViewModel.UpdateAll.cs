@@ -652,6 +652,7 @@ namespace RackCad.UI.VentanaRackCad
                 case PushBackEditorViewModel pushBack: pushBack.WriteHandedOver(); break;
                 case DynamicEditorViewModel dynamic: dynamic.WriteHandedOver(); break;
                 case CantileverEditorViewModel cantilever: cantilever.WriteHandedOver(); break;
+                case CabeceraEditorViewModel cabecera: cabecera.WriteHandedOver(); break; // T7 cab (review of 258c16b1, M-1): its panel «Insertar vista…»
             }
         }
 

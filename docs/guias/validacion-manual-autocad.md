@@ -82,7 +82,7 @@ no una regla geométrica defectuosa.
 | Comando | Comprobación principal |
 |---|---|
 | `RACKCAD` | Ventana RackCad (no bloquea AutoCAD): secciones, lista de racks del dibujo y acceso a los editores. El menú clásico es `RACKMENU`. |
-| `RACKCABECERA` / `QUICKCABECERA` | Cabecera estándar, edición y colocación. |
+| `RACKCABECERA` / `QUICKCABECERA` | Cabecera estándar, edición y colocación. `RACKCABECERA` abre la ventana RackCad en «Nuevo» › «Cabecera en esta ventana»; el configurador clásico está en `RACKMENU` › «Diseñar cabecera». |
 | `RACKSISTEMADINAMICO` | Sistema dinámico y sus vistas ligadas. |
 | `QUICKCAMA` | Cama de rodamiento dinámica o pushback. |
 | `RACKSELECTIVO` | Selectivo, matriz, fondos, vistas y seguridad. |

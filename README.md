@@ -34,7 +34,7 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 | `RACKMENU` | El menú clásico de RackCad (modal), mientras las secciones de la ventana se migran. |
 | `RACKNUEVO` | Abre el editor de un sistema nuevo por su palabra clave (Selectivo, PushBack, Dinamico, Cantilever, Cabecera, Cama, Larguero), por la misma ruta del menú; lo usa «Nuevo» de la ventana. |
 | `RACKBIBLIOTECA` | Abre la biblioteca de diseños y el editor del diseño elegido, por la misma ruta del menú. |
-| `RACKCABECERA` / `QUICKCABECERA` | Diseñar una cabecera. |
+| `RACKCABECERA` / `QUICKCABECERA` | Diseñar una cabecera. `RACKCABECERA` abre la ventana RackCad en «Nuevo» › «Cabecera en esta ventana»; el configurador clásico está en `RACKMENU` › «Diseñar cabecera». |
 | `RACKSISTEMADINAMICO` | Dibujar el sistema dinámico predeterminado. |
 | `QUICKCAMA` | Dibujar una cama de rodamiento. |
 | `RACKSELECTIVO` | Diseñar un rack selectivo. |

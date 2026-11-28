@@ -134,7 +134,7 @@
                     <!-- T7 cab: «Insertar vista…» of a cabecera of the drawing, «Insertar en el dibujo…» of a new one (the panel of DG-07, below). -->
                     <Button x:Name="InsertViewButton" Content="{Binding InsertViewLabel}" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
                             IsEnabled="{Binding CanOpenInsertPanel}"
-                            ToolTip="Escribe la cabecera en las vistas del dibujo y después inserta las vistas que elijas, enlazadas a la misma cabecera."
+                            ToolTip="{Binding InsertViewToolTip}"
                             AutomationProperties.ItemStatus="{Binding InsertPanelStatus}"
                             AutomationProperties.Name="Insertar vistas de la cabecera" Click="OnInsertViewClick">
                         <Button.Style>

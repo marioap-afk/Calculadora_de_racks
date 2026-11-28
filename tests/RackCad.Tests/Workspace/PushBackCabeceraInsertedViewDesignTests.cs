@@ -416,10 +416,13 @@ public class PushBackCabeceraInsertedViewDesignTests
 
         var commands = WorkspaceHostSource.Code("src/RackCad.Plugin/RackCabeceraCommands.cs");
         var edit = WorkspaceHostSource.BodyOf(commands, @"internal\s+static\s+void\s+EditCabecera\s*\(");
-        Assert.Matches(@"RackViewBatchProducts\.Header\(\s*document,\s*config,\s*id,\s*name,\s*embed,\s*project,\s*authorized\.AuthoredInput\)", edit);
+        // T7 cab (review of 258c16b1, I-1): «Insertar» of EditCabecera is ApplyCabeceraInsert, with the cabecera, the identity, the name and
+        // the envelope of the picked view; the queue is prepared there, from that envelope (asserted on `insert` below).
+        Assert.Matches(@"if\s*\(!window\.UpdateOnly\)\s*\{\s*ApplyCabeceraInsert\(document,\s*blockId,\s*embed,\s*project,\s*config,\s*id,\s*name,\s*window\.InsertViews\);\s*return;\s*\}", edit);
+        Assert.DoesNotContain("RackViewBatchProducts", edit, StringComparison.Ordinal);
         Assert.True(Regex.Matches(edit, @"BuildCabeceraPayload\(config,\s*id,\s*name,").Count == 2,
-            "EditCabecera redraws its lateral and its planta with the cabecera, the identity and the name it hands the queue. If another redraw "
-            + "is added, change the count and check that it takes config, id and name too.");
+            "EditCabecera «Actualizar» redraws its lateral and its planta with the cabecera, the identity and the name. If another redraw is "
+            + "added, change the count and check that it takes config, id and name too.");
 
         // T7 cab (séptima tanda, the Owner: «Las dos»): the door of a cabecera has four commands now. RACKCABECERAABRIR reads and
         // RACKCABECERAAPLICAR redraws in place (ApplyCabeceraUpdate, no queue). The two that insert follow what this guard asked for:

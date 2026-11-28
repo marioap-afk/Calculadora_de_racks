@@ -232,8 +232,8 @@ public class CabeceraDoorTests
             "var (blockId, embed) = blocks[0];",
             "CabeceraDoorRules.PlanApply(",
             "var name = string.IsNullOrWhiteSpace(cabecera.Name) ? embed.Name : cabecera.Name;",
-            "RackCabeceraCommands.ApplyCabeceraInsert(document, blockId, embed, plan.Project, cabecera, pending.RackId, name,",
-            "pending.Write.InsertViews",
+            "var id = string.IsNullOrWhiteSpace(embed.Id) ? pending.RackId : embed.Id;",
+            "RackCabeceraCommands.ApplyCabeceraInsert(document, blockId, embed, plan.Project, cabecera, id, name, pending.Write.InsertViews);",
             "RackCommandSupport.FindRackBlocks(document, pending.RackId).Count - (blocks.Count - erased)",
             "RackDoorRules.AnswerForInsert(pending.RequestId, pending.RackId, redrawn, erased, inserted)");
         Assert.DoesNotMatch(new Regex(@"new\s+RackDesignWritten\s*\([^;]*,\s*true\s*,"), insert);
@@ -266,16 +266,72 @@ public class CabeceraDoorTests
             "new HeaderInsertionRequest(cabecera, sourceProject: null, rackId, views[0]);", "request.SetViews(views);");
     }
 
+    // Review of 258c16b1, I-1: the half of «Insertar» was a COPY of the branch of EditCabecera, and a guard of fragments in order did not see
+    // a missing return after a refusal. The classic stays (order of the Owner), so the copy would have been for good: it was EXTRACTED.
+    // RACKEDITAR «Insertar» and RACKCABECERAINSERTAR run the ONE drawing half ApplyCabeceraInsert, which is the old branch as it was.
     [Fact]
-    public void TheDrawingHalfOfInsertarVistaRunsTheStepsOfInsertarOfRackEditarInTheSameOrder()
+    public void RackEditarInsertarAndInsertarVistaOfTheWindowRunTheOneDrawingHalfOfInsertar()
     {
-        // T7 cab: a copy of the branch !window.UpdateOnly of EditCabecera (RACKEDITAR does not change, CB4-09): the same steps, in the same order.
         var classic = Flat(Method(WorkspaceHostSource.Code(Classic), "internal static void EditCabecera("));
+        // The branch «Insertar» of the classic is the call, and only it: after the identity, before the views of «Actualizar».
+        const string Call = "if (!window.UpdateOnly) { ApplyCabeceraInsert(document, blockId, embed, project, config, id, name, window.InsertViews); return; }";
+        Assert.Single(Regex.Matches(classic, Regex.Escape(Call)));
+        InOrder(classic, "var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;",
+            "var id = !window.UpdateOnly && string.IsNullOrWhiteSpace(embed.Id) ? window.RackId :", Call, "RackCommandSupport.FindRackBlocks(document, id)");
+        // What is left of EditCabecera is «Actualizar»: it authorizes nothing, prepares no queue and does not warn about the units (I-05).
+        foreach (var gone in new[] { "TryAuthorize", "authorized", "RackViewBatch", "RackUnitsGuard", "PrepareAll", "insertViews" })
+            Assert.DoesNotContain(gone, classic, StringComparison.Ordinal);
+
+        // The door of the window calls the same half, with the identity of the envelope (the request only as a fallback, as RACKEDITAR).
+        var door = Flat(Method(WorkspaceHostSource.Code(Commands), "public void InsertCabeceraViews()"));
+        InOrder(door, "var id = string.IsNullOrWhiteSpace(embed.Id) ? pending.RackId : embed.Id;",
+            "RackCabeceraCommands.ApplyCabeceraInsert(document, blockId, embed, plan.Project, cabecera, id, name, pending.Write.InsertViews);");
+
+        // Nobody else calls it, and there is one drawing half of «Insertar» of a cabecera.
+        var callers = WorkspaceHostSource.Files("src")
+            .SelectMany(f => Regex.Matches(f.Code, @"\bApplyCabeceraInsert\s*\(").Select(_ => f.Path))
+            .OrderBy(n => n, StringComparer.Ordinal).ToArray();
+        Assert.Equal(new[] { Classic, Half, Commands }.OrderBy(n => n, StringComparer.Ordinal).ToArray(), callers); // two calls and the definition
+    }
+
+    // Review of 258c16b1, I-1: the drawing half of «Insertar» stops BEFORE any geometry when the authored edge (AUTH-13), the preflight of the
+    // inner designs (I-11) or the queue of ID18 (B-1) refuse; each refusal is the exact block, with its return, and comes before the first
+    // redraw. Then the steps of the old branch, in their order.
+    [Fact]
+    public void TheDrawingHalfOfInsertarStopsBeforeAnyGeometryWhenTheEdgeThePreflightOrTheQueueRefuse()
+    {
         var half = Flat(Method(WorkspaceHostSource.Code(Half), "internal static (int Redrawn, int Erased) ApplyCabeceraInsert("));
+        Assert.Empty(StopViolations(half));
+
+        // The guard sees a half that goes on after a refusal (it would redraw the views and place nothing, or place from the old design).
+        Assert.NotEmpty(StopViolations(half.Replace("{ editor.WriteMessage(\"\\nRackCad: \" + preflight.ErrorMessage); return (0, 0); }",
+            "{ editor.WriteMessage(\"\\nRackCad: \" + preflight.ErrorMessage); }")));
+        Assert.NotEmpty(StopViolations(half.Replace("+ batchDiagnostic); return (0, 0); }", "+ batchDiagnostic); }")));
+        Assert.NotEmpty(StopViolations(half.Replace("out var authorized)) return (0, 0);", "out var authorized)) { }")));
+        Assert.NotEmpty(StopViolations(half.Replace("RackUnitsGuard.WarnIfNotInches(document);", string.Empty)));
+    }
+
+    private static System.Collections.Generic.List<string> StopViolations(string half)
+    {
+        var violations = new System.Collections.Generic.List<string>();
+        var stops = new[]
+        {
+            "if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out var authorized)) return (0, 0);",
+            "if (preflight.Aborted) { editor.WriteMessage(\"\\nRackCad: \" + preflight.ErrorMessage); return (0, 0); }",
+            "if (!batchProducts.PrepareAll(batchRequest, out var batchDiagnostic)) { editor.WriteMessage(\"\\nRackCad: no se preparo la cola ID18; no se modifico ningun bloque. \" + batchDiagnostic); return (0, 0); }",
+        };
+        var firstRedraw = half.IndexOf("RedrawInPlace(", StringComparison.Ordinal);
+        foreach (var stop in stops)
+        {
+            var at = half.IndexOf(stop, StringComparison.Ordinal);
+            if (at < 0) violations.Add("falta la parada: " + stop);
+            else if (firstRedraw >= 0 && at > firstRedraw) violations.Add("la parada va después del primer redibujo: " + stop);
+        }
+
         var steps = new[]
         {
             "RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out",
-            "authorized.Blocks.ToList()",
+            "var blocks = authorized.Blocks.ToList();",
             "lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).ToList();",
             "plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).ToList();",
             "if (lateralBlocks.Count == 0 && plantaBlocks.All(b => b.BlockId != blockId) && !RackCommandSupport.IsPlantaView(embed))",
@@ -283,7 +339,7 @@ public class CabeceraDoorTests
             "RackCommandSupport.PreflightInnerSources(",
             "RackUnitsGuard.WarnIfNotInches(document);",
             "RackViewBatchProducts.Header( document, config, id, name, embed, project, authorized.AuthoredInput);",
-            "RackCad.Application.Views.Preparation.RackProductSourceKind.ExistingRack,",
+            "RackCad.Application.Views.Preparation.RackProductSourceKind.ExistingRack, RackSystemKind.Selective, id, insertViews);",
             ".PrepareAll(batchRequest, out var batchDiagnostic)",
             "new LateralHeaderDrawService().RedrawInPlace(",
             "BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, lat.Embed, preflight.ResolvedByBlock[lat.BlockId]), regen: false);",
@@ -294,17 +350,26 @@ public class CabeceraDoorTests
             "document.Editor.Regen();",
             "RackViewBatchExecution.Run(document, batchProducts, batchRequest,",
             "RackInsertRedrawOutcome.Of(lateralBlocks.Count + plantaBlocks.Count, 0, updated, 0)",
+            "return (updated, 0);",
         };
-        InOrder(classic, steps.Select(Flat).ToArray());
-        InOrder(half, steps.Select(Flat).ToArray());
+        var position = -1;
+        foreach (var step in steps.Select(Flat))
+        {
+            var next = half.IndexOf(step, position + 1, StringComparison.Ordinal);
+            if (next <= position)
+            {
+                violations.Add("falta o está fuera de orden: " + step);
+                continue;
+            }
 
-        // The declared differences: the identity is the one of the envelope (the request is only a fallback), the views are the ones of the
-        // window, and it answers its counts; nothing writes the name of the cabecera and nothing is modal.
-        Assert.Contains("var id = string.IsNullOrWhiteSpace(embed.Id) ? rackId : embed.Id;", half, StringComparison.Ordinal);
-        Assert.Contains("RackSystemKind.Selective, id, insertViews);", half, StringComparison.Ordinal);
-        Assert.Contains("return (updated, 0);", half, StringComparison.Ordinal);
-        Assert.DoesNotMatch(new Regex(@"config\.Name\s*=[^=]"), half);
-        Assert.DoesNotContain("ShowModalWindow", half, StringComparison.Ordinal);
+            position = next;
+        }
+
+        // Three refusals and the end: no other return; nothing writes the name of the cabecera and nothing is modal.
+        if (Regex.Matches(half, @"\breturn\b").Count != 4) violations.Add("otro return");
+        if (Regex.IsMatch(half, @"config\.Name\s*=[^=]")) violations.Add("escribe el nombre");
+        if (half.Contains("ShowModalWindow", StringComparison.Ordinal)) violations.Add("una ventana modal");
+        return violations;
     }
 
     [Fact]
