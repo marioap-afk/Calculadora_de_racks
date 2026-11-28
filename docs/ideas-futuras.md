@@ -2211,3 +2211,14 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
 - **La ayuda emergente de «Insertar en el dibujo…» de un Push Back nuevo** (revisión de `258c16b1`, M-4). El botón de Push Back dice
   siempre «Escribe el borrador en las vistas del dibujo y después inserta las vistas que elijas…», también en un Push Back nuevo, que no
   tiene vistas. La cabecera ya la cambia según sea nueva o no (`CabeceraEditorViewModel.InsertViewToolTip`); a Push Back no se le tocó.
+
+## I-64 séptima tanda, per — el texto de la respuesta de «Perfil estructural» (2026-11-27, registrado sin corregir)
+
+- **Lo que hay:** la página «Perfil estructural» de la ventana muestra, bajo «En la línea de órdenes:», el informe de RACKSECCION tal como lo
+  escribe la línea de órdenes (`StructuralSectionCommandFlow.Describe`): sin acentos y con el nombre interno de la vista («vista CrossSection»,
+  «vista LongitudinalX»). Es el mismo texto de la clásica (T7per-S7).
+- **Decisión del Owner (2026-11-27, Q-per-2):** «Pulirlo después». No se cambia ahora.
+- **La mejora:** pulir el informe en el flujo, para las dos superficies a la vez: acentos donde la consola los admita y la vista con su nombre
+  («Sección», «Longitudinal X», «Isométrica»), como en los controles del inspector. Cambia también la línea de órdenes de la clásica, así que
+  necesita su propia decisión y la revisión de las guardas que fijan el texto del flujo (`StructuralSectionPluginSourceGuardTests`,
+  `MainMenuStructuralSectionAccessGuardTests`).

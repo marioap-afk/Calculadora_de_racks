@@ -30,18 +30,24 @@ namespace RackCad.Plugin
         /// path, before the first DWG modification; a pure in-place update (RACKEDITAR "Actualizar") must NOT call it.
         /// Inches (or a null document/database) produce no message. Non-blocking: it never throws and never stops the
         /// command.
+        ///
+        /// T7 per (I-64, séptima tanda): it returns whether it wrote the advisory, so the page «Perfil estructural» of the RackCad window
+        /// can say it too. The callers that only warn ignore the value; nothing else changed.
         /// </summary>
-        internal static void WarnIfNotInches(Document document)
+        internal static bool WarnIfNotInches(Document document)
         {
             if (document?.Database == null)
             {
-                return;
+                return false;
             }
 
             if (DrawingUnitsAdvisory.RequiresInsertionAdvisory(Classify(document.Database.Insunits)))
             {
                 document.Editor.WriteMessage("\n" + Advisory);
+                return true;
             }
+
+            return false;
         }
 
         /// <summary>

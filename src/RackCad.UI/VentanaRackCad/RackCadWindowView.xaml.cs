@@ -38,6 +38,7 @@ namespace RackCad.UI.VentanaRackCad
             RackPageHost.Content = PanelView;
             BomPage.Content = new RackBomPageView(viewModel.Bom); // T4 bom: the page «BOM y lista de racks»
             WarehousePage.Content = new WarehousePageView(viewModel.Warehouse); // T5 al: the page «Almacén»
+            StructuralSectionPage.Content = new StructuralSectionPageView(viewModel.StructuralSection); // T7 per: «Nuevo › Perfil estructural»
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             SizeChanged += OnSizeChanged;
@@ -277,7 +278,7 @@ namespace RackCad.UI.VentanaRackCad
 
         private void OnNewSystemClick(object sender, RoutedEventArgs e) => Contained(() =>
         {
-            if ((sender as FrameworkElement)?.DataContext is RackCadNewSystemCard card) _viewModel.Run(card.Action);
+            if ((sender as FrameworkElement)?.DataContext is RackCadNewSystemCard card) _viewModel.OpenNewSystem(card); // T7 per: «Perfil estructural» opens its page
         });
 
         // The buttons of the pages name their classic action in their Tag.

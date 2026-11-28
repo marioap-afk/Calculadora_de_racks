@@ -57,6 +57,7 @@ namespace RackCad.UI.VentanaRackCad
                 _propertiesAsked = null;
                 if (ask.Target == RackCadShortcutTarget.RackProperties) ShowRackPropertiesByShortcut(ask);
                 else if (ask.Target == RackCadShortcutTarget.NewCabecera) StartNewCabeceraByShortcut(ask); // T7 cab: RACKCABECERA and RCB
+                else if (ask.Target == RackCadShortcutTarget.StructuralSection) ShowStructuralSectionByShortcut(ask); // T7 per: RACKSECCION
                 else ShowVariablesByShortcut(ask);
             });
         }

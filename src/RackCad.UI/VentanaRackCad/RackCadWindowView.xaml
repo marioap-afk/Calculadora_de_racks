@@ -744,6 +744,9 @@
                     <Grid x:Name="LargueroPageHost" Visibility="{Binding IsLargueroPage, Converter={StaticResource FlagToVisibility}}">
                         <local:LargueroWorkbenchView x:Name="LargueroPage" DataContext="{Binding LargueroWorkbench}" />
                     </Grid>
+                    <!-- T7 per: «Nuevo › Perfil estructural», the inspector of RACKSECCION (StructuralSectionPageView, placed here by the code-behind). -->
+                    <ContentControl x:Name="StructuralSectionPage" Focusable="False"
+                                    Visibility="{Binding IsStructuralSectionPage, Converter={StaticResource FlagToVisibility}}" />
                 </Grid>
             </DockPanel>
         </Grid>

@@ -18,6 +18,9 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>T7 cab (the Owner on 2026-11-27: «Abren la ventana»): RACKCABECERA and RCB, «Nuevo» › «Cabecera en esta ventana».</summary>
         NewCabecera,
+
+        /// <summary>T7 per: RACKSECCION, the page «Perfil estructural» (it reads nothing of the drawing: the page reads the catalog).</summary>
+        StructuralSection,
     }
 
     /// <summary>
@@ -111,6 +114,7 @@ namespace RackCad.Application.VentanaRackCad
                 : ask.Target == RackCadShortcutTarget.Variables ? "«Variables» en la ventana RackCad"
                 : ask.Target == RackCadShortcutTarget.ProjectProperties ? "«Variables» › «Propiedades del proyecto» en la ventana RackCad"
                 : ask.Target == RackCadShortcutTarget.NewCabecera ? "«Nuevo» › «Cabecera en esta ventana» en la ventana RackCad" // T7 cab
+                : ask.Target == RackCadShortcutTarget.StructuralSection ? "«Nuevo» › «Perfil estructural» en la ventana RackCad" // T7 per
                 : "«Propiedades» del rack en la ventana RackCad";
             if (ask == null || !ask.Taken) return "RackCad: " + NotOpenedText;
             var said = (ask.Said ?? string.Empty).Trim();

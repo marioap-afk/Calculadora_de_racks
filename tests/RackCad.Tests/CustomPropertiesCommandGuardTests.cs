@@ -149,8 +149,15 @@ namespace RackCad.Tests
         /// </summary>
         internal static readonly string[] A14UpdateAllCommands = { "RACKACTUALIZARTODO" };
 
+        /// <summary>
+        /// Lo que la septima tanda de la ventana RackCad (parte «per», T7 per) anade, EXACTAMENTE: la puerta de la pagina «Perfil estructural», que
+        /// dibuja la seccion aprobada con la materializacion de RACKSECCION en una orden (un solo «U»), sin alias, en
+        /// <c>src/RackCad.Plugin/RackSeccionCommands.Ventana.cs</c>. RACKSECCION sigue en el censo de apertura: abre la pagina, no cambia de nombre.
+        /// </summary>
+        internal static readonly string[] A14StructuralSectionDoorCommands = { "RACKSECCIONINSERTAR" };
+
         /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).Concat(A14CamaDoorCommands).Concat(A14CantileverDoorCommands).Concat(A14PushBackDoorCommands).Concat(A14UpdateAllCommands).ToArray(); // T5 al: A14WarehouseCommands; T5 cm: A14CamaDoorCommands; T5 ct: A14CantileverDoorCommands; T5 pb: A14PushBackDoorCommands; T6 at: A14UpdateAllCommands
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).Concat(A14CamaDoorCommands).Concat(A14CantileverDoorCommands).Concat(A14PushBackDoorCommands).Concat(A14UpdateAllCommands).Concat(A14StructuralSectionDoorCommands).ToArray(); // T5 al: A14WarehouseCommands; T5 cm: A14CamaDoorCommands; T5 ct: A14CantileverDoorCommands; T5 pb: A14PushBackDoorCommands; T6 at: A14UpdateAllCommands; T7 per: A14StructuralSectionDoorCommands
 
         // ================================================================ censo
 

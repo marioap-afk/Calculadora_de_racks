@@ -37,8 +37,7 @@ namespace RackCad.UI.VentanaRackCad
         /// How the window loads the catalogue of structural sections of Cantilever (fail closed, as the classic editor: an invalid catalogue
         /// means no trustworthy dimension, so the window does not offer the editor and says why). Tests give theirs.
         /// </summary>
-        internal static Func<StructuralSectionCatalog> CantileverCatalogueSource { get; set; } =
-            () => new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
+        internal static Func<StructuralSectionCatalog> CantileverCatalogueSource { get; set; } = StructuralSectionCatalogSource.Load; // T7 per (review I-1): the ONE source
 
         private sealed class CantileverDraftEntry
         {

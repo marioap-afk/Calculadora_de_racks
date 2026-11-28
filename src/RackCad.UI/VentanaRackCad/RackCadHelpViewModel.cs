@@ -53,7 +53,7 @@ namespace RackCad.UI.VentanaRackCad
                 ["RACKSISTEMADINAMICO"] = ("Nuevo", RackCadWindowPage.Nuevo),
                 ["RACKCANTILEVER"] = ("Nuevo", RackCadWindowPage.Nuevo),
                 ["RACKPUSHBACK"] = ("Nuevo", RackCadWindowPage.Nuevo),
-                ["RACKSECCION"] = ("Nuevo", RackCadWindowPage.Nuevo),
+                ["RACKSECCION"] = ("Nuevo › Perfil estructural", RackCadWindowPage.PerfilEstructural), // T7 per: RACKSECCION opens that page
                 ["RACKEDITAR"] = ("Página del rack: «Editar aquí» (Selectivo y Dinámico)", null),
                 ["RACKVARIABLES"] = ("Variables", RackCadWindowPage.Variables),
                 ["RACKPROPIEDADES"] = ("Página del rack: su pestaña «Propiedades»", null), // T6 rl

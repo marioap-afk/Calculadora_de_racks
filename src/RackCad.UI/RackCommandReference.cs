@@ -39,7 +39,7 @@ namespace RackCad.UI
             new RackCommandInfo("Diseñar", "QUICKCAMA", "QCM", "Cama de rodamiento (riel + rodillos + frenos)."),
             new RackCommandInfo("Diseñar", "RACKCANTILEVER", "RCT", "Línea Cantilever: estaciones, brazos por nivel y lado, arriostramiento; vistas frontal, lateral y planta."),
             new RackCommandInfo("Diseñar", "RACKPUSHBACK", "RPB", "Sistema Push Back. LIFO: carga y descarga por el mismo extremo (bajo); vistas lateral, frontal y planta."),
-            new RackCommandInfo("Diseñar", "RACKSECCION", "", "Perfil estructural: consulta perfiles W, HSS, C y L del catálogo AISC, visualiza su geometría e insértala en el dibujo."),
+            new RackCommandInfo("Diseñar", "RACKSECCION", "", "Perfil estructural: consulta perfiles W, HSS, C, L y S del catálogo AISC, visualiza su geometría e insértala en el dibujo. RACKSECCION abre «Nuevo» › «Perfil estructural» en la ventana RackCad, sin bloquear AutoCAD; la ventana clásica sigue en el menú clásico (RACKMENU, «Generar perfil estructural»)."), // T7 per
 
             new RackCommandInfo("Editar y copiar", "RACKEDITAR", "RED", "Reabrir el editor de un rack dibujado; al confirmar redibuja todas sus vistas y, si lo pides, inserta una o varias vistas nuevas ligadas al mismo rack."),
             new RackCommandInfo("Editar y copiar", "RACKDUPLICAR", "RD", "Copiar un rack como INDEPENDIENTE, estilo COPY: punto base → destinos (múltiple por defecto)."),
