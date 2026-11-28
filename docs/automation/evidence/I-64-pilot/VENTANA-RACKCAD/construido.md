@@ -8587,3 +8587,69 @@ Dos partes, cada una con su revisión independiente (ninguna bloqueante) y sus c
 - el smoke en AutoCAD de la séptima tanda, por la sesión, con los pasos de cada parte (cab 10, per 14);
 - además, RACKEDITAR «Insertar» de una cabecera clásica (`EditCabecera` ahora llama a `ApplyCabeceraInsert`), y RACKCANTILEVER, Cantilever de la ventana y «Larguero», que ahora leen el catálogo de secciones por `StructuralSectionCatalogSource`;
 - después, la prueba guiada corta del Owner y su autorización del cierre formal.
+
+## Séptima tanda: smoke en AutoCAD (sesión, 2026-11-27, 19:03 a 19:31)
+
+- **Orden del Owner:** «Haz la prueba». AutoCAD estaba cerrado.
+- **DLL:** Debug de esta rama en `c0dd7a6b` (CI verde, run 46088915654), recompilado con `--no-incremental` tras el commit del merge. El
+  ensamblado lleva grabado `c0dd7a6b`.
+  - SHA-256 (prefijo): Plugin `5F7B1B0F288D548E`, UI `E2EA17EF03BB8D54`, Application `1B23D0BC26616415`, Domain `FDE203028D749DD5`.
+  - Cargado con NETLOAD «Load Once»; FILEDIA a 0 solo para la ruta y de vuelta a 1.
+- **Dibujo:** una copia de trabajo de `smoke-sel-prep.dwg` (huella `2FA0BC027C615D53`), que no está en pulgadas (INSUNITS). Se cerró sin
+  guardar y conserva la misma huella.
+- **Dejado como estaba:** la paleta, en la posición y el tamaño que dejó el Owner en su prueba (359,153, 947 × 816); FILEDIA en 1; los
+  borradores de prueba, descartados.
+
+### Resultados (OBSERVADO)
+
+| Paso | Parte | Resultado | Observación |
+|---|---|---|---|
+| C-1 | cab | PASA | RACKCABECERA abrió la ventana en «Nuevo» con «Borrador 1 · Cabecera · Sin insertar», plantilla «Estandar (3 paneles)», pestaña «Alzado». Línea de órdenes: «RackCad: «Nuevo» › «Cabecera en esta ventana» en la ventana RackCad: Borrador 1, con los valores por defecto del configurador clásico…». |
+| C-2 | cab | PASA | El botón «Cabecera en esta ventana» de «Nuevo» abrió otro «Borrador 1». La tarjeta «Cabecera» y RACKMENU › «Diseñar cabecera» siguen en el menú. |
+| C-3 | cab | PASA | «Propiedades»: «Zona» = «A». «Insertar en el dibujo…» abrió el panel con «Lateral» y «Planta» marcadas (S3) → «Insertar con 2 vistas» → RACKCABECERANUEVO pidió «Punto de insercion de la cabecera» dos veces → «AutoCAD insertó el rack nuevo «Cabecera 1» con 2 vistas… También escribió sus propiedades.», «COMPLETED (2/2)». Leído por COM: las dos vistas tienen el mismo `Design`, el mismo `Id`, el nombre «Cabecera 1» y «Zona» = «A»; solo cambia `View`. **Un solo «U»** deshizo RACKCABECERANUEVO y no quedó ninguna referencia. |
+| C-4 | cab | PASA | Esc en el primer punto: «AutoCAD no insertó el rack nuevo: se canceló la colocación o no se pudo preparar. El borrador sigue en la ventana…» y «PLACEMENT_CANCELLED_PARTIAL_BATCH (0/2)». El borrador siguió «Sin insertar, con cambios», con su propiedad. |
+| C-5 | cab | PASA | Insertada con solo la lateral y releída la lista, «Cabecera 1» se abre en el mismo editor, «Limpio», por RACKCABECERAABRIR/APLICAR. El claro de P1 de 44 a 40 dio «Modificado» y «Actualizar todo (1)». «Actualizar»: «AutoCAD redibujó 1 vista del rack con el borrador» y «cabecera actualizada». Un «U» deshizo RACKCABECERAAPLICAR y el editor quedó marcado. |
+| C-6 | cab | PASA | Con el claro en 40 sin escribir, «Insertar vista…» › «Planta». El panel avisó de la lateral existente y de que escribiría antes el borrador → «AutoCAD redibujó 1 vista del rack con el borrador e insertó 1 vista nueva», y el editor volvió a abrir la cabecera, «Limpio». Leído por COM: los dos sobres llevan el mismo `Design` (B-1), con el claro nuevo: elevaciones 4, 44, 88, 106 y 124, alto 128. Un «U» deshizo RACKCABECERAINSERTAR. |
+| C-7 | cab | PASA | Tras ese «U», «Insertar vista…» dijo «El dibujo cambió desde que se leyó: pulsa «Volver a leer del dibujo» antes de insertar vistas.». |
+| C-8 | cab | PASA | Con la cabecera seleccionada en el dibujo, RACKPROPIEDADES abrió su pestaña «Propiedades» en la ventana: «RackCad: «Propiedades» del rack en la ventana RackCad.». |
+| C-9 | cab | PASA | Con «Cabecera 1» modificada y un borrador nuevo de cabecera modificado, el botón decía «Actualizar todo (1)»: el borrador nuevo no entra. |
+| C-10 | cab | PASA | `_CLOSE` → «No» a guardar: «RackCad: el dibujo no se cerró: la ventana RackCad tiene cambios sin escribir en Borrador 1 (Cabecera nueva), Cabecera 1. Escríbelos con «Actualizar» en su editor (un rack nuevo de la ventana, con «Insertar en el dibujo…») o descártalos, y vuelve a cerrar.». |
+| C-11 | cab, clásico | PASA | RACKEDITAR sobre «Cabecera 1» abrió el «Configurador de cabecera» clásico. Alto de 132 a 144, «Generar cabecera» → «Insertar planta» → «COMPLETED (1/1)». Leído por COM: las dos vistas llevan el mismo `Design`, con `Height` 144 (B-1 en el clásico con `ApplyCabeceraInsert` compartida). Un «U» deshizo RACKEDITAR. |
+| P-1 | per | PASA | RACKSECCION abrió «Nuevo › Perfil estructural» en la ventana, con «Nuevo» marcado en la columna. Línea de órdenes: «RackCad: «Nuevo» › «Perfil estructural» en la ventana RackCad.». AutoCAD siguió libre. |
+| P-2 | per | PARCIAL | La página y la clásica abren con los mismos controles y los mismos valores por defecto (C10X15.3, 120 in, «Seccion», «Tabulada», «Wireframe»). No se recorrieron las opciones una a una (S, rotación, espejo, eje y envolvente). |
+| P-3 | per | PASA | W12X26 → «Insertar en el dibujo…» → RACKSECCIONINSERTAR pidió «Punto de insercion de la seccion:». La barra decía «AutoCAD pide el punto de inserción de la sección…» y «Dejar de esperar» estaba apagado. Respuesta: «AutoCAD insertó «W12X26» como el bloque «RACKCAD_SECCION_AISC-W-W12X26_CrossSection_L120». Es una sección suelta, sin datos de rack…», con el informe de la línea de órdenes debajo. Por COM: 1 definición y 1 referencia. |
+| P-4 | per | PASA | Un solo «U» deshizo RACKSECCIONINSERTAR: 0 definiciones y 0 referencias. |
+| P-5 | per | PASA | Esc en el punto: «No se insertó nada: se canceló el punto de inserción. El dibujo no cambió.». Por COM: 0 definiciones. |
+| P-6 | per | PASA | El dibujo no está en pulgadas: «Aviso de unidades: el dibujo no está en pulgadas (INSUNITS)…», en la página y en la línea de órdenes. No se probó un dibujo en pulgadas. |
+| P-7 | per | PASA | Tras insertar, la lista siguió con 6 racks: la sección no es un rack. |
+| P-9 | per, clásico | PASA | RACKMENU › «Generar perfil estructural» abrió la clásica modal «Secciones estructurales» → «Insertar» → «Punto de insercion de la seccion» (RACKMENU) → C10X15.3 insertada, con su mensaje de fidelidad. Un «U» deshizo RACKMENU: 0 definiciones. |
+| P-10 | per | PASA | La tarjeta «Perfil estructural» de «Nuevo» abre la página. |
+| P-11 | per | PASA | Con la paleta a 620 px de ancho, la vista previa baja bajo los parámetros. |
+| P-14 | per | PASA | Tras el «U» de la inserción, el editor abierto de «Cabecera 1» pasó de naranja (modificado) a rojo («El dibujo cambió»), como declara T7per-S11. |
+| X-1 | per (I-1) | PASA | «Cantilever en esta ventana»: el selector del brazo carga el catálogo («Mostrando 40 de 1011»). |
+| X-2 | per (I-1) | PASA | «Larguero en esta ventana · en construcción»: «Mostrando 8 de 1019 secciones». |
+
+### Observaciones
+
+- **O-1 (per, sin confirmar):** con la paleta a 860 px de alto, el botón «Insertar en el dibujo…» de la página quedó en el borde inferior,
+  cortado.
+  - No quedó claro si la página podía bajar más: la rueda sobre la vista previa no desplaza la página, y la barra no se arrastró hasta el
+    final. A 950 px el botón se vio entero.
+  - La respuesta de la inserción queda bajo el botón y hay que desplazar la página para leerla.
+  - Se revisa en la prueba guiada del Owner (paleta de 816 px). Si ahí no se alcanza el botón, es un defecto de la página.
+- **O-2 (cab, declarado):** al cancelar la colocación de una cabecera nueva, el aviso dice «el rack nuevo» (T7cab-S13: textos de la puerta
+  reutilizados).
+- **O-3 (de la herramienta):** la modal clásica de RACKMENU abrió en otro monitor y se movió con `SetWindowPos` para verla. Las lecturas por
+  COM entre una escritura y su «U» no dejaron pasos vacíos en esta sesión.
+
+### Lo que este smoke no cubrió
+
+- **per:**
+  - P-2 opción por opción;
+  - P-6 en un dibujo en pulgadas;
+  - P-8 («Dejar de esperar» con texto a medio escribir);
+  - P-12 (otra petición en vuelo);
+  - P-13 (un catálogo que no valida).
+- **RACKCANTILEVER clásico:** su ventana también lee ya por `StructuralSectionCatalogSource`, pero aquí solo se probó el Cantilever de la
+  ventana.
+- Quedan para la prueba guiada del Owner, o como limitación declarada.
