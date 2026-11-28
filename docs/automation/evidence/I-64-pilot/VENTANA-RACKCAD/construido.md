@@ -8653,3 +8653,17 @@ Dos partes, cada una con su revisión independiente (ninguna bloqueante) y sus c
 - **RACKCANTILEVER clásico:** su ventana también lee ya por `StructuralSectionCatalogSource`, pero aquí solo se probó el Cantilever de la
   ventana.
 - Quedan para la prueba guiada del Owner, o como limitación declarada.
+
+## Séptima tanda: prueba guiada del Owner (2026-11-27)
+
+- **Versión:** `d1e11518`. El código es el de `c0dd7a6b`: los commits posteriores solo tocan documentación, y el DLL que cargó lleva
+  grabado `c0dd7a6b`.
+- **Dibujo:** una copia nueva de `smoke-sel-prep.dwg` (`prueba-owner-t7-2026-11-27.dwg`, huella `2FA0BC027C615D53`).
+- **Guía:** pegada en el chat, sin abreviar. Tres apartados:
+  - la cabecera nueva desde la ventana: RACKCABECERA, la propiedad, Esc, insertar con dos vistas y un solo «U»;
+  - «Insertar vista…» en una cabecera existente, con RACKPROPIEDADES;
+  - la página «Perfil estructural»: RACKSECCION, W12X26, el botón con la paleta del Owner, insertar, «U», Esc y la clásica de RACKMENU.
+- **Respuesta del Owner (literal):** «Todo ok».
+- **O-1 del smoke de la sesión:** con la paleta del Owner (816 px de alto) el botón «Insertar en el dibujo…» se alcanza (paso 3.3). No es un
+  defecto.
+- **Estado:** la séptima tanda queda validada por el Owner.
