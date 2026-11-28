@@ -91,11 +91,26 @@ namespace RackCad.Application.VentanaRackCad
         public static StructuralSectionInserted Cancelled(long requestId, string report, bool unitsWarned) =>
             new StructuralSectionInserted(requestId, false, false, CancelledText, null, report, unitsWarned);
 
-        /// <summary>The answer when the drawing failed: the transaction was not committed, so nothing reached the drawing.</summary>
+        /// <summary>
+        /// The answer when the drawing failed BEFORE the commit (the transaction was not committed) or before anything was created (the
+        /// units advisory, the point): nothing reached the drawing, so «El dibujo no cambió» is true. A failure after the commit is
+        /// <see cref="DrawnButFailed"/> (review M-1).
+        /// </summary>
         public static StructuralSectionInserted Failed(long requestId, string error, string report, bool unitsWarned) =>
             new StructuralSectionInserted(requestId, false, true,
                 "No se pudo dibujar la sección: " + (string.IsNullOrWhiteSpace(error) ? "sin detalle." : error.Trim()) + " El dibujo no cambió.",
                 null, report, unitsWarned);
+
+        /// <summary>
+        /// T7 per (review M-1): the section WAS committed and what failed came after it (the regen). The section is in the drawing, so the
+        /// answer says so and where to look, and never that the drawing did not change; one «U» undoes the insertion.
+        /// </summary>
+        public static StructuralSectionInserted DrawnButFailed(long requestId, StructuralSectionDefinition section, string blockName, string error,
+            string report, bool unitsWarned) =>
+            new StructuralSectionInserted(requestId, true, true,
+                "AutoCAD insertó «" + (section?.DisplayName ?? string.Empty) + "» como el bloque «" + (blockName ?? string.Empty) + "», pero después falló: "
+                + (string.IsNullOrWhiteSpace(error) ? "sin detalle" : error.Trim().TrimEnd('.')) + ". Revisa el dibujo: un «U» deshace la inserción.",
+                blockName, report, unitsWarned);
 
         /// <summary>The answer when the command refused the request before asking anything (another drawing, nothing to insert).</summary>
         public static StructuralSectionInserted Refused(long requestId, string text) =>

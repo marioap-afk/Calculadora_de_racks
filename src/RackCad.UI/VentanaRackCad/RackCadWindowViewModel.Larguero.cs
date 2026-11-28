@@ -17,8 +17,11 @@ namespace RackCad.UI.VentanaRackCad
     {
         private LargueroWorkbenchViewModel _largueroWorkbench;
 
-        /// <summary>The neutral catalog of structural sections the page reads (the one of RACKSECCION); the tests give theirs.</summary>
-        internal Func<StructuralSectionCatalog> LargueroSectionsLoader { get; set; } = LoadStructuralSections;
+        /// <summary>
+        /// The neutral catalog of structural sections the page reads: the ONE source of RACKSECCION (T7 per, review I-1; the page keeps its
+        /// own notices when it cannot read it); the tests give theirs.
+        /// </summary>
+        internal Func<StructuralSectionCatalog> LargueroSectionsLoader { get; set; } = StructuralSectionCatalogSource.Load;
 
         /// <summary>
         /// The catalog of RackCad the page reads: the provider itself, which caches by the signature of the files and THROWS when it cannot
@@ -59,13 +62,11 @@ namespace RackCad.UI.VentanaRackCad
         // ShowPage: what the center shows follows the page.
         private void RaiseLargueroPage() => OnPropertyChanged(nameof(IsLargueroPage));
 
-        // The side column marks «Nuevo» while its page «Larguero» is shown (the crumb «Nuevo › Larguero»).
+        // The side column marks «Nuevo» while one of its pages is shown: «Larguero» (the crumb «Nuevo › Larguero») and, T7 per, «Perfil
+        // estructural» (the crumb «Nuevo › Perfil estructural»).
         private bool IsUnderNuevo(RackCadWindowPage section) =>
             section == RackCadWindowPage.Nuevo && (_page == RackCadWindowPage.Larguero || _page == RackCadWindowPage.PerfilEstructural); // T7 per: and «Nuevo › Perfil estructural»
 
         private static RackCatalog LoadRackCatalog() => JsonRackCatalogProvider.FromBaseDirectory().Load();
-
-        private static StructuralSectionCatalog LoadStructuralSections() =>
-            new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
     }
 }

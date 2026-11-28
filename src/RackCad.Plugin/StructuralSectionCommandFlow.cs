@@ -66,33 +66,30 @@ namespace RackCad.Plugin
                 return; // cancelled: nothing was loaded into the drawing and nothing has to be undone
             }
 
-            var placement = Place(document, window.AcceptedSection, window.Result);
-            editor.WriteMessage("\n" + placement.Report);
+            var placement = Place(document, window.Result);
+            editor.WriteMessage("\n" + Describe(placement.Outcome, window.AcceptedSection, window.Result));
         }
 
         /// <summary>
         /// T7 per (I-64, séptima tanda): the ONE materialisation of a plan the user APPROVED, extracted from <see cref="Run"/> so the page
         /// «Perfil estructural» of the RackCad window (RACKSECCIONINSERTAR) draws exactly what this flow draws: the units advisory, the point
-        /// asked before anything is created, definition and reference in one transaction, the one regen, and the report the user reads. It
-        /// computes no geometry: <paramref name="plan"/> is the object the preview drew.
+        /// asked before anything is created, definition and reference in one transaction and the one regen. It computes no geometry:
+        /// <paramref name="plan"/> is the object the preview drew.
         ///
-        /// The caller writes the report where its user reads it (both write it to the command line, as before); a cancelled point is a
-        /// placement that placed nothing.
+        /// The report the user reads (<see cref="Describe"/>) is a step of its own (review M-1): the window must know what was drawn and
+        /// whether the units advisory fired even if wording the report failed. A cancelled point is a placement that placed nothing.
         /// </summary>
-        internal static StructuralSectionPlacement Place(
-            Document document,
-            StructuralSectionDefinition section,
-            StructuralSectionRepresentationPlan plan)
+        internal static StructuralSectionPlacement Place(Document document, StructuralSectionRepresentationPlan plan)
         {
             // I-05: warn once if the drawing is not in inches. The plan is in inches and nothing converts it.
             var unitsWarned = RackUnitsGuard.WarnIfNotInches(document);
 
             var outcome = StructuralSectionInsertService.Insert(document, plan);
-            return new StructuralSectionPlacement(outcome, Describe(outcome, section, plan), unitsWarned);
+            return new StructuralSectionPlacement(outcome, unitsWarned);
         }
 
         /// <summary>What the user reads afterwards: what was drawn, how faithful it is and what it weighs.</summary>
-        private static string Describe(
+        internal static string Describe(
             StructuralSectionInsertOutcome outcome,
             StructuralSectionDefinition section,
             StructuralSectionRepresentationPlan plan)
@@ -149,21 +146,18 @@ namespace RackCad.Plugin
     }
 
     /// <summary>
-    /// T7 per: what <see cref="StructuralSectionCommandFlow.Place"/> did: the outcome of the insert, the report the user reads (the very text
-    /// the classic flow writes to the command line) and whether the units advisory fired.
+    /// T7 per: what <see cref="StructuralSectionCommandFlow.Place"/> did: the outcome of the insert and whether the units advisory fired. The
+    /// report the user reads is <see cref="StructuralSectionCommandFlow.Describe"/> of that outcome, a step of its own (review M-1).
     /// </summary>
     internal sealed class StructuralSectionPlacement
     {
-        internal StructuralSectionPlacement(StructuralSectionInsertOutcome outcome, string report, bool unitsWarned)
+        internal StructuralSectionPlacement(StructuralSectionInsertOutcome outcome, bool unitsWarned)
         {
             Outcome = outcome;
-            Report = report;
             UnitsWarned = unitsWarned;
         }
 
         public StructuralSectionInsertOutcome Outcome { get; }
-
-        public string Report { get; }
 
         public bool UnitsWarned { get; }
     }
@@ -196,6 +190,13 @@ namespace RackCad.Plugin
 
         internal static StructuralSectionInsertOutcome Failure(string message) =>
             new StructuralSectionInsertOutcome(false, false, null, message);
+
+        /// <summary>
+        /// T7 per (review M-1): the section WAS committed and what failed came after (the regen). Not a success, so the classic words it
+        /// as every failure, as before; but placed, so the page of the window says that the section is in the drawing.
+        /// </summary>
+        internal static StructuralSectionInsertOutcome FailedAfterCommit(string blockName, string message) =>
+            new StructuralSectionInsertOutcome(false, true, blockName, message);
     }
 
     /// <summary>
@@ -224,10 +225,11 @@ namespace RackCad.Plugin
                 return StructuralSectionInsertOutcome.Cancelled();
             }
 
+            string blockName = null;
+            var committed = false;
+
             try
             {
-                string blockName;
-
                 using (document.LockDocument())
                 {
                     using (var transaction = document.Database.TransactionManager.StartTransaction())
@@ -239,6 +241,7 @@ namespace RackCad.Plugin
                             document.Database, transaction, definitionId, point.Value);
 
                         transaction.Commit();
+                        committed = true;
                     }
 
                     SystemBlockWriter.ApplyRegen(document, regen: true);
@@ -248,9 +251,12 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                // The transaction was not committed, so nothing partial reached the drawing: no half-defined
-                // block, no orphan reference.
-                return StructuralSectionInsertOutcome.Failure(ex.Message);
+                // Before the commit, the transaction was not committed, so nothing partial reached the drawing: no
+                // half-defined block, no orphan reference. T7 per (review M-1): after it (the regen failed), the
+                // section IS in the drawing, and the outcome says so instead of claiming that nothing changed.
+                return committed
+                    ? StructuralSectionInsertOutcome.FailedAfterCommit(blockName, ex.Message)
+                    : StructuralSectionInsertOutcome.Failure(ex.Message);
             }
         }
     }

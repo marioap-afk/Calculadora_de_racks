@@ -8011,14 +8011,15 @@ se borró código clásico.
 |---|---|---|
 | T7per-S1 | RACKSECCION (no tiene alias) abre la página con las marcas de los atajos: no deja paso en Deshacer y conserva la selección. «Ejecutar» de RACKSECCION en «Órdenes y atajos» abre la página también; la clásica está solo en RACKMENU, «Generar perfil estructural» | `RackSeccionCommands.cs` |
 | T7per-S2 | La tarjeta «Perfil estructural» abre la página directamente; no hay un botón «… en esta ventana» aparte, como en los sistemas. Su texto pasa a «Perfiles W, HSS, C, L y S del catálogo AISC, en esta ventana.» (antes no nombraba la S) | `RackCadWindowViewModel.cs` (`NewSystems`) |
-| T7per-S3 | El botón de la página dice «Insertar en el dibujo…», como el resto de la ventana (la clásica dice «Insertar»). La clásica tiene «Cerrar»; la página vuelve con la miga «Nuevo» | `StructuralSectionPageView.xaml` |
+| T7per-S3 | El botón de la página dice «Insertar en el dibujo…», como el resto de la ventana (la clásica dice «Insertar»). La clásica tiene «Cerrar»; la página vuelve con la miga «Nuevo». **Respondida (Q-per-1, 2026-11-27): «Insertar en el dibujo…», aprobado** | `StructuralSectionPageView.xaml` |
 | T7per-S4 | La página no necesita un dibujo para ver perfiles; «Insertar en el dibujo…» sí (y la puerta): sin dibujo, apagado con «Abre o crea un dibujo para insertar la sección.» | `StructuralSectionPageViewModel.InsertRefusal` |
 | T7per-S5 | El catálogo se lee cada vez que se muestra la página. Con el mismo catálogo se quedan la sección y los valores elegidos; si un archivo cambió, el estado vuelve a los valores por defecto; si no valida o no se puede leer, la página lo dice (las palabras del clásico, con acentos) y no ofrece nada | `StructuralSectionPageViewModel.Shown` |
 | T7per-S6 | Mientras AutoCAD pide el punto, la página sigue editable: lo que se cambie ya no llega a esa inserción (la petición lleva su plan). «Insertar en el dibujo…» queda apagado hasta la respuesta, con el texto de la espera | `StructuralSectionPageViewModel` |
-| T7per-S7 | La respuesta en la página: el titular, el aviso de unidades con palabras de la página y el informe del flujo literal bajo «En la línea de órdenes:» (sin acentos y con «vista CrossSection», como lo escribe la clásica). La respuesta anterior se borra al pedir otra inserción | `StructuralSectionDoorRules`, `StructuralSectionPageView.xaml` |
+| T7per-S7 | La respuesta en la página: el titular, el aviso de unidades con palabras de la página y el informe del flujo literal bajo «En la línea de órdenes:» (sin acentos y con «vista CrossSection», como lo escribe la clásica). La respuesta anterior se borra al pedir otra inserción. **Respondida (Q-per-2, 2026-11-27): «Pulirlo después»**; no se cambia ahora, anotado en `docs/ideas-futuras.md` | `StructuralSectionDoorRules`, `StructuralSectionPageView.xaml` |
 | T7per-S8 | El punto se pide con el texto de la clásica, «Punto de insercion de la seccion:», sin cambios | `StructuralSectionInsertService` |
 | T7per-S9 | En la página, los controles del inspector se nombran para la automatización por su etiqueta y « (perfil estructural)»; la clásica sigue sin nombres | `StructuralSectionPageView.NameTheControls` |
-| T7per-S10 | La página no recuerda nada entre sesiones de AutoCAD (la clásica tampoco): cada AutoCAD empieza con los valores por defecto | — |
+| T7per-S10 | La página no recuerda nada entre sesiones de AutoCAD (la clásica tampoco): cada AutoCAD empieza con los valores por defecto. **Respondida (Q-per-3, 2026-11-27): sin memoria entre sesiones, aprobado** | — |
+| T7per-S11 | (Revisión M-5.) El «U» que la página sugiere tras insertar es una orden que no es de la ventana: por la regla de st, al terminar marca «(posiblemente obsoleto)» los editores de la ventana abiertos en ese dibujo, aunque solo deshaga la sección suelta. «Volver a leer del dibujo» quita la marca | `RackCadWindowViewModel.DrawingChange.cs` (regla de st, sin cambios) |
 
 ### Las ediciones a archivos compartidos (pequeñas, marcadas `T7 per`)
 
@@ -8182,12 +8183,88 @@ Con el DLL Debug de `D:\w7per`, un dibujo en pulgadas y otro en milímetros.
     respuesta de AutoCAD…».
 13. **Un catálogo que no valida** (en una copia de prueba de la instalación, no en la del Owner): RACKSECCION abre la página con el aviso y sin nada
     que insertar, y la línea de órdenes lo dice; la clásica de RACKMENU falla cerrada como siempre.
+14. **El «U» tras insertar (T7per-S11, revisión M-5):** con un editor de la ventana abierto en el mismo dibujo (un Selectivo, limpio), insertar un
+    perfil y deshacerlo con «U»: el perfil desaparece, y el editor queda marcado «(posiblemente obsoleto)» en la lista, con «Volver a leer del dibujo»,
+    porque el «U» no es una orden de la ventana. La inserción misma no lo marcaba (paso 7).
 
 ### Preguntas para el Owner
 
 - **Q-per-1 (T7per-S3):** ¿el botón de la página se llama «Insertar en el dibujo…», como en el resto de la ventana, o «Insertar», como en la clásica?
   Recomendación: «Insertar en el dibujo…» (la ventana entera usa ese nombre y pide un punto después).
+  **Respondida (2026-11-27):** «Insertar en el dibujo…», aprobado.
 - **Q-per-2 (T7per-S7):** el informe que la página muestra es el de la línea de órdenes, literal: sin acentos y con «vista CrossSection» (el nombre
   interno de la vista). ¿Se deja así, o se pule (acentos y «vista Sección») en las dos, la clásica incluida? Recomendación: dejarlo literal en esta
   tanda («igual que la clásica») y pulirlo en el flujo en una tanda aparte, porque cambia también la línea de órdenes de la clásica.
+  **Respondida (2026-11-27):** «Pulirlo después». No se cambia ahora; anotado en `docs/ideas-futuras.md` («I-64 séptima tanda, per — el texto de la
+  respuesta de «Perfil estructural»»).
 - **Q-per-3 (T7per-S10):** ¿la página debe recordar entre sesiones la última sección y longitud? Recomendación: no por ahora (la clásica no lo hace).
+  **Respondida (2026-11-27):** sin memoria entre sesiones, aprobado.
+
+### Séptima tanda, per: correcciones de la revisión (sobre `4a18f4c6`)
+
+Corrige la revisión independiente de la parte (sin bloqueantes) y aplica las respuestas del Owner. Hecho en `D:\w7per`, sobre el commit `4a18f4c6`
+de la sesión. Sin commit, sin push, sin AutoCAD.
+
+**Las respuestas del Owner (2026-11-27)**, puestas como respondidas en la tabla de supuestos y en las preguntas de arriba:
+- **Q-per-1 (T7per-S3):** «Insertar en el dibujo…», aprobado.
+- **Q-per-2 (T7per-S7):** «Pulirlo después». El texto de la respuesta no cambia ahora; anotado en `docs/ideas-futuras.md` («I-64 séptima tanda,
+  per — el texto de la respuesta de «Perfil estructural»»).
+- **Q-per-3 (T7per-S10):** sin memoria entre sesiones, aprobado.
+
+| Punto | Qué pasaba | Qué se hizo | Prueba |
+|---|---|---|---|
+| I-1 (importante) | La lectura del catálogo y su fallo cerrado estaban en varias copias: el cargador de la página, su política y sus textos (con un `catch (Exception)` de más), el cargador de «Larguero» y `StructuralSectionCatalogAccess` del Plugin. Además, Cantilever (la ventana y el editor clásico) leían por su cuenta | **Un solo sitio, en Application:** `StructuralSectionCatalogSource` (`src/RackCad.Application/StructuralSections/StructuralSectionCatalogSource.cs`, nuevo). `Load()` lee el catálogo de la distribución. `TryLoad()` decide el fallo cerrado: solo `StructuralSectionCatalogException` e `IOException` son un valor, y da las palabras de la línea de órdenes (las de siempre, letra por letra) y las de la página. Lo usan `StructuralSectionCatalogAccess` (RACKSECCION y las órdenes de Cantilever), la página, «Larguero», Cantilever de la ventana y el editor clásico de Cantilever. Cualquier otra excepción se propaga, como desde la orden: la página se queda sin estado (falla cerrada) y la ventana lo dice como un fallo contenido. «Larguero» y Cantilever de la ventana conservan sus avisos: la lectura es la del sitio único; lo que muestran, suyo. La guarda `ExactlyOnePlaceInThePluginOwnsEachPieceOfTheFlow` mira ahora el Plugin y la UI | Core: `TheCatalogueIsReadAndFailsClosedInOnePlaceWithTheWordsOfRackSeccion` y `EveryReaderOfTheCatalogueGoesThroughTheOneSourceAndOnlyItDecidesTheFailure` (nuevas); la guarda extendida; `AnInvalidCatalogueStillFailsClosed` y `AnInvalidCatalogueStopsTheCommandInsteadOfDrawing`, reapuntadas al sitio único. UI: el defecto en `ACatalogueThatDoesNotValidateIsSaidAndNothingIsOfferedAsRackSeccionFailsClosed` |
+| M-1 | «El dibujo no cambió» también cuando el fallo era posterior al `Commit` (el regen), o cuando redactar el informe fallaba; en ese caso se perdía además `UnitsWarned` | La inserción recuerda que confirmó (`committed`): un fallo después del `Commit` es `FailedAfterCommit`, colocado pero no un éxito (la clásica lo dice como siempre). En la página, `DrawnButFailed`: «AutoCAD insertó «…» como el bloque «…», pero después falló: … Revisa el dibujo: un «U» deshace la inserción.». El informe (`Describe`) salió de `Place` y es un paso propio (`ReportOf`): si falla, no cambia la respuesta ni pierde el aviso de unidades. «El dibujo no cambió» queda solo donde está garantizado: antes del `Commit`, o antes de crear nada (lo que escapa de `Place` viene del aviso de unidades o del punto). El comentario de la orden, corregido | Core: `TheAnswersSayWhatWasDrawnOrWhyNotAndCarryTheReportAndTheUnits` (`DrawnButFailed`), `TheFlowPlacesTheApprovedPlanOnceForTheClassicAndThePage` (`committed`, `Describe`), `TheDoorCommandDrawsTheApprovedPlan…` (`ReportOf` y la rama). UI: `OnlyTheAnswerOfItsRequestCountsAndACancelledPointOrAFailureSayWhy` |
+| M-2 | La orden solo registraba el fallo en el log | `RackCommandSupport.Report(ex)` en su `catch` y al redactar el informe, como la clásica y las demás puertas | Core: `TheDoorCommandDrawsTheApprovedPlan…` |
+| M-3 | La prueba comparaba cuatro campos del plan | La firma completa (`Signature()`): contra el plan del estado (con la rotación en 30) y, en WPF, contra lo que pintó la vista previa (`Controls.Preview.Plan`). La pieza en rojo U3, rehecha cambiando solo la rotación (R12) | UI: `InsertarHandsTheDoorThePlanTheStateBuiltWithItsSectionAndTheWindowWaits`, `TheButtonFollowsTheSelectionSendsTheRequestAndThePageShowsTheAnswer` |
+| M-4 | La raíz de la página se llamaba «Perfil estructural», como la tarjeta de «Nuevo» | «Página Perfil estructural». La prueba de nombres únicos incluye la raíz y comprueba que la tarjeta está en el árbol que mira | UI: `NarrowThePreviewGoesBelowTheParametersAndTheNamesOfThePageAreUnique` |
+| M-5 | El «U» que la página sugiere es una orden ajena, y marca los editores abiertos de ese dibujo | Declarado como **T7per-S11**, y el paso 14 del smoke | — (documentación) |
+| M-6 | La orden nueva no estaba en dos teorías de «no es un rack» y «no alcanza a I-37» | `RackSeccionCommands.Ventana.cs` entra en `AnInsertedSectionIsNotARack` y en `NothingHereReachesIntoI37` | Core: las dos teorías |
+| M-7 | El comentario de `RebuildSections` decía solo «T5 lg» | Al día en los dos sitios (`RebuildSections` e `IsUnderNuevo`). El predicado se queda en el parcial de «Larguero» (mudarlo era opcional) | — |
+
+**Archivos:** nuevo, `src/RackCad.Application/StructuralSections/StructuralSectionCatalogSource.cs`. Cambiados:
+- el Plugin: `StructuralSectionCatalogAccess.cs`, `StructuralSectionCommandFlow.cs` (`Place` sin informe, `Describe` interno, `committed`,
+  `FailedAfterCommit`) y `RackSeccionCommands.Ventana.cs`;
+- Application: `VentanaRackCad/StructuralSectionDoor.cs` (`DrawnButFailed`);
+- la UI: `StructuralSectionPageViewModel.cs`, `StructuralSectionPageView.xaml`, `RackCadWindowViewModel.StructuralSection.cs`, `.Larguero.cs`,
+  `.Cantilever.cs`, `RackCadWindowViewModel.cs` (un comentario) y `Systems/Cantilever/RackCantileverWindow.xaml.cs`;
+- las pruebas: `StructuralSectionDoorTests.cs`, `MainMenuStructuralSectionAccessGuardTests.cs`, `StructuralSectionPluginSourceGuardTests.cs` y
+  `RackCadStructuralSectionPageTests.cs`;
+- la documentación: `construido.md` y `docs/ideas-futuras.md`.
+
+**Para integrar con cab:** `RackCadWindowViewModel.Cantilever.cs` y `RackCantileverWindow.xaml.cs` cambian una línea (el sitio de la lectura); si cab
+los toca, no se pisan.
+
+**Para el smoke en AutoCAD, además de los 14 pasos de arriba:** RACKCANTILEVER, la página «Larguero» y una línea Cantilever de la ventana abren como
+antes; su lectura del catálogo cambió de sitio, no de conducta.
+
+**Comprobación en rojo:** quince piezas rotas a propósito, una a una, con la mecánica de `red.py` (`hs65\t7\per\red-rev.py` en el scratchpad de
+la sesión; salida en `red-rev-out.txt` y `red-rev-out-2.txt`). Primero las piezas leídas como texto, después las de UI y al final las de
+Application, para que ninguna corra con los binarios de otra (la lección de la primera pasada). Se guardó copia fuera del worktree, se restauró
+con el mismo SHA-256 (las quince) y no hay restos en `git diff`. R14 y R15 fallaron en la primera pasada, pero el script no leyó el nombre de una
+teoría con parámetros; se repitieron con el lector corregido (`red-rev-out-2.txt`).
+
+| Pieza | Qué se rompió | Fallan |
+|---|---|---|
+| R1 | I-1: el dueño del Plugin vuelve a leer el CSV por su cuenta | 3: `AnInvalidCatalogueStillFailsClosed`, `EveryReaderOfTheCatalogueGoesThroughTheOneSourceAndOnlyItDecidesTheFailure`, `AnInvalidCatalogueStopsTheCommandInsteadOfDrawing` |
+| R2 | I-1: la página vuelve a capturar el fallo del catálogo | 1: `EveryReaderOfTheCatalogueGoesThroughTheOneSourceAndOnlyItDecidesTheFailure` |
+| R3 | I-1: «Larguero» vuelve a su propio cargador | 1: `EveryReaderOfTheCatalogueGoesThroughTheOneSourceAndOnlyItDecidesTheFailure` |
+| R7 | M-1: la inserción no recuerda que ya confirmó | 1: `TheFlowPlacesTheApprovedPlanOnceForTheClassicAndThePage` |
+| R8 | M-1: la respuesta no distingue el fallo tras confirmar | 1: `TheDoorCommandDrawsTheApprovedPlanWithTheMaterializationOfRackSeccionInOneUndoStep` |
+| R10 | M-2: el fallo de la orden no se informa como en la clásica | 1: `TheDoorCommandDrawsTheApprovedPlanWithTheMaterializationOfRackSeccionInOneUndoStep` |
+| R11 | M-1: el informe se redacta dentro del paso que dibuja | 1: `TheDoorCommandDrawsTheApprovedPlanWithTheMaterializationOfRackSeccionInOneUndoStep` |
+| R14 | M-6: la orden de la página nombra un Guid (un rack) | 1: `AnInsertedSectionIsNotARack(forbidden: "Guid")` |
+| R15 | M-6: la orden de la página alcanza a I-37 (Larguero) | 1: `NothingHereReachesIntoI37(forbidden: "Larguero")` |
+| R6 | I-1: un defecto deja a la página con su estado | 1: `ACatalogueThatDoesNotValidateIsSaidAndNothingIsOfferedAsRackSeccionFailsClosed` |
+| R12 | M-3 (U3 rehecha): «Insertar» manda el plan con otra rotación | 2: `InsertarHandsTheDoorThePlanTheStateBuiltWithItsSectionAndTheWindowWaits`, `TheButtonFollowsTheSelectionSendsTheRequestAndThePageShowsTheAnswer` |
+| R13 | M-4: la raíz de la página repite el nombre de la tarjeta | 1: `NarrowThePreviewGoesBelowTheParametersAndTheNamesOfThePageAreUnique` |
+| R4 | I-1: el sitio único cambia las palabras de la clásica | 2: `TheCatalogueIsReadAndFailsClosedInOnePlaceWithTheWordsOfRackSeccion`, `AnInvalidCatalogueStopsTheCommandInsteadOfDrawing` |
+| R5 | I-1: el sitio único captura cualquier excepción | 1: `TheCatalogueIsReadAndFailsClosedInOnePlaceWithTheWordsOfRackSeccion` |
+| R9 | M-1: «dibujado pero falló» dice que el dibujo no cambió | 1: `TheAnswersSayWhatWasDrawnOrWhyNotAndCarryTheReportAndTheUnits` |
+
+**Números** (sobre las fuentes finales, tras la comprobación en rojo):
+- **Core Full:** 19647 correctas, 0 con error, 403 omitidas (20050): las 19645 de antes más las 2 pruebas nuevas de I-1. 18 min.
+- **UI completa:** 3385 correctas, 0 con error, 48 omitidas (3433): las mismas pruebas, con las aserciones nuevas de I-1, M-1, M-3 y M-4. 26 min.
+- **Solución en Debug (Plugin incluido), con `--no-incremental`:** 0 errores; ninguna advertencia `MSB`, `CS`, `NU` ni `NETSDK`.
+- **Solución en Release:** 0 errores y 0 advertencias `MSB`, `CS`, `NU` ni `NETSDK` (solo los analizadores de xUnit de siempre; las dos de
+  `xUnit2013` en las guardas de secciones son líneas anteriores a esta parte).

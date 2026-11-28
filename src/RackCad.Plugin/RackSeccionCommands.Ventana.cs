@@ -47,15 +47,17 @@ namespace RackCad.Plugin
                 }
                 else
                 {
-                    var placement = StructuralSectionCommandFlow.Place(document, request.Section, request.Plan);
-                    report = placement.Report;
-                    answer = AnswerOf(request, placement);
+                    var placement = StructuralSectionCommandFlow.Place(document, request.Plan);
+                    report = ReportOf(placement, request);
+                    answer = AnswerOf(request, placement, report);
                 }
             }
             catch (System.Exception ex)
             {
-                // Place contains its own failures (an uncommitted transaction): what reaches here left nothing in the drawing.
-                RackLog.Exception("RackSeccionCommands.RackSeccionInsertar", ex);
+                // What escapes Place came BEFORE anything was created: the units advisory or the point. Its insert contains every failure
+                // from the lock on, and says when the section was already committed (review M-1). Reported as the classic and the other
+                // doors report a failure (review M-2).
+                RackCommandSupport.Report(ex);
                 answer = StructuralSectionDoorRules.Failed(request.RequestId, ex.Message, null, false);
             }
 
@@ -73,13 +75,31 @@ namespace RackCad.Plugin
             }
         }
 
-        // The answer of the page for what the flow did: drawn, cancelled at the point, or failed (nothing committed).
-        private static StructuralSectionInserted AnswerOf(StructuralSectionInsertRequest request, StructuralSectionPlacement placement)
+        // The report of the flow (what the classic writes): a step of its own, so a failure wording it does not change what was drawn nor
+        // lose the units advisory; reported as the classic reports it (review M-1, M-2).
+        private static string ReportOf(StructuralSectionPlacement placement, StructuralSectionInsertRequest request)
+        {
+            try
+            {
+                return StructuralSectionCommandFlow.Describe(placement.Outcome, request.Section, request.Plan);
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+                return null;
+            }
+        }
+
+        // The answer of the page for what the flow did: drawn and then a failure (after the commit), a failure before the commit (nothing
+        // reached the drawing), the point cancelled, or drawn.
+        private static StructuralSectionInserted AnswerOf(StructuralSectionInsertRequest request, StructuralSectionPlacement placement, string report)
         {
             var outcome = placement.Outcome;
-            if (!outcome.Success) return StructuralSectionDoorRules.Failed(request.RequestId, outcome.ErrorMessage, placement.Report, placement.UnitsWarned);
-            if (!outcome.Placed) return StructuralSectionDoorRules.Cancelled(request.RequestId, placement.Report, placement.UnitsWarned);
-            return StructuralSectionDoorRules.Inserted(request.RequestId, request.Section, outcome.BlockName, placement.Report, placement.UnitsWarned);
+            if (!outcome.Success && outcome.Placed) return StructuralSectionDoorRules.DrawnButFailed(request.RequestId, request.Section, outcome.BlockName,
+                outcome.ErrorMessage, report, placement.UnitsWarned);
+            if (!outcome.Success) return StructuralSectionDoorRules.Failed(request.RequestId, outcome.ErrorMessage, report, placement.UnitsWarned);
+            if (!outcome.Placed) return StructuralSectionDoorRules.Cancelled(request.RequestId, report, placement.UnitsWarned);
+            return StructuralSectionDoorRules.Inserted(request.RequestId, request.Section, outcome.BlockName, report, placement.UnitsWarned);
         }
     }
 }

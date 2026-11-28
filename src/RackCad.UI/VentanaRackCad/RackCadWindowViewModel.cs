@@ -1406,7 +1406,7 @@ namespace RackCad.UI.VentanaRackCad
         private void RebuildSections()
         {
             var sections = new List<RackCadWindowSection>(SectionOrder.Count);
-            foreach (var (page, label) in SectionOrder) sections.Add(new RackCadWindowSection(page, label, page == _page || IsUnderNuevo(page))); // T5 lg: «Nuevo» while «Larguero»
+            foreach (var (page, label) in SectionOrder) sections.Add(new RackCadWindowSection(page, label, page == _page || IsUnderNuevo(page))); // T5 lg, T7 per: «Nuevo» while «Larguero» or «Perfil estructural»
             _sections = sections;
             OnPropertyChanged(nameof(Sections));
         }

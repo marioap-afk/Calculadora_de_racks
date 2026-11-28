@@ -259,6 +259,16 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Page.HasState);
             Assert.False(rig.Page.HasCatalogNotice);
             Assert.True(rig.Page.CanInsert);
+
+            // T7 per, review I-1: anything else is not «the catalogue is wrong» but a defect. The page still fails closed (no inspector over
+            // data it could not read) and the message of the window says the contained failure, as for any other defect of the window.
+            rig.Loader = () => throw new UnauthorizedAccessException("sin permiso sobre catalogs");
+            rig.Window.OpenStructuralSectionPage();
+            Assert.False(rig.Page.HasState);
+            Assert.False(rig.Page.HasCatalogNotice);
+            Assert.False(rig.Page.CanInsert);
+            Assert.True(rig.Window.ActionFailed);
+            Assert.Equal("La ventana tuvo un fallo contenido: sin permiso sobre catalogs", rig.Window.ActionMessage);
         }
 
         // ------------------------------------------------------------------ «Insertar en el dibujo…»
@@ -269,6 +279,7 @@ namespace RackCad.UI.Tests
             var rig = new Rig();
             var section = rig.OpenWithW12X26();
             rig.State.View = SectionViewKind.LongitudinalX;
+            rig.State.RotationDegrees = 30;
             var expected = rig.State.BuildPlan();
 
             rig.Page.Insert();
@@ -277,8 +288,9 @@ namespace RackCad.UI.Tests
             Assert.Equal(Session, request.Session);
             Assert.Same(section, request.Section);
             Assert.Equal(section.SectionId, request.Plan.SectionId);
-            Assert.Equal((144.0, SectionViewKind.LongitudinalX, expected.Curves.Count, expected.Fidelity),
-                (request.Plan.Length, request.Plan.View, request.Plan.Curves.Count, request.Plan.Fidelity));
+            Assert.Equal((144.0, SectionViewKind.LongitudinalX), (request.Plan.Length, request.Plan.View));
+            // T7 per, review M-3: the WHOLE plan (every curve and point, the fidelity and the authority), not a few of its fields.
+            Assert.Equal(expected.Signature(), request.Plan.Signature());
             Assert.Null(StructuralSectionDoorRules.RefusalOf(request));
 
             // One request for the whole window, with «Dejar de esperar» until AutoCAD takes it.
@@ -331,6 +343,15 @@ namespace RackCad.UI.Tests
             Assert.True(rig.Window.IsWaitingForAutoCad);
             Assert.False(rig.Page.HasStatus);
 
+            // T7 per, review M-1: drawn, then a failure after the commit (the regen): the page says the section IS in the drawing.
+            rig.Door.Answered(StructuralSectionDoorRules.DrawnButFailed(first, rig.State.Selected!, "RACKCAD_SECCION_W12X26", "eRegen", "RackCad: no se pudo dibujar la seccion. eRegen", false));
+            Assert.False(rig.Window.IsWaitingForAutoCad);
+            Assert.True(rig.Page.StatusFailed);
+            Assert.StartsWith("AutoCAD insertó «W12X26» como el bloque «RACKCAD_SECCION_W12X26», pero después falló: eRegen.", rig.Page.StatusText);
+            Assert.DoesNotContain("no cambió", rig.Page.StatusText);
+
+            rig.Page.Insert();
+            first = rig.Door.Inserts.Last().RequestId;
             rig.Door.Answered(StructuralSectionDoorRules.Cancelled(first, "RackCad: insercion cancelada; no se dejo nada en el dibujo.", false));
             Assert.False(rig.Window.IsWaitingForAutoCad);
             Assert.Equal(StructuralSectionDoorRules.CancelledText, rig.Page.StatusText);
@@ -642,11 +663,17 @@ namespace RackCad.UI.Tests
                 Assert.Equal("Elige una sección de la lista para poder insertarla.", page.SectionInsertReasonText.Text);
 
                 controls.SearchBox.Text = "W12X26";
+                var rotation = controls.Parameters.Children.OfType<TextBox>().ToList()[2];
+                rotation.Text = "30";
                 Assert.True(page.SectionInsertButton.IsEnabled);
                 Click(page.SectionInsertButton);
 
                 var request = Assert.Single(rig.Door.Inserts);
                 Assert.Equal("W12X26", request.Section.DisplayName);
+                // T7 per, review M-3: what reaches AutoCAD is, curve for curve and point for point, what the preview drew.
+                Assert.NotNull(controls.Preview.Plan);
+                Assert.Equal(controls.Preview.Plan!.Signature(), request.Plan.Signature());
+                Assert.Equal(30.0, rig.State.RotationDegrees);
                 Assert.False(page.SectionInsertButton.IsEnabled);
 
                 rig.Door.Start(request.RequestId);
@@ -673,6 +700,8 @@ namespace RackCad.UI.Tests
             {
                 var rig = new Rig();
                 var view = new RackCadWindowView(rig.Window);
+                rig.Window.ShowPage(RackCadWindowPage.Nuevo); // the cards of «Nuevo» are built, so their names are in the tree
+                Lay(view, 1100);
                 rig.Window.OpenStructuralSectionPage();
                 Lay(view, 1100);
                 var page = (StructuralSectionPageView)view.StructuralSectionPage.Content;
@@ -684,16 +713,20 @@ namespace RackCad.UI.Tests
                 Assert.True(page.PreviewBelow);
                 Assert.Equal((1, 0), (Grid.GetRow(page.SectionPreviewPanel), Grid.GetColumn(page.SectionPreviewPanel)));
 
-                // Every control of the inspector is named in the page by its label, and no name of the page repeats one of the window.
-                var named = Descendants<FrameworkElement>(page)
+                // Every control of the inspector is named in the page by its label, and no name of the page (its root included) repeats one
+                // of the window: T7 per, review M-4, the root is «Página Perfil estructural», not the name of the card of «Nuevo».
+                var pageElements = new[] { (FrameworkElement)page }.Concat(Descendants<FrameworkElement>(page)).ToList();
+                var named = pageElements
                     .Select(AutomationProperties.GetName)
                     .Where(n => !string.IsNullOrEmpty(n))
                     .ToList();
+                Assert.Equal("Página Perfil estructural", AutomationProperties.GetName(page));
                 Assert.Contains("Buscar designacion (perfil estructural)", named);
                 Assert.Contains("Mostrar envolvente (perfil estructural)", named);
                 Assert.Equal(named.Count, named.Distinct(StringComparer.Ordinal).Count());
-                var outside = Descendants<FrameworkElement>(view).Except(Descendants<FrameworkElement>(page))
+                var outside = Descendants<FrameworkElement>(view).Except(pageElements)
                     .Select(AutomationProperties.GetName).Where(n => !string.IsNullOrEmpty(n)).ToHashSet(StringComparer.Ordinal);
+                Assert.Contains("Perfil estructural", outside); // the card of «Nuevo» is in the tree the test looks at
                 Assert.DoesNotContain(named, outside.Contains);
             });
         }

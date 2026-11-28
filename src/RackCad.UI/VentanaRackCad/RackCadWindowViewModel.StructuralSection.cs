@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using RackCad.Application.Catalogs;
 using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.VentanaRackCad;
@@ -20,8 +19,10 @@ namespace RackCad.UI.VentanaRackCad
     {
         private IRackCadStructuralSectionDoorPort _sectionDoor;
 
-        /// <summary>The neutral catalogue of structural sections the page reads (the one of RACKSECCION); the tests give theirs.</summary>
-        internal Func<StructuralSectionCatalog> StructuralSectionCatalogLoader { get; set; } = LoadStructuralSectionCatalog;
+        /// <summary>
+        /// The neutral catalogue of structural sections the page reads: the ONE source of RACKSECCION (review I-1); the tests give theirs.
+        /// </summary>
+        internal Func<StructuralSectionCatalog> StructuralSectionCatalogLoader { get; set; } = StructuralSectionCatalogSource.Load;
 
         /// <summary>The page «Perfil estructural».</summary>
         public StructuralSectionPageViewModel StructuralSection { get; private set; }
@@ -170,8 +171,5 @@ namespace RackCad.UI.VentanaRackCad
             StructuralSection.InsertStopped(text);
             if (!IsStructuralSectionPage) Say(text, failed: false);
         }
-
-        private static StructuralSectionCatalog LoadStructuralSectionCatalog() =>
-            new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
     }
 }

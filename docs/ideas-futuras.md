@@ -2199,3 +2199,14 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
   - filtrar en el puente de eventos los objetos que no son de RackCad (bajo las invariantes de F1);
   - pasar el nombre de la orden en la instantánea y no contar las de presentación y guardado (CTAB, LAYOUT, QSAVE, PLOT…).
 - **Sin medir:** QSAVE, PLOT y las matrices.
+
+## I-64 séptima tanda, per — el texto de la respuesta de «Perfil estructural» (2026-11-27, registrado sin corregir)
+
+- **Lo que hay:** la página «Perfil estructural» de la ventana muestra, bajo «En la línea de órdenes:», el informe de RACKSECCION tal como lo
+  escribe la línea de órdenes (`StructuralSectionCommandFlow.Describe`): sin acentos y con el nombre interno de la vista («vista CrossSection»,
+  «vista LongitudinalX»). Es el mismo texto de la clásica (T7per-S7).
+- **Decisión del Owner (2026-11-27, Q-per-2):** «Pulirlo después». No se cambia ahora.
+- **La mejora:** pulir el informe en el flujo, para las dos superficies a la vez: acentos donde la consola los admita y la vista con su nombre
+  («Sección», «Longitudinal X», «Isométrica»), como en los controles del inspector. Cambia también la línea de órdenes de la clásica, así que
+  necesita su propia decisión y la revisión de las guardas que fijan el texto del flujo (`StructuralSectionPluginSourceGuardTests`,
+  `MainMenuStructuralSectionAccessGuardTests`).

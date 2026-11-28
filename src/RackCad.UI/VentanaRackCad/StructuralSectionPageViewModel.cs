@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.VentanaRackCad;
@@ -103,42 +102,38 @@ namespace RackCad.UI.VentanaRackCad
         /// <summary>
         /// The page was shown (a click on its card, the crumb of the help, RACKSECCION): it reads the catalogue. The same catalogue keeps the
         /// state (what was chosen stays); another one (a file changed) gives a fresh state; a failure drops the state and says why.
+        ///
+        /// T7 per (review I-1): the read and the decision of the failure are the ONE source of RACKSECCION
+        /// (<see cref="StructuralSectionCatalogSource.TryLoad(Func{StructuralSectionCatalog})"/>), with its words for a page. Anything else is a
+        /// defect, not a failure of the catalogue: the page still drops its state (no inspector over data it could not read) and the defect
+        /// goes on to the window, which says it as every contained failure.
         /// </summary>
         public void Shown()
         {
-            StructuralSectionCatalog catalog;
-            string failure = null;
+            StructuralSectionCatalogLoad load = null;
             try
             {
-                catalog = _loader();
-                if (catalog == null) failure = "No se pudo cargar el catálogo de secciones estructurales, así que no se dibujará nada.";
+                load = StructuralSectionCatalogSource.TryLoad(_loader);
             }
-            catch (StructuralSectionCatalogException ex)
+            finally
             {
-                catalog = null;
-                failure = "El catálogo de secciones estructurales no es válido, así que no se dibujará nada. " + ex.Message;
+                Apply(load);
             }
-            catch (IOException ex)
-            {
-                catalog = null;
-                failure = "No se pudo leer el catálogo de secciones estructurales, así que no se dibujará nada. " + ex.Message;
-            }
-            catch (Exception ex)
-            {
-                catalog = null;
-                failure = "No se pudo cargar el catálogo de secciones estructurales, así que no se dibujará nada. " + ex.Message;
-            }
+        }
 
+        // The state and the notice for what the source got; null (a defect escaped the source) drops the state with no notice of its own.
+        private void Apply(StructuralSectionCatalogLoad load)
+        {
             var before = _state;
-            if (failure != null)
+            if (load == null || !load.Loaded)
             {
                 _state = null;
-                _catalogNotice = failure.Trim();
+                _catalogNotice = load?.PageText ?? string.Empty;
             }
             else
             {
                 _catalogNotice = string.Empty;
-                if (_state == null || !ReferenceEquals(_state.Catalog, catalog)) _state = new StructuralSectionInspectorState(catalog);
+                if (_state == null || !ReferenceEquals(_state.Catalog, load.Catalog)) _state = new StructuralSectionInspectorState(load.Catalog);
             }
 
             if (!ReferenceEquals(before, _state))
