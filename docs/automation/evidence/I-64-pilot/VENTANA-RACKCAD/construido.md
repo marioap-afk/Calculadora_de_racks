@@ -8667,3 +8667,70 @@ Dos partes, cada una con su revisión independiente (ninguna bloqueante) y sus c
 - **O-1 del smoke de la sesión:** con la paleta del Owner (816 px de alto) el botón «Insertar en el dibujo…» se alcanza (paso 3.3). No es un
   defecto.
 - **Estado:** la séptima tanda queda validada por el Owner.
+
+## Cierre de I-64 (2026-11-27)
+
+Lo construido, por página o editor, y sus diferencias con lo planeado están en la A-14, §14 (`docs/initiatives/I-64-A-14.md`). Aquí van los
+hechos del cierre.
+
+### El Candidato
+
+- **SHA:** `c0dd7a6b` (`c0dd7a6b7c997ae43f9153db8c9868f82c500755`), el merge de la parte per de la séptima tanda.
+- **CI de push:** verde, run 46088915654.
+- **Las dos suites en local sobre ese SHA exacto,** en un worktree aparte, desacoplado en `c0dd7a6b` y limpio al empezar y al terminar
+  (2026-11-28, de 01:54Z a 02:34Z; SDK resuelto 8.0.423):
+  - la solución en Debug con `--no-incremental`: 0 errores; el `RackCad.Plugin.dll` lleva grabado `c0dd7a6b`;
+  - Core Full: 19657 / 0 / 403;
+  - UI completa: 3408 / 0 / 48.
+- **DLL:** el Debug de `c0dd7a6b`, compilado con `--no-incremental`, es el del smoke de la séptima tanda y el de la prueba guiada del Owner
+  (secciones «Séptima tanda: smoke en AutoCAD» y «Séptima tanda: prueba guiada del Owner»).
+
+### La validación del Owner
+
+- **Prueba guiada general sobre `0a34fe71`:** «Ya terminé la prueba, todo está muy bien».
+  - Durante la prueba, el Owner encontró G-1, que se arregló en `8362d3de` (sección «Prueba guiada del Owner sobre `0a34fe71`»).
+  - Pregunta: después de la prueba entró `8362d3de`, y el WORKFLOW pide la validación sobre el SHA exacto. Respuesta: «Basta con tu prueba».
+    La validación de `0a34fe71` cubre `8362d3de`, porque el cambio solo toca la maquetación de «Calculado»: es una excepción del Owner.
+- **Prueba guiada de Cabecera y Perfil estructural sobre `d1e11518`,** con el binario de `c0dd7a6b`: «Todo ok».
+- **La excepción del Owner para el Candidato:**
+  - Pregunta: ¿la prueba guiada general (`0a34fe71`) y la de Cabecera y Perfil estructural (binario de `c0dd7a6b`), junto con el smoke de
+    la sesión sobre `c0dd7a6b`, valen como validación de `c0dd7a6b`?
+  - Respuesta: «Sí, valen para c0dd7a6b». Es una excepción a la regla del SHA exacto para la validación del dueño (WORKFLOW §4.5, paso 3).
+
+### Las decisiones del Owner para el cierre (2026-11-27)
+
+- **El editor clásico como legacy** (ADR-0052):
+  - Pregunta del Owner: «¿Las pruebas van a durar más si no se quita el RackCad viejo?». Respuesta de la sesión: UI, 857 de 2904 pruebas
+    declaradas en archivos con ventanas clásicas; Core, como mucho 1411 de 9915; el ahorro, unos 2-3 min, solo al cerrar o integrar y en
+    el CI.
+  - Propuesta del Owner (literal): «¿Podríamos simplemente dejarlo como legacy sin seguir dando soporte y eliminar las pruebas por lo
+    mismo?».
+  - Las pruebas: «Separarlas, no borrarlas». El clásico queda legacy, sin funciones nuevas ni arreglos, y la ventana es el único editor
+    soportado. Las pruebas que solo prueban su pantalla pasan a una categoría «Legacy» que no corre en el día a día, solo en el CI; las que
+    protegen código compartido se quedan. Al usar una orden clásica, se avisa de que es legacy.
+  - Cuándo: «Después, en otra iniciativa». I-64 se cierra ahora con la decisión «legacy» como ADR, y el cambio de las pruebas va en una
+    iniciativa corta posterior, en `docs/ideas-futuras.md` («I-64 — después del cierre (2026-11-27)»). No retrasa el merge a `main`.
+- **F4B:** «Cerrarla como reemplazada» por Push Back en la ventana. Sus carpetas locales (unos 45 GB) se liberan aparte, con el Owner.
+- **Largueros:** «Hay que dejarlo Wip, entra en otra iniciativa». La parte lg de la sexta tanda (`e05c21cf`) no se integra: queda en la
+  rama local `architecture/workspace-persistente-rackcad-t6-lg`, que no está en `origin`.
+- **Hotfix en `main` de los defectos del clásico (B-1 y el BOM clásico):** «No, que lleguen con I-64».
+
+### Después del Candidato, solo documentación
+
+| Commit | Qué trae |
+|---|---|
+| `d1e11518` | El smoke en AutoCAD de la séptima tanda (este documento) |
+| `a299f5ce` | La prueba guiada del Owner de la séptima tanda, «Todo ok» (este documento) |
+| `69848d78` | El merge de la rama de A-14: `docs/initiatives/I-64-A-14.md`, su revisión, el Snapshot M, la activación firmada por el Owner y su evidencia |
+| El commit de este cierre | La A-14, §14; el estado de I-64; ROADMAP; HANDOFF; ADR-0052 y su índice; `docs/ideas-futuras.md`, y esta sección |
+
+`git diff --name-only c0dd7a6b..69848d78`: 78 archivos, todos bajo `docs/`. El commit de este cierre también toca solo `docs/`.
+
+### Lo que queda
+
+- El CI del commit de cierre, sobre su SHA exacto (WORKFLOW §4.5, paso 4).
+- El merge `--no-ff` a `main` (paso 5).
+- El CI del `MERGE_SHA`, con su cobertura (paso 6), y la comprobación diferida de la cobertura del Candidato (paso 7).
+- La etiqueta `integration/I-64`, con los SHAs de cierre y de merge, el CI posterior y la cobertura (WORKFLOW §11.6).
+- La limpieza, solo después de los pasos 6 y 7: las ramas y los worktrees de I-64, avisando al Owner, y las carpetas locales de F4B, aparte y
+  con el Owner. La rama local de Largueros (`architecture/workspace-persistente-rackcad-t6-lg`) no se borra: es de la otra iniciativa.

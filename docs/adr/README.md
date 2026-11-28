@@ -87,6 +87,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0046](0046-protocolo-de-ejecucion-delegada-de-agentes.md) | Protocolo de ejecución delegada de agentes (Controller Codex, Worker y entrega estructurada) | aceptado |
 | [0051](0051-exportacion-excel-nativa-sobre-la-plataforma.md) | Exportación Excel nativa (Table y PivotTable) sobre la plataforma, sin biblioteca externa | aceptado |
 | [0049](0049-parametros-calculados-namespace-rack-y-resumen-de-proyecto.md) | Parámetros calculados de solo lectura, namespace built-in `rack` del motor de expresiones y resumen de proyecto (sucesor parcial de ADR-0043) | aceptado |
+| [0052](0052-editor-clasico-legacy-ventana-rackcad-soportada.md) | El editor clásico queda como legacy; la ventana RackCad es el editor soportado | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,

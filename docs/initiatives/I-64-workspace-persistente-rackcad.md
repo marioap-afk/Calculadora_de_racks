@@ -3,7 +3,7 @@ schema: rackcad-initiative/v2
 id: I-64
 title: Persistent RackCad Workspace
 type: architecture
-status: f1-pending-gate-contract
+status: integrated
 workflow: V2
 conceptual_initiative: I-64
 delivery_unit: I-64
@@ -176,6 +176,14 @@ regresión; F7 PASS → Smoke-PERF → si PASS → READY, con la clasificación 
 
 Estado: **F0 COMPLETE**; **F1 NOT STARTED**. Los contratos de gate de F1 los emite el Coordinator (AUTOMATION_PLAN 16.5); la propuesta para
 emitirlos está en [I-64-f1-gate-contract-proposal.md](I-64-f1-gate-contract-proposal.md).
+
+Estado al cierre (2026-11-27): **INTEGRADA**. Desde el 2026-11-24, por orden del Owner, la ventana RackCad se construyó ventana por ventana en
+la rama lateral `architecture/workspace-persistente-rackcad-selectivo`, sin paquetes por fase ni Architect: lo construido y sus diferencias con
+lo planeado están en la [A-14](I-64-A-14.md) §14 y en
+[lo construido](../automation/evidence/I-64-pilot/VENTANA-RACKCAD/construido.md) («Cierre de I-64 (2026-11-27)»). F4B se cerró como reemplazada,
+el editor clásico queda legacy ([ADR-0052](../adr/0052-editor-clasico-legacy-ventana-rackcad-soportada.md)) y Largueros sale a otra iniciativa.
+Candidato `c0dd7a6b`, con la validación del Owner por prueba guiada y su excepción a la regla del SHA exacto; `MERGE_SHA`, CI posterior,
+cobertura y limpieza en el tag `integration/I-64`.
 
 ## 9. Owner Validation
 

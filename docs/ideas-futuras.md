@@ -2222,3 +2222,66 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
   («Sección», «Longitudinal X», «Isométrica»), como en los controles del inspector. Cambia también la línea de órdenes de la clásica, así que
   necesita su propia decisión y la revisión de las guardas que fijan el texto del flujo (`StructuralSectionPluginSourceGuardTests`,
   `MainMenuStructuralSectionAccessGuardTests`).
+
+## I-64 — después del cierre (2026-11-27)
+
+Lo que el cierre de I-64 deja para después, con las decisiones del Owner del 2026-11-27 (registro en
+`docs/automation/evidence/I-64-pilot/VENTANA-RACKCAD/construido.md`, «Cierre de I-64 (2026-11-27)»). Lo que anotaron las partes de la
+sexta y la séptima tanda está en sus secciones de arriba y no se repite.
+
+### Separar las pruebas del clásico legacy (iniciativa corta)
+
+- **La decisión del Owner:** el editor clásico queda legacy ([ADR-0052](adr/0052-editor-clasico-legacy-ventana-rackcad-soportada.md)) y
+  sus pruebas se separan: «Separarlas, no borrarlas». Va en otra iniciativa corta, después de I-64: «Después, en otra iniciativa». No
+  retrasa el merge de I-64 a `main`.
+- **Qué hace:**
+  - las pruebas que solo prueban la pantalla del clásico pasan a una categoría «Legacy», que no corre en el día a día, solo en el CI;
+  - las que protegen código compartido se quedan;
+  - al usar una orden clásica, un aviso dice que es legacy.
+- **Lo medido (2026-11-27), para dimensionarla:**
+  - UI: 857 de las 2904 pruebas declaradas están en archivos que construyen ventanas clásicas;
+  - Core: como mucho 1411 de 9915;
+  - el ahorro: unos 2-3 min, solo al cerrar o integrar y en el CI.
+
+### Retirar el editor clásico
+
+- **Hoy no.** El Owner lo deja «por ahora a menos que elimine dificultades de escalabilidad en un futuro» (2026-11-27). Retirarlo es un ADR
+  nuevo que reemplace a ADR-0052.
+- **Las condiciones** (ADR-0052): antes, la ventana tiene que cubrir todo lo que hoy solo hace el clásico. Entre otras cosas:
+  - Largueros (abajo);
+  - los diseños de cabecera de la biblioteca como borrador de la ventana (T7cab-S9, en «I-64 séptima tanda, cab», arriba);
+  - «Guardar como plantilla…» de la cabecera (CB-11) y las cabeceras de los módulos de Dinámico («Editar cabecera…» y «Copiar a otros
+    módulos…»), que construido.md deja en «Lo que falta» de «Cuarta tanda, cb»;
+  - la pieza suelta de Cantilever, que sigue en los configuradores del clásico (RCT, CT5-08).
+- **La lista de retiro:** qué órdenes se retiran, con la entrada de respaldo (RACKMENU), la decide el Owner (A-14, §2, decisión 4; §6,
+  fase 9; C-07).
+
+### Largueros, WIP para otra iniciativa
+
+- **La decisión del Owner (2026-11-27):** «Hay que dejarlo Wip, entra en otra iniciativa», para sus cuatro preguntas abiertas: el tipo, el
+  bloque FRONTAL, el apoyo de la ménsula y las opciones del perfil suelto.
+- **Lo que entra en `main` con I-64:** solo el borrador «en construcción» de la quinta tanda, «Nuevo › Larguero en esta ventana · en
+  construcción» (LG-01 a LG-03). Elige la sección y la ménsula, y no guarda ni dibuja (construido.md, «Quinta tanda, lg»).
+- **Lo que queda fuera:** la parte lg de la sexta tanda, `e05c21cf` («la página «Larguero» terminada, con el perfil estructural»), en la rama
+  local `architecture/workspace-persistente-rackcad-t6-lg`.
+  - No se integra y no está en `origin`: si se pierde la rama local, se pierde ese trabajo.
+  - La limpieza de I-64 no la borra.
+- **Ya decidido para esa iniciativa** (respuestas del Owner del 2026-11-27 a las preguntas de la parte lg):
+  - guardar una sección AISC: «Un campo nuevo»;
+  - dibujarlo: «Pieza suelta»;
+  - RACKSECCION y «Larguero» en «una sola página»: lo sustituyó la séptima tanda. RACKSECCION abre «Perfil estructural», una página aparte
+    de «Larguero» («Igual que la clásica»).
+
+### Lo que el smoke de la séptima tanda no cubrió
+
+Del smoke de la sesión sobre `c0dd7a6b` (construido.md, «Séptima tanda: smoke en AutoCAD», «Lo que este smoke no cubrió»). La prueba guiada
+del Owner tampoco lo recorrió («Séptima tanda: prueba guiada del Owner»), así que queda como limitación declarada del cierre:
+- **«Perfil estructural» (per):**
+  - P-2, opción por opción (S, rotación, espejo, eje y envolvente). Sí se vio que la página y la clásica abren con los mismos controles y
+    los mismos valores por defecto;
+  - P-6 en un dibujo en pulgadas: solo se vio el aviso de un dibujo que no lo está;
+  - P-8, «Dejar de esperar» con texto a medio escribir;
+  - P-12, otra petición en vuelo;
+  - P-13, un catálogo que no valida.
+- **RACKCANTILEVER clásico:** su ventana también lee ya el catálogo de secciones por `StructuralSectionCatalogSource`, pero solo se probó el
+  Cantilever de la ventana (X-1).

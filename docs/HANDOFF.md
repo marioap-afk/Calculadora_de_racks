@@ -12,6 +12,19 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
+**I-64 — Persistent RackCad Workspace (ID30; absorbe ID3) — INTEGRADA** el **2026-11-27** (`architecture/workspace-persistente-rackcad`,
+desde la rama lateral `architecture/workspace-persistente-rackcad-selectivo`; Workflow V2, NEW ARCHITECTURE). RACKCAD, RK y RACKPANEL abren
+la **ventana RackCad**, una paleta que no bloquea AutoCAD: a la izquierda, las secciones y la lista de los racks del dibujo, con buscador y
+filtros; en el centro, el rack abierto. Selectivo, Dinámico, Push Back, Cantilever, las camas y las cabeceras se editan ahí sobre un
+borrador, con «Actualizar», «Insertar vista…» y los borradores de «Nuevo»; «Actualizar todo» escribe los borradores con cambios, todo o nada,
+con un solo «U». Variables, BOM y lista de racks, Almacén, Biblioteca de diseños, Configuración y Perfil estructural son páginas de la
+ventana. El editor clásico se queda como **legacy** ([ADR-0052](adr/0052-editor-clasico-legacy-ventana-rackcad-soportada.md)): sin
+funciones nuevas ni arreglos; RACKEDITAR y RACKMENU lo siguen abriendo. Largueros queda WIP para otra iniciativa, y F4B se cierra como
+reemplazada por Push Back en la ventana. Se construyó ventana por ventana, por orden del Owner, sobre la [A-14](initiatives/I-64-A-14.md)
+(§14: lo construido y sus diferencias con lo planeado). [Lo construido](automation/evidence/I-64-pilot/VENTANA-RACKCAD/construido.md),
+[evidencia](automation/evidence/I-64-evidence.md), [seguimientos](ideas-futuras.md) y tag `integration/I-64` (SHAs de cierre y merge, CI
+posterior, cobertura y limpieza).
+
 **I-69 — Selectivo Component Catalog Expansion — INTEGRACIÓN PARCIAL** el **2026-11-24** (`feature/selectivo-catalogo-componentes`, Workflow V2), por orden del
 Owner y sin cerrar la iniciativa. Entran a `main` cuatro largueros del catálogo Selectivo: escalón invertido calibre 14, escalón con ángulo, escalón invertido con
 ángulo y tubo 1.9" (peralte único 1.9), todos con ménsula 3 remaches calibre 10 colocada igual que en el escalón calibre 14. Solo datos de catálogo y su golden, sin
@@ -1538,6 +1551,12 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-64 (2026-11-27) — OWNER VALIDATION APROBADA por prueba guiada, con excepción del Owner a la regla del SHA exacto.** Prueba general
+sobre `0a34fe71` («Ya terminé la prueba, todo está muy bien»; el G-1 que encontró se arregló en `8362d3de`, que esa prueba cubre por
+excepción) y prueba de Cabecera y Perfil estructural sobre `d1e11518` con el DLL de `c0dd7a6b` («Todo ok»). Por excepción del Owner, las
+dos, con el smoke de la sesión, valen para el Candidato `c0dd7a6b`. Suites locales, CI exacta, DLL y smokes en
+[lo construido](automation/evidence/I-64-pilot/VENTANA-RACKCAD/construido.md) («Cierre de I-64 (2026-11-27)» y las secciones de cada tanda).
+
 **I-69 (2026-11-24) — prueba del Owner, no Owner Validation sobre SHA exacto.** El Owner probó los cuatro largueros en AutoCAD 2025 con el DLL Debug del worktree
 (`4a128a7c` más los datos sin commit, mismos blobs que `ffe0b74e`) y dictó «funciona bien». Core Full, UI Full y builds en la [evidencia](automation/evidence/I-69-evidence.md) §18.
 
@@ -2108,6 +2127,21 @@ veredicto.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### Sin trabajo activo de I-64 (integrada el 2026-11-27)
+
+La ventana RackCad es el único editor soportado, y el clásico queda legacy
+([ADR-0052](adr/0052-editor-clasico-legacy-ventana-rackcad-soportada.md)). Las ramas activas se rebasan sobre el nuevo `main` antes de su
+propia integración. Seguimientos, en [ideas-futuras](ideas-futuras.md) («I-64 — después del cierre (2026-11-27)»):
+
+- **Separar las pruebas del clásico legacy:** una iniciativa corta, por decisión del Owner: la categoría «Legacy» (solo en el CI), las
+  pruebas del código compartido en su sitio y el aviso legacy en las órdenes clásicas.
+- **Largueros:** WIP para otra iniciativa. Su trabajo de la sexta tanda solo está en la rama local
+  `architecture/workspace-persistente-rackcad-t6-lg`, que la limpieza de I-64 no borra.
+- **F4B,** cerrada como reemplazada: sus carpetas locales (unos 45 GB) se liberan aparte, con el Owner.
+- **Retirar el clásico** exige antes que la ventana cubra todo lo que hoy solo hace él (las condiciones, en ADR-0052).
+- **Sin decidir en este cierre:** la clasificación de ID3 y la aceptación de [ADR-0047](adr/0047-workspace-persistente-modeless-rackcad.md),
+  que sigue `propuesto`.
 
 ### I-69 sigue abierta tras su integración parcial (2026-11-24)
 
@@ -3999,6 +4033,12 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
+**Cierre de I-64 — 2026-11-27:** Candidato `c0dd7a6b` con CI de push exacta, las dos suites en local sobre ese SHA, revisiones
+independientes por parte, smokes de la sesión en AutoCAD y la validación del Owner por prueba guiada, con su excepción a la regla del SHA
+exacto. Sin paquetes por fase, READY ni conformidad del Architect: el 2026-11-24 el Owner ordenó construir ventana por ventana, sin contrato
+ni Architect. El commit de cierre (solo documental) lleva su propio CI. El merge `--no-ff`, la CI posterior al merge con cobertura, la
+cobertura diferida del Candidato y la limpieza se registran en `integration/I-64`.
+
 **Cierre de I-68 — 2026-11-09:** Candidato `68d9fb9a` con READY PASS (Architect y Coordinator CONFORMING), evidencia local Full, builds, CI exacta, cobertura y humo en
 Excel real, y Owner Validation PASS. El commit de cierre (solo documental) lleva su propia evidencia. El merge `--no-ff`, la CI posterior con cobertura y la limpieza se registran en
 `integration/I-68`.
@@ -5425,3 +5465,8 @@ con identidad estable, la entrada propia del NOD para el Proyecto y el miembro d
 `RackId` con su orden único, los estados no escribibles que nunca se tratan como vacío, la unificación segura y el
 reparto entre Application, que decide, y el Plugin, que lee y escribe. G3..G7 lo implementaron **sin cambiarlo**, y el
 Owner validó el resultado en G9. Su contenido es **inmutable**; sólo pueden cambiar su Estado y sus enlaces.
+
+**ADR-0052 — el editor clásico queda como legacy; la ventana RackCad es el editor soportado — `aceptado` el 2026-11-27** (iniciativa
+I-64). El Owner revirtió la eliminación del clásico al final de I-64 (SD-02) y lo dejó legacy: sin funciones nuevas ni arreglos, con sus
+pruebas separadas, no borradas, en una iniciativa corta posterior, y con su retiro condicionado a que la ventana cubra antes todo lo que hoy
+solo hace el clásico ([registro](automation/evidence/I-64-pilot/VENTANA-RACKCAD/construido.md), «Cierre de I-64 (2026-11-27)»).
