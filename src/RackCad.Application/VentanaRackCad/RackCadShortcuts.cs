@@ -15,6 +15,9 @@ namespace RackCad.Application.VentanaRackCad
 
         /// <summary>RACKPROPIEDADES and RPR with «Proyecto»: the tab «Propiedades del proyecto» of the page «Variables».</summary>
         ProjectProperties,
+
+        /// <summary>T7 cab (the Owner on 2026-11-27: «Abren la ventana»): RACKCABECERA and RCB, «Nuevo» › «Cabecera en esta ventana».</summary>
+        NewCabecera,
     }
 
     /// <summary>
@@ -65,11 +68,13 @@ namespace RackCad.Application.VentanaRackCad
         /// <summary>
         /// The reads of the window that a command typed by the user may run inside itself: the first read of «Variables» and the reads of
         /// «Editar aquí» of the editors with a tab «Propiedades». They only read (no undo marker); any other request, writes included, is
-        /// refused during the command as today (a command is in progress).
+        /// refused during the command as today (a command is in progress). T7 cab: the cabecera of its own has the tab now, so its read
+        /// (RACKCABECERAABRIR) is one of them.
         /// </summary>
         public static IReadOnlyList<string> InlineReads { get; } = new[]
         {
             "RACKVARIABLESLEER", "RACKSELECTIVOABRIR", "RACKDINAMICOABRIR", "RACKPUSHBACKABRIR", "RACKCANTILEVERABRIR", "RACKCAMAABRIR",
+            "RACKCABECERAABRIR", // T7 cab
         };
 
         /// <summary>The command of a text the door hands to AutoCAD («RACKSELECTIVOABRIR » → RACKSELECTIVOABRIR) when it is one of <see cref="InlineReads"/>; null otherwise.</summary>
@@ -105,6 +110,7 @@ namespace RackCad.Application.VentanaRackCad
             var page = ask == null ? "la ventana RackCad"
                 : ask.Target == RackCadShortcutTarget.Variables ? "«Variables» en la ventana RackCad"
                 : ask.Target == RackCadShortcutTarget.ProjectProperties ? "«Variables» › «Propiedades del proyecto» en la ventana RackCad"
+                : ask.Target == RackCadShortcutTarget.NewCabecera ? "«Nuevo» › «Cabecera en esta ventana» en la ventana RackCad" // T7 cab
                 : "«Propiedades» del rack en la ventana RackCad";
             if (ask == null || !ask.Taken) return "RackCad: " + NotOpenedText;
             var said = (ask.Said ?? string.Empty).Trim();
@@ -113,8 +119,11 @@ namespace RackCad.Application.VentanaRackCad
 
         // ------------------------------------------------------------------ what the window says
 
-        public const string CabeceraHasNoPropertiesText =
-            "Una cabecera suelta no tiene pestaña «Propiedades» en la ventana: usa «Propiedades personalizadas (ventana clásica)» del menú clásico (RACKMENU).";
+        // T7 cab: the text that said a cabecera of its own had no tab «Propiedades» went away with T6rl-S10: it has the tab now (T7cab-S6).
+
+        /// <summary>T7 cab: what RACKCABECERA says when the window opened a new draft of a cabecera (its label), for the command line.</summary>
+        public static string NewCabeceraText(string draftLabel)
+            => draftLabel + ", con los valores por defecto del configurador clásico; se coloca con «Insertar en el dibujo…» y, si no le pones nombre, toma el automático.";
 
         public const string NoEditorText =
             "Este rack no tiene editor en la ventana: usa «Propiedades personalizadas (ventana clásica)» del menú clásico (RACKMENU).";

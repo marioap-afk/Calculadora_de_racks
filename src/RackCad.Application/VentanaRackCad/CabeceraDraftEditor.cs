@@ -187,6 +187,25 @@ namespace RackCad.Application.VentanaRackCad
             _openedGeneratedHeight = _generatedHeight;
         }
 
+        /// <summary>T7 cab: what «Descartar» goes back to (what was opened, read or written last), as the JSON of the project store.</summary>
+        public string BaselineJson => _openedJson;
+
+        /// <summary>
+        /// T7 cab («Duplicar» of a cabecera of «Nuevo», the rule of the other drafts): the working frame becomes <paramref name="edited"/>, kept
+        /// normalized, while what «Descartar» goes back to stays what was opened (the base of the original). The template is the one the
+        /// frame names and the height it was generated with is its own height (CB4-03: the model keeps no other).
+        /// </summary>
+        public void TakeAsEdit(RackFrameConfiguration edited)
+        {
+            if (edited == null) throw new ArgumentNullException(nameof(edited));
+            var next = Store.DeepCopy(edited);
+            ImposeContext(next);
+            Normalize(next, null);
+            _config = next;
+            _templateId = TemplateIdOf(_config);
+            _generatedHeight = HeightOf(_config);
+        }
+
         // ------------------------------------------------------------------ the standard and its differences
 
         /// <summary>The frame the template gives with the height it was generated with, the post and the depth of now; null if it cannot be built.</summary>

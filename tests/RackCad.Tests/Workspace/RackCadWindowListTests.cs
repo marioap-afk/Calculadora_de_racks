@@ -302,7 +302,8 @@ public class RackCadWindowListTests
                 // T6 at: the command of «Actualizar todo» (RackCadUpdateAllCommands) is a command of the door too: it reaches the same
                 // checks and drawing halves as the APLICAR commands; its one outer transaction lives in Systems/Shared/RackUpdateAllTransaction.cs.
                 && !path.EndsWith("RackCadUpdateAllCommands.cs", StringComparison.Ordinal))
-                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bApplyCabeceraUpdate\b|\bApplyCamaUpdate\b|\bApplyCantileverEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\bRackPushBackWindowDrawing\b|\[CommandMethod"), code); // T5 cm: ApplyCamaUpdate
+                // T7 cab: the drawing half of «Insertar vista…» of a cabecera (ApplyCabeceraInsert) is reached only by the commands of its door.
+                Assert.DoesNotMatch(new System.Text.RegularExpressions.Regex(@"\bRackCommandSupport\.|\bApplyDynamicEdit\b|\bApplySelectiveEdit\b|\bApplyCabeceraUpdate\b|\bApplyCabeceraInsert\b|\bApplyCamaUpdate\b|\bApplyCantileverEdit\b|\bInsertSelectiveViews\b|\bDispatchInsertion\b|\bReadProjectVariables\b|\bRackPushBackWindowDrawing\b|\[CommandMethod"), code); // T5 cm: ApplyCamaUpdate
         }
     }
 

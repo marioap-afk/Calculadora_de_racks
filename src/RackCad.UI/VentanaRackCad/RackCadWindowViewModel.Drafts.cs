@@ -25,8 +25,8 @@ namespace RackCad.UI.VentanaRackCad
     ///
     /// <para><b>The one entry point</b> to open a design as a new draft is <see cref="OpenAsNewDraft"/>. «Selectivo en esta ventana» and
     /// «Dinámico en esta ventana» call it with <see cref="RackCadDraftSeed.Defaults"/>; «Duplicar» with a copy; Utilidades («Abrir de la
-    /// biblioteca») calls it with <see cref="RackCadDraftSeed.FromProject"/> over the project the library loaded. To add a system (Cabecera,
-    /// «Nuevo › Cabecera en esta ventana»), give its case to the six per-system methods of this file: <see cref="DraftDoorOf"/> (it has an
+    /// biblioteca») calls it with <see cref="RackCadDraftSeed.FromProject"/> over the project the library loaded. To add a system (T7 cab
+    /// added the Cabecera, «Nuevo › Cabecera en esta ventana», this way), give its case to the six per-system methods of this file: <see cref="DraftDoorOf"/> (it has an
     /// editor, and the door that writes it), <see cref="CreateDraftEditor"/> (its editor, kept in its own dictionary with its
     /// <c>IsNewRack</c>, as the two here), <see cref="IsLive"/>, <see cref="StateOf"/>, <see cref="CopyOf"/> and
     /// <see cref="ForgetDraftEditor"/>; everything else (numbers, column, list, limit, notices) follows.</para>
@@ -170,6 +170,7 @@ namespace RackCad.UI.VentanaRackCad
                 case RackSystemKind.PushBack: // T5 pb
                     hasDoor = _pushBackDoor != null;
                     return true;
+                case RackSystemKind.Selective: hasDoor = _cabeceraDoor != null; return true; // T7 cab: a cabecera of its own
                 default:
                     hasDoor = false;
                     return false;
@@ -187,6 +188,7 @@ namespace RackCad.UI.VentanaRackCad
                 case RackSystemKind.Cama: return CreateCamaDraft(seed, session, rackId, label, out failure); // T5 cm
                 case RackSystemKind.Cantilever: return CreateCantileverDraft(seed, session, rackId, label, out failure); // T5 ct
                 case RackSystemKind.PushBack: return CreatePushBackDraft(seed, session, rackId, label, out failure); // T5 pb
+                case RackSystemKind.Selective: return CreateCabeceraDraft(seed, session, rackId, label, out failure); // T7 cab
                 default:
                     failure = RackCadDraftNaming.NoEditorText(seed.Kind);
                     return null;
@@ -413,6 +415,7 @@ namespace RackCad.UI.VentanaRackCad
                 case CamaEditorViewModel cama: return IsLiveCama(entry, cama); // T5 cm
                 case CantileverEditorViewModel cantilever: return IsLiveCantilever(entry.Session, entry.RackId, cantilever); // T5 ct
                 case PushBackEditorViewModel pushBack: return IsLivePushBack(pushBack, entry.Session, entry.RackId); // T5 pb
+                case CabeceraEditorViewModel cabecera: return IsLiveCabecera(entry.Session, entry.RackId, cabecera); // T7 cab
                 default:
                     return false;
             }
@@ -427,6 +430,7 @@ namespace RackCad.UI.VentanaRackCad
                 case CamaEditorViewModel cama: return (cama.Name, cama.IsDirty, cama.IsWriting); // T5 cm
                 case CantileverEditorViewModel cantilever: return (cantilever.Name, cantilever.IsDirty, cantilever.IsWriting); // T5 ct
                 case PushBackEditorViewModel pushBack: return (pushBack.Name, pushBack.IsDirty, pushBack.IsWriting); // T5 pb
+                case CabeceraEditorViewModel cabecera: return (cabecera.Name, cabecera.IsDirty, cabecera.IsWriting); // T7 cab
                 default: return (null, false, false);
             }
         }
@@ -450,6 +454,7 @@ namespace RackCad.UI.VentanaRackCad
                 case CamaEditorViewModel cama: return CopyOfCama(cama); // T5 cm
                 case CantileverEditorViewModel cantilever: return CopyOfCantilever(cantilever); // T5 ct
                 case PushBackEditorViewModel pushBack: return CopyOfPushBack(pushBack); // T5 pb
+                case CabeceraEditorViewModel cabecera: return CopyOfCabecera(cabecera); // T7 cab
                 default:
                     return (null, null);
             }
@@ -473,6 +478,7 @@ namespace RackCad.UI.VentanaRackCad
                 case PushBackEditorViewModel pushBack: // T5 pb
                     ClosePushBackEditor(pushBack);
                     break;
+                case CabeceraEditorViewModel cabecera: CloseCabeceraEditor(cabecera); break; // T7 cab
             }
         }
 

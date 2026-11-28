@@ -2199,3 +2199,15 @@ Son los menores de la revisión independiente del código de PB-T3c, intento 1. 
   - filtrar en el puente de eventos los objetos que no son de RackCad (bajo las invariantes de F1);
   - pasar el nombre de la orden en la instantánea y no contar las de presentación y guardado (CTAB, LAYOUT, QSAVE, PLOT…).
 - **Sin medir:** QSAVE, PLOT y las matrices.
+
+## I-64 séptima tanda, cab — lo que queda para otra tanda (2026-11-27)
+
+- **Los diseños de cabecera de la biblioteca como borrador de la ventana (T7cab-S9).** Respuesta del Owner (2026-11-27): «Sí, en otra
+  tanda».
+  - Hoy «Abrir» de un diseño de cabecera de la biblioteca sigue en el configurador clásico (`OpensHere` no incluye la cabecera).
+  - La entrada de los borradores ya admite un proyecto de cabecera (`CreateCabeceraDraft`, que usa «Duplicar»).
+  - Falta lo que lib hizo para los demás sistemas: llevar el proyecto de la biblioteca hasta RACKCABECERANUEVO, para que sus campos
+    desconocidos y su versión lleguen al dibujo (I-11, `RackLibrarySourceDesign`, `HeaderInsertionRequest.SourceProject`), y su prueba.
+- **La ayuda emergente de «Insertar en el dibujo…» de un Push Back nuevo** (revisión de `258c16b1`, M-4). El botón de Push Back dice
+  siempre «Escribe el borrador en las vistas del dibujo y después inserta las vistas que elijas…», también en un Push Back nuevo, que no
+  tiene vistas. La cabecera ya la cambia según sea nueva o no (`CabeceraEditorViewModel.InsertViewToolTip`); a Push Back no se le tocó.

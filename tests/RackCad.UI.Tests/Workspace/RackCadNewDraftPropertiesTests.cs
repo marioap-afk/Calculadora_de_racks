@@ -39,15 +39,17 @@ namespace RackCad.UI.Tests
             Cama,
             Cantilever,
             PushBack,
+            Cabecera, // T7 cab: «Nuevo» › «Cabecera en esta ventana» has the tab too
         }
 
-        public static TheoryData<Sys> Systems() => new() { Sys.Selectivo, Sys.Dinamico, Sys.Cama, Sys.Cantilever, Sys.PushBack };
+        public static TheoryData<Sys> Systems() => new() { Sys.Selectivo, Sys.Dinamico, Sys.Cama, Sys.Cantilever, Sys.PushBack, Sys.Cabecera };
 
         // ------------------------------------------------------------------ the door of every system
 
         private sealed record Sent(long RequestId, string RackId, bool NewRack, RackPropertiesWrite? Properties);
 
-        private sealed class AllDoors : IRackCadSelectiveDoorPort, IRackCadCamaDoorPort, IRackCadCantileverDoorPort, IRackCadPushBackDoorPort
+        private sealed class AllDoors : IRackCadSelectiveDoorPort, IRackCadCamaDoorPort, IRackCadCantileverDoorPort, IRackCadPushBackDoorPort,
+            IRackCadCabeceraDoorPort // T7 cab
         {
             public List<Sent> Writes { get; } = new();
 
@@ -65,6 +67,8 @@ namespace RackCad.UI.Tests
 
             public event Action<RackDesignRead>? PushBackRead { add { } remove { } }
 
+            public event Action<CabeceraDesignRead>? CabeceraRead { add { } remove { } } // T7 cab
+
             public RackCadClassicResult RequestDesign(RackDoorRequest request) => RackCadClassicResult.Started();
 
             public RackCadClassicResult RequestSelectiveDesign(RackDoorRequest request) => RackCadClassicResult.Started();
@@ -75,6 +79,8 @@ namespace RackCad.UI.Tests
 
             public RackCadClassicResult RequestPushBackDesign(RackDoorRequest request) => RackCadClassicResult.Started();
 
+            public RackCadClassicResult RequestCabeceraDesign(RackDoorRequest request) => RackCadClassicResult.Started(); // T7 cab
+
             public RackCadClassicResult RequestDynamicUpdate(RackDoorWrite write) => Keep(new Sent(write.RequestId, write.RackId, write.NewRack, write.Properties));
 
             public RackCadClassicResult RequestSelectiveUpdate(SelectiveDoorWrite write) => Keep(new Sent(write.RequestId, write.RackId, write.NewRack, write.Properties));
@@ -84,6 +90,8 @@ namespace RackCad.UI.Tests
             public RackCadClassicResult RequestCantileverUpdate(CantileverDoorWrite write) => Keep(new Sent(write.RequestId, write.RackId, write.NewRack, write.Properties));
 
             public RackCadClassicResult RequestPushBackUpdate(PushBackDoorWrite write) => Keep(new Sent(write.RequestId, write.RackId, write.NewRack, write.Properties));
+
+            public RackCadClassicResult RequestCabeceraUpdate(CabeceraDoorWrite write) => Keep(new Sent(write.RequestId, write.RackId, write.NewRack, write.Properties)); // T7 cab
 
             public void Abandon(long requestId)
             {
@@ -134,6 +142,8 @@ namespace RackCad.UI.Tests
                 panel.Mark(Planta, RackViewAddress.PushBackCut(RackPushBackEnd.Posterior, RackPushBackSide.A));
                 panel.Insert();
             }, p.RequestWrite, p.Discard, () => p.IsNewRack),
+            CabeceraEditorViewModel k => new Draft(k, k.PropertiesTab, () => k.IsDirty, () => k.InsertViewBlockedText, // T7 cab
+                () => k.InsertWith(RackViewAddress.Whole(DimensionViewKind.Lateral), Planta), k.RequestWrite, k.Discard, () => k.IsNewRack),
             _ => throw new ArgumentException("not an editor of a draft", nameof(editor)),
         };
 
@@ -160,6 +170,7 @@ namespace RackCad.UI.Tests
                     case Sys.Dinamico: Window.StartNewDynamic(); return Of(Window.NewDynamicEditor!);
                     case Sys.Cama: Window.StartNewCama(); return Of(Window.NewCamaEditor!);
                     case Sys.PushBack: Window.StartNewPushBack(); return Of(Window.NewPushBackEditor!);
+                    case Sys.Cabecera: Window.StartNewCabecera(); return Of(Window.NewCabeceraEditor!); // T7 cab
                     default:
                         // A line that resolves: the defaults of the classic editor do not (CT-05), a design of the library does.
                         var opening = Window.OpenAsNewDraft(RackCadDraftSeed.FromProject(RackProject.ForCantilever(Line()), "de la prueba"));
@@ -452,6 +463,7 @@ namespace RackCad.UI.Tests
                 Sys.Dinamico => rig.Window.NewDynamicEditor!,
                 Sys.Cama => rig.Window.NewCamaEditor!,
                 Sys.Cantilever => rig.Window.NewCantileverEditor!,
+                Sys.Cabecera => rig.Window.NewCabeceraEditor!, // T7 cab
                 _ => (object)rig.Window.NewPushBackEditor!,
             });
             Assert.NotSame(original.Editor, copy.Editor);
@@ -512,7 +524,7 @@ namespace RackCad.UI.Tests
                 source.Switch.Level = SourceLevels.Error;
                 try
                 {
-                    foreach (var system in new[] { Sys.Selectivo, Sys.Dinamico, Sys.Cama, Sys.Cantilever, Sys.PushBack })
+                    foreach (var system in new[] { Sys.Selectivo, Sys.Dinamico, Sys.Cama, Sys.Cantilever, Sys.PushBack, Sys.Cabecera }) // T7 cab
                     {
                         var draft = new Rig().Start(system);
                         Add(draft.Tab, "Zona", "A");
@@ -559,6 +571,9 @@ namespace RackCad.UI.Tests
                 case PushBackEditorViewModel p:
                     var pushBack = new PushBackEditorView(p);
                     return (pushBack, pushBack.Tabs, pushBack.RackPropertiesTabItem, pushBack.RackPropertiesView);
+                case CabeceraEditorViewModel k: // T7 cab
+                    var cabecera = new CabeceraEditorView(k);
+                    return (cabecera, cabecera.Tabs, cabecera.RackPropertiesTabItem, cabecera.RackPropertiesView);
                 default:
                     throw new ArgumentException("not an editor of a draft", nameof(editor));
             }

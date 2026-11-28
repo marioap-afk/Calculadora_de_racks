@@ -56,6 +56,7 @@ namespace RackCad.UI.VentanaRackCad
                 ask.Taken = true;
                 _propertiesAsked = null;
                 if (ask.Target == RackCadShortcutTarget.RackProperties) ShowRackPropertiesByShortcut(ask);
+                else if (ask.Target == RackCadShortcutTarget.NewCabecera) StartNewCabeceraByShortcut(ask); // T7 cab: RACKCABECERA and RCB
                 else ShowVariablesByShortcut(ask);
             });
         }
@@ -125,12 +126,7 @@ namespace RackCad.UI.VentanaRackCad
                 return;
             }
 
-            if (ShowPropertiesTabOfActiveEditor()) return;
-            if (IsCabeceraRack)
-            {
-                ask.Said = RackCadShortcutRules.CabeceraHasNoPropertiesText;
-                return;
-            }
+            if (ShowPropertiesTabOfActiveEditor()) return; // T7 cab: a cabecera of its own has the tab now (T6rl-S10 no longer holds)
 
             if (_inFlight != null)
             {
@@ -144,11 +140,20 @@ namespace RackCad.UI.VentanaRackCad
             else if (ShowPushBackOffer) EditPushBackHere();
             else if (ShowCantileverOffer) EditCantileverHere();
             else if (ShowCamaOffer) EditCamaHere();
+            else if (ShowCabeceraOffer) EditCabeceraHere(); // T7 cab: its read runs inside the command too
             else
             {
                 _propertiesAsked = null;
                 ask.Said = RackCadShortcutRules.NoEditorText;
             }
+        }
+
+        // T7 cab (the Owner on 2026-11-27: «Abren la ventana»): RACKCABECERA and RCB, «Nuevo» › «Cabecera en esta ventana» as a click on it: a
+        // new draft with the defaults of the classic configurator (nothing to read). What the window said goes to the command line.
+        private void StartNewCabeceraByShortcut(RackCadShortcutAsk ask)
+        {
+            var opening = StartNewCabecera();
+            ask.Said = opening.Opened && opening.Draft != null ? RackCadShortcutRules.NewCabeceraText(opening.Draft.Label) : opening.Reason;
         }
 
         // The tab «Propiedades» of the editor of the active rack, when one is open.
@@ -164,6 +169,8 @@ namespace RackCad.UI.VentanaRackCad
                 cantilever.SelectedTab = CantileverEditorViewModel.PropertiesTabIndex;
             else if (ActiveCamaEditor is CamaEditorViewModel cama)
                 cama.SelectedTab = CamaEditorViewModel.PropertiesTabIndex;
+            else if (ActiveCabeceraEditor is CabeceraEditorViewModel cabecera) // T7 cab
+                cabecera.SelectedTab = CabeceraEditorViewModel.PropertiesTabIndex;
             else
                 return false;
             return true;

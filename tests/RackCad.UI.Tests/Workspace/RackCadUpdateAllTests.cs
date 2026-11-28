@@ -490,7 +490,8 @@ namespace RackCad.UI.Tests
                 w.Line != null),
             CamaDoorWrite w => string.Join("|", "Cama", w.RackId, w.Session, w.Name, w.NewRack, w.Properties != null, new FlowBedConfigurationStore().Serialize(w.Bed),
                 w.SourceDesignJson ?? "-"),
-            CabeceraDoorWrite w => string.Join("|", "Cabecera", w.RackId, w.Session, w.Name, new RackFrameProjectStore().Serialize(w.Cabecera)),
+            CabeceraDoorWrite w => string.Join("|", "Cabecera", w.RackId, w.Session, w.Name, w.NewRack, w.Inserts, w.Properties != null, // T7 cab: and its tab «Propiedades»
+                new RackFrameProjectStore().Serialize(w.Cabecera)),
             _ => throw new ArgumentException(write?.GetType().Name),
         };
 

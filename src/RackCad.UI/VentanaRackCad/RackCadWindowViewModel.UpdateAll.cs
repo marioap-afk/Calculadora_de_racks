@@ -589,7 +589,7 @@ namespace RackCad.UI.VentanaRackCad
                 var editor = pair.Value.Editor;
                 var name = CabeceraNameOf(pair.Value);
                 yield return new UpdateAllEntry(
-                    new UpdateAllCandidate(UpdateAllSystem.Cabecera, editor.RackId, name, editor.IsDirty, editor.IsWriting, false,
+                    new UpdateAllCandidate(UpdateAllSystem.Cabecera, editor.RackId, name, editor.IsDirty, editor.IsWriting, editor.IsNewRack, // T7 cab: a new one does not go
                         BlockedOf(session, editor.RackId, editor, editor.IsDirty, editor.CanUpdate, editor.UpdateBlockedText), IsStale(session, editor.RackId)),
                     id =>
                     {
@@ -598,7 +598,8 @@ namespace RackCad.UI.VentanaRackCad
                         if (copy == null) return null;
                         var sent = new RackFrameProjectStore().Serialize(copy);
                         return new UpdateAllSent(new DoorRequest(id, true, session, editor.RackId, sent, copy.Name, IsCabecera: true),
-                            new UpdateAllItem(UpdateAllSystem.Cabecera, editor.RackId, name, Cabecera: new CabeceraDoorWrite(id, session, editor.RackId, copy.Name, copy)),
+                            new UpdateAllItem(UpdateAllSystem.Cabecera, editor.RackId, name, Cabecera: new CabeceraDoorWrite(id, session, editor.RackId, copy.Name, copy,
+                                Properties: editor.PropertiesWrite())), // T7 cab: with its tab «Propiedades», as its «Actualizar»
                             editor);
                     },
                     editor);
@@ -651,6 +652,7 @@ namespace RackCad.UI.VentanaRackCad
                 case PushBackEditorViewModel pushBack: pushBack.WriteHandedOver(); break;
                 case DynamicEditorViewModel dynamic: dynamic.WriteHandedOver(); break;
                 case CantileverEditorViewModel cantilever: cantilever.WriteHandedOver(); break;
+                case CabeceraEditorViewModel cabecera: cabecera.WriteHandedOver(); break; // T7 cab (review of 258c16b1, M-1): its panel «Insertar vista…»
             }
         }
 

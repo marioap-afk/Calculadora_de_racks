@@ -192,6 +192,7 @@ namespace RackCad.Tests
             { "src/RackCad.Plugin/VentanaRackCad/RackCadCamaDoorCommands.cs", @"public\s+void\s+InsertNewCama\s*\(", "RACKCAMANUEVO", "pending.Write.Properties" },
             { "src/RackCad.Plugin/VentanaRackCad/RackCadCantileverDoorCommands.cs", @"public\s+void\s+InsertNewCantilever\s*\(", "RACKCANTILEVERNUEVO", "write.Properties" },
             { "src/RackCad.Plugin/VentanaRackCad/RackCadPushBackDoorCommands.cs", @"public\s+void\s+InsertNewPushBack\s*\(", "RACKPUSHBACKNUEVO", "write.Properties" },
+            { "src/RackCad.Plugin/VentanaRackCad/RackCadCabeceraDoorCommands.cs", @"public\s+void\s+InsertNewCabecera\s*\(", "RACKCABECERANUEVO", "write.Properties" }, // T7 cab
         };
 
         [Theory]

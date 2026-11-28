@@ -45,6 +45,7 @@ namespace RackCad.UI.VentanaRackCad
             ShowVariablesPage(); // T4 va (RackCadWindowView.Variables.cs)
             WireCamaView(); // T5 cm (RackCadWindowView.Cama.cs)
             BuildPushBackChrome(); // T5 pb (RackCadWindowView.PushBack.cs)
+            BuildCabeceraChrome(); // T7 cab (RackCadWindowView.Cabecera.cs)
         }
 
         /// <summary>Below this width the two columns do not fit: the side column is hidden on its own until the window is wider again.</summary>

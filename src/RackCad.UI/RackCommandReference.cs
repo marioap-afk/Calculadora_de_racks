@@ -33,7 +33,7 @@ namespace RackCad.UI
             new RackCommandInfo("Diseñar", "RACKCAD", "RK", "Ventana RackCad (no bloquea AutoCAD): secciones y lista de racks del dibujo."),
             new RackCommandInfo("Diseñar", "RACKMENU", "", "Menú clásico (elige el tipo de rack a diseñar), mientras las secciones de la ventana se migran."),
             new RackCommandInfo("Diseñar", "RACKSELECTIVO", "RS", "Editor de rack selectivo (matriz frentes × niveles)."),
-            new RackCommandInfo("Diseñar", "RACKCABECERA", "RCB", "Configurador de cabecera (marco: postes + placas + celosía)."),
+            new RackCommandInfo("Diseñar", "RACKCABECERA", "RCB", "Cabecera (marco: postes + placas + celosía). RACKCABECERA y RCB abren «Nuevo» › «Cabecera en esta ventana» en la ventana RackCad, que la edita sin bloquear AutoCAD; el configurador clásico sigue en el menú clásico (RACKMENU, «Diseñar cabecera»)."), // T7 cab
             new RackCommandInfo("Diseñar", "QUICKCABECERA", "QCB", "Cabecera por línea de comandos (pide poste/fondo/alto)."),
             new RackCommandInfo("Diseñar", "RACKSISTEMADINAMICO", "RSD", "Sistema dinámico (pallet flow)."),
             new RackCommandInfo("Diseñar", "QUICKCAMA", "QCM", "Cama de rodamiento (riel + rodillos + frenos)."),

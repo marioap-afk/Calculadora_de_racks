@@ -131,6 +131,24 @@
                     <Button x:Name="UpdateButton" Content="Actualizar" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
                             Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanUpdate}"
                             AutomationProperties.Name="Actualizar el dibujo con la cabecera" Click="OnUpdateClick" />
+                    <!-- T7 cab: «Insertar vista…» of a cabecera of the drawing, «Insertar en el dibujo…» of a new one (the panel of DG-07, below). -->
+                    <Button x:Name="InsertViewButton" Content="{Binding InsertViewLabel}" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                            IsEnabled="{Binding CanOpenInsertPanel}"
+                            ToolTip="{Binding InsertViewToolTip}"
+                            AutomationProperties.ItemStatus="{Binding InsertPanelStatus}"
+                            AutomationProperties.Name="Insertar vistas de la cabecera" Click="OnInsertViewClick">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsInsertPanelOpen}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     <Button x:Name="DiscardButton" Content="Descartar" Style="{StaticResource HeadButton}" IsEnabled="{Binding CanDiscard}"
                             AutomationProperties.Name="Descartar el borrador de la cabecera" Click="OnDiscardClick" />
                     <Button x:Name="RestoreButton" Content="Restaurar estándar…" Style="{StaticResource HeadButton}" IsEnabled="{Binding CanRestore}"
@@ -266,6 +284,12 @@
                         </WrapPanel>
                     </StackPanel>
                 </Border>
+
+                <!-- T7 cab: the panel «Insertar vista…» (DG-07: the same view as the other editors); it scrolls on its own. -->
+                <ScrollViewer x:Name="InsertPanelScroll" MaxHeight="380" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              Visibility="{Binding IsInsertPanelOpen, Converter={StaticResource FlagToVisibility}}">
+                    <local:RackViewInsertPanelView x:Name="InsertPanelView" DataContext="{Binding InsertPanel}" Inserting="OnInsertPanelInserting" />
+                </ScrollViewer>
 
                 <Border x:Name="CopyPanel" Style="{StaticResource QuestionPanel}" BorderBrush="{DynamicResource ShellBorderBrush}"
                         AutomationProperties.Name="{Binding CopyTitle}" Visibility="{Binding IsCopyOpen, Converter={StaticResource FlagToVisibility}}">
@@ -513,6 +537,14 @@
                         <TextBlock TextWrapping="Wrap" Margin="0,4,0,0" FontStyle="Italic" Foreground="{DynamicResource ShellTextSecondaryBrush}"
                                    Text="Existen en el modelo y hoy no tienen control. «Estado físico» de la horizontal y «Cara de montaje» no se ofrecen: no cambian el dibujo ni el BOM, y la celosía va siempre en el centro." />
                     </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- T7 cab: the tab «Propiedades» (VA-07; VA-S9 for a new cabecera) at the end, as in the other editors; a cabecera of a post has none. -->
+            <TabItem x:Name="RackPropertiesTabItem" Header="{Binding PropertiesTab.TabHeader}" AutomationProperties.Name="Propiedades"
+                     Visibility="{Binding IsStandalone, Converter={StaticResource FlagToVisibility}}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <local:RackPropertiesTabView x:Name="RackPropertiesView" DataContext="{Binding PropertiesTab}" />
                 </ScrollViewer>
             </TabItem>
         </TabControl>

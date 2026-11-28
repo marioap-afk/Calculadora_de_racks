@@ -16,6 +16,7 @@ namespace RackCad.Plugin
     /// the window, asks it to show what it opens (during the call, with the gestures the window already has: the first read of «Variables»,
     /// «Editar aquí» of the rack), runs INSIDE itself the read the window handed to the door meanwhile, and tells the window when it
     /// answered (it then shows the tab asked). No command leaves the window. The classic windows stay in the classic menu (RACKMENU).
+    /// T7 cab: RACKCABECERA and RCB open «Nuevo» › «Cabecera en esta ventana» the same way (a new draft: nothing to read).
     /// </summary>
     internal static class RackCadWindowShortcuts
     {
@@ -50,6 +51,7 @@ namespace RackCad.Plugin
                 case "RACKPUSHBACKABRIR": new RackCadPushBackDoorCommands().ReadPushBack(); break;
                 case "RACKCANTILEVERABRIR": new RackCadCantileverDoorCommands().ReadCantilever(); break;
                 case "RACKCAMAABRIR": new RackCadCamaDoorCommands().ReadCama(); break;
+                case "RACKCABECERAABRIR": new RackCadCabeceraDoorCommands().ReadCabecera(); break; // T7 cab
             }
         }
 

@@ -242,7 +242,8 @@ namespace RackCad.UI.VentanaRackCad
         // ------------------------------------------------------------------ the texts
 
         public string Title => _context.IsNewRack
-            ? "Insertar el " + _context.SystemName + " nuevo en el dibujo"
+            ? "Insertar " + (RackCadDraftNaming.NewText(_context.SystemName ?? string.Empty).EndsWith(" nueva", StringComparison.Ordinal) ? "la " : "el ") // T7 cab: «la Cabecera nueva»
+              + RackCadDraftNaming.NewText(_context.SystemName ?? string.Empty) + " en el dibujo"
             : "Insertar vistas de " + (string.IsNullOrWhiteSpace(_context.RackName) ? "este rack" : _context.RackName.Trim());
 
         public string Lead =>

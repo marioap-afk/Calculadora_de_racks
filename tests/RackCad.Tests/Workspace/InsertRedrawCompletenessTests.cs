@@ -180,9 +180,23 @@ public class InsertRedrawCompletenessTests
             "RackInsertRedrawOutcome.Of(blocks.Count, staleViewBlocks.Count, updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms)" },
         { "src/RackCad.Plugin/RackCantileverCommands.cs", @"internal\s+static\s+\(int\s+Redrawn,\s*int\s+Erased\)\s+ApplyCantileverEdit\s*\(",
             "RackInsertRedrawOutcome.Of(blocks.Count, staleViewBlocks.Count, Redrawn(updated), erasedPhantoms)" },
-        { "src/RackCad.Plugin/RackCabeceraCommands.cs", @"internal\s+static\s+void\s+EditCabecera\s*\(",
+        // T7 cab (review of 258c16b1, I-1): the «Insertar» of EditCabecera was extracted, as it was, to ApplyCabeceraInsert, the one drawing
+        // half of RACKEDITAR «Insertar» and of RACKCABECERAINSERTAR of the window (TheInsertarOfACabeceraIsItsOneDrawingHalf, below).
+        { "src/RackCad.Plugin/RackCabeceraCommands.Door.cs", @"internal\s+static\s+\(int\s+Redrawn,\s*int\s+Erased\)\s+ApplyCabeceraInsert\s*\(",
             "RackInsertRedrawOutcome.Of(lateralBlocks.Count + plantaBlocks.Count, 0, updated, 0)" },
     };
+
+    // T7 cab (review of 258c16b1, I-1): RACKEDITAR «Insertar» of a cabecera answers the queue with the rule because it IS ApplyCabeceraInsert:
+    // EditCabecera has no queue of its own.
+    [Fact]
+    public void TheInsertarOfACabeceraIsItsOneDrawingHalf()
+    {
+        var edit = Flat(WorkspaceHostSource.BodyOf(WorkspaceHostSource.Code("src/RackCad.Plugin/RackCabeceraCommands.cs"), @"internal\s+static\s+void\s+EditCabecera\s*\("));
+        Assert.Contains("if (!window.UpdateOnly) { ApplyCabeceraInsert(document, blockId, embed, project, config, id, name, window.InsertViews); return; }", edit, StringComparison.Ordinal);
+        Assert.DoesNotContain("RackViewBatchExecution", edit, StringComparison.Ordinal);
+        Assert.DoesNotContain("RackInsertRedrawOutcome", edit, StringComparison.Ordinal);
+        Assert.DoesNotContain("RackViewBatchRedrawResult", edit, StringComparison.Ordinal);
+    }
 
     private static string Flat(string code) => Regex.Replace(code, @"\s+", " ").Replace("( ", "(").Replace(" )", ")");
 

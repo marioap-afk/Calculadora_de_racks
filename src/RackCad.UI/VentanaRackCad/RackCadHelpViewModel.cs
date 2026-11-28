@@ -49,7 +49,7 @@ namespace RackCad.UI.VentanaRackCad
                 ["RACKCAD"] = ("Es esta ventana", null),
                 ["RACKMENU"] = ("Pie de la columna", null),
                 ["RACKSELECTIVO"] = ("Nuevo", RackCadWindowPage.Nuevo),
-                ["RACKCABECERA"] = ("Nuevo", RackCadWindowPage.Nuevo),
+                ["RACKCABECERA"] = ("Nuevo › «Cabecera en esta ventana»", RackCadWindowPage.Nuevo), // T7 cab
                 ["RACKSISTEMADINAMICO"] = ("Nuevo", RackCadWindowPage.Nuevo),
                 ["RACKCANTILEVER"] = ("Nuevo", RackCadWindowPage.Nuevo),
                 ["RACKPUSHBACK"] = ("Nuevo", RackCadWindowPage.Nuevo),

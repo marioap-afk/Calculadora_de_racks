@@ -1178,6 +1178,7 @@ namespace RackCad.UI.VentanaRackCad
             RaiseNewCama(); // T5 cm
             RaiseNewCantilever(); // T5 ct
             RaisePushBack(); // T5 pb: its offer, its editor and its new draft
+            RaiseNewCabecera(); // T7 cab: the new cabecera of «Nuevo»
         }
 
         private static string RefusalText(RackCadClassicResult result)

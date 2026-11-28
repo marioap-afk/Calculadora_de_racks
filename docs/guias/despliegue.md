@@ -274,7 +274,7 @@ comando completo. La ventana `RACKCAD` tiene esta misma lista en «Ayuda» › �
 | `RACKCAD` | `RK` | Ventana RackCad (no bloquea AutoCAD): secciones y lista de racks del dibujo. |
 | `RACKMENU` | — | Menú clásico (elige el tipo de rack a diseñar), mientras las secciones de la ventana se migran. |
 | `RACKAYUDA` | `RA` | Diálogo con **todos los comandos y sus atajos** dentro de AutoCAD (esta tabla, viva); en la ventana, «Ayuda» › «Órdenes y atajos». |
-| `RACKCABECERA` | `RCB` | Configurador de cabecera (editor). |
+| `RACKCABECERA` | `RCB` | Abre «Nuevo» › «Cabecera en esta ventana» en la ventana RackCad; el configurador clásico sigue en el menú clásico (`RACKMENU`, «Diseñar cabecera»). |
 | `QUICKCABECERA` | `QCB` | Cabecera por línea de comandos (pide poste/fondo/alto). |
 | `RACKSISTEMADINAMICO` | `RSD` | Sistema dinámico (pallet flow). |
 | `QUICKCAMA` | `QCM` | Cama de rodamiento. |
