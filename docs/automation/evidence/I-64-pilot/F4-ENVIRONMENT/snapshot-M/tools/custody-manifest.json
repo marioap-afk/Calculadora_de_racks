@@ -1,0 +1,143 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4-ENVIRONMENT/snapshot-M/tools",
+  "SourceRoot": "hs65/snapM/, la carpeta de las herramientas de la Snapshot M de la sesion (fuera del repositorio)",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 14,
+    "EXCLUDED": 2
+  },
+  "Files": [
+    {
+      "Path": "_gen_snapM.py",
+      "Bytes": 11750,
+      "Sha256": "fc30e2cebea719a69d775c1f63b25958607baa9b93e874fd2f363819ba7d4365",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "437d0b86e46c77adb7144358c369df16938d050fa76a2fae1d2715929578ee68",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-A-14>",
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <usuario>"
+      ]
+    },
+    {
+      "Path": "cfg_check_m.py",
+      "Bytes": 1908,
+      "Sha256": "a6e76fb89d947210e615dbe0f7e4128d17236e1914bc466d8e57de8d0a5f3e93",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "eval_probe_m.py",
+      "Bytes": 6353,
+      "Sha256": "27279fac7448fc70b518c16896e0b71959a7a6af34433f6121490bbb21d4f85e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3e753294baf540c25a1445267c6ba7f3ee9cb83ef2bbd579fa3c9097709e1479",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-A-14>"
+      ]
+    },
+    {
+      "Path": "launch_probe_m.sh",
+      "Bytes": 1187,
+      "Sha256": "cc7358c75cb3b08f908616e597d8cde8beabac43b7f035c1e16aaf01e8e2500f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "64fafb4011440799c5235867f7c046eaea6b3f9b35c16a088b7ecd288e4bf621",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-A-14>",
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <runtime-de-codex>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>"
+      ]
+    },
+    {
+      "Path": "make_probe_m.py",
+      "Bytes": 2329,
+      "Sha256": "a4ca30b5517574c64d166265e227ace43e953ed5baab56bf933c888f3c117693",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "opaque-logs-m.txt",
+      "Bytes": 1886,
+      "Sha256": "1559660bd8f106f581457d0a09136cbb615012574d2bbcc39b272ccf780b44f4",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de la busqueda en los registros de la app de Codex: lleva nombres de archivo de registro con identificadores de instancia de la app; solo por SHA-256 (su conclusion consta en opaque-proof-m.txt y en snapshot-m.json)"
+    },
+    {
+      "Path": "opaque-proof-m.txt",
+      "Bytes": 208,
+      "Sha256": "a1bbd22f8750d7eb0b0472548eb9e885e54d13279603118b2ed47cc39703657d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d4a0317fff09516581e0b053a2877d4aa74966d1cff63581266e298c0667fe42",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "opaque_logs.py",
+      "Bytes": 1632,
+      "Sha256": "01183f1184d42c99315ba15c3ac53021e5b6b3fe00da7f01c65b68a250d783f1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "opaque_reconstruct_l.py",
+      "Bytes": 1723,
+      "Sha256": "f24709ffd8b1f8dde414a1538d98ea77c9d157e8e28231b93cf6cffe847c7cbc",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "probe-runid-m.txt",
+      "Bytes": 23,
+      "Sha256": "17d5ee1c84260f193bc84f2a759512c0dbc056ec2eb494214267a8267c9b3e15",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "probe_cwd_m.py",
+      "Bytes": 1290,
+      "Sha256": "b92b08592c0fa49daa9ff5cd20e2a67b819538411f3689cbd69a02136ed86c53",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3f0084b2563ebf3fa240eb7b0bff7e827584854a85d697918cdf708dabf0865a",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-A-14>"
+      ]
+    },
+    {
+      "Path": "probe_post_m.sh",
+      "Bytes": 776,
+      "Sha256": "1bf2fb5127b237ac35d3506b13de62effb3c645ab33322cfcfde03492feae715",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "probe_pre_m.sh",
+      "Bytes": 828,
+      "Sha256": "74ab80ddd5fc54c25453b322b6dab811a0b219db90b0f07639a7dafdcdebe90a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "probe_state_m.py",
+      "Bytes": 1451,
+      "Sha256": "de6f83a7de027ed4d210584828647466baa69b12c8860536ee17270a9f34c769",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9f3c8f575f9306db04893e0454cb6dd0b24e19a2e7cfcc00b66b5554106765e1",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-A-14>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>"
+      ]
+    },
+    {
+      "Path": "proc_check_m.ps1",
+      "Bytes": 3880,
+      "Sha256": "d12d9232f290c9712f080c3498fb92693849191a4bfcf14ebd411a795b9bea3c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "6c0ea587ffaa84feed0c0a66e429d1e41b124d99414bcb2dc4394c68e1f4397c",
+      "Redaction": [
+        "ubicacion local sustituida por: <worktree-de-A-14>"
+      ]
+    },
+    {
+      "Path": "record_snapshot_m.py",
+      "Bytes": 6325,
+      "Sha256": "3c320cb5ba79d082651ed125d55782b12fdfa83dcbb593fac0916280a72fd5c0",
+      "Disposition": "EXCLUDED",
+      "Reason": "archivo que, tras la redaccion comun, aun lleva una ruta o un nombre local que no se tapa: solo por SHA-256"
+    }
+  ]
+}

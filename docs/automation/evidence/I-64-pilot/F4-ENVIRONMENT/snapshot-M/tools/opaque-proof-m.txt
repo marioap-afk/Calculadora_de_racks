@@ -1,0 +1,2 @@
+ocurrencias del GUID en config.toml 1 guid-sha actual 9B52E6E992BF guid-sha de la instancia de L 9C038F616063
+config.toml con el GUID de la instancia de L -> SHA-256 == Snapshot L: True | TOML valido: True

@@ -9075,3 +9075,169 @@ Todo en la ventana clásica de Push Back, con el RED primero y la sustitución d
 **Las comprobaciones, antes de escribir nada:** la numeración (F4B-E61 y la 291 existen; F4B-E62 y la 292 no); el árbol limpio y la rama remota en el Candidato; la línea `BOUNDED_RESULT`, con el token `EMITIBLE;` y los sha256 del paquete, la guía y el guion; ningún destino que ya exista, tampoco el contrato; el cambio de `I-64.yml`, calculado sobre HEAD; ninguna ruta de más de 156 caracteres.
 
 **Límites:** solo documentación; sin cambios en `src/` ni en `tests/`; sin AutoCAD.
+
+## 293. A-14 / replaneación hacia la ventana RackCad sin bloqueo, versionada en rama lateral (PROPOSED / NOT ACTIVE)
+
+**Solo en la rama lateral `architecture/workspace-persistente-rackcad-a14`.** Sale del HEAD de la rama de I-64, `fa59bd82` (F4B-E62, CI de push `45159049770` en success), por la decisión Q-C1. La rama de I-64 no se mueve mientras el Smoke-PB de F4B sigue abierto; la rama lateral se une a ella después del cierre de F4B.
+
+**A-14:** `docs/initiatives/I-64-A-14.md` (sha256 `8b5e8dc441a47200ab65794d274d0924ad89478b37fdd50976ef6a4f62104e50`), el texto de la v2.3 (sha256 `edf20bd23d508e76a3ebdbabeb17c862dc842ec7c47d975012952ec032304f13`) sin cambios de fondo. Los ajustes al versionar:
+- el título, sin «(borrador v2.3)»;
+- «propuesta del borrador» pasa a «propuesta de la sesión», en la cabecera y en §9;
+- las decisiones Q-C1 y Q-C2 se anotan con su fuente, en la cabecera, §2, §10, §12 y §13;
+- §10, paso 1, recoge la cadena completa hasta la v2.3;
+- §12 y §13 apuntan a la carpeta de custodia y a esta sección.
+
+**La cadena de revisión** (un revisor independiente de solo lectura, en sesión separada; no es el Architect):
+- **v1:** la revisión adversarial da APTO TRAS CORRECCIONES. Hallazgos: 0/11/14 del v1, más 2/0/2 por la segunda ronda del Owner (29).
+- **v2:** aplica los 29, sin rechazar ninguno. Su comprobación acotada da EMITIBLE TRAS CORRECCIONES: 28 resueltos y 1 parcial (R2-02); nuevos, 0/5/14.
+- **v2.1:** aplica 20 filas. Su comprobación da EMITIBLE TRAS CORRECCIONES: 19 resueltos y 1 parcial (N-01); nuevos, 0/1/5.
+- **v2.2:** aplica 7 filas. Su comprobación da **EMITIBLE A ARCHITECT**: 7 resueltos; nuevos, 0/0/4.
+- **v2.3:** aplica los 4 menores, sin rechazar ninguno, más el detalle del punto 10. Es el texto versionado.
+
+**Las decisiones del Owner (2026-11-23),** literales en `A-14/coordinator/owner-a14-decisions.md`:
+- primera ronda: aprueba los cambios de §3 de la replaneación; la ventana recuerda su tamaño y su posición; RACKCAD abre la ventana; la lista de retiro, después;
+- RACKPANEL se queda por ahora;
+- segunda ronda: Q-03, Q-09, Q-07 y Q-08;
+- tercera ronda: Q-02 y Q-10.
+
+**Las decisiones del Coordinator** (el Owner como Coordinator, cuarta ronda del mismo registro):
+- **Q-C1:** «Rama lateral, como A-12/A-13 (Recomendado)»: esta rama, la enmienda en `docs/initiatives/I-64-A-14.md` y las fuentes en la evidencia de I-64;
+- **Q-C2:** «gpt-6-luna, el acreditado (Recomendado)»: la revisión formal del Architect usa la celda gpt-6-luna / high / read-only, con el binario `4F91AE86…` y la configuración Snapshot L (F4B-E57), sin sondas nuevas.
+
+**Qué se custodia, en `docs/automation/evidence/I-64-pilot/A-14/`,** con su manifiesto `sha256.txt` (sha256 custodiado, bytes, líneas, CR, NUL, coincidencias, admitidos y, si se redactó, el sha256 original):
+- `coordinator/owner-a14-decisions.md`: el registro literal de las cuatro rondas;
+- `replaneacion-i64.html`: la replaneación «Replaneación de I-64»;
+- `prototipo/`: el prototipo «RackCad tipo navegador» v3 (`Main.dc.html`, redactado, y `canvas.json`);
+- como historia, las versiones v1, v2, v2.1, v2.2 y v2.3 (la v2.3, la versionada, también aquí);
+- `review/`: la revisión del v1, las comprobaciones de la v2, la v2.1 y la v2.2, y las disposiciones de la v2, la v2.1, la v2.2 y la v2.3;
+- `encargos/`: los encargos de la redacción, de la revisión del v1, de la comprobación de la v2, las instrucciones de la v2 y de la v2.1 y el de este versionado;
+- `a14-drafting-notes.md`: las notas de redacción.
+
+**La redacción:**
+- en los encargos, las rutas locales pasan a sus marcadores: `<worktree-de-I-64>`, `<carpeta-de-trabajo-de-A-14>`, `<herramientas-de-la-sesion>`, `<checkout-principal>` y `<worktree-de-A-14>`;
+- en el prototipo, las tres rutas de disco de ejemplo de Configuración pasan a `<datos-locales-del-usuario>` (sha256 original `0d0ee1198ae441e0b1eb3324965fea96cd1c389e4ed8797a59d43205ad67a097`; redactado `4386ef631c162c01365b9ac67d73e113d512de9fab808e67786e40b01d96342e`);
+- cada archivo se comprueba con los patrones locales de privacidad, que no se custodian. Tras la redacción no queda ninguna coincidencia. Lo admitido son menciones genéricas, no datos: los ejemplos de forma de ruta de la regla de privacidad del encargo de versionado, el correo del co-autor del commit, una mención de la carpeta temporal de la sesión en una regla y la ruta relativa del prototipo en la carpeta de trabajo;
+- nada queda fuera de la custodia: todo se pudo redactar.
+
+**Las comprobaciones, antes de escribir nada:**
+- la rama lateral no existía, ni en local ni en `origin`, y la de I-64 estaba en `fa59bd82` en local y en remoto;
+- el worktree de la rama lateral es nuevo y de ruta corta;
+- ningún destino existía;
+- la numeración: la 292 es la última sección.
+
+**Siguiente:**
+- la CI del commit exacto;
+- la orden del Coordinator de **una** revisión formal del Architect sobre ese commit, con la celda de Q-C2, STOP si la elegibilidad cambió, y Q-C3 (materialidad y autoridad);
+- si da AGREED, Coordinator AGREED y la firma del Owner (§11); si pide cambios, la corrección es A-15 y A-14 no se edita.
+
+**Límites:**
+- solo documentación; sin cambios en `src/` ni en `tests/`;
+- la rama de I-64 y su worktree, sin tocar;
+- sin AutoCAD;
+- sin lanzar al Architect.
+
+## 294. A-14: sonda neutra (Snapshot M) y revisión formal del Architect, en la rama lateral (AGREED)
+
+**Solo en la rama lateral `architecture/workspace-persistente-rackcad-a14`.** El objeto revisado es su commit `ab0170b7` (sección 293, CI exacta `45263171189` en success, 4/4). La rama de I-64 sigue en `fa59bd82` y no se toca.
+
+**La Snapshot M:**
+- **El hecho:** la app de Codex reescribió `config.toml` al arrancar tras el reinicio del 2026-11-23, a las 19:21:15Z. Su SHA-256 pasó de `B71650A6…` (Snapshot L) a `3E9BC35B0E72641A81241EC3E32BF45010B8CC3CC93FDD4E3C5E8188E6D19FFC`.
+- **Lo que no cambió:** los 105 nombres, en el mismo orden (`3ECF8E07…`), los 69 valores del inventario seguro, la versión de la app y el binario acreditado (`4F91AE86…`).
+- **El valor tapado que cambió:** el GUID del nombre de canalización `codex-computer-use-<GUID>` de `mcp_servers.node_repl.env.SKY_CUA_NATIVE_PIPE_DIRECTORY`. Es un identificador opaco y su valor no se registra.
+  - La app genera ese GUID en cada arranque. La instancia del 2026-11-22 (la de la L) y la del 2026-11-23 registran GUID distintos.
+  - **La prueba:** si se pone en el `config.toml` actual el GUID de la instancia de la L, se reproduce byte a byte el SHA-256 de la L. Es el único cambio del archivo (`opaque_reconstruct_l.py` y `opaque-proof-m.txt`, en `tools/`).
+- **La decisión del Owner:** «Sonda neutra, luego M (Recomendado)», en la quinta ronda del registro de A-14. La pregunta y la respuesta, literales, están en `F4-ENVIRONMENT/snapshot-M/owner-config-snapshot-m-decision.md`.
+- **La sonda neutra** `F4-ENVIRONMENT/probe-R20261123T211742Z-282c` da **PASS**:
+  - corrió desde el worktree lateral, el directorio de la revisión, que no figura en `[projects]` de `config.toml`;
+  - binario `4F91AE86…`, gpt-6-luna / high efectivos, solo lectura, política `never` y CLI 0.167.0-alpha.3.2;
+  - frente a la sonda `2c14` de la L, el contexto efectivo solo difiere en `root_turn_id`; que el directorio no figure en `[projects]` no cambia el contexto efectivo;
+  - el repositorio y `config.toml` no cambiaron durante la sonda.
+- **Su registro:** `F4-ENVIRONMENT/snapshot-M/snapshot-m.json`, con la forma del de la L.
+- **Sus herramientas:** están en `snapshot-M/tools/`, con su manifiesto. Se derivan de las de la L con reemplazos exactos (`_gen_snapM.py`). Hay dos diferencias de fondo:
+  - la carpeta de la corrida va a la carpeta de la sesión, fuera del repositorio;
+  - los participantes se miden contra el worktree lateral.
+
+  14 van como texto, redactadas. 2 van solo por SHA-256: `record_snapshot_m.py`, que lleva sus propios patrones de privacidad, como `record_snapshot_l.py`, y `opaque-logs-m.txt`, que lleva identificadores de instancia de la app.
+- **El alcance:** el registro no cambia la cadena de F4B. `cfg_check_f4.py` y la rama de I-64 no se tocan.
+
+**La orden del Coordinator** se ajustó a la M con un reemplazo exacto de sus cuatro menciones de la L: el bloque `config:`, E-2 y las dos líneas de INVALID_OUTPUT. Deja constancia en su propio texto. Su cabecera de preparación y sus campos `[COORDINATOR]` quedan como se prepararon. Se custodia literal en la carpeta de la revisión (SHA-256 `C37B9E78…`).
+
+**La revisión formal del Architect** está en `A-14-review/R20261123T212253Z-ab02`. Es una sola invocación, sin reintento, de 21:23:19Z a 21:26:14Z.
+- **La celda:** gpt-6-luna / high, solo lectura y política `never`, pedidos y efectivos. CLI 0.167.0-alpha.3.2, con el mismo binario antes y después. `config.toml` es la Snapshot M a la salida y a la entrada.
+- **El estado:**
+  - la rama lateral está en `ab0170b7`, en local, en remoto y en el seguimiento, con el árbol limpio y el checkout principal limpio;
+  - no hay participantes ni procesos sin atribuir.
+- **La salida:**
+  - valida contra el esquema y es coherente;
+  - los blobs del sujeto casan con `ab0170b7`;
+  - el SHA-256 de la orden que devuelve casa con el de la orden custodiada;
+  - no tiene bytes no ASCII.
+- **La auditoría de órdenes:** 24 órdenes, todas de lectura. No hay escrituras Git, y el único candidato a escritura es un cálculo de SHA-256.
+- **El veredicto, literal:** **AGREED**, con REQUIRED 0 y OPTIONAL 0, y sin limitaciones.
+  - M-01 a M-08 = YES.
+  - Q01 a Q13 = YES, todas conformes.
+  - Q14 = NO: no hace falta una decisión nueva del Owner.
+  - Q15 = NO: no queda ninguna ruta abierta.
+- **Lo declarado en el registro:**
+  - **La carpeta de la corrida** fue la de la sesión: el encargo prohibía escribir en el worktree lateral hasta el fin de la revisión. Por eso:
+    - no hubo `git fetch`;
+    - la ruta de la orden que nombra el prompt no existe en el worktree. Ninguna orden del revisor la pidió.
+  - **El prompt** conserva el texto de Q-C2 («config Snapshot L»).
+  - **AutoCAD:** había un `acad.exe` del Owner, abierto antes de la sonda. Ni la sesión ni la revisión lo usaron.
+
+**La custodia** se preparó primero en la carpeta de la sesión, redactada, con un manifiesto por unidad:
+- **La revisión:** 14 archivos van como texto. Solo por SHA-256 van los eventos, la salida de error, el código de salida, la evaluación mecánica, `git-exit.json` (idéntico a `git-entry.json`) y el registro de sesión de Codex.
+- **La sonda:** 13 archivos van como texto. Solo por SHA-256 van los eventos y los tres archivos idénticos a otros ya custodiados.
+
+**Siguiente:** STOP en `COORDINATOR_A14_ARCHITECT_REVIEW_REQUIRED`, como manda la orden. No se pide la firma del Owner ni se activa A-14.
+
+**Límites:**
+- solo documentación y evidencia; sin cambios en `src/` ni en `tests/`;
+- la rama de I-64, su worktree y `main`, sin tocar;
+- sin usar AutoCAD.
+
+## 295. A-14 ACTIVA: Coordinator AGREED, firma del Owner (tramo 1 = fases 0 a 4) y activación en la rama lateral
+
+**Solo en la rama lateral `architecture/workspace-persistente-rackcad-a14`** (Q-C1). La rama de I-64 sigue en `fa59bd82` y no se toca. A-14 es `docs/initiatives/I-64-A-14.md` en `ab0170b76c34249b4d772ac18cc571c1b5a587f1` (blob `427ce303…`), sin editar: es append-only desde ese commit.
+
+**La cadena completa** (A-14 §10):
+1. **La redacción y las revisiones independientes**, del v1 a la v2.3 (sección 293): la última comprobación da EMITIBLE A ARCHITECT, y la v2.3 aplica sus 4 menores.
+2. **Q-C1 y Q-C2**, decididas por el Owner como Coordinator: la rama lateral, y la celda gpt-6-luna / high / read-only (sección 293).
+3. **El versionado** en `ab0170b7`, con las fuentes en `A-14/` y `sha256.txt`. Su CI exacta es la `45263171189`: success, 4/4 (sección 293).
+4. **La configuración de la revisión:** la Snapshot M, por la quinta ronda del Owner («Sonda neutra, luego M»). La sonda `282c` da PASS (sección 294).
+5. **La revisión formal del Architect** `R20261123T212253Z-ab02` da **AGREED**, con REQUIRED 0 y OPTIONAL 0. M-01 a M-08 = YES; Q01 a Q13 = YES y Q14 y Q15 = NO, todas conformes (sección 294).
+6. **Coordinator AGREED,** en la sexta ronda: «AGREED (Recomendado)», sobre «la A-14 tal como está en ab0170b7». Está en `A-14/coordinator/coordinator-a14-agreed.md`.
+7. **La firma del Owner,** en la sexta ronda: «SATISFIED, tramo 1 = fases 0-4 (Recomendado)». Está en `A-14/coordinator/owner-a14-satisfied.md`.
+   - **La frase firmada** es la exacta de la §11 de `ab0170b7`, líneas 940 a 962. Solo cambian el `<SHA>`, que pasa a `ab0170b7…`, y la materia (11), que queda en «tramo 1 = fases 0 a 4, como se propone».
+   - El archivo trae la frase completa y sus SHA-256.
+   - Como la materia (11) queda en la propuesta, no hace falta la A-n de tramos.
+8. **La activación** en el estado de I-64 (`docs/automation/state/I-64.yml`, en esta rama):
+   - **`f4b_a14_status`** = A-14 ACTIVA, con los tres acuerdos y el tramo 1 = fases 0 a 4. Sigue la forma de `f2_a13_status`.
+   - **`codex_environment`** = la Snapshot M, como línea base activa del Controller, en lugar de la L (F4B-E57).
+   - **`current_phase`** sigue en F4B. `next_action` tampoco cambia: el Smoke-PB.
+
+**La orden de la revisión:** su anexo `A-14/coordinator/coordinator-a14-review-order-annex.md` registra lo que pasó, sin editar la orden custodiada (su SHA-256 sigue siendo el de su manifiesto):
+- **Su cabecera de preparación:** la orden la emitió la quinta ronda del Owner, y la consumió la revisión `ab02`.
+- **Sus campos `[COORDINATOR]`:** la revisión se lanzó con la propuesta de A-14 §9 y §12 en cada uno, y el Architect y el Coordinator AGREED los cubren como se detalla.
+- **Las dos desviaciones del prompt:**
+  - dice «config Snapshot L», el texto de Q-C2, frente a la Snapshot M medida a la salida y a la entrada;
+  - nombra la ruta de la orden en el worktree, donde no existió.
+
+**Lo que no cambia:**
+- F4B, el contrato de PB-T5 y el Smoke-PB, que sigue en curso (A-14 §6, fase 0; Relation to F4B);
+- los textos de A-1 a A-13 y de IC-01 a IC-11; las únicas sustituciones son las de IC-02, IC-03 e IC-05, que hacen C-02 y C-03 y están dentro de la firma;
+- F1, F2, F3 y F4, que no se reabren.
+
+**Lo que sigue:**
+- **Fase 0 = el cierre de F4B.** El Smoke-PB de PB-T5 sigue pendiente, con las reglas de su contrato (F4B-E62).
+- **El paquete de la fase 1** (la ventana) espera a que F4B cierre (A-14 §10, paso 8). Como toda fase, necesita su paquete, su revisión independiente y la orden del Owner y del Coordinator antes de emitirse (A-14 §6).
+- **La línea D** (el diseño por sistema, sin código) empieza por **Dinámico**, por la quinta ronda del Owner. Selectivo se aplaza, porque su editor cambiará en otra iniciativa del Owner.
+- **Al unir** esta rama lateral con la de I-64, después del cierre de F4B:
+  - se renumeran las secciones 293 a 295 de esta evidencia, si la rama de I-64 añade antes las suyas;
+  - se reconcilia `I-64.yml`.
+
+**Límites:**
+- solo documentación y estado; sin cambios en `src/` ni en `tests/`;
+- la rama de I-64, su worktree y `main`, sin tocar;
+- sin AutoCAD;
+- ninguna fase de A-14 emitida.

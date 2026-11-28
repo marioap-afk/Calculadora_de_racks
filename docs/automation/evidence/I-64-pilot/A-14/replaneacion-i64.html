@@ -1,0 +1,183 @@
+<title>Replaneación de I-64</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Documento de planeación: una columna de lectura; tablas en su propio contenedor; chips para estado y autoridad. */
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --fg: #1d2530; --muted: #4f5b69; --line: #dde2e8;
+  --accent: #1f5fbf; --accent-soft: #e6eefb;
+  --ok: #17663a; --ok-soft: #e3f4ea; --warn: #8a4b0b; --warn-soft: #fcefdc; --owner: #5b2d91; --owner-soft: #efe7fa;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161c; --surface: #1a2029; --fg: #e4e9ef; --muted: #a7b2bf; --line: #2c3441;
+  --accent: #7fb0ff; --accent-soft: #1d2b44;
+  --ok: #7fd6a2; --ok-soft: #173325; --warn: #f2bb73; --warn-soft: #3a2a14; --owner: #c9a8f5; --owner-soft: #2c2140;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12161c; --surface: #1a2029; --fg: #e4e9ef; --muted: #a7b2bf; --line: #2c3441;
+  --accent: #7fb0ff; --accent-soft: #1d2b44;
+  --ok: #7fd6a2; --ok-soft: #173325; --warn: #f2bb73; --warn-soft: #3a2a14; --owner: #c9a8f5; --owner-soft: #2c2140;
+  color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.6; }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 28px; }
+header { display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h1 { font-family: var(--display); font-size: 34px; line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: 22px; margin: 0; text-wrap: balance; }
+h3 { font-size: 16px; margin: 0; }
+p { margin: 0; max-width: 68ch; }
+section { display: flex; flex-direction: column; gap: 12px; }
+.lead { font-size: 17px; color: var(--muted); max-width: 70ch; }
+.summary { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+ul, ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; max-width: 72ch; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+.chip { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.chip-owner { background: var(--owner-soft); color: var(--owner); }
+.chip-arch { background: var(--accent-soft); color: var(--accent); }
+.chip-ok { background: var(--ok-soft); color: var(--ok); }
+.chip-warn { background: var(--warn-soft); color: var(--warn); }
+.phase { font-family: var(--display); font-weight: 600; white-space: nowrap; }
+.note { background: var(--warn-soft); color: var(--warn); border-radius: 8px; padding: 12px 14px; font-size: 14px; max-width: 76ch; }
+.flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; }
+.flow span.step { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-weight: 600; }
+.flow span.arrow { color: var(--muted); }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.q strong { font-weight: 600; }
+.small { font-size: 13px; color: var(--muted); }
+code { font-family: Consolas, Menlo, monospace; font-size: 13px; }
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">I-64 · Workspace persistente · borrador para revisión del Owner · 23-11-2026</span>
+  <h1>Replaneación de I-64: todo RackCad en una ventana que no bloquea AutoCAD</h1>
+  <p class="lead">Cómo llevar lo que ya está hecho (F1 a F4B) hasta la ventana tipo navegador del prototipo, qué cambia del plan congelado y qué decisiones te tocan.</p>
+</header>
+
+<div class="summary">
+  <h3>En corto</h3>
+  <ul>
+    <li><strong>El objetivo no cambia de fondo:</strong> el plan congelado (Proposal V5) ya decía que los editores serían «editables en el panel». El «Editar todo» modal de F4B se apartó de eso y se trata como provisional.</li>
+    <li><strong>Lo nuevo:</strong> navegación por la columna lateral (sin pestañas arriba), «Actualizar todo» (todo o nada), «Nuevo» dentro de la ventana y las secciones de RackCad (Variables, BOM y lista, Biblioteca, Configuración).</li>
+    <li><strong>Primer paso, pequeño:</strong> que el panel sea la ventana principal de RackCad, con el contenido del menú de RACKCAD, sin bloquear.</li>
+    <li><strong>Cómo se formaliza:</strong> una enmienda A-14 al plan congelado, con revisión independiente, Architect, Coordinator y tu firma. No toca <code>main</code> ni el Smoke-PB.</li>
+  </ul>
+</div>
+
+<section>
+  <h2>1. El objetivo, como lo decidiste</h2>
+  <ul>
+    <li>Todo RackCad funciona desde <strong>una sola ventana tipo navegador</strong>, acoplable o flotante, que no bloquea AutoCAD.</li>
+    <li>Cada rack o sistema del dibujo es una entrada de la <strong>columna lateral</strong>, con buscador y filtros, porque un dibujo puede tener hasta unos 70 racks.</li>
+    <li>Cada rack tiene su <strong>«Actualizar»</strong>; fuera de ellos hay un <strong>«Actualizar todo»</strong> que es todo o nada, con un solo Deshacer.</li>
+    <li><strong>«Nuevo»</strong> crea el sistema elegido dentro de la ventana. Mientras se migra, abre la ventana clásica de ese sistema.</li>
+    <li><strong>Cada sistema se rediseña</strong> (UI/UX) con un prototipo que apruebas tú. Push Back entra a la ventana tal cual, porque ya está hecho, y se rediseña después; los demás se migran una sola vez, ya con su diseño nuevo.</li>
+    <li>Secciones fijas: <strong>Variables, BOM y lista de racks, Biblioteca de diseños, Configuración</strong>. Muchos comandos se retirarán; RACKPROYECTAR y RACKEDITAR se quedan.</li>
+  </ul>
+  <p class="small">Prototipo aprobado: «RackCad tipo navegador» (versión 3, navegación lateral con buscador).</p>
+</section>
+
+<section>
+  <h2>2. Lo que ya está hecho y se reutiliza</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Fase cerrada</th><th>Qué dejó</th><th>Para qué sirve en el plan nuevo</th></tr></thead>
+    <tbody>
+      <tr><td class="phase">F1</td><td>El panel que no bloquea (<code>PaletteSet</code>), el puente de eventos, la política de foco, <code>RACKPANEL</code>.</td><td>Es la ventana. Se amplía, no se rehace.</td></tr>
+      <tr><td class="phase">F2</td><td>Seleccionar, Ver, Centrar y Localizar vista; la selección de AutoCAD llega al panel.</td><td>Las acciones del rack abierto y «Seguir la selección de AutoCAD».</td></tr>
+      <tr><td class="phase">F3</td><td>Pestañas preview y fijadas, registros ligeros por rack, una sola superficie viva.</td><td>Los registros ligeros se quedan; la tira de pestañas se sustituye por la lista lateral.</td></tr>
+      <tr><td class="phase">F4</td><td>Borrador por rack, obsolescencia, conflicto, Actualizar todo o nada de un rack, veto al cerrar; piloto con un campo.</td><td>La base de «Actualizar» y de «Actualizar todo».</td></tr>
+      <tr><td class="phase">F4B</td><td>Push Back completo: estado fuera de la ventana, escritor completo desde el borrador, «Editar todo» (modal).</td><td>Todo se reutiliza para poner el editor de Push Back dentro de la ventana. El modal queda como paso intermedio.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">F4B sigue abierta: falta terminar el Smoke-PB (unos 45 de 65 pasos) cuando tengas AutoCAD libre. SPB-12 y SPB-13 certifican que la ventana modal bloquea; se registrarán como comportamiento provisional, que la Fase 3 de este plan sustituye.</p>
+</section>
+
+<section>
+  <h2>3. Qué cambia del plan congelado (enmienda A-14)</h2>
+  <p>El plan congelado no se edita: cada cambio entra como enmienda. Estos son los puntos y quién los decide según el ciclo de vida del proyecto.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Punto de V5</th><th>Hoy dice</th><th>Pasa a</th><th>Decide</th></tr></thead>
+    <tbody>
+      <tr><td>§1 Objetivo</td><td>Panel modeless, borradores por rack y Actualizar como frontera.</td><td>Lo mismo, más: <strong>toda la operación de RackCad</strong> desde esa ventana.</td><td><span class="chip chip-owner">Owner</span></td></tr>
+      <tr><td>D-08 Pestañas</td><td>Pestañas preview y fijadas arriba.</td><td><strong>Columna lateral</strong>: lista de racks del dibujo con buscador, filtro por sistema, «solo con cambios» y estado; un rack abierto a la vez en el centro; los borradores siguen vivos al cambiar.</td><td><span class="chip chip-owner">Owner</span> <span class="chip chip-arch">Architect</span></td></tr>
+      <tr><td>§11 F6</td><td>Inventario del documento y búsqueda, casi al final.</td><td><strong>Sube</strong>: la lista lateral lo necesita desde el principio.</td><td><span class="chip chip-arch">Coordinator</span></td></tr>
+      <tr><td>D-09 y D-20</td><td>Sin «Actualizar» por lotes (residual de ID3).</td><td><strong>«Actualizar todo»</strong>: escribe todos los racks y variables con cambios; todo o nada; un solo Deshacer; dice cuál falló y por qué.</td><td><span class="chip chip-owner">Owner</span> <span class="chip chip-arch">Architect</span></td></tr>
+      <tr><td>No-objetivo</td><td>Crear racks nuevos desde el panel: no.</td><td><strong>«Nuevo»</strong> en la ventana. Intermedio: abre la ventana clásica del sistema.</td><td><span class="chip chip-owner">Owner</span></td></tr>
+      <tr><td>D-16 y no-objetivo</td><td>Ningún comando cambia (RACKLISTA, RACKVARIABLES, RACKBOMTOTAL…).</td><td>Sus funciones entran como <strong>secciones</strong> de la ventana; RACKCAD abre la ventana. Retirar comandos: fase propia, con la lista que decidas. RACKPROYECTAR y RACKEDITAR se quedan.</td><td><span class="chip chip-owner">Owner</span></td></tr>
+      <tr><td>D-15 y F4B D-PB-01</td><td>Editores «editables en el panel»; F4B abrió «Editar todo» como ventana modal.</td><td>Se <strong>realinea</strong> con V5: el editor vive en el área central de la ventana. El modal queda solo como paso intermedio.</td><td><span class="chip chip-arch">Architect</span> <span class="chip chip-arch">Coordinator</span></td></tr>
+      <tr><td>No-objetivo</td><td>No persistir la posición de la paleta entre sesiones.</td><td><strong>Pregunta abierta</strong> (ver §7).</td><td><span class="chip chip-owner">Owner</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>4. Las fases nuevas</h2>
+  <p>Cada fase deja algo que se ve en AutoCAD y sigue la misma cadena que F4B: paquete con revisión, contrato, implementación con pruebas, CI, revisiones y cierre.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Fase</th><th>Qué ves al terminar</th><th>Sustituye a</th><th>Depende de</th><th>Prueba en AutoCAD</th></tr></thead>
+    <tbody>
+      <tr><td class="phase">0 · F4B</td><td>Push Back completo certificado (Smoke-PB terminado).</td><td>—</td><td>—</td><td><span class="chip chip-warn">en curso</span></td></tr>
+      <tr><td class="phase">1 · La ventana</td><td>El panel es la ventana principal de RackCad: columna lateral con las secciones y el contenido del menú RACKCAD. «Nuevo» y las secciones abren sus ventanas actuales mientras se migran. RACKCAD abre la ventana.</td><td>Menú modal de RACKCAD</td><td>0</td><td>Smoke corto</td></tr>
+      <tr><td class="phase">2 · Racks del dibujo</td><td>La lista lateral de todos los racks: estado, buscador, filtro por sistema, «solo con cambios», «Seguir la selección de AutoCAD» y Selección (N). Probada con 70 o más racks.</td><td>Tira de pestañas (F3); F6</td><td>1</td><td>—</td></tr>
+      <tr><td class="phase">3 · Push Back en la ventana</td><td>El editor completo de Push Back en el área central, sin bloquear; los cambios van al borrador; «Actualizar» del rack; teclado y foco dentro de la ventana. «Editar todo» deja de abrir la ventana modal.</td><td>«Editar todo» modal</td><td>2</td><td>Smoke principal (con la 4)</td></tr>
+      <tr><td class="phase">4 · Actualizar todo</td><td>Escribe todos los racks y variables con cambios en una sola operación: todo o nada, un Deshacer, progreso y lista de lo que falló.</td><td>—</td><td>3</td><td>Smoke principal</td></tr>
+      <tr><td class="phase">5 · Secciones</td><td>Variables, BOM y lista de racks, Biblioteca y Configuración dentro de la ventana, sin bloquear.</td><td>Sus ventanas modales</td><td>1</td><td>—</td></tr>
+      <tr><td class="phase">D · Diseño por sistema</td><td>En paralelo desde ya, sin código: un prototipo de UI/UX por sistema, como el de la ventana, que apruebas tú. Orden: Selectivo, Dinámico y Cantilever (antes de la 6), Cabecera y Cama (antes de la 7) y Push Back (para la 3b).</td><td>—</td><td>—</td><td>Tu revisión del prototipo</td></tr>
+      <tr><td class="phase">6 · Selectivo, Dinámico, Cantilever</td><td>Sus editores dentro de la ventana, ya con su diseño nuevo, con el patrón de la Fase 3.</td><td>F5-A</td><td>3 y su prototipo de D</td><td>Smoke</td></tr>
+      <tr><td class="phase">7 · Cabecera y Cama</td><td>Lo mismo para Cabecera y Cama, con su diseño nuevo.</td><td>F5-B</td><td>6 y su prototipo de D</td><td>—</td></tr>
+      <tr><td class="phase">3b · Push Back rediseñado</td><td>El editor de Push Back con su diseño nuevo, dentro de la ventana; reutiliza el estado y el escritor de F4B.</td><td>Push Back tal cual (3)</td><td>4 y su prototipo de D</td><td>Smoke</td></tr>
+      <tr><td class="phase">8 · Nuevo en la ventana</td><td>«Nuevo» crea el sistema en la lista como «Nuevo, sin insertar» y lo inserta desde la ventana.</td><td>Nuevo → ventana clásica</td><td>3 y 6</td><td>—</td></tr>
+      <tr><td class="phase">9 · Retiro de comandos</td><td>Los comandos sustituidos se retiran o avisan de que su función está en la ventana, según tu lista.</td><td>—</td><td>5 a 8</td><td>—</td></tr>
+      <tr><td class="phase">F7 · READY</td><td>Rendimiento y regresión; Smoke-PERF con un dibujo real de unos 70 racks; integración.</td><td>F7 de V5</td><td>1 a 9</td><td>Smoke-PERF</td></tr>
+    </tbody>
+  </table></div>
+  <div class="flow" aria-label="Orden de las fases">
+    <span class="step">0</span><span class="arrow">→</span><span class="step">1</span><span class="arrow">→</span><span class="step">2</span><span class="arrow">→</span><span class="step">3</span><span class="arrow">→</span><span class="step">4</span><span class="arrow">→</span><span class="step">6</span><span class="arrow">→</span><span class="step">7</span><span class="arrow">→</span><span class="step">3b</span><span class="arrow">→</span><span class="step">8</span><span class="arrow">→</span><span class="step">9</span><span class="arrow">→</span><span class="step">F7</span>
+  </div>
+  <p class="small">La línea de diseño (D) corre en paralelo desde ya, y cada fase de editor empieza con su prototipo aprobado. La Fase 5 puede avanzar en paralelo desde que cierre la 1.</p>
+</section>
+
+<section>
+  <h2>5. Riesgos y cómo se tratan</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Riesgo</th><th>Tratamiento</th></tr></thead>
+    <tbody>
+      <tr><td>El editor de Push Back es grande para una paleta.</td><td>Ventana flotante y redimensionable; la Fase 3 empieza midiendo (como PB-T0). Si la paleta no sirve, V5 ya prevé la alternativa de una ventana sin bloqueo (D-01), por enmienda.</td></tr>
+      <tr><td>Teclado y foco con un editor completo dentro de la paleta (ya vimos el problema de Ctrl+V en Smoke-1).</td><td>La obligación de foco de D-01 ya está congelada: ninguna tecla de un campo llega a AutoCAD. La Fase 3 la prueba en todos los controles del editor.</td></tr>
+      <tr><td>70 racks en un dibujo.</td><td>La Fase 2 mide la lista y el inventario con 70 o más racks; Smoke-PERF con un dibujo real.</td></tr>
+      <tr><td>«Actualizar todo» puede tardar: hoy un rack grande tarda de 9 a 13 s (SPB-23).</td><td>Progreso visible; una sola operación con un solo Deshacer; si algo falla, no se escribe nada. Cómo cancelar a medias se define en la Fase 4.</td></tr>
+      <tr><td>Ventanas pequeñas que siguen siendo modales (Configurar cabecera, Seguridad, BOM, Guardar en biblioteca).</td><td>Se quedan modales al principio (duran segundos) y se listan para migrarlas en sus fases.</td></tr>
+      <tr><td>RACKEDITAR cambia un rack que tiene borrador en la ventana.</td><td>Ya resuelto en F4: el borrador pasa a «posiblemente obsoleto» y «Actualizar» pide elegir.</td></tr>
+      <tr><td>El rediseño cambia la forma de trabajar con cada sistema.</td><td>Prototipo aprobado antes de programar, Smoke por sistema, y RACKEDITAR clásico como respaldo mientras tanto.</td></tr>
+      <tr><td>Costo del proceso: cada fase lleva la cadena completa.</td><td>Las fases 1, 2 y 5 son ligeras. Las 3 y 4 son las grandes, como F4B.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>6. Cómo se aprueba</h2>
+  <ol>
+    <li>Revisas este borrador y contestas las preguntas de §7.</li>
+    <li>Redacto la enmienda <strong>A-14</strong> (objetivo, no-objetivos y plan de fases) con revisión independiente.</li>
+    <li>Architect y Coordinator dan su acuerdo; tú firmas lo que es tuyo (<span class="chip chip-owner">Owner</span> en la tabla de §3).</li>
+    <li>Paquete de la Fase 1, con su revisión, como en F4B.</li>
+  </ol>
+  <p class="small">Nada de esto toca <code>main</code> ni el Smoke-PB, que sigue pendiente de que tengas AutoCAD libre.</p>
+</section>
+
+<section>
+  <h2>7. Preguntas para ti</h2>
+  <div class="q"><strong>1. ¿Apruebas el objetivo y los cambios de §3?</strong><span>Con eso redacto A-14.</span></div>
+  <div class="q"><strong>2. ¿La ventana recuerda su tamaño y posición entre sesiones de AutoCAD?</strong><span>V5 lo excluyó. Recomiendo que sí: una ventana grande que vuelve a su sitio cada vez es más cómoda. Es un cambio pequeño de alcance.</span></div>
+  <div class="q"><strong>3. Rediseño de UI/UX de cada sistema: decidido.</strong><span>«Diseñar antes de migrar»: línea de diseño en paralelo con prototipos que apruebas; Push Back entra tal cual y se rediseña después (3b); los demás se migran una sola vez con su diseño nuevo.</span></div>
+  <div class="q"><strong>4. ¿Qué comandos se retiran?</strong><span>No hace falta decidirlo ahora: antes de la Fase 9 te traigo la lista completa de comandos con lo que hace cada uno.</span></div>
+  <div class="q"><strong>5. ¿Cómo se llama la ventana y qué comando la abre?</strong><span>Hoy es RACKPANEL. Propuesta: RACKCAD abre la ventana, y RACKPANEL queda como alias.</span></div>
+</section>
+</div>
