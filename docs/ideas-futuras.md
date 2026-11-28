@@ -513,7 +513,11 @@ Selectivo ni el Dinámico:
   `Math.Min(postIndex, Fronts.Count - 1)`, que colapsa el último poste sobre el último frente: apagar la
   celda del penúltimo poste suprime también la del último. La capacidad
   `SelectiveSafetySelection.DesviadorCellsAreByPost` es el interruptor; activarla para el Dinámico
-  cambiaría su comportamiento y necesita decisión del Owner.
+  cambiaría su comportamiento y necesita decisión del Owner. **Decidido el 2026-11-26** («Sí, corrígelo en
+  Dinámico») y **corregido en la cuarta tanda de I-64, parte seg**: la marca persistida
+  `SelectiveDesviadorConfig.CellsByPost` lleva el Dinámico a la misma regla de `CellKey`; un rack nuevo la
+  trae, y uno existente se lee como antes hasta que su desviador se edita en la ventana (ver `construido.md`
+  de la ventana RackCad, «Corrección del desviador de Dinámico»).
 - ~~**El mismo defecto de contrato que PB-002 corrigió en Push Back sigue en el Dinámico**~~ **CORREGIDO por
   I-33**: `RackDynamicSystemWindow` entregaba al diálogo compartido una lista POR FRENTE marcada como por
   POSTE, así que el último poste caía a 1 nivel. Ahora entrega las dos listas por separado —por frente para
@@ -1718,3 +1722,566 @@ Componente omite los racks planos. El Owner lo aceptó con advertencia visible y
 ### La exportación de un solo rack no tiene Table ni tabla dinámica
 
 Decisión D-2 de I-68: las ocho entradas a `RackBomWindow` conservan el XLSX simple, que no tiene Rack ni Copias.
+
+## I-64 F4-T2A — pérdidas de la ruta de carga de la ventana clásica de Push Back (2026-11-12, registradas sin corregir)
+
+La caracterización ventana frente a piloto de F4-T2A (`WorkspaceDraftPilotWindowLoadCharacterizationTests`) compara `RackPushBackSystemWindow.LoadExisting` con la materialización del piloto, que sigue solo la parte de Application. Al cargar un rack, la ventana pasa los valores por sus controles y luego recalcula, y el siguiente Actualizar escribe lo que quedó. El piloto conserva el valor authored. Ninguna de estas pérdidas se corrige en I-64 F4.
+
+### (a) Redondeo al formato «0.###» de los controles
+
+Un valor authored con más de tres decimales (por ejemplo, una escala de anotación de 1.23456 o una altura de tarima de 61.23456) vuelve como 1.235 y 61.235, y un RACKEDITAR seguido de Actualizar lo escribe redondeado. El fixture `pb-08-redondeo` lo mide.
+
+### (b) `ReadInputs` pierde `DimensionStyle`
+
+`ReadInputs` (`RackPushBackSystemWindow.xaml.cs:840-848`) reconstruye `Annotations` sin `DimensionStyle`, mientras que `RecoverInputs` lo recupera y el ensamblador lo escribe. Un rack con estilo de cota propio lo pierde en el siguiente Actualizar clásico.
+
+### (c) y (d) Ajustes de `LoadFromModel` y celda vuelta a comprometer
+
+`LoadFromModel` (`:382-419`) sustituye y ajusta valores al poblar los controles, y `CommitCurrentCell` vuelve a escribir la celda desde ellos. Con el corpus de F4-T2A no hay ningún diseño que provoque un delta de estas clases. La caracterización de F4-T1B o la migración de F5 pueden medirlas.
+
+## I-64 F4-T4C-H0 — las lecturas del panel vacían Rehacer (2026-11-15, registrada sin corregir)
+
+La sonda de host T4C-H0 (F4-E63) vio que las lecturas del panel de F4-T3 y F4-T4A, «Editar» y «Comprobar ahora», dejan entradas «Group of commands» en la pila de Deshacer y vacían la de Rehacer. Son lecturas que se suponían sin efecto. Un `U` seguido de «Comprobar ahora» deja sin nada que rehacer. Toca S2-05 y la obligación de IC-02 de observar Deshacer y Rehacer.
+
+El Owner la dispuso aparte («Registrar aparte», O-18 del paquete de F4-T4C, F4-E65). No cambia el alcance de F4-T4C. Smoke-2 la declara y prueba Redo justo después de Undo. Queda como candidata para una corrección aparte de T3 y T4A.
+
+## I-64 Smoke-2 — la fila de navegación del panel se mueve con la selección (2026-11-17, mejora de uso futura)
+
+Con un rack seleccionado, la sección «Selección» del panel Workspace pasa de dos líneas a tres (`Rack seleccionado: <GUID partido>`). Eso desplaza hacia abajo, unos 12 px, todo lo que hay debajo, incluida la fila Seleccionar / Ver / Centrar. Los avisos que aparecen y desaparecen («Hay un comando en curso.», las confirmaciones) también mueven el panel. En Smoke-2 eso hizo que un operador automático pulsara por encima de «Ver» y diera un falso FAIL (paso 50, F4-E80).
+
+Mejora posible: mantener vertical y estable la fila de navegación y acciones mientras cambia el contenido de «Selección», por ejemplo con una altura fija o reservada para esa sección. El Owner la registra como **FUTURE UX IMPROVEMENT**: no reabre F4 y no es un defecto de corrección.
+
+## I-64 F4B PB-T1a — hallazgos de la ventana clásica de Push Back (2026-11-18, registrados sin corregir)
+
+La red de caracterización de PB-T1a (`tests/RackCad.UI.Tests/PushBackStateNet*.cs`) fija estos comportamientos tal como son hoy. El Owner decidió reproducirlos en PB-T1 sin cambiar RACKEDITAR y anotarlos aquí como mejoras futuras (F4B-E14, preguntas 2 y 3). Corregirlos sería un cambio declarado de RACKEDITAR, en una tarea propia.
+
+### La unidad «ton» se pierde al reconstruir la estructura (c-09)
+
+Un rack guardado con `PalletWeightUnit = "ton"` la conserva al cargar y con «Actualizar». Pero cuando otra edición reconstruye la estructura (por ejemplo, el fondo del pallet), la salida pasa a «kg» con el mismo número: 1000 ton se convierten en 1000 kg. La caja `WeightUnitBox` solo ofrece kg y lb. PB-T1b lo reproduce como una regla explícita del estado (F4B-E14, pregunta 2). La fija CT-PBT1A-02.
+
+### «lb» y la caja de fondos de pallet no llegan solas a la salida
+
+- **«lb» en `WeightUnitBox`:** elegirla no cambia la salida, ni con «Actualizar», mientras nada reconstruye la estructura (`SamePallet` ignora la unidad). La elección del usuario se pierde en silencio hasta la siguiente reconstrucción.
+- **`PalletsDeepBox`:** editarla no mueve la salida, ni siquiera el fondo de un frente que se añade después.
+
+La fija CT-PBT1A-02.
+
+### Aceptar Seguridad sin cambios añade el portador de botas
+
+En `pb-05-topes`, aceptar el diálogo de Seguridad sin tocar nada añade a la salida el portador de botas (`Structure.SafetySelections` y `DefensePieceId`), sin cambiar el BOM. La fija CT-PBT1A-11 (es la observación de CT-16 de PB-T0). Si el portador llega al dibujo es algo para comprobar en Smoke-PB.
+
+### Una caja de largo manual vaciada no se vacía (M-07 de PB-TC2)
+
+Con un indicador mixto obsoleto, vaciar «Largo manual» deja el override en la salida, y una caja obligatoria vacía no marca error. La fija CT-PBT1A-10 como INCUMPLIMIENTO CARACTERIZADO.
+
+### El poste fuera de catálogo se ve vacío (c-02)
+
+Un `HeaderPostCatalogId` que no está en el catálogo pasa al poste por defecto en la salida, pero `PostBox` se ve vacía. PB-T1b lo reproduce como una regla explícita (F4B-E09, pregunta 2). Mostrar en la caja el poste que de verdad se usa sería una mejora de uso.
+
+### Higiene de pruebas: `Abrir` en CT-PB0-17 (M-01 de PB-T0)
+
+CT-PB0-17 sigue usando el ayudante `Abrir` (M-01 de la revisión de PB-T0). Las pruebas nuevas de PB-T1 usan `Ventana()` con la carga dentro del `try`. Queda sin corregir porque PB-T1 no edita pruebas existentes.
+
+## I-64 F4B PB-T1b — limitación conocida y mejoras de pruebas (2026-11-19, registradas sin corregir)
+
+### RACKEDITAR pierde en silencio los campos desconocidos anidados (F4B-E24)
+
+Un campo que el plugin no conoce, dentro de un módulo, de un lado o de otra pieza anidada del diseño Push Back, se pierde al reescribir desde RACKEDITAR («Actualizar» o «Guardar en biblioteca»). Puede venir de una versión más nueva del plugin o de una edición a mano.
+- **Por qué:** el lector tolerante descarta el campo al leer, y el escritor reconstruye cada pieza anidada desde cero. Solo el sobre, el proyecto y el diseño de primer nivel tienen `[JsonExtensionData]` (I-11 no es recursiva).
+- **El panel no tiene el problema:** no escribe esos racks. Los rechaza con aviso (AUTH-13, I-58) y remite a RACKEDITAR. PB-T3 fija ese rechazo con una prueba.
+- **Decisión del Owner:** «Basta así». Es una limitación conocida, anterior a F4B, y no se corrige en F4B. Conservar lo anidado sería una iniciativa propia: 21 tipos de datos, algunos compartidos con Dinámico y Selectivo.
+
+### Mejoras de las pruebas de PB-T1b (revisión independiente del intento 2, menores)
+
+- **PBT1B2-IR-M01:** la autoprueba nueva de CT-PBT1B-15 (`escritor-fuera-de-DrawPushBackView`) no distingue la comprobación nueva («dentro del método») de la anterior.
+- **PBT1B2-IR-M02:** al caso corregido de CT-10 (I02) le falta una línea de control que demuestre que la sesión de módulos es la única diferencia.
+- **PBT1B2-IR-M03:** las corridas de medición previas al RED (p2) se lanzaron con `--no-build` y la entrega no trae su log de compilación. Solo p3, el RED y el GREEN prueban qué texto se compiló.
+- **PBT1B2-IR-M04:** la regla «EXCEPCION» sigue sin aplicarse en CT-11. No es una regresión.
+- **PBT1B2-IR-M05:** la línea de declaración de CT-PBT1B-01 (M08) calcula 16 y 19 en lugar de escribirlos.
+
+## I-64 F4B PB-T1c — aislamiento de pruebas y un desfase del editor (2026-11-19, registrados sin corregir)
+
+### Las pruebas de UI escriben la disposición del configurador en el perfil del usuario
+
+Varias pruebas de UI que ya existían crean un `RackFrameConfiguratorWindow` real y lo cierran: las clases RichEditor*, EditorShellAdoptionTests, FirstView* y PushBackHeaderOwnerRoundTwoTests, entre otras.
+- **Qué pasa:** `OnClosed` llama a `SaveCurrentLayout`, y `RackFrameConfiguratorLayoutStore` escribe `RackCad/RackFrameConfigurator.layout` bajo los datos locales del usuario.
+- **El efecto:** cada corrida local de esas pruebas sobrescribe la disposición del configurador (anchos de columna y alto de paneles) que el usuario tiene guardada. No afecta a dibujos ni a datos de racks.
+- **En la CI no tiene efecto,** porque el runner es efímero.
+- **Cómo se vio:** en la prueba de limpieza del perfil de los Workers de F4B.
+- **Lo que haría falta:** una tarea propia que redirija la ubicación de la disposición en las pruebas. Por ejemplo, una costura de prueba en `RackFrameConfiguratorLayoutStore` o una carpeta temporal por prueba. PB-T1c no podía cambiar pruebas existentes.
+
+### El diseño calculado del compuesto va una pasada por detrás tras tres gestos
+
+En la ventana clásica de Push Back, tras cambiar `GapBox`, `CentralSeparatorCheck` o la estructura propia (`StructureOverrideBox`), la secuencia de módulos de `LastComputation` de la parte compuesta se reconverge en la pasada **siguiente**. Por eso, hasta el recálculo siguiente, el diseño calculado va una pasada por detrás del estado.
+- **Ya existía antes de PB-T1c** y es igual en la base.
+- **Las salidas que escriben no se ven afectadas:** «Actualizar», el BOM y «Guardar en biblioteca» recalculan antes de usar el diseño.
+- **«Restaurar» sí:** lee `lastComputation.Design` sin una pasada previa, así que un «Restaurar» justo después de esos gestos parte del diseño que va una pasada por detrás. Lo vio la revisión independiente de PB-T1c, OWNER-01, como dato informativo.
+  - Por el mecanismo, la intención compuesta debería volver a ganar en la pasada siguiente.
+  - Ninguna prueba lo ejerce sobre un compuesto.
+  - El comportamiento es el mismo antes y después de PB-T1c.
+- **Lo fija CT-PBT1C-02,** que compara tras un recálculo neutro (F4B-E30).
+- **Conviene revisarlo** en PB-T2, cuando «Aplicar al borrador» devuelva el estado en el modo WORKSPACE.
+
+### Mejoras de las pruebas de PB-T1c (revisión independiente del intento 2, menores)
+
+- **PBT1CC2-IR-M01 y M02:** dos comentarios quedan desfasados en W.
+  - El de I-42 en `Restore_Click` describe `LoadCompositeFromDesign`, que se retiró.
+  - El `<summary>` del estado compuesto documenta ahora `editable` en lugar del reenvío `composite`.
+- **PBT1CC2-IR-M03:** el gesto «PostBox=otro» de CT-PBT1C-02 es inerte con el catálogo que se entrega, porque solo trae un poste. Con un catálogo de varios postes, ninguna prueba de la ventana fija el traspaso al estado.
+- **PBT1CC2-IR-M04:** CT-PBT1C-01 deriva sus líneas esperadas de la misma enumeración del corpus que las reales.
+- **PBT1CC2-IR-M05:** la parte 2 de CT-PBT1C-02 captura las referencias tras cada paso del gesto, no tras cada pasada interna.
+
+## I-64 F4B PB-T2a — mejoras de las pruebas del puerto al borrador (2026-11-19, registradas sin corregir)
+
+Son los menores de la revisión independiente del intento 2 de PB-T2a. El código es correcto por lectura; lo que falta es cobertura o precisión.
+
+- **PBT2A-IR2-M01:** CT-PBT2A-02 no discrimina dos cosas que fija la API:
+  - la línea `launchfor` no mira `SourceProject`;
+  - cada caso de excepción pasa un solo nulo, así que el **orden** de las tres comprobaciones del constructor de `PushBackDraftEditorLaunch` (D-PBT2-03) no se ejerce.
+- **PBT2A-IR2-M02:** CT-PBT2A-03 podría pasar en vacío para X-01 y F-01. Si sus diseños dan `null` cuando la pasada traga una excepción, la fila usa un estado nuevo y vacío, y las líneas salen iguales sin ejercer nada.
+- **PBT2A-IR2-M03:** dos comentarios XML imprecisos, heredados del esqueleto:
+  - `NotEditable` no cubre todos los estados del núcleo (`Applying`, `Unknown`);
+  - `IsDirty` simplifica lo que hace el núcleo.
+- **PBT2A-IR2-M04:** INV-PBT2A-01 no se cumple a la letra contra una sola base en una corrección:
+  - desde ChainBaseSha entran los documentos de la sesión;
+  - desde la BaseSha, los archivos ya existen con el esqueleto.
+
+  La lectura correcta, que es la de la verificación, mira `src/` desde ChainBaseSha. Conviene escribirla así en los contratos de las subtareas siguientes.
+- **PBT2A-IR2-M05:** el Worker lanzó las corridas largas como tareas en segundo plano. Ninguna se solapó, y los árboles medidos coinciden con los del RED y el GREEN.
+
+## I-64 F4B — el kit de nc2 frente a F4B-E21 (2026-11-19, registrado sin corregir)
+
+- **El kit de los controles recalcula el hash del relevo de la planificación con la regla de F4:** en la copia mutada, `relay-record-planning.json` → `Outcome.OutputSha256` pasa a ser el SHA de la delegación mutada. Pero desde F4B-E21 el relevo real guarda el SHA de la salida cruda del Controller, con las colecciones opacas vacías. **La copia de nc2 no es, por tanto, del todo fiel a F4B-E21.** No tuvo efecto en PB-T2a: el Controller falló Contract y Scope por la ruta quitada.
+- **El sustituto adaptado `PBT2A-NC2-EXACT-WHITELIST-F4B-01` exige exactamente ese recálculo** y lo declara (`Nc2KitRelayRecompute`). Si se corrige el kit, hay que revisar el sustituto.
+- **Además, el sustituto depende de la serialización de `inject_opaque.py`,** porque exige que la salida cruda más las colecciones reproduzca la delegación byte a byte.
+
+## I-64 F4B PB-T2b — los menores de la revisión independiente y un arrastre del Owner (2026-11-19, registrados sin corregir)
+
+Son los menores de la revisión independiente de PB-T2b, intento 1. El código cumple el paquete; lo que falta es precisión de las pruebas o de la evidencia.
+
+- **PBT2B-IR-M01:** tres comprobaciones de CT-PBT2B-08 no prueban lo que dicen.
+  - **R11b:** la autoprueba quita la primera aparición de la llamada a `ApplyEditsToEditingState`, que está en `ApplyToDraft` y no en `RequestDraw`.
+  - **R6 y otra autoprueba:** tampoco aíslan la regla que nombran.
+- **PBT2B-IR-M02:** el `Vigia` de CT-PBT2B-05 captura con menos frecuencia que el de CT-PBT1C-02: tras el gesto entero, no tras cada paso, en `calculo-invalido` y `bloqueante`.
+- **PBT2B-IR-M03:** las cinco corridas de diagnóstico del Worker no siguieron el régimen de las corridas temporales (INV-PBT2B-10):
+  - sin TRX;
+  - no todas terminan en `Assert.Fail`;
+  - con un filtro de método en lugar del filtro del contrato.
+
+  Cumplen 16.8, RR y la limpieza del árbol.
+- **PBT2B-IR-M04:** la evidencia de INV-PBT2B-06 cuenta 27 costuras con una expresión que solo ve declaraciones `internal` de una línea. El contrato dice 41. En lo material se cumple.
+- **PBT2B-IR-M05:** `DisenoDe` y `DisenoDeVentana` comparten el centinela `<sin diseno>`. Si los dos fallaran, `diseno-igual` daría True. Hoy no se ejerce.
+- **PBT2B-IR-M06:** el §5.0 del paquete dice que la primera línea de cada ventana de WORKSPACE es `modo=…`, y las listas literales del §5.3 solo la llevan en algunas. El Worker siguió las listas, como manda C07.
+- **A-T2b-OWNER-01, para PB-T4** (decisión del Owner, F4B-E38): con un módulo escenificado y cambios sin aplicar al borrador a la vez, «Cerrar» solo pregunta por el módulo, y «Sí» pierde también lo no aplicado sin nombrarlo. En PB-T4, una sola pregunta que nombre las dos cosas, con su prueba.
+- **El nc1 de F4B:** es la tercera variación de PD-F4-04 (PB-TC, PB-T2a y PB-T2b). En PB-T2b, el Controller además leyó mal `Worker.Trailer` y `RedRepairSha` en `Deviations`. Conviene estudiar, fuera de F4B, si el texto del control nc1 o el esquema de la entrega pueden dejar menos margen a esas lecturas.
+
+## I-64 F4B PB-T2c — menores de la revisión, un límite de cobertura y una diferencia entre modos (2026-11-19, registrados sin corregir)
+
+- **PBT2C-IR-M01:** en CT-PBT2C-01, el gesto y el clic de «Aplicar» no pasan por `Paso`; en CT-02 y CT-03 sí. Si el producto lanzara ahí, CT-01 fallaría por excepción y no dejaría una línea `EXCEPCION`. Además, un comentario de la clase describe mal dónde va la carga.
+- **PBT2C-IR-M02:** el Worker leyó INV-PBT2C-10 de forma más estricta que el contrato. Creyó que solo admitía el filtro de la clase nueva en las corridas aisladas. La atribución de los fallos existentes del RED es correcta igualmente.
+- **CT-PBT2C-03, un límite de cobertura (M-13 de CA-T2c):** `PostBox=otro`, `CellInOutBeamBox=otro` y `CellInOutPeralteBox=otro` son gestos inertes con el catálogo de prueba, que tiene una sola opción en cada uno. Esos tres controles no se prueban en el camino al borrador. Conviene una prueba con un catálogo de prueba de dos opciones.
+- **OWNER-01 de la revisión de PB-T2c, informado al Owner:** en WORKSPACE, un lado B declarado sin frentes sobrevive en el estado del borrador mientras este vive, y una reapertura del editor desde ese borrador vuelve a mostrar el aviso. En CLASSIC, «Actualizar» escribe el diseño no compuesto y la declaración se pierde al reabrir. Qué escribe el panel lo deciden PB-T3 y PB-T4.
+
+## I-64 F4B PB-T3a — menores de la revisión independiente y dos lecciones de método (2026-11-20, registrados sin corregir)
+
+Son los menores de la revisión independiente de PB-T3a, intento 2. El código cumple el paquete v4.5; lo que falta es precisión de las pruebas.
+
+- **PBT3A-IR-M01:** el caso «modulo» de CT-PBT3A-06 no es exactamente la receta F-01 que cita el §5.0.
+- **PBT3A-IR-M02:** `cambio-llego` es tautológico en el caso «modulo»: el getter de `ModuleSession` abre la sesión si es nula.
+- **PBT3A-IR-M03:** varias pruebas llaman directamente a ayudantes de producto (`PushBackEditableStateSeat.Pass`, constructores y `Copy`), donde el paquete prescribe su propio camino.
+- **PBT3A-IR-M04:** CT-PBT3A-12 cubre menos que INV-PBT3A-06. Busca los cinco nombres del §5.2 con `\b` y no ve el comparador.
+- **PBT3A-IR-M05:** el fragmento de RR-3 ` reglas-sin-coincidencias=True`, con el espacio delante, no aparece literal en la clase. No hubo reparación, así que no tuvo efecto.
+- **PBT3A-IR-M06:** hay una divergencia latente entre el clasificador de producto y el oráculo que prescribe CT-PBT3A-09 en un caso de `DiffPaths`.
+- **PBT3A-IR-M07:** `PushBackFullDraftReader.Read` lanza `ArgumentNullException` con un escaneo nulo, y D-PBT3-04 dice «total». Es lo mismo que hace el lector del piloto.
+- **PBT3A-IR-M08:** en CT-PBT3A-06, la lectura «después» se toma tres operaciones más tarde de lo que dice el paquete.
+- **PBT3A-IR-M09:** ningún CT ejerce las ramas del paso 2 de D-PBT3-04 en las que el lector completo difiere del piloto sin admitir.
+
+**Dos lecciones de método,** con su traducción a los paquetes siguientes:
+- **Comprobar los archivos nuevos contra todas las guardas existentes antes de fijar el esqueleto.** La parada del intento 1 vino de G9, que barre también Application. Ya está en el §5.0 de la v4.5.
+- **Los sustitutos de control con literales de contrato:** cada paquete redacta la evidencia a su manera, así que un sustituto que exige un literal debe llevar la lista cerrada de los literales de cada paquete.
+
+## I-64 F4B PB-T3b — menores de la revisión independiente y dos lecciones de método (2026-11-20, registrados sin corregir)
+
+Son los menores de la revisión independiente de PB-T3b, intento 2. El código cumple el paquete v4.6, con la variante (A) de D-1; ninguno pide cambiar `src/`.
+
+- **PBT3B-IR-M01:** tres recetas no son las del §5.3, y la entrega las declara solo en `UnexpectedFindings`.
+  - CT-PBT3B-04 (iii) y (iv) usan el rack compuesto de CT-PB0-10, sobre `pb-01-base`, en lugar de `pb-20-ab`.
+  - CT-PBT3B-11, en su parte principal, y CT-PBT3B-05, con el nombre en blanco, fabrican la relectura: AUTH-13 solo admite la versión de sobre `1.0` y el lector rechaza los nombres distintos.
+- **PBT3B-IR-M02:** la línea «hueco-negativo» de CT-PBT3B-06 depende de la cultura del proceso. El producto forma el texto con `CurrentCulture`, y la prueba no fija la cultura invariante, como sí hace CT-PBT1B-12.
+- **PBT3B-IR-M03:** el reparto de los dos delegados de la corrida no sigue la letra de D-PBT3-10. La instantánea de la entrada se crea en `_originOf` y `_prepare` no usa su parámetro. Conserva el momento de lectura de la base, pero acopla las dos lambdas por orden de llamada.
+- **PBT3B-IR-M04:** la guarda E-3 es algo más débil que la letra del §5.3. Adapta la aguja a `BuildCore` sin comprobar que `Build` y `BuildFull` pasen `reread.StaleBase`.
+- **PBT3B-IR-M05:** la receta «celda-no-cabe» de CT-PBT3B-06 no es la de CT-PBT1B-12, y la línea no prueba que el bloqueante sea el de la celda.
+- **PBT3B-IR-M06:** CT-PBT3B-09 compara el piloto en 2 casos, no en todos los del §5.3. Faltan las claves distintas y el sobre distinto; las pruebas de F4 de `ComparePost` mitigan el hueco.
+- **PBT3B-IR-M07:** la regla del §5.0 de comprobar `IsDirty` justo antes de la operación solo se cumple en CT-01 (i), CT-07 (ii), CT-10, CT-11 y CT-15.
+- **PBT3B-IR-M08:** CT-PBT3B-13 (ii) detecta `Precheck` con el borrador completo solo si el tipo aparece en el texto de la llamada. Lo mitiga CT-PBT3A-12.
+- **PBT3B-IR-M09:** la entrega no cuadra del todo con los hechos. Habla de «tres commits», y hay dos. Hay corridas locales (`g0`, `d0` y `t0`) que no están en `TestsExecuted`. Y la cronología indica que el GREEN se redactó antes del commit RED; ninguna regla lo prohíbe.
+
+**Dos lecciones de método,** con su traducción a los paquetes siguientes:
+- **Compilar el esqueleto y ejecutar la suite completa de Core antes de emitir.** La parada del intento 1 vino de dos CS0121 de una prueba existente, y un tercer choque era de reflexión. El barrido por nombre no ve ni la resolución de sobrecargas ni los escaneos de ensamblado. Ya está en F4B-E45; la redacción del §5.0 pasa a la revisión del paquete para PB-T3c (M-07 de CA-T3b).
+- **Una evidencia esperada que dependa de cómo cuente la TRX lleva el total exacto de cada rama.** El contrato de PB-T3b decía «19 128 resultados», con la alternativa «+ 6 o + 10 omitidas»; en la rama «+ 6», la real, el total es 19 124. Un Controller lo leyó de forma estricta en nc3 (F4B-E46, `owner-pbt3b-nc3-decision.md`).
+
+## I-64 F4B PB-T3c — menores de la revisión independiente, riesgos para el Smoke-PB y menores de CA-T3c (2026-11-20, registrados sin corregir)
+
+Son los menores de la revisión independiente del código de PB-T3c, intento 1. El código cumple D-PBT3-11 punto por punto; ninguno pide cambiar `src/`.
+
+- **PBT3C-IR-M01:** CT-PBT3C-01 cuenta las declaraciones de la fachada por modificador de acceso. Un miembro declarado sin modificador (privado implícito) no lo ve. La lista cerrada de PBT3C-C13 la sostiene hoy el censo de la entrega, no una guarda duradera.
+- **PBT3C-IR-M02:** en CT-PBT3C-04, la regla «la llamada está dentro de `EraseUnit`» no tiene una autoprueba que la aísle: las tres del §5.4 suben el total a 2. Además, el censo solo ve el literal `RackViewBlockEraser.EraseInTransaction(`, y un `using static` o un grupo de métodos se le escaparían.
+- **PBT3C-IR-M03:** CT-PBT3C-03 es menos preciso que su nombre. Cuenta los `Failed` en todo `PrepareUnits`, no dentro del bucle de las claves a borrar, y no comprueba que la relectura compare las claves a borrar con el `ObjectId` resuelto. El código real sí lo hace.
+- **PBT3C-IR-M04:** las autopruebas de CT-PBT3C-05 usan 8 de los 15 ejemplos de CT-PBT1B-14. Faltan los `as`/`is` de la regla 1b y los dos que ejercen la regla 2b (alias más molde). Es el mismo subconjunto que CT-PBT3B-13, y el paquete no fija la lista.
+- **PBT3C-IR-M05:** tres líneas de WR que D-PBT3-11 no prescribe: los dos `_erasures.Clear()` (al empezar PREPARE y en `Dispose`) y el bucle de las claves a borrar antes del de los miembros. Copian el patrón de `_prepared` y no cambian nada observable. El orden lo declaró el Worker; la línea de `Dispose`, no.
+- **PBT3C-IR-M06:** la fachada no lleva el salto del clásico para una definición nula o borrada; con ella lanza una excepción de AutoCAD. Es conforme al paquete y no se alcanza, porque la relectura exige cada clave. Pero el comentario de la clase dice que hace «lo que hace el borrado clásico, en el mismo orden», y hay dos diferencias: el layout, que lanza, y este salto.
+
+**Para el Smoke-PB de PB-T5 (D-PB-09),** riesgos del borrado real que no son defectos de la entrega (la fachada reproduce el clásico):
+- **PBT3C-IR-OWNER-1:** `GetBlockReferenceIds(directOnly: true)` devuelve también las referencias de la vista en los layouts de papel y las anidadas en bloques del usuario, y la fachada las borra todas sin aviso. Probar una de cada, con un solo `U`. El Owner decide si quiere un aviso.
+- **PBT3C-IR-OWNER-2:** la purga de las anidadas es de un nivel: las definiciones de segundo nivel pueden quedar sin referencias y sin purgar, como en el clásico. Contar los candidatos de `PURGE` antes y después.
+- **PBT3C-IR-OWNER-3 (baja):** las representaciones anónimas `*U` de un bloque dinámico no se devuelven ni se escanean. Confirmar que las vistas de RackCad son estáticas.
+
+**De la comprobación acotada de la emisión (CA-T3c),** sin efecto en el contrato:
+- **CA-T3c M-02:** la nota de V47-06 del paquete de PB-T3 da por hecho que `pb-20-ab` no tiene un lateral que exista solo por B, y la revisión de PB-T3b dice que no lo verificó. Le falta además el rechazo de sobres con nombres distintos (`DivergentDiagnostic`, OWNER-2 de PB-T3b).
+- **CA-T3c M-05:** el corte de argumentos corregido de `overload_sweep_t3c.py` sigue tomando por genérica una comparación sin espacios como `(a<b, c>d)`. No afecta a PB-T3c. La salida custodiada de PB-T3b (`overload-sweep-eab27a9e.txt`) cuenta 5 parámetros en el constructor de `RackPilotMutationScope`, que tenía 4: el mismo defecto, sin efecto en sus conclusiones.
+
+## I-64 F4B PB-T4a — el coste de la lectura, riesgos para el Smoke-PB y menores de la revisión (2026-11-20, registrados sin corregir)
+
+**El coste de la lectura (OWNER-02, medido; decisión del Owner «Cerrar y optimizar en PB-T4b»):**
+- **La medida:** cada lectura del panel hace ahora el piloto y además la lectura completa con su materialización. Medido sin AutoCAD en los fixtures mayores (`F4B-DRAFTS/pbt4/read-cost-pbt4a/`): de +40 a +80 ms en `Begin`, de +35 a +86 ms en la relectura habitual y de +80 a +175 ms con el origen encontrado (p95 hasta 257 ms), dentro del bloqueo del documento.
+- **De dónde sale:** casi todo es `PushBackEditableStateSeat.LoadExisting`, de 25 a 78 ms por llamada, que se hace dos veces cuando se encuentra el origen.
+- **Lo que viene:** PB-T4b elige el origen antes de leer, para materializar una sola vez, y se mide otra vez allí y en el Smoke-PB.
+- **Una lección de método:** una medición prevista en el paquete («se mide en la precondición 6») tiene que tener su salida custodiada antes de emitir. Si no, es un efecto sin medir.
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4A-IR-OWNER-01:** el origen «deriva» al `Primary` y se queda allí. Si el texto del origen del borrador deja de estar, byte a byte, en un miembro mutable (el rack editado en RACKEDITAR, o un «Comprobar ahora» en `Unknown`), la relectura cae al `Primary`. `Reload`, `DiscardAndReload` y `KeepMine` reconstruyen el borrador desde él, y las relecturas siguientes ya no vuelven a la vista de origen. No es una regresión: hoy siempre es el `Primary`. Para probarlo: abrir desde una vista que no sea el `Primary`, editar en RACKEDITAR y conservar, descartar o comprobar, y ver qué vista refleja el panel.
+- **PBT4A-IR-OWNER-03:** dos subcasos de la relectura con origen sin CT en PB-T4a:
+  - sin destinos frescos de navegación, la relectura se admite donde hoy no;
+  - el texto del origen tras el rebase de un POST.
+
+**Los menores de la revisión independiente del código** (ninguno pide cambiar `src/`):
+- **PBT4A-IR-M01:** CT-PBT4A-02 es casi tautológica respecto del Plugin. El kit hace él mismo las dos lecturas sobre un escaneo y las une con `FromReads`, así que no prueba el cableado de RIA, que solo cubren la guarda de texto CT-07 y el Smoke-PB.
+- **PBT4A-IR-M02:** CT-PBT4A-03 no distingue `CurrentDraftState.Origin` de `InitialDraftState.Origin`, porque el doble responde siempre con el mismo texto de origen.
+- **PBT4A-IR-M03:** CT-PBT4A-04 no fija la comparación byte a byte: no tiene un caso casi igual, como mayúsculas o espacios.
+- **PBT4A-IR-M04:** el oráculo de las líneas de CT-02, CT-04 y CT-07 salió de clases temporales que llevaban el GREEN literal en memoria. Se borraron antes del RED y la entrega lo declara.
+- **PBT4A-IR-M05:** en CT-03 y CT-05, el constructor del rig corre fuera de `Paso`. Si lanzara, la CT caería por excepción y no por su aserción.
+- **PBT4A-IR-M06:** la entrega dice «the three commits» y son dos. Cosmético.
+- **PBT4A-IR-M07:** la relectura con origen descarta `ChosenReference` (pasa `null`). Hoy no se nota, porque los gestos del panel construyen la petición con `null`.
+
+**Dos lecciones de la cadena** (aplicadas en la de PB-T4b):
+- **El prompt de un Controller no debe pasar de 30 000 bytes:** Windows corta la línea de órdenes y Codex no arranca. Los bloques grandes van a `inputs/` con su sha256, y una guarda de tamaño en los guiones previos lo impide.
+- **Las reglas del prompt se escriben como condición explícita** («si … es PBT4A-C07»), nunca como «<hecho>, <parada>.». Además, el prompt de la verificación aclara que una ruta del diff de emisión que no figura en Authorities la admite 16.3.
+
+## I-64 F4B PB-T4b — el texto de «Conservar», menores de la revisión, RR-3 pendiente, el sustituto de nc1 y riesgos para el Smoke-PB (2026-11-21, registrados sin corregir)
+
+**El texto de la presentación de «Conservar» (PBT4B-IR-OWNER-01; decisión del Owner «Es lo esperado»):**
+- **El comportamiento:** con «Conservar mi borrador» y después «Actualizar», el rack se queda con el nombre del borrador aunque alguien lo renombrara en el dibujo fuera del panel. Es D-PB-05, paso 4: gana el diseño editable completo, y el nombre es editable.
+- **Lo que falta en el texto:** la presentación lo avisa antes del segundo «Sí» como «Cambiado fuera: el nombre.», pero no dice qué valor gana.
+- **La mejora,** para la etapa de la interfaz: que el texto diga que se conserva el valor del borrador.
+
+**Los menores de la revisión independiente del código** (ninguno pide cambiar `src/`):
+- **PBT4B-IR-M01:** tras la reparación, la línea `resto-del-rack-actual` de CT-PBT4B-08 no discrimina.
+  - El escenario solo cambia el nombre entre el rack de base y el actual, así que los cinco campos que quedan del sobre son iguales en el viejo y en el actual.
+  - **La mejora:** una variante en la que el rack actual difiera del borrador en un campo del sobre que no sea del editor.
+  - La procedencia del sobre la cubre hoy el equivalente de WPP `TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft`.
+- **PBT4B-IR-M02:** CT-PBT4B-20 es más débil que el §5.2 en (1) y en (7), sin declararlo.
+  - (1) acepta cualquier motivo `I-64 F4B PB-T4b: …` en vez del motivo literal de cada causa.
+  - (7) no compara las dos mitades de cada `Theory` de D-S5 salvo sus filas.
+  - La revisión lo comprobó aparte y está bien.
+  - **La mejora,** si se reabre CT-20: añadir las dos comprobaciones.
+- **PBT4B-IR-M03:** las autopruebas de CT-PBT4B-20 no aíslan (3). `autoprueba-asercion-cambiada` y `autoprueba-sin-copia` cambian el texto de la copia, así que `sha256=False` basta, y un `ApplyMap` que siempre diera `True` pasaría.
+  - **La mejora:** una autoprueba que mute la copia y recalcule el hash, o que compare sin el sha.
+- **PBT4B-IR-M07:** el registro del relevo del trabajo etiqueta mal «PorAsercion».
+  - Cuenta solo los fallos con mensaje `Assert.*`: 135.
+  - Con la regla del contrato (la primera línea del StackTrace bajo `tests/`) son 306 de 306.
+  - **La mejora:** renombrar el campo, o añadir el recuento por la regla del contrato.
+  - **Decidido:** se corrige en la cadena de PB-T4c (decisión del Owner sobre nc3, F4B-E53). Es lo que confundió a nc3, que leyó como excepciones 171 de los 306 fallos del RED.
+- **PBT4B-IR-M08:** el texto «El valor debe ser > 0.» tiene dos fuentes:
+  - la constante `NotPositiveMessage` de `PushBackFullFieldAdapter`, que exige el paquete;
+  - el mensaje que compone `NumericTextRule` con `Format(0)`.
+
+  Hoy coinciden en toda cultura. **La mejora:** que PB-T4d lo derive, o que una prueba lo fije.
+
+**RR-3: tres clases de PB-T4b pendientes en la lectura de la cadena** (`pbt4b_rr3_reading.py`, F4B-E53). Sus filas de §6.0 de la v4.9 remiten a literales que el paquete no enumera, así que la lectura no las resuelve sin interpretar, y la cadena para si una reparación del RED las toca:
+- **`WorkspaceFullCopyGuardTests` (CT-20):**
+  - «los 21 nombres de clase de origen»;
+  - «las nueve parejas de M-00 a M-08 (con los seis tipos de M-00 de §5.2)»;
+  - «los `BaseSha` de los 21 archivos de los `Skip` (§6.2.1) y los `CopySha` de las 21 copias y del kit»;
+  - «los cinco escaneos de M-05»;
+  - «las cuatro `particion-por-filas` con …».
+- **`PushBackFullPanelGuardTests`:**
+  - «los seis nombres de CT-12»;
+  - «las de CT-21 en §5.2 y sus expresiones literales»;
+  - el marcador `<nombre>` de una línea de CT-12 en §5.2.
+- **`PushBackFullPanelFieldTests` (UI):**
+  - «Valores: los diez textos de CT-PBT2B-10 y los once casos de CT-18»;
+  - los marcadores `<n>` de CT-04 y de CT-18 en §5.2.
+
+**La mejora:** que el paquete de la próxima subtarea enumere en la tabla de RR-3 los literales de cada fila, o que su generador traiga `rr3_table_check`. La lectura de PB-T4a no leía las filas de PB-T4b.
+
+**Para la lista de PB-T4d** (decisión del Owner «Llevarlas a PB-T4d»; la lista vuelve al Owner antes de emitirse): los vacíos de PBT4B-IR-M04, guardas de PEG que en el GREEN siguen en verde sin comprobar nada:
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:592-597`, `TheReadGuardAllowsAnotherReadThatALaterTaskWouldAddWithItsOwnMark`: su `Replace` de `FindPilotDraft` ya no encuentra nada, así que el control positivo no inyecta nada;
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:906-909` y `:917-920`, `TheOperationsOfThePortAndTheDecoratorNameNoApiOfWritingTheDrawing`: la expresión de `FindPilotDraft` sigue con el tipo del piloto y el bucle la salta;
+- `tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs:255-258`: el mismo vacío, heredado en la copia.
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4B-IR-OWNER-01:** el nombre tras «Conservar» y «Actualizar» en el dibujo real.
+- **PBT4B-IR-OWNER-04:** el segundo «Sí» sin cambios en el dibujo real.
+  - Ninguna CT ejecuta RIA ni NH evaluando el testigo tras `AtOrigin`.
+  - Si el testigo no volviera `Unchanged`, «Conservar» presentaría en bucle.
+  - «Conservar» lee ahora el dibujo dos veces.
+- **El coste real de la lectura,** con una sola materialización por lectura (D-S4).
+- **Lo que ya estaba:** PBT3C-IR-OWNER-1 a OWNER-3 de PB-T3c y PBT4A-IR-OWNER-01 y OWNER-03 de PB-T4a.
+
+**nc1, candidato a revisar su sustituto** (sin cambio ahora; decisión del Owner «Aceptarlo solo esta vez»):
+- **El caso:** nc1 lleva en F4B **seis** variaciones de la cascada del SHA falso: PB-TC, PB-TC2, PB-T2a, PB-T2b, PB-T4a y PB-T4b.
+- **La de PB-T4b:** la cascada llega también a Trailer, con la misma causa dicha con otras palabras («no existe el objeto CurrentSha»). El sustituto de PD-F4B-01 (ScriptSha256 `41440edc…`) da FAIL en `d1_FailSetWithinAllowed` y `e2_OtherFailCitesFakeSha`.
+- **La lección:** la firma exacta del sustituto no sigue la variación natural de cómo el Controller redacta la cascada. Cada variación vuelve al Owner.
+- **Lo que se podría revisar:** que el sustituto admita la cascada en Trailer cuando su evidencia nombre la ausencia del objeto del CurrentSha falso. La firma nueva volvería al Owner con esa revisión.
+
+**Tres lecciones de la cadena:**
+- **Una entrega grande no cabe en el tope de 600 s de la verificación.** La primera corrió 600 s, con 50 órdenes, y el lanzador la cortó. Ahora:
+  - el tope de los lanzadores es de 1800 s;
+  - el relevo registra un TIMEOUT como lanzamiento no productivo;
+  - el cierre lo custodia como unidad propia.
+- **Un esqueleto que el paquete fija con un generador, y no con un parche,** se compara con lo que da ese generador custodiado y con el registro de la precondición 6, archivo a archivo.
+- **Una etiqueta de un registro de la sesión puede confundir a un Controller:** «PorAsercion» solo contaba los `Assert`, y nc3 la leyó contra la regla del contrato. Los registros nombran lo que cuentan, con la regla del contrato.
+## I-64 F4B PB-T4c — la recarga de «Editar todo», menores de la revisión, la prueba lenta y riesgos para el Smoke-PB (2026-11-21, registrados sin corregir)
+
+**La recarga de «Editar todo» (PBT4C-IR-OWNER-02; decisión del Owner «Aceptarlo y corregir luego»):**
+- **El comportamiento:** con un borrador Clean marcado como posiblemente obsoleto (el dibujo cambió fuera), «Editar» recarga antes de editar (`TryReload`, la carga perezosa), y «Editar todo» no.
+  - `EditAllOfPilot` no mira `IsPossiblyStale` ni `NeedsLazyReload`, y el botón se ofrece igual.
+  - El editor se abre sobre la base vieja. Al editar, el borrador pasa a sucio y obsoleto, y al aplicar sale el camino de «Conservar mi borrador», que avisa de lo que cambió fuera antes de escribir.
+  - No se escribe nada sin avisar, pero el usuario no recibe la recarga silenciosa que da «Editar».
+- **La corrección,** para PB-T4d o una tarea posterior, que vuelve al Owner con su lista: que «Editar todo» recargue antes, como «Editar».
+
+**Los menores de la revisión independiente del código que son mejoras** (ninguno pide cambiar `src/` en PB-T4c):
+- **PBT4C-IR-M01:** §5.3 pide para CT-PBT4C-10 «el puerto real (`WorkspacePilotEditGate` sobre WHC)», y la CT llama a `TryEditAll` sobre el anfitrión, sin la compuerta (`tests/RackCad.Tests/PushBackEditAllTests.cs:106` y :425).
+  - Las líneas no cambian, y el reenvío de la compuerta lo fija CT-PBT4C-12.
+  - **La mejora:** que CT-10 vaya por la compuerta, como pide el paquete.
+- **PBT4C-IR-M02:** dos debilidades de discriminación que vienen de la letra del paquete.
+  - **CT-PBT4C-07:** la autoprueba inyecta el nombre en el texto del sujeto, así que «falla» aunque el sujeto esté vacío. No vería una extracción que dejara de casar, y la guarda pasaría en vacío. Hoy las cinco expresiones casan en el GREEN.
+  - **CT-PBT4C-04,** `estado-igual`: el estado del lanzamiento es, por referencia, el estado editable actual del borrador, así que la comparación da `True` por identidad.
+  - **La mejora,** en una versión futura del paquete: una línea «sujeto … longitud>0» en el GREEN, y la comparación por valor.
+- **PBT4C-IR-M03:** `VentanaBorrador` (`tests/RackCad.UI.Tests/PushBackEditAllWindowTests.cs:343-361`) construye la ventana y carga el borrador fuera del `try`.
+  - §5.0 pide la carga dentro del `try` y «Cerrar» en `finally`.
+  - Si la carga lanzara, la excepción escaparía de la CT y la ventana no se cerraría. La rama clásica sí sigue la regla.
+  - **La mejora:** mover la carga dentro del `try`.
+- **PBT4C-IR-M04:** si `ShowModal` lanza después de aplicar, `EditAllOfPilot` devuelve `Failed` con `Applied` a 0.
+  - Pero el borrador ya tiene la edición y `NotePilotEdit` ya corrió.
+  - El campo dice «No se abrió el editor: <mensaje>.», que es falso: el editor se abrió y hay cambios.
+  - Es la letra del GREEN del paquete (`WorkspaceHostCore.cs:1210-1222`; FVM:1344).
+  - **La mejora,** en una versión futura: distinguir el fallo tras aplicar. El Smoke-PB mira el aviso.
+
+**Para la lista de PB-T4d** (vuelve al Owner antes de emitirse):
+- **La recarga de «Editar todo»** (arriba).
+- **PBT4C-IR-OWNER-05, la prueba lenta frente al detector de cuelgue de la CI:**
+  - la prueba es `FullPanelCopyWorkspacePilotPrepareGreenTests.InvalidD_ABuilderThatCannotBuild…` (`tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs:1912-1945`, del RED de PB-T4b), que hace un `Prepare` completo por cada número de toques del catálogo;
+  - tarda 276 s en la CI de PB-T4b, y 321 s y 188 s en las del RED y el GREEN de PB-T4c;
+  - el detector de cuelgue de la CI está en 5 min (`ci.yml`), y el comentario del job dice que su máximo observado es de unos 2,5 min;
+  - en el RED de PB-T4c pasó del umbral sin abortar, probablemente porque el detector mide la inactividad y otras pruebas terminaban en paralelo;
+  - es frágil: si cambian el paralelismo o la máquina, la CI de PB-T4d podría abortar. PB-T4c no lo causa.
+- **Los vacíos de PBT4B-IR-M04** de PB-T4b, que ya estaban en la lista (F4B-E53).
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4C-IR-OWNER-02:** «Editar todo» con un borrador Clean y un cambio externo del dibujo.
+- **PBT4C-IR-OWNER-03:** el BOM y «Guardar en biblioteca» desde la ventana de «Editar todo».
+  - En WORKSPACE siguen visibles (D-PB-07): solo se ocultan las inserciones.
+  - Escriben en disco: «Guardar en biblioteca» un `.rackcad.json`, y el BOM puede exportar XLSX o CSV.
+  - «Guardar en biblioteca» ejecuta además `EnsureId` y `SetName` sobre la identidad de la ventana. Hay que mirar si ese `SetName` llega al borrador con «Aplicar al borrador».
+- **PBT4C-IR-OWNER-04:**
+  - la pregunta combinada de «Cerrar», con el aviso real de AutoCAD;
+  - el resumen y «Modificado» del campo tras cerrar;
+  - el aviso «No se abrió el editor» cuando sí hubo cambios (M-04).
+- **Lo que solo se ve en AutoCAD:** el modal real, con la paleta deshabilitada; el foco y el teclado; «Actualizar» tras editar; los eventos del puente durante el modal; el redibujo.
+- **Lo que ya estaba:**
+  - PBT3C-IR-OWNER-1 a OWNER-3, de PB-T3c;
+  - PBT4A-IR-OWNER-01 y OWNER-03, de PB-T4a;
+  - PBT4B-IR-OWNER-01, el nombre tras «Conservar» y «Actualizar», de PB-T4b;
+  - PBT4B-IR-OWNER-04, el segundo «Sí» sin cambios en el dibujo real, de PB-T4b;
+  - el coste real de la lectura, de PB-T4b.
+
+**Dos lecciones de la cadena:**
+- **Un alcance sin copias:**
+  - los equivalentes se comparan con su `EquivalentSha`;
+  - los `Skip`, con el comprobador que nombra la ExpectedEvidence;
+  - el GREEN literal, con lo que da el generador custodiado (igual al `GreenFiles` de la precondición 6).
+  La cadena lee la forma del contrato y no escribe nada del régimen a mano.
+- **La copia para los revisores** (M-06) no llevó `relay-subst-check.json` ni la carpeta de la prueba de limpieza. **La mejora:** que la cadena siguiente las copie con la entrega.
+
+## I-64 F4B PB-T4d — los nombres que aún describen el piloto retirado, riesgos para el Smoke-PB y lecciones de la retirada (2026-11-22, registrados sin corregir)
+
+**La limpieza de los nombres de prueba y los comentarios que siguen describiendo como presente el código retirado del piloto** (PBT4D-IR-M03; decisión del Owner «Apuntarla en ideas futuras»). Es opcional: no se hace en PB-T4d ni en PB-T5.
+- **Los ejemplos de la revisión** (en `7db6fd0c`):
+  - **nombres de prueba:**
+    - `tests/RackCad.Tests/PushBackFullWritePrepareTests.cs:549`, `CT_PBT3B_06_…OfTheFullModelAndOfThePilot`;
+    - `tests/RackCad.Tests/PushBackFullWriteRunTests.cs:246`, `CT_PBT3B_09_…AndThePilotKeepsItsComparison`;
+    - `tests/RackCad.Tests/PushBackRetirePilotRunTests.cs:79`, `AViewThatIsNotAvailable…`, que ahora prueba la frontal B (el cambio a mano que declara §5.6);
+    - la clase `WorkspacePilotUpdateRunTests`;
+  - **los resúmenes de las guardas** en `tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs`: el de `E3Violations` (`:104-106`) dice que el piloto nunca borra una vista que no está disponible, y el de `E5Violations` (`:183`) nombra como las dos corridas que deben existir `Execute`, la del piloto, y `ExecuteFull`;
+  - **fuera del alcance de PB-T4d,** en `src/RackCad.Application/Workspace/WorkspaceHostCore.cs`:
+    - la etiqueta `"WorkspaceHostCore.PilotUpdateRun.Execute"` (`:1783`);
+    - «the adapter of the pilot» (`:1240` y `:1268`), que es el campo `PilotFieldAdapter`, de tipo `PushBackFullFieldAdapter`.
+- **Por qué no es trivial:**
+  - casi todo es texto literal de la pieza del RED o de un archivo que PB-T4d tenía prohibido (C10);
+  - renombrar una prueba cambia su identidad y los filtros `FullyQualifiedName~` de los contratos.
+- **La mejora:** una tarea de limpieza que renombre esas pruebas, corrija los comentarios y ponga al día sus filtros, si el Owner la quiere.
+
+**Los menores de la revisión independiente del código que quedan abiertos:**
+- **PBT4D-IR-M01, `RedFiles` de WPUR** (M-16 de la emisión, abierta):
+  - `RedFiles` de `F4B-DRAFTS/pbt4/pbt4d-precondition6.json` lleva, para `tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs`, el sha256 del RED de la v5.3 (`62c6ff80…`);
+  - el RED de la pieza v5.4, que manda el contrato, da `7ea61704…`, y solo difiere en comentarios;
+  - cualquier comprobación contra `RedFiles` daría un falso «no coincide» en 1 de 28 archivos. Por eso la disposición de la verificación de PB-T4d recuerda que se compara con la pieza: `red-literal.json` lleva su sha256.
+  - **La mejora:** si se corrige el JSON, que sea en una tarea de documentos.
+- **Lo que la revisión no comprobó:** que no queden en `tests/` ayudantes `internal` o `public` sin uso. IDE0051 solo ve los privados, y la compilación no lo ve.
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4D-IR-OWNER-02** (decisión del Owner «Sí, sumarlos»): tres caminos de `BuildCore` cuyo texto cambia en PB-T4d, sin cambio de comportamiento.
+  - Van en una pasada de «Editar todo» → «Actualizar» en el dibujo real, junto a la que ya estaba prevista:
+    - un plan que borra un lateral obsoleto;
+    - un borrador con el nombre en blanco, que escribe el del sobre de origen en todas las vistas;
+    - el rechazo de la frontal B de un rack sin lado B.
+  - Core ya los cubre: CT-PBT3B-02, 04 y 05, y la sustituta n.º 10.
+- **Lo que ya estaba:**
+  - PBT3C-IR-OWNER-1 a OWNER-3, de PB-T3c;
+  - PBT4A-IR-OWNER-01 y OWNER-03, de PB-T4a;
+  - PBT4B-IR-OWNER-01 y OWNER-04, y el coste real de la lectura, de PB-T4b;
+  - PBT4C-IR-OWNER-02 a OWNER-04 y lo que solo se ve en AutoCAD, de PB-T4c.
+
+**RR-3 de las dos CT de PB-T4d, pendiente en la lectura de la cadena** (`pbt4d_rr3_reading.py`). Una reparación del RED en cualquiera de las dos clases habría parado la cadena (RR3_PENDING), sin gastar intento. No la hubo, así que no tuvo efecto. Lo que la lectura no resuelve:
+- **«las 35 de CT-01 en §5.6, literales»** y **«las 11 de CT-02»:** §5.6 las da, literales, en la columna de líneas de su fila, con «(35)» y «(11)» al final de la celda. La regla de la lectura solo admite «las de CT-NN en §5.n», sin el número.
+- **«las expresiones e inyecciones de su tabla `Retired`»** (`RetiredUses`, en CT-02): §5.6 no las da. Están en el texto de la clase, en el anexo V54-A, y leerlas exige interpretar el C#.
+- **La mejora:** que el paquete de la próxima subtarea enumere en la tabla de RR-3 los literales de cada fila, como ya pedía la nota de PB-T4b.
+
+**Cuatro lecciones de la retirada:**
+- **Una retirada es una forma del alcance propia.** Lleva:
+  - las rutas de `Pilot/` en el AllowedWriteScope;
+  - los borrados del RED y del GREEN (D en `git diff --name-status`);
+  - C02 con la lista cerrada de lo que se borra y de lo que cambia;
+  - un RED sin esqueleto.
+
+  La cadena la lee del contrato y deja intactas las formas de PB-T4b y PB-T4c.
+- **Una autoprueba de una guarda de ausencia no discrimina mientras lo ausente todavía existe** (PBT4D-IR-M02). Las dos autopruebas de archivo de CT-PBT4D-01 inyectan un archivo retirado: en el RED ese archivo aún existe, así que la inyección no cambia nada y solo discriminan en el GREEN. **La mejora,** en una próxima retirada: que el paquete diga en qué rama discrimina cada autoprueba, o que la autoprueba de archivo inyecte la ausencia.
+- **Una prueba lenta frente al detector de cuelgue** puede tumbar la CI de un commit que solo lleva documentos: le pasó a la emisión de PB-T4d (`45043090710`). La cota de D-S14 lo resolvió: la prueba pasó de minutos a menos de 10 s en la CI.
+- **Un sustituto que enumera los subconjuntos del alcance no escala** con el tamaño del contrato. La v2 del sustituto de nc2 enumeraba los 2^n subconjuntos del AllowedWriteScope en su propiedad 10: con las 21 rutas de PB-T4c terminó, y con las 37 de PB-T4d acabó en MemoryError, sin veredicto. La v3 (F4B-E58) calcula la misma proposición en su forma cerrada. **La mejora:** que la revisión de un sustituto mida también su coste frente al alcance más grande previsto, PB-T5 incluida.
+
+## I-64 F4B PB-T4e — la paleta durante «Editar todo», los resúmenes del puerto, riesgos para el Smoke-PB y lecciones de la forma literal (2026-11-23, registrados sin corregir)
+
+**Para el Smoke-PB de PB-T5 (D-PB-09):**
+- **PBT4E-IR-OWNER-01** (= M-01 de la revisión independiente del código; informativo, sin decisión del Owner): los pasos 3 y 8 de la guía (§5.5 del paquete de PB-T4) no dicen qué se ve en la paleta mientras la ventana de «Editar todo» está abierta.
+  - **Por el código** (en `0eac7911`; la revisión no lo ejecutó): la recarga ocurre dentro de `TryEditAll` y el modal se abre justo después, en la misma llamada síncrona. El campo solo se repinta (`Render()`, `WorkspacePilotFieldViewModel.cs:489`) cuando `TryEditAll` vuelve, al cerrarse el editor; entrar en el modal solo pone la marca, sin refrescar el panel.
+  - **Lo que se verá:** con la ventana abierta, la paleta, deshabilitada, sigue mostrando «Limpio (posiblemente obsoleto)» y el valor de antes del cambio de fuera, mientras la ventana enseña el valor recargado. Al cerrar, el campo queda bien (CT-PBT4E-03, `recargado-y-cerrado`).
+  - Es la misma falta de repintado que PB-T4c ya tiene mientras el editor entrega cambios al borrador, y no es un texto ni un estado nuevo.
+  - **La mejora:** que la guía lo diga en esos dos pasos, para que no se lea como un fallo de la recarga. Si en AutoCAD se viera otra cosa, sería una observación del Smoke, no un defecto de PB-T4e.
+- **El paso 5, sin verificar:** borrar fuera todas las vistas del rack y pulsar «Editar todo» supone que la pestaña del rack y su borrador Clean marcado siguen en el panel después del borrado. CT-PBT4E-02 lo modela con el lector (`OriginMissing`), sin cambiar la superficie. Si en AutoCAD el navegador cambiara la pestaña activa al borrar las vistas, el paso no se podría hacer tal cual, pero no sería un fallo del código.
+- **Lo que ya estaba:**
+  - R-T4-39 (F4B-E60), que se le cuenta al Owner como información junto al paso 6: con un borrador Dirty y un cambio de fuera que reescriba el sobre de origen, «Actualizar» puede dar `NotAppliedPreflight` y no «Conservar mi borrador»;
+  - PBT4D-IR-OWNER-02, los tres caminos de `BuildCore`, de PB-T4d;
+  - lo de PB-T3c, PB-T4a, PB-T4b y PB-T4c, en sus notas de arriba.
+
+**Los resúmenes del puerto y de `BeginEdit`** (una observación de la revisión, que no cuenta como hallazgo; anterior a PB-T4e y fuera de su alcance, C10):
+- `IWorkspacePilotEditPort.cs:19` dice que solo las seis operaciones de la intención de edición leen el dibujo, y el de `BeginEdit` (`WorkspacePilotFieldViewModel.cs:375`), que es la única entrada que lo lee. Los dos son inexactos desde PB-T4c: «Editar todo» lee al empezar, y desde PB-T4e también al recargar.
+- La primera frase la fija `WorkspacePilotEditGuardTests.cs:1083`, y D-PBT4-22, punto 3, decidió conservarla. El comentario nuevo de `TryEditAll` (`IWorkspacePilotEditPort.cs:117-124`) sí lo dice bien.
+- **La mejora:** una tarea de documentación que corrija los dos resúmenes y la frase que fija la guarda, si el Owner la quiere.
+
+**El sustituto de nc1, la séptima variación** (decisión del Owner «Aceptarlo solo esta vez», sin cambiar el sustituto): su propiedad `e2_OtherFailCitesFakeSha` falló porque las evidencias de Ci y de Tests citan el SHA falso por el nombre del campo («not the handoff CurrentSha», «CurrentSha is not a commit») y no por su valor, como ya pasó con Tests en PB-T4a. Sigue siendo candidato a revisarse (F4B-E53), sin cambio ahora; si la variación vuelve a aparecer, vuelve al Owner.
+
+**Dos lecciones de PB-T4e:**
+- **Una lista vacía es una forma del alcance propia.** El RED solo añade las clases de las CT, sin esqueleto, y el GREEN es el texto literal de `src/`. La cadena la lee del contrato (INV-PBT4E-02 y 07), deja intactas las formas de PB-T4b, PB-T4c y PB-T4d, y para limpia en lo que depende de la versión hasta su seco sobre el contrato emitido.
+- **El participante falso de la propia sesión** (la lección de I-61) volvió a salir en la preparación de la verificación: la línea de órdenes de la sesión llevaba la ruta del worktree, y la medida de los procesos contó 2 participantes. Repetida desde el scratchpad, dio 0/0, antes de lanzar. **La mejora:** que la preparación avise cuando la línea de órdenes de quien la llama nombra el worktree, o lanzarla siempre desde el scratchpad.
+
+## I-64 sexta tanda — el aviso de st al cambiar de presentación (2026-11-27, registrado sin corregir)
+
+- **Lo observado (smoke de la sexta tanda, S6-14 y O-3 en construido.md):** cambiar de Model a Layout1 y volver (CTAB), con un editor
+  de la ventana abierto y limpio, lo marca con «El dibujo cambió desde que se leyó…». La lista pasa a «puede no estar al día».
+- **Por qué:**
+  - La señal de st (`RackCadCommandWatch`) solo conoce dos contadores de la sesión: los objetos del dibujo añadidos, borrados o
+    modificados (`DrawingChangeCount`) y las órdenes que empezaron (`CommandStartCount`).
+  - Cambiar de presentación modifica objetos (la presentación y sus ventanas), así que cuenta como un cambio.
+  - ZOOM, PAN y REGEN no modifican objetos y no marcan.
+- **Decisión del Owner (2026-11-27):** «Dejarlo así». Es un aviso de más, no se pierde nada: «Volver a leer del dibujo» lo quita.
+- **La mejora, si se quiere más adelante:** que solo cuenten los cambios que pueden tocar un rack. Hay dos caminos:
+  - filtrar en el puente de eventos los objetos que no son de RackCad (bajo las invariantes de F1);
+  - pasar el nombre de la orden en la instantánea y no contar las de presentación y guardado (CTAB, LAYOUT, QSAVE, PLOT…).
+- **Sin medir:** QSAVE, PLOT y las matrices.
+
+## I-64 séptima tanda, cab — lo que queda para otra tanda (2026-11-27)
+
+- **Los diseños de cabecera de la biblioteca como borrador de la ventana (T7cab-S9).** Respuesta del Owner (2026-11-27): «Sí, en otra
+  tanda».
+  - Hoy «Abrir» de un diseño de cabecera de la biblioteca sigue en el configurador clásico (`OpensHere` no incluye la cabecera).
+  - La entrada de los borradores ya admite un proyecto de cabecera (`CreateCabeceraDraft`, que usa «Duplicar»).
+  - Falta lo que lib hizo para los demás sistemas: llevar el proyecto de la biblioteca hasta RACKCABECERANUEVO, para que sus campos
+    desconocidos y su versión lleguen al dibujo (I-11, `RackLibrarySourceDesign`, `HeaderInsertionRequest.SourceProject`), y su prueba.
+- **La ayuda emergente de «Insertar en el dibujo…» de un Push Back nuevo** (revisión de `258c16b1`, M-4). El botón de Push Back dice
+  siempre «Escribe el borrador en las vistas del dibujo y después inserta las vistas que elijas…», también en un Push Back nuevo, que no
+  tiene vistas. La cabecera ya la cambia según sea nueva o no (`CabeceraEditorViewModel.InsertViewToolTip`); a Push Back no se le tocó.
+
+## I-64 séptima tanda, per — el texto de la respuesta de «Perfil estructural» (2026-11-27, registrado sin corregir)
+
+- **Lo que hay:** la página «Perfil estructural» de la ventana muestra, bajo «En la línea de órdenes:», el informe de RACKSECCION tal como lo
+  escribe la línea de órdenes (`StructuralSectionCommandFlow.Describe`): sin acentos y con el nombre interno de la vista («vista CrossSection»,
+  «vista LongitudinalX»). Es el mismo texto de la clásica (T7per-S7).
+- **Decisión del Owner (2026-11-27, Q-per-2):** «Pulirlo después». No se cambia ahora.
+- **La mejora:** pulir el informe en el flujo, para las dos superficies a la vez: acentos donde la consola los admita y la vista con su nombre
+  («Sección», «Longitudinal X», «Isométrica»), como en los controles del inspector. Cambia también la línea de órdenes de la clásica, así que
+  necesita su propia decisión y la revisión de las guardas que fijan el texto del flujo (`StructuralSectionPluginSourceGuardTests`,
+  `MainMenuStructuralSectionAccessGuardTests`).
+
+## I-64 — después del cierre (2026-11-27)
+
+Lo que el cierre de I-64 deja para después, con las decisiones del Owner del 2026-11-27 (registro en
+`docs/automation/evidence/I-64-pilot/VENTANA-RACKCAD/construido.md`, «Cierre de I-64 (2026-11-27)»). Lo que anotaron las partes de la
+sexta y la séptima tanda está en sus secciones de arriba y no se repite.
+
+### Separar las pruebas del clásico legacy (iniciativa corta)
+
+- **La decisión del Owner:** el editor clásico queda legacy ([ADR-0052](adr/0052-editor-clasico-legacy-ventana-rackcad-soportada.md)) y
+  sus pruebas se separan: «Separarlas, no borrarlas». Va en otra iniciativa corta, después de I-64: «Después, en otra iniciativa». No
+  retrasa el merge de I-64 a `main`.
+- **Qué hace:**
+  - las pruebas que solo prueban la pantalla del clásico pasan a una categoría «Legacy», que no corre en el día a día, solo en el CI;
+  - las que protegen código compartido se quedan;
+  - al usar una orden clásica, un aviso dice que es legacy.
+- **Lo medido (2026-11-27), para dimensionarla:**
+  - UI: 857 de las 2904 pruebas declaradas están en archivos que construyen ventanas clásicas;
+  - Core: como mucho 1411 de 9915;
+  - el ahorro: unos 2-3 min, solo al cerrar o integrar y en el CI.
+
+### Retirar el editor clásico
+
+- **Hoy no.** El Owner lo deja «por ahora a menos que elimine dificultades de escalabilidad en un futuro» (2026-11-27). Retirarlo es un ADR
+  nuevo que reemplace a ADR-0052.
+- **Las condiciones** (ADR-0052): antes, la ventana tiene que cubrir todo lo que hoy solo hace el clásico. Entre otras cosas:
+  - Largueros (abajo);
+  - los diseños de cabecera de la biblioteca como borrador de la ventana (T7cab-S9, en «I-64 séptima tanda, cab», arriba);
+  - «Guardar como plantilla…» de la cabecera (CB-11) y las cabeceras de los módulos de Dinámico («Editar cabecera…» y «Copiar a otros
+    módulos…»), que construido.md deja en «Lo que falta» de «Cuarta tanda, cb»;
+  - la pieza suelta de Cantilever, que sigue en los configuradores del clásico (RCT, CT5-08).
+- **La lista de retiro:** qué órdenes se retiran, con la entrada de respaldo (RACKMENU), la decide el Owner (A-14, §2, decisión 4; §6,
+  fase 9; C-07).
+
+### Largueros, WIP para otra iniciativa
+
+- **La decisión del Owner (2026-11-27):** «Hay que dejarlo Wip, entra en otra iniciativa», para sus cuatro preguntas abiertas: el tipo, el
+  bloque FRONTAL, el apoyo de la ménsula y las opciones del perfil suelto.
+- **Lo que entra en `main` con I-64:** solo el borrador «en construcción» de la quinta tanda, «Nuevo › Larguero en esta ventana · en
+  construcción» (LG-01 a LG-03). Elige la sección y la ménsula, y no guarda ni dibuja (construido.md, «Quinta tanda, lg»).
+- **Lo que queda fuera:** la parte lg de la sexta tanda, `e05c21cf` («la página «Larguero» terminada, con el perfil estructural»), en la rama
+  local `architecture/workspace-persistente-rackcad-t6-lg`.
+  - No se integra y no está en `origin`: si se pierde la rama local, se pierde ese trabajo.
+  - La limpieza de I-64 no la borra.
+- **Ya decidido para esa iniciativa** (respuestas del Owner del 2026-11-27 a las preguntas de la parte lg):
+  - guardar una sección AISC: «Un campo nuevo»;
+  - dibujarlo: «Pieza suelta»;
+  - RACKSECCION y «Larguero» en «una sola página»: lo sustituyó la séptima tanda. RACKSECCION abre «Perfil estructural», una página aparte
+    de «Larguero» («Igual que la clásica»).
+
+### Lo que el smoke de la séptima tanda no cubrió
+
+Del smoke de la sesión sobre `c0dd7a6b` (construido.md, «Séptima tanda: smoke en AutoCAD», «Lo que este smoke no cubrió»). La prueba guiada
+del Owner tampoco lo recorrió («Séptima tanda: prueba guiada del Owner»), así que queda como limitación declarada del cierre:
+- **«Perfil estructural» (per):**
+  - P-2, opción por opción (S, rotación, espejo, eje y envolvente). Sí se vio que la página y la clásica abren con los mismos controles y
+    los mismos valores por defecto;
+  - P-6 en un dibujo en pulgadas: solo se vio el aviso de un dibujo que no lo está;
+  - P-8, «Dejar de esperar» con texto a medio escribir;
+  - P-12, otra petición en vuelo;
+  - P-13, un catálogo que no valida.
+- **RACKCANTILEVER clásico:** su ventana también lee ya el catálogo de secciones por `StructuralSectionCatalogSource`, pero solo se probó el
+  Cantilever de la ventana (X-1).

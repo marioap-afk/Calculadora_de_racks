@@ -305,7 +305,7 @@ namespace RackCad.UI.Tests
 
         /// <summary>H1, caracterizado y NO corregido: el editor de Push Back no tiene control de estilo, y su diseño sale con
         /// <c>DimensionStyle = null</c> aunque el documento cargado trajera uno, antes y después de tocar las casillas.</summary>
-        [Fact]
+        [Fact(Skip = "SUSTITUIDA por PB-TC (D-PB-06), registro docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md fila SUS-02: la ejecuta PushBackDeclaredCorrectionDimensionStyleTests.CT_PBTC_04_TheLoadedDimensionStyleSurvivesTheLoadsAndTheGestures")]
         public void T19_H1_TheDimensionStyleStillComesOutNull()
         {
             var (afterLoad, afterGesture) = StaTestRunner.Run(() =>

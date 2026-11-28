@@ -1,0 +1,7 @@
+vuelta 0: bajas 0, errores 42 (distintos 20), miembros nuevos 12, sin resolver 0
+vuelta 1: bajas 12, errores 404 (distintos 193), miembros nuevos 87, sin resolver 0
+vuelta 2: bajas 99, errores 10 (distintos 4), miembros nuevos 3, sin resolver 0
+vuelta 3: bajas 102, errores 238 (distintos 119), miembros nuevos 87, sin resolver 0
+vuelta 4: bajas 189, errores 2 (distintos 1), miembros nuevos 1, sin resolver 0
+vuelta 5: bajas 190, errores 86 (distintos 26), miembros nuevos 11, sin resolver 0
+vuelta 6: bajas 201, errores 0 (distintos 0), miembros nuevos 0, sin resolver 0

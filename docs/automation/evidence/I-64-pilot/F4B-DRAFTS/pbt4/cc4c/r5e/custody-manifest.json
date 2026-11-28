@@ -1,0 +1,572 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-DRAFTS/pbt4/cc4c/r5e",
+  "SourceRoot": "la carpeta de la sesion (fuera del repositorio)",
+  "Counts": {
+    "CUSTODIED": 44,
+    "EXCLUDED": 42
+  },
+  "Files": [
+    {
+      "Path": "apply-green.txt",
+      "Bytes": 1740,
+      "Sha256": "377e0655a803162c32642ca17e8d3a51449cc2680391b340befe3fe7845a004b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "apply-red.txt",
+      "Bytes": 1996,
+      "Sha256": "68afb3ef74e130c592aa4471c63fcb559b5df4fc73e4b54d6243a1ceb8cdebe3",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "check-core-green.txt",
+      "Bytes": 5927,
+      "Sha256": "0408e8b3a3b3efc3198946613bf537f65706ada16edb99a0c603de86c543a297",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "check-core-red.txt",
+      "Bytes": 5923,
+      "Sha256": "7b0134edcfaee836fd2c5a9c44c50a880fdbcde3ecf2cc107ac6e7a45a05a47f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "check-ui-green.txt",
+      "Bytes": 1817,
+      "Sha256": "f913312e5389ccd75a1555722a1954d84f33298d6a7e1c518bef429b963c8524",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9733f9b2455878f5e5348a53398084c21175b24ca6d9ec8201ddf116a39b528f"
+    },
+    {
+      "Path": "check-ui-red.txt",
+      "Bytes": 1435,
+      "Sha256": "ae24a06b0f5aa91babd1d5df176e122958198d72762bd0ac62107a8de481a008",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "core-green-outcomes.txt",
+      "Bytes": 149921,
+      "Sha256": "6613a7271ac801d28201fa882012d3ec24577584c5fe0c22a5a61bb7f3fb26f2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "core-green.log",
+      "Bytes": 135500,
+      "Sha256": "4fb419974909496b2e4da936213ba0981f62e34d2581f3cd7d4aa14a83d3ab56",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "core-red-outcomes.txt",
+      "Bytes": 149921,
+      "Sha256": "5515f1669958cbbabe955d86c0b9ce0bb4a33e5b0124064a281c3f19a5170916",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "core-red.log",
+      "Bytes": 135499,
+      "Sha256": "8c7365cb6f21891f8cf8c8f8f40fda8140a1da2bc537df38372f3293abdd9e02",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-core-tests.log",
+      "Bytes": 44342,
+      "Sha256": "cc86c51f7c15a85df7f85382398fbc67f0f143de307659a3a40e9459a2d8f9cd",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-plugin.log",
+      "Bytes": 30752,
+      "Sha256": "417def07002c2175994692cfd687ffdf6230243957fb1b2aef9384760029c313",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_Cantilever-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "73d314149621f555f4e3c8d3f33f929206b4dd769925d5af22ffd38bfc1e0761",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_Cantilever.log",
+      "Bytes": 479,
+      "Sha256": "2bb91111e2c51b8b17cbed121b11b949004b85841074acd43694ae61a2d2273f",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "302d70e3d57dc0885d3b84de5b4e49da1cda2aa71c73c11a8e29519ae8c873d9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests.log",
+      "Bytes": 522,
+      "Sha256": "a376bca7ce2b3383f88b79c9c55574b3593bb3cdb7363ab2b4e0c471ea67c48f",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "a3c9b0e81dfe4f72795d1f5a888ced3c069993c2c855cea6e03636324f680d37",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests.log",
+      "Bytes": 527,
+      "Sha256": "d2866590619859d77ffe860502c45d8f6dbe6f830556776ac87d984d45722a13",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_NumericFieldTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "64c0b667c12fc6c5a9b3f004a5462777ede0b5130e9c05dc24c8f018f3c4c40a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_NumericFieldTests.log",
+      "Bytes": 488,
+      "Sha256": "305e88a9959e4e343e562d533302fd6fe9194fdf3480062bf07062740057ddc1",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_NumericFieldValidationTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "8cd1e7d8641dbc058a5f66705e0cbdfacd241146ac9a255dfdf479e23a44a295",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_NumericFieldValidationTests.log",
+      "Bytes": 498,
+      "Sha256": "260aa02e8365df356b0ce69231da154f5bf27eb37a0b2359cac8cf05a6074a3b",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackClassicCharacterization-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "bca98d586b3b25de420dc4676ca0004ab2be36aa8b2cb47c707efb0d21ea216e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackClassicCharacterization.log",
+      "Bytes": 500,
+      "Sha256": "0c0b45b0bf89310b4edbcdfdc22884140bf27fc7736d6cc0ce4f946dd4af095e",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "1c1b1a6b7d9c8bb12a7da37613ea71bb63139a9058c99d4dc2774372e6e89b20",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.log",
+      "Bytes": 495,
+      "Sha256": "1426e4fad8402dcd20d6f833eb7eab5e9fea264b7e66ddd425e6167d9746724f",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "882d624768ba2d35573a06399d3b5d6948278cf6fadd0576bb829fceb4a94a31",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.log",
+      "Bytes": 511,
+      "Sha256": "004224dee2dda04df952c60e7fde98f5593d5488a7bbf76b92900c083a67c853",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "f8c26b278924f6393f2ec882631e7abb1053c2f81f67421b0d92b7e6451f8a52",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.log",
+      "Bytes": 506,
+      "Sha256": "bfb7ac89905db5aa031c97722d07604fe74b8880bec24a267272a5f92d690608",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization-outcomes.txt",
+      "Bytes": 870,
+      "Sha256": "eb73398de566d815fdd5b19323eb81045cb60998463c1a78f75dec78ac54b368",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.log",
+      "Bytes": 1223,
+      "Sha256": "60b43fda9384488472928abc5243f85814f7443aca38c17fae2aaba05b855fb1",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "6d98d13434d8c0a0837b27182541fd6161d7b88a38049f20df276eff298af31b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests.log",
+      "Bytes": 498,
+      "Sha256": "4ef4bc841eec2ee3bb0eb9630d4e3b2a12eccdb5abe2f408cc4b3f442c2a3757",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackStateNet-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "a39224676403d7eac34649a99adc49b515fec4bac354cce63f7a8529077ecc8c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackStateNet.log",
+      "Bytes": 486,
+      "Sha256": "7b12460ca691712da414e2cf48b9675adad95fd9244b8c65f5b5fb088b3f2d89",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "f2091ab42bcc89e7da18df8fcd76a9f19fb4962866673625770b34d11d0d0805",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.log",
+      "Bytes": 495,
+      "Sha256": "8b2a63d5f7c6ab6332c5eb58a981fffac680366a5f64fc48195c13d1ce0b2ca2",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests-outcomes.txt",
+      "Bytes": 451,
+      "Sha256": "078fffa675861b89426be7b9253ed10bb0867d270297c69a6c8ffe189614f406",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "05e753684ace812943bfd7b061ae7784cfa683127b47b32f7998599996373c4f"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.log",
+      "Bytes": 2280,
+      "Sha256": "2377f3759f68c84edee0942d3cbbe342e07cd23da7e04ca4fc7a13f10e6c7f53",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "e9a4953dd736f743c26c47fdf80951f8675dff6214073f280d61e349c3854e06",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.log",
+      "Bytes": 501,
+      "Sha256": "1da42d27e4f1bf98af9e9267ecc267e537f259007b6e64300e17773ce23eb199",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "45c17046b1acf5000e3177a2a5e611fe97f5dc01542891a9c09fa4200ce83df1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.log",
+      "Bytes": 498,
+      "Sha256": "11d6b51bc40fb343e1382e1fdff2acb2bf69c9c718f46684c55b784e8c1bac69",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_Workspace-outcomes.txt",
+      "Bytes": 9629,
+      "Sha256": "cc2de5a26879264dcc10e2d66e8a91d202318cfc77688f7fbae68aa47139aa4b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "green-ui-RackCad_UI_Tests_Workspace.log",
+      "Bytes": 8690,
+      "Sha256": "9bd6800077d8f2955ac906f2169931ca1b2e9fe8c82fce4d284be1b7e9c65426",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "green-ui-tests.log",
+      "Bytes": 10146,
+      "Sha256": "68b5e781617943d3e869877d356349535c96407d84b8c8fc27c863eb0012e1b6",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-core-tests.log",
+      "Bytes": 44765,
+      "Sha256": "fdaef6e732a0241b0ac81e9594d826c40f4011ca06f706f2c2dbcd5aa9a5174c",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-plugin.log",
+      "Bytes": 30822,
+      "Sha256": "6a28b977427256b9f930532c89ead3c5c76343d891bd5574f0851423db2c85ea",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_Cantilever-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "4cf580bed55ed950c7383b494748020ccd4c0c77cd3bf30d02ba0adb2ba53b5d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_Cantilever.log",
+      "Bytes": 477,
+      "Sha256": "1023405ee2b6e54f2f6d2e25eea6d0dd13e69fd2c2a8072e2f7ddb1c18badb55",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "746b3261d4a2745b693a22bb0c46e51a346cdac7250472a6717d2efb018942bd",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests.log",
+      "Bytes": 520,
+      "Sha256": "fd06239a667f543ad809cd2dd1c9a4c0c41dd51f07a98bffb74047eeb743198b",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "00e07c5b55e13d5bb989bba814d6061252ea16104d9541cdca402f416c0f832e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests.log",
+      "Bytes": 525,
+      "Sha256": "3911be4ef30f28dbf4526880a53fc4d180c8fb6fec05d94aaeca521a491abda9",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_NumericFieldTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "5b1f445aba2aaab47b4d21956d06803158791c31281e184fdb6632e058d22fe6",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_NumericFieldTests.log",
+      "Bytes": 486,
+      "Sha256": "eaebc77e1ed62fa457bbc6c9e5ac3e2f430f6f31360ee74a080bd2ed4ec2851b",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_NumericFieldValidationTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "0fecb151546174595e1ef67daff8a48c700b90e7654b57323e479f6333679855",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_NumericFieldValidationTests.log",
+      "Bytes": 496,
+      "Sha256": "4febb7d49c82b40b5579d6680b692bdb83ee154bf2cc2b79c2459780efe2502c",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackClassicCharacterization-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "1110d25c7d48a074a6f271454eb4e5473681f082796aa61731bb25ae1d1ee347",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackClassicCharacterization.log",
+      "Bytes": 499,
+      "Sha256": "10a658291b0ff31e4d7bdc3b94a4b72c67490c136f36c8201b89be6a29971296",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "164def738943146c8883627ee64ec8d06f7260266e0d689e5d86041023eb4604",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.log",
+      "Bytes": 493,
+      "Sha256": "50db64f1fec0d01a51a0ef56b49dcb7387a99075d35fa3ad9104a79afe8ffe8e",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "2b38df6ffc133356c24012d245fe6f5e34be9f0718db3131dd27bc5b5e979690",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.log",
+      "Bytes": 509,
+      "Sha256": "a27b84f0a1ef38df9e96e50854d8e1525d2378ee39089b7cedc1fb5604ad6a8d",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "6634b406b284534d20c152fc715d8f1d022ecb4c18b8d5b55919ea8f2c48b2d0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.log",
+      "Bytes": 504,
+      "Sha256": "5c8a4e9ae9ace3af9f9dbc8a5db9eee571c35088200aa7ba3362fa87254e57e9",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization-outcomes.txt",
+      "Bytes": 870,
+      "Sha256": "28d5593379d1d61ba5b71d362afe13560f2fc1ec2435e901f7c0e71efc778570",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.log",
+      "Bytes": 1222,
+      "Sha256": "fa195eb9b6619fe69608c919f24a26801554845fc4b4f27a5343c671f0978582",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "49d49c94cbac0bbf98ea0bef8996ce67824d8c83018871f1ab003b4a46c02e63",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests.log",
+      "Bytes": 496,
+      "Sha256": "367f4cf7fc26f8f3a6394da4f4e8770de4c866453a27bcecb007237cedff602d",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackStateNet-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "61c47dc61fefee46af0f99ea0931b4d605741f92962b83461f31b803bbaeb7a6",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackStateNet.log",
+      "Bytes": 484,
+      "Sha256": "4e57a6f62ca4f1683ebd5a17feb5577194802518a556ded4222d425857c8c9bd",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "1d895b64bf6fa91576cfb741e9b6493b694831859ae88052133524433699f63b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.log",
+      "Bytes": 493,
+      "Sha256": "a706869c507c89a3a8a232b56563be1f8ca914784de30acb3b9e84452f949a75",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "fb2d1a8426724d8928940be5e9b044e1a347b55dcd9debdb4b22ff69ba2f052c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.log",
+      "Bytes": 499,
+      "Sha256": "70e1751180bdc2c41d052a7687287ed1f779b662ee36a2c22eb0fc79c70aec4a",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "e2bad201745bc02a4fef09afd91e4acee35a6fcb4fe94ac525f76a1859fc9cb0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.log",
+      "Bytes": 499,
+      "Sha256": "145df1f5662e44c6f26d585a1639c552ddecc5796f4f51507c0687cfe11ef544",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "b61ccc1458e15beb6415fed4d5800fb7c88eb12c4222ca69b638d387f219a4ad",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.log",
+      "Bytes": 496,
+      "Sha256": "19a52973233cfd1276270d1554681e0a6035c150586830497a87b1af83febcc1",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_Workspace-outcomes.txt",
+      "Bytes": 9629,
+      "Sha256": "d058dbae4e068c22a6e1ee7947402522dcb5d938e9d6e09416ec969c05bedd3f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "red-ui-RackCad_UI_Tests_Workspace.log",
+      "Bytes": 8688,
+      "Sha256": "8802384c4c25f1ffbd261304cc5c071021959eef22853f0b3ab94158c8334166",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "red-ui-tests.log",
+      "Bytes": 10302,
+      "Sha256": "52c2bdbb98a92bf968418bdeb97b505e1edca718c27780bb6195d75cd8678769",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "driver-redgreen-r5e.txt",
+      "Bytes": 12463,
+      "Sha256": "1603ee23985a1de54e936e15fce32d199fb2f3cd99be2254da4d56023fbdf2a4",
+      "Source": "variant-rename/driver-redgreen-r5e.txt",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

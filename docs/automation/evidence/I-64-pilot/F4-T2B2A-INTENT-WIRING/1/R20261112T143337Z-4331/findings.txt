@@ -1,0 +1,2 @@
+In Release, the full UI suite has 2 failures, PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers and ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne: src/RackCad.UI/Controls/PendingTextField.cs throws that exception only under #if DEBUG, the CI runs the UI tests in Debug, the two tests pass in Debug (7 of 7), and this task changes nothing under src/RackCad.UI or tests/RackCad.UI.Tests. They are a pre-existing Release-only mismatch, not caused by this change.
+The full UI suite takes about 13 minutes in Release on this machine.

@@ -1,0 +1,88 @@
+precondicion 6 de PB-T4e (v5.5), copia principal; copia /d/r72; salida r72-p6; revision 160e019d773ba9095e2d5858cd593a954b8eec67
+procesos al empezar: 0 (16:14:57)
+  pieza 647e185329ce18450eccda093d3071554759043bfc1c61e27e3f52f621da033b pbt4e-red-v55.txt
+  pieza 6727c6f20839ef28ae5895f938b2263abc4e5538a5f30baeee6b041d477fac2f red_pbt4e_v55.py
+  pieza 50b1919438ed52a4da5ee6ce60bebacb104087bd24c74b9ff7ccea0c900e9b96 apply_red_pbt4e_v55.py
+  pieza 5d26dc483f83cfca1d005adfd60c25f6d2e5eac7cc545b9342182f96bdc95407 pbt4e-green-v55.txt
+  pieza 888c9fb21832965a40a7e4c306bb21635d8c912a5c4f02f576568631dc38aee1 green_pbt4e_v55.py
+  pieza 832afa9e4eafb298b92a47794b37b38d99dd1b1e23a9eb2679d79ee509be65c0 apply_green_pbt4e_v55.py
+  pieza 98a52801e4e361355af3a5f3bc1d3b83737acf244e9be9e19e3117abc3c950e7 p6_pbt4e_v55.sh
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb check_trx_v55.py
+  pieza 98a962da6ae75f01dfccac13582ed76dcbeee3f2b341be226779a190f616e5e1 cov_v55.runsettings
+  pieza d769e5e34f3fef68a8d6bf39d8e4fe2d9721474673d0000649a8a9ffb3ab69b0 ui_filters_pbt4e_v55.txt
+  pieza 9674eb343b1f40428815346920bcd3bf356526c506844e4a611dce7e147e9c96 ui_union_v55.txt
+  pieza 48e093c372ba5f98899327986020727ee164b901d87348e523787a97072edf74 classes_v55.py
+copia exportada: 15796 archivos
+nuevo 47594d48273cf04746f7d2b0c6456f7614c12b7124168553e156f31d50c1c81a tests/RackCad.Tests/PushBackEditAllReloadTests.cs
+nuevo a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs
+RED de PB-T4e escrito: 2 archivos nuevos de tests/; ningun archivo existente tocado; src/ sin tocar
+r-core rc=0 errores=0 avisos-CS=0
+r-ui rc=0 errores=0 avisos-CS=0
+core core-red rc=1 segundos=314 trx=38486c47f9be2fdd :: filas 19421 {'Failed': 3, 'NotExecuted': 403, 'Passed': 19015}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+  Failed RackCad.Tests.PushBackEditAllReloadTests.RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday | at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1
+  Failed RackCad.Tests.PushBackEditAllReloadTests.RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers | at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, I
+  Failed RackCad.Tests.PushBackEditAllReloadTests.RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict | at RackCad.Tests.PushBackEditAllReloadTests.Finish(Li
+no pasan: 3
+  ui red-ui01 rc=0 segundos=11 FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests :: filas 1 {'Passed': 1}; omitidas por origen {}
+  ui red-ui02 rc=0 segundos=9 FullyQualifiedName~RackCad.UI.Tests.Workspace :: filas 653 {'NotExecuted': 27, 'Passed': 626}; omitidas por origen {'PB-T4b': 27}
+  ui red-ui03 rc=0 segundos=26 FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests :: filas 2 {'Passed': 2}; omitidas por origen {}
+  ui red-ui04 rc=0 segundos=13 FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization :: filas 55 {'Passed': 55}; omitidas por origen {}
+  ui red-ui05 rc=0 segundos=15 FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization :: filas 18 {'NotExecuted': 2, 'Passed': 16}; omitidas por origen {'otro': 2}
+  ui red-ui06 rc=0 segundos=25 FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet :: filas 14 {'Passed': 14}; omitidas por origen {}
+  ui red-ui07 rc=0 segundos=12 FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection :: filas 12 {'Passed': 12}; omitidas por origen {}
+  ui red-ui08 rc=0 segundos=4 FullyQualifiedName~RackCad.UI.Tests.Cantilever :: filas 67 {'Passed': 67}; omitidas por origen {}
+  ui red-ui09 rc=0 segundos=11 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests :: filas 3 {'Passed': 3}; omitidas por origen {}
+  ui red-ui10 rc=0 segundos=10 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests :: filas 4 {'NotExecuted': 1, 'Passed': 3}; omitidas por origen {'PB-T4c': 1}
+  ui red-ui11 rc=0 segundos=18 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests :: filas 3 {'Passed': 3}; omitidas por origen {}
+  ui red-ui12 rc=0 segundos=4 FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests :: filas 3 {'Passed': 3}; omitidas por origen {}
+  ui red-ui13 rc=0 segundos=2 FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests :: filas 13 {'Passed': 13}; omitidas por origen {}
+  ui red-ui14 rc=0 segundos=3 FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests :: filas 10 {'Passed': 10}; omitidas por origen {}
+  ui red-ui15 rc=0 segundos=2 FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests :: filas 30 {'Passed': 30}; omitidas por origen {}
+  ui red-ui16 rc=0 segundos=3 FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests :: filas 6 {'Passed': 6}; omitidas por origen {}
+  ui red-ui17 rc=0 segundos=4 FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests :: filas 4 {'Passed': 4}; omitidas por origen {}
+  ui red-ui18 rc=0 segundos=4 FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests :: filas 1 {'Passed': 1}; omitidas por origen {}
+  ui red-ui19 rc=1 segundos=3 FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests :: filas 1 {'Failed': 1}; omitidas por origen {}
+  Failed RackCad.UI.Tests.PushBackEditAllReloadFieldTests.RackCad.UI.Tests.PushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll | at RackCad.UI.Tests.PushBackEditAllReloadFieldTest
+no pasan: 1
+green 49b5245c112e3d4f0b3b95114f9ff0444469b316a3ef912947cf3b696e0c6ebd src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+green bbc6882283833b02bab79c9bb70c082f3ac14b2a88650722bf8d72be0e13b5e2 src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+green fa19d28ca897125d13af64bd58c06bf5c513427f780ca9ef83aa1ae9cbc0e202 src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+green c4b5c6990c5623e53be607fdbb461db95103b957c96627e1d63300dabe3d643b src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+GREEN de PB-T4e escrito: 4 archivos de src/ cambiados; tests/ sin tocar
+g-core rc=0 errores=0 avisos-CS=0
+g-ui rc=0 errores=0 avisos-CS=0
+g-plugin rc=0 errores=0 avisos-CS=0
+core core-green rc=0 segundos=306 trx=4486733cd8a2da76 :: filas 19421 {'NotExecuted': 403, 'Passed': 19018}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+no pasan: 0
+  ui green-ui01 rc=0 segundos=28 FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests :: filas 1 {'Passed': 1}; omitidas por origen {}
+  ui green-ui02 rc=0 segundos=24 FullyQualifiedName~RackCad.UI.Tests.Workspace :: filas 653 {'NotExecuted': 27, 'Passed': 626}; omitidas por origen {'PB-T4b': 27}
+  ui green-ui03 rc=0 segundos=53 FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests :: filas 2 {'Passed': 2}; omitidas por origen {}
+  ui green-ui04 rc=0 segundos=29 FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization :: filas 55 {'Passed': 55}; omitidas por origen {}
+  ui green-ui05 rc=0 segundos=35 FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization :: filas 18 {'NotExecuted': 2, 'Passed': 16}; omitidas por origen {'otro': 2}
+  ui green-ui06 rc=0 segundos=54 FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet :: filas 14 {'Passed': 14}; omitidas por origen {}
+  ui green-ui07 rc=0 segundos=30 FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection :: filas 12 {'Passed': 12}; omitidas por origen {}
+  ui green-ui08 rc=0 segundos=22 FullyQualifiedName~RackCad.UI.Tests.Cantilever :: filas 67 {'Passed': 67}; omitidas por origen {}
+  ui green-ui09 rc=0 segundos=30 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests :: filas 3 {'Passed': 3}; omitidas por origen {}
+  ui green-ui10 rc=0 segundos=27 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests :: filas 4 {'NotExecuted': 1, 'Passed': 3}; omitidas por origen {'PB-T4c': 1}
+  ui green-ui11 rc=0 segundos=47 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests :: filas 3 {'Passed': 3}; omitidas por origen {}
+  ui green-ui12 rc=0 segundos=18 FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests :: filas 3 {'Passed': 3}; omitidas por origen {}
+  ui green-ui13 rc=0 segundos=18 FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests :: filas 13 {'Passed': 13}; omitidas por origen {}
+  ui green-ui14 rc=0 segundos=18 FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests :: filas 10 {'Passed': 10}; omitidas por origen {}
+  ui green-ui15 rc=0 segundos=18 FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests :: filas 30 {'Passed': 30}; omitidas por origen {}
+  ui green-ui16 rc=0 segundos=19 FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests :: filas 6 {'Passed': 6}; omitidas por origen {}
+  ui green-ui17 rc=0 segundos=20 FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests :: filas 4 {'Passed': 4}; omitidas por origen {}
+  ui green-ui18 rc=0 segundos=19 FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests :: filas 1 {'Passed': 1}; omitidas por origen {}
+  ui green-ui19 rc=0 segundos=18 FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests :: filas 1 {'Passed': 1}; omitidas por origen {}
+core core-green-cov rc=0 segundos=361 trx=6304db600e998eed :: filas 19421 {'NotExecuted': 403, 'Passed': 19018}; omitidas por origen {'PB-T4b': 390, 'PB-T4c': 3, 'otro': 10}
+no pasan: 0
+  cobertura json=2d039030b1a245e8 cobertura=107e793d7b8a6795
+ui ui-green-cov rc=0 segundos=176 :: filas 900 {'NotExecuted': 30, 'Passed': 870}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=594bed0a03a12174 cobertura=3ea2fbc7fc9588fa
+ui ui-green-cov-r-1 rc=0 segundos=180 :: filas 900 {'NotExecuted': 30, 'Passed': 870}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=688997852f02cff9 cobertura=73440854c84ae541
+ui ui-green-cov-r-2 rc=0 segundos=177 :: filas 900 {'NotExecuted': 30, 'Passed': 870}; omitidas por origen {'PB-T4b': 27, 'PB-T4c': 1, 'otro': 2}
+  cobertura json=93bdb80e52eb04ea cobertura=77547d4b57ff3d2c
+clases red=acd1d4c65add7433 green=c2d5d0e5ee735f18
+build-server shutdown rc=0
+procesos al acabar: 0 (16:56:52)
+MAINCO []

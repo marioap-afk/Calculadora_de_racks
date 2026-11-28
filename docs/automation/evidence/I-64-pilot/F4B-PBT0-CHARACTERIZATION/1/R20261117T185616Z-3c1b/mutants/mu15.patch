@@ -1,0 +1,12 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..f9e809d5 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -2650,7 +2650,6 @@ namespace RackCad.UI.Systems.PushBack
+                 }
+                 else
+                 {
+-                    state.LoadRearTopeConfig(topeSection.Config);
+                 }
+ 
+                 RequestRecompute();

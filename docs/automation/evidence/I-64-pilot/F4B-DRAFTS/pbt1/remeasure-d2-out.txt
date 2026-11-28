@@ -1,0 +1,29 @@
+== CT-PBT1B-14 (Application, archivos que existen) archivos 47
+  miembros=997 alias-por-ficha=5
+   alias PushBackEditorState.cs ['structure']
+   alias PushBackEditorState.cs ['signature']
+   alias PushBackCompositeEditorAssembler.cs ['baseline']
+   alias PushBackEditorDesignAssembler.cs ['baseline', 'rebuildShape']
+  TOTAL regla1=0 regla2=0 regla2-foreach=0 regla1b=0
+== CT-PBT1C-04 (W y WC) archivos 2
+  miembros=320 alias-por-ficha=2
+   alias RackPushBackSystemWindow.xaml.cs ['outputIsBlocked']
+   alias RackPushBackSystemWindow.xaml.cs ['reconciliation']
+  TOTAL regla1=0 regla2=0 regla2-foreach=0 regla1b=0
+== autopruebas en negativo (cada una sola, sobre un texto neutro)
+  a             regla1=1 regla2=0 regla2-foreach=0 regla1b=0
+  b             regla1=0 regla2=1 regla2-foreach=0 regla1b=0
+  c-v22         regla1=1 regla2=0 regla2-foreach=0 regla1b=0
+  c-compilable  regla1=0 regla2=0 regla2-foreach=0 regla1b=1
+  d             regla1=1 regla2=0 regla2-foreach=0 regla1b=0
+  e-foreach     regla1=0 regla2=0 regla2-foreach=1 regla1b=0
+== censo de Name en el Plugin (archivos que nombran PushBack)
+  src/RackCad.Plugin/RackMenuCommands.cs:64	header.Configuration.Name = Systems.Shared.RackNewRackName.Resolve(
+  src/RackCad.Plugin/RackMenuCommands.cs:80	if (dynamic.System != null) dynamic.System.Name = dynamicName;
+  src/RackCad.Plugin/RackMenuCommands.cs:102	if (selective.System != null) selective.System.Name = selectiveName;
+  src/RackCad.Plugin/RackMenuCommands.cs:121	if (cantilever.Design != null) cantilever.Design.Name = cantileverName;
+  src/RackCad.Plugin/RackMenuCommands.cs:135	if (pushBack.System != null) pushBack.System.Name = pushBackName;
+  src/RackCad.Plugin/RackPushBackCommands.cs:98	system.Name = rackName;
+  src/RackCad.Plugin/RackPushBackCommands.cs:190	system.Name = name;
+  archivos del Plugin que nombran PushBack: 14
+  la regex estrecha de la v2.2 sobre TODO el Plugin: 10 ['src/RackCad.Plugin/ProjectVariableMutationExecutor.cs:169', 'src/RackCad.Plugin/RackDinamicoCommands.cs:108', 'src/RackCad.Plugin/RackDinamicoCommands.cs:185', 'src/RackCad.Plugin/RackMenuCommands.cs:80', 'src/RackCad.Plugin/RackMenuCommands.cs:102', 'src/RackCad.Plugin/RackMenuCommands.cs:135', 'src/RackCad.Plugin/RackPushBackCommands.cs:98', 'src/RackCad.Plugin/RackPushBackCommands.cs:190', 'src/RackCad.Plugin/RackSelectivoCommands.cs:128', 'src/RackCad.Plugin/RackSelectivoCommands.cs:552']

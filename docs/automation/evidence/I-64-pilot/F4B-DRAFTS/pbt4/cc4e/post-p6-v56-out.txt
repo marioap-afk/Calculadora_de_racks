@@ -1,0 +1,32 @@
+v5.5 guardada: ef33dca0f718bdc09a7e52369ea2534612a0ac8039ae75dc784f811262f26d21 pbt4e-precondition6-v55.json; 1fd30380e7e0fa43c3e9df3a5e1af081690fb131404ed126edf6159dcafb505e compile-check-v55.md
+r80 ya corrido, no se repite: d67d71bdd284bfca7f0b43bef6317a5f93a62eaf3a1c5dfd9a57fa89194cb5fb driver-r80-ct.txt
+r80 control-core rc=1 :: == Failed RackCad.Tests.PushBackEditAllReloadTests CT-01;== Failed RackCad.Tests.PushBackEditAllReloadTests CT-02;== Failed RackCad.Tests.PushBackEditAllReloadTests CT-04; control-ui rc=0 :: == Passed RackCad.UI.Tests.PushBackEditAllReloadFieldTests CT-03; 
+r81 ya corrido, no se repite: 19ad5f4a1f0bd052bbbd0890814dd4802a853a8af228db2a4d9478f257705656 driver-r81-ct.txt
+r81 control-core rc=0 :: == Passed RackCad.Tests.PushBackEditAllReloadTests CT-01;== Passed RackCad.Tests.PushBackEditAllReloadTests CT-02;== Passed RackCad.Tests.PushBackEditAllReloadTests CT-04; control-ui rc=1 :: == Failed RackCad.UI.Tests.PushBackEditAllReloadFieldTests CT-03; 
+RequiredTests de PB-T4d: 88; claves ['ExpectRed', 'Filter', 'MinSelected', 'Project']; TaskId F4B-PBT4-RETIRE-PILOT
+cobertura: base UI 22 corridas, GREEN UI 22 corridas
+archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 8; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0
+cobertura PASA
+bajan (informativo) 2: PERDIDA 0, VARIA 2, ESTABLE 0
+archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 8; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0
+cobertura PASA
+bajan (informativo) 2: PERDIDA 0, VARIA 2, ESTABLE 0
+# los RequiredTests de PB-T4e: los 88 heredados de PB-T4d con su MinSelected comprobado en la base, el RED y el GREEN, y los 2 nuevos por clase exacta
+  el heredado n.o 84 (RackCad.Tests.PushBackRetirePilotGuardTests) pasa a ExpectRed false (era true en PB-T4d)
+heredados 88 + nuevos 2 = 90; solapamientos: 0 []
+core base: 19418 = 19015 + 0 + 403 (Passed + Failed + Skipped)
+core red: 19421 = 19015 + 3 + 403 (Passed + Failed + Skipped)
+core green: 19421 = 19018 + 0 + 403 (Passed + Failed + Skipped)
+ui-filtros base (la union de los 19, cada uno en su proceso): 899 = 869 + 0 + 30
+ui-filtros red (la union de los 19, cada uno en su proceso): 900 = 869 + 1 + 30
+ui-filtros green (la union de los 19, cada uno en su proceso): 900 = 870 + 0 + 30
+ui-ci red: 2465 = 2416 + 1 + 48 (la linea base de la CI 2464 = 2416 + 0 + 48 mas la diferencia de los filtros)
+ui-ci green: 2465 = 2417 + 0 + 48 (la linea base de la CI 2464 = 2416 + 0 + 48 mas la diferencia de los filtros)
+json daea59847a3629111073f0b7565d9144be90c880cf2ba61c98aae91373c9c169; compile-check 549766ebfb0ab0e2d75d33e334faab1e5f66454902f31b87e7b8f97818bbd426; todo lo previsto: SI
+lo que cambia frente a la v5.5 (del diff): §0; §1; la sección «PB-T4e» de §3; D-PBT4-22; §4.5; §5.7; §6.0; §6.5; §6.5.1; §6.5.2; §7; §8.5; §9; §11
+nuevas (del diff): el anexo V56-A
+sale: el anexo V55-A (lo sustituye el V56-A)
+sin cambio frente a la v5.5: 109 secciones; de PB-T4a a PB-T4d (sin cambio desde la v5.4): 99
+v5.6 6b8939ae26d39392824108fe9b73bc3741f30a45657810a2ecf534e9a40cf66a (1029232 bytes) I-64-f4b-pbt4-gate-contract-package-v56.md
+la version que se emite: 6b8939ae26d39392824108fe9b73bc3741f30a45657810a2ecf534e9a40cf66a I-64-f4b-pbt4-gate-contract-package-v56.md
+MAINCO []

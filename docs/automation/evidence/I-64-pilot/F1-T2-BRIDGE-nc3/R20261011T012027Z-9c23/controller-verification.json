@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261011T012027Z-9c23",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "WorkRunId": "R20261010T202008Z-3df4",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, Cession.SessionOperated=false. The P-01 record is covered by the supplied Owner dispositions and does not invalidate Termination."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F1-T2-BRIDGE, Attempt 3, DelegationRunId R20261010T082206Z-21c1, and RunId R20261010T202008Z-3df4. Its SHA-256 matches relay-record-work.json Outcome.OutputSha256; OutputWrittenUtc follows Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read delegated UNIT_DOC authorities from AuthorityRevision d5bdcb7aff31ba54901a3a0acdbfd81be92ab516 and EXTERNAL authorities from MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453 via git show. All 30 paths exist; declared section headers match after the specified ASCII normalization. AUTOMATION_PLAN 16.3, 16.8-16.10 and agent-execution README Sec. 8 were read from MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json match for AuthorityRevision, MainSha, Authorities (30), Invariants (14), StopConditions (39), RequiredTests, AllowedWriteScope (3), and ForbiddenWriteScope (42). coordinator-acceptance.md records A1-A8 and nc4 as PASS."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return e2f642b86197441eea0838c8055c1db666606f11. Branch is architecture/workspace-persistente-rackcad. git merge-base --is-ancestor returns 0 for BaseSha d5bdcb7aff31ba54901a3a0acdbfd81be92ab516 and RedSha 31e3c57a66025ba339acb2c796298e71153126cc against HEAD."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry records HeadSha and LsRemoteSha as e2f642b86197441eea0838c8055c1db666606f11; OriginMainSha is bb0d5522e8411f66a51fdfb3f1f0d0514b737453, equal to MainSha. RemoteFacts.CurrentRun records the same CurrentSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..HEAD returns 10 paths, all new files under the three allowed Workspace directories. No forbidden path is present. The five existing T1 Application Workspace files are unchanged. git diff --name-only RedSha HEAD -- tests/ returns no paths."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 is empty. git check-ignore -v on the supplied handoff input reports the artifacts/ ignore rule."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun and ci-core/38085381131/core.trx plus ci-ui/38085381131/ui.trx identify push run 38085381131 for the exact CurrentSha and branch; all four required jobs succeeded. Red run 38084788650 is a push for RedSha; its Core Tests job failed as expected and Plugin build was skipped."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core TRX: 12754/12754 passed; required Workspace filter selected 159 and passed 159. Red Core TRX: 12754 total; filter selected 159, with 97 passed and 62 assertion failures. Failures: 47 report no live session in the skeleton fixture, 10 Assert.NotEmpty on empty collections, 2 Assert.Equal mismatches, and one each Assert.Null, Assert.Single, and Assert.True. RT from git diff BaseSha RedSha -- tests/ is the five new tests/RackCad.Tests/Workspace files; RedSha-to-HEAD changes no tests, so ChainRedFiles=RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD shows both RED and GREEN commits include Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching the declared Worker trailer and effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort and required routing. relay-record-work.json records the effective model as claude-sonnet-5-5 and 86 assistant entries with high effort."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json WorkCompleted contains an exact Sec. 16.10 prohibited phrase at the end of the field. The match is confirmed by scanning all listed free-text fields. Sec. 16.9 maps this check failure to REWORK; coordinator-acceptance.md states CorrectionsAuthorized=false and AttemptsRemaining=0, triggering C-15 and S-11."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes records no permission denials and no usage or credit-limit notices. One intermediate script error was recovered by later calls; no failed order remains pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [
+    "C-15",
+    "S-11"
+  ],
+  "Findings": [
+    "The handoff free-text scan finds one exact prohibited phrase in WorkCompleted; this is the first failed check.",
+    "All 62 failures in the Red TRX are assertion failures, not compilation failures; their assertion categories and counts are recorded in Tests Evidence.",
+    "The supplied Owner dispositions accept the two listed config hashes for this verification chain and state that the Worker result remains eligible; this does not clear the separate free-text failure."
+  ],
+  "RecommendedNextAction": "Apply STOP S-11 and await a new Coordinator instruction before continuing the verification/control chain."
+}

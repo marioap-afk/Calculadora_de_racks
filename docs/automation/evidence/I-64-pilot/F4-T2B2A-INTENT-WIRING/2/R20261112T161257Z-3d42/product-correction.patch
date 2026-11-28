@@ -1,0 +1,184 @@
+diff --git a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+index 5ed09c8c..a23a6101 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@ -82,7 +82,12 @@ namespace RackCad.Application.Workspace
+         /// <summary>No active document, a RackCad modal, a command or no rest: the intention waits. Nothing was read.</summary>
+         Waiting,
+ 
+-        /// <summary>The session of the request is not the one of the active document (INV-22): no effect and no read of the drawing.</summary>
++        /// <summary>
++        /// The request is refused and no draft is created. The session of the request is not the one of the active document
++        /// (INV-22), which is decided before anything about the drafts and before any read of the drawing. The other way to this
++        /// state, a session that was retired when the draft was begun (the SessionRetired answer of step 8), is reached AFTER the
++        /// read, so a Rejected outcome does not by itself mean that nothing was read.
++        /// </summary>
+         Rejected,
+ 
+         /// <summary>There is already a draft for (session, rack): nothing was read.</summary>
+@@ -186,19 +191,24 @@ namespace RackCad.Application.Workspace
+     /// </summary>
+     public readonly struct EditCheckOutcome
+     {
++        private readonly IReadOnlyList<string>? _differences;
++
+         private EditCheckOutcome(EditCheckStatus status, string? reason, IReadOnlyList<string> differences)
+         {
+             Status = status;
+             Reason = reason;
+-            Differences = differences;
++            _differences = differences;
+         }
+ 
+         public EditCheckStatus Status { get; }
+ 
+         public string? Reason { get; }
+ 
+-        /// <summary>What differs, as "key:kind" lines (the variable registry has no key); empty unless the status is Conflict.</summary>
+-        public IReadOnlyList<string> Differences { get; }
++        /// <summary>
++        /// What differs, as "key:kind" lines (the variable registry has no key); empty unless the status is Conflict. Never null,
++        /// also for a default value of this struct.
++        /// </summary>
++        public IReadOnlyList<string> Differences => _differences ?? Array.Empty<string>();
+ 
+         public static EditCheckOutcome Unavailable(string reason) => Without(EditCheckStatus.Unavailable, reason);
+ 
+diff --git a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+index ad2273a4..39c4da2c 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@ -266,6 +266,11 @@ namespace RackCad.Application.Workspace
+                         EditWitnessStatus.NotEvaluated);
+                 }
+ 
++                // 1, continued: a witness that is present must carry a key; one without it is a failure of the request, before the
++                // reader, the gate and the registry are touched, and the witness is not evaluated.
++                if (HasWitnessWithoutKey(request))
++                    return EditIntentOutcome.Failed("The preview witness has no key.");
++
+                 // 2 to 5: the reader, the probe of the active document, the modal or the command, the authorization.
+                 var gate = PassGate(request.Session, out var reason);
+                 if (gate == EditGate.Unavailable) return EditIntentOutcome.Unavailable(reason);
+@@ -339,6 +344,10 @@ namespace RackCad.Application.Workspace
+                 if (string.IsNullOrWhiteSpace(request.RackId))
+                     return EditCheckOutcome.NotFound("A blank rack has no draft.");
+ 
++                // 1, continued: the same request error as the intention; nothing is read and the draft is not touched.
++                if (HasWitnessWithoutKey(request))
++                    return EditCheckOutcome.Failed("The preview witness has no key.");
++
+                 // 2 to 5: the same gate as the intention; nothing is read.
+                 var gate = PassGate(request.Session, out var reason);
+                 if (gate == EditGate.Unavailable) return EditCheckOutcome.Unavailable(reason);
+@@ -388,6 +397,10 @@ namespace RackCad.Application.Workspace
+             }
+         }
+ 
++        // A witness that is present (not null) with a null, empty or blank key cannot be compared with anything (INV-27).
++        private static bool HasWitnessWithoutKey(EditIntentRequest request) =>
++            request.Witness != null && string.IsNullOrWhiteSpace(request.Witness.Key);
++
+         private enum EditGate
+         {
+             Open,
+diff --git a/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs b/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+index 15e774c6..8db5d002 100644
+--- a/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
++++ b/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+@@ -114,10 +114,12 @@ namespace RackCad.Plugin.Views
+                 }
+ 
+                 var scan = RackSiblingScan.CaptureDrawing(document);
++                if (scan.RawEnvelopes == null)
++                    return new RackPilotIntentReadResult(null, "The scan of the drawing carries no raw envelopes.");
++
+                 var input = new PushBackPilotIntentScan(rackId, originKey, scan.Facts, scan.RawEnvelopes, CompletenessEvidence, witness);
+                 var read = PushBackPilotIntentReader.Read(input, catalog);
+ 
+-                AssertNoOpenTransaction(document, "after");
+                 return new RackPilotIntentReadResult(read, null);
+             }
+             catch (Autodesk.AutoCAD.Runtime.Exception ex) when (ex.ErrorStatus == ErrorStatus.LockViolation)
+@@ -132,6 +134,11 @@ namespace RackCad.Plugin.Views
+             {
+                 return new RackPilotIntentReadResult(null, "The edit intention could not be read: " + ex.Message);
+             }
++            finally
++            {
++                // INV-14: every path of the read (the success, the early return and the catches) leaves no transaction open.
++                AssertNoOpenTransaction(document, "after");
++            }
+         }
+ 
+         /// <summary>
+@@ -143,6 +150,9 @@ namespace RackCad.Plugin.Views
+         {
+             try
+             {
++                // INV-14: no transaction is open before the lock and the transaction of this read, and none after both are closed.
++                AssertNoOpenTransaction(document, "before");
++
+                 if (definitionHandle <= 0)
+                     return new RackPilotWitnessResult(null, "The definition has no handle.");
+ 
+@@ -171,6 +181,11 @@ namespace RackCad.Plugin.Views
+             {
+                 return new RackPilotWitnessResult(null, "The preview witness could not be read: " + ex.Message);
+             }
++            finally
++            {
++                // The lock and the transaction are closed by now (both using blocks are inside the try).
++                AssertNoOpenTransaction(document, "after");
++            }
+         }
+ 
+         // The one conversion from the long handle of the host to the handle of the drawing.
+diff --git a/src/RackCad.Plugin/Views/RackSiblingScan.cs b/src/RackCad.Plugin/Views/RackSiblingScan.cs
+index b2eef82a..aaa3aac8 100644
+--- a/src/RackCad.Plugin/Views/RackSiblingScan.cs
++++ b/src/RackCad.Plugin/Views/RackSiblingScan.cs
+@@ -45,15 +45,13 @@ namespace RackCad.Plugin.Views
+             IReadOnlyDictionary<string, ObjectId> definitions,
+             IReadOnlyDictionary<string, RackEmbedDocument> envelopes,
+             IReadOnlyDictionary<string, CustomPropertiesReadResult> properties,
+-            IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> layers,
+-            IReadOnlyDictionary<string, string> rawEnvelopes = null)
++            IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> layers)
+         {
+             Facts = facts;
+             Definitions = definitions;
+             Envelopes = envelopes;
+             Properties = properties;
+             Layers = layers;
+-            RawEnvelopes = rawEnvelopes ?? new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(StringComparer.Ordinal));
+         }
+ 
+         internal IReadOnlyList<RackSiblingScanFact> Facts { get; }
+@@ -64,9 +62,11 @@ namespace RackCad.Plugin.Views
+ 
+         /// <summary>
+         /// The raw text of the envelope of each scanned definition that has text, by key (ordinal): the same text that
+-        /// <c>Traverse</c> deserializes. It is a read-only view; the scan still writes nothing.
++        /// <c>Traverse</c> deserializes. It is a read-only view; the scan still writes nothing. It is assigned at the one point
++        /// where a scan is built (<c>Traverse</c>); a scan without it carries null, and the read of the intention then fails
++        /// with a typed failure instead of receiving an empty dictionary in silence.
+         /// </summary>
+-        internal IReadOnlyDictionary<string, string> RawEnvelopes { get; }
++        internal IReadOnlyDictionary<string, string> RawEnvelopes { get; init; }
+ 
+         /// <summary>The members of one rack among the scanned definitions; no source is selected, so none is erased by kind.</summary>
+         internal RackSiblingMembershipSnapshot MembershipFor(string rackId)
+@@ -163,8 +163,10 @@ namespace RackCad.Plugin.Views
+                 transaction.Commit();
+             }
+ 
+-            return new RackSiblingDrawingScan(
+-                facts, definitions, envelopes, properties, layers, new ReadOnlyDictionary<string, string>(rawEnvelopes));
++            return new RackSiblingDrawingScan(facts, definitions, envelopes, properties, layers)
++            {
++                RawEnvelopes = new ReadOnlyDictionary<string, string>(rawEnvelopes)
++            };
+         }
+ 
+         private static void AddLayer(Transaction transaction, ObjectId layerId, RackSiblingLayerUse use,

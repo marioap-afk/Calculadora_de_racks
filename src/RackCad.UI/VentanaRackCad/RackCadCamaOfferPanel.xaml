@@ -1,0 +1,23 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.RackCadCamaOfferPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             AutomationProperties.Name="Editar la cama aquí">
+    <!-- T5 cm (I-64, quinta tanda; dolor 15 of the inventory «camas»): a cama of the list can be edited here, with its door and the same rules
+         as Dinámico, Selectivo and the cabecera. Its data context is the view-model of the window (the page of the rack), as the other offers. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Padding="10,8" BorderThickness="1" CornerRadius="6" BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}">
+        <DockPanel>
+            <Button x:Name="EditCamaHereButton" DockPanel.Dock="Right" Content="Editar aquí" Padding="12,4" Margin="8,0,0,0"
+                    Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Editar la cama en la ventana"
+                    Click="OnEditCamaHereClick" />
+            <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                       Text="Esta es una cama de rodamiento. Puedes editarla aquí, con el editor nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el editor clásico." />
+        </DockPanel>
+    </Border>
+</UserControl>

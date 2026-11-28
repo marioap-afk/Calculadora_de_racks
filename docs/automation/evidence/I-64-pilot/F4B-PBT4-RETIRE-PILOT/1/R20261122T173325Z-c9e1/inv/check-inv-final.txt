@@ -1,0 +1,42 @@
+git diff --name-only RedSha -- src tests:
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+  src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+OK   INV-PBT4D-01 desde RedSha solo los seis de Pilot/, nada de tests/ 
+OK   INV-PBT4D-01 Domain/UI/Plugin vacio 
+OK   INV-PBT4D-01 los cinco/seis archivos no cambiados del contrato 
+OK   INV-PBT4D-01 en src/ solo los seis de Pilot/ 6
+OK   INV-PBT4D-01 4 M y 2 D ['M\tsrc/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs', 'D\tsrc/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs', 'M\tsrc/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs', 'D\tsrc/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs', 'M\tsrc/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs', 'M\tsrc/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs']
+tests/ cambiados entre BaseSha y destino: 31
+OK   RED literal: 31 archivos de tests/ con el sha256 de red-files.txt y los borrados ausentes (en el destino) 
+OK   tests/ del destino == tests/ de RedSha (sin cambio desde el RED) 
+OK   tests/ que cambian desde BaseSha son exactamente los 31 del RED 31
+OK   GREEN literal: 4 archivos con su sha256 y 2 ausentes 
+OK   INV-PBT4D-13 allowErase no aparece en src/ 
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\b0\build-RackCad.Plugin.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\b0\build-RackCad.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\b0\build-RackCad.UI.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\b0\build-debug-RackCad.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\b0\build-debug-RackCad.UI.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\g1\build-RackCad.Plugin.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\g1\build-RackCad.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\g1\build-RackCad.UI.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\g1\build-debug-RackCad.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\g1\build-debug-RackCad.UI.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\r1\build-RackCad.Plugin.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\r1\build-RackCad.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\r1\build-RackCad.UI.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\r1\build-debug-RackCad.Tests.log
+  warning CS 0  artifacts/orchestration/I-64/F4B-PBT4-RETIRE-PILOT/1/R20261122T173325Z-c9e1\tests\r1\build-debug-RackCad.UI.Tests.log
+OK   0 lineas "warning CS" en todos los registros de build 
+lineas anadidas en src/: 37 (de ellas no comentario: 5)
+  +                if (!decoded.HasAddress || disposition == PushBackViewDispositionKind.NoAddress)
+  +                if (disposition == PushBackViewDispositionKind.ObsoleteLateral)
+  +                if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay)
+  +                var memberName = string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName;
+  +            if (dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(AllViewsObsoleteReason);
+OK   INV-PBT4D-14/C17 ninguna linea anadida nombra PushBackSystem ni RackModuleReconciliationResult []
+RESULTADO: TODO OK

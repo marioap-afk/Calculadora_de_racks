@@ -1,0 +1,3 @@
+The RED UI filter run and the RED Plugin build were done on the RED skeleton before one last edit of a single line of a Core guard test file (a numeric char literal in place of a raw BOM character), so their TreeSha is null; the RED Core filter run was repeated on the exact RED tree.
+The T2B1 carry-over N-4 renamed one test method (Rule3...NeverReadsTheText -> Rule3...EvenWithAValidText) and one (Rule9ComesBeforeTheAuth13ComparisonSoThePair9And11 -> ...ForThePair9And11WithALoneSelectiveOrigin), as the carry-over asks for names that say what they check.
+The full UI suite in Release does not reach 0 failures because of the two Release-only tests in UnexpectedFindings; the same tests pass in Debug.

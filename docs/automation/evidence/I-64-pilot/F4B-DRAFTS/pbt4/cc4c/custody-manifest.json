@@ -1,0 +1,2531 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-DRAFTS/pbt4/cc4c",
+  "SourceRoot": "la carpeta de la sesion (fuera del repositorio)",
+  "Counts": {
+    "CUSTODIED": 371,
+    "EXCLUDED": 17
+  },
+  "Files": [
+    {
+      "Path": "census_c13_v51.py",
+      "Bytes": 12158,
+      "Sha256": "83a88e3895716dfe8810d360b20c8bce1751a178356cd90591e308a5844343cc",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "classes_v51.py",
+      "Bytes": 1822,
+      "Sha256": "48e093c372ba5f98899327986020727ee164b901d87348e523787a97072edf74",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "compile-check-v50.md",
+      "Bytes": 6736,
+      "Sha256": "bca9fde88b3a4ac881860769260780354a4440a48a94c9690b8c08f7acaefc44",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "63e4304b1be77dd169f0e717507f6c325ce540ec8ca8aa7f0ab3244fa1feb5ab"
+    },
+    {
+      "Path": "compile-check.md",
+      "Bytes": 213806,
+      "Sha256": "060c5c8b4ea1197079bcde5f5c5d8d299d5b71dde6295d2a468982e5fb1bb02c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0880864318eb12127193bc51783bcfc6d38124c8d0fdc94f3248f638ae0c1bef"
+    },
+    {
+      "Path": "compile_check_v51.py",
+      "Bytes": 13612,
+      "Sha256": "20bd90830f074def46e2ae9deb17ea7363228e632c2d4c9265dc5d9d2ba36b13",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "310a1aa9110dec93b8a8f4bba4c664f268f557758482b10caf456a0e7dfaf8e5"
+    },
+    {
+      "Path": "control_check_v51.py",
+      "Bytes": 3285,
+      "Sha256": "ec74af4484ae7496fc4e8f0258a71a2f88b124dd42933b5734314d4682384262",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-compile-r5b.txt",
+      "Bytes": 2762,
+      "Sha256": "6b7441680890dc2f936a886359d326a8b5d570c50c5a1634b35cfb0d0c4aff4a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-isdirty-v50-r5h.txt",
+      "Bytes": 1127,
+      "Sha256": "ba65fabbd9e18aa5f0f00221e825dae6c215fe0640d8196c4a036493a4760546",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-probes-r5d.txt",
+      "Bytes": 1753,
+      "Sha256": "5db36eece4ebb3100aa0244bcbafe73db3d6fa46416170e6b5fc51ad55eb069e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-probes-v50b-r5f.txt",
+      "Bytes": 2507,
+      "Sha256": "68f7250daf753e5396af15b02b26797457b4e0c3ee9d7b6a7d6d2b86f58e497b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-r5i-en.txt",
+      "Bytes": 3560,
+      "Sha256": "d3f0635ee26e5fca01761c9b20174be6a8f82fe506df05b07bffe52f77ffb34f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-r5j-rg.txt",
+      "Bytes": 12426,
+      "Sha256": "1fa471d0e68095b1182c4a70b7da51ee51f9daa1b11008284fcfbe12c8045da4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-r5k-id.txt",
+      "Bytes": 1210,
+      "Sha256": "6122f1afeb1016512c10d874f463b41fb4cc91caa347ed6d1909c2e1f1d54e9c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-r5l-cc.txt",
+      "Bytes": 1697,
+      "Sha256": "f685599ecdef5462d8f03846f941b58587f63f237644b319635396228bc2103d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-redgreen-r5c.txt",
+      "Bytes": 12488,
+      "Sha256": "6cbc2f2fc6683d67585fead9076a6f9d631253bc687fcf16e7f5d0c05a648314",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "driver-redgreen-v50b-r5g.txt",
+      "Bytes": 13330,
+      "Sha256": "f2f5d7efdf51916f4bbb6c57858d091168df05588357b94b5c22a5079460ae1c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "filter_overlap_pbt4c_v50.py",
+      "Bytes": 3548,
+      "Sha256": "9836bdd106ea0edbf4df01dcb9f54f86a70d79e08413bd403f379425d1a620f5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "filter_overlap_pbt4c_v50b.py",
+      "Bytes": 3889,
+      "Sha256": "d5ebc82f7cba6754872f5a24d0237b2d3010bf2f3b05dec2c52f0ec856265306",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-compile-v50-r5b/apply-green.txt",
+      "Bytes": 1742,
+      "Sha256": "b1f487fc499330fcbf7fde33f1d56015f9a01e18a80332835b9f4f86d91e1e7d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-compile-v50-r5b/apply-red.txt",
+      "Bytes": 1998,
+      "Sha256": "582c480e4f0ef4c2f3cd0c5808247efdb41f658fedff4205628662568474aea2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-compile-v50-r5b/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-compile-v50-r5b/green-core-tests.log",
+      "Bytes": 44342,
+      "Sha256": "4aed2da803f1375825edb676bb5202a1051a3ce9e25b89e5205cb8e2e88b77a6",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5402148d8f268754fb11991c02717ce7d3c09cede1e48bcbeefc7122f14dade3"
+    },
+    {
+      "Path": "out-compile-v50-r5b/green-plugin.log",
+      "Bytes": 30752,
+      "Sha256": "808627c21bf057ef7418739fd641c8cb49fdf4b2b2631ba3c418a327da7e19df",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ad2490b01e75375917e23f8014b1736be3db138c1d4a76f721c15b38ae5ac26c"
+    },
+    {
+      "Path": "out-compile-v50-r5b/green-ui-tests.log",
+      "Bytes": 10146,
+      "Sha256": "2bef3c770487d04b064e1dfab26e048c7a64708588be6330d49ab76a5eca1bf0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d7e212cb3220406ca13263d55f7c35cbd70eaaecdbc9de6b666c7926b1188e77"
+    },
+    {
+      "Path": "out-compile-v50-r5b/red-core-tests.log",
+      "Bytes": 44765,
+      "Sha256": "62fc1127384a1f69dc2987a60db65d25c46c8d3ea05298db194d6d47347a9c08",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "87d004a4886fa879b2a070b64fc51d17d543e31639b32316d96ce3e8a6c77e56"
+    },
+    {
+      "Path": "out-compile-v50-r5b/red-plugin.log",
+      "Bytes": 30822,
+      "Sha256": "74da43513c11638196384f0dc7ebc7977998d7bb59e611619d0795d4d68548f0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3848c11034d205c1a37f6888cef2210aea68444ac841d576632a622fc05f3a1e"
+    },
+    {
+      "Path": "out-compile-v50-r5b/red-ui-tests.log",
+      "Bytes": 10302,
+      "Sha256": "22750049372a0379079f4ed61d75a8d15512bb2a79bbe13395000c6ba644feff",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "85a62b261cb8566ed596bc18af9d43978c31a0c4ef32847a33d3286b8d2d9450"
+    },
+    {
+      "Path": "out-isdirty-v50-r5h/apply-green.txt",
+      "Bytes": 1740,
+      "Sha256": "377e0655a803162c32642ca17e8d3a51449cc2680391b340befe3fe7845a004b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-isdirty-v50-r5h/apply-red.txt",
+      "Bytes": 2259,
+      "Sha256": "d853b70e3bafe72f60a429d4f0cf959305b25fbe0adc6db90bfe6f64e952cbde",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-isdirty-v50-r5h/build-release.log",
+      "Bytes": 44779,
+      "Sha256": "e6b795e1b0c97f53a98b5bcb499c6fe9c1b6439a2c33939f341189d950cc4459",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "1bd986da3eb930a70e4b40042187e73a58a84def1fbbff77daaba5f266147ad3"
+    },
+    {
+      "Path": "out-isdirty-v50-r5h/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-isdirty-v50-r5h/isdirty-probe.txt",
+      "Bytes": 824,
+      "Sha256": "cb7a34799aea3b96ccb385c221faec46c48703b30bb078b3d6cd3af63c1d34cc",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-isdirty-v50-r5h/isdirty.log",
+      "Bytes": 1802,
+      "Sha256": "a7bf4f5b455e06ac0137b6e1e20eae9036b8669a996574fd4d7b41f01cda74ea",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "92a150f981900edebe533435245387f5e9de835a3c8a28ec9abf817e2fe6bb30"
+    },
+    {
+      "Path": "out-probes-v50-r5d/apply-green.txt",
+      "Bytes": 1742,
+      "Sha256": "b1f487fc499330fcbf7fde33f1d56015f9a01e18a80332835b9f4f86d91e1e7d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50-r5d/apply-red.txt",
+      "Bytes": 1998,
+      "Sha256": "582c480e4f0ef4c2f3cd0c5808247efdb41f658fedff4205628662568474aea2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50-r5d/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50-r5d/probe-editall-lines.txt",
+      "Bytes": 2659,
+      "Sha256": "cbbd8457149afd6919dbfb763b63c47a60283bc44d01f05c0b92aae1652ea59f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50-r5d/probes-core-tests.log",
+      "Bytes": 44769,
+      "Sha256": "253bbe78c9dbce3f887bdc26275dbfc314b49a429791fdf0007b172065293a2f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "854ba2eb28bb49732300e4ddbc68bbeff3ffa23e1a99235f9e14ef88bd39aaed"
+    },
+    {
+      "Path": "out-probes-v50-r5d/probes-outcomes.txt",
+      "Bytes": 408,
+      "Sha256": "19370f32fe5bc2c237c581f195c60e1b0bbbfdf49c463cd1fdfc3a0540fbc316",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "81cb0284c54b53f13b1f4093b2f37caabb6404138d5ef6aab72b65ddb0b38acf"
+    },
+    {
+      "Path": "out-probes-v50-r5d/probes.log",
+      "Bytes": 3551,
+      "Sha256": "b3655e9267728b30f63f6bdf53be285ba1bd7df763b183570bfdef84c49347d0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a89c36ea1c0a2d4fea6c7d9074fe9f15c383824669f13f28faa5e9e2b31564d4"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/apply-green.txt",
+      "Bytes": 1740,
+      "Sha256": "377e0655a803162c32642ca17e8d3a51449cc2680391b340befe3fe7845a004b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/apply-red.txt",
+      "Bytes": 2259,
+      "Sha256": "d853b70e3bafe72f60a429d4f0cf959305b25fbe0adc6db90bfe6f64e952cbde",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "fe558fb72a8b6c7231f562945de8ed69dde691d70741e03aef2d0793c3697aa9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/probe-core-lines.txt",
+      "Bytes": 2659,
+      "Sha256": "cbbd8457149afd6919dbfb763b63c47a60283bc44d01f05c0b92aae1652ea59f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/probe-ui-lines.txt",
+      "Bytes": 1123,
+      "Sha256": "3ee13f60b188754d2509cd8776b5cb07a97a6397497480a2745507e812ac85ce",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/probes-core-outcomes.txt",
+      "Bytes": 408,
+      "Sha256": "5725091803b29d8150bceaaa0f20155f90e01142576cff62849b40c3b77b71d7",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a88b47903e4915ab602b50e46d83ddd0e0759d4c7d449f9c8cd1ef8802e9b4f1"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/probes-core-tests.log",
+      "Bytes": 44769,
+      "Sha256": "4acdcc7aaae4d8eed4b676bea701ce27833b2d75396f9e1b8fcc431ef55e4e3b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d84acc3c5d328c3cf75f4fc0a1c156ee972d75f393864e8741e6f443f1d5dee6"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/probes-core.log",
+      "Bytes": 3556,
+      "Sha256": "cc3f3923b203812d4175b7ef6d36124ff88967c9282198223450754a1c7a7bf7",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "e724b9aad39ba9bf70cd7f2aee7b124ec0a8e061b9847a673bb818fb33086cde"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/probes-ui-outcomes.txt",
+      "Bytes": 325,
+      "Sha256": "2bf1fd9702d19db3f5ed71094454fc4a81eb9498e314c08de32739c689944205",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "97a19c9302363063185063a6e45a57f6786aa54d67fbd1d89776375fd1c8bade"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/probes-ui-tests.log",
+      "Bytes": 10302,
+      "Sha256": "b731c18a36dfc72bfaf4df78a644c89fd4a52dbba1104af61dbea967ee0c156a",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3d3ebed21da308502623bb9c68c46eb3285560cc1cab74a1522073cf20a9be53"
+    },
+    {
+      "Path": "out-probes-v50b-r5f/probes-ui.log",
+      "Bytes": 2039,
+      "Sha256": "91b5f56a6fb6f3b03d05914652e892581619c1f95b7e035939a815c196d7d23e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "df0f3cc67d72bc8ae3e9c26f49ba8375011f32cd0dcbe53be94360ca188ab15c"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/apply-green.txt",
+      "Bytes": 1742,
+      "Sha256": "b1f487fc499330fcbf7fde33f1d56015f9a01e18a80332835b9f4f86d91e1e7d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/apply-red.txt",
+      "Bytes": 1998,
+      "Sha256": "582c480e4f0ef4c2f3cd0c5808247efdb41f658fedff4205628662568474aea2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/check-core-green.txt",
+      "Bytes": 6274,
+      "Sha256": "7e4b2c9a5a30cd25a433051e736d2c8e3710c039fa69d914bce4d157b493e806",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4700b14d2dafb30349e66dba834f9d0465350e7ce9d7bc90b111a8924e7159c3"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/check-core-red.txt",
+      "Bytes": 6270,
+      "Sha256": "aa7bab0c16deb33f714f61406bdbcecd32613286ecb3ddb545a66556ced8c054",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7791a3b253ac8dcc5940dc6414cc980c26a7f8460a909147d0f8e7fc0ff923fd"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/check-ui-green.txt",
+      "Bytes": 1817,
+      "Sha256": "5c84c097ebde91d2895898c05d6c323167cd50270d31de09ac45b188c64c37f7",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9733f9b2455878f5e5348a53398084c21175b24ca6d9ec8201ddf116a39b528f"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/check-ui-red.txt",
+      "Bytes": 1435,
+      "Sha256": "ae24a06b0f5aa91babd1d5df176e122958198d72762bd0ac62107a8de481a008",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/core-green-outcomes.txt",
+      "Bytes": 150262,
+      "Sha256": "9bf24792c55adb2bb7289d7b879b66823e9e7445cb5e50b2cb8f04e5c02b69f2",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ebc3c2ec839ac393e188477d4e2f74847299ba3b7f47debe2caf034db925f443"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/core-green.log",
+      "Bytes": 136746,
+      "Sha256": "dcd22cb32c4fd6c2f41abd9ea2ccdb20beed830bc4efabbef899d27ad3c5c671",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4d3efa7961f4009b010ef85d05404e3aff5c263ff0653faddb66a3754b0b54c6"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/core-red-failed-messages.txt",
+      "Bytes": 673,
+      "Sha256": "10f97104606ab7e19671e0481328e217f9f24acef1f3ec1d2ab1f7c0e1208e78",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/core-red-outcomes.txt",
+      "Bytes": 150262,
+      "Sha256": "9e82f45accc08f3ef35d2bc7b8b3d3a54f3f7336230af0a3318ef569777673f7",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "eb0ea602ffe1c89e4554f4ddb1c5187058e14a0a9aa0626fc4aedcf24ec845c6"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/core-red.log",
+      "Bytes": 136744,
+      "Sha256": "98bc837abf663a0e9cd7ce0b0fb01d5a39d207a19e06412ee8703150e7c8af9d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2c5d485dab6d74f47d239c19d4a396ce64b458b6591e53429548993e84b1d127"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-core-tests.log",
+      "Bytes": 44342,
+      "Sha256": "029f16a84f5eecf93fd31deba1e74db359a53d0552a75228b7dc0cc2c646e035",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4370148c2ed63067dd0507ba0cfee2611d618d6f07349e0b596d6280f0941a49"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-plugin.log",
+      "Bytes": 30752,
+      "Sha256": "f61a7954de4231221be5f1be9fede927203c75554aa5c13035bbe599362bdfd8",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "42249d95facaaf1d006708b9a3dc0bb3c8a1613b99ce2b9061c03c6c8aea8ae1"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_Cantilever-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "ecb7c081aeada6dc1c98daa0551a496bc346d6823bfcbaa45fc702fef91d7bba",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_Cantilever.log",
+      "Bytes": 479,
+      "Sha256": "f6ff3fd7cad2af75b742986e9610dd318455fcd03adddca21d135411beb308f2",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "717fd97554c7cfda7b07f737e27647feefa77bd8edd9300179eec59c5356e70a"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "dd1e9cdb0ac79ed5f33ff440d4ee5debe097a3d43d9c9c7cbbfa1c9e911bea49",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests.log",
+      "Bytes": 522,
+      "Sha256": "ce0ca8cd89ca6669570b39b89d1f25f76452ff38450fccd772b6e9934743fe1e",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "a0c664b180b0f623e9f440ee65b440698801049c1f8ab9f30118195d7ff0cc3a",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests.log",
+      "Bytes": 527,
+      "Sha256": "81826a53de19ac8f63b9fbbb10b511e1c7651cf480ec82487eeb215b80fd0e49",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_NumericFieldTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "a9b254770ac486e722eceb35de1a6e7b06662f279426ca6936f0aa76f25f90c8",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_NumericFieldTests.log",
+      "Bytes": 488,
+      "Sha256": "27c839da30ba5686e5c7a91947f4caaf3efd4b1f324ff656f99274f2567cd581",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7a4ee411122e4930de8b20364ab8899bf143dd4d92801f5d129c48ba12b43257"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_NumericFieldValidationTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "37511a7b0eb48e0bbd2888c4862bf5fbf951048a8a4ff2f7bea60c0a5bcd2ad9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_NumericFieldValidationTests.log",
+      "Bytes": 498,
+      "Sha256": "3c2264c6b932fbb7385e37b36b40635d5a4ee58d6c8a47a50668f0149586f804",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "cbbe649eaa5f9d85504e91d65aa4e9fc8d36e73dc52d3afae612d16cea3b9d30"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackClassicCharacterization-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "5ee0c93e85dc49a4df856a04237483d4971c6dbc43f2902232460a21cb61af51",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackClassicCharacterization.log",
+      "Bytes": 501,
+      "Sha256": "67c48873d9f8f102366652d297aa6f57b2ea69d6a2fe7ee67c1bb040cb047606",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "cd3039c7355222eabeb07e50d3ef11e888bd44f783312147677ef48f565e368b"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "443c6e80cc7d422d0f572e607a3bd9085f6d60fae85ab3da4c9c202f131009d9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.log",
+      "Bytes": 495,
+      "Sha256": "599d8c33348844393545d42947093c595af98faaa41df3b80c7b20f28aae9d98",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3199251906cdf49b1f33028a95c88b01e0afcc1e3f1c227dce87a0e5164fa9c4"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "fc6dc59b3fbb95d54233560daf099f24ea213a420a1397ddf2c107dbadae039a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.log",
+      "Bytes": 511,
+      "Sha256": "b52490fa24802c6069d1ff26ea5880a829291cebae512c297f43908c074892c8",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "762403976e525fa92e3b4c6080fb1699485c2c2bf7a99f9745d54333c5bb6e6e"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "86914ce1dadd7934094b5de4d008d9bb8e966f21773a91333800a066e2ad7a63",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.log",
+      "Bytes": 506,
+      "Sha256": "1bf4aaeb41551dbc2e509175eacf245a64c1074a8b87a4bde0aa0c0944e13c09",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "554219fa5fae2923755e4e041433927ede3ffbc41ceefcd9c81892bf0125b07c"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization-outcomes.txt",
+      "Bytes": 870,
+      "Sha256": "13f2363168f84782a1fb894f7bda7b35cdb6d9c8129572693f8236c29a48c154",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.log",
+      "Bytes": 1223,
+      "Sha256": "291754d3571608f4d1c8f71b84f766bf0f690d64f5cafe432c504ac71a1ecc43",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "575b6cded989804592f06bfb0e55d6d44d7e4657cc881058ca5e1a1115f0addf"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "e23206b5864fad5c9271c11b4d96e71c7055284a33609f66c5b0a1017a1444a3",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests.log",
+      "Bytes": 498,
+      "Sha256": "ab138f056070ad554e6ca5c3a8c1069772dfb9174a9c967854e136290fcbbbe3",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "bac42fea88f42aba535654312525e6d7d39cda332182e6edbe868cc665b8d085"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackStateNet-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "0d777217c2d21c770feb7449b14df6d34378f0843080ad88798f9f08a53dae17",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackStateNet.log",
+      "Bytes": 486,
+      "Sha256": "af1af6207758e839da040c248ba9eabf85791533083c1d8d0afd13e710a82d81",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "87cc19f6fe7747e33a4397c145307c5be20c7b3297d07eacd0cc037ec3acfe86"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "f0a00e72a68a01d2843c0662d400edf795c1233c0d1904994cec220b5864b87a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.log",
+      "Bytes": 495,
+      "Sha256": "cdd322ae955adc51987b925a97db2013d49663db8bcc0942c3d5b4c36abf95b0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "45bf4a7e8aee7eba2be0e0ba01facc3669c77b4bb797a629343d127955f31f38"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests-outcomes.txt",
+      "Bytes": 451,
+      "Sha256": "21d88d4591a80eefd356e8084e89f37419fefb68d3124debfbdd499c4812258c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c069978a77e2f68e9f6e15da3e9d8126670ce53ff51e47d566c4b46e9428b6e8"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.log",
+      "Bytes": 2277,
+      "Sha256": "be3bf4b5ff6cd5b9e037d7a96f3220e1ac92b613b4deb25780212e4647b1a7cb",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "29b2835df4688be7c77f7fc9b29cda3d58c4af55bea2a4c16df2afd750bd9476"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "dd74fd3263955c8c410cc6c1260b95003074f8d88c572ec6750f0458d810f157",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.log",
+      "Bytes": 501,
+      "Sha256": "a220732a19e9a8b2ba0d683ca56c38ee4e9db84d30a0bba8b0f1cc69a927581a",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2dd8451ced4daf3aa534028195af8654628c93f13c41ef174cf94bb324d5d035"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "edf32e8d53b3adce56f6a871154192dac192a8ac3b54ea032461514ebd20c3e2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.log",
+      "Bytes": 498,
+      "Sha256": "9136b9944f6358ce3880f1bb9b419208c5d72b1802b9cb3fa1e72bb4ae16a742",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "18c1b507ca1adc28f0ab3f750d1866f301259ef700b30a35fbc532c03bddb62d"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_Workspace-outcomes.txt",
+      "Bytes": 9629,
+      "Sha256": "664271b72787eb7b24359d5b23b986d38d28b27d9891a66a607bebce35e48457",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-RackCad_UI_Tests_Workspace.log",
+      "Bytes": 8690,
+      "Sha256": "216df42316e236ab389d3af224bafb367fd758672e395077a3e76ff23fb3694b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "e96fc180890c16d45821bf85cd94478cecc189e6ae739dde7cb6097f03bce044"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-applyclose-failed-messages.txt",
+      "Bytes": 1180,
+      "Sha256": "54036ec18727f42a1873cccd0f4face6b02a2772b02776e8a91e78cc15984796",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/green-ui-tests.log",
+      "Bytes": 10146,
+      "Sha256": "9b9c476fd007a924c6308f858f3b758bfbf0ac301332dec01fb79bc172f5e53c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3db89921e5aac02c798cae6c22c67f8a5201a23ab5bc4c915201e68391dc5c9c"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-core-tests.log",
+      "Bytes": 44769,
+      "Sha256": "0de3b1d90cc0c4ba888239f3a2f62ae0cc7e7debe318171f4b99a5816080eab1",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9e47351b984dd118e6afe765a889cb92fe90371ba2dc73721dffef8f6bf62c1b"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-plugin.log",
+      "Bytes": 30822,
+      "Sha256": "140639a85c9e296e4d48678c08c63fb1c7ff7f0e0420704c77571c8227c7b9ad",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "37983a29098c950736cdb8094fdffa80dc15d7816c86490ad8a0fc2bdb56eb51"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_Cantilever-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "9372d22ad097882ab549156a18f739bb0abe31a67d127a8dbe641d243384c622",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_Cantilever.log",
+      "Bytes": 477,
+      "Sha256": "a553aadc5cb3cb47b28d540cdb351db2c0053e5bf9a26305a3f2f869d0bae2a6",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c7a1739d4e2503e3b3773d212540287ba1579040a5c99d186289cab1c90c32e7"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "d2d877174ed1a7a77327efcc0d63fd64fa8d0c5265b73003ed55298f08438d34",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests.log",
+      "Bytes": 520,
+      "Sha256": "b2a31932cdd1a9ef770e90ae7040377068fedbd0842bba039d9c387570902fd0",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "5172244aef0f753c59988d48f5cd771f21350dd8636afc8f82495cf48961bbe2",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests.log",
+      "Bytes": 525,
+      "Sha256": "7b7e070cab74f35994ce77b9fb3751dc8cd0e8f8fc79c8b173c0a198fb22c61c",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_NumericFieldTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "dc4823c47095ed3dcbb1d9f8c93978cb3ec98c35a00b664aa02bca45285ba36d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_NumericFieldTests.log",
+      "Bytes": 486,
+      "Sha256": "b7d1e13a6c5c9291e8ac50e2f6395a0967fedcee21a5d0e89cd9d0126578d780",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "bee6f7c1fe26e47a79262686012dc92ca1a5ed814bb4485474835e5b4488f23c"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_NumericFieldValidationTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "87c0356eec7e5515e7bd6c01a9d9ebb11e4240d6a411b8952161b04e22e25f4d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_NumericFieldValidationTests.log",
+      "Bytes": 496,
+      "Sha256": "259b0d7433d15a633a768e379052f0c088227df3a6fb8290bd9fcde0595fe086",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7d00a359bb0185cc3b48b0bf846f223dfa1e6e32dc4352367ae36d6968cc493c"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackClassicCharacterization-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "70d081218438c35e902f0ad83b31bc2c273ed64d769f507379bc8b547bff77c9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackClassicCharacterization.log",
+      "Bytes": 498,
+      "Sha256": "78ccc59351bc95f82ebda15a6495308fae61cc2bdcb281d669f920e9aa542d18",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5653bc86e88b62939990831abaee87bf4d423b38fa2ca3f10915d44fc0290941"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "486b34a0be8d7f87249a2d20233406c01ec12dc9dc467d276f0289256abe2ee0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.log",
+      "Bytes": 494,
+      "Sha256": "5fc59bec750802a250373ca0ccaf6161cdfc3edb55b3ec49b5f4c16ac3d27c6b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2701484bd7641a6fcb24b924b4f73caccac7216b74dbaacacab4e10746e16024"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "4de5a11520e913e9891c02e4ceeed0849fc7998b9d339bd98a4330ee1d2e30c5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.log",
+      "Bytes": 509,
+      "Sha256": "e9dca2d51f730675256ab933dd6b4260416c03a361244de7c7db3fccbc4b3fed",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "73538eee7d43a397e314a76cd0fe3c3d6e5beb03f918cb810a41e0bf3417118d"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "331f33cdbd98f7a729baa62a8b00da1747e9ddec1085f13c75869533ec96efd5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.log",
+      "Bytes": 504,
+      "Sha256": "ad1664832d673461def0afe96fdb60062abdc2f1a1d5222ece0934978beb8e72",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7c6efdbc24a37dfa7263f009f72c268f1dfd17ba9b651129f7158108311edc04"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization-outcomes.txt",
+      "Bytes": 870,
+      "Sha256": "2f5fd122bb6ec476cb2e3bc91e8375a5a85bde41f9b48b0431ecb6bd5edd4677",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.log",
+      "Bytes": 1221,
+      "Sha256": "c8ceb4390f9fd1909387550ed8d3eb561c1699c95dcd6e5f8492ddf591dd103d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4a1942e834e78150cdd379a14e4789fc6d80c9daa69d65a53880e21ca0b8deae"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "ecee59e396cabdcc8db0f5d5552eee9dd0c1178e87a9a6bff10205261f49ec67",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests.log",
+      "Bytes": 496,
+      "Sha256": "5cac44f4de2a91d6bc3e0c1ba52f80a6150269e84966c32349b10b367055ccd9",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2e3cc05ddced8010494a453deb0e07a81f56e7fb5c7087ceaef25d49fc012425"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackStateNet-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "f73a46dafd22079e2584de6abe2d9e890700892843378abdb52d2c24473d6775",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackStateNet.log",
+      "Bytes": 484,
+      "Sha256": "df6a5946a962403e490a1676b5b8c8f3daf86cb6e0940f6828a12ff391e171b8",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c9c81a3cfc8c8fcd4e1239f30d705e10adbc906c06ae308d65f8261f53fe8c79"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "c707b9f69f2caf67a90b9ad5e2aca9687ccb813230fe0431b647c9c3b1b6d68a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.log",
+      "Bytes": 493,
+      "Sha256": "d0ec7d445f34b48b91bc191ec20a29019af8a7107c5c76b9ded9d710e152380b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "748a0aa6f74193af646bc84bee1f523e4097ea4b4eaba2d707430867c29b44b6"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "39652332d8a67c7bbea4bf59d48c486bdcd2190e45d133c2c2654a6150ea99f4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.log",
+      "Bytes": 499,
+      "Sha256": "370e53a08ec42f9b423b8e13f422a5d34a87a0dc4086fa5d44a5d1c1f3dfb88d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "94c70e2506e9081f56dfb9e398dd548c2364dace166bc19658c7a6e135e5f8c9"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "c3729f0a99469409df78962f99490f95257fffadd2c36281147002e15437e48d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.log",
+      "Bytes": 499,
+      "Sha256": "086f478ef2fbd86640ce38c7bbf0b00f329d7ecb475972446ef9700df63551f1",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "09e11c3be19718b018456c5bd720258f3cb758c2d60ddd550d3c46d2e5e822b4"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "283316de9ec7c9f4e01cfdd64cb873d23f343cc78820737ddca5266762bbe61f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.log",
+      "Bytes": 496,
+      "Sha256": "5dfd9d024a816e1f108ca2154ba3d928044a5897b144181db11ff3a6d4361d0f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "99d8b4ff8a3008229894b18eba4613f79747dbd09245b9d488b693f4fe303a54"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_Workspace-outcomes.txt",
+      "Bytes": 9629,
+      "Sha256": "cea4c713f4d88c9cd9fc73e9f752cf4e62e0b3738f08c77f9ccd761ad89f9c8f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-RackCad_UI_Tests_Workspace.log",
+      "Bytes": 8688,
+      "Sha256": "f056b69a96c6b6421f704bd2cfc4c29c2c507f6bf851913ab76f53a8c41dbe72",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "70ff205182460e66ef20b0dcd0d163881e2bd8c1f1df700aba3a225947f7fb82"
+    },
+    {
+      "Path": "out-redgreen-v50-r5c/red-ui-tests.log",
+      "Bytes": 10302,
+      "Sha256": "7032f2b835422e11d40e727f3d255e676b736acc98219e88cc5142497869b7c9",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3cf6da8dd6d8e7fc6efa40510334bb8dea2702ca1ddc7a4393c8ae0d226bfccf"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/apply-green.txt",
+      "Bytes": 1740,
+      "Sha256": "377e0655a803162c32642ca17e8d3a51449cc2680391b340befe3fe7845a004b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/apply-red.txt",
+      "Bytes": 2259,
+      "Sha256": "d853b70e3bafe72f60a429d4f0cf959305b25fbe0adc6db90bfe6f64e952cbde",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/check-core-green.txt",
+      "Bytes": 6032,
+      "Sha256": "806e1e320b0252dce6b30f39eac74487fc2905c75c2cc18011fa8202003cd7d9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/check-core-red.txt",
+      "Bytes": 6028,
+      "Sha256": "12983b16d591a577f0407660f9804b08befc8d1e2675e3d929832a884dd3de31",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/check-skips.txt",
+      "Bytes": 523,
+      "Sha256": "4d74c67e84e3faa630126e98b2e33fe7c6e1966bf3b0f06b76af77823c387885",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/check-ui-green.txt",
+      "Bytes": 1698,
+      "Sha256": "c867041f11301c3c2c1b43dde12e3a6a9206e73406ada5f0d2082a791aceba05",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/check-ui-red.txt",
+      "Bytes": 1678,
+      "Sha256": "c20c4dd70a282946039422a997f8fd491f19afa5680458f70c805ebc6de20cfc",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/core-green-outcomes.txt",
+      "Bytes": 149921,
+      "Sha256": "6cd9dd2c0cb890d1aada0307f88bb92e3a1624b4328adaaa3928ec9e450ba200",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/core-green.log",
+      "Bytes": 135500,
+      "Sha256": "3e5fdb144f4b447b6d32a7fe17fe6e3edc8be15a685802da073583ed408ce8e1",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fb2bdba573570ea598b4134d723d097fda6a2901f1a602b49dca8673bfea8831"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/core-red-outcomes.txt",
+      "Bytes": 149921,
+      "Sha256": "c210a2a8d8a131c183754175b9af4e6d0eb9d77052b2c28ef072e092d824abdc",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/core-red.log",
+      "Bytes": 135499,
+      "Sha256": "a41aad46a65d4e54130f2b9890a25e7d6246652e81282318b5130bfbd4570a81",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "692ba4e72d5ed6ef79512776d45a2e1a0d36460314a76cfda38567b277077c13"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/filter-overlap-v50b.txt",
+      "Bytes": 14166,
+      "Sha256": "b1bacf8ce056f80a0882f25ce42db629b446f26507f75b121de5d96877832083",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-core-tests.log",
+      "Bytes": 44342,
+      "Sha256": "57f437463d2f0b3c0b615c0686c57223b434c9156d839f9681eaa2908253ff93",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "6a07f771807b81a43a9b45dfae5deb60850feca281f482af7fc3dbfd2c58ac34"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-plugin.log",
+      "Bytes": 30752,
+      "Sha256": "f703aa45e609edfc8cd086682e6cf36207f339e2b0f8ba91f27f004c4cc44fbe",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "bdc22e8e830d4d61caec3ac0d999b172b5d66420076321e10f0aa0e70e01cc18"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_Cantilever-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "3fb57f5c585a3fbc4226e641a7edda731879ca07e0cc2384191599083a1a4f45",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_Cantilever.log",
+      "Bytes": 479,
+      "Sha256": "e7adb9eb623635368d1b15348ac3ca856274935eeabee1ee9a636c8f96a3df56",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2788933a361663afafb3b1aca02ee8169a478ac7bac24cfe466a1b17647e90de"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "0cd4e6f5a6c36a68da9ca0845b7e446857af2322bcb3c6d00bf23bb821cdee6e",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests.log",
+      "Bytes": 522,
+      "Sha256": "30450b3687c9e29b49458c029b90568f082e179a657cd0857938b12afeb667f8",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "c51a2dc302608704db9b5c34cf21550021142c4a4caebdd4e4a219154dbca0eb",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests.log",
+      "Bytes": 527,
+      "Sha256": "4e766205fe07d70923e6a63f7c73c80ff3a95dee1d7edeb759eb6457087e32e0",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_NumericFieldTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "9707015127ce43fd32456e6834c75cd7065340485995420d18370e2753ed8942",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_NumericFieldTests.log",
+      "Bytes": 488,
+      "Sha256": "a8d2ade6872ad49c116320ef6219831dae5853c591208aa547c91925ee629fc8",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0b6092020dd12cb5e46d71da82ecb38d746213ff0d30100fe6efa4897764f385"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_NumericFieldValidationTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "05833645388c562a1b15bed7ab60235413fa72cfe0f3ca0d2bfa261e3cadab86",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_NumericFieldValidationTests.log",
+      "Bytes": 498,
+      "Sha256": "a47c233b1722467ff4c258bcb8c98cafa010680d06f8287578c7f00fc1e2bcd3",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "54901bcee51a4a92956d774746c49c1a4c61116ae1131d395564e233ae10e9e4"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackClassicCharacterization-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "5b987766ede5a306fc14db21c749bcff11371daf2bc409eb425ec4a0d4c8e6b2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackClassicCharacterization.log",
+      "Bytes": 500,
+      "Sha256": "7ff97c2e0ec567848b1b2112744571e13d76b972abd6c6e002ab0c2058e67846",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "aa610136beb076427f5eab14f479c5f6ab9ccf6a3759cba9fa6c2f047dbeeda4"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "bf63c5d72b995a6aeb70d2c713ed3f1f1ac607c7a803b4c57b6b0ff464b93534",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.log",
+      "Bytes": 495,
+      "Sha256": "5e36c76155e40f9f682309d7a26f83d1731e66d68f94ea208c7723e5c13fd2a0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3199251906cdf49b1f33028a95c88b01e0afcc1e3f1c227dce87a0e5164fa9c4"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackEditAllApplyCloseTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "f244feda078a054cc58f6652b2b3c29d4c1a18c6cdf49a506bdd535b00a396b4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackEditAllApplyCloseTests.log",
+      "Bytes": 502,
+      "Sha256": "59d6487a98cff8f2a35ca671562b577cdc92bffd15b2cff7346bd3d6e22a61de",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3cc79de138d03ac6925327b118465f252c7d9b5e9532cf99ae3d33a95066d472"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "7f24471020325b74ac590edacee31c6c9eb27bcc3ce0c51280782405ae17a6b0",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.log",
+      "Bytes": 511,
+      "Sha256": "0819ea40f14f4f09bcda28ff56771c3d2841a1fc3308f264a2058b23398fec14",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "762403976e525fa92e3b4c6080fb1699485c2c2bf7a99f9745d54333c5bb6e6e"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "a87b0c9ef50d1ca6899530b2c5f410148378b7c6966a06805410748e80df6ce4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.log",
+      "Bytes": 506,
+      "Sha256": "5b4a7192170f4f28be3c9f45fe98cd803e633c9f18a539082de493e41197e6a1",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "554219fa5fae2923755e4e041433927ede3ffbc41ceefcd9c81892bf0125b07c"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization-outcomes.txt",
+      "Bytes": 870,
+      "Sha256": "a12ded78097714bd131034b8e90da9ac21edfb6358b8b5a79cc90a50057837d5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.log",
+      "Bytes": 1223,
+      "Sha256": "47371c739d2337335466fe65469ebabec9aca105be54b62cd5e3568190718cf0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "8eb88c561b03c0f362e94ca7622c1ee630ff483f6db85cd4c15d28211aaaad0a"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "45b40b7399c25c949a3a58fb10c5b8b02eab458fdfe2bd7aecbaf1c952dfd087",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests.log",
+      "Bytes": 498,
+      "Sha256": "fa7ecf15de8606f42cd6224fb7caeac5ee0914440bf03117c686dc11fc4d113b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2930ee0df65ea2de8d23d1d9cad3299a1826f47ab5b528595a626faf4cea6e8a"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackStateNet-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "09f134123f91e7e07a59ef1ad58059808d4fd95c9a9a120fe7c10192c76e4b3b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackStateNet.log",
+      "Bytes": 486,
+      "Sha256": "5386198a7516d6dfa8708cdecb860d05539d821ae07a05edca51b72b8eb190ab",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "693ea4d65f8c63d30fb2f406efb3b67b6e1ea3112dbbd3b9393798e7c68f0b7f"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "c7a8ddc0baa14f862c462d4515fa598b0c5179d74eaaa71cb792a0d25ed2f1bb",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.log",
+      "Bytes": 495,
+      "Sha256": "7780614c86af773632863bada894e74736afce9a28e1bf0c3a906f12c988f7bc",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4b24cb2e83f5428075a010602cbc6118050c1d328abe528d1352c063e24bed2c"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests-outcomes.txt",
+      "Bytes": 424,
+      "Sha256": "113e1710c5abd10e886fd98af78d4c05c5bdabf4a0ebb0de37bab92a5dc0cd6b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.log",
+      "Bytes": 750,
+      "Sha256": "6b4a1105e2120c0b54d5e3109053d6d320cb1d5a5a16934d2a27d5d9ead7cae0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c3e3a552a9c7ea1045dc6d04d95d1dccebc0ad0f3a7bcb9e59cef0c2da4e487c"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "a8294981b87ddde58602cf643269a07fbc68370393dbe7a2b58eb35d6a54930a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.log",
+      "Bytes": 501,
+      "Sha256": "6184d32404637908e772c3970cf2026e1b617d5ae5a38344db82efc37b39deba",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a533500dd90f8da10e3d4486e32a5d2aab7e69a02a60c24db4c33e5e59b0a837"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "8a30a8a19e09d7f500d952af282816812eecb51875721183aff4435be0e8b745",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.log",
+      "Bytes": 498,
+      "Sha256": "458f5236441dc8da8af5a4a165e492ce715bf375297ae22246f099db40219c91",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "b0080c85f42b32778611071414a362dae7899c81b1370f6048c0302ddc3fb17d"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_Workspace-outcomes.txt",
+      "Bytes": 9629,
+      "Sha256": "8aed0f64eb607cac914c08ec34af74f8813b21e8b1de3bdfe2993a772d5a0d6b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-RackCad_UI_Tests_Workspace.log",
+      "Bytes": 8690,
+      "Sha256": "e6c0fc40a8e8c16979086c50e45f05d6681dd52e5740c81a8349b982865e3ff4",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7ada151fab2ad66b2147ddea45833184955ff3f6e197ca53ef770a866c1b26d9"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/green-ui-tests.log",
+      "Bytes": 10146,
+      "Sha256": "a9b8dc727ff7a1aabcd5269b51630b0d719c06bd4a4c1bff8aa474113734937a",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d9e561696dbf4487b3b300a7f6bd5d12fcf21cb4b35e9609d11c68b133f382dd"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-core-tests.log",
+      "Bytes": 44769,
+      "Sha256": "3647f8b75ff7ba30529cdc8eba92bde7573a02f51a492a516fd54dc7ad4f0cf7",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2b5ba2b6598f9517ba28a63104dcb69c975df0e1476c54d34d26f041d1376be4"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-plugin.log",
+      "Bytes": 30822,
+      "Sha256": "72f879bca9f54fea6989fd537f1d8d625735df3396c2691da3fc3bcbd9520055",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c3884b0e601a8a1c13ab5582dd1ff7f92840ea01572158e8b9e3368eecfe82a3"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_Cantilever-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "4dae00093814c11b4eeb921ad009c96ff63b43e9820c85c1eafbe05771f4603c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_Cantilever.log",
+      "Bytes": 477,
+      "Sha256": "ad9d1526d5443c0cfaee17dfd652a6a0bbf5d25398a3b174c638f0fa696bddd9",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "42c8b366ef5480c6f17478ff2b04fe2f3d96682230d30084738ca3444793c5db"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "6e5fcae679621e53a494dc5b91c7e2a4e75475ea28b123d4ff7bca0c21fd06f2",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationGreenTests.log",
+      "Bytes": 520,
+      "Sha256": "c66727708787bac7910d6c5983c07760711dae45468fee43399e4ade6a64875e",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "d6c2e050a277c200c41708834847cd10463bebd5e96eb08c84b18dea34aff3ce",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_FullPanelCopyWorkspacePilotReconciliationViewGreenTests.log",
+      "Bytes": 525,
+      "Sha256": "3d17f01beeba447354fe6785841eee13b8e78510cf68619e2b498d06b51b2b53",
+      "Disposition": "EXCLUDED",
+      "Reason": "ruta > 156 (MAX_PATH): solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_NumericFieldTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "22f16303c445863c360bebbfc55da79cb406783a592d13b762676f9481506b9b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_NumericFieldTests.log",
+      "Bytes": 486,
+      "Sha256": "6af8e2829d043fd9f18f397b2baf590dd31be67d40ba9b4d3800134f8267ae5b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "51147d45985c7d7afd1cf265dfd29d05f4e87492f0379ef4e030353a4417a57d"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_NumericFieldValidationTests-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "ce8d63a4f613594325cfbb78ebf8c1d7106485f7f5d5c6a8a027ee9d4e8f8ddb",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_NumericFieldValidationTests.log",
+      "Bytes": 496,
+      "Sha256": "c1b6102f3c099893afedebe26e84920dd6642249b76659942d53c215630693c5",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "22dd802512de141d0b869d3305c95ead80bbfbd038fef8ac8c2bbe8d5bd3c9a0"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackClassicCharacterization-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "b7820efcb03553541645310c9f7d8be03d90cba8de4564004633f95a5470aa3b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackClassicCharacterization.log",
+      "Bytes": 498,
+      "Sha256": "abaf59337da8fa99a21a1a0f3aa71a5845dc06661f66f196546aa0f314005419",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a9d6b12cf0bb2493eca66b6d75d9ae7e39da9f443449963252d8ef3260ae6d7f"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "b948c50cc127252af57bdae955fd71f58e8429e12041e3d302c668d00aeb69be",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.log",
+      "Bytes": 493,
+      "Sha256": "ea391f23dbf45e710e1898b4aa192573b4c42e086fd6c341fa72628bd53257de",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4b140b9b34d24829243d1688d6e2d7cb7d9b5f068b8a29ae301fc97dc22a9e5e"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackEditAllApplyCloseTests-outcomes.txt",
+      "Bytes": 432,
+      "Sha256": "56e77ed8ad270d0e7a724833c6a63c3d66a2d6a48b7d8beb15dd4216d3a4ee94",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c293350e217f965ed877bcd3aea837d7c401f742e1c315a0a27fe5f357d500a2"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackEditAllApplyCloseTests.log",
+      "Bytes": 2268,
+      "Sha256": "e83cce878fc38bcd16b1eb1801b9a955d22326f4e644370c1d0ec853b6fe1fa6",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4d32f220445e4b5829c04ead4c88169745591b092f0fcfdac110bf8657c10887"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "5e3c0524acfac2bce3337208581895479a9a37bd6ace01173de28d78786157f4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.log",
+      "Bytes": 509,
+      "Sha256": "bfb6743e23c538da5e5f7a06cc94f24c3fed1e589cdabfe82d9d62623dc4ade4",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "73538eee7d43a397e314a76cd0fe3c3d6e5beb03f918cb810a41e0bf3417118d"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "a552e966243bcb7bd90da77898a3bff9d6bc858884c37234b7faf6f1bde0c344",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.log",
+      "Bytes": 504,
+      "Sha256": "0df05948f4485054737528f06a5e8f2d76b1a8011cc86b79a9edd6e26b5f821d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7c6efdbc24a37dfa7263f009f72c268f1dfd17ba9b651129f7158108311edc04"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization-outcomes.txt",
+      "Bytes": 870,
+      "Sha256": "37ada7dae0635b7258159145d2ceea2715893bcd7ce01db49bf23d6d120293e5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.log",
+      "Bytes": 1221,
+      "Sha256": "8e4d8561635ba8d03b67e8abac2f485d1f467a51e8b726b31fd3c43dd73a0881",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2fdfc599008f01fa82f6143a3e61a8adbcf145d2334751826fad509b0a13305d"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "7300ff84d54ff017d0051e5ca4b96f9ae5ae9dc2d7c13c200b8d4b1c954e8038",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackFullPanelFieldTests.log",
+      "Bytes": 496,
+      "Sha256": "e2c9c8ac8896586cf7dd2fe86d56cdeeefe68a052210f288a3b8492351374283",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7b698d40dfdd799c7819dd44669c91841b45f37343bdd525c2b2e7a422ebb231"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackStateNet-outcomes.txt",
+      "Bytes": 105,
+      "Sha256": "b663a8a2b2969678773a9d747a78c9c02f9af74c7284b1b16bdc84029f32e52e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackStateNet.log",
+      "Bytes": 484,
+      "Sha256": "0abd1660632fc0ee439090bbe7df380161d4b46ce9568008b0ca860a088400db",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c9c81a3cfc8c8fcd4e1239f30d705e10adbc906c06ae308d65f8261f53fe8c79"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "21fec1b1f638fe4c2c3dae3120dc0826972a2188f7e11e656eae3efde8b80af7",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.log",
+      "Bytes": 493,
+      "Sha256": "73d6ac3026bfe06c823d4b9b3c190146bd6f8e6d3a6abd48286fee48dc138c60",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "748a0aa6f74193af646bc84bee1f523e4097ea4b4eaba2d707430867c29b44b6"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests-outcomes.txt",
+      "Bytes": 424,
+      "Sha256": "4b445a51a03125242a3fc92d60d8b738a34f036966b5cfbcb9d1ef0975e32d95",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.log",
+      "Bytes": 748,
+      "Sha256": "9ae4e2366c0edf86dc6e08390aaddfe5a39985d636ac95cbdc04b2e4d8af8693",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "626ad73616140ad8055c1460785598bb064af437173009447ba3494f58d570fd"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "55f992de8b4a2b80dc5cb198adaa76db3d8236b9132fb1afe595f9b25253ddda",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.log",
+      "Bytes": 499,
+      "Sha256": "c9c2583a8dc361ab928e45d8a3cb66f5ac8971fd9e573cbb27a79e998dd29a53",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3d0f1be430d6c25f4ee670b0734f796b320c77bf725adf8522c33fed4a785e63"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests-outcomes.txt",
+      "Bytes": 103,
+      "Sha256": "9852d5f745f7ee14c8e082f79f9571239cf689588f83cad2ad1424ba1ea0ee74",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.log",
+      "Bytes": 496,
+      "Sha256": "c9d99c6e32f8379444f4ef4e0e84c15f19bacf52c3817c1f7404d3e1e362e612",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a4428eefb19881636db2b246714329bd523082d2c19307ee09da13a16fdb5a61"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_Workspace-outcomes.txt",
+      "Bytes": 9629,
+      "Sha256": "8d5b210278d24d14793a29bf98e1150c0a1fecf67ce7445cb1247caeda65aaf2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-RackCad_UI_Tests_Workspace.log",
+      "Bytes": 8688,
+      "Sha256": "61b216ecd826191dc5911741ed77c4362325277f352ee55087f88484d6976422",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "063d07eea4e7efddc5ec17c5b41fda6f1ad96af845f686f210b59f305c18292c"
+    },
+    {
+      "Path": "out-redgreen-v50b-r5g/red-ui-tests.log",
+      "Bytes": 10302,
+      "Sha256": "5aef61978f97c955abf2202ff06dc3a72a8eac808d950c678ad8b1169bfda087",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d92db0b5caccbded880142337d21aab8c785c1dc1e92dae14e75a5f77d2e554e"
+    },
+    {
+      "Path": "p6_check_pbt4c_v50.py",
+      "Bytes": 7977,
+      "Sha256": "0ab2ff4401c8c449ca22817f0df2144bf651868fc8de0d9de366071daa115e24",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "p6_check_pbt4c_v50b.py",
+      "Bytes": 9425,
+      "Sha256": "bb2c983b53121020df80e63655743e2cee943c318f25653362bcb8561f8d9486",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "p6_control50_v51.sh",
+      "Bytes": 3353,
+      "Sha256": "612b80ab7a60969c772b9f3c58ca50f7cd01c1890aa1ccfa334570142ed97dd3",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "20e617b255401ee02e5e308524cb9702a5e07d80ce4934db76c82cdb3b38e1c1"
+    },
+    {
+      "Path": "p6_isdirty_pbt4c_v50.sh",
+      "Bytes": 2985,
+      "Sha256": "af5dac1bc568adeec5df1f104586c6f0b686183f497324e2cb64fa0d81598d0f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a9027ca855492531eb10f839bb566b506be55c15542e9d9ef0984505b6071a09"
+    },
+    {
+      "Path": "p6_isdirty_pbt4c_v51.sh",
+      "Bytes": 3088,
+      "Sha256": "0505ee2b0e165c98568448b0682eba56b4388f71ecd20937c4bc21b6367a9a9b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9122bc03c42420ee8b9dc8b8ff09443c6138593d797abbad8b6dda6862d3a1c7"
+    },
+    {
+      "Path": "p6_json_pbt4c_v50.py",
+      "Bytes": 6433,
+      "Sha256": "963e80ff70f0797559c8002825891f4046fd9b3d9f6d3f5ed754a11788b30a91",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "p6_json_pbt4c_v51.py",
+      "Bytes": 9211,
+      "Sha256": "0b10d8516b1f4b355fd98fac6fffdd10f5e95e8f5078862f56d055c34e82b6a9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "p6_pbt4c_v50.sh",
+      "Bytes": 7256,
+      "Sha256": "628cdd29acbd9773460b0c32dde30575781de4e1a1025cc4a7020d43f0097e45",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c203b301bc4834b4c722e14405b3e0358339de772f065dcebdaccd9e72ab162e"
+    },
+    {
+      "Path": "p6_pbt4c_v50b.sh",
+      "Bytes": 8179,
+      "Sha256": "6dab6c0fea2965af0893b92cfc576fbce2dee142385b699f7a045ef60e97a397",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "eab994a1effe9b7362084e4873cf326688f19e5d1c51f654b19a6ec547c3031e"
+    },
+    {
+      "Path": "p6_pbt4c_v51.sh",
+      "Bytes": 9780,
+      "Sha256": "83477d65dcf3f9461494025d950462f15308ceb9538f571222f9a2527d3d753b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "87c76478ee51ae255860764b1bc7a4c1981ae43117459146f38aa8732a9a9814"
+    },
+    {
+      "Path": "pbt4c-precondition6-v50.json",
+      "Bytes": 37426,
+      "Sha256": "0cb67aee2b2d925d68235bb6444566b4222205a6cf97f472b3851fd0795b2f51",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "pbt4c-precondition6.json",
+      "Bytes": 39420,
+      "Sha256": "29179a12ef8623f4c276f943a725ece6f3ffd84464f16705e1feda757efbce1a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/apply-green.txt",
+      "Bytes": 1740,
+      "Sha256": "89f7eb6cc61ce5a49da9b4aa2dde786940c0957e92304d8465f04f7a18729786",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/apply-red.txt",
+      "Bytes": 2259,
+      "Sha256": "8c4d1426c0717c9499fbe4915bd62d0666641ad16204c4ade66af243f1db748a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/clases-ensayo.txt",
+      "Bytes": 859,
+      "Sha256": "62c74326432d783f8f74ee71933190cca37650432cff6b8a40f113d48dc1f0ad",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/en-green-core.log",
+      "Bytes": 44342,
+      "Sha256": "5550b0b0579a9efdf38b12f79de364232efa62aa7607433352f35d9626653ef4",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "b47101a5f2b511c8cdc702ef8111925c94ada5795d42410bfce3455bf5df4379"
+    },
+    {
+      "Path": "r5i-en/en-green-res.txt",
+      "Bytes": 103,
+      "Sha256": "d4e59133f4cb9c35cc8e7ecc9c3ea9e739cf21d16297118cee4b82c4bd966327",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/en-green-ui.log",
+      "Bytes": 10302,
+      "Sha256": "6eaa6b9acc91089b6d1301b1a417012e47e5a07be39e672e07e2cf92df21029c",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4bf8968747d959f1b5f7ae18a2bd7e60dc0fb2e9ac0bbaca747c2709c47b70ba"
+    },
+    {
+      "Path": "r5i-en/en-green.log",
+      "Bytes": 436,
+      "Sha256": "10f253252c4cd61d82720787fc3c9f3b1acf6f617ce070192cbc75cdeb820463",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7cbe1eb5dda3a2e918e55956ef5d95b5408d8ac33ca6a51bbba4b388fb315447"
+    },
+    {
+      "Path": "r5i-en/en-red-core.log",
+      "Bytes": 44769,
+      "Sha256": "d31caad905578bb9e95388c168854bc67ce892314fa66f3633f7c8225bbb8659",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "025e4637070897db5bd3034fd747152a995f9fe8ef6bc400cee23675511c83e9"
+    },
+    {
+      "Path": "r5i-en/en-red-res.txt",
+      "Bytes": 673,
+      "Sha256": "d8c4e3b578aa4c93d730ce58ecd62302235daafde82be0db0fe1742888c1b605",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d78af804e14457614169176b2df639121a33a10fce47dffca0634ebb66f64e91"
+    },
+    {
+      "Path": "r5i-en/en-red.log",
+      "Bytes": 2705,
+      "Sha256": "b4a3de6902d94d15f45b39711fb072afd5b5bb055b92d65856070f412c20b6ba",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a7fa34244dbe93a2a261aa10ec163ca6d6922967525aec1ee564162f0c427602"
+    },
+    {
+      "Path": "r5i-en/ensayo-green.txt",
+      "Bytes": 359,
+      "Sha256": "90cf68a2391793aa10425bd837d180185b136f962d330d3c126a08c8d0ddfb25",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/ensayo-red.txt",
+      "Bytes": 1566,
+      "Sha256": "ab271fc9367ac2e0e9cdda8eef01f3072181388da5da3ee73b90dd01f56e100f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "dbb3466393d8b60e128690353947d7fa46aeb7c7f0c43e4b2618b286c6b0a04b"
+    },
+    {
+      "Path": "r5i-en/sonda-core-lineas.txt",
+      "Bytes": 2659,
+      "Sha256": "cbbd8457149afd6919dbfb763b63c47a60283bc44d01f05c0b92aae1652ea59f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/sonda-core-res.txt",
+      "Bytes": 408,
+      "Sha256": "da59f9d9dadbb798dedf00347492ce6c8d35773f5ec52ebcc362d482bfd5e503",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "f73afcd5872c7c0b9f5a8db1583890b389515ec2688ea52e80404ea63d94414d"
+    },
+    {
+      "Path": "r5i-en/sonda-core.log",
+      "Bytes": 3555,
+      "Sha256": "fa327d414710e01baefbd9726721c10eacb3b74dd61bca80b912805a31c16b03",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9c143c476b060179e28e5eabab7ed880ed8188d5749ca092cbfe62f235a9543e"
+    },
+    {
+      "Path": "r5i-en/sonda-ui-lineas.txt",
+      "Bytes": 1123,
+      "Sha256": "3ee13f60b188754d2509cd8776b5cb07a97a6397497480a2745507e812ac85ce",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5i-en/sonda-ui-res.txt",
+      "Bytes": 325,
+      "Sha256": "0fff7ea802ab1e2a2c8fe8c17a182ed76abceb66f8f94dbf1957f5c695770862",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7e768c4c537005a44a6ccce35f6c767937e482d4c09033c56f32604a204aef7c"
+    },
+    {
+      "Path": "r5i-en/sonda-ui.log",
+      "Bytes": 2038,
+      "Sha256": "732323864751753b85ad56bb5df284fb769a0e9137ad692d88de33f615a92f43",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "55b657082a7b434289bb7767857f471e3aa88773b2f20e1fdc5cbc90c08caf86"
+    },
+    {
+      "Path": "r5j-rg/apply-green.txt",
+      "Bytes": 1740,
+      "Sha256": "89f7eb6cc61ce5a49da9b4aa2dde786940c0957e92304d8465f04f7a18729786",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/apply-red.txt",
+      "Bytes": 2259,
+      "Sha256": "8c4d1426c0717c9499fbe4915bd62d0666641ad16204c4ade66af243f1db748a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "fe558fb72a8b6c7231f562945de8ed69dde691d70741e03aef2d0793c3697aa9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/check-core-green.txt",
+      "Bytes": 6032,
+      "Sha256": "d88dfaeecbc8b3610bb01a4ee5d0197b89e8906a076a544852bd4e720932b75d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/check-core-red.txt",
+      "Bytes": 6028,
+      "Sha256": "488636960752835afbd63f630bf4700ae6441ed505b38b46daf1f857e3c05c73",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/check-skips.txt",
+      "Bytes": 523,
+      "Sha256": "4d74c67e84e3faa630126e98b2e33fe7c6e1966bf3b0f06b76af77823c387885",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/check-ui-green.txt",
+      "Bytes": 835,
+      "Sha256": "082e5a220adef6aae3ae4600f3e1ec85fe0de94ab5e875689cb9a1e93b1c71f4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/check-ui-red.txt",
+      "Bytes": 851,
+      "Sha256": "8ce64398fda31f7b725a1a5cbde0b3bf8c7175e290e4b9fc86b52d78efb43d71",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/clases-core-green-todas.txt",
+      "Bytes": 59072,
+      "Sha256": "c60b679667188e5e53225552fd90f934ccffd24084553b6aef137f0727bf8c3e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/clases-core-green.txt",
+      "Bytes": 2012,
+      "Sha256": "727404a2679ca971955cc7d756a4f1d8504310b8a691c265a70daf773ef9700e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/clases-core-red-todas.txt",
+      "Bytes": 57664,
+      "Sha256": "ab658f4c331b856526e889d1efc63b53680076402ad75a019e2b0b035a600d3d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/clases-core-red.txt",
+      "Bytes": 1966,
+      "Sha256": "84d11aebf5d69be654656e5123711ce050960a68ba00a61d4680e37cd526bcc5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/clases-ui-green.txt",
+      "Bytes": 5356,
+      "Sha256": "4b0b1ec95a9a7fad189a7499c885d2294facabc8c66f9dc91d7e778c93f1da0c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/clases-ui-red.txt",
+      "Bytes": 5356,
+      "Sha256": "b6da25a813ca714526a7be1837bc257dc7218fe1e4b2c6cf4992f55d1158ba67",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/core-green-res.txt",
+      "Bytes": 149921,
+      "Sha256": "4d195a5c3f7a75907d3a6d65f22acfdaf748ec3a4cc0be2d5a54b56f90c80aa5",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/core-green.log",
+      "Bytes": 135501,
+      "Sha256": "3cd48dc447b0cb7377351f46774b7826e0124974e1db8efd575e07acadd25518",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "01f10c80dc86865d23df3acd8d5a19e9fccc719bbd0356ddf2830fdc4eb11d91"
+    },
+    {
+      "Path": "r5j-rg/core-red-res.txt",
+      "Bytes": 149921,
+      "Sha256": "ecb57f21d791f242df7a784b5286da96ef79398dab80da3d6c0eaf44248edabb",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/core-red.log",
+      "Bytes": 135498,
+      "Sha256": "e197c4e4f15e29040a27cf5af6bfb9af8f45f5b66365e6858af470291db3dcd4",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "f153f22a64715e8b4d7a81e5a28f49d09bf846e1c6f49551cd49860e5223442a"
+    },
+    {
+      "Path": "r5j-rg/filtros.txt",
+      "Bytes": 14166,
+      "Sha256": "b1bacf8ce056f80a0882f25ce42db629b446f26507f75b121de5d96877832083",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-01-res.txt",
+      "Bytes": 103,
+      "Sha256": "fba8f2e28d92f48aec63b5834cf922627cffdd48e18cd3a83e08d0c23f677e74",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-01.log",
+      "Bytes": 453,
+      "Sha256": "b4de397dc280578befbf03f6fe9b00ea7ec296d8c7d74cb9671ba8e60f0aaa65",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "e475b50016befd4644e8c34e55044058d34cd422852f94c0f5d7e822b5b958b5"
+    },
+    {
+      "Path": "r5j-rg/g-ui-02-res.txt",
+      "Bytes": 9629,
+      "Sha256": "e228a77848a8570d6945cafbb5a070fd4d03fdb82845887c97d238a70f6a41d0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-02.log",
+      "Bytes": 8662,
+      "Sha256": "88b63230443af230a5e39f5298bc99c56af7f56d2487beeec1b1eecf4bad881d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5e357fd4cf864caabbe839596460fe76bfbaf236d24584ac8132a63fbd388078"
+    },
+    {
+      "Path": "r5j-rg/g-ui-03-res.txt",
+      "Bytes": 103,
+      "Sha256": "1b90330cab740e13302aced82ad65a8493ebf7c32c0619318f8a2cb017931966",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-03.log",
+      "Bytes": 450,
+      "Sha256": "81b4c7ccab98e146ae89ed2991756fd2ad595185acaed1fd15cbc18970b640b0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2774d05d529709da7488f7af71f90582cfff476a07bc91c89476568b5188174f"
+    },
+    {
+      "Path": "r5j-rg/g-ui-04-res.txt",
+      "Bytes": 105,
+      "Sha256": "a9ae5fe84d160004d8af462636350933bbc50f64aa41ba357e3cabe5e16c7798",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-04.log",
+      "Bytes": 450,
+      "Sha256": "5738000078b14e8ef0645588c05d5a40d9a36d339ef0e6e3874b2655a5a199f0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "edde9b5dfbc9a121c8f7b482034162697822ea6aee548eec01736e7d59e3f428"
+    },
+    {
+      "Path": "r5j-rg/g-ui-05-res.txt",
+      "Bytes": 870,
+      "Sha256": "601525685c8355737b5085cb1f45b28e309364e5a77dae2a9956dd26fc8b689f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-05.log",
+      "Bytes": 1170,
+      "Sha256": "21fa07a04be09a69a8a306e97b359f207e294dc1aed39ee4a424f3c2cc10972f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7628ee41abcd33026c9c0f8c8073635dc1f963b811ee3911033574d3e3b60be7"
+    },
+    {
+      "Path": "r5j-rg/g-ui-06-res.txt",
+      "Bytes": 105,
+      "Sha256": "05049e367ece3313c393e313dd473f23a07c22a4baa287a140fb9d0d0428b6c3",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-06.log",
+      "Bytes": 451,
+      "Sha256": "77210b502f41a2298d6a1c6af0be3736887b9dd8e87fdb3486a4cbe3d1b799cc",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d408a709533956d6a51a7399f3fa5daa22700c7a201039da9ba4f374819d4517"
+    },
+    {
+      "Path": "r5j-rg/g-ui-07-res.txt",
+      "Bytes": 105,
+      "Sha256": "7061622feec406c4d9881df79bd72c3fa68be86d25b6d1d801238c37b445ee6d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-07.log",
+      "Bytes": 451,
+      "Sha256": "d3d3a38933aea400d9b8889601b9d2654aa49fc2669f13a606382d66dc901fd9",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a73ffef75273706040db21ac6512827216836e0b063fb439008aaff6495401a3"
+    },
+    {
+      "Path": "r5j-rg/g-ui-08-res.txt",
+      "Bytes": 105,
+      "Sha256": "03e4a4c9239a9d849aecd525ed36a6f6e91a9d4c17ef8de84c9c4da578a81c53",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-08.log",
+      "Bytes": 450,
+      "Sha256": "5164b303ca06a88b451a6790e4d17a142dfe25b798ffe169129cf16521080c85",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "3325a96fb91daf77a51d8129c2af3ce2b03036d006f16774a2ce938b617cc8e8"
+    },
+    {
+      "Path": "r5j-rg/g-ui-09-res.txt",
+      "Bytes": 103,
+      "Sha256": "b9ec4f2addedf6161c5f9cfd282bb797ae924f4fb2ccf4d3445010f5f6ec0c77",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-09.log",
+      "Bytes": 453,
+      "Sha256": "1b1850f08cb5ee6f9fdc64bfd8679126fd85089d861050c8965c492acc4e4682",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fbbc46ec4d78eff28a425d2c2c60e93afe4a7b731955bd07d1a50d028a8edcf9"
+    },
+    {
+      "Path": "r5j-rg/g-ui-10-res.txt",
+      "Bytes": 424,
+      "Sha256": "97f1402c11485a99c15ad8f8c14d83f6358a9c472d1003379f23c0099b0f946d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-10.log",
+      "Bytes": 699,
+      "Sha256": "3c50f38f54b7ba8e0fa5d2d8dd07f43a43d558b2fbd878beb4f4d1bb00fd8430",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7ee84d0b5245826ef6548f4e54f19383c0b3e5000878a29a2436dc3798725ae1"
+    },
+    {
+      "Path": "r5j-rg/g-ui-11-res.txt",
+      "Bytes": 103,
+      "Sha256": "850bf1b208c214d766f771333d3c3d69cc598d2c3631c8683c939624ab2dea24",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-11.log",
+      "Bytes": 453,
+      "Sha256": "ff2bf1f949e109660680ce8952921d55d6c2fd6d194cb149e69b985f8b526890",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "381d20190b4e6588c576807ef9f56e07006a11114440daef202b84e78ac384b3"
+    },
+    {
+      "Path": "r5j-rg/g-ui-12-res.txt",
+      "Bytes": 103,
+      "Sha256": "500a03d0b9910d80a1459cde010f5fa1a32a013f604c5bfce29f197772f8634f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-12.log",
+      "Bytes": 451,
+      "Sha256": "280554153a1634e813b4506806fd22fd8c6b979f04a2f59b3cb06a9adca3856b",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "64e67d8aa8a78e92c25689512241157226e2a6a52e0479bd1aaa7cbca8e92971"
+    },
+    {
+      "Path": "r5j-rg/g-ui-13-res.txt",
+      "Bytes": 103,
+      "Sha256": "af6573e3ea6c68e3378c4515a8219bdb7c58501d4d5b9f82b5a14a5232551d26",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-13.log",
+      "Bytes": 452,
+      "Sha256": "0bac58f148f67530df4d94c536acc16487177a841109300ef9f0d1f7b212df0a",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "8f5c6195f0f2c1ecde0f79412041e8c02e7c95ef6b5d5fb3bb5210ef4a21bcd5"
+    },
+    {
+      "Path": "r5j-rg/g-ui-14-res.txt",
+      "Bytes": 105,
+      "Sha256": "cedf8b30b26e5c5edf7b6aeae9043b5970fdb8faa372e5b7abbf865cf2badce0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-14.log",
+      "Bytes": 452,
+      "Sha256": "28080a64f3ab7aba9d8a95edb4b6b571c7c078aab9cfa30164b7830df96cb666",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a4aadaf989549289bf918a74226ed8c7449a00bcc060ef746ae0a22ee7ff5402"
+    },
+    {
+      "Path": "r5j-rg/g-ui-15-res.txt",
+      "Bytes": 105,
+      "Sha256": "e86a7ea867da64ab559945b19e2e7190b20bb3798b1a67e2aba505c0bc3a6584",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-15.log",
+      "Bytes": 452,
+      "Sha256": "e83a3912ef2932d2464954f69f9f73c8911105d43c3cbb9bb77f09edc7694e11",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2f39cf549950d121078b56d27dd9919e3ac85dcfdba67eba0407ade5a25ee446"
+    },
+    {
+      "Path": "r5j-rg/g-ui-16-res.txt",
+      "Bytes": 105,
+      "Sha256": "0e6a1c47da3223f7fe7bf5b796954e33937b05fb5687a119d9c30dbd20b6281c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-16.log",
+      "Bytes": 452,
+      "Sha256": "dc093dbc93a7c7aeb32d9faca315ae91f68d30b4bfd8dd08270412e1fa697015",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "9d05805d94c7b8d00e6b95041ed5dc1055ddaddde259eac6244e057d9a6e15e6"
+    },
+    {
+      "Path": "r5j-rg/g-ui-17-res.txt",
+      "Bytes": 103,
+      "Sha256": "f91f4767c3cd2f22c0aca2cf502610fb4f23616a3d51cdd69ac7182e8c949597",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-17.log",
+      "Bytes": 453,
+      "Sha256": "7dd52136f77302212c1aa48fe31d10c35ac3c3adff78d8b9afaa632d946880d0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0175be390360cc9dfa31dfa3ec12e2b0cec284904f55266a70b7f03ff09d786d"
+    },
+    {
+      "Path": "r5j-rg/g-ui-18-res.txt",
+      "Bytes": 103,
+      "Sha256": "b22614f8a086a4bd52c6b4dc538ead3e9bfc4ca74dc49178ad61b335faca13a7",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/g-ui-18.log",
+      "Bytes": 453,
+      "Sha256": "10df608105082c78bbdef56d4389981492f40785efe94673d31d26aaf4e83985",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ca4494505d70e30f1df8e583b256380af5efc5c13d48d5a5a356beca72fbc9e1"
+    },
+    {
+      "Path": "r5j-rg/green-core.log",
+      "Bytes": 44342,
+      "Sha256": "2150b1f9a4084ae63e765afa5cdc2e14eec92a5595c76c5e0aaadb200439228a",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "e743e9ca7600d81448db06c0b21f551b4a8f97ea5b5d7a74cccdc26fdd7af9f1"
+    },
+    {
+      "Path": "r5j-rg/green-plugin.log",
+      "Bytes": 30752,
+      "Sha256": "65625dddc532fe610c9b1aebc0e271e799ca2626a36cdeba2166775418b9f6b7",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "f5435b7218c61273d2120ad918c1684ea661e8b4f40b322de144baaecd7eaa98"
+    },
+    {
+      "Path": "r5j-rg/green-ui.log",
+      "Bytes": 10146,
+      "Sha256": "cb638769161dcb4a81929c69c3074f4bb30fbe790c1c662b0d7b8ab04e112434",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "151ed3d156ee44239808b2786c6d8ed76836dde6050238a1fdb58a52e8e037a0"
+    },
+    {
+      "Path": "r5j-rg/r-ui-01-res.txt",
+      "Bytes": 103,
+      "Sha256": "5db85986755380817ab0ae9e5fb60ebbfbdade8c03fe53630bad5429d5e74a71",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-01.log",
+      "Bytes": 453,
+      "Sha256": "789547aa3fa0bfe21c7cebb465918b577afb24aedd053ab4ff781987832d2de3",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a8fd8e3f5ddf9949b4529aedc2471b302ac03f6701cc36dafd3850507f03e610"
+    },
+    {
+      "Path": "r5j-rg/r-ui-02-res.txt",
+      "Bytes": 9629,
+      "Sha256": "36c9bde8d5fe55142dfc01bbad23854256472ca2baaf6f48929a4cdfd411baba",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-02.log",
+      "Bytes": 8662,
+      "Sha256": "b530be56526c82e8f3fe5ac7551f0f45e1b2a86a325d09b3a26f091374feecc3",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fec1ddc88be64a3d219fda1a1fb6f3510b9755f8337f5f36e56c837cc4f9bb3e"
+    },
+    {
+      "Path": "r5j-rg/r-ui-03-res.txt",
+      "Bytes": 103,
+      "Sha256": "b270a68d862bc09aec8caae80d69a2b764db0a00dcb155ed5ce950865169d2de",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-03.log",
+      "Bytes": 450,
+      "Sha256": "6da3f14a117e3a5e2e3bd33d53227fd15b5bf20e5d7298bc3b6d487beccee27a",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "015297b73511bb4ba58f5e3b42a8858de99423c2dbe5e113f2a2ecb412c14f78"
+    },
+    {
+      "Path": "r5j-rg/r-ui-04-res.txt",
+      "Bytes": 105,
+      "Sha256": "1cb8b7846eb91a224e04b7e5d770c71b97539c6c0439dde52b535c399b5ecc64",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-04.log",
+      "Bytes": 450,
+      "Sha256": "43d62fcb605f53182710b500c3bfc3441858bc02dd04bfeef016af76bd5d062d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "b37ea44cbbecd3eff952f27d2e4c54104a3064437543e081ccb2c92baf3c3b40"
+    },
+    {
+      "Path": "r5j-rg/r-ui-05-res.txt",
+      "Bytes": 870,
+      "Sha256": "761041df9dce37992f299c0a420f541ec37a9e14538f60444ce4b20893f42709",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-05.log",
+      "Bytes": 1170,
+      "Sha256": "c2b1a5f7809931f517b086782830750fd8e6149afa1959bb2bbaf533c6390116",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "586f3c58039d496468ebd6aec2993e53f3316989e2c38bf39390b0fe10dd088d"
+    },
+    {
+      "Path": "r5j-rg/r-ui-06-res.txt",
+      "Bytes": 105,
+      "Sha256": "8be62053918e934f2e85665948bd7e296e60897846a00dc7402bc94c201f25b4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-06.log",
+      "Bytes": 451,
+      "Sha256": "868f741e591965b43a673b03556f1a987f3b734846b134d4e452e3bdfacefdf4",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "535b9152e573791747c62ae1ac6defbdd0dee5a98bf68ec508b8d968222962d4"
+    },
+    {
+      "Path": "r5j-rg/r-ui-07-res.txt",
+      "Bytes": 105,
+      "Sha256": "2ceba0d94a5931efe3eb3a716816f6010f96f7bbee964b0f720b6ebf05fb5c80",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-07.log",
+      "Bytes": 450,
+      "Sha256": "0f807b0d5531f1d1ebed0e989db3475ca1d0e9ec4c39ed84c518ba6702e3c252",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c71c90ad9ed2cff68c81e8f984a1f7eabc2be46518592f4108bb62027fef6ec4"
+    },
+    {
+      "Path": "r5j-rg/r-ui-08-res.txt",
+      "Bytes": 105,
+      "Sha256": "74e641f6c500117a60174f7e1c97da019aaf85166fd9bc8ed7a83699fbab8078",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-08.log",
+      "Bytes": 450,
+      "Sha256": "5ec61147b130db4fc3a6c2912712ef472d547fe0d72a1f2b9e3feefcdf9b55e5",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "bfb40078ae59793dd1ef8e68a0bf47c0b3f5c365b03fb3c6fcaf704ec803a073"
+    },
+    {
+      "Path": "r5j-rg/r-ui-09-res.txt",
+      "Bytes": 103,
+      "Sha256": "1bfe54d8912b6712f6bdd1207ac3ac0595bb3c30b6b8c943aa56fc1ea7ee830c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-09.log",
+      "Bytes": 453,
+      "Sha256": "b940607fdb4dc6739361e9add09f657110ec40c4cd95348f8eafb0b6d48e6e33",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5b982e59b22055c3fe964af2799c016baf821071cc58b760231e75615e8a488c"
+    },
+    {
+      "Path": "r5j-rg/r-ui-10-res.txt",
+      "Bytes": 424,
+      "Sha256": "fcb36bc2611e45e007a9f01cb0b5e7db97f6dbbf4243aafd4f90a16afa99224d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-10.log",
+      "Bytes": 699,
+      "Sha256": "03be3b06c350c601566db7a602a524313baa43394d4ec2648b389d284fd2c560",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5a634f9393d910ff94cedddb63d79dc8a1b2ac6ec4d3dba8bfed9eeb4bc0ef39"
+    },
+    {
+      "Path": "r5j-rg/r-ui-11-res.txt",
+      "Bytes": 103,
+      "Sha256": "2cb49b6f2bbc2cbe8dc448795067dfa6268d7e5cb5fc92c0543df6f15d439c2c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-11.log",
+      "Bytes": 453,
+      "Sha256": "56f22166fe6721848e7c092f8bea07d2cba1ea054e44450e623acd81bdf6b552",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "8f8aa930a83406066e2260953cae0b7ea5469035f243fd02fd80a0b89005cfc5"
+    },
+    {
+      "Path": "r5j-rg/r-ui-12-res.txt",
+      "Bytes": 103,
+      "Sha256": "2617686cf9960e4027aed99e59bc22e6fd716b682a660db348b1cc1e4675f499",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-12.log",
+      "Bytes": 451,
+      "Sha256": "00e3a6c2e460f71ade8a88b453716791538153ffd55c4b75de32bc904279d74e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0c4e4ff139945d4df2edc06576d6454cb4cb9224bbbfb2c40933e0667bf51f42"
+    },
+    {
+      "Path": "r5j-rg/r-ui-13-res.txt",
+      "Bytes": 103,
+      "Sha256": "99fa561eae67cff36f243551a9a446551c2069082c666c098d980c836b0cf931",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-13.log",
+      "Bytes": 452,
+      "Sha256": "9d18b386257ef572b3e5fdc6a8282f807092e4dd4c42e8ebea833db5c746efab",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "8e4434e108c6800c3c0821c750138c784a00bd17d0fbcd50a4fe56d385085f03"
+    },
+    {
+      "Path": "r5j-rg/r-ui-14-res.txt",
+      "Bytes": 105,
+      "Sha256": "c2ceb3fbddb1eec7cbce31f25085b13412365b4e7fdd5058f5e3888effd1763c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-14.log",
+      "Bytes": 452,
+      "Sha256": "6c3bf6096cab4a86ced0a9b85f67cd21be96aaad31f5f2fef07c9445fc42eb43",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "27ec76fcae3fbf28db191a370dcc38277da6e6598e2ef94d12efef65f839bf1d"
+    },
+    {
+      "Path": "r5j-rg/r-ui-15-res.txt",
+      "Bytes": 105,
+      "Sha256": "7f55cb241888452bc9c64c468944a19bba87e726705117e5e3cbd8ee91654f8b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-15.log",
+      "Bytes": 452,
+      "Sha256": "0ed4ed93f449ab3f1b704eb11d9bed55753866a9fc315df51cac85704b739295",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "4537913a2fdd550491a9eebaa12fdc09b2b1c2174f120fd1b53d485cec8cf106"
+    },
+    {
+      "Path": "r5j-rg/r-ui-16-res.txt",
+      "Bytes": 105,
+      "Sha256": "44c04715254647ec768d79903a0eac4a7a3e5d9774aab5f4bad69574766edd1d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-16.log",
+      "Bytes": 452,
+      "Sha256": "6a8710883f0df496c2527eef1982a86bad5ee4ddd4a0a8434deac8fdb0bc19d0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "93075d8af7137125ff00a94a088c58af8e487a2785fdb20933d3fa82a61c3ceb"
+    },
+    {
+      "Path": "r5j-rg/r-ui-17-res.txt",
+      "Bytes": 103,
+      "Sha256": "ad770d0aadcce4f40a40d65ec039c9740348fd16751eebfb2988c2f696fe9213",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/r-ui-17.log",
+      "Bytes": 453,
+      "Sha256": "3b52729e9fa640ef3de75354556fd3b6ed520f3ada6fe7a97f3c295cafcf3dea",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "b6e2f29fde8a252cdddd81423d8a62b68dc1e282fe6e16b01f308b52067a4b5d"
+    },
+    {
+      "Path": "r5j-rg/r-ui-18-res.txt",
+      "Bytes": 432,
+      "Sha256": "d386d12837116515581f4256b29046ca9539f4ac4b7bbae21ac5073f76496468",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ece8ff94dc74542bdc6bbc924c7c2c99dee57942ea70529e2cf87ca188eaba7f"
+    },
+    {
+      "Path": "r5j-rg/r-ui-18.log",
+      "Bytes": 2221,
+      "Sha256": "cdcd0ccdf27f14e5ba51a0335438237d95f4e9fa24fa2d2e6b568cedabaf6fa3",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a336ae58b1474a691debf80be116065e93a0c17456ed370abec79815dfd11fc3"
+    },
+    {
+      "Path": "r5j-rg/red-core.log",
+      "Bytes": 44765,
+      "Sha256": "eb7a14ec63577eee7fd0cb5b3fa320e394497f6a7329b4308e683cc2b815d811",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "990b8d1765f8b9dd50b666c7a9ef8bcd97527f20534904cc6f4632e784d2b790"
+    },
+    {
+      "Path": "r5j-rg/red-plugin.log",
+      "Bytes": 30822,
+      "Sha256": "55dd8ea937e80d03f9eac2919eee620ccd3eb6078b595c76c1a561fae0e440d0",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "d6353bb2dd999bcd861fb3622dccd2a57d28ac5c375c9f1deee1182272751688"
+    },
+    {
+      "Path": "r5j-rg/red-ui.log",
+      "Bytes": 10302,
+      "Sha256": "3ca577fad85d75f534ead66f606e84c4924b1c74611dc2a4fa8b2050e8009124",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "fee10c7aaf37a3881f9a0343b7c60b1edf2eb80d7bccbb1cb6167c2645297d46"
+    },
+    {
+      "Path": "r5j-rg/ui-filtros-g.txt",
+      "Bytes": 1241,
+      "Sha256": "6dc9e926838097e36e6531d6ad52863c0cae3a296bf1dbc5b8c95c99b5cd68f2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5j-rg/ui-filtros-r.txt",
+      "Bytes": 1241,
+      "Sha256": "6dc9e926838097e36e6531d6ad52863c0cae3a296bf1dbc5b8c95c99b5cd68f2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5k-id/apply-green.txt",
+      "Bytes": 1740,
+      "Sha256": "89f7eb6cc61ce5a49da9b4aa2dde786940c0957e92304d8465f04f7a18729786",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5k-id/apply-red.txt",
+      "Bytes": 2259,
+      "Sha256": "8c4d1426c0717c9499fbe4915bd62d0666641ad16204c4ade66af243f1db748a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5k-id/build-release.log",
+      "Bytes": 44775,
+      "Sha256": "113bb6c25dd2f8d7787b56b7e37f98d1a9114702830379a4a3230189724a8359",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "41d237dba18ea62c1bead5efd0bc1cb1fe129a7ef7093afb96a3c16f0a4e9222"
+    },
+    {
+      "Path": "r5k-id/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5k-id/isdirty-probe.txt",
+      "Bytes": 824,
+      "Sha256": "c978e206ded23347518def12daadb10d822d2f69e01faa9b4d716a708a9b1e59",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5k-id/isdirty.log",
+      "Bytes": 1802,
+      "Sha256": "89352f87a54e8184a22dcc4f9ad74a22679a31396bfdb2b3b7c7a39e1f82e1f8",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "1ed3ead7e46c3bed10b49aec8ed2a3c695dc8835daca8a3aca76c6658a6bcffe"
+    },
+    {
+      "Path": "r5l-cc/apply-green.txt",
+      "Bytes": 1740,
+      "Sha256": "377e0655a803162c32642ca17e8d3a51449cc2680391b340befe3fe7845a004b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5l-cc/apply-red.txt",
+      "Bytes": 2259,
+      "Sha256": "d853b70e3bafe72f60a429d4f0cf959305b25fbe0adc6db90bfe6f64e952cbde",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5l-cc/build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5l-cc/cc-green-core.log",
+      "Bytes": 44342,
+      "Sha256": "24180d0b59851903ad0167daae8d5f7e3ea69b4c81983257dbd2d08b32c9c470",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2d9ab9737e52d209ece6bb4e7b696192543a6e469259e6c245b82d6349274b25"
+    },
+    {
+      "Path": "r5l-cc/cc-green-res.txt",
+      "Bytes": 302,
+      "Sha256": "c6a0bbdf54b15a391a2b75c8433e96dd444f92702c4201cac7078582d4ce911f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "b9bac8df7007c57fea1d3ed499e738be72256134c978cf14db635fd2dbdd3c21"
+    },
+    {
+      "Path": "r5l-cc/cc-green.log",
+      "Bytes": 1198,
+      "Sha256": "b8befb08d8b22ccb6cf04ee29bebe39e54c42318caa35a8ea8a01d0d0c6cf486",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "7f3c850c6c1e9b5b74b7650ae93b62b8195287a1a6f6d5ee878706afb22d6484"
+    },
+    {
+      "Path": "r5l-cc/cc-red-core.log",
+      "Bytes": 44765,
+      "Sha256": "ce58e5958995645a0d3067f8b98a0d282f2730971b7bbbee6370f4a5e99f8271",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0a4c912d9591dbecf55df0d84b90be4ba79742e27149b929c01cc09a7ab1ce00"
+    },
+    {
+      "Path": "r5l-cc/cc-red-res.txt",
+      "Bytes": 859,
+      "Sha256": "1e51efcd2632eaae6a157cb8007847b6975409fdda1a8c557b76c08c78ec2ced",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "f7a9ea9103b44d7a9685fdeaaaf7756865b2a9ddab0afa8a67fbef27b0bb5582"
+    },
+    {
+      "Path": "r5l-cc/cc-red.log",
+      "Bytes": 3465,
+      "Sha256": "c906fa5a4e85010aaa3f5a2ff400c9bdbed5ae43b726d0dbdddf1cf55255325e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "725e20ceac5e6b0083d032f85d438618e6f48f482894143519996542e99ead74"
+    },
+    {
+      "Path": "r5l-cc/control-green.txt",
+      "Bytes": 790,
+      "Sha256": "b55a094d02748316e2b9d698cd3f10322d5c3c8cffdeea7e5df1ce46831e1743",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "r5l-cc/control-red.txt",
+      "Bytes": 1698,
+      "Sha256": "c035f06a1b617fc13c893791bc6f774f5772f24130aca6655f71b4d057b6937f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "rehearsal_check_v51.py",
+      "Bytes": 2463,
+      "Sha256": "772f35eebc2589bfdd3d64adef7183b6109044c4d3ac8bf7f1cadc2054b20428",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "run_classes_v51.py",
+      "Bytes": 2603,
+      "Sha256": "f7c7ada64a34c3a3fcba04553b5d3448ddafffa66adc69ae9c210f129f1f62b6",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "trx_message_v50.py",
+      "Bytes": 1072,
+      "Sha256": "6faf8fc9052c1a7185e1c5f431f40272883f66f678830a25645cb6c3f1fc646e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "ui_filters_pbt4c_v50.txt",
+      "Bytes": 1120,
+      "Sha256": "2c7034679c1d8e438f545b63f8b259a39ffe9976340b4b944b7c06c7f402a4d2",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "ui_filters_pbt4c_v50b.txt",
+      "Bytes": 1187,
+      "Sha256": "19182fbc10012c160453df237ad2657568affdc586e2f7ce9cad8feccdef7815",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "v51-census/census-c13.txt",
+      "Bytes": 2707,
+      "Sha256": "be049da435a8132497ec6098cb0a3f61d5febad9259da5ceb81e2bfc318f2519",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "v51-clases/r5c.txt",
+      "Bytes": 62398,
+      "Sha256": "a260ba073df9372b94db68bf9c3b9c92f6640b0abcc2ea9c47ba95d5d5cae3fd",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "v51-clases/r5g.txt",
+      "Bytes": 62634,
+      "Sha256": "b3eb39880c4d931a66897425643a7b0376be020a3caee211dbdfce6fedf32d95",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "v51-clases/r5i.txt",
+      "Bytes": 689,
+      "Sha256": "044bd5bf2027997e344368f3bdea8e0c5578b4763d544014dbf8f8bdfeac2233",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "v51-clases/r5j.txt",
+      "Bytes": 60944,
+      "Sha256": "ac7a6beb2550262bf56e92dc2043974dc8de726893239739895a161c195d74f1",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "v51-clases/r5k.txt",
+      "Bytes": 181,
+      "Sha256": "2fa9e26116daae13466e7910a6d2b5e30ca0f63de261f34b204351625ae1f3a6",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "v51-clases/r5l.txt",
+      "Bytes": 502,
+      "Sha256": "2fbbb8e86ce3bad1e011907eee193207d8ed8604540d012551d5ebe3ec6fa78f",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

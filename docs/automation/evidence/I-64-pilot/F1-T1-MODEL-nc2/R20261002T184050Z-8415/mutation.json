@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261002T184050Z-8415",
+  "SourceVerification": "R20261002T182925Z-5c9b",
+  "SourceInputs": "artifacts/orchestration/I-64/F1-T1-MODEL/3/R20261002T182925Z-5c9b/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+    "CoveredByPrefix": "src/RackCad.Application/Workspace/",
+    "Old": [
+      "docs/adr/0047-workspace-persistente-modeless-rackcad.md",
+      "src/RackCad.Application/Workspace/",
+      "tests/RackCad.Tests/Workspace/"
+    ],
+    "New": [
+      "docs/adr/0047-workspace-persistente-modeless-rackcad.md",
+      "src/RackCad.Application/Workspace/Hints.cs",
+      "src/RackCad.Application/Workspace/SelectionContext.cs",
+      "src/RackCad.Application/Workspace/SessionId.cs",
+      "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+      "tests/RackCad.Tests/Workspace/"
+    ],
+    "Rule": "README 10: el prefijo que lo cubre se sustituye por la enumeracion de los demas archivos permitidos bajo el (git ls-tree en CurrentSha), de modo que exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "3D738567BA2C55CAB3B11E4650CDB71CBFD324A49525C9171F24DCC30AA33B03",
+    "New": "F0E08B8473555228BAEC48F6E9411BD0AFA1547776E3C77B0A5E484E45ED5331",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "55CB2B0C3B80DB9AC0DC427BFC99460DF33E675AB13DD15057FA5CC2EF87AB99",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "delegation.json": "F0E08B8473555228BAEC48F6E9411BD0AFA1547776E3C77B0A5E484E45ED5331",
+    "gate-contract.json": "25B87EE7DCDF71E752BF911C004923BD513040CACD88C62E223D79EC60C511B1",
+    "relay-record-planning.json": "81029A1D9E6B9CB5B038A73EBD584DBBCBE79A3CBB2BB23B41DAB7629D7533CC",
+    "relay-record-work.json": "5D0C79FA59BF83CF16CF5591B735CB2F54BF460EB2D6DDC2BB85E11C98E9A8F6",
+    "worker-handoff.json": "D627AE6FDFC708759F1C093CCF5D2199740A06E5413785EAC439B892F92BB8B5",
+    "ci-core/37046833476/core.trx": "95F6A117AEF4E87EECFD104CB2354A25BEAD043D840C1422A5A634449CE21B3C",
+    "ci-ui/37046833476/ui.trx": "FE21DBEC71102CD37181D416AFED0ED1B7EC1A41F483A3AD6F0BC95A10E5D801"
+  }
+}

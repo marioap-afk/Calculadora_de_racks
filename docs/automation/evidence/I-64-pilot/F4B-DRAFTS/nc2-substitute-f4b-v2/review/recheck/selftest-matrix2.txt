@@ -1,0 +1,553 @@
+{
+ "CaseCount": 40,
+ "Cases": {
+  "A": {
+   "Description": "ruta exacta cambiada; la mutacion de README 10 la quita; Controller con Scope = fail",
+   "ExpectedGlobal": "PASS",
+   "Global": "PASS",
+   "FalseProps": [],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "B": {
+   "Description": "el alcance mutado sigue cubriendo la ruta cambiada",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "10_NoAlternativeOneFieldMutation",
+    "2_RealChangedPathInsideAcceptedScope",
+    "3_Nc2RemovesExactlyThatPath",
+    "4_NoOtherDelegationFieldChanges",
+    "5_DerivedHashesConsistent",
+    "6_ChangedPathNotInMutatedScope",
+    "7_ScopeMustFail",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "C": {
+   "Description": "cambia un segundo campo de la delegacion",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "D": {
+   "Description": "cambia ForbiddenWriteScope",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "E": {
+   "Description": "la delegacion real no es la lista exacta del contrato",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "1_AcceptedRealDelegationMatchesContract"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "F": {
+   "Description": "el hash derivado no coincide con los bytes de la delegacion mutada",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "G": {
+   "Description": "el Controller no informo Scope = fail",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "9_ControllerReportedScopeFail"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "H": {
+   "Description": "el contrato no exige la lista blanca exacta",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": null,
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "I": {
+   "Description": "la mutacion anade otra ruta",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "3_Nc2RemovesExactlyThatPath",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "J": {
+   "Description": "cambia otra entrada ademas de las derivadas",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "K": {
+   "Description": "cambia la atestacion de fidelidad de la delegacion real",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "L": {
+   "Description": "A5 llano tambien falla (se quitan invariantes): Contract no falla solo por la exactitud",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "M": {
+   "Description": "la ruta quitada no esta en el diff",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "10_NoAlternativeOneFieldMutation",
+    "2_RealChangedPathInsideAcceptedScope",
+    "3_Nc2RemovesExactlyThatPath",
+    "6_ChangedPathNotInMutatedScope",
+    "7_ScopeMustFail"
+   ],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "N": {
+   "Description": "prefijo: README 10 sustituye el prefijo por los demas archivos del diff",
+   "ExpectedGlobal": "PASS",
+   "Global": "PASS",
+   "FalseProps": [],
+   "ExpectFailed": null,
+   "Mode": "F4",
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "SameBundleAsOriginal": true,
+   "SameVectorAsOriginal": true
+  },
+  "O": {
+   "Description": "F4B-E21: relevo = SHA de la salida cruda, nota coherente, exactitud por la evidencia exacta y el bfc",
+   "ExpectedGlobal": "PASS",
+   "Global": "PASS",
+   "FalseProps": [],
+   "ExpectFailed": [],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "P": {
+   "Description": "F4B: la nota no coincide con el relevo ni con la salida cruda (OutputSha256)",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "Q": {
+   "Description": "F4B: DelegationSha256 de la nota distinto del SHA de la delegacion",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "R": {
+   "Description": "F4B: la nota no registra las 8 colecciones inyectadas (7)",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "S": {
+   "Description": "F4B: la nota dice NonEmptyInControllerOutput no vacio con la salida cruda vacia",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "T": {
+   "Description": "F4B: el contrato no lleva la evidencia exacta ni EXACT_CLAUSE",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": null
+  },
+  "U": {
+   "Description": "F4B: el bfc con AllowedWriteScopeElementwiseInOrder = false",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": null
+  },
+  "V": {
+   "Description": "F4B: el bfc con Result = FAIL",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": null
+  },
+  "W": {
+   "Description": "F4B: el bfc sin AllowedWriteScope en Fields (solapa con la propiedad 1)",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "1_AcceptedRealDelegationMatchesContract",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "1_AcceptedRealDelegationMatchesContract",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": null
+  },
+  "X": {
+   "Description": "F4B: el relevo de nc2 no recalcula el SHA de la delegacion mutada",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "Y": {
+   "Description": "modo F4B con EXACT_CLAUSE en el contrato y sin la evidencia exacta: no se acepta (modos acoplados)",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": null
+  },
+  "Z": {
+   "Description": "modo F4 (sin nota ni salida cruda) con la evidencia F4B y sin EXACT_CLAUSE: no se acepta",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Mode": "F4",
+   "ExactWhitelistBy": null
+  },
+  "AA": {
+   "Description": "F4B: el relevo no coincide con la salida cruda (la nota si)",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AB": {
+   "Description": "F4B: relevo y nota coinciden entre si pero no con el SHA de la salida cruda leida (X2)",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AC": {
+   "Description": "F4B: una coleccion no vacia en la salida cruda y la nota lo declara",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AD": {
+   "Description": "F4B: una coleccion no vacia en la salida cruda y la nota dice que no",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AE": {
+   "Description": "F4B: la salida cruda con las 8 colecciones del contrato no es la delegacion real",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AF": {
+   "Description": "F4B: Injected con un elemento de mas",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AG": {
+   "Description": "F4B: Injected con un elemento repetido (8 elementos, falta uno)",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AH": {
+   "Description": "F4B: RunId de la nota distinto del de byte-fidelity-check",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AI": {
+   "Description": "F4B: ContractSha256 de la nota distinto del SHA del contrato",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AJ": {
+   "Description": "F4B: Fidelity de la nota sin PASS",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AK": {
+   "Description": "F4B: Decision de la nota que no empieza por F4B-E21",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AL": {
+   "Description": "F4B: entrada de ExpectedEvidence parecida pero negada",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": null
+  },
+  "AM": {
+   "Description": "F4B: nota sin salida cruda",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  },
+  "AN": {
+   "Description": "F4B: salida cruda sin nota",
+   "ExpectedGlobal": "FAIL",
+   "Global": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Mode": "F4B-E21",
+   "ExactWhitelistBy": "F4B_EXACT_EVIDENCE+BFC"
+  }
+ },
+ "Mismatches": [],
+ "SelfTestOk": 40,
+ "SelfTestPass": true,
+ "SelfTestDeterministic": true,
+ "CasesWithoutExactSet": [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N"
+ ]
+}

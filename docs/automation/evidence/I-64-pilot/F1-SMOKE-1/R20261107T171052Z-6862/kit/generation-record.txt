@@ -1,0 +1,21 @@
+generacion del kit de R20261107T171052Z-6862 UTC 2026-11-07T17:22:13.1158164Z
+  owner-preflight-baseline.ps1 : 1 x sustitucion [124 -> 124 caracteres] RunId R20261105T050250Z-785a (Candidato cc7503e3 reutilizado sin recompilar, producto C2 0e0d536b; HEAD = custodia b5ea02f5)
+  owner-preflight-baseline.ps1 : 1 x sustitucion [31 -> 31 caracteres] arbol limpio, HEAD = b5ea02f5 y
+  owner-preflight-baseline.ps1 : 1 x sustitucion [33 -> 33 caracteres] $RunId = 'R20261105T050250Z-785a'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [58 -> 58 caracteres] $HeadExpected = 'b5ea02f5d193d80e4b921b82bbeb7f87a0c8be0d'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [128 -> 128 caracteres] # 2. arbol limpio; HEAD = custodia b5ea02f5 (NO se exige HEAD = Candidato); prueba del Candidato reutilizado (autorizacion 785a)
+owner-preflight-baseline.ps1 origen E16EE9495B0D632F7C6490BD8389AEBA28B86397B1A8DE2E757574CBBFC96A6E -> destino A26B3D2308CBD5675254EAA70E7043CF65F90A301C1AB63D33259499157E432F
+  owner-post.ps1 : 1 x sustitucion [43 -> 43 caracteres] I-64 Smoke-1, RunId R20261105T050250Z-785a:
+  owner-post.ps1 : 1 x sustitucion [33 -> 33 caracteres] $RunId = 'R20261105T050250Z-785a'
+owner-post.ps1 origen 64617EB319E4AD9E85DA55BC2CAF28778F66383DC2336244A1DFDC8B1587CA32 -> destino 31481683B5E3B3C6E103EFFEB1BA6F42FFFE025A1300A8ECB2DC52A8567DA94A
+  Capture-HostExtras.ps1 : 2 x sustitucion [22 -> 22 caracteres] R20261105T050250Z-785a
+  Capture-HostExtras.ps1 : 1 x sustitucion [47 -> 46 caracteres] (COORDINATOR SMOKE-1 RETRY AUTHORIZATION, 785a)
+Capture-HostExtras.ps1 origen C8A9D4299514FD791DA5B2D059D452D85BA26A6C1099FDD5E3E1E0B61AF21BAE -> destino DDB3FF4D7D2AFA096BC900F9EB28268F47655C31135C9F28C5AA715F70F3D25D
+  compare_host_extras.py : 1 x sustitucion [22 -> 22 caracteres] R20261105T050250Z-785a
+compare_host_extras.py origen FF09B93C4082F6EF65647CBC76B54B015AE860701B7E5595A54ED0F339B34F96 -> destino F0DC909D1513DCA9196342AD36534C9B5D1A219D46140753B626ADFF0737978C
+Inspect-LoadedRackCad.ps1 copia identica de process-guard/ 86985EC90F4591806391F70257DE2B2CCBD0CFC096EB34B33117DF63E413E5AB
+Test-AcadProcessGuard.ps1 copia identica de process-guard/ 736463BD3EF607A5C61530ACCBE385E9C799BD9A1FDF72107CEF1B76CB76E3A4
+Save-ScreenRegion.ps1 copia identica de process-guard/ 61983D32CE96DFFE54BF26629E63511BEC4A3C93E507B895AC9BB38AEB576CDF
+Test-CapturePrecheck.ps1 copia identica de post-785a/ 122D634F84CDA509A8D968D4F6862346524AC2CEF3C7A73A7C7D14731FD08380
+Read-AcadWindowPosition.ps1 copia identica de post-785a/ 5CC96E9022A787158BE2E04CFE55F5CB5AC143C64B3E89D475E5FA08A353008F
+List-TopWindows.ps1 copia identica de post-785a/ 5C709C4690B0EE485327519C95AD6258B66D5CE42A93A62048F96B2C7D3EA4E7

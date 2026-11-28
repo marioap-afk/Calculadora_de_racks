@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..fa90e630 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -1943,7 +1943,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            StageHeaderConfiguration(module, edited);
++            StageHeaderConfiguration(module, copy);
+         }
+ 
+         /// <summary>

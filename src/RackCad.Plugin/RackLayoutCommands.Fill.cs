@@ -20,7 +20,7 @@ namespace RackCad.Plugin
     /// with as many copies of a rack as fit — the first working, deterministic version of the layout optimizer.</summary>
     public sealed partial class RackLayoutCommands
     {
-        [CommandMethod("RR")]  public void AliasRackRellenar() => RackRellenar();          // RACKRELLENAR
+        // T6 rl (AL-S14): the shortcut RR opens the page «Almacén» of the RackCad window (RackLayoutCommands.Ventana.cs); RACKRELLENAR stays.
 
         /// <summary>
         /// Auto-fill: pick a rack (its PLANTA view is used), read the site geometry from a layer (the largest CLOSED
@@ -432,7 +432,7 @@ namespace RackCad.Plugin
         /// are rack MIN CORNERS, so each reference goes at (cell − offset), where the offset is the seed's own
         /// origin→bbox-min gap — recomputed for the rotated orientation (+90° CCW about the insertion turns the AABB
         /// offset (ox, oy, fx, fy) into (−(oy+fy), ox) with spans swapped).</summary>
-        private static int PlaceFill(Document document, WarehouseAutoFillResult fill, PlantaSeed seed)
+        private static int PlaceFill(Document document, WarehouseAutoFillResult fill, PlantaSeed seed, bool regen = true) // T5 al: regen
         {
             var database = document.Database;
             var rotated = fill.Orientation == RackOrientation.Rotated;
@@ -480,7 +480,7 @@ namespace RackCad.Plugin
                 transaction.Commit();
             }
 
-            document.Editor.Regen();
+            if (regen) document.Editor.Regen(); // T5 al: the window regenerates after it knows the placement was committed
             return placed;
         }
 

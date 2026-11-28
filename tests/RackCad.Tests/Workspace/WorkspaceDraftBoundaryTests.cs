@@ -1,0 +1,635 @@
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using RackCad.Application.Workspace;
+using RackCad.Application.Workspace.Drafts;
+using Xunit;
+using Src = RackCad.Tests.WorkspaceHostSource;
+
+namespace RackCad.Tests;
+
+// I-64 F4-T1-DRAFT-CORE: INV-F4T1-15, 16 and 17 as source and shape guards over the pure core of the drafts.
+// WorkspaceModelBoundaryTests keeps guarding the namespace RackCad.Application.Workspace; the checks that look only at the
+// EXACT namespace (type names, public members) do not see the subnamespace, so this class applies the same rules to it.
+public class WorkspaceDraftBoundaryTests
+{
+    private const string DraftsFolder = "src/RackCad.Application/Workspace/Drafts/";
+    private const string DraftsNamespace = "RackCad.Application.Workspace.Drafts";
+
+    private static readonly string[] ExpectedFiles =
+    {
+        DraftsFolder + "DraftApplyOutcome.cs",
+        DraftsFolder + "DraftClosePolicy.cs",
+        DraftsFolder + "DraftRegistry.cs",
+        DraftsFolder + "DraftSession.cs",
+        DraftsFolder + "DraftStaleBase.cs",
+    };
+
+    private static IReadOnlyList<(string Path, string Code)> DraftFiles() => Src.Files(DraftsFolder);
+
+    private static IReadOnlyList<Type> DraftTypes() =>
+        typeof(DraftRegistry).Assembly.GetTypes()
+            .Where(t => t.Namespace == DraftsNamespace && !t.IsDefined(typeof(CompilerGeneratedAttribute), false))
+            .ToList();
+
+    private const BindingFlags AllMembers = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+
+    // ------------------------------------------------------------------ the folder and its files
+
+    [Fact]
+    public void TheDraftsFolderHoldsExactlyTheFiveCoreFilesAndTheParentGuardsRecurseIntoIt()
+    {
+        Assert.Equal(ExpectedFiles, DraftFiles().Select(f => f.Path).ToArray());
+
+        // The parent guards walk src/RackCad.Application/Workspace/ recursively, so they apply to these files too.
+        var parent = Src.ApplicationFiles().Select(f => f.Path).ToHashSet(StringComparer.Ordinal);
+        Assert.All(ExpectedFiles, f => Assert.Contains(f, parent));
+    }
+
+    [Fact]
+    public void EveryFileStartsWithNullableEnableAndDeclaresOneBlockNamespaceEqualToItsFolder()
+    {
+        foreach (var path in ExpectedFiles)
+        {
+            var text = Src.Text(path);
+            Assert.StartsWith("#nullable enable", text, StringComparison.Ordinal);
+            var declarations = Regex.Matches(Src.CodeOnly(text), @"^\s*namespace\s+([\w\.]+)\s*(\{|;)", RegexOptions.Multiline);
+            Assert.Single(declarations);
+            Assert.Equal(DraftsNamespace, declarations[0].Groups[1].Value);
+            Assert.Equal("{", declarations[0].Groups[2].Value);
+        }
+    }
+
+    [Fact]
+    public void EveryPublicTypeOfTheCoreLivesInTheDraftsNamespaceOfApplication()
+    {
+        var types = DraftTypes();
+
+        Assert.Contains(types, t => t == typeof(DraftSession<>));
+        Assert.Contains(types, t => t == typeof(DraftRegistry));
+        Assert.Contains(types, t => t == typeof(DraftClosePolicy));
+        Assert.Contains(types, t => t == typeof(DraftStaleBase));
+        Assert.Contains(types, t => t == typeof(DraftApplyOutcome<>));
+        Assert.All(types, t => Assert.Equal(typeof(DraftRegistry).Assembly, t.Assembly));
+    }
+
+    // ------------------------------------------------------------------ no AutoCAD, WPF, Plugin or UI
+
+    private static readonly Regex HostReferences = new(@"\bAutodesk\.|System\.Windows|RackCad\.Plugin|RackCad\.UI|Autodesk\.AutoCAD\.Internal");
+
+    [Fact]
+    public void NoFileOfTheCoreReferencesAutoCadWpfThePluginOrTheUi()
+    {
+        foreach (var (path, code) in DraftFiles())
+            Assert.True(!HostReferences.IsMatch(code), path + " uses " + HostReferences.Match(code).Value);
+    }
+
+    [Theory]
+    [InlineData("using Autodesk.AutoCAD.DatabaseServices;")]
+    [InlineData("var w = new System.Windows.Window();")]
+    [InlineData("using RackCad.Plugin.Workspace;")]
+    [InlineData("using RackCad.UI.Controls;")]
+    [InlineData("Autodesk.AutoCAD.Internal.Utils.SetFocusToDwgView();")]
+    public void TheHostReferenceGuardDetectsEachFamily(string injected)
+    {
+        var real = DraftFiles()[0].Code;
+        Assert.DoesNotMatch(HostReferences, real);
+        Assert.Matches(HostReferences, real + "\n" + injected);
+    }
+
+    // ------------------------------------------------------------------ no persistence, no authored writes
+
+    // The same families as WorkspaceModelBoundaryTests.ModelDoesNotPersistNorWriteAuthoredData plus the registry of settings.
+    private static readonly Regex PersistenceOrWriteAuthorities = new(
+        @"System\.IO|\bFile\.|\bDirectory\.|\bStreamWriter\b|Microsoft\.Win32|\bRegistry\.|\bUserSettings\b|\bAtomicFile\b|Transaction|LockDocument|Database|\bCommit\s*\(|\bAutodesk\.|RackLog|Environment\.|\b(?:Console|Trace|Debug)\.");
+
+    [Fact]
+    public void NoFileOfTheCorePersistsOrWritesAuthoredData()
+    {
+        foreach (var (path, code) in DraftFiles())
+            Assert.True(!PersistenceOrWriteAuthorities.IsMatch(code), path + " uses " + PersistenceOrWriteAuthorities.Match(code).Value);
+    }
+
+    [Theory]
+    [InlineData("using System.IO;")]
+    [InlineData("var t = File.ReadAllText(p);")]
+    [InlineData("Directory.CreateDirectory(p);")]
+    [InlineData("using var w = new StreamWriter(p);")]
+    [InlineData("Microsoft.Win32.Registry.CurrentUser.OpenSubKey(k);")]
+    [InlineData("Registry.CurrentUser.SetValue(k, v);")]
+    [InlineData("UserSettings.Save();")]
+    [InlineData("AtomicFile.Write(p, t);")]
+    [InlineData("using var tr = db.TransactionManager;")]
+    [InlineData("var l = doc.LockDocument();")]
+    [InlineData("Database db = null;")]
+    [InlineData("HostDatabase db = null;")]
+    [InlineData("var d = WorkingDatabaseFor(doc);")]
+    [InlineData("tr.Commit();")]
+    [InlineData("tr.Commit ();")]
+    [InlineData("tr.Commit   (  );")]
+    [InlineData("Console.WriteLine(text);")]
+    [InlineData("Trace.WriteLine(text);")]
+    [InlineData("Debug.WriteLine(text);")]
+    [InlineData("using Autodesk.AutoCAD.DatabaseServices;")]
+    [InlineData("RackLog.Exception(ex);")]
+    [InlineData("Environment.SetEnvironmentVariable(a, b);")]
+    public void ThePersistenceGuardDetectsEachForbiddenFamilyInRealCoreText(string injected)
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftSession.cs", StringComparison.Ordinal)).Code;
+        Assert.DoesNotMatch(PersistenceOrWriteAuthorities, real);
+        Assert.Matches(PersistenceOrWriteAuthorities, real + "\n" + injected);
+    }
+
+    [Fact]
+    public void ThePersistenceGuardDoesNotRejectTheInMemoryRegistryOfDrafts()
+    {
+        var registry = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+
+        Assert.Contains("DraftRegistry", registry);
+        Assert.DoesNotMatch(PersistenceOrWriteAuthorities, registry);
+    }
+
+    // ------------------------------------------------------------------ nothing of I-63
+
+    // Bom as part of ANY identifier, whatever its case: at the start of a word (BOM.Build, BOMLines, bomCount), at its end (DraftBOM, GetBom,
+    // draftbom) or inside it before an uppercase letter, a digit or an underscore (DraftBomLines, BomBuilder, _bomCount). Words that merely
+    // contain the letters in lowercase (Combo) are not Bom.
+    private const string BomInAnyIdentifier = @"(?:(?i:\bbom|bom\b)|(?-i:Bom(?![a-z])|BOM(?![a-z])|_bom(?![a-z])))";
+
+    private static readonly Regex I63Concepts = new(
+        @"ComputedParameter|Metric|ProjectSummary|TotalRacks|Aggregat|Provider|" + BomInAnyIdentifier, RegexOptions.IgnoreCase);
+
+    [Fact]
+    public void NoFileOfTheCoreCarriesAMetricsProviderProjectSummaryOrAggregationConcept()
+    {
+        foreach (var (path, code) in DraftFiles())
+            Assert.True(!I63Concepts.IsMatch(code), path + " mentions " + I63Concepts.Match(code).Value);
+    }
+
+    [Theory]
+    [InlineData("var x = ComputedParameters.Evaluate();")]
+    [InlineData("class DraftMetricsHolder {}")]
+    [InlineData("var s = new ProjectSummary();")]
+    [InlineData("int TotalRacks;")]
+    [InlineData("Aggregate(items);")]
+    [InlineData("BomBuilder.Build();")]
+    [InlineData("var DraftBomLines = new object();")]
+    [InlineData("int _bomCount;")]
+    [InlineData("class DraftStateProvider {}")]
+    public void TheI63GuardDetectsEachConceptInRealCoreText(string injected)
+    {
+        var real = DraftFiles()[0].Code;
+        Assert.DoesNotMatch(I63Concepts, real);
+        Assert.Matches(I63Concepts, real + "\n" + injected);
+    }
+
+    [Fact]
+    public void TheCoreDefinesNoStateOfAnySystemAndNamesNoEditorOfOne()
+    {
+        var systems = new Regex(@"PushBack|Selectiv|Cantilever|Cabecera|Dynamic|FlowBed|Cama|Tarima|Fondo|Header", RegexOptions.IgnoreCase);
+        foreach (var (path, code) in DraftFiles())
+            Assert.True(!systems.IsMatch(code), path + " mentions " + systems.Match(code).Value);
+
+        var session = typeof(DraftSession<>);
+        Assert.True(session.IsGenericTypeDefinition);
+        Assert.Empty(session.GetGenericArguments()[0].GetGenericParameterConstraints());
+    }
+
+    // ------------------------------------------------------------------ names (the subnamespace equivalent of WorkspaceModelBoundaryTests)
+
+    private static readonly Regex ForbiddenTypeNames = new("Subscription|Editor|Tab|Handler", RegexOptions.IgnoreCase);
+    private static readonly Regex ForbiddenMemberNames = new("Subscription|Handler|ProjectSummary|Metric|Provider|TotalRacks|Aggregat|" + BomInAnyIdentifier, RegexOptions.IgnoreCase);
+
+    [Fact]
+    public void NoTypeOfTheCoreIsCalledSubscriptionEditorTabOrHandler()
+    {
+        Assert.NotEmpty(DraftTypes());
+        foreach (var type in DraftTypes())
+            Assert.True(!ForbiddenTypeNames.IsMatch(type.Name), type.FullName + " matches " + ForbiddenTypeNames.Match(type.Name).Value);
+    }
+
+    [Theory]
+    [InlineData("DraftSubscription")]
+    [InlineData("DraftEditorState")]
+    [InlineData("DraftTabState")]
+    [InlineData("DraftHandler")]
+    [InlineData("DraftStableState")]
+    [InlineData("DraftMutableSet")]
+    [InlineData("DraftTable")]
+    public void TheTypeNameGuardDetectsEachForbiddenFamilyBySubstringAndIgnoringCase(string injected)
+    {
+        Assert.Matches(ForbiddenTypeNames, injected);
+        Assert.Matches(ForbiddenTypeNames, injected.ToLowerInvariant());
+        Assert.All(DraftTypes(), t => Assert.DoesNotMatch(ForbiddenTypeNames, t.Name));
+    }
+
+    [Fact]
+    public void NoMemberOfTheCoreIsAMetricAProviderASummaryASubscriptionOrAHandler()
+    {
+        foreach (var type in DraftTypes())
+        {
+            Assert.DoesNotMatch(ForbiddenMemberNames, type.Name);
+            foreach (var member in type.GetMembers(AllMembers))
+                Assert.True(!ForbiddenMemberNames.IsMatch(member.Name), type.Name + "." + member.Name);
+        }
+    }
+
+    [Theory]
+    [InlineData("MetricsSnapshot")]
+    [InlineData("TotalRacks")]
+    [InlineData("ProjectSummary")]
+    [InlineData("AggregateAll")]
+    [InlineData("DraftBom")]
+    [InlineData("DraftBomLines")]
+    [InlineData("StateProvider")]
+    [InlineData("Subscribe_Subscription")]
+    [InlineData("OnChangedHandler")]
+    public void TheMemberNameGuardDetectsEachForbiddenFamily(string injected)
+    {
+        Assert.Matches(ForbiddenMemberNames, injected);
+    }
+
+    // ------------------------------------------------------------------ pureza: no tasks, events, threads or static mutable state
+
+    private static readonly Regex BackgroundWork = new(
+        @"\basync\b|\bawait\b|\bTask\b|Task\.|\bThread\b|ThreadPool|\bTimer\b|System\.Timers|\bevent\b|\bDispatcher\b|SynchronizationContext|Parallel\.|BackgroundWorker|\bRegen\b|ConfigureAwait|GetAwaiter|\bLazy<|ValueTask|\block\s*\(|\bMonitor\b|\bInterlocked\b|PeriodicTimer");
+
+    // Every static field declaration: its optional readonly and its type text.
+    private static readonly Regex StaticField = new(@"\bstatic\s+(?<readonly>readonly\s+)?(?!class\b)(?!extern\b)(?<type>[\w<>,\.\[\]\? ]+?)\s+\w+\s*(?:=(?!>)|;)");
+
+    private static readonly string[] PrimitiveTypeNames =
+    {
+        "bool", "byte", "sbyte", "short", "ushort", "int", "uint", "long", "ulong", "char", "float", "double", "decimal", "string", "nint", "nuint",
+    };
+
+    private static bool IsImmutableFieldType(Type type) =>
+        type.IsPrimitive
+        || type == typeof(string)
+        || type == typeof(decimal)
+        || type.IsEnum
+        || (type.IsValueType && type.CustomAttributes.Any(a => a.AttributeType.FullName == "System.Runtime.CompilerServices.IsReadOnlyAttribute"));
+
+    // The names a static readonly field may have as its type: primitives, string, and the enums and read-only structs of the core.
+    private static HashSet<string> ImmutableTypeNames() =>
+        DraftTypes().Where(IsImmutableFieldType).Select(t => t.Name).Concat(PrimitiveTypeNames).ToHashSet(StringComparer.Ordinal);
+
+    /// <summary>The static fields of a text that are not a const nor a readonly field of a primitive, string, enum or read-only struct.</summary>
+    private static IReadOnlyList<string> MutableStaticFields(string code)
+    {
+        var allowed = ImmutableTypeNames();
+        var offenders = new List<string>();
+        foreach (Match match in StaticField.Matches(code))
+        {
+            var type = match.Groups["type"].Value.Trim();
+            if (match.Groups["readonly"].Success && allowed.Contains(type)) continue;
+            offenders.Add(match.Value);
+        }
+
+        return offenders;
+    }
+
+    /// <summary>The static fields of the given types (backing fields of static properties included) that are not immutable.</summary>
+    private static IReadOnlyList<string> MutableStaticFieldsOf(IEnumerable<Type> types) =>
+        types.SelectMany(t => t.GetFields(AllMembers).Where(f => f.IsStatic && !f.IsLiteral && !(f.IsInitOnly && IsImmutableFieldType(f.FieldType))).Select(f => t.Name + "." + f.Name)).ToList();
+
+    [Fact]
+    public void NoFileOfTheCoreUsesAsyncTasksThreadsTimersEventsOrMutableStaticFields()
+    {
+        foreach (var (path, code) in DraftFiles())
+        {
+            Assert.True(!BackgroundWork.IsMatch(code), path + " uses " + BackgroundWork.Match(code).Value);
+            Assert.Empty(MutableStaticFields(code));
+        }
+    }
+
+    [Theory]
+    [InlineData("public async System.Threading.Tasks.Task Run() {}", "async")]
+    [InlineData("var t = Task.Run(() => 1);", "Task")]
+    [InlineData("new Thread(() => {});", "Thread")]
+    [InlineData("private Timer _t;", "Timer")]
+    [InlineData("public event Action Changed;", "event")]
+    [InlineData("Dispatcher.Invoke(a);", "Dispatcher")]
+    [InlineData("doc.Editor.Regen();", "Regen")]
+    [InlineData("public ValueTask<int> Load() => default;", "ValueTask")]
+    [InlineData("lock (_gate) { _count++; }", "lock")]
+    [InlineData("lock(_gate) { _count++; }", "lock")]
+    [InlineData("Monitor.Enter(_gate);", "Monitor")]
+    [InlineData("Interlocked.Increment(ref _count);", "Interlocked")]
+    [InlineData("using var t = new PeriodicTimer(period);", "PeriodicTimer")]
+    public void TheBackgroundWorkGuardDetectsEachFamilyInRealCoreText(string injected, string expected)
+    {
+        var real = DraftFiles()[0].Code;
+        Assert.DoesNotMatch(BackgroundWork, real);
+        Assert.Contains(expected, BackgroundWork.Match(real + "\n" + injected).Value);
+    }
+
+    [Theory]
+    [InlineData("private static int _counter;")]
+    [InlineData("internal static List<string> Log = new();")]
+    [InlineData("static string _name = \"x\";")]
+    [InlineData("private static readonly List<string> Log = new();")]
+    [InlineData("private static readonly Dictionary<string, int> Map = new();")]
+    [InlineData("internal static readonly string[] Names = { \"a\", \"b\" };")]
+    [InlineData("internal static readonly int[] Sizes = new int[4];")]
+    [InlineData("private static readonly HashSet<string> Seen = new();")]
+    [InlineData("private static readonly object Gate = new();")]
+    [InlineData("static readonly Random Rng = new();")]
+    [InlineData("private static readonly DraftRegistry Shared = new();")]
+    public void TheStaticStateGuardDetectsEveryMutableStaticFieldEvenWhenItIsReadonlyInRealCoreText(string injected)
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+        Assert.Empty(MutableStaticFields(real));
+        Assert.NotEmpty(MutableStaticFields(real + "\n" + injected));
+    }
+
+    [Theory]
+    [InlineData("private static readonly int One = 1;")]
+    [InlineData("private static readonly string Name = \"x\";")]
+    [InlineData("private static readonly bool Flag = true;")]
+    [InlineData("private static readonly DraftMembership Default = DraftMembership.Mutable;")]
+    [InlineData("private static readonly DraftStaleBaseEntry NoEntry = new(string.Empty, DraftMembership.NotMember, null, null, null);")]
+    [InlineData("private static readonly DraftDifference First = new(\"k\", DraftDifferenceKind.View);")]
+    [InlineData("public static DraftAdmission Admitted => new(true, null);")]
+    [InlineData("public static bool IsBlocking(DraftBoundary boundary) => true;")]
+    [InlineData("public static class DraftBoundaries")]
+    [InlineData("internal static DraftApplyStart Started(DraftStatus previous) => new(true, previous, DraftApplyRefusal.None);")]
+    public void TheStaticStateGuardAcceptsConstantsAndReadonlyPrimitivesStringsEnumsAndReadOnlyStructs(string injected)
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+        Assert.Empty(MutableStaticFields(real + "\n" + injected));
+    }
+
+    private static class StaticSampleImmutable
+    {
+        internal const int Constant = 1;
+        internal static readonly int One = 1;
+        internal static readonly string Text = "x";
+        internal static readonly DraftMembership Kind = DraftMembership.Mutable;
+        internal static readonly DraftDifference Difference = new("k", DraftDifferenceKind.View);
+    }
+
+    private static class StaticSampleList { internal static readonly List<string> Items = new(); }
+
+    private static class StaticSampleDictionary { internal static readonly Dictionary<string, int> Map = new(); }
+
+    private static class StaticSampleArray { internal static readonly string[] Names = { "a" }; }
+
+    private static class StaticSampleObject { internal static readonly object Gate = new(); }
+
+    private static class StaticSampleNotReadonly { internal static int Counter = 1; }
+
+    private static class StaticSampleMutableClass { internal static readonly DraftFormAdapter Shared = new(); }
+
+    private static class StaticSampleAutoProperty { internal static List<string> Items { get; } = new(); }
+
+    [Theory]
+    [InlineData(typeof(StaticSampleList))]
+    [InlineData(typeof(StaticSampleDictionary))]
+    [InlineData(typeof(StaticSampleArray))]
+    [InlineData(typeof(StaticSampleObject))]
+    [InlineData(typeof(StaticSampleNotReadonly))]
+    [InlineData(typeof(StaticSampleMutableClass))]
+    [InlineData(typeof(StaticSampleAutoProperty))]
+    public void TheStaticFieldReflectionGuardDetectsEveryMutableStaticFieldEvenWhenReadonly(Type sample)
+    {
+        Assert.NotEmpty(MutableStaticFieldsOf(new[] { sample }));
+    }
+
+    [Fact]
+    public void TheStaticFieldReflectionGuardAcceptsConstantsAndReadonlyPrimitivesStringsEnumsAndReadOnlyStructs()
+    {
+        Assert.Empty(MutableStaticFieldsOf(new[] { typeof(StaticSampleImmutable) }));
+    }
+
+    [Fact]
+    public void TheCoreHasNoEventsAndItsStaticStateIsImmutable()
+    {
+        Assert.Empty(MutableStaticFieldsOf(DraftTypes()));
+        foreach (var type in DraftTypes())
+        {
+            Assert.Empty(type.GetEvents(AllMembers));
+            foreach (var property in type.GetProperties(AllMembers).Where(p => p.GetAccessors(true).Any(m => m.IsStatic)))
+                Assert.True(!property.CanWrite, type.Name + "." + property.Name);
+        }
+    }
+
+    // ------------------------------------------------------------------ only SessionId of the parent namespace
+
+    private static IReadOnlyList<string> ParentTypesOtherThanSessionId() =>
+        typeof(SessionId).Assembly.GetTypes()
+            .Where(t => t.Namespace == "RackCad.Application.Workspace" && !t.IsDefined(typeof(CompilerGeneratedAttribute), false))
+            .Select(t => Regex.Replace(t.Name, @"`\d+$", string.Empty))
+            .Where(n => n != nameof(SessionId))
+            .Distinct()
+            .ToList();
+
+    /// <summary>The types of the parent namespace other than SessionId that a text names, plus any qualified name that is not the drafts namespace.</summary>
+    private static IReadOnlyList<string> ParentNamespaceViolations(string code)
+    {
+        var violations = ParentTypesOtherThanSessionId()
+            .Where(name => Regex.IsMatch(code, @"\b" + Regex.Escape(name) + @"\b"))
+            .ToList();
+        violations.AddRange(Regex.Matches(code, @"\bRackCad\.[\w\.]+").Select(m => m.Value).Where(q => q != DraftsNamespace));
+        return violations;
+    }
+
+    [Fact]
+    public void TheCoreUsesNoTypeOfTheParentNamespaceExceptSessionId()
+    {
+        Assert.Contains("WorkspaceSession", ParentTypesOtherThanSessionId());
+
+        foreach (var (path, code) in DraftFiles())
+        {
+            Assert.Empty(ParentNamespaceViolations(code));
+            Assert.Equal(new[] { DraftsNamespace }, Regex.Matches(code, @"\bRackCad\.[\w\.]+").Select(m => m.Value).ToArray());
+        }
+
+        Assert.Contains(DraftFiles(), f => Regex.IsMatch(f.Code, @"\bSessionId\b"));
+    }
+
+    [Theory]
+    [InlineData("WorkspaceSession")]
+    [InlineData("BrowserSession")]
+    [InlineData("NavigationTargets")]
+    [InlineData("EventBridgeCore")]
+    [InlineData("WorkspaceHostCore")]
+    [InlineData("SelectionContext")]
+    public void TheParentNamespaceGuardDetectsEachTypeOfTheParentNamespaceOtherThanSessionIdInRealCoreText(string parentType)
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+        Assert.Contains(parentType, ParentTypesOtherThanSessionId());
+        Assert.Empty(ParentNamespaceViolations(real));
+
+        Assert.Contains(parentType, ParentNamespaceViolations(real + "\n" + "private " + parentType + " _other;"));
+        Assert.Contains(parentType, ParentNamespaceViolations(real + "\n" + "var x = new " + parentType + "(1);"));
+    }
+
+    [Theory]
+    [InlineData("using RackCad.Application.Workspace;")]
+    [InlineData("var s = new RackCad.Application.Workspace.WorkspaceSession();")]
+    [InlineData("using RackCad.Application.Bom;")]
+    public void TheParentNamespaceGuardDetectsAQualifiedNameThatIsNotTheDraftsNamespace(string injected)
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+        Assert.Empty(ParentNamespaceViolations(real));
+        Assert.NotEmpty(ParentNamespaceViolations(real + "\n" + injected));
+    }
+
+    [Fact]
+    public void TheParentNamespaceGuardAcceptsSessionIdAndTheDraftsNamespaceItself()
+    {
+        var real = DraftFiles().First(f => f.Path.EndsWith("DraftRegistry.cs", StringComparison.Ordinal)).Code;
+
+        Assert.Empty(ParentNamespaceViolations(real + "\nprivate SessionId _session;\nusing RackCad.Application.Workspace.Drafts;"));
+    }
+
+    [Fact]
+    public void EveryTypeInTheSignaturesOfTheCoreIsFromSystemFromTheCoreItselfOrIsSessionId()
+    {
+        static IEnumerable<Type> Flatten(Type type)
+        {
+            if (type.IsByRef || type.IsArray || type.IsPointer) type = type.GetElementType()!;
+            if (type.IsGenericParameter) yield break;
+            yield return type;
+            if (type.IsGenericType)
+                foreach (var argument in type.GetGenericArguments().SelectMany(Flatten)) yield return argument;
+        }
+
+        var referenced = new HashSet<Type>();
+        foreach (var type in DraftTypes())
+        {
+            foreach (var f in type.GetFields(AllMembers)) foreach (var t in Flatten(f.FieldType)) referenced.Add(t);
+            foreach (var p in type.GetProperties(AllMembers)) foreach (var t in Flatten(p.PropertyType)) referenced.Add(t);
+            foreach (var m in type.GetMethods(AllMembers))
+            {
+                foreach (var t in Flatten(m.ReturnType)) referenced.Add(t);
+                foreach (var parameter in m.GetParameters()) foreach (var t in Flatten(parameter.ParameterType)) referenced.Add(t);
+            }
+
+            foreach (var c in type.GetConstructors(AllMembers))
+                foreach (var parameter in c.GetParameters()) foreach (var t in Flatten(parameter.ParameterType)) referenced.Add(t);
+        }
+
+        Assert.Contains(typeof(SessionId), referenced);
+        foreach (var type in referenced)
+        {
+            var ns = type.Namespace ?? string.Empty;
+            var allowed = ns == DraftsNamespace || ns == "System" || ns == "System.Text" || ns == "System.Collections.Generic" || ns == "System.Collections.ObjectModel" || type == typeof(SessionId);
+            Assert.True(allowed, type.FullName);
+        }
+    }
+
+    // ------------------------------------------------------------------ every operation returns a value (INV-F4T1-15)
+
+    [Fact]
+    public void EveryPublicOperationOfTheCoreReturnsAValueThatSaysWhatChanged()
+    {
+        var operations = new[] { typeof(DraftSession<>), typeof(DraftRegistry), typeof(DraftClosePolicy), typeof(DraftStaleBase), typeof(DraftApplyOutcome<>), typeof(DraftIntentRead<>) }
+            .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
+            .ToList();
+
+        Assert.True(operations.Count > 30);
+        Assert.All(operations, m => Assert.True(m.ReturnType != typeof(void), m.DeclaringType!.Name + "." + m.Name));
+        Assert.Contains(operations, m => m.Name == "TryBeginApply");
+        Assert.Contains(operations, m => m.Name == "CrossBoundary");
+        Assert.Contains(operations, m => m.Name == "RetireSession");
+    }
+
+    // ------------------------------------------------------------------ a preview has no way to a draft (INV-F4T1-03, INV-F4T1-24)
+
+    // A navigation preview (the browser of the workspace) must never create a draft nor a stale base: the files that serve it do
+    // not name the types that carry a read of the edit intention, a base or a draft. This replaces the T1-only guard that forbade
+    // every consumer of the core, which T2 would have had to weaken.
+    private static readonly string[] PreviewFiles =
+    {
+        "src/RackCad.Application/Workspace/BrowserSession.cs",
+        "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+        "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+        "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+    };
+
+    private static readonly Regex DraftTypesNamedByAPreview = new(@"\b(?:DraftIntentRead|DraftStaleBase|DraftRegistry|DraftSession)\b");
+
+    [Fact]
+    public void NoFileThatServesAPreviewNamesTheTypesOfAReadOfTheIntentionAStaleBaseOrADraft()
+    {
+        Assert.Equal(4, PreviewFiles.Length);
+        foreach (var path in PreviewFiles)
+        {
+            var code = Src.Code(path);
+            Assert.NotEmpty(code);
+            Assert.True(!DraftTypesNamedByAPreview.IsMatch(code), path + " names " + DraftTypesNamedByAPreview.Match(code).Value);
+        }
+    }
+
+    [Theory]
+    [InlineData("DraftIntentRead<object> read = null;")]
+    [InlineData("var b = DraftStaleBase.Create(entries);")]
+    [InlineData("private readonly DraftRegistry _drafts = new();")]
+    [InlineData("DraftSession<object> draft = null;")]
+    public void ThePreviewGuardDetectsEachTypeInTheRealTextOfEachPreviewFile(string injected)
+    {
+        foreach (var path in PreviewFiles)
+        {
+            var real = Src.Code(path);
+            Assert.DoesNotMatch(DraftTypesNamedByAPreview, real);
+            Assert.Matches(DraftTypesNamedByAPreview, real + "\n" + injected);
+        }
+    }
+
+    [Fact]
+    public void ThePreviewGuardDoesNotRejectOtherNamesThatOnlyStartLikeThoseOfTheCore()
+    {
+        Assert.DoesNotMatch(DraftTypesNamedByAPreview, "var x = DraftRegistryEntry; var y = DraftSessionless;");
+    }
+    // BEGIN N-1 regression (F4-T1 attempt 3)
+
+    // INV-F4T1-22 and INV-F4T1-25: the BOM rule detects the word whatever its case, at the start, at the end and inside
+    // an identifier, and it is never weaker than the rules of 90a81104 and of 09955667.
+
+    [Theory]
+    [InlineData("BOM.Build();")]
+    [InlineData("var BOMLines = 1;")]
+    [InlineData("var bomCount = 1;")]
+    [InlineData("Bom.Build();")]
+    [InlineData("var x = DraftBOM;")]
+    [InlineData("var y = GetBom();")]
+    [InlineData("var z = GetBOM();")]
+    [InlineData("var w = draftbom;")]
+    [InlineData("var v = DRAFTBOM;")]
+    [InlineData("BOM")]
+    [InlineData("Bom")]
+    [InlineData("bom")]
+    [InlineData("BomBuilder.Build();")]
+    [InlineData("var DraftBomLines = new object();")]
+    [InlineData("int _bomCount;")]
+    public void TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(string injected)
+    {
+        var real = DraftFiles()[0].Code;
+        Assert.DoesNotMatch(I63Concepts, real);
+        Assert.Matches(I63Concepts, real + "\n" + injected);
+    }
+
+    [Theory]
+    [InlineData("BOM")]
+    [InlineData("Bom")]
+    [InlineData("bom")]
+    [InlineData("BOMLines")]
+    [InlineData("DraftBOM")]
+    [InlineData("GetBOM")]
+    [InlineData("DRAFTBOM")]
+    [InlineData("draftbom")]
+    [InlineData("GetBom")]
+    [InlineData("DraftBomLines")]
+    [InlineData("BomBuilder")]
+    [InlineData("_bomCount")]
+    public void TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName(string injected)
+    {
+        Assert.Matches(ForbiddenMemberNames, injected);
+    }
+    // END N-1 regression (F4-T1 attempt 3)
+}

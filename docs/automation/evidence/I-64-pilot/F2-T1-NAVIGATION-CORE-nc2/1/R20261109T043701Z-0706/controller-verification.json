@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "RunId": "R20261109T043701Z-0706",
+  "DelegationRunId": "R20261108T181429Z-adae",
+  "WorkRunId": "R20261108T182756Z-ec7e",
+  "Attempt": 1,
+  "VerifiedSha": "c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession ended 2026-11-08T18:46:05Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json at the supplied inputs path has TaskId F2-T1-NAVIGATION-CORE, Attempt 1, RunId R20261108T182756Z-ec7e, BaseSha 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb and CurrentSha c726410f3ac764f4a80a08a2b810b5fdda276ecc. OutputWrittenUtc in relay-record-work.json is 2026-11-08T12:45:41.225211-06:00, after Cession.StartUtc 2026-11-08T18:28:11Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read the declared sections from AuthorityRevision 90f5872e89660655a93606e16d50f4bc19aa3c9c and other authorities from MainSha a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60. git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha showed only docs/automation paths; no declared EXTERNAL authority path or UNIT_CHANGE section changed."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json and contract-equivalence.json. The mechanical reissue records unchanged invariants, stop-condition IDs, test requirements and authority paths; delegation scope is within contract scope and required test/filter settings agree."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current returned architecture/workspace-persistente-rackcad. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned c726410f3ac764f4a80a08a2b810b5fdda276ecc. git merge-base --is-ancestor 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb CurrentSha and --is-ancestor f2761979b89e784ed16220815e250d21bc476aa1 CurrentSha exited 0. Handoff branch and worktree match the delegation."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts records origin/main=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60 and LsRemoteSha=CurrentSha c726410f3ac764f4a80a08a2b810b5fdda276ecc. Direct git ls-remote could not reach GitHub in this environment; relay facts provide the recorded remote values."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 10 new files: four under src/RackCad.Application/Workspace/ and six under tests/RackCad.Tests/Workspace/. All are within the contract's two allowed directory entries; none intersects its forbidden paths. git diff --name-only RedSha CurrentSha lists only NavigationActions.cs, NavigationTargetSet.cs and NavigationTargets.cs; no tests changed."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 returned empty. git check-ignore -v for artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T182756Z-ec7e/worker-handoff.json matched .gitignore:3 (artifacts/)."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push on refs/heads/architecture/workspace-persistente-rackcad, exact CurrentSha, completed/success; all four required jobs are success. Run 42511528392 Core TRX counters: 15048 passed, 0 failed. RemoteFacts.RedRun is push on the same ref, exact RedSha, completed/failure; Core job failed as expected. Run 42511103159 Core TRX counters: 14997 passed, 51 failed, 0 errors."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RequiredTests is tests/RackCad.Tests/RackCad.Tests.csproj, FullyQualifiedName~Workspace, MinSelected 645, ExpectRed=true. Applying the case-insensitive fully qualified class/method filter semantics to the supplied TRX is recorded as 724 selected: GREEN 724 passed/0 failed and RED 673 passed/51 failed, matching worker-handoff.json and the Coordinator disposition. The RED TRX failures are new WorkspaceNavigation tests and include assertion failures; the relay records the exact 50 assertion + 1 NullReferenceException split. git diff --name-only ChainBaseSha RedSha -- tests/ lists six new Workspace test files (RT); git diff --name-only RedSha CurrentSha contains no test paths, so GREEN leaves RT unchanged. ChainRedFiles for this verified RED is RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%P%n%B BaseSha..CurrentSha shows both RED f2761979b89e784ed16220815e250d21bc476aa1 and GREEN c726410f3ac764f4a80a08a2b810b5fdda276ecc carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching the declared Worker trailer and effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests Anthropic claude-sonnet-5-5 at high effort. relay-record-work.json notes report 78 effective-model entries as claude-sonnet-5-5 with effort high; no routing deviation is recorded."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked the handoff free-text fields against the AUTOMATION_PLAN 16.10 term list; no prohibited complete-word or phrase match was found."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json notes report no permission denials and no usage/credit warnings. One malformed shell command was superseded by later calls; the record reports no pending failed order."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The handoff's RunId matches the assigned WorkRunId; its WorkRunId property is absent, so run identity is established from RunId and the work relay.",
+    "The measured RED contains 50 assertion failures and one NullReferenceException in a new RED test. The supplied Coordinator disposition accepts this as the expected failing skeleton behavior; it is not a compilation failure.",
+    "Worker-reported limitations: ordering for views not decoded by RackViewCodec uses View text, then Section, then handle; Select acts on the freshly revalidated set; host adapters belong to F2-T2."
+  ],
+  "RecommendedNextAction": "Run the required nc1, nc2 and nc3 controls against this verified delivery."
+}

@@ -1,0 +1,42 @@
+{
+  "CheckedUtc": "2026-10-11T03:51:45.3412006Z",
+  "CheckerPid": 29028,
+  "Rows": [
+    {
+      "Pid": 10244,
+      "ParentPid": 30660,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 18312,
+      "ParentPid": 10244,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 27556,
+      "ParentPid": 1256,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null
+    },
+    {
+      "Pid": 29028,
+      "ParentPid": 35064,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-10-11T03:51:41.3050500Z",
+      "Classification": "own-tree",
+      "Reread": null
+    }
+  ],
+  "ReadableNonParticipants": 43,
+  "Participants": 0,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 0
+}

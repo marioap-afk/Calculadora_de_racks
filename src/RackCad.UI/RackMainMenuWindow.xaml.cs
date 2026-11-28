@@ -182,6 +182,19 @@ namespace RackCad.UI
             Close();
         }
 
+        // T6 rl: the classic windows of RACKVARIABLES and RACKPROPIEDADES, run by the host after the menu closes (they write the drawing).
+        private void OpenVariablesClassic_Click(object sender, RoutedEventArgs e)
+        {
+            RequestedAction = MainMenuAction.ProjectVariablesClassic;
+            Close();
+        }
+
+        private void OpenPropertiesClassic_Click(object sender, RoutedEventArgs e)
+        {
+            RequestedAction = MainMenuAction.CustomPropertiesClassic;
+            Close();
+        }
+
         private void OpenDesignLibrary_Click(object sender, RoutedEventArgs e)
         {
             try

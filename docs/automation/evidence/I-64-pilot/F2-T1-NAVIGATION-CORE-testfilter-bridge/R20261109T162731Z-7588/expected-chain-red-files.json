@@ -1,0 +1,8 @@
+[
+  "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+  "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+  "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+  "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+  "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+  "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+]

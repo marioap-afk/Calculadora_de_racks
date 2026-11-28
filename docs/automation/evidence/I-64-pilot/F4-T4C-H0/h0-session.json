@@ -1,0 +1,35 @@
+{
+  "Schema": "rackcad-i64-h0-session/v1",
+  "Probe": "F4-T4C-H0",
+  "Base": "b15072ff4d30e72ed820df8a40bada84729fc331",
+  "SessionStartUtc": "2026-11-15T12:32:39Z",
+  "SessionEndUtc": "2026-11-15T12:45:26Z",
+  "Operator": "session (Owner instruction: create the drawing controlling AutoCAD, without asking for authorization)",
+  "AcCoreMgdFileVersion": "25.0.171.0.0",
+  "Assemblies": {
+    "RackCad.Plugin.dll": "611808426BAA9A022414A18D1E736DE015626DC127F4EC5FA0FDF6FE1FDAE790",
+    "RackCad.Application.dll": "850275667364075D058211A98644E6C64322C7BF6BA2BC7F1EDC81EA02907EE2",
+    "RackCad.Domain.dll": "0033C322019C48246FB76E1473A86987F0BBC600E5B1C1015466154C199D5F63",
+    "RackCad.UI.dll": "13778C8111D92ED8D87DD637EC0C8A66846CFFF8988F92B2D822BD0E1F7DFD4C"
+  },
+  "HarnessPatchSha256Prefix": "F2A48BEC64704EBB",
+  "BlockLibrarySha256": "B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8",
+  "OriginalDrawingSha256Before": "07AC27C32A2B97A80F42B198B3C03FB37E87BAE5CFEB4CC3FEF7A512A9AAA168",
+  "OriginalDrawingSha256After": "07AC27C32A2B97A80F42B198B3C03FB37E87BAE5CFEB4CC3FEF7A512A9AAA168",
+  "CopySavedAfterProbe": false,
+  "AcadProcessesBefore": 0,
+  "AcadProcessesAfter": 0,
+  "InjectionVariablesArmed": [],
+  "RawLogSha256": "4F1DA1E1BEED4CA329A8638AD45EF56E7EAF3F1A73A1022E8C239E69560E4D5D",
+  "RawLogBytes": 601557,
+  "TraceLines": 2192,
+  "TraceGaps": 0,
+  "CallbackDelayMs": {
+    "P1": 49.6,
+    "P2": 61.6,
+    "P3": 80.6,
+    "P4": 74.4,
+    "P5": 145.8
+  },
+  "I52Release": "requested via cross-session channel before opening AutoCAD; no reply (I-52 idle, no acad.exe)"
+}

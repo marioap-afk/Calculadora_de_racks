@@ -1,0 +1,47 @@
+ensayo rapido; copia /d/r6m; salida r6m-qk; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 00e311b6a310ce8b7de80e7a7db18605d3e820910bc6102c93b440b9b3eceebe red-draft-2.txt
+  pieza 47ee55e0c154413199ac7084834288725ee5ce362e70e2ca00ad660155bdcbde red_pbt4d_v52.py
+  pieza f229e3e993472a1ed77190da5dfc66658f5423c67d4ce671b467e353c60e9c00 apply_red_pbt4d_v52.py
+  pieza efeeffe80e0853a3707ef02a0b58c863eccc5a0a87b3510d53bc4587a4907692 green_pbt4d_v52.py
+  pieza 4059860f629c7190d268fc874e7ae4fc430ba937de755bc3d84a2ea8aafa4932 pbt4d-green-v52.txt
+  pieza e09635609576325b6d73fc00e104efbf42f6ac152c2736f1a814e208baee6732 apply_green_pbt4d_v52.py
+  pieza 6b23c035b41d873686cec1587dd80ee827eeb326f6b3e3f366de9b0d34afed41 p6d_quick2_v52.sh
+RED de PB-T4d escrito: 26 archivos existentes de tests/ y 5 nuevos; src/ sin tocar
+r-core rc=1 errores=4 avisos-CS=0
+    <copia>\tests\RackCad.Tests\PushBackRetirePilotRunTests.cs(435,49): error CS0103: El nombre 'NamedScan' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\PushBackRetirePilotRunTests.cs(442,50): error CS0103: El nombre 'NamedScan' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+r-ui rc=0 errores=0 avisos-CS=0
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/red.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6m-qk/red-res.txt' for reading: No such file or directory
+test red :: 
+sed: can't read /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6m-qk/red-res.txt: No such file or directory
+GREEN de PB-T4d escrito: 4 archivos de src/ cambiados y 2 borrados
+g-core rc=1 errores=4 avisos-CS=0
+    <copia>\tests\RackCad.Tests\PushBackRetirePilotRunTests.cs(435,49): error CS0103: El nombre 'NamedScan' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\PushBackRetirePilotRunTests.cs(442,50): error CS0103: El nombre 'NamedScan' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+g-ui rc=0 errores=0 avisos-CS=0
+g-plugin rc=0 errores=0 avisos-CS=0
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4dcc\compile\p6d_check_v52.py", line 14, in <module>
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/green.trx'
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6m-qk/green-res.txt' for reading: No such file or directory
+test green :: 
+sed: can't read /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4dcc/compile/r6m-qk/green-res.txt: No such file or directory
+build-server shutdown rc=0
+MAINCO []

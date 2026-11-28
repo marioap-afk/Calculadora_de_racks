@@ -1,0 +1,6 @@
+fase green; patch sha256 25771775bf8fe8d4844cc0b2fb8ee26c5044b321f3cc0f5b0d4f73804b379515; contrato sha256 bead322a0f24ecd2e540c32ef17a2e7cbb3bed6aa7944bac62c695abd980d293
+de la parte de tests/ del parche: 1 archivo(s)
+apply_green sha256 b53a6b3231fcd8979430a68fc49a0b2673206418e977c541dde7726769082fb9
+apply_green fallo
+git show src/RackCad.Application/Workspace/WorkspaceHostCore.cs -> 128
+rc=6

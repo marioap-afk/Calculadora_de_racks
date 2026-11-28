@@ -1,0 +1,1 @@
+variante A: 3 archivos escritos, 2 borrados, 0 bajas de tests, 0 no encontradas

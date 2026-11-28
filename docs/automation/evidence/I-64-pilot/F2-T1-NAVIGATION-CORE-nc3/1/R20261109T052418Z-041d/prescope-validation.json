@@ -1,0 +1,106 @@
+{
+  "RunId": "R20261109T052418Z-041d",
+  "MutatedCheck": "FreeText",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T18:28:11Z",
+          "Utc": "2026-11-08T18:28:11+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; final notification recorded. Cession.StartUtc=2026-11-08T18:28:11Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [
+        {
+          "Quoted": "R20261108T181429Z-adae",
+          "Sources": [
+            "contract-equivalence.json",
+            "delegation.json",
+            "relay-record-planning.json",
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        },
+        {
+          "Quoted": "R20261108T182756Z-ec7e",
+          "Sources": [
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        }
+      ],
+      "Evidence": "worker-handoff.json matches TaskId F2-T1-NAVIGATION-CORE, Attempt 1, DelegationRunId R20261108T181429Z-adae, RunId R20261108T182756Z-ec7e; output timestamp follows Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only MainSha AuthorityRevision for the four EXTERNAL paths was empty; AuthorityRevision..BaseSha has no changes to those paths. Header transliterations match the ASCII contract."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "contract-equivalence.json records mechanical reissue and unchanged scope, tests, stop conditions and invariants. Delegation A3-A5 matches the contract; relay-record-planning.json records A1-A8 all pass and the authorized nc4 rejection."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 82bbac8fb5837e53e057f95ba8715df31b5ec01b; handoff CurrentSha is c726410f3ac764f4a80a08a2b810b5fdda276ecc. Base..Current and Red..Current ancestry checks pass, but HEAD and remote ref do not equal CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json RemoteFacts records LsRemoteSha=c726410f3ac764f4a80a08a2b810b5fdda276ecc and OriginMainSha=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60. CurrentRun is completed push on the exact branch and SHA."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 10 paths: 4 under src/RackCad.Application/Workspace/ and 6 under tests/RackCad.Tests/Workspace/. All are in AllowedWriteScope; none intersect ForbiddenWriteScope. git diff --name-only RedSha CurrentSha -- tests/ is empty."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git status --porcelain=v1 is empty. git check-ignore on the copied worker-handoff.json returns the ignored artifact path."
+    },
+    "Ci": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "CurrentRun 42511528392 is a completed push for refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs succeeded. RedRun 42511103159 is a completed push at RedSha; Core tests failed as expected."
+    },
+    "Tests": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Current Core TRX counters: 15048 passed, 0 failed; Worker handoff green-full agrees. The TRX contains at least 656 Workspace-named results, above MinSelected 645; the handoff records 724 selected by the required filter. Red Core TRX: 15048 total, 14997 passed, 51 failed; failed cases are WorkspaceNavigation tests with assertion failures. Handoff red-filter also records 724 selected and 51 failed. Red..Current changes no tests, so RT and ChainRedFiles are empty. UI TRX: 1718 total, 1701 passed, 17 NotExecuted, 0 failed."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows RED f2761979 and GREEN c726410f; both contain the declared Co-Authored-By: Claude Sonnet 5.5 trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Delegation requests sonnet/high; relay-record-work.json records effective claude-sonnet-5-5/high, matching the required routing. No model or effort deviation recorded."
+    }
+  },
+  "Findings": [],
+  "Pass": true
+}

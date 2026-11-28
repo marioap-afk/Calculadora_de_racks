@@ -1,0 +1,54 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261114T043649Z-86d0",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD = bbd9a35e242788f7fa5864dccb3e9d3353b043ee; branch = architecture/workspace-persistente-rackcad; remote-tracking branch = bbd9a35e242788f7fa5864dccb3e9d3353b043ee. BaseSha is an ancestor of observed HEAD and RedSha is an ancestor of observed HEAD (both merge-base checks exited 0). Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef and therefore does not equal HEAD or the remote-tracking SHA."
+  },
+  "OutputSha256": "2B631BE9BF40C4E2A73CE95D1453FF409EA33706EFBC0A910B309D74DA7D89C8",
+  "ManualFreeText1610": []
+}

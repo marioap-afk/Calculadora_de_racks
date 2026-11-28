@@ -1,0 +1,21 @@
+r-ui-01.trx filas 1 {'Passed': 1}
+r-ui-02.trx filas 672 {'NotExecuted': 28, 'Passed': 644}
+r-ui-03.trx filas 2 {'Passed': 2}
+r-ui-04.trx filas 55 {'Passed': 55}
+r-ui-05.trx filas 18 {'NotExecuted': 2, 'Passed': 16}
+r-ui-06.trx filas 14 {'Passed': 14}
+r-ui-07.trx filas 14 {'Passed': 14}
+r-ui-08.trx filas 67 {'Passed': 67}
+r-ui-09.trx filas 3 {'Passed': 3}
+r-ui-10.trx filas 4 {'NotExecuted': 1, 'Passed': 3}
+r-ui-11.trx filas 1 {'Passed': 1}
+r-ui-12.trx filas 3 {'Passed': 3}
+r-ui-13.trx filas 3 {'Passed': 3}
+r-ui-14.trx filas 13 {'Passed': 13}
+r-ui-15.trx filas 10 {'Passed': 10}
+r-ui-16.trx filas 30 {'Passed': 30}
+r-ui-17.trx filas 6 {'Passed': 6}
+r-ui-18.trx filas 1 {'Failed': 1}
+omitida de la lista (UI): ('NotExecuted', True)
+equivalente PushBackEditAllApplyCloseTests Failed (esperado Failed) por-asercion=True
+ui red: PASA (otras Failed 0)

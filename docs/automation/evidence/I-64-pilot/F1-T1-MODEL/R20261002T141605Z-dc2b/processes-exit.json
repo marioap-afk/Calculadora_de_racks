@@ -1,0 +1,53 @@
+{
+  "CheckedUtc": "2026-10-02T14:16:31.9653808Z",
+  "CheckerPid": 12608,
+  "SessionPid": 7356,
+  "Rows": [
+    {
+      "Pid": 27468,
+      "ParentPid": 16040,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-01T21:07:31.4279790Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 7356,
+      "ParentPid": 27468,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-01T22:14:59.1560940Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 10384,
+      "ParentPid": 1244,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-10-01T23:08:07.6177480Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null
+    },
+    {
+      "Pid": 12608,
+      "ParentPid": 30472,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-10-02T14:16:28.0385010Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 25404,
+      "ParentPid": 25960,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-02T14:16:28.5684520Z",
+      "Classification": "unattributable",
+      "Reread": "GONE"
+    }
+  ],
+  "SessionDescendants": [],
+  "Orphans": [],
+  "ReadableNonParticipants": 38,
+  "Participants": 0,
+  "UnattributablePersistent": 0,
+  "OrphansPersistent": 0
+}

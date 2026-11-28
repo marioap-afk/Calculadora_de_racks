@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT0-CHARACTERIZATION",
+  "RunId": "R20261117T215737Z-e427",
+  "DelegationRunId": "R20261117T185020Z-e1ae",
+  "WorkRunId": "R20261117T185616Z-3c1b",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession StartUtc 2026-11-17T18:56:22Z; handoff OutputWrittenUtc 2026-11-17T21:20:09.575253-06:00, after start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists; TaskId, RunId, DelegationRunId, Attempt match the delegation and work record. Its SHA256 matches relay Outcome.OutputSha256; output time is after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exit 0. git diff --name-only AuthorityRevision BaseSha returns four docs paths; none are EXTERNAL or UNIT_CHANGE. Diff of listed EXTERNAL files from MainSha to AuthorityRevision is empty."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Delegation and contract counts match: 16 AllowedWriteScope, 265 ForbiddenWriteScope, 24 Invariants, 29 StopConditions, 2 RequiredTests, 32 Authorities. byte-fidelity-check.json reports PASS and byte equality for all eight compared collections."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "Branch and worktree match. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 28e38d8d51108c22305a5fc41ce84070a2efdbe7. BaseSha is an ancestor of RedSha and RedSha is an ancestor of that HEAD. Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, not the observed HEAD."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts reports CurrentRun head 28e38d8d51108c22305a5fc41ce84070a2efdbe7, the declared branch ref, event push, and OriginMainSha 812baf879612320653094a8aaf46aca0bac81383 matching delegation MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentRun.HeadSha returns exactly the ten new test files in delegation AllowedWriteScope; none intersect ForbiddenWriteScope. Product diff is empty. RED-to-GREEN diff contains only the six declared MutantScope product files."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v for the handoff input reports .gitignore:3 artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun is push for the exact branch and observed HEAD; all four required jobs succeeded. RedRun is push for RedSha; Core and UI test jobs failed, Build UI succeeded, Plugin build was skipped. TRX totals agree: GREEN Core 19070 passed, UI 2404 passed; RED Core 22 failed, UI 123 failed, with zero timeouts."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Required filters in GREEN TRX: Core 3/3 passed; UI 18/18 passed. RED TRX: Core 3/3 failed and UI 18/18 failed; selected failures have assertion messages, stack traces under tests/, and no skipped or not-executed selected results. git diff --name-only ChainBaseSha RedSha -- tests/ gives ChainRedFiles: tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs, tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs, tests/RackCad.Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs, tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCatalogTests.cs, tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCompositeTests.cs, tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs, tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs, tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationStateTests.cs, tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSubdialogTests.cs, tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs. GREEN diff from RedSha has no tests paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentRun.HeadSha shows both commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer and the effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. Work record records launcher alias sonnet, effective model claude-sonnet-5-5, and effective effort high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction in the handoff; no AUTOMATION_PLAN 16.10 terms matched."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Work record Notes report zero permission denials and five tool errors, none pending; no usage-limit warning is reported."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "Handoff CurrentSha contradicts the observed HEAD, branch ref, and the work record's CurrentRun head SHA; the handoff SHA cannot identify the delivered commit.",
+    "Coordinator disposition ratifies the CT-PB0-17 c-16 deviation for this attempt; the Owner disposition states PBT0-C10 does not apply to that deviation."
+  ],
+  "RecommendedNextAction": "Coordinator: resolve the contradictory commit identity and request a corrected handoff for verification."
+}

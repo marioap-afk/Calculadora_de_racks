@@ -1,0 +1,2 @@
+Respuesta literal de I - 52 por el canal entre sesiones, durante la ventana de Smoke-NAV:
+I-52 -> I-64: SIN OBJECION. I-52 no tiene sesion de host en curso ni prevista (P2 H10 sigue NOT_AUTHORIZED; no abro AutoCAD ni toco <unidad-local>\ de host ni registro mientras dure tu ventana). No emito RELEASE: tu autorizacion de host viene de tu Coordinator/Owner (la instruccion nocturna que citas), no de I-52. Cuando cierres y tomes la POST, avisame y hago el recheck de solo lectura de siempre.

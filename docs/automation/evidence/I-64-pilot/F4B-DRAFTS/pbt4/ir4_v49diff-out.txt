@@ -1,0 +1,357 @@
+== replace v4.8:3-3 -> v4.9:3-3
+   - v4.8
+   + v4.9
+== replace v4.8:5-5 -> v4.9:5-49
+   < **Estado:** v4.8. Corrige la parte de **PB-T4b** con lo que encontró la precondición 6 de la v4.7. La lista pasa a 478 por la **sexta tanda del Owner** (`owner-pbt4b-list-478-decision.md`, sha256 `a18afbb4c20320ed98a12202db6311b925bb1d9e406064f45d0ea661ee2affe7`); lo demás lo decide la sesión (`sess
+   > **Estado:** v4.9. Corrige la parte de **PB-T4b** con la comprobación acotada **CA-T4b** (`independent-review-v1.md`, §20: EMITIBLE TRAS CORRECCIONES, 0/1/8) y con la **séptima tanda del Owner**, el coste de la lectura (`owner-pbt4b-cost-decision.md`, sha256 `d0f4ca259f26fbf91676538d0895eca7acf921b76
+   > 
+   > **Lo que cambia:**
+   > - **CA-T4b I-01** (V49-01): el equivalente de WHHG `NoneOfThe30…` trae, tras su `Assert.Empty`, **la autoprueba de la guarda** (WHHG:501-526: sus dos variables y sus 13 `Assert.NotEmpty`, literales), sobre su propio `LiteralViolations` y su tabla con 0, 6 y 0. Es lo que hace el equivalente de G-4 co
+   >   - **Por qué:** la autoprueba original pasa en vacío en el GREEN. Su tabla (2, 5 y 1) ya no casa con el anfitrión, así que `LiteralViolations` sin mutar ya da tres violaciones y sus `NotEmpty` se cumplen con cualquier mutación.
+   >   - **Lo que cambia:** solo el `CopySha` de `WorkspaceHostHardeningGuardFull.cs`. No cambian la lista, los totales ni la partición;
+   > - **M-01 a M-04 de la CA-T4b** (V49-02 a V49-05), de texto;
+   > - **el coste de la lectura** (V49-06): el Owner lo da por cumplido con dos de tres corridas de la v4.8. **La v4.9 conserva esas corridas,** porque no cambia ninguna de sus entradas (comprobado por sha256 en la precondición 6).
+   > 
+   > **Lo demás no cambia:**
+   > - la lista de 478, el mapa v5 y el GREEN;
+   > - el esqueleto y el kit;
+   > - D-S1 a D-S6;
+   > - PB-T4a.
+   > 
+   > **La precondición 6 repite los pasos 1 a 6** con los guiones de la v4.9, en copias nuevas (`/d/r4u` en adelante). Sus resultados van en `pbt4bcc/compile/`.
+   > 
+   > **Lo que sale de la v4.9 (PB-T4b):**
+   > - las ediciones (`pbt4b_hand_edits_v49.py`);
+   > - el guion de la copia (`make_copies_pbt4b_v49.py`) y su revisión (`pbt4b-equivalents-review-v49.txt`, 114 entradas);
+   > - el RED (`apply_red_pbt4b_v49.py`);
+   > - la autoprueba (`selftest_pbt4b_v49.py`, `v49/selftest_pbt4b_v49-out.txt`);
+   > - y `make_v49.py`, que arma esta versión desde la v4.8.
+   > 
+   > Los `Skip`, la partición y las comprobaciones son los de la v4.8.
+   > 
+   > ---
+   > 
+   > ## Registro de cambios v4.8 → v4.9
+   > 
+   > | Id | Hallazgo | Qué cambia | Dónde |
+   > |---|---|---|---|
+   > | **V49-01** | **CA-T4b I-01** (importante): la autoprueba `TheGuardOfTheLiteralsTripsOnAnEnglishLiteralAMissingSpanishTextAndALostIdentifier` (WHHG:501-526) **pasa en vacío en el GREEN**. La v4.8 daba otra razón («es una autoprueba que inyecta textos sobre el anfitrión y pasa», §4.2) | **Como G-4:*
+   > | V49-02 | CA-T4b M-01 | Declarado en §4.2: las autopruebas de `HostViolations` de PEG que quedan fuera de la lista (PEG:401-416, :418-431, :433-451, :453-468, :470-492 y :516-526; 6 métodos, 31 resultados) **también pasan en vacío en el GREEN**, con la mitigación de la §20.10 | §4.2 |
+   > | V49-03 | CA-T4b M-02 | **Los nombres de las dos copias de WPP de D-S1** («…NeverErasesAView…», «…MakesTheUpdateInvalid…») dicen lo contrario de lo que afirman. Se conservan por el mecanismo (CT-20 (2) y la partición), y **la regla es la del cuerpo**. Va en V48-02 y en §8.3 | V48-02; §8.3 |
+   > | V49-04 | CA-T4b M-03 | En §4.2, WCAG: `ReasonTable` es WCAG:408-419, y las filas que cuenta el paseo son :415-419 (la v4.8 citaba :408 y :447) | §4.2 |
+   > | V49-05 | CA-T4b M-04 | **«`AtOrigin`, NH, `ReadAt` y WHC no cambian»** quiere decir que **D-S4 no los toca** (D-PBT4-21): WHC sí cambia en el GREEN de PB-T4b, por D-PBT4-04 y D-PBT4-08. Corregido en D-PBT4-03. La fila V45-02 de la cabecera de la v4.5 queda como estaba, con esta aclaración | D-PBT4
+   > | V49-06 | **La séptima tanda del Owner: el coste de la lectura** | «Darlo por cumplido (Recomendado)» (`owner-pbt4b-cost-decision.md`): dos de tres corridas de la sonda de la v4.8 cumplen todo. **La v4.9 conserva el paso 7 de la v4.8** (CT-06 en `/d/r4s` y el coste en `/d/r4s` y `/d/r4t`): la preco
+   > | V49-07 | La versión | El `Objective` de PB-T4b cita la v4.8 → **v4.9** y «sus siete tandas». La cabecera cita los registros vigentes (la v4.8 citaba un sha256 viejo del de la sesión, `f8518e78…`). **Las corridas de la v4.9:** `/d/r4u` en adelante | §6.2.1; §11 |
+   > 
+   > ---
+   > 
+   > ## La cabecera de la v4.8, sin cambio salvo lo que dice el registro v4.8 → v4.9
+   > 
+   > **Estado de la v4.8:** Corrige la parte de **PB-T4b** con lo que encontró la precondición 6 de la v4.7. La lista pasa a 478 por la **sexta tanda del Owner** (`owner-pbt4b-list-478-decision.md`, sha256 `a18afbb4c20320ed98a12202db6311b925bb1d9e406064f45d0ea661ee2affe7`); lo demás lo decide la sesión (
+== replace v4.8:21-21 -> v4.9:65-65
+   - sale
+   + salió
+== replace v4.8:39-39 -> v4.9:83-83
+   - Green
+   + Green. **Sus nombres** («…NeverErasesAView…», «…MakesTheUpdateInvalid…») dicen lo contrario de lo que afirman: se conservan por el mecanismo (CT-20 (2) y la partición), y la regla es la del cuerpo (CA-T4b M-02; V49-03)
+== replace v4.8:348-348 -> v4.9:392-392
+   - (`owner-pbt4b-list-478-decision.md`).
+   + (`owner-pbt4b-list-478-decision.md`); y en la séptima, sobre el coste de la lectura de PB-T4b, «Darlo por cumplido» (`owner-pbt4b-cost-decision.md`).
+== insert v4.8:369-368 -> v4.9:413-413
+   > | **La decisión del Owner sobre el coste de la lectura de PB-T4b** (`owner-pbt4b-cost-decision.md`, 2026-11-21, la séptima tanda) | «Darlo por cumplido»: el paso 7 de la precondición 6, con dos de tres corridas (§8.5) |
+== replace v4.8:654-654 -> v4.9:699-699
+   - materializa:
+   + materializa. **D-S4 no toca**
+   - y
+   + ni
+   - no
+   + (CA-T4b
+   - cambian.
+   + M-04; V49-05); WHC sí cambia en el GREEN de PB-T4b, por D-PBT4-04 y D-PBT4-08.
+== replace v4.8:838-838 -> v4.9:883-883
+   - V48-03)
+   + V48-03; V49-01)
+== replace v4.8:847-847 -> v4.9:892-892
+   - V48-A).
+   + V49-A).
+== replace v4.8:876-876 -> v4.9:921-921
+   - `make_copies_pbt4b_v48.py`**
+   + `make_copies_pbt4b_v49.py`**
+   - (con
+   + (el de la v4.8, `make_copies_pbt4b_v48.py`, con
+   - `pbt4b_hand_edits_v48.py`,
+   + `pbt4b_hand_edits_v49.py`,
+== replace v4.8:918-918 -> v4.9:963-963
+   - V48-A
+   + V49-A
+== replace v4.8:920-920 -> v4.9:965-965
+   - su prueba sin cambio y
+   + (nada)
+   - N`;
+   + N`) y, **desde la v4.9** (CA-T4b I-01; V49-01), su prueba con la **autoprueba de la guarda** tras su `Assert.Empty`: las líneas WHHG:504-525, literales (sus dos variables y sus 13 `Assert.NotEmpty`), sobre su `LiteralViolations` y esa tabla, como hace
+   - (nada)
+   + equivalente de G-4 (el
+   - V48-A);
+   + V49-A);
+== replace v4.8:922-922 -> v4.9:967-967
+   - `make_copies_pbt4b_v48.py`
+   + `make_copies_pbt4b_v49.py`
+   - `pbt4b_hand_edits_v48.py`,
+   + `pbt4b_hand_edits_v49.py`,
+   - `pbt4b-equivalents-review-v48.txt`
+   + `pbt4b-equivalents-review-v49.txt`
+== replace v4.8:1192-1192 -> v4.9:1237-1237
+   - cuentas
+   + cuentas, y con la autoprueba de la guarda (WHHG:504-525) tras su `Assert.Empty` (CA-T4b I-01)
+== replace v4.8:1207-1208 -> v4.9:1252-1253
+   - lista:**
+   + lista.**
+   - es
+   + Pasa en las dos suites completas del GREEN (`/d/r4m` y `/d/r4o`), **pero en vacío** (CA-T4b I-01; V49-01): llama a `LiteralViolations` sobre el anfitrión y el soporte reales (WHHG:504-505), con la tabla del original (2, 5 y 1), y solo exige `NotEmpty`, 13 veces, sin una línea base vacía. En el GREEN esas tres cuentas ya no casan (0, 6 y 0), así que `LiteralViolations` sin mutar ya da tres violaciones, y las 13 se cumplen con cualquier mutación. **Por eso el equivalente de `NoneOfThe30…` trae esa autoprueba sobre su tabla nueva**, como el de G-4 (la v4.8 daba otra razón: «es
+   - **pasa en las dos suites completas del GREEN** (`/d/r4m` y `/d/r4o`);
+   + pasa»);
+   - (WCAG:408
+   + (WCAG:408-419;
+   - y
+   + las
+   - :447),
+   + filas que cuenta el paseo son :415-419; CA-T4b M-03),
+== replace v4.8:1216-1216 -> v4.9:1261-1261
+   - (nada)
+   + **Lo mismo pasa con las autopruebas de `HostViolations` de PEG que quedan fuera de la lista** (CA-T4b M-01; V49-02): PEG:401-416, :418-431, :433-451, :453-468, :470-492 y :516-526 (6 métodos, 31 resultados) **pasan en vacío en el GREEN**, porque el anfitrión del GREEN ya incumple la regla del adaptador estático del piloto (PEG:279-280), así que sus `NotEmpty` se cumplen sin la mutación. **La mitigación:** CT-20 (1) y (4) fijan el texto de `HostViolations` del original y de la copia; la copia conserva parte del lado que salta (la `Theory` partida de D-S5, la del orden del vuelo y la de la tramp
+== replace v4.8:1851-1851 -> v4.9:1896-1896
+   - V48-05)
+   + V48-05; V49-01, V49-06)
+== replace v4.8:1870-1870 -> v4.9:1915-1915
+   - `make_copies_pbt4b_v48.py`
+   + `make_copies_pbt4b_v49.py`
+== replace v4.8:1872-1872 -> v4.9:1917-1917
+   - apply_red_pbt4b_v48.py
+   + apply_red_pbt4b_v49.py
+== replace v4.8:1888-1888 -> v4.9:1933-1933
+   - v4.8,
+   + v4.9,
+   - seis
+   + siete
+   - la
+   + las
+   - PB-T4a),
+   + PB-T4a y de PB-T4b),
+== replace v4.8:1988-1988 -> v4.9:2033-2033
+   - `make_copies_pbt4b_v48.py`
+   + `make_copies_pbt4b_v49.py`
+   - `74f15dbd7686596ccd4d66e2989f3888f61adaa2fd8a37dc11cf92c81674317f`),
+   + `d0bdf62e216518e90f8e9fc28e644467b2ec3333713a43fe9e340b1f91d9533f`), el de la v4.8 (`make_copies_pbt4b_v48.py`, sha256 `74f15dbd7686596ccd4d66e2989f3888f61adaa2fd8a37dc11cf92c81674317f`) con `pbt4b_hand_edits_v49.py` (sha256 `a10461f62041984a570168e01b5ab0997dabbfab21a58c810ebd979c28646190`),
+   - usa
+   + carga `pbt4b_hand_edits_v48.py` (`7d98d007d647f125596088ecf29eccec7352dc9682decb520d7e4369d3dde9fa`); y, como en la v4.8,
+   - (sha256 `2a96b2afb6ce84824047809101f0aed052d0f42717bc64382d917815667dd247`),
+   + (`2a96b2afb6ce84824047809101f0aed052d0f42717bc64382d917815667dd247`),
+   - (sha256 `3cc8e56cfc2609d567e69577a28f03ac5801c5b46f0bddba5c6692cc715ecdd6`)
+   + (`3cc8e56cfc2609d567e69577a28f03ac5801c5b46f0bddba5c6692cc715ecdd6`)
+   - (sha256 `a6fd6c01547a01ba1fa2be03fbaced84caed2f4f1365082a701ff39dca33fa3c`)
+   + (`a6fd6c01547a01ba1fa2be03fbaced84caed2f4f1365082a701ff39dca33fa3c`),
+   - `pbt4b_hand_edits_v48.py` (sha256 `7d98d007d647f125596088ecf29eccec7352dc9682decb520d7e4369d3dde9fa`), que carga
+   + (nada)
+   - (`v48/copies_probe_v48`;
+   + (`v49/copies_probe_v49`;
+   - `f4c0baf61f2d5e797df09f822773c369b12b6647922a38b0788ceda4040b1fa0`;
+   + `4ff5b6705a409478cbfaa69ff49b78bd0fdeb6549c64003c367df3a2ddeb595e`;
+   - `v48/copies_probe_v48-out.txt`),
+   + `v49/copies_probe_v49-out.txt`):
+   - y
+   + las
+   - su
+   + de la v4.8 salvo `WorkspaceHostHardeningGuardFull.cs`. Su
+   - `pbt4b-equivalents-review-v48.txt`
+   + `pbt4b-equivalents-review-v49.txt`
+   - `a021de76c79368b293ce6e4a501864e2e5ff07326f95e38805f14abb8b918c9e`),
+   + `182b6aed301dc18a176da947b6eefacac2f8d7f68d88ab3f0f0c8449f99311ec`),
+   - v4.7
+   + v4.8
+   - **La
+   + **Las
+   - autoprueba**
+   + autopruebas:**
+   - (`selftest_pbt4b_v48.py`,
+   + `selftest_pbt4b_v48.py`
+   - `v48/selftest_pbt4b_v48-out.txt`)
+   + (`v48/selftest_pbt4b_v48-out.txt`) y `selftest_pbt4b_v49.py` (`v49/selftest_pbt4b_v49-out.txt`), que
+   - los
+   + que
+   - 478
+   + la
+   - `Skip` (72 a mano), D-S6 en las 21 copias, el texto
+   + copia
+   - D-S1
+   + WHHG
+   - en
+   + es
+   - las dos de WPP, las tres cuentas
+   + la
+   - guarda nueva y,
+   + v4.8
+   - una
+   + un
+   - partición
+   + solo
+   - sintética,
+   + bloque tras el `Assert.Empty`: el comentario de I-01 y
+   - clases
+   + líneas
+   - de
+   + WHHG:504-525
+   - las
+   + del
+   - cuatro
+   + objeto
+   - de
+   + git,
+   - D-S5.
+   + literales, con sus 13 `Assert.NotEmpty`.
+== replace v4.8:1992-1992 -> v4.9:2037-2037
+   - apply_red_pbt4b_v48.py
+   + apply_red_pbt4b_v49.py
+== replace v4.8:1995-1995 -> v4.9:2040-2040
+   - `apply_red_pbt4b_v48.py
+   + `apply_red_pbt4b_v49.py
+== replace v4.8:1999-1999 -> v4.9:2044-2044
+   - emisión;
+   + emisión. **En la v4.8, la primera de tres corridas no cumplió un caso, y el Owner lo dio por cumplido** (`owner-pbt4b-cost-decision.md`, la séptima tanda; las tres corridas, en `pbt4bcc/compile/compile-check.md`); **la v4.9 conserva ese paso 7**, porque no cambia ninguna de sus entradas, comprobado por sha256 (V49-06);
+== replace v4.8:2102-2102 -> v4.9:2147-2147
+   - v4.8,
+   + v4.9,
+== replace v4.8:2115-2115 -> v4.9:2160-2160
+   - (nada)
+   + `make_copies_pbt4b_v49.py`,
+   - (nada)
+   + `pbt4b_hand_edits_v49.py`,
+== replace v4.8:2122-2122 -> v4.9:2167-2167
+   - y
+   + ,
+   - sexta),
+   + sexta) y `owner-pbt4b-cost-decision.md` (la séptima, el coste),
+   - (v4.8),
+   + (v4.9),
+   - (CA-T4b),
+   + (CA-T4b: la §20 de `independent-review-v1.md`, sobre la v4.8),
+== replace v4.8:2127-2127 -> v4.9:2172-2172
+   - v4.8
+   + v4.9
+== replace v4.8:2209-2209 -> v4.9:2254-2254
+   - `pbt4b-copy-map-v5.tsv`)
+   + `pbt4b-copy-map-v5.tsv`). Los nombres de las dos de WPP de la v4.8 se conservan por el mecanismo (CT-20 (2) y la partición), y la regla es la del cuerpo (CA-T4b M-02)
+== insert v4.8:2253-2252 -> v4.9:2298-2298
+   > | **7.ª** (2026-11-21) | `owner-pbt4b-cost-decision.md` | «Coste T4b»: «Darlo por cumplido (Recomendado)». «Sonda dedicada antes» y «No emitir PB-T4b» no se hacen | **El coste de la lectura de la precondición 6 se da por cumplido** con dos de tres corridas que cumplen todo (la primera incumple un so
+== replace v4.8:2258-2258 -> v4.9:2304-2304
+   - seis
+   + siete
+== replace v4.8:2260-2260 -> v4.9:2306-2306
+   - equivalente).
+   + equivalente), y la v4.9, la 7.ª (el coste, dado por cumplido, sin cambiar ningún criterio).
+== replace v4.8:2280-2280 -> v4.9:2326-2326
+   - `owner-pbt4b-list-477-decision.md`
+   + `owner-pbt4b-list-477-decision.md`, `owner-pbt4b-list-478-decision.md`
+   - `owner-pbt4b-list-478-decision.md`),
+   + `owner-pbt4b-cost-decision.md`),
+== replace v4.8:2292-2292 -> v4.9:2338-2338
+   - V47-05
+   + V47-05, V48-06
+   - V48-06;
+   + V49-06;
+   - v4.8;
+   + v4.9, y el paso 7, el de la v4.8 (V49-06);
+   - `apply_red_pbt4b_v48.py`
+   + `apply_red_pbt4b_v49.py`
+   - Owner;
+   + Owner (el de la v4.8 lo dio por cumplido el Owner, `owner-pbt4b-cost-decision.md`);
+== replace v4.8:2299-2299 -> v4.9:2345-2345
+   - (v4.8),
+   + (v4.9), la v4.8,
+   - `v47/`
+   + `v47/`, `v48/`
+   - `v48/`,
+   + `v49/`,
+   - v4.8
+   + v4.9
+   - `pbt4b-equivalents-review-v47.txt`
+   + `pbt4b-equivalents-review-v47.txt`, `pbt4b-equivalents-review-v48.txt`
+   - `pbt4b-equivalents-review-v48.txt`,
+   + `pbt4b-equivalents-review-v49.txt`,
+   - (nada)
+   + la regla de la tercera corrida del coste (`v48/session-cost-rerun-rule.md`),
+   - quinta
+   + quinta, la sexta
+   - sexta
+   + séptima
+   - `owner-pbt4b-list-477-decision.md`
+   + `owner-pbt4b-list-477-decision.md`,
+   - y
+   + `owner-pbt4b-list-478-decision.md`
+   - `owner-pbt4b-list-478-decision.md`;
+   + y, la séptima, `owner-pbt4b-cost-decision.md`;
+== replace v4.8:2302-2302 -> v4.9:2348-2348
+   - V48-A.
+   + V49-A.
+   - (nada)
+   + la v4.9, y
+== replace v4.8:2304-2304 -> v4.9:2350-2350
+   - `make_v48.py`
+   + `make_v49.py`
+   - `pbt4b-equivalents-review-v48.txt`
+   + `pbt4b-equivalents-review-v49.txt`
+   - `a021de76c79368b293ce6e4a501864e2e5ff07326f95e38805f14abb8b918c9e`,
+   + `182b6aed301dc18a176da947b6eefacac2f8d7f68d88ab3f0f0c8449f99311ec`,
+   - V47-A:**
+   + V48-A:** es
+   - texto
+   + mismo salvo el equivalente
+   - las
+   + WHHG
+   - mitades
+   + `NoneOfThe30…`, que trae la autoprueba
+   - D-S5
+   + la
+   - y
+   + guarda
+   - de
+   + (CA-T4b
+   - los
+   + I-01;
+   - dos miembros nuevos no cambia; cambian los nombres de sus clases (D-S6).
+   + V49-01).
+== replace v4.8:2387-2387 -> v4.9:2433-2433
+   - C-5)
+   + C-5), con su autoprueba (CA-T4b I-01; V49-01)
+== replace v4.8:2389-2389 -> v4.9:2435-2435
+   - (sin
+   + (la
+   - cambio):
+   + prueba del original y, tras su `Assert.Empty`, la autoprueba WHHG:504-525, con sus 13 `Assert.NotEmpty`):
+== insert v4.8:2400-2399 -> v4.9:2446-2472
+   > 
+   >         // I-64 F4B PB-T4b (CA-T4b I-01; owner-pbt4b-list-478-decision.md): the self-test of the guard (WHHG:501-526), over the table of this
+   >         // copy. In the GREEN the original self-test passes vacuously: its table (2, 5 and 1) no longer matches the host (0, 6 and 0), so
+   >         // LiteralViolations already answers three violations without any mutation. Here the host is clean for this table (the Assert.Empty
+   >         // above), so each of the 13 mutations has to make the guard trip.
+   >         var host = Src.Code(HostPath);
+   >         var support = Src.Code(SupportPath);
+   > 
+   >         // An English literal that comes back, in the host and in the support.
+   >         Assert.NotEmpty(LiteralViolations(host + " \"The reread failed.\"", support));
+   >         Assert.NotEmpty(LiteralViolations(host, support + " \"A notice of the panel is being delivered.\""));
+   >         // A Spanish text that goes away (here, replaced by another), and one that is repeated.
+   >         Assert.NotEmpty(LiteralViolations(host.Replace("\"Falló la relectura.\"", "\"Otra cosa.\"", StringComparison.Ordinal), support));
+   >         Assert.NotEmpty(LiteralViolations(host + " \"Falló la relectura.\"", support));
+   >         // A lost identifier.
+   >         Assert.NotEmpty(LiteralViolations(host.Replace("NoDraftReason", "NoBorradorReason", StringComparison.Ordinal), support));
+   >         Assert.NotEmpty(LiteralViolations(host, support.Replace("InsideNoticeReason", "DentroDelAvisoReason", StringComparison.Ordinal)));
+   >         // The two new texts: an English original that comes back, and a Spanish text that goes away.
+   >         Assert.NotEmpty(LiteralViolations(host + " \"The draft cannot be checked in its current status.\"", support));
+   >         Assert.NotEmpty(LiteralViolations(host + " \"Only a draft in conflict or with edits marked as possibly stale is kept.\"", support));
+   >         Assert.NotEmpty(LiteralViolations(host.Replace("El borrador no admite comprobación en su estado actual.", "Otra cosa.", StringComparison.Ordinal), support));
+   >         Assert.NotEmpty(LiteralViolations(host.Replace("Solo se conserva un borrador en conflicto", "Se conserva un borrador en conflicto", StringComparison.Ordinal), support));
+   >         // A reused text that one operation of the reconciliation stops using changes its exact count.
+   >         Assert.NotEmpty(LiteralViolations(host.Replace("\"El testigo de la vista previa no tiene clave.\"", "\"Otro.\"", StringComparison.Ordinal), support));
+   >         // The text of the record or of the differences changes.
+   >         Assert.NotEmpty(LiteralViolations(host.Replace("(variable registry)", "(registro de variables)", StringComparison.Ordinal), support));
+   >         Assert.NotEmpty(LiteralViolations(host.Replace("Uncertain racks", "Racks inciertos", StringComparison.Ordinal), support));

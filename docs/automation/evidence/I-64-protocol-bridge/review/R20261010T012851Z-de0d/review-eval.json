@@ -1,0 +1,69 @@
+{
+  "RunId": "R20261010T012851Z-de0d",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1237f-f52a-7a83-a207-6b0e74466adc",
+  "Usage": {
+    "input_tokens": 734401,
+    "cached_input_tokens": 657920,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 9346,
+    "reasoning_output_tokens": 4753
+  },
+  "CommandCount": 23,
+  "NonZeroCommands": [],
+  "ExecutedBridgeTools": [],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OutputSha256": "2731B8ADB13B94D4DA8D02CDE5D4E72CAD0BEAC75508393AAB6AA245847B1BDE",
+  "NonAsciiBytes": 0,
+  "Verdict": "CHANGES_REQUIRED",
+  "Conformance": "NON_CONFORMING",
+  "RequiredCount": 2,
+  "RequiredFindings": [
+    {
+      "Id": "I64-A1-M04",
+      "Severity": "REQUIRED",
+      "Topic": "AuthorityAndMateriality",
+      "Location": "docs/initiatives/I-64-A-1.md:64,205",
+      "Defect": "A-1 marks M-04 NO and classifies the amendment as Coordinator-only even though it changes how the required protocol control is satisfied by substituting a mechanical bridge for the controller-executed nc2. M-04 is defined by the change to what fails or how it fails, not only by product behavior.",
+      "Authority": "INITIATIVE_LIFECYCLE Sec.3 M-04 and Sec.6: a material M requires Architect and Coordinator authority.",
+      "Correction": "Mark M-04 YES and obtain Architect and Coordinator review before activation, or revise the amendment so it does not change the frozen control or its satisfaction conditions."
+    },
+    {
+      "Id": "I64-A1-I61-SUBSTITUTION",
+      "Severity": "REQUIRED",
+      "Topic": "NoI61OrI62NormativeChange",
+      "Location": "docs/initiatives/I-64-A-1.md:64",
+      "Defect": "A-1 permits the bridge to satisfy nc2 instead of the model-executed control. This substitutes the actor and execution method required by I-61 README Sec.10 for I-64, despite the claim that A-1 only adds an I-64 evidence requirement.",
+      "Authority": "docs/automation/agent-execution/README.md Sec.10 requires the real Controller to execute negative controls with the same prompt. The historical I-64 Coordinator decision prohibits changing I-61 from I-64 and identifies a protocol-owner decision or integrated protocol evolution as the route to a conforming replacement.",
+      "Correction": "Obtain and version the protocol-owner authority for this I-64 replacement control before activation, or revise A-1 so the bridge is additional evidence and does not substitute for an I-61 requirement."
+    }
+  ],
+  "OptionalFindings": [],
+  "Topics": {
+    "AuthorityAndMateriality": "NON_CONFORMING",
+    "ScopeInvariantPreserved": "CONFORMING",
+    "FailOpenRoutes": "CONFORMING",
+    "HistoricalNc2RemainsFail": "CONFORMING",
+    "NoI61OrI62NormativeChange": "NON_CONFORMING",
+    "FutureUseStrictlyScoped": "CONFORMING"
+  },
+  "Coherent": true,
+  "SubjectMatches": true,
+  "GateTerms1610": [
+    "GATE PASS"
+  ],
+  "Limitations": [
+    "The verifier and self-test were not executed, as instructed. The committed self-test result was inspected, but this review does not independently reproduce it.",
+    "No claim is made about GATE PASS, candidacy, closure, integration, or Owner approval."
+  ],
+  "Effective": [
+    "gpt-6-luna",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-10-09T19-49-11-01a1237f-f52a-7a83-a207-6b0e74466adc.jsonl",
+  "EffectiveSourceSha256": "BCC0C57282C65325C50493F111D9D8C626C3523BADC205119BB069F3150201EC",
+  "LimitPatternContexts": {},
+  "EventsSha256": "71E794BC815F1CCDF81BEA1D13997E8F21F78AE215486A7AA2D716B62495FED1"
+}

@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs b/src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs
+index 770176d4..e3ec241b 100644
+--- a/src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs
++++ b/src/RackCad.UI/Views/RackViewBatchDialogPresenter.cs
+@@ -56,7 +56,7 @@ namespace RackCad.UI.Views
+             out IReadOnlyList<RackViewAddress> views)
+         {
+             var presenter = new RackViewBatchDialogPresenter(kind, candidates);
+-            var dialog = new RackViewBatchDialog(presenter) { Owner = owner };
++            var dialog = new RackViewBatchDialog(presenter) { Owner = (Window)owner };
+             var accepted = dialog.ShowDialog() == true;
+             views = accepted ? presenter.Result : Array.Empty<RackViewAddress>();
+             return accepted;

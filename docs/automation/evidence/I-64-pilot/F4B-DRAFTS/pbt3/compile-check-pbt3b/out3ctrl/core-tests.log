@@ -1,0 +1,18 @@
+  Determinando los proyectos que se van a restaurar...
+  Todos los proyectos están actualizados para la restauración.
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.Domain -> <copia>\src\RackCad.Domain\bin\Debug\net8.0\RackCad.Domain.dll
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.Application -> <copia>\src\RackCad.Application\bin\Debug\net8.0\RackCad.Application.dll
+  fatal: not a git repository (or any of the parent directories): .git
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.StructuralAnalysis.RamTool -> <copia>\tools\RackCad.StructuralAnalysis.RamTool\bin\Debug\net8.0\RackCad.StructuralAnalysis.RamTool.dll
+  RackCad.StructuralSections.Import -> <copia>\tools\RackCad.StructuralSections.Import\bin\Debug\net8.0\RackCad.StructuralSections.Import.dll
+  fatal: not a git repository (or any of the parent directories): .git
+  RackCad.Tests -> <copia>\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll
+
+Compilación correcta.
+    0 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:18.16

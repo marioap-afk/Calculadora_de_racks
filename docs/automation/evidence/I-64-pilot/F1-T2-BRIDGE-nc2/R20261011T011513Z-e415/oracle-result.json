@@ -1,0 +1,47 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261011T011513Z-e415",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "e2f642b86197441eea0838c8055c1db666606f11",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha devuelve 10 rutas. git diff --name-status confirma que las 10 son A bajo Application/Workspace, Plugin/Workspace y tests/RackCad.Tests/Workspace; ninguna queda fuera de AllowedWriteScope ni coincide con ForbiddenWriteScope."
+  },
+  "OutputSha256": "8F5473F3C3406511F77D42D47C1517D1A4E217F37517E2A0CD8F9C473ACAF416",
+  "ManualFreeText1610": []
+}

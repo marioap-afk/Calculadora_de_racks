@@ -1,0 +1,25 @@
+r74 build-server shutdown rc=0
+r75 build-server shutdown rc=0
+RequiredTests de PB-T4d: 88; claves ['ExpectRed', 'Filter', 'MinSelected', 'Project']; TaskId F4B-PBT4-RETIRE-PILOT
+cobertura: base UI 22 corridas, GREEN UI 22 corridas
+archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 6; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0
+cobertura PASA
+bajan (informativo) 0: PERDIDA 0, VARIA 0, ESTABLE 0
+# los RequiredTests de PB-T4e: los 88 heredados de PB-T4d con su MinSelected comprobado en la base, el RED y el GREEN, y los 2 nuevos por clase exacta
+  el heredado n.o 84 (RackCad.Tests.PushBackRetirePilotGuardTests) pasa a ExpectRed false (era true en PB-T4d)
+heredados 88 + nuevos 2 = 90; solapamientos: 0 []
+core base: 19418 = 19015 + 0 + 403 (Passed + Failed + Skipped)
+core red: 19421 = 19015 + 3 + 403 (Passed + Failed + Skipped)
+core green: 19421 = 19018 + 0 + 403 (Passed + Failed + Skipped)
+ui-filtros base (la union de los 19, cada uno en su proceso): 899 = 869 + 0 + 30
+ui-filtros red (la union de los 19, cada uno en su proceso): 900 = 869 + 1 + 30
+ui-filtros green (la union de los 19, cada uno en su proceso): 900 = 870 + 0 + 30
+ui-ci red: 2465 = 2416 + 1 + 48 (la linea base de la CI 2464 = 2416 + 0 + 48 mas la diferencia de los filtros)
+ui-ci green: 2465 = 2417 + 0 + 48 (la linea base de la CI 2464 = 2416 + 0 + 48 mas la diferencia de los filtros)
+json ef33dca0f718bdc09a7e52369ea2534612a0ac8039ae75dc784f811262f26d21; compile-check 1fd30380e7e0fa43c3e9df3a5e1af081690fb131404ed126edf6159dcafb505e; todo lo previsto: SI
+ops aplicadas 31
+lo que cambia (del diff): §0; §1; D-PBT4-01; D-PBT4-19; D-PBT4-20; §5.4; §5.5; §6.0; §7; §8.3; §8.5; §9; §10; §11
+nuevas (del diff): la sección «PB-T4e» de §3; D-PBT4-22; §4.5; §5.7; §6.5; §6.5.1; §6.5.2; el anexo V55-A
+sin cambio: 99 secciones
+v5.5 a241bfbe6d2a18d5fba9d154aa0975a9c38031c1d121074bb04827d541cc103d (1003244 bytes) I-64-f4b-pbt4-gate-contract-package-v55.md
+MAINCO []

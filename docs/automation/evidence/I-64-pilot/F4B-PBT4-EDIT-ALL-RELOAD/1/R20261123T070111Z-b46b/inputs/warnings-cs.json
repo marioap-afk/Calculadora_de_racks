@@ -1,0 +1,21 @@
+{
+  "Regla": "Las lineas \"warning CSnnnn\" de cada registro .log de la entrega (artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e): tienen que ser 0 en todos (build-plugin de la CI falla con cualquiera).",
+  "Registros": [
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/b0/build-RackCad.Plugin.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/b0/build-RackCad.Tests.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/b0/build-RackCad.UI.Tests.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/b0/test-core-full.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/g0/build-RackCad.Plugin.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/g0/build-RackCad.Tests.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/g0/build-RackCad.UI.Tests.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/gf/test-core-full.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r0/build-RackCad.Plugin.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r0/build-RackCad.Tests.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r0/build-RackCad.UI.Tests.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r2/test-core-full.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r4/build-RackCad.Plugin.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r4/build-RackCad.Tests.log",
+    "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r4/build-RackCad.UI.Tests.log"
+  ],
+  "ConWarningCS": {}
+}

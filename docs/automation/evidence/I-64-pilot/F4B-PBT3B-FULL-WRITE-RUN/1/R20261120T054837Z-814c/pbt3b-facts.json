@@ -1,0 +1,11 @@
+{
+  "SkipReason": "I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).",
+  "SkipReasonFrom": "paquete",
+  "SkipReasonContract": null,
+  "SkipReasonPackage": "I-64 F4B PB-T3b: sustituida por <E-n> de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).",
+  "WorkspaceMinSelected": 3261,
+  "Nc2ExactEvidenceEntries": [
+    0
+  ],
+  "Nc2SubstituteSha256": "C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45"
+}

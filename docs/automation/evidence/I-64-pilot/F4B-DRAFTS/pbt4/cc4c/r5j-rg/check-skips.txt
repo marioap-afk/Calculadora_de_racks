@@ -1,0 +1,5 @@
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs skip-linea=155 igual-a-la-base-con-su-skip=True skips-pbt4c=1
+tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs skip-linea=306 igual-a-la-base-con-su-skip=True skips-pbt4c=1
+tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs skip-linea=568 igual-a-la-base-con-su-skip=True skips-pbt4c=1
+tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs skip-linea=686 igual-a-la-base-con-su-skip=True skips-pbt4c=1
+check_skips PB-T4c: PASA (4 archivos, 4 Skip)

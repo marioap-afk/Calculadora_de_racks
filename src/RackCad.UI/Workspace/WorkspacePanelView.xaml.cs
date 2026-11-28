@@ -1,0 +1,216 @@
+using System;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+
+namespace RackCad.UI.Workspace
+{
+    /// <summary>
+    /// Root control of the workspace panel (I-64 F1-T3B): the one visual the palette host adds, labelled "Workspace".
+    /// Its data context is the view-model. The control never asks the host for anything by itself: it has no timer and does
+    /// not react to being shown or resized. Only explicit user interactions reach the view-model (the retry, the
+    /// instrumentation switch and, since I-64 F2-T2B, the clicks of the navigation actions), and all are contained here as
+    /// well: a failure becomes the Error state of the panel and never reaches the message loop of the host. It installs no
+    /// global exception handler.
+    /// </summary>
+    public partial class WorkspacePanelView : UserControl
+    {
+        /// <summary>The label of the root of the panel.</summary>
+        public const string RootLabel = "Workspace";
+
+        private readonly WorkspacePanelViewModel _viewModel;
+
+        public WorkspacePanelView(WorkspacePanelViewModel viewModel)
+        {
+            _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+            InitializeComponent();
+            DataContext = viewModel;
+
+            // The error banner follows the view-model directly, so it never depends on when the binding engine runs.
+            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+            ShowErrorBanner(_viewModel.HasError);
+        }
+
+        public WorkspacePanelViewModel ViewModel => _viewModel;
+
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(WorkspacePanelViewModel.HasError)) ShowErrorBanner(_viewModel.HasError);
+        }
+
+        private void ShowErrorBanner(bool visible)
+        {
+            var visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            ErrorPanel.Visibility = visibility;
+            RetryButton.Visibility = visibility;
+        }
+
+        private void OnRetryClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Retry());
+
+        private void OnInstrumentationClick(object sender, RoutedEventArgs e) =>
+            Contained(() => _viewModel.SetInstrumentation(((CheckBox)sender).IsChecked == true));
+
+        // The navigation clicks (I-64 F2-T2B): each one is one explicit interaction. The view-model's entry contains every
+        // failure and presents it, so the task it returns never faults and needs no observer here.
+        private void OnNavigationSelectClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.SelectAsync());
+
+        private void OnNavigationViewClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.ViewAsync());
+
+        private void OnNavigationCenterClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.CenterAsync());
+
+        private void OnNavigationLocateClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.LocateAsync());
+
+        private void OnNavigationNextCopyClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Navigation.NextCopy());
+
+        // The tab clicks (I-64 F3-T2): each one is one explicit interaction that only changes memory. The tab is the data context of its
+        // own button, so the handler needs no lookup in the visual tree.
+        private void OnBrowserTabActivateClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ActivateTab(RackOf(sender)));
+
+        private void OnBrowserTabPinClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.PinTab(RackOf(sender)));
+
+        private void OnBrowserTabCloseClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.CloseTab(RackOf(sender)));
+
+        // The reload of the surface (I-64 F3-T2, T2-F4): one explicit interaction that asks again for the summary of the active tab.
+        private void OnBrowserSurfaceReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadSummary());
+
+        // The double click on the button of a tab (I-64 F4-T3B1): a gesture of the field only when, after the clicks, that tab is the active one.
+        private void OnBrowserTabActivateDoubleClick(object sender, MouseButtonEventArgs e) =>
+            Contained(() => _viewModel.Browser.BeginFieldEditFromTab(RackOf(sender)));
+
+        // The field of the pilot (I-64 F4-T3B1). The text typed by the user reaches the view-model only through the setter of the bound
+        // property; here live the buttons, the gestures that open a read-only box and the keys Enter and Esc of an editable one.
+        private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
+
+        // I-64 F4B PB-T4c (D-PBT4-12): "Editar todo" goes straight to the gesture of the field, which commits the pending text first.
+        private void OnBrowserFieldEditAllClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.EditAll());
+
+        private void OnBrowserFieldReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadField());
+
+        // The reconciliation of the field (I-64 F4-T4A2): each click is one explicit interaction of the user, and each handler only calls its own
+        // member of the field. The two options only ask for the confirmation; the check and the answer Yes are the ones that reach the port.
+        private void OnBrowserFieldCheckClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.CheckNow());
+
+        // The update of the rack (I-64 F4-T4C2, D-T4C-11): one explicit click is one gesture of the field. The handler only calls the gesture; the
+        // field checks its own button first, so a click that was queued after a run does not ask for another one.
+        private void OnBrowserFieldUpdateClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.Update());
+
+        private void OnBrowserFieldDiscardAndReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.RequestDiscardAndReload());
+
+        private void OnBrowserFieldKeepMineClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.RequestKeepMine());
+
+        private void OnBrowserFieldChoiceYesClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.ConfirmChoice());
+
+        private void OnBrowserFieldChoiceNoClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.CancelChoice());
+
+        // Closing and discarding (I-64 F4-T3B2): each click is one explicit interaction that only changes memory. The inline confirmation has
+        // exactly these two buttons; the buttons of a row of notice find their row in their own data context.
+        private void OnBrowserFieldDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.DiscardField());
+
+        private void OnBrowserDiscardDocumentClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.RequestDocumentDiscard());
+
+        private void OnBrowserConfirmDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ConfirmDiscard());
+
+        private void OnBrowserCancelDiscardClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.CancelDiscard());
+
+        private void OnBrowserNoticeDiscardDocumentClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.RequestDocumentDiscard());
+
+        private void OnBrowserNoticeDismissClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.DismissNotice(NoticeKeyOf(sender)));
+
+        // A click on a read-only box is the first gesture only while the field offers the Edit button; the click itself is not consumed.
+        private void OnBrowserFieldBoxPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_viewModel.Browser.Field.IsEditable) return;
+            Contained(() => _viewModel.Browser.BeginFieldEditFromBox());
+        }
+
+        // The key that launched the first gesture from the read-only box (I-64 F4-T3B2, N-3). Held down, it keeps repeating after the box turns
+        // editable; those repetitions are marked so they are not typed into it. The first press that is not a repetition forgets it.
+        private Key? _launchKey;
+
+        private void OnBrowserFieldBoxPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var field = _viewModel.Browser.Field;
+            if (field.IsEditable)
+            {
+                var launch = _launchKey;
+                if (!e.IsRepeat) _launchKey = null;
+                if (e.IsRepeat && launch.HasValue && e.Key == launch.Value)
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                // Enter commits and Esc does nothing: both stay in the panel. Esc never reverts the text. Every other key goes to the
+                // editor untouched (no handler of the bubble event marks it), so a character key produces its text input.
+                if (e.Key == Key.Enter)
+                {
+                    e.Handled = true;
+                    Contained(() => field.CommitPending());
+                }
+                else if (e.Key == Key.Escape)
+                {
+                    e.Handled = true;
+                }
+
+                return;
+            }
+
+            // A read-only box: a key that is not a modifier, Tab or Esc is consumed, so it is not typed into a box that may be editable a
+            // moment later and does not leave the panel. It is the first gesture only while the field offers the Edit button and never
+            // when it is a repetition of a held key. Esc is consumed with no gesture.
+            if (e.Key == Key.Escape)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (IsModifierOrNavigation(e.Key)) return;
+
+            e.Handled = true;
+            if (e.IsRepeat) return;
+            _launchKey = e.Key;
+            Contained(() => _viewModel.Browser.BeginFieldEditFromBox());
+        }
+
+        // Leaving the box commits the pending text; the view-model does nothing without pending text or with a box that is not editable.
+        private void OnBrowserFieldBoxLostFocus(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.CommitPending());
+
+        private static bool IsModifierOrNavigation(Key key)
+        {
+            switch (key)
+            {
+                case Key.Tab:
+                case Key.LeftCtrl:
+                case Key.RightCtrl:
+                case Key.LeftShift:
+                case Key.RightShift:
+                case Key.LeftAlt:
+                case Key.RightAlt:
+                case Key.LWin:
+                case Key.RWin:
+                case Key.System:
+                case Key.None:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private static string RackOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserTabItem)?.RackId;
+
+        private static string NoticeKeyOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserNoticeItem)?.Key;
+
+        private void Contained(Action interaction)
+        {
+            try
+            {
+                interaction();
+            }
+            catch (System.Exception ex)
+            {
+                _viewModel.ShowError(ex);
+            }
+        }
+    }
+}

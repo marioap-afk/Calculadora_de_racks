@@ -1,0 +1,13 @@
+{
+  "Real": {
+    "Head": "399c9bec6d4778aa50096ab6204859c0bd015419",
+    "TrackingBranch": "399c9bec6d4778aa50096ab6204859c0bd015419",
+    "TrackingMain": "812baf879612320653094a8aaf46aca0bac81383",
+    "StatusPorcelain": ""
+  },
+  "CodexExes": [
+    "OpenAI/Codex/bin/5449c1f0f26f1f98/codex.exe"
+  ],
+  "BinarySha256": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+  "ConfigSha256": "B71650A637551747F522BB1D2F4BA1BB9E25AAFF1A61CE1B7BC066197FFFEBB3"
+}

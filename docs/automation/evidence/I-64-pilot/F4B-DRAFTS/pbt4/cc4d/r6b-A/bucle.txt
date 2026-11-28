@@ -1,0 +1,3 @@
+vuelta 0: bajas 223, errores 4 (distintos 1), miembros nuevos 0, sin resolver 1
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:15 CS0535 'PilotEditThrowingComparer' no implementa el miembro de interfaz 'IEqualityComparer<PushBackPilotDraftState>.GetHashCode(PushBackPilotDraftState)'
+bajas finales 223 (de la lista 222, SUS-01 1, por compilacion 0)

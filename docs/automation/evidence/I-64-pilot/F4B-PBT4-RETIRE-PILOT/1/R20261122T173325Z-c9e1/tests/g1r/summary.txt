@@ -1,0 +1,2 @@
+core01 | FullyQualifiedName~RackCad.Tests.PushBackRetirePilotGuardTests | exit=0 | Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)
+DONE

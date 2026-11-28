@@ -1,0 +1,54 @@
+inventario: e05-estilo.txt
+sha256: d42852a329964210003c6198979118fe3b2e3d378808c182b929e7abb214c7c4
+bytes: 8840361
+
+(inventario en Windows-1252; resumido desde una copia en UTF-8)
+REF 18
+  REF handle=1D2323 nombre=Dinámico 1 - copia - lateral 1 capa=0
+  REF handle=1CFA73 nombre=Dinámico 1 - copia - lateral 1 capa=0
+  REF handle=1CC51E nombre=Dinámico bloque 1 - copia - copia - copia - copia (2) capa=0
+  REF handle=1CC51D nombre=Dinámico bloque 1 - copia - copia - copia - copia - copia capa=0
+  REF handle=1CBA6D nombre=Dinámico 1 - copia capa=0
+  REF handle=1A9DD9 nombre=Dinámico 1 - copia - copia - copia - copia - lateral 1 capa=0
+  REF handle=1A53B6 nombre=Dinámico bloque 1 - copia - copia - copia - copia (1) capa=0
+  REF handle=1A2238 nombre=Dinámico 1 - copia - copia - copia - copia - lateral 1 capa=0
+  REF handle=19F9FE nombre=Dinámico 1 - copia - copia - copia capa=0
+  REF handle=19F086 nombre=Dinámico 1 - copia - copia capa=0
+  REF handle=18B629 nombre=Dinámico bloque 1 - copia - copia - copia - copia - planta capa=0
+  REF handle=18B303 nombre=Dinámico 1 - planta capa=0
+  REF handle=18B2DB nombre=Dinámico bloque 1 - copia - copia - copia - planta capa=0
+  REF handle=18B275 nombre=Dinámico bloque 1 - copia - copia - copia - copia - frontal entrada-salida capa=0
+  REF handle=17FB9B nombre=Dinámico 1 - lateral 1 capa=0
+  REF handle=15F6AA nombre=Dinámico bloque 1 - copia - copia - copia - frontal entrada-salida capa=0
+  REF handle=15C3E6 nombre=Dinámico 1 - frontal salida capa=0
+  REF handle=149BA6 nombre=Dinámico 1 - lateral 1 capa=0
+DEF 27
+  DEF Dinámico bloque 1 - copia - copia entidades=244 json=888499 ('pushback', 'planta', 'Dinámico bloque 1 - copia - copia', '616e97c4-6902-458b-818f-f21eea853cf4', -1)
+  DEF Dinámico bloque 1 - copia - copia - copia - planta entidades=97 json=399714 ('pushback', 'planta', 'Dinámico bloque 1 - copia - copia - copia', '12239492-9667-4841-82c6-acf14537f416', -1)
+  DEF Dinámico 1 - lateral 1 entidades=86 json=81996 ('dynamic', 'lateral', 'Dinámico 1', 'e8db6dce-d344-4e1c-9eef-c892dde83ea0', 0)
+  DEF Dinámico 1 - planta entidades=117 json=81996 ('dynamic', 'planta', 'Dinámico 1', 'e8db6dce-d344-4e1c-9eef-c892dde83ea0', -1)
+  DEF Dinámico bloque 1 - copia - copia - copia - lateral 1 entidades=109 json=399714 ('pushback', 'lateral', 'Dinámico bloque 1 - copia - copia - copia', '12239492-9667-4841-82c6-acf14537f416', 0)
+  DEF Dinámico 1 - frontal salida entidades=21 json=81996 ('dynamic', 'frontal', 'Dinámico 1', 'e8db6dce-d344-4e1c-9eef-c892dde83ea0', 0)
+  DEF Dinámico bloque 1 - copia - copia - copia - frontal entrada-salida entidades=12 json=399714 ('pushback', 'frontal', 'Dinámico bloque 1 - copia - copia - copia', '12239492-9667-4841-82c6-acf14537f416', 0)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia - planta entidades=262 json=583291 ('pushback', 'planta', 'Dinámico bloque 1 - copia - copia - copia - copia', 'c3b279f1-f63d-4bee-aef1-24da2b64a6cd', -1)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia - copia - planta entidades=315 json=114748 ('pushback', 'planta', 'Dinámico bloque 1 - copia - copia - copia - copia - copia', '46e74587-4eaa-446a-8263-39ac71cce506', -1)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia - frontal entrada-salida entidades=39 json=583291 ('pushback', 'frontal', 'Dinámico bloque 1 - copia - copia - copia - copia', 'c3b279f1-f63d-4bee-aef1-24da2b64a6cd', 0)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia entidades=113 json=882606 ('pushback', 'planta', 'Dinámico bloque 1 - copia - copia - copia - copia', '0bb9386e-32de-4a6f-9400-4d3ac84a3a7d', -1)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia - frontal entrada-salida_1 entidades=12 json=883011 ('pushback', 'frontal', 'Dinámico bloque 1 - copia - copia - copia - copia', '0bb9386e-32de-4a6f-9400-4d3ac84a3a7d', 0)
+  DEF Dinámico 1 - copia - planta entidades=271 json=84002 ('dynamic', 'planta', 'Dinámico 1 - copia', 'b8bd8089-925f-44e2-b93a-8ad622ee2a5a', -1)
+  DEF Dinámico 1 - copia - copia - planta entidades=83 json=69489 ('dynamic', 'planta', 'Dinámico 1 - copia - copia', 'e9df8add-0a9a-4f5e-a19e-e48096515cf0', -1)
+  DEF Dinámico 1 - copia - copia - copia - planta entidades=83 json=69497 ('dynamic', 'planta', 'Dinámico 1 - copia - copia - copia', '7df1352c-2540-4607-9372-1ab35c2ae809', -1)
+  DEF Dinámico 1 - copia - copia entidades=102 json=72821 ('dynamic', 'planta', 'Dinámico 1 - copia - copia', 'bc51ffbc-0ab4-450f-80b4-f3aa8ada8552', -1)
+  DEF Dinámico 1 - copia - copia - copia entidades=80 json=69498 ('dynamic', 'planta', 'Dinámico 1 - copia - copia - copia', '12b7a51e-25d0-46aa-8da5-dd7f5410d671', -1)
+  DEF Dinámico 1 - copia - copia - copia - copia - planta entidades=80 json=69736 ('dynamic', 'planta', 'Dinámico 1 - copia - copia - copia - copia', 'b1cf2ab6-b152-4147-87da-8b693c26b1a9', -1)
+  DEF Dinámico 1 - copia - copia - copia - copia - lateral 1 entidades=63 json=69736 ('dynamic', 'lateral', 'Dinámico 1 - copia - copia - copia - copia', 'b1cf2ab6-b152-4147-87da-8b693c26b1a9', 0)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia (1) entidades=154 json=486079 ('pushback', 'planta', 'Dinámico bloque 1 - copia - copia - copia - copia', 'ed80a7d3-5db2-41b6-9e7c-d604f64ccf1b', -1)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia - lateral 1 entidades=79 json=486079 ('pushback', 'lateral', 'Dinámico bloque 1 - copia - copia - copia - copia', 'ed80a7d3-5db2-41b6-9e7c-d604f64ccf1b', 0)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia - lateral 1_1 entidades=99 json=583291 ('pushback', 'lateral', 'Dinámico bloque 1 - copia - copia - copia - copia', 'c3b279f1-f63d-4bee-aef1-24da2b64a6cd', 0)
+  DEF Dinámico 1 - copia entidades=94 json=81273 ('dynamic', 'planta', 'Dinámico 1 - copia', '5ad610e8-659e-439c-9bfa-39acba37c461', -1)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia - copia entidades=233 json=407561 ('pushback', 'planta', 'Dinámico bloque 1 - copia - copia - copia - copia - copia', 'f742f42e-d892-4ffe-8145-6d6af77c4c7b', -1)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia (2) entidades=86 json=399316 ('pushback', 'planta', 'Dinámico bloque 1 - copia - copia - copia - copia', '895e2833-b2dc-4a7e-95d8-5ccc5cccd932', -1)
+  DEF Dinámico 1 - copia - lateral 1 entidades=75 json=81273 ('dynamic', 'lateral', 'Dinámico 1 - copia', '5ad610e8-659e-439c-9bfa-39acba37c461', 0)
+  DEF Dinámico bloque 1 - copia - copia - copia - copia - copia - lateral 1 entidades=89 json=407561 ('pushback', 'lateral', 'Dinámico bloque 1 - copia - copia - copia - copia - copia', 'f742f42e-d892-4ffe-8145-6d6af77c4c7b', 0)
+BLK 642 ; DEF entre las BLK: True
+NEST 0

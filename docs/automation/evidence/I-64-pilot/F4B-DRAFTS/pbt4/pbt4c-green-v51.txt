@@ -1,0 +1,549 @@
+@@@@ PB-T4c (paquete v5.1): el texto literal del GREEN de src/. Cada bloque EDIT sustituye su OLD (exactamente una vez) por su NEW en el
+@@@@ archivo de 6adff90d; cada bloque NEWFILE es un archivo nuevo entero. Saltos de linea \n; green_pbt4c_v51.py lo aplica y lo comprueba.
+@@@@ EDIT src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@@@ OLD
+        EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId);
+    }
+@@@@ NEW
+        EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId);
+
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" for one rack. Without work for the rack it begins it through the edit intention, so its
+        /// one read is the one of the intention; then it opens the full editor over the work and keeps the mark of the reads until the editor
+        /// closes, so while it is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the
+        /// work: nothing here writes the drawing. A port that does not offer it answers NotAvailable.
+        /// </summary>
+        EditAllOutcome TryEditAll(EditIntentRequest request) => EditAllOutcome.NotAvailable(null);
+    }
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@@@ OLD
+        private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
+            new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
+    }
+@@@@ NEW
+        private static EditIntentOutcome Without(EditIntentStatus status, string? reason) =>
+            new(status, EditWitnessStatus.NotEvaluated, reason, null, null, null);
+    }
+
+    /// <summary>How "Editar todo" ended (I-64 F4B PB-T4c, D-PBT4-13). The default value is NotAvailable.</summary>
+    public enum EditAllStatus
+    {
+        /// <summary>The port does not offer the full editor, no reader is assigned or there is no full editor here: nothing was read or opened.</summary>
+        NotAvailable,
+
+        /// <summary>It waits: the gate, a read in progress, a notice of the panel, an update in flight or a work that is being applied.</summary>
+        Waiting,
+
+        /// <summary>The request is not of the active document: nothing was read or opened.</summary>
+        Rejected,
+
+        /// <summary>There was no work and the edit intention did not begin it: the outcome carries the one of the intention.</summary>
+        NotBegun,
+
+        /// <summary>The work is in a state that the editor does not open (unknown, in error or undecidable), or it still has pending text.</summary>
+        Refused,
+
+        /// <summary>The full editor was opened over the work and is closed again; Applied counts the edits that it handed to the work.</summary>
+        Closed,
+
+        /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
+        Failed,
+    }
+
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-13) — the answer of the host to "Editar todo". A value: it names no type of the work and no type of the
+    /// systems, and the outcome of the intention that it may carry is the value of the edit intention.
+    /// </summary>
+    public readonly struct EditAllOutcome
+    {
+        private EditAllOutcome(EditAllStatus status, string? reason, EditIntentOutcome begin, int applied)
+        {
+            Status = status;
+            Reason = reason;
+            Begin = begin;
+            Applied = applied;
+        }
+
+        public EditAllStatus Status { get; }
+
+        /// <summary>Why the editor did not open; null for Closed and NotBegun.</summary>
+        public string? Reason { get; }
+
+        /// <summary>The outcome of the edit intention that did not begin the work (NotBegun); the default value otherwise.</summary>
+        public EditIntentOutcome Begin { get; }
+
+        /// <summary>How many times the editor handed its edits to the work (Closed); 0 otherwise.</summary>
+        public int Applied { get; }
+
+        public static EditAllOutcome NotAvailable(string? reason) => new(EditAllStatus.NotAvailable, reason, default, 0);
+
+        public static EditAllOutcome Waiting(string reason) => new(EditAllStatus.Waiting, reason, default, 0);
+
+        public static EditAllOutcome Rejected(string reason) => new(EditAllStatus.Rejected, reason, default, 0);
+
+        public static EditAllOutcome NotBegun(EditIntentOutcome begin) => new(EditAllStatus.NotBegun, null, begin, 0);
+
+        public static EditAllOutcome Refused(string reason) => new(EditAllStatus.Refused, reason, default, 0);
+
+        public static EditAllOutcome Closed(int applied) => new(EditAllStatus.Closed, null, default, applied);
+
+        public static EditAllOutcome Failed(string reason) => new(EditAllStatus.Failed, reason, default, 0);
+    }
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
+@@@@ NEW
+        private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
+
+        // I-64 F4B PB-T4c (D-PBT4-13): the reasons of "Editar todo".
+        private const string EditAllNoEditorReason = "No editable aquí: el panel no tiene el editor completo.";
+        private const string EditAllPendingTextReason = "Hay texto sin confirmar en el campo.";
+        private const string EditAllBusyDraftReason = "El borrador se está aplicando o se retiró: el editor no se abre.";
+        private const string EditAllStateReason = "El borrador no admite el editor completo en su estado actual.";
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        private IPushBackPilotUpdateHost? _updateHost;
+@@@@ NEW
+        private IPushBackPilotUpdateHost? _updateHost;
+
+        // I-64 F4B PB-T4c (D-PBT4-15): the host of the full editor (assigned once, it keeps nothing): it enters the modal of the panel and
+        // shows the editor over the launch.
+        private IWorkspaceFullEditHost? _fullEditHost;
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
+@@@@ NEW
+        public void SetPilotUpdateHost(IPushBackPilotUpdateHost host) =>
+            _updateHost = host ?? throw new ArgumentNullException(nameof(host));
+
+        /// <summary>
+        /// Assigns the host of the full editor of "Editar todo" (I-64 F4B PB-T4c, D-PBT4-15), by assignment like the executor of the update and
+        /// never by constructor. It has no state. Without it "Editar todo" answers NotAvailable.
+        /// </summary>
+        public void SetFullEditHost(IWorkspaceFullEditHost host) =>
+            _fullEditHost = host ?? throw new ArgumentNullException(nameof(host));
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+        EditIntentOutcome IWorkspacePilotEditPort.TryDiscardAndReload(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryDiscardAndReloadPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+@@@@ NEW
+        EditIntentOutcome IWorkspacePilotEditPort.TryDiscardAndReload(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return TryDiscardAndReloadPilotEdit(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+
+        // I-64 F4B PB-T4c (D-PBT4-13, D-PBT4-14): "Editar todo". The mark of the reads wraps the whole operation, the begin of the work and the
+        // editor included, so while the full editor is open every operation of the panel answers Busy or Waiting (K = 1).
+        EditAllOutcome IWorkspacePilotEditPort.TryEditAll(EditIntentRequest request)
+        {
+            if (_pilotReadInProgress) return EditAllOutcome.Waiting(PilotReadInProgressReason);
+            _pilotReadInProgress = true;
+            try
+            {
+                return EditAllOfPilot(request);
+            }
+            finally
+            {
+                _pilotReadInProgress = false;
+            }
+        }
+
+        // The rules of the keep of the pilot (I-09): the gate first, the update in flight after it, the exceptions contained with Report, and
+        // NotePilotEdit for every edit that the editor hands to the work. Nothing here writes the drawing.
+        private EditAllOutcome EditAllOfPilot(EditIntentRequest request)
+        {
+            try
+            {
+                if (request == null) throw new ArgumentNullException(nameof(request));
+
+                var gate = PassGate(request.Session, out var reason);
+                if (gate == EditGate.Unavailable) return EditAllOutcome.NotAvailable(reason);
+                if (gate == EditGate.Waiting) return EditAllOutcome.Waiting(reason);
+                if (gate == EditGate.Rejected) return EditAllOutcome.Rejected(reason);
+
+                if (UpdateInFlightForRequest(request)) return EditAllOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
+                if (_fullEditHost == null) return EditAllOutcome.NotAvailable(EditAllNoEditorReason);
+
+                // Without work for the rack the edit intention begins it, with its one read, its admission and its diagnostic.
+                var draft = FindPilotDraft(request.Session, request.RackId);
+                if (draft == null)
+                {
+                    var begun = TryBeginPilotEdit(request);
+                    if (begun.Status != EditIntentStatus.Admitted) return EditAllOutcome.NotBegun(begun);
+                    draft = FindPilotDraft(request.Session, request.RackId);
+                    if (draft == null) return EditAllOutcome.Failed(EditAllBusyDraftReason);
+                }
+
+                var view = ViewOfPilotDraft(draft);
+                if (view.State == PilotFieldState.Applying || !draft.IsRegistered) return EditAllOutcome.Waiting(EditAllBusyDraftReason);
+                if (!view.CanEdit) return EditAllOutcome.Refused(EditAllStateReason);
+                if (draft.HasPendingText) return EditAllOutcome.Refused(EditAllPendingTextReason);
+
+                // The port keeps the origin of the work, and every edit that it hands to the work ends the "known clean" mark of the session.
+                var applied = 0;
+                var port = new PushBackFullDraftStatePort(draft, () =>
+                {
+                    applied++;
+                    NotePilotEdit(request.Session);
+                });
+                _fullEditHost.ShowModal(PushBackFullDraftLaunch.For(draft, port));
+                return EditAllOutcome.Closed(applied);
+            }
+            catch (Exception ex)
+            {
+                Report("WorkspaceHostCore.TryEditAll", ex);
+                return EditAllOutcome.Failed(ex.Message);
+            }
+        }
+@@@@ END
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspacePilotSupport.cs
+@@@@ OLD
+        public EditUpdateStart RequestUpdate(EditIntentRequest request) =>
+            _depth.IsInside ? EditUpdateStart.Waiting(InsideNoticeReason) : _inner.RequestUpdate(request);
+@@@@ NEW
+        public EditUpdateStart RequestUpdate(EditIntentRequest request) =>
+            _depth.IsInside ? EditUpdateStart.Waiting(InsideNoticeReason) : _inner.RequestUpdate(request);
+
+        // I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" may begin the work, so it waits inside a notice like the reads.
+        public EditAllOutcome TryEditAll(EditIntentRequest request) =>
+            _depth.IsInside ? EditAllOutcome.Waiting(InsideNoticeReason) : _inner.TryEditAll(request);
+@@@@ END
+@@@@ EDIT src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@@@ OLD
+                    _host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());
+@@@@ NEW
+                    _host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());
+
+                    // The host of the full editor of "Editar todo" (I-64 F4B PB-T4c, D-PBT4-15) is wired the same way, after the executor: the
+                    // modal of the panel, nested here, over the opener of the window, in the views of the Plugin.
+                    _host.SetFullEditHost(new FullEditorModal(this, RackWorkspaceEditorWindow.Show));
+@@@@ END
+@@@@ EDIT src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@@@ OLD
+            public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _gate.TakeUpdateProgress(origin, rackId);
+        }
+@@@@ NEW
+            public EditUpdateProgress TakeUpdateProgress(WorkspaceRequest origin, string rackId) => _gate.TakeUpdateProgress(origin, rackId);
+
+            public EditAllOutcome TryEditAll(EditIntentRequest request) => _gate.TryEditAll(request);
+        }
+
+        // I-64 F4B PB-T4c (D-PBT4-15): the modal of the panel for the full editor. It names neither the interface nor the system: it enters the
+        // modal of the panel and hands the launch to the opener, which shows the window without an owner and returns when it closes.
+        private sealed class FullEditorModal : IWorkspaceFullEditHost
+        {
+            private readonly WorkspaceController _controller;
+            private readonly Action<object> _open;
+
+            public FullEditorModal(WorkspaceController controller, Action<object> open)
+            {
+                _controller = controller;
+                _open = open;
+            }
+
+            public void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class
+            {
+                using (_controller.EnterPanelModal()) _open(launch);
+            }
+        }
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        private const string ListSeparator = "; ";
+@@@@ NEW
+        private const string ListSeparator = "; ";
+
+        // I-64 F4B PB-T4c (D-PBT4-12): the notices of "Editar todo".
+        private const string EditAllNotOpenedPrefix = "No se abrió el editor: ";
+        private const string EditAllAppliedText = "Editor cerrado: sus cambios están en el borrador.";
+        private const string EditAllNothingAppliedText = "Editor cerrado sin cambios en el borrador.";
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        public bool ShowEditButton => _showEdit;
+@@@@ NEW
+        public bool ShowEditButton => _showEdit;
+
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-12): the "Editar todo" button. It has the conditions of the Edit button but the read-only one: a pinned
+        /// surface, no failure, no diagnostic that stays and no choice waiting, and no work yet or a work that the editor opens.
+        /// </summary>
+        public bool ShowEditAllButton =>
+            _failure == null && _session.HasValue && !_isPreview && _persistDiagnostic == null && !HasChoice && (!_view.Exists || _view.CanEdit);
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
+@@@@ NEW
+        /// <summary>
+        /// I-64 F4B PB-T4c (D-PBT4-12): "Editar todo". The pending text is committed first, the same two-phase step as a blocking boundary: an
+        /// invalid text does not open the editor and shows its message, and a field that is busy or refused does not open it either. Then the
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none and holds the panel while the editor is open. When it closes, the field and the strip are shown again from the port.
+        /// </summary>
+        public void EditAll()
+        {
+            if (_port == null || !_session.HasValue || _rack == null) return;
+
+            var session = _session.Value;
+            var rack = _rack;
+            try
+            {
+                ClearNotices();
+                var view = _port.GetField(new WorkspaceRequest(session), rack);
+                if (view.PendingText != null)
+                {
+                    var committed = _port.CommitField(new WorkspaceRequest(session), rack);
+                    if (committed.Status == PilotFieldStatus.Invalid)
+                    {
+                        Apply(committed.View);
+                        _messageText = committed.Message ?? committed.View.PendingMessage ?? string.Empty;
+                        _noticeText = EditAllNotOpenedPrefix + SentenceOf(_messageText);
+                        RaiseAll();
+                        return;
+                    }
+
+                    if (committed.Status != PilotFieldStatus.Applied && committed.Status != PilotFieldStatus.NotEditable)
+                    {
+                        Render();
+                        _noticeText = RefusalOf(committed);
+                        RaiseAll();
+                        return;
+                    }
+                }
+
+                var outcome = _port.TryEditAll(new EditIntentRequest(session, rack, null, null));
+                if (!IsMine(session, rack))
+                {
+                    // The editor closed over another surface: its result is not shown here.
+                    Render();
+                    _noticeText = SurfaceChangedText;
+                    RaiseAll();
+                    return;
+                }
+
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+                }
+                else
+                {
+                    _noticeText = EditAllNoticeOf(outcome);
+                }
+
+                Render();
+                _changed?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                EnterFailure(ex);
+            }
+        }
+
+        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+            OnPropertyChanged(nameof(ShowEditButton));
+@@@@ NEW
+            OnPropertyChanged(nameof(ShowEditButton));
+            OnPropertyChanged(nameof(ShowEditAllButton));
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        // The prefix of a check that did not reread the drawing: the ones of Describe, the one of a draft that does not apply, and a default.
+@@@@ NEW
+        // I-64 F4B PB-T4c (D-PBT4-12): the notice of "Editar todo" once the editor closed, or when it did not open.
+        private static string EditAllNoticeOf(EditAllOutcome outcome)
+        {
+            switch (outcome.Status)
+            {
+                case EditAllStatus.Closed: return outcome.Applied > 0 ? EditAllAppliedText : EditAllNothingAppliedText;
+                case EditAllStatus.NotAvailable: return SentenceOf(outcome.Reason);
+                case EditAllStatus.Waiting: return "En espera: " + SentenceOf(outcome.Reason);
+                case EditAllStatus.Rejected: return "Rechazado: " + SentenceOf(outcome.Reason);
+                case EditAllStatus.NotBegun: return Describe(outcome.Begin.Status, outcome.Begin.Reason);
+                default: return EditAllNotOpenedPrefix + SentenceOf(outcome.Reason);
+            }
+        }
+
+        // A text as the end of a sentence: one final period, and "sin detalle." for a missing one.
+        private static string SentenceOf(string text) => string.IsNullOrWhiteSpace(text) ? "sin detalle." : text.TrimEnd('.') + ".";
+
+        // The prefix of a check that did not reread the drawing: the ones of Describe, the one of a draft that does not apply, and a default.
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+@@@@ OLD
+                                    Click="OnBrowserFieldEditClick" />
+@@@@ NEW
+                                    Click="OnBrowserFieldEditClick" />
+                            <Button x:Name="BrowserFieldEditAllButton" Content="Editar todo" Margin="0,2,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Editar el rack completo en el editor"
+                                    Visibility="{Binding Browser.Field.ShowEditAllButton, Converter={StaticResource FlagToVisibility}}"
+                                    Click="OnBrowserFieldEditAllClick" />
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+@@@@ OLD
+        private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
+@@@@ NEW
+        private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
+
+        // I-64 F4B PB-T4c (D-PBT4-12): "Editar todo" goes straight to the gesture of the field, which commits the pending text first.
+        private void OnBrowserFieldEditAllClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.EditAll());
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@@@ OLD
+                "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+            return modules.HasPendingWork ? modules : EditorPendingWork.When(HasUnappliedDraftChanges(), WorkspaceUnappliedQuestion);
+        }
+@@@@ NEW
+                "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+
+            // I-64 F4B PB-T4c (D-PBT4-17; A-T2b-OWNER-01): a staged module AND unapplied changes ask one question that names both. In
+            // WORKSPACE a staged module always leaves unapplied changes (D-S10), so the module question alone is the one of CLASSIC, where
+            // there are never unapplied changes; unapplied changes alone ask the question of today.
+            if (modules.HasPendingWork && HasUnappliedDraftChanges()) return EditorPendingWork.When(true, WorkspaceStagedAndUnappliedQuestion);
+            return modules.HasPendingWork ? modules : EditorPendingWork.When(HasUnappliedDraftChanges(), WorkspaceUnappliedQuestion);
+        }
+@@@@ END
+@@@@ EDIT src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@@@ OLD
+        private const string WorkspaceUnappliedQuestion = "Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?";
+@@@@ NEW
+        private const string WorkspaceUnappliedQuestion = "Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?";
+
+        // I-64 F4B PB-T4c (D-PBT4-17): the one question when a staged module and unapplied changes would be lost together.
+        private const string WorkspaceStagedAndUnappliedQuestion = "Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?";
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs
+#nullable enable
+namespace RackCad.Application.Workspace
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-15) — the host of the full editor of "Editar todo": it shows the editor modally over the launch that the host
+    /// core hands it, inside the modal of the panel, and returns when the editor closes. It is generic so that the workspace names no type of
+    /// the systems; it keeps nothing, and the editor only hands its edits to the port of the launch. It is a declared exception to R-PB-05
+    /// and to ADR-0029 D12: it lives with the workspace and not with the system.
+    /// </summary>
+    public interface IWorkspaceFullEditHost
+    {
+        void ShowModal<TLaunch>(TLaunch launch) where TLaunch : class;
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs
+using System;
+using RackCad.Application.Persistence;
+using RackCad.Application.Workspace.Drafts;
+
+namespace RackCad.Application.Systems.PushBack.Draft
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-13) — the launch of the full Push Back editor over the full draft of the panel: the editable state of the draft
+    /// (the window copies it when it loads), the identity of the rack, the project of the envelope of its origin and the port through which the
+    /// edits go back to the draft. It reads no drawing: the project comes from the text of the origin that the draft already holds.
+    /// </summary>
+    public static class PushBackFullDraftLaunch
+    {
+        public static PushBackDraftEditorLaunch For(DraftSession<PushBackFullDraftState> draft, IPushBackDraftStatePort port)
+        {
+            if (draft == null) throw new ArgumentNullException(nameof(draft));
+            if (port == null) throw new ArgumentNullException(nameof(port));
+            var current = draft.CurrentDraftState;
+            return new PushBackDraftEditorLaunch(current.Editable, draft.RackId, ProjectOf(current.Origin), port);
+        }
+
+        // The project of the envelope of the origin, with its metadata, or null when the text does not hold one: the launch admits a null one.
+        private static RackProject ProjectOf(string origin)
+        {
+            var envelope = new RackEmbedStore().Deserialize(origin);
+            if (envelope == null) return null;
+            return new RackProjectStore().TryDeserialize(envelope.Design, out var project, out _) ? project : null;
+        }
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs
+using System;
+using RackCad.Application.Workspace.Drafts;
+
+namespace RackCad.Application.Systems.PushBack.Draft
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-13) — the port of the full editor over the full draft of the panel. It hands the edited state to the draft with
+    /// the origin that the draft holds, so the origin is kept, and the draft keeps a COPY of it. Every edit that the draft takes calls back
+    /// once, so the host ends the "known clean" mark of the session. It copies nothing and calls no other operation of the draft.
+    /// </summary>
+    public sealed class PushBackFullDraftStatePort : IPushBackDraftStatePort
+    {
+        private readonly DraftSession<PushBackFullDraftState> _draft;
+        private readonly Action _applied;
+
+        public PushBackFullDraftStatePort(DraftSession<PushBackFullDraftState> draft, Action applied)
+        {
+            _draft = draft ?? throw new ArgumentNullException(nameof(draft));
+            _applied = applied ?? throw new ArgumentNullException(nameof(applied));
+        }
+
+        public PushBackDraftApplyResult ApplyToDraft(PushBackEditableState edited)
+        {
+            if (edited == null) throw new ArgumentNullException(nameof(edited));
+            var result = _draft.SetCurrentDraftState(new PushBackFullDraftState(edited, _draft.CurrentDraftState.Origin));
+            if (result.Status != DraftEditStatus.Updated) return new PushBackDraftApplyResult(PushBackDraftApplyStatus.NotEditable, result.IsDirty);
+            _applied();
+            return new PushBackDraftApplyResult(PushBackDraftApplyStatus.Applied, result.IsDirty);
+        }
+    }
+}
+@@@@ END
+@@@@ NEWFILE src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs
+#nullable enable
+using RackCad.Application.Systems.PushBack;
+using RackCad.UI.Systems.PushBack;
+using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+
+namespace RackCad.Plugin.Views
+{
+    /// <summary>
+    /// I-64 F4B PB-T4c (D-PBT4-15) — the opener of the full Push Back editor for "Editar todo". It builds the window over the launch and shows
+    /// it modally, without an owner, like the classic opener; the modal of the panel is its caller's. It reads and writes nothing of the
+    /// drawing and does nothing after the window closes: the window only hands its edits to the port of the launch.
+    /// </summary>
+    internal static class RackWorkspaceEditorWindow
+    {
+        internal static void Show(object launch)
+        {
+            var window = RackPushBackSystemWindow.ForDraft((PushBackDraftEditorLaunch)launch);
+            AcApplication.ShowModalWindow(window);
+        }
+    }
+}
+@@@@ END

@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs b/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
+index c4615c84..f72edf03 100644
+--- a/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
++++ b/src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs
+@@ -326,7 +326,7 @@ namespace RackCad.Application.Systems.Dynamic
+         }
+ 
+         private static double Scale(DynamicRackSystem system)
+-            => system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
++            => system.AnnotationScale > 0.0 ? Math.Round(system.AnnotationScale, 3) : 1.0;
+ 
+         /// <summary>How far below Y=0 a view's cotas reach, from that view's EFFECTIVE detail.</summary>
+         private static double BottomReach(DimensionDetail detail, double scale)

@@ -1,0 +1,162 @@
+{
+  "Schema": "rackcad-i64-scope-bridge/v1",
+  "Result": "FAIL",
+  "Reasons": [
+    {
+      "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+      "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Application/Workspace/NavigationActions.cs\"]"
+    }
+  ],
+  "BaseSha": "9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb",
+  "CurrentSha": "c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+  "DelegationSha256": "f1eaf1e6e703fe5a4a32b8261703306bb20bd0c2d4139c88c8615c572578d1c3",
+  "HandoffSha256": "7f9f7e7484f62c8b4561d03e654faac4d91d90957919c346add79b3333a7b5f7",
+  "DelegationRunId": "R20261108T181429Z-adae",
+  "ChangedPaths": [
+    "src/RackCad.Application/Workspace/NavigationActions.cs",
+    "src/RackCad.Application/Workspace/NavigationFacts.cs",
+    "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+    "src/RackCad.Application/Workspace/NavigationTargets.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Workspace/NavigationFacts.cs",
+    "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+    "src/RackCad.Application/Workspace/NavigationTargets.cs",
+    "tests/RackCad.Tests/Workspace/"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "assets/",
+    "deploy/",
+    "eng/",
+    "tools/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md",
+    "docs/"
+  ],
+  "OutsideAllowed": [
+    "src/RackCad.Application/Workspace/NavigationActions.cs"
+  ],
+  "ForbiddenHits": [],
+  "Checks": [
+    {
+      "Id": "ExpectedBase.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "ExpectedCurrent.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.RunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffCurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Repository",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.BaseSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.CurrentSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Ancestry",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff.Decode",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.NonEmpty",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.PathSyntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Scope.Allowed",
+      "Result": "fail"
+    },
+    {
+      "Id": "Scope.Forbidden",
+      "Result": "pass"
+    }
+  ]
+}

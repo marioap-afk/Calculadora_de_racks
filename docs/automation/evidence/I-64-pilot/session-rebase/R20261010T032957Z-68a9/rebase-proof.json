@@ -1,0 +1,245 @@
+{
+  "Schema": "rackcad-i64-rebase-proof/v1",
+  "RunId": "R20261010T032957Z-68a9",
+  "OldTip": "5ee345b5007e38ec68f67323bf45e4af988711b7",
+  "NewTip": "8e6a1b4eb2114ad793b41816c55fe8a0fa9c5094",
+  "MainBefore": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "MainAfter": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "ArchiveTag": {
+    "Ref": "refs/tags/archive/I-64-pre-rebase-5ee345b5",
+    "TagObject": "5e5e399b58ed7d0d5620e2fe8ae5ca2db38a2eea",
+    "Target": "5ee345b5007e38ec68f67323bf45e4af988711b7",
+    "Remote": "5e5e399b58ed7d0d5620e2fe8ae5ca2db38a2eea"
+  },
+  "CommitCount": 42,
+  "PatchIdEqualCount": 41,
+  "PatchIdDifferent": [
+    "d8a0216306f40e4d502b77310c1632cdbb84d70d"
+  ],
+  "WorkerCommits": [
+    {
+      "OriginalSha": "36c344dc283d4a9855110a31ca6b20a2da7fd972",
+      "ImageSha": "b29a1f4639e7a67dace54f5a0cf168f99eeb67e4",
+      "PatchIdEqual": true
+    },
+    {
+      "OriginalSha": "66d34af31524c49214e38479d5892cd9ec985eb9",
+      "ImageSha": "a89d4c7fe28692d76b69460642ef8a9368afc0b4",
+      "PatchIdEqual": true
+    },
+    {
+      "OriginalSha": "189353f8df954b05cbbcdc0f15dca0cb3bf21002",
+      "ImageSha": "10a684a9087dcae0d6b53b40a60784ace48bf6e4",
+      "PatchIdEqual": true
+    },
+    {
+      "OriginalSha": "b38e54f9f434fee7aa41ce6dcfd1804978afd619",
+      "ImageSha": "1b257684abbcfa5315da73a65e2f4043a3f6565c",
+      "PatchIdEqual": true
+    },
+    {
+      "OriginalSha": "a9778068af566bc2b84ba6a0005711b6452a2666",
+      "ImageSha": "012ae28835e588e7b21fce8b6dbdba96b51c69ef",
+      "PatchIdEqual": true
+    },
+    {
+      "OriginalSha": "8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce",
+      "ImageSha": "14136328621a12c968670b0da89611d3c6766f06",
+      "PatchIdEqual": true
+    },
+    {
+      "OriginalSha": "39f7caa411a5ebb372614c233a32255de7398cca",
+      "ImageSha": "f593cb8b2a8600e9d7baec0646ecfa1a626d254c",
+      "PatchIdEqual": true
+    }
+  ],
+  "T1Chain": {
+    "BaseSha": {
+      "Original": "0b7db52f12ddbf7ed36c8c2d020645818335c0fa",
+      "Image": "39ed16418cadf195d5d7adbd84608233faa9b698"
+    },
+    "ChainBaseSha": {
+      "Original": "e0587355b0e84d98807057a56dfc50591da87489",
+      "Image": "05a5ae9d11012572c4a33d381d46546871de534a"
+    },
+    "ChainRedSha": {
+      "Original": "a9778068af566bc2b84ba6a0005711b6452a2666",
+      "Image": "012ae28835e588e7b21fce8b6dbdba96b51c69ef"
+    },
+    "CurrentSha": {
+      "Original": "39f7caa411a5ebb372614c233a32255de7398cca",
+      "Image": "f593cb8b2a8600e9d7baec0646ecfa1a626d254c"
+    }
+  },
+  "Freeze": {
+    "FreezeSha": "9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311",
+    "FreezeImageSha": "6f8450875115c859894e5f36371d7eaa97691d5d",
+    "PatchIdEqual": true,
+    "FreezeDocBlob": "dc1924ff5a73a4e529fbc5f995621d29351a091b",
+    "FreezeDocBlobAtImage": "dc1924ff5a73a4e529fbc5f995621d29351a091b",
+    "FreezeDocBlobAtNewTip": "dc1924ff5a73a4e529fbc5f995621d29351a091b",
+    "Equal": true
+  },
+  "UnitDocs": [
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Blob": "57952077ff1708867439f89ee4f7de598aac1054",
+      "ImageBlob": "57952077ff1708867439f89ee4f7de598aac1054",
+      "Equal": true
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Blob": "2ac000087442d1b6f638b4eddb4b8205590a41ba",
+      "ImageBlob": "2ac000087442d1b6f638b4eddb4b8205590a41ba",
+      "Equal": true
+    },
+    {
+      "Path": "docs/initiatives/I-64-discovery.md",
+      "Blob": "3565015c21a44b08df564b3277b5546a8a6ce013",
+      "ImageBlob": "3565015c21a44b08df564b3277b5546a8a6ce013",
+      "Equal": true
+    },
+    {
+      "Path": "docs/initiatives/I-64-f1-gate-contract-proposal.md",
+      "Blob": "3d666641706a155f46808763b47a254206487bc7",
+      "ImageBlob": "3d666641706a155f46808763b47a254206487bc7",
+      "Equal": true
+    },
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b",
+      "ImageBlob": "dc1924ff5a73a4e529fbc5f995621d29351a091b",
+      "Equal": true
+    },
+    {
+      "Path": "docs/initiatives/I-64-workspace-persistente-rackcad.md",
+      "Blob": "7401786a1aa6976e278788b608af99f3e19e745b",
+      "ImageBlob": "7401786a1aa6976e278788b608af99f3e19e745b",
+      "Equal": true
+    }
+  ],
+  "UnitChangeSections": 0,
+  "ExternalAuthoritiesChangedOnMain": [],
+  "Roadmap": {
+    "ConflictCommit": {
+      "OriginalSha": "d8a0216306f40e4d502b77310c1632cdbb84d70d",
+      "ImageSha": "f3c846e93d57fff8124f864404a4e0cfaa30cceb",
+      "Subject": "I-64 D0: bootstrap de la iniciativa (contrato, brief, confirmacion, evidencia y fila de ROADMAP)"
+    },
+    "Kind": "insercion de filas adyacentes tras I-60 (anticipada en la evidencia de I-64, seccion 4, nota de integracion de I-63)",
+    "Resolution": "fila de I-63 tal como esta en main + fila original de I-64 del commit de bootstrap",
+    "BootstrapRemovedLinesEqual": true,
+    "BootstrapAddedLinesEqual": true,
+    "BootstrapAddedLineCount": 1,
+    "BootstrapRemovedLineCount": 0,
+    "BootstrapOtherPathsBlobsEqual": true,
+    "BootstrapOtherPaths": [
+      "docs/automation/evidence/I-64-evidence.md",
+      "docs/initiatives/I-64-coordinator-confirmation-d0-r3.txt",
+      "docs/initiatives/I-64-owner-brief.txt",
+      "docs/initiatives/I-64-workspace-persistente-rackcad.md"
+    ],
+    "TipDeltaRemovedLinesEqual": true,
+    "TipDeltaAddedLinesEqual": true,
+    "I63RowsInMain": 1,
+    "I63RowsUnchangedAtTip": true,
+    "PatchIdDiffersOnlyByContext": true,
+    "ProvablyPreserved": true
+  },
+  "TipsDifferOnlyByMainOutsideRoadmap": true,
+  "UnitDocsTreeEqualBetweenTips": true,
+  "HistoricalBlobs": {
+    "docs/initiatives/I-64-A-1.md": {
+      "OldTip": "fb6a49c2e8e96689f82a2ad01fda7994fc2397b0",
+      "NewTip": "fb6a49c2e8e96689f82a2ad01fda7994fc2397b0",
+      "Equal": true
+    },
+    "docs/initiatives/I-64-A-2.md": {
+      "OldTip": "de6f6088356b0dec0e7a33431c7d00d0ba0d396b",
+      "NewTip": "de6f6088356b0dec0e7a33431c7d00d0ba0d396b",
+      "Equal": true
+    },
+    "docs/initiatives/I-64-A-3.md": {
+      "OldTip": "e14935bc7cafc78887eea977251ca21c492e1fe0",
+      "NewTip": "e14935bc7cafc78887eea977251ca21c492e1fe0",
+      "Equal": true
+    },
+    "docs/initiatives/I-64-A-4.md": {
+      "OldTip": "d587403e40243beda5db61779ef8e9687c480619",
+      "NewTip": "d587403e40243beda5db61779ef8e9687c480619",
+      "Equal": true
+    },
+    "docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/oracle-result.json": {
+      "OldTip": "c00bf5f96b54e6673e2c01d88985c67dd0ca22ea",
+      "NewTip": "c00bf5f96b54e6673e2c01d88985c67dd0ca22ea",
+      "Equal": true
+    },
+    "docs/automation/evidence/I-64-pilot/F1-T1-MODEL-nc2/R20261002T184050Z-8415/controller-verification.json": {
+      "OldTip": "90b9337262bc5f1aa6cd8a2e883dafdf5df5ceda",
+      "NewTip": "90b9337262bc5f1aa6cd8a2e883dafdf5df5ceda",
+      "Equal": true
+    },
+    "docs/automation/evidence/I-64-pilot/F1-T1-MODEL/R20261002T182925Z-5c9b/controller-verification.json": {
+      "OldTip": "cae87c5ad14446bc8ddafdb8833da3ecf6154d2c",
+      "NewTip": "cae87c5ad14446bc8ddafdb8833da3ecf6154d2c",
+      "Equal": true
+    }
+  },
+  "Product": {
+    "SrcTestsDeltaByteEqual": true,
+    "SrcTestsDeltaSha256": "4EEE6D96DC410FEBAD31C546259D84FC555044A440A6AEC2A5ABABF6634A6379",
+    "SrcTestsPaths": [
+      "src/RackCad.Application/Workspace/Hints.cs",
+      "src/RackCad.Application/Workspace/SelectionContext.cs",
+      "src/RackCad.Application/Workspace/SessionId.cs",
+      "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+      "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs"
+    ],
+    "T1ProductCommit": {
+      "OriginalSha": "39f7caa411a5ebb372614c233a32255de7398cca",
+      "ImageSha": "f593cb8b2a8600e9d7baec0646ecfa1a626d254c",
+      "PatchIdEqual": true,
+      "Paths": [
+        "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+      ],
+      "Hunks": [
+        "@@ -6 +6 @@ namespace RackCad.Application.Workspace"
+      ],
+      "DiffBodyEqual": true
+    },
+    "RegistryBlob": {
+      "AtOriginalCurrent": "b6e771e1ff3952e54ada78087d0bbbdc6f3fdff4",
+      "AtOldTip": "b6e771e1ff3952e54ada78087d0bbbdc6f3fdff4",
+      "AtNewTip": "b6e771e1ff3952e54ada78087d0bbbdc6f3fdff4",
+      "Equal": true
+    }
+  },
+  "MechanicalChecks": {
+    "WorkspaceFiles": [
+      "src/RackCad.Application/Workspace/Hints.cs",
+      "src/RackCad.Application/Workspace/SelectionContext.cs",
+      "src/RackCad.Application/Workspace/SessionId.cs",
+      "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+      "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+    ],
+    "ComputedParametersFileCount": 17,
+    "WorkspaceRefsToI63": 0,
+    "I63RefsToWorkspace": 0,
+    "WorkspaceAutoCadRefs": 0,
+    "WorkspaceTestGuardLiterals": [
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs:34:            Assert.DoesNotMatch(new Regex(@\"\\bAutodesk\\.\"), code);",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs:42:        @\"System\\.IO|\\bFile\\.|\\bDirectory\\.|\\bStreamWriter\\b|Microsoft\\.Win32|\\bRegistry\\.|\\bUserSettings\\b|\\bAtomicFile\\b|Transaction|LockDocument|\\bDatabase\\b|\\bCommit\\(|\\bAutodesk\\.\");",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs:64:    [InlineData(\"using Autodesk.AutoCAD.DatabaseServices;\")]"
+    ],
+    "ApplicationCsprojAutoCadRefs": 0,
+    "Adr0047Estado": "propuesto",
+    "PluginUiDomainDiffVsMain": [],
+    "RackEditarFilesDiffVsMain": [],
+    "Ok": true
+  },
+  "Ok": true
+}

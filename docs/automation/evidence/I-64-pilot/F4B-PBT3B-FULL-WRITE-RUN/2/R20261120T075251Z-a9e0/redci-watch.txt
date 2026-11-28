@@ -1,0 +1,406 @@
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push less than a minute ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  * Run actions/checkout@v4
+  * Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/checkout@v4
+* Build UI (WPF, valida API de Application) (ID 136180617360)
+  ✓ Set up job
+  * Run actions/checkout@v4
+  * Run actions/setup-dotnet@v4
+  * dotnet build UI
+  * Post Run actions/checkout@v4
+* Tests (Domain + Application) (ID 136180617415)
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push less than a minute ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+* Build UI (WPF, valida API de Application) (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet build UI
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+* Tests (Domain + Application) (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 1 minute ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+* Tests (Domain + Application) (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 1 minute ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+* Tests (Domain + Application) (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 2 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+* Tests (Domain + Application) (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  * Normalize coverage path
+  * Upload Cobertura coverage
+  * Upload Core test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 2 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m37s (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136181779507)
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 3 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m37s (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136181779507)
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 3 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m37s (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136181779507)
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 4 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m37s (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136181779507)
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 4 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m37s (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136181779507)
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 5 minutes ago
+
+JOBS
+* UI Tests (WPF controls, net8.0-windows) (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  * dotnet test UI controls (TRX + blame-hang)
+  * Upload UI test diagnostics (TRX + blame)
+  * Post Run actions/setup-dotnet@v4
+  * Post Run actions/checkout@v4
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m37s (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136181779507)
+X architecture/workspace-persistente-rackcad CI · 44704503614
+Triggered via push about 5 minutes ago
+
+JOBS
+✓ UI Tests (WPF controls, net8.0-windows) in 5m37s (ID 136180617048)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet test UI controls (TRX + blame-hang)
+  ✓ Upload UI test diagnostics (TRX + blame)
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+✓ Build UI (WPF, valida API de Application) in 59s (ID 136180617360)
+  ✓ Set up job
+  ✓ Run actions/checkout@v4
+  ✓ Run actions/setup-dotnet@v4
+  ✓ dotnet build UI
+  ✓ Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+X Tests (Domain + Application) in 2m37s (ID 136180617415)
+  ✓ Set up job
+  ✓ Cadencia de cobertura y SHA objetivo
+  ✓ Run actions/checkout@v4
+  ✓ Verificar que el checkout es el SHA pedido
+  ✓ Run actions/setup-dotnet@v4
+  X dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)
+  - Normalize coverage path
+  - Upload Cobertura coverage
+  ✓ Upload Core test diagnostics (TRX + blame)
+  - Post Run actions/setup-dotnet@v4
+  ✓ Post Run actions/checkout@v4
+  ✓ Complete job
+- Build Plugin without AutoCAD in 0s (ID 136181779507)

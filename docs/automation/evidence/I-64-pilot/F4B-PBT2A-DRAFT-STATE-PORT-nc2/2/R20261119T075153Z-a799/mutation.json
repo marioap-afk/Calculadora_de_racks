@@ -1,0 +1,66 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261119T075153Z-a799",
+  "SourceVerification": "R20261119T074453Z-10a9",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT2A-DRAFT-STATE-PORT/2/R20261119T074453Z-10a9/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs",
+      "tests/RackCad.Tests/PushBackDraftStatePortTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs",
+      "tests/RackCad.Tests/PushBackDraftStatePortTests.cs",
+      "tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs",
+      "tests/RackCad.Tests/PushBackDraftStatePortTests.cs",
+      "tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "100A7695160F5A5FF622470128957399BB2172FF90D0F66EDC414C5E811472A8",
+    "New": "0420BB14225645625AD1794C57915A85B605E3334F82F20B4E037FED8E529828",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "EC624FB727C346C02E6B027445D44659FB8B51FEC172BA32293C58444FAD4317",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "08811C918D66E59A14EEE827ACCDCB15B94D9E36B2E7183F0E239F8C244F40C0",
+    "delegation-intento1.json": "F3EDA070BF6653584DC58FCA24327087A2C9CEDF9F14022070FEDFD08E5E27E0",
+    "delegation.json": "0420BB14225645625AD1794C57915A85B605E3334F82F20B4E037FED8E529828",
+    "gate-contract.json": "319683F7F6F037269DA41224C601B2F2F981A332D1117EFC48C75EE38A017F5F",
+    "relay-record-planning.json": "D6ED080B964702F2DFC61EA51861FF6A01E5AD39B301A599A9408413A44148D6",
+    "relay-record-work.json": "A393A7F655C881E866026DC8EFE4F7F5FBBD65071A526A0790D54840B3E45129",
+    "worker-handoff-intento1.json": "527E44CE6BF234B394FF43A9FE8CE483802BB91D9BF6615B72521DD084DC31F0",
+    "worker-handoff.json": "944450D3C47F0E1652ADEC18ADA33F950B9056D40BBC40FFBEFF5B198AF6FC7B",
+    "ci-core/44480898605/core.trx": "ACA35BF875690BE2367C7E9791DB56B3DC592D6950451FE6FDD8C86E9D33F3F5",
+    "ci-core-red/44478438623/core.trx": "C02A5BD37637A99967890E2C1AB7756358B15782F1EA5612DE9F41F75D0A3EC6",
+    "ci-ui/44480898605/ui.trx": "2A1D3AFC8F698A8B303CC02C0347978ED90C6774D36E1E7A9C24726E712628DC",
+    "ci-ui-red/44478438623/ui.trx": "428417062693610906FC8FD8937DEC02BC758876C75EC82D95F14E7D226B37FB"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

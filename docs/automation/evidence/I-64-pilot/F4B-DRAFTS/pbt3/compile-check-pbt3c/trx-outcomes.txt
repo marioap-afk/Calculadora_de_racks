@@ -1,0 +1,13 @@
+filas 19124 {'Passed': 19118, 'NotExecuted': 6}
+  NotExecuted RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName
+      I-64 F4B PB-T3b: sustituida por E-2 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+  NotExecuted RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope
+      I-64 F4B PB-T3b: sustituida por E-1 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+  NotExecuted RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase
+      I-64 F4B PB-T3b: sustituida por E-3 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+  NotExecuted RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing
+      I-64 F4B PB-T3b: sustituida por E-4 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+  NotExecuted RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst
+      I-64 F4B PB-T3b: sustituida por E-6 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).
+  NotExecuted RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal
+      I-64 F4B PB-T3b: sustituida por E-5 de PushBackPilotUpdateEquivalenceGuardTests (registro declarado superseding-characterization.md; decisión del Owner F4B-E29, D-1).

@@ -1,0 +1,130 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4-T3B2-EDIT-CLOSE-SYNC",
+  "PlanningRunId": "R20261113T113012Z-e025",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "95e4ef2b8eb9e70738e33535e3b6ab51f097ae9798777b34a8bc17e96675382b",
+  "ContractSha256": "270d6dc00d63aa07433e5de56abf25989e9042e0738f3a275a7a6774f6eb977b",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "b4cbca680bffd316efc0e85e5682fc3eb236accfd2811d7f6233b0a22f4453b7",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 15,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "39537513be70ff8f791130e8e0dd596a5ad63e4049cb3e2c82c72f7b1f9cfbb9",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 4,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "e2608ca559829843b7dbf24f7e0bbfeb17f250c2bc8ed047a73955ef28448c4c",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 50,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "f02c6b35afb40ee35c214dfd2766b8ee5c45044084b66320c9a90293750e3447",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 87,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "39b235590db12f731e3e285728578e4c00ecb8108470fdc08a1331c167b33268",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 9,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "d3c0f3c828b4dd99f547da67fb8bf24b15619a11b54652847f6bb3113ed58831",
+      "OutputSha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "Differences": [
+        {
+          "Index": 0,
+          "Offset": 0,
+          "Source": "Completar la superficie de edicion del p",
+          "Output": ""
+        }
+      ]
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "f379505d6464d54a9a586412c8cc98a6284c35de76f1d2425c61d42a893c77dd",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 13,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "4d27f25ef370e8a3df30108a3542bf60c5ae3f3672efc56fe8223504d2aca1de",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 102,
+          "CountOutput": 0
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": false,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 102,
+    "Output": 0
+  }
+}

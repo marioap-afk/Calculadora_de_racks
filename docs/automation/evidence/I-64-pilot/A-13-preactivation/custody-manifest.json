@@ -1,0 +1,45 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "A-13-preactivation",
+  "SourceRoot": "artifacts/orchestration/I-64/A-13-preactivation",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 4,
+    "EXCLUDED": 1
+  },
+  "Files": [
+    {
+      "Path": "authority-blobs.json",
+      "Bytes": 2339,
+      "Sha256": "194b49dbe221c2546ea059fd3aef45e0a60fc5ab096e9a22a303bd209a8c0df4",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config.json",
+      "Bytes": 3434,
+      "Sha256": "3e1f8e5168c033fa7ac79c02305f0b091166a5d74e6cc9b599348c2635275962",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "git-state.json",
+      "Bytes": 605,
+      "Sha256": "bfe398ed7ae7390551070b723f74cf7e2695823b965fa327216f101c56be6349",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a A-13-review/R20261110T022847Z-bc2b/git-entry.json, ya custodiado"
+    },
+    {
+      "Path": "neutral-git-probe.json",
+      "Bytes": 1212,
+      "Sha256": "6243946eb6e343f70e4560556eac95de748f38d83bb7db54cf0dd6cfa1d48ae8",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "processes.json",
+      "Bytes": 1286,
+      "Sha256": "469f52e462502e17e226295f4c3dce7cc1049d487f211a9f4dffc26406d64306",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "20cf70b8ad1c21c1c9960d9b67674e2609c1c75d8db273875cd22f96619ca573",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    }
+  ]
+}

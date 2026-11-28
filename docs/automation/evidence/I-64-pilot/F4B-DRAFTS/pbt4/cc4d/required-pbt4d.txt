@@ -1,0 +1,15 @@
+# los RequiredTests de PB-T4d: los heredados de PB-T4c con su MinSelected medido en el GREEN, y los nuevos por clase exacta
+  baja el heredado n.o 5 de PB-T4c (PB-T4d n.o 5): RackCad.Tests.WorkspacePilotUpdateGuardTests de 85 a 83 (base 85, GREEN 83)
+  baja el heredado n.o 6 de PB-T4c (PB-T4d n.o 6): RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests de 121 a 120 (base 121, GREEN 120)
+  baja el heredado n.o 12 de PB-T4c (PB-T4d n.o 12): RackCad.Tests.Workspace de 2716 a 2539 (base 2860, GREEN 2683)
+  baja el heredado n.o 15 de PB-T4c (PB-T4d n.o 15): RackCad.UI.Tests.Workspace de 521 a 503 (base 644, GREEN 626)
+  baja el heredado n.o 26 de PB-T4c (PB-T4d n.o 26): RackCad.UI.Tests.PushBackDeclaredCorrection de 14 a 12 (base 14, GREEN 12)
+  baja el heredado n.o 50 de PB-T4c (PB-T4d n.o 48): RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests de 47 a 46 (base 47, GREEN 46)
+  sale el heredado n.o 37 de PB-T4c: RackCad.UI.Tests.PushBackFieldValidationConcordanceTests (1; base 1, GREEN 0)
+  sale el heredado n.o 85 de PB-T4c: RackCad.Tests.PushBackEditAllFullCopyGuardTests (1; base 1, GREEN 0)
+heredados 83 de 85 (salen 2) + nuevos 5 = 88
+solapamientos: 0 []
+totales RED core: 19418 {'Failed': 1, 'NotExecuted': 403, 'Passed': 19014}
+totales RED ui_all: 899 {'NotExecuted': 30, 'Passed': 869}
+totales GREEN core: 19418 {'NotExecuted': 403, 'Passed': 19015}
+totales GREEN ui_all: 899 {'NotExecuted': 30, 'Passed': 869}

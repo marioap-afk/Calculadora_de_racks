@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T063546Z-0cd7",
+  "DelegationRunId": "R20261002T061355Z-c5cd",
+  "WorkRunId": "R20261002T062258Z-de0f",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe y coincide en TaskId=F1-T1-MODEL, Attempt=1, DelegationRunId=R20261002T061355Z-c5cd y RunId=R20261002T062258Z-de0f. OutputWrittenUtc=06:32:04.994043Z es posterior a Cession.StartUtc=06:23:21Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leídas por Git: autoridades de unidad en AuthorityRevision e0587355b0e84d98807057a56dfc50591da87489; autoridades EXTERNAL, incluida AUTOMATION_PLAN §16 y README, en MainSha 819955d61a6da4c811a11fbd11b5dca13f634b7c."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json corresponden a F1-T1-MODEL, F1, Attempt 1 y las mismas revisiones; el registro de planificación consigna A1-A8 pass y aceptación del Coordinator. RequiredTests exige RackCad.Tests.Workspace; scope y 12 invariantes son coherentes con la delegación."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Órdenes Git: rev-parse --show-toplevel y rev-parse HEAD confirman el worktree delegado y HEAD b38e54f9f434fee7aa41ce6fd1804978afd619; branch --show-current confirma architecture/workspace-persistente-rackcad; merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha devuelven 0; rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad coincide con CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts, obtenido 06:35:33Z: LsRemoteSha=CurrentSha y OriginMainSha=MainSha; CurrentRun tiene push, ref exacta y head_sha CurrentSha. rev-parse origin/main confirma MainSha. El reintento directo de ls-remote no conectó por el proxy de red; el hecho remoto registrado coincide con las referencias locales."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera cuatro archivos bajo tests/RackCad.Tests/Workspace y tres bajo src/RackCad.Application/Workspace; todos están dentro de AllowedWriteScope y ninguno intersecta ForbiddenWriteScope. git show CurrentSha confirma que ADR 0047 sigue propuesto."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain vacío; git check-ignore -v sobre inputs/gate-contract.json devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX: CurrentRun 36973802008 es push del ref y SHA exactos; Core, UI y Build UI success, pero Build Plugin without AutoCAD failure. Notes identifica el paso Verify AutoCAD compile references y CS8632 en WorkspaceSelectionContextTests.cs(62,75). RedRun 36973700069 es push exacto del RedSha; el job Core terminó failure como se exige para el RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX del SHA actual: Core 12447/12447 pass; filtro RackCad.Tests.Workspace 51/51 pass según TRX y registro. UI: 1637 pass, 0 failed, 17 NotExecuted por Skip (el contador declara notExecuted=0 según la convención documentada). TRX del RedSha: filtro 51 seleccionadas, 22 pass y 29 fallidas por aserciones de comportamiento aún desactivado; Core total 12418 pass y 29 fail. Las aserciones fallidas corresponden a identidad/sesiones, clasificación de selección, autorización y drenaje de pistas. git diff ChainBaseSha RedSha -- tests/ y ChainRedFiles dan cuatro rutas; git diff RedSha CurrentSha --name-only no muestra rutas de esas listas, incluyendo el renombre de SelectionContextTests.cs a WorkspaceSelectionContextTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra los commits RED y GREEN; ambos incluyen Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual a Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Worker solicita claude-sonnet-5-5/medium; relay-record-work.json Notes registra modelo efectivo sonnet (alias claude-sonnet-5-5) y effort medium, coincidentes con la delegación requerida."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revisados WorkCompleted, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json; el escaneo de términos de AUTOMATION_PLAN §16.10 no encontró coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 23 llamadas de herramienta, 0 resultados con error, 0 denegaciones de permisos o credenciales y 0 avisos de límite."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "Ci",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El CI exacto de CurrentSha no está completamente verde: falla Build Plugin without AutoCAD por CS8632 en WorkspaceSelectionContextTests.cs(62,75), según Notes del relevo; los otros tres jobs requeridos pasan.",
+    "Los 29 fallos del TRX Core del RedSha son fallos de aserción asociados al comportamiento de sesiones, selección y drenaje todavía desactivado; el TRX actual pasa las 12447 pruebas Core.",
+    "Ambos TRX UI registran 17 resultados NotExecuted por Skip y 1637 superados; Counters.notExecuted=0 es la convención del logger indicada en el relevo.",
+    "El reintento de git ls-remote desde este entorno falló por conexión al proxy; el registro remoto, obtenido 13 segundos antes de la entrada del Controller, y origin/main local coinciden con los SHA esperados."
+  ],
+  "RecommendedNextAction": "Corregir el aviso CS8632 y obtener una nueva corrida push verde para el SHA corregido."
+}

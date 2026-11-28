@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "F4B-PBT2A-DRAFT-STATE-PORT",
+  "RunId": "R20261119T065628Z-7de7",
+  "Initiative": "I-64",
+  "Unit": "I-64",
+  "Gate": "F4B",
+  "Attempt": 2,
+  "AuthorityRevision": "1ee10d3fc53010e87f7a2720146366c3d4320951",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "BaseSha": "17872be8179475a3c080a9df158488a4a7b4f870",
+  "ExpectedBranch": "architecture/workspace-persistente-rackcad",
+  "ExpectedWorktree": "<worktree-de-I-64>",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261119T065628Z-7de7"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "Medium",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Low"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "La clasificacion es implementacion transversal corta: la correccion ajusta una prueba Core sobre el esqueleto existente y completa el puerto de Application entre PushBackEditableState y DraftSession. Ambiguedad Low: C-1 a C-3, API, pruebas y limites estan fijados por el contrato y el analisis. Sensibilidad arquitectonica Medium: conecta Application con el nucleo Workspace sin modificar Drafts ni otras capas. Amplitud Medium: dos archivos de producto, una prueba corregida y el alcance de verificacion del contrato. Uso de herramientas High: requiere inspeccion Git, pruebas focales y Core completa, y comprobacion de CI; la celda seleccionada cuenta con tool-use. Coste de fallo High: copia, identidad y referencias mutables estan sujetas a invariantes y condiciones de retorno al Owner. Repeticion mecanica Low: la correccion es una reordenacion puntual y la implementacion es especifica. Horizonte Low: alcance cerrado y secuencial, sin trabajo de larga duracion. Se enruta a la celda subagent Anthropic claude-sonnet-5-5 con effort high, Deep, el nivel elegible mas bajo adecuado entre las celdas del contrato. El catalogo registra esta celda verificada el 2026-09-30; el contrato registra high como probado el 2026-09-30. Verificados para esta emision: branch architecture/workspace-persistente-rackcad, BaseSha 17872be8179475a3c080a9df158488a4a7b4f870 y origin/main 812baf879612320653094a8aaf46aca0bac81383; los conteos medidos fueron 70, 5, 716 y 212 archivos en las cuatro rutas declaradas. Horizonte Low, por lo que no aplica S-03.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [],
+  "Objective": "",
+  "AllowedWriteScope": [],
+  "ForbiddenWriteScope": [],
+  "Invariants": [],
+  "AcceptanceCriteria": [
+    "En la fase RED de la correccion, cambiar solo tests/RackCad.Tests/PushBackDraftStatePortTests.cs para aplicar C-1 dentro de la lectura de LaunchFor(draft, p): capturar estado-es-el-actual con ReferenceEquals(desdeBorrador.State, draft.CurrentDraftState) e id antes de aplicar la edicion; luego aplicar por desdeBorrador.Port y despues comprobar puerto-es-del-borrador. Conservar exactamente la linea esperada launchfor estado-es-el-actual=True id=GUID-PBT2-0001 puerto-es-del-borrador=True, la regla EXCEPCION y el resto de la clase.",
+    "Aplicar C-2: CT-PBT2A-01, CT-PBT2A-03 y CT-PBT2A-04 permanecen como en c33ac6ac. En la fase RED, los dos archivos de src/ siguen siendo el esqueleto de c33ac6ac y PushBackDraftPortSharedReferenceGuardTests permanece sin cambios. El diff BaseSha..RedSha de tests/ contiene solo la clase corregida.",
+    "Verificar INV-PBT2A-02 con el filtro PushBackDraftStatePortTests: Selected es al menos 3 y Failed == Selected; los tres fallos son aserciones sobre el esqueleto. Ningun metodo del filtro pasa y ninguno falla por una excepcion no convertida en la asercion esperada.",
+    "Registrar la tabla CT a asercion del RED: CT-PBT2A-01, resultado de aplicar, estado dirty, copia entregada, objeto distinto, estado inicial intacto y mutacion posterior; CT-PBT2A-02, linea de LaunchFor y sus resultados de identidad, id, proyecto, puerto y excepciones; CT-PBT2A-03, la linea de igualdad del corpus C18, que falla porque el esqueleto no aplica al borrador. La guarda CT-PBT2A-04 permanece sin coincidencias y sus quince autopruebas indican falla para a, b, c, e, f1, f2, f3, g1, g2, h1, h2, i, j, k1 y k2.",
+    "Implementar en el GREEN solo src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs y src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs, conforme a la API exacta D-PBT2-02 y D-PBT2-03. Conservar las sentencias literales: ArgumentNullException para draft, edited, state y port, cada una con su mensaje y nombre de parametro fijados; ArgumentException para rackId nulo, vacio o espacios, con A rack id is required. (Parameter 'rackId'). LaunchFor(null, p) rechaza draft con la excepcion literal requerida.",
+    "Cumplir INV-PBT2A-06: ApplyToDraft realiza una sola llamada al borrador, SetCurrentDraftState(edited). Cumplir INV-PBT2A-04: no declarar campos estaticos y usar un solo namespace RackCad.Application.Systems.PushBack de bloque por archivo; las pruebas usan namespace RackCad.Tests.",
+    "Cumplir INV-PBT2A-05: los dos archivos nuevos de src/ no contienen RackCad.UI, System.Windows, Autodesk, Pilot, RackSystemKind, .RequestUpdate(, CrossBoundary, TryBeginApply, CompleteApply, DiscardAndReload, KeepMineOnCurrentVersion, EnterError, MarkPossiblyStale ni SetPendingText.",
+    "Cumplir INV-PBT2A-01: entre ChainBaseSha 0dc623ca7a4bf1640654440276aa3d27147f48d4 y CurrentSha no cambia ningun archivo de src/ que ya existia en ChainBaseSha; frente a BaseSha, el GREEN modifica solo los dos archivos nuevos de src/ y no modifica tests/.",
+    "Cumplir PBT2A-C13 por nombre: en los dos archivos nuevos de src/ usar solo los miembros y tipos de la lista cerrada del contrato, ademas de los constructores permitidos. No tocar Drafts/, archivos de PB-T1b, Pilot/ ni WorkspaceHostCore.",
+    "Mantener exactamente las lineas literales y resultados esperados de CT-PBT2A-01 a CT-PBT2A-04; no corregir expectativas. Si el resultado de CT-PBT2A-03 da iguales=False, diseno-igual=False, huellas-iguales=False o una referencia mutable compartida fuera de D2, aplicar PBT2A-C15.",
+    "Dejar en verde y sin cambios las redes de pruebas indicadas por INV-PBT2A-07. Ejecutar todos los filtros del contrato con sus conteos minimos y la suite Core completa; cada seleccion debe mostrar al menos una prueba seleccionada.",
+    "Respetar D2 e INV-PBT2A-14: conservar exactamente las dos referencias compartidas declaradas por lado, sin compartir otros objetos mutables ni mutar PushBackSystem o RackModuleReconciliationResult adoptados durante la vida del borrador. Si el trabajo requiere una mutacion o un recurso compartido adicional, aplicar PBT2A-C17 y devolver la decision al Owner.",
+    "Cumplir INV-PBT2A-09 de determinismo e INV-PBT2A-10 de contencion de las corridas locales. En la comprobacion de limpieza, si entre las mediciones solo cambia RackFrameConfigurator.layout, tratarlo como el defecto de aislamiento previo a F4B descrito en section 4 del analisis; cualquier otro cambio del perfil o la biblioteca activa PBT2A-C09.",
+    "Dejar sin cambios la ventana, el piloto, el host core, el nucleo de borradores, el Plugin, los archivos de PB-T1b y las pruebas o ayudantes existentes. No ejecutar AutoCAD.",
+    "Comprobar la CI exacta de la fase RED: tests en failure por CT-PBT2A-01 a 03, ui-tests y build-ui en success, build-plugin omitido por su needs. Comprobar la CI exacta del GREEN: los cuatro jobs requeridos en success; Core previsto en 19092 resultados y UI en 2439 resultados, con 2418 Passed y 21 Skipped.",
+    "Registrar los trailers reales de los commits RED y GREEN en la entrega y hacer que el trailer de la entrega coincida con los trailers comprobados."
+  ],
+  "RequiredTests": [],
+  "ExpectedEvidence": [],
+  "StopConditions": [],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 1,
+  "ChainBaseSha": "0dc623ca7a4bf1640654440276aa3d27147f48d4",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": {
+    "RunId": "R20261119T060524Z-55f2",
+    "FailureClass": "StopCondition",
+    "AnalysisSha256": "34717ba021ddd613fc69674b5ef8433684ce6316ff7b3a3a1bdc5d805a9c61d3"
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4B-PBT2A-DRAFT-STATE-PORT/2/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion F4B-PBT2A-DRAFT-STATE-PORT, correccion del intento 2, CONTROLLER_PLANNING)"
+}

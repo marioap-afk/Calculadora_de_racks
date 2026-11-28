@@ -24,9 +24,14 @@ namespace RackCad.Application.Systems.Selective
         /// With <see cref="SelectiveSafetySelection.DesviadorCellsAreByPost"/> the key IS the post index: the grid has
         /// one column per post and that is what Push Back stores. Otherwise it collapses onto the last front, which is
         /// the historical dynamic reading and stays byte-identical.
+        /// <para>
+        /// I-64, cuarta tanda (decision of the Owner, 2026-11-26): a Dinámico whose desviador carries
+        /// <see cref="SelectiveDesviadorConfig.CellsByPost"/> (a new rack, or one whose desviador was edited in the RackCad window) is read
+        /// by post too, with this same rule; a document without it keeps the historic reading.
+        /// </para>
         /// </summary>
         public static int CellKey(SelectiveSafetySelection selection, int postIndex, int frontCount)
-            => selection?.DesviadorCellsAreByPost == true
+            => selection?.DesviadorCellsAreByPost == true || selection?.Desviador.CellsByPost == true
                 ? postIndex
                 : Math.Min(postIndex, Math.Max(0, frontCount - 1));
 

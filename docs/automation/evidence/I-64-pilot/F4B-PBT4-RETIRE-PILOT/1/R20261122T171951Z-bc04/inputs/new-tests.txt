@@ -1,0 +1,5 @@
+tests/RackCad.Tests/PushBackRetirePilotGuardTests.cs
+tests/RackCad.Tests/PushBackRetirePilotCensusGuardTests.cs
+tests/RackCad.Tests/PushBackRetirePilotRunTests.cs
+tests/RackCad.Tests/PushBackRetirePilotFullCopyGuardTests.cs
+tests/RackCad.Tests/PushBackRetirePilotPlanGuardTests.cs

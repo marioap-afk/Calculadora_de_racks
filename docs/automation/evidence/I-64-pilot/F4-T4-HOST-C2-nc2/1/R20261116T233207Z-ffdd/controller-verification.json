@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4-HOST-C2",
+  "RunId": "R20261116T233207Z-ffdd",
+  "DelegationRunId": "R20261116T124830Z-cfb1",
+  "WorkRunId": "R20261116T125319Z-3ea9",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json parses as rackcad-worker-handoff/v1; TaskId=F4-T4-HOST-C2, Attempt=1, DelegationRunId=R20261116T124830Z-cfb1, RunId=R20261116T125319Z-3ea9; OutputWrittenUtc 2026-11-16T17:09:36.348312-06:00 is after Cession.StartUtc 2026-11-16T12:53:24Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 6d02b485efaed0787849a0651e6704cbee94dd65 dcf3396f7c0850c6389e9826a1ca3e544f130cc9 exited 0; BaseSha parent is AuthorityRevision. git diff --name-only AuthorityRevision BaseSha lists 3 paths, all UNIT_DOC in Authorities. MainSha-to-HEAD diff for AGENTS.md, AUTOMATION_PLAN.md, agent-execution README, WORKFLOW.md, ADR-0003, routing and model-catalog is empty."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json for 16.9 A3-A5: delegation AllowedWriteScope is a subset of contract scope; ForbiddenWriteScope matches; Invariants, StopConditions, Authorities and RequiredTests compare equal. See finding on the contradictory byte-fidelity record."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse --show-toplevel, HEAD, branch and refs/remotes/origin/architecture/workspace-persistente-rackcad match the handoff worktree, branch and CurrentSha 9abc1320743d5e4d472c4db6f5fdf4a96b835a46. git merge-base --is-ancestor BaseSha CurrentSha and RedSha CurrentSha exited 0; RedSha is between BaseSha and CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Exit records LsRemoteSha=BaseSha and OriginMainSha=MainSha; Entry records LsRemoteSha=CurrentSha. RemoteFacts.CurrentRun HeadSha=CurrentSha and RedRun HeadSha=RedSha."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs and tests/RackCad.Tests/RedefinedViewReferenceUndoTouchGuardTests.cs. delegation.json AllowedWriteScope contains only the test path, so the source path is outside the exact delegated whitelist. The source path is permitted by the contract, but not by the delegation."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 is empty. git check-ignore -v on the inputs package reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records push runs on the exact branch and SHAs: CurrentSha run 43972738540 has all four required jobs success; RedSha run 43971230759 has Core failure, UI success, Build UI success and Plugin build skipped. Current TRX totals: Core 19067 passed, UI 2386 passed and 0 failed. Red Core has 3 failures in the new class; Red UI has 0 failures."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX files show Current Core 19067/19067 passed and UI 2386 passed, 0 failed. RequiredTests counts in worker-handoff TestResults meet each MinSelected; Workspace=3482, new guard=4, UI Workspace=694 and UI PushBackClassicCharacterization=55. Red TRX has 3 assertion failures only in RedefinedViewReferenceUndoTouchGuardTests; its negative mutation case passes as specified. git diff --name-only ChainBaseSha RedSha -- tests/ is only the new test file; git diff --name-only RedSha CurrentSha -- tests/ is empty. ChainRedFiles is tests/RackCad.Tests/RedefinedViewReferenceUndoTouchGuardTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format='%H %s%n%b' BaseSha..CurrentSha shows both commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff Worker.Trailer and effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation Model=claude-sonnet-5-5 and Effort.Provider=high; relay-record-work Participant.ModelEffective=claude-sonnet-5-5 and EffortEffective=high. Participant.ModelRequested=sonnet is the recorded subagent launch alias."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned worker-handoff WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against the AUTOMATION_PLAN 16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report 0 permission denials, 2 tool errors with none pending, no usage warning, and 0 persistent participant or unattributable processes at entry and exit."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "Scope fails: the source file in the BaseSha..CurrentSha diff is absent from delegation.json AllowedWriteScope.",
+    "byte-fidelity-check.json reports the AllowedWriteScope collection equal byte-for-byte, but the supplied contract has 2 allowed paths and the supplied delegation has 1. This contradiction triggers S-04."
+  ],
+  "RecommendedNextAction": "Resolve the delegated scope and byte-fidelity discrepancy before another verification."
+}

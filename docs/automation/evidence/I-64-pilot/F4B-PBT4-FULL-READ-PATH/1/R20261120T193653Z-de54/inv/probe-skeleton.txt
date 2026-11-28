@@ -1,0 +1,79 @@
+== INV-PBT4A-01: git diff --name-status 5aaacce3 WT -- src tests
+  M	src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+  M	tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+== git diff --name-only 5aaacce3 -- src/RackCad.UI src/RackCad.Domain src/RackCad.Plugin/RackPushBackCommands.cs src/RackCad.Plugin/RackCommandSupport.cs (must be empty)
+  EMPTY
+== INV-PBT4A-05: WHC is BaseSha with the five sentences changed, whitespace collapsed, comments kept
+  sentences of BaseSha: 6 (Begin + 5); sentences of the original left now: 6; of the new block now: 0
+  DIFFERENT; first difference at 18700: expected [ is IWorkspaceEditIntentOriginReader originReader ? originReader.ReadIntentAtOri] now [!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.W]
+  Find<PushBackPilotDraftState>: base 9, now 9
+== INV-PBT4A-04: counts over the WHOLE text of each file, comments included (BaseSha -> now)
+  RackPilotIntentAdapter.cs LockDocument: 1 -> 1
+  RackPilotIntentAdapter.cs StartTransaction: 1 -> 1
+  RackPilotIntentAdapter.cs CaptureDrawing(: 1 -> 1
+  RackPilotIntentAdapter.cs PushBackPilotIntentReader.Read(: 1 -> 1
+  RackPilotIntentAdapter.cs new PushBackPilotIntentScan(: 1 -> 1
+  RackPilotIntentAdapter.cs PushBackFullDraftReader.Read(: 0 -> 0
+  RackPilotIntentAdapter.cs PushBackOriginByText.ReadAt(: 0 -> 0
+  WorkspaceNavigationHost.cs LockDocument: 2 -> 2
+  WorkspaceNavigationHost.cs RackPilotIntentAdapter.Read(: 1 -> 1
+  WorkspaceNavigationHost.cs RackPilotIntentAdapter.LoadCatalog(): 1 -> 1
+  WorkspaceNavigationHost.cs RackPilotIntentAdapter.AtOrigin(: 0 -> 0
+  WorkspaceHostCore.cs Find<PushBackPilotDraftState>: 9 -> 9
+  signature of RackPilotIntentAdapter.Read unchanged: True
+  ReadOnActiveDocument gains originText: False
+== the Skip of CT-PBT3A-12: lines of the file that differ from BaseSha
+  line counts: 337 -> 337
+  changed lines: 1
+  60: [[Fact]] -> [[Fact(Skip = "I-64 F4B PB-T4a: sustituida por CT-PBT4A-06 de PushBackFullReadGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]]
+== INV-PBT4A-13: the census of declarations of the six code paths, BaseSha vs now (a name with a count; an overload is one more)
+-- WorkspaceEditIntent.cs: base 192 declarations, now 195
+   EditIntentReadResult.Catalog [field-or-property]: 0 -> 1
+   EditIntentReadResult.FromReads [method]: 0 -> 1
+   EditIntentReadResult.FullRead [field-or-property]: 0 -> 1
+   - signature gone: .EditIntentReadResult.EditIntentReadResult: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead)
+   + signature new:  .EditIntentReadResult.EditIntentReadResult: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead, PushBackFullIntentResult? fullRead, RackCatalog?
+   + signature new:  .EditIntentReadResult.Catalog: public RackCatalog? Catalog
+   + signature new:  .EditIntentReadResult.FullRead: public PushBackFullIntentResult? FullRead
+   + signature new:  .EditIntentReadResult.FromReads: public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog)
+-- IWorkspaceEditIntentOriginReader.cs: base 0 declarations, now 2
+   IWorkspaceEditIntentOriginReader [type]: 0 -> 1
+   IWorkspaceEditIntentOriginReader.ReadIntentAtOrigin [method]: 0 -> 1
+-- PushBackOriginByText.cs: base 0 declarations, now 4
+   PushBackOriginByText [type]: 0 -> 1
+   PushBackOriginByText.AtKey [method]: 0 -> 1
+   PushBackOriginByText.Choose [method]: 0 -> 1
+   PushBackOriginByText.ReadAt [method]: 0 -> 1
+-- WorkspaceHostCore.cs: base 127 declarations, now 127
+-- RackPilotIntentAdapter.cs: base 22 declarations, now 22
+-- WorkspaceNavigationHost.cs: base 27 declarations, now 27
+== names added (file, name, +count):
+   ('WorkspaceEditIntent.cs', 'EditIntentReadResult.Catalog [field-or-property]', 1)
+   ('WorkspaceEditIntent.cs', 'EditIntentReadResult.FromReads [method]', 1)
+   ('WorkspaceEditIntent.cs', 'EditIntentReadResult.FullRead [field-or-property]', 1)
+   ('IWorkspaceEditIntentOriginReader.cs', 'IWorkspaceEditIntentOriginReader [type]', 1)
+   ('IWorkspaceEditIntentOriginReader.cs', 'IWorkspaceEditIntentOriginReader.ReadIntentAtOrigin [method]', 1)
+   ('PushBackOriginByText.cs', 'PushBackOriginByText [type]', 1)
+   ('PushBackOriginByText.cs', 'PushBackOriginByText.AtKey [method]', 1)
+   ('PushBackOriginByText.cs', 'PushBackOriginByText.Choose [method]', 1)
+   ('PushBackOriginByText.cs', 'PushBackOriginByText.ReadAt [method]', 1)
+== names removed (file, name, -count) (must be empty):
+== INV-PBT4A-14: every line added to src/ by git diff -U0 5aaacce3 WT, with the suspicious ones flagged
+   WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   WorkspaceEditIntent.cs:         private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead, PushBackFullIntentResult? fullRead, RackCatalog? catalog)
+   WorkspaceEditIntent.cs:             FullRead = fullRead;
+   WorkspaceEditIntent.cs:             Catalog = catalog;
+   WorkspaceEditIntent.cs:         /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless the read came from <see cref="FromReads"/>.</summary>
+   WorkspaceEditIntent.cs:         public PushBackFullIntentResult? FullRead { get; }
+   WorkspaceEditIntent.cs: 
+   WorkspaceEditIntent.cs:         /// <summary>I-64 F4B PB-T4a: the catalog of the read; null unless the read came from <see cref="FromReads"/>.</summary>
+   WorkspaceEditIntent.cs:         public RackCatalog? Catalog { get; }
+   WorkspaceEditIntent.cs: 
+   WorkspaceEditIntent.cs:             return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog) => new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
+   WorkspaceEditIntent.cs: 
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadStatus.NoActiveDocument, reason, null, null, null);
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult Busy(string reason) => new(EditIntentReadStatus.Busy, reason, null, null, null);
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult Rejected(string reason) => new(EditIntentReadStatus.Rejected, reason, null, null, null);
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult Failed(string reason) => new(EditIntentReadStatus.Failed, reason, null, null, null);

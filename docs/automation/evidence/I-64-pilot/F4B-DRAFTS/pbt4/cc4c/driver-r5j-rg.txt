@@ -1,0 +1,94 @@
+fase redgreen; copia /d/r5j; salida r5j-rg; revision 6adff90d856026a7a51067c1e9d7248f3d81641c
+  pieza a8a3afa2a0a71674ccd7eafc1f4e52eea183fef7cbf8bc5fd319be9dfb639215 green_pbt4c_v51.py
+  pieza 081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16 pbt4c-green-v51.txt
+  pieza f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e pbt4c-skeleton-v51.txt
+  pieza a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f pbt4c_skips_v50.py
+  pieza d81fcb41bed684b8ac35949841e3a7fba2277120bdf3e882d0267f8176e4a896 make_equivalents_pbt4c_v50.py
+  pieza 03dbb6a76d1e50c7c1935926727e4a5172f44c30a3cc6bc11ddac51197bd5102 apply_red_pbt4c_v51.py
+  pieza 8b9445455b60521598a113e14e870fe5218d3b1b4b142308fbac934016d9bd49 apply_green_pbt4c_v51.py
+  pieza 71521e52abdd7f371fb4b067d2b4400bb508c2d1d6a246ca83df4bb39127ee22 check_skips_pbt4c_v50.py
+  pieza 9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de pbt4c-substitution-list-4.tsv
+  pieza ede5d822d30e8d5dc022f124a2a42f4e7cb562f53de7862be11b2d7b0b0e13ba pbt4c-rehearsal-textct.cs
+  pieza 0d668ed9b58d9f0d933cfdbda1e06bf7a7a9d5ad78fed661a88c7e1a9ac5285b pbt4c-probe-editall.cs
+  pieza bc9a0fb348b63aa9f639d66ccf301210af3bb2b63f799348e8808d58290649b5 pbt4c-probe-close-ui.cs
+  pieza bb2c983b53121020df80e63655743e2cee943c318f25653362bcb8561f8d9486 p6_check_pbt4c_v50b.py
+  pieza 772f35eebc2589bfdd3d64adef7183b6109044c4d3ac8bf7f1cadc2054b20428 rehearsal_check_v51.py
+  pieza d5ebc82f7cba6754872f5a24d0237b2d3010bf2f3b05dec2c52f0ec856265306 filter_overlap_pbt4c_v50b.py
+  pieza 48e093c372ba5f98899327986020727ee164b901d87348e523787a97072edf74 classes_v51.py
+  pieza 6faf8fc9052c1a7185e1c5f431f40272883f66f678830a25645cb6c3f1fc646e trx_message_v50.py
+  pieza 19182fbc10012c160453df237ad2657568affdc586e2f7ce9cad8feccdef7815 ui_filters_pbt4c_v50b.txt
+  pieza 8feddf4f40505fe740dd6cd410d6b00d38d66b10145e7c6126224c9f8e5db449 pbt4b-contract-dump-v50.txt
+  pieza 83477d65dcf3f9461494025d950462f15308ceb9538f571222f9a2527d3d753b p6_pbt4c_v51.sh
+copia exportada: 13895 archivos
+RED de PB-T4c escrito: 16 archivos (esqueleto 8, Skip 4, equivalentes 4), sin las CT
+check_skips PB-T4c: PASA (4 archivos, 4 Skip)
+check_skips rc=0 :: check_skips PB-T4c: PASA (4 archivos, 4 Skip)
+red-core rc=0 errores=0 avisos-CS=0
+red-ui rc=0 errores=0 avisos-CS=0
+red-plugin rc=0 errores=0 avisos-CS=0
+red: errores 0, avisos CS 0 (en total, hasta aqui)
+  binario 751133d4eb13114a907a7c51e02d0980f4aa6aef8d4f1563d78f335732790329 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Application.dll
+  binario d7554d35782dd4fe4aea9c44a220b24ebe78737b193f52b1f1262fa6b239cd77 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Tests.dll
+  binario b3b68b25d10e3428b52655b4906e71da28d0873a51afbd9113edcd2b5030a3a3 tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario 45641b30a2be263d4fa5a4ad161c1b54a99f63c83b171907450832333a4c5ab3 _plugin-out-red/RackCad.Plugin.dll
+test core-red.trx rc=0 segundos=736 trx-sha256=f8eac38a2f77277c94c0207b60d403890480bceee5f766e64d5d0262a93b41a9 :: filas 19608 {'NotExecuted': 461, 'Passed': 19147}; inicio 2026-11-21T12:30:08.7517750-06:00; fin 2026-11-21T12:42:10.0086862-06:00
+check core red rc=0 :: core red: PASA
+test r-ui-01.trx rc=0 segundos=8 trx-sha256=ce67b1bd56a835dbd2a3518122154f52e4a022f0e0ccc2d766eed741df8aba29 :: filas 1 {'Passed': 1}; inicio 2026-11-21T12:42:24.3022860-06:00; fin 2026-11-21T12:42:24.3023089-06:00
+test r-ui-02.trx rc=0 segundos=9 trx-sha256=e8bfb01c648391412c85d2bbc77f78cfcfb7848bf1db9d14df6c6d8fc5346baa :: filas 672 {'NotExecuted': 28, 'Passed': 644}; inicio 2026-11-21T12:42:27.7164938-06:00; fin 2026-11-21T12:42:33.9490692-06:00
+test r-ui-03.trx rc=0 segundos=23 trx-sha256=86c10d63f2b9bde0b122716357b322b15de246d3968d976e37673122c877db76 :: filas 2 {'Passed': 2}; inicio 2026-11-21T12:42:50.1707486-06:00; fin 2026-11-21T12:42:58.1554677-06:00
+test r-ui-04.trx rc=0 segundos=12 trx-sha256=0c088cce2b2c5e263e1525a9c09b78e7e479a7bc606ff826375d8df9c8a8de69 :: filas 55 {'Passed': 55}; inicio 2026-11-21T12:43:01.7235026-06:00; fin 2026-11-21T12:43:10.9601663-06:00
+test r-ui-05.trx rc=0 segundos=14 trx-sha256=d6075a139f9894afa6358c9da4424fb533001d20d9e162b2cb61e488886263d3 :: filas 18 {'NotExecuted': 2, 'Passed': 16}; inicio 2026-11-21T12:43:16.5848870-06:00; fin 2026-11-21T12:43:26.3282459-06:00
+test r-ui-06.trx rc=0 segundos=23 trx-sha256=a709f117a5673c89ba6608f1bf6557e6a86bbdb683c77d960c989f5217cc45d6 :: filas 14 {'Passed': 14}; inicio 2026-11-21T12:43:30.4639774-06:00; fin 2026-11-21T12:43:50.1867595-06:00
+test r-ui-07.trx rc=0 segundos=14 trx-sha256=9932fb23471c95e681a5b2e45d96d6ad628bb5ac577b5aa68e2801758edacbcf :: filas 14 {'Passed': 14}; inicio 2026-11-21T12:43:55.3172524-06:00; fin 2026-11-21T12:44:04.7205039-06:00
+test r-ui-08.trx rc=0 segundos=5 trx-sha256=81e1500c58a7f8e0d04feaa2b1530401423b3d83dc9a0bc22d171b02c9d9a65d :: filas 67 {'Passed': 67}; inicio 2026-11-21T12:44:08.8021246-06:00; fin 2026-11-21T12:44:10.6213359-06:00
+test r-ui-09.trx rc=0 segundos=11 trx-sha256=ff1426bfc5a3901d5489aa635298f6567aea5396a3227ac48619f491d8d738bc :: filas 3 {'Passed': 3}; inicio 2026-11-21T12:44:22.1486140-06:00; fin 2026-11-21T12:44:22.6643049-06:00
+test r-ui-10.trx rc=0 segundos=11 trx-sha256=abcb92dd3c68a6e067309cdb77d54e03a245afeb26e6e5e02506b4d191e8b8bb :: filas 4 {'NotExecuted': 1, 'Passed': 3}; inicio 2026-11-21T12:44:29.3009963-06:00; fin 2026-11-21T12:44:33.7401577-06:00
+test r-ui-11.trx rc=0 segundos=3 trx-sha256=f148c7c4e456bfd0e95d092e1f40eddd3360b2aea73125e7e735b606ada7e0c4 :: filas 1 {'Passed': 1}; inicio 2026-11-21T12:44:37.1846045-06:00; fin 2026-11-21T12:44:37.1846193-06:00
+test r-ui-12.trx rc=0 segundos=19 trx-sha256=57f1f44030810758ceecb70605bc45185b522c968d76cb8179325978f8549a50 :: filas 3 {'Passed': 3}; inicio 2026-11-21T12:44:45.9844025-06:00; fin 2026-11-21T12:44:57.0868573-06:00
+test r-ui-13.trx rc=0 segundos=3 trx-sha256=ad0a80885fa3badd70068630ec7c9fecc419081f8d79790370a81ff237bd70e0 :: filas 3 {'Passed': 3}; inicio 2026-11-21T12:45:01.2564621-06:00; fin 2026-11-21T12:45:01.2956341-06:00
+test r-ui-14.trx rc=0 segundos=3 trx-sha256=2d109c9839c510eb7169447ba0b9635a84020f8621c14f6d2c3ea883e04d8041 :: filas 13 {'Passed': 13}; inicio 2026-11-21T12:45:04.7572863-06:00; fin 2026-11-21T12:45:04.7807925-06:00
+test r-ui-15.trx rc=0 segundos=3 trx-sha256=6b0af16ee4a0ca1f1a0978a505955cc3f6cc3c43f047d1022e24e944b26a213b :: filas 10 {'Passed': 10}; inicio 2026-11-21T12:45:08.3944881-06:00; fin 2026-11-21T12:45:08.4384307-06:00
+test r-ui-16.trx rc=0 segundos=3 trx-sha256=c8a7b0cc5050f323762c421fbae9e161c5010c34cff6cfc49e97aedaec9154a9 :: filas 30 {'Passed': 30}; inicio 2026-11-21T12:45:11.9236688-06:00; fin 2026-11-21T12:45:11.9595611-06:00
+test r-ui-17.trx rc=0 segundos=3 trx-sha256=b742a315b950181736f261def7f61120aba4a32283fcbfe4923ffbca55ef1a98 :: filas 6 {'Passed': 6}; inicio 2026-11-21T12:45:15.7717918-06:00; fin 2026-11-21T12:45:16.1154989-06:00
+test r-ui-18.trx rc=1 segundos=4 trx-sha256=b869d117851adef469e778e1b66003d43911a13fed0bb590369820097d012912 :: filas 1 {'Failed': 1}; inicio 2026-11-21T12:45:21.4797216-06:00; fin 2026-11-21T12:45:21.4797348-06:00
+check ui red :: ui red: PASA (otras Failed 0)
+clases=60 filas=60
+clases=704 filas=25
+GREEN de PB-T4c escrito: 13 archivos de src/
+green-core rc=0 errores=0 avisos-CS=0
+green-ui rc=0 errores=0 avisos-CS=0
+green-plugin rc=0 errores=0 avisos-CS=0
+green: errores 0, avisos CS 0 (en total, hasta aqui)
+  binario ca09203ba4a09955820a84127f960c5617a02d10e4fed6f470e76df0b55f0807 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Application.dll
+  binario 17ee5fae7d8513bc6ffc34f25e29b052f4ea36192eb0dc1fa3504f83ba728bdd tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Tests.dll
+  binario 3e8f00e91647b7f4f60cd589b38ec3894ce1ce41a7a44fd6ba554b172a167e8e tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario 8648f655e17ba366c361acc996cae54e77fe239020efbadd19958a1f1a03d16a _plugin-out-green/RackCad.Plugin.dll
+test core-green.trx rc=0 segundos=622 trx-sha256=a0d26d57abeb48fd468f21168f075dab5c536ef8e76d79a6f8df42a73f2e6667 :: filas 19608 {'NotExecuted': 461, 'Passed': 19147}; inicio 2026-11-21T12:47:13.7202745-06:00; fin 2026-11-21T12:57:25.7769640-06:00
+check core green rc=0 :: core green: PASA
+test g-ui-01.trx rc=0 segundos=8 trx-sha256=145a821058f02ab1c4ab05f16830c535a6f671b591087121cf0f63dd9805e742 :: filas 1 {'Passed': 1}; inicio 2026-11-21T12:57:39.6002233-06:00; fin 2026-11-21T12:57:39.6002368-06:00
+test g-ui-02.trx rc=0 segundos=10 trx-sha256=da57cc62091b84cee7e85452976d30f64f17e8d65c34bdb4e76ea52cedd69b96 :: filas 672 {'NotExecuted': 28, 'Passed': 644}; inicio 2026-11-21T12:57:43.2096702-06:00; fin 2026-11-21T12:57:49.7247246-06:00
+test g-ui-03.trx rc=0 segundos=23 trx-sha256=4878cf7ae3136fc9cf4af730d84dc31febce35ae2d25aa09cb1761450847b104 :: filas 2 {'Passed': 2}; inicio 2026-11-21T12:58:06.2438871-06:00; fin 2026-11-21T12:58:14.4421133-06:00
+test g-ui-04.trx rc=0 segundos=13 trx-sha256=58ee0020d988232fc48c2aa1aae42ddf4dca7996d0cc1606fbefb07998e89cc2 :: filas 55 {'Passed': 55}; inicio 2026-11-21T12:58:18.1944213-06:00; fin 2026-11-21T12:58:27.7599997-06:00
+test g-ui-05.trx rc=0 segundos=16 trx-sha256=0423401e409db76da821164198693fda64f832cfb2e059e8d3e0d7351f9f15ec :: filas 18 {'NotExecuted': 2, 'Passed': 16}; inicio 2026-11-21T12:58:34.4854789-06:00; fin 2026-11-21T12:58:43.8898880-06:00
+test g-ui-06.trx rc=0 segundos=26 trx-sha256=5c6c2cfcf38e6eb39cb5eacc3709b720b6baac86b3238760de1e725f7214094e :: filas 14 {'Passed': 14}; inicio 2026-11-21T12:58:48.7311369-06:00; fin 2026-11-21T12:59:11.4238642-06:00
+test g-ui-07.trx rc=0 segundos=16 trx-sha256=cc72ef3f51ebf67d062817fb79669d12388ce967a881fbd01f749c87daa18197 :: filas 14 {'Passed': 14}; inicio 2026-11-21T12:59:17.3593275-06:00; fin 2026-11-21T12:59:27.9313274-06:00
+test g-ui-08.trx rc=0 segundos=5 trx-sha256=d04ca8c3306d3534c132cb404a8bfe7fd60eac9033f43468566e9c7fc44cba80 :: filas 67 {'Passed': 67}; inicio 2026-11-21T12:59:32.3521192-06:00; fin 2026-11-21T12:59:34.4016122-06:00
+test g-ui-09.trx rc=0 segundos=12 trx-sha256=55ddae7becb22ed3fb8c243c5dbab8f3e9d2b7789e747d9034bb5b30af5261a7 :: filas 3 {'Passed': 3}; inicio 2026-11-21T12:59:46.8641186-06:00; fin 2026-11-21T12:59:47.4116685-06:00
+test g-ui-10.trx rc=0 segundos=11 trx-sha256=a9e123d40e63bdac44902c437eeffffaa8201e7bb493b26d2261bb6491c34619 :: filas 4 {'NotExecuted': 1, 'Passed': 3}; inicio 2026-11-21T12:59:55.3217902-06:00; fin 2026-11-21T12:59:58.8384855-06:00
+test g-ui-11.trx rc=0 segundos=3 trx-sha256=cdb7b879cded8a900c772a21adf83291d5b73a55c14d9b55d96ade08841d9f10 :: filas 1 {'Passed': 1}; inicio 2026-11-21T13:00:02.8985315-06:00; fin 2026-11-21T13:00:02.8985455-06:00
+test g-ui-12.trx rc=0 segundos=20 trx-sha256=02748c253285147b6be6ef3308e8848f8984c81a10a52aadba72591d380777e6 :: filas 3 {'Passed': 3}; inicio 2026-11-21T13:00:12.7269098-06:00; fin 2026-11-21T13:00:24.5278524-06:00
+test g-ui-13.trx rc=0 segundos=4 trx-sha256=882a620296daf3a0cb795d4ad09234e36b91e2c23ffdd64d0248d19b2acf81df :: filas 3 {'Passed': 3}; inicio 2026-11-21T13:00:29.1275326-06:00; fin 2026-11-21T13:00:29.1737270-06:00
+test g-ui-14.trx rc=0 segundos=3 trx-sha256=1ded113559b05e0a522c49acce8373c509698a04cfbf8467ad7f5114330a09b6 :: filas 13 {'Passed': 13}; inicio 2026-11-21T13:00:32.8250675-06:00; fin 2026-11-21T13:00:32.8485362-06:00
+test g-ui-15.trx rc=0 segundos=3 trx-sha256=3be2e1094f1ee05e181d4c3a76dd778796cec65dc722f04196e98eb2ae53ca6f :: filas 10 {'Passed': 10}; inicio 2026-11-21T13:00:36.2599759-06:00; fin 2026-11-21T13:00:36.3038642-06:00
+test g-ui-16.trx rc=0 segundos=3 trx-sha256=e12a22e51924be9b67d3da94b947c485a977cf083b28004cf95a95258a327f7d :: filas 30 {'Passed': 30}; inicio 2026-11-21T13:00:39.9532829-06:00; fin 2026-11-21T13:00:39.9923858-06:00
+test g-ui-17.trx rc=0 segundos=3 trx-sha256=8fb115e3be7cec194c268e3816f9e9f3e15fd8ee01ed6428ea749c10e9c95745 :: filas 6 {'Passed': 6}; inicio 2026-11-21T13:00:43.8213110-06:00; fin 2026-11-21T13:00:44.3346752-06:00
+test g-ui-18.trx rc=0 segundos=5 trx-sha256=d55a11d860f54c4490b6d14be0ae790f2af06e39953bb66d67333bdb60401dd4 :: filas 1 {'Passed': 1}; inicio 2026-11-21T13:00:50.3163653-06:00; fin 2026-11-21T13:00:50.3163791-06:00
+check ui green :: ui green: PASA (otras Failed 0)
+clases=60 filas=60
+clases=704 filas=25
+clases=704 filas=704
+filtros: PASA
+filtros :: filtros: PASA
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

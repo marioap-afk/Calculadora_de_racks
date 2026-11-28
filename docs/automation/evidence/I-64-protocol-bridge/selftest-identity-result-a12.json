@@ -1,0 +1,984 @@
+{
+  "Schema": "rackcad-i64-identity-bridge-selftest/v1",
+  "VerifierSha256": "de215a5873b76778f1c7935f0f5ea87d758d67c25db5cc1cb10cb216e35e584c",
+  "Result": "PASS",
+  "Passed": 31,
+  "Total": 31,
+  "Cases": [
+    {
+      "Id": "T01",
+      "Description": "real handoff and real repository state: integrity and Identity both pass, and no control result",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "PASS",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATION_NOT_REJECTED_BY_IDENTITY",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "PASS",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATION_NOT_REJECTED_BY_IDENTITY"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T02",
+      "Description": "only CurrentSha mutated, to an existing commit: integrity passes and Identity fails",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "FAIL",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATED_SHA_NOT_AUTHORIZED",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "FAIL",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATED_SHA_EXISTS",
+        "MUTATED_SHA_NOT_AUTHORIZED"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T03",
+      "Description": "TaskId also changed",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "HANDOFF_TASK_ID_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "HANDOFF_TASK_ID_MISMATCH",
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_NOT_ONLY_CURRENT_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T04",
+      "Description": "Attempt also changed",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "HANDOFF_ATTEMPT_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "HANDOFF_ATTEMPT_MISMATCH",
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_NOT_ONLY_CURRENT_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T05",
+      "Description": "DelegationRunId also changed",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "HANDOFF_DELEGATION_RUN_ID_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "HANDOFF_DELEGATION_RUN_ID_MISMATCH",
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_NOT_ONLY_CURRENT_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T06",
+      "Description": "WorkRunId also changed",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "HANDOFF_WORK_RUN_ID_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "HANDOFF_WORK_RUN_ID_MISMATCH",
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_NOT_ONLY_CURRENT_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T07",
+      "Description": "Branch also changed",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "HANDOFF_BRANCH_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "HANDOFF_BRANCH_MISMATCH",
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_NOT_ONLY_CURRENT_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T08",
+      "Description": "the relay output hash does not match the mutated handoff",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "RELAY_OUTPUT_HASH_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "RELAY_OUTPUT_HASH_MISMATCH"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T09",
+      "Description": "the mutated CurrentSha equals HEAD: the control fails",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "PASS",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATION_NOT_REJECTED_BY_IDENTITY",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "PASS",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATION_NOT_REJECTED_BY_IDENTITY"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T10",
+      "Description": "HEAD and the remote branch disagree",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "HEAD_REMOTE_DISAGREE",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "HEAD_REMOTE_DISAGREE"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T11",
+      "Description": "BaseSha is not an ancestor of RedSha",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "BASE_NOT_ANCESTOR",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "BASE_NOT_ANCESTOR"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T12",
+      "Description": "RedSha is not on the expected chain",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "RED_NOT_ON_CHAIN",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "RED_NOT_ON_CHAIN"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T13",
+      "Description": "malformed handoff JSON",
+      "Expected": {
+        "HandoffIntegrity": "NOT_EVALUATED",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATED_UNREADABLE",
+      "Got": {
+        "HandoffIntegrity": "NOT_EVALUATED",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T14",
+      "Description": "a second mutation hidden in a nested field",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATION_NOT_ONLY_CURRENT_SHA",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_NOT_ONLY_CURRENT_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T15",
+      "Description": "nonexistent CurrentSha only: the exact nc1 substitute passes",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "FAIL",
+        "ControlResult": "PASS",
+        "FailClosed": false,
+        "ExitCode": 0
+      },
+      "ExpectedCode": null,
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "FAIL",
+        "ControlResult": "PASS",
+        "FailClosed": false,
+        "ExitCode": 0
+      },
+      "ReasonCodes": [],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T16",
+      "Description": "HEAD is a docs-only descendant of the verified SHA: no custody semantics, fails closed",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "HEAD_NOT_VERIFIED_SHA",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "HEAD_NOT_VERIFIED_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T17",
+      "Description": "HEAD is on another branch",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "BRANCH_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "BRANCH_MISMATCH"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T18",
+      "Description": "bytes reformatted without any change of value",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATION_BYTES_NOT_EXACT",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATION_BYTES_NOT_EXACT"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T19",
+      "Description": "top-level key order changed",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATION_KEY_ORDER_CHANGED",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_KEY_ORDER_CHANGED"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T20",
+      "Description": "a second top-level field changed (WorkCompleted)",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATION_NOT_ONLY_CURRENT_SHA",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_NOT_ONLY_CURRENT_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T21",
+      "Description": "Worktree also changed",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "HANDOFF_WORKTREE_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "HANDOFF_WORKTREE_MISMATCH",
+        "MUTATION_BYTES_NOT_EXACT",
+        "MUTATION_NOT_ONLY_CURRENT_SHA"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T22",
+      "Description": "duplicate JSON key",
+      "Expected": {
+        "HandoffIntegrity": "NOT_EVALUATED",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATED_UNREADABLE",
+      "Got": {
+        "HandoffIntegrity": "NOT_EVALUATED",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T23",
+      "Description": "byte order mark",
+      "Expected": {
+        "HandoffIntegrity": "NOT_EVALUATED",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATED_UNREADABLE",
+      "Got": {
+        "HandoffIntegrity": "NOT_EVALUATED",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T24",
+      "Description": "schema: CurrentSha is not 40 lowercase hex characters",
+      "Expected": {
+        "HandoffIntegrity": "NOT_EVALUATED",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATED_SCHEMA_INVALID",
+      "Got": {
+        "HandoffIntegrity": "NOT_EVALUATED",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T25",
+      "Description": "the real handoff is not the verified delivery",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "REAL_CURRENT_SHA_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "REAL_CURRENT_SHA_MISMATCH"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T26",
+      "Description": "relay for another task",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "RELAY_BINDING_MISMATCH",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "RELAY_BINDING_MISMATCH"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T27",
+      "Description": "relay outcome not COMPLETED",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "RELAY_NOT_COMPLETED",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "RELAY_NOT_COMPLETED"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T28",
+      "Description": "output written before the cession started",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "RELAY_OUTPUT_TIME_INVALID",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "RELAY_OUTPUT_TIME_INVALID"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T29",
+      "Description": "output time without a UTC offset",
+      "Expected": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "RELAY_OUTPUT_TIME_INVALID",
+      "Got": {
+        "HandoffIntegrity": "FAIL",
+        "Identity": "NOT_EVALUATED",
+        "ControlResult": "FAIL",
+        "FailClosed": true,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "RELAY_OUTPUT_TIME_INVALID"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T30",
+      "Description": "a nonexistent SHA that is not the bound synthetic",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "FAIL",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATED_SHA_NOT_AUTHORIZED",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "FAIL",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATED_SHA_NOT_AUTHORIZED"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    },
+    {
+      "Id": "T31",
+      "Description": "the bound synthetic names an existing object",
+      "Expected": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "FAIL",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ExpectedCode": "MUTATED_SHA_EXISTS",
+      "Got": {
+        "HandoffIntegrity": "PASS",
+        "Identity": "FAIL",
+        "ControlResult": "FAIL",
+        "FailClosed": false,
+        "ExitCode": 1
+      },
+      "ReasonCodes": [
+        "MUTATED_SHA_EXISTS"
+      ],
+      "Asserts": {
+        "HandoffIntegrity": true,
+        "Identity": true,
+        "ControlResult": true,
+        "FailClosed": true,
+        "ExitCode": true,
+        "ReasonCode": true
+      },
+      "Ok": true
+    }
+  ]
+}

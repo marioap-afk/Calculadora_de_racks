@@ -1,0 +1,9 @@
+apply_green_pbt4a rc 0 conjunto  7d29d396d8181e4ae83c5ec2693ed20e6f71b2846938eb07816967d33f4586cd  (6 archivos; sha256 de las líneas «<sha256>  <ruta>» ordenadas, con LF)
+apply_red_pbt4b --dry rc 0 | PENDIENTE: tests/RackCad.Tests/PushBackFullReadGuardTests.cs no existe en la copia (CT-PBT4A-06 se salta tras el cierre  | SECO 43 archivos; conjunto e726a0ab11eddca8b90610b6e7fbf562668027cc9b39bf323d7a09a32add04c6
+apply_red_pbt4b rc 0 | ESCRITOS 43 archivos; conjunto e726a0ab11eddca8b90610b6e7fbf562668027cc9b39bf323d7a09a32add04c6
+Skip de PB-T4b escritos: 474
+apply_red_pbt4b otra vez (debe parar) rc 1 | PENDIENTE: tests/RackCad.Tests/PushBackFullReadGuardTests.cs no existe en la copia (CT-PBT4A-06 se s
+apply_green_pbt4b rc 0 | ESCRITOS 9 archivos; conjunto 4fd0c3c08c5a98c1a17a4adfe853fc5db55f9a2793c70b41a8d610e018b331d0
+apply_green_pbt4b sobre el GREEN (debe parar) rc 1 | PARA, sin escribir nada:
+
+borrada True

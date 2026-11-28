@@ -51,10 +51,10 @@ namespace RackCad.UI.Systems.PushBack
         /// <see cref="PushBackEditorState"/> que esta ventana conducia antes de la iniciativa. Toda la ventana lee
         /// <see cref="state"/>, que es el lado ACTIVO, asi que el selector de lado hace que la matriz, la celda
         /// seleccionada y los cinco alcances trabajen sobre el lado que el usuario esta mirando, sin duplicar ni un
-        /// control.
+        /// control. I-64 F4B PB-T1c: el estado editable vive en <see cref="editable"/> y este es su editor.
         /// </summary>
-        private readonly PushBackCompositeEditorState composite =
-            new PushBackCompositeEditorState(new PushBackEditorState(), new PushBackEditorState());
+        private readonly PushBackEditableState editable = new PushBackEditableState();
+        private PushBackCompositeEditorState composite => editable.Editor;
 
         private readonly PushBackCompositeEditorAssembler compositeAssembler;
         private readonly PushBackEditorDesignAssembler assembler;
@@ -81,15 +81,20 @@ namespace RackCad.UI.Systems.PushBack
         /// </summary>
         private PushBackEditorState moduleOwner => composite.SideA;
         private readonly RackEditorSession<PushBackDesign, PushBackSystem> session;
-        private readonly List<SelectiveSafetySelection> safetySelections = new List<SelectiveSafetySelection>();
+        private List<SelectiveSafetySelection> safetySelections => editable.SafetySelections;
         private readonly bool canInsertInAutoCad;
+
+        /// <summary>I-64 F4B PB-T2b (D-PBT2-04) - el modo de la ventana. <c>Classic</c> por defecto; solo lo asigna, una vez, el constructor de WORKSPACE.</summary>
+        private readonly PushBackEditorMode mode;
 
         private bool isEditingExisting;
         private bool suppressSync;
         private bool hasValidModel;          // ever produced a valid model (a preview reference exists)
         private bool currentInputsAreValid;  // the CURRENT controls recomputed to a valid model
         private RackProject sourceProject;
+        private readonly IPushBackDraftStatePort draftPort; // WORKSPACE: the only channel to the draft (D-PBT2-05)
         private PushBackEditorComputation lastComputation; // the LAST VALID computation (only replaced on a valid build)
+        private PushBackEditableState appliedState; // WORKSPACE: the state last applied to the draft (W0 at the start)
 
         /// <summary>
         /// PB-013 (I-32): the RACK-WIDE pallet. Only its Fondo and Unidad are edited in this window (the two boxes that
@@ -98,12 +103,20 @@ namespace RackCad.UI.Systems.PushBack
         /// mirrored boxes — is what guarantees that selecting or editing a cell never rewrites the rack-wide pallet, and
         /// therefore never changes the drawing through a panel the Owner reported as inert.
         /// </summary>
-        private PalletSpecification generalPallet = PushBackEditorInputs.NewDesign().Pallet;
+        private PalletSpecification generalPallet { get => editable.Pallet; set => editable.Pallet = value; }
+
+        // I-64 F4B PB-TC (D-PB-06 (a), D-PBTC-01): the value each of these RACK-WIDE boxes was seeded from, exact. A box the
+        // user did not edit shows the same as its carrier, so Keep (below) hands the carrier back instead of the box's
+        // "0.###" rounding. The depth needs no carrier of its own: it is generalPallet.Depth.
+        private double rackTolerance { get => editable.PalletTolerance; set => editable.PalletTolerance = value; }
+        private double rackPostPeralte { get => editable.PostPeralte; set => editable.PostPeralte = value; }
+        private double rackBeamDepth { get => editable.BeamDepth; set => editable.BeamDepth = value; }
+        private double rackAnnotationScale { get => editable.AnnotationScale; set => editable.AnnotationScale = value; }
 
         /// <summary>Carrier of the four advanced RACK-WIDE scopes between recomputes (I-35, Owner round 2). It is the
         /// SAME transport type the assembler consumes, so there is no parallel field and no second authority: only
         /// its four advanced properties are used, and ReadInputs copies them across verbatim.</summary>
-        private readonly PushBackEditorInputs advanced = PushBackEditorInputs.NewDesign();
+        private PushBackEditorInputs advanced => editable.Advanced;
 
         // The informative card matrix (PB-VAL-01 round 3). Cards are looked up by (front, level) for in-place updates;
         // the grid stores NO state of its own — every card derives from PushBackMatrixCardModel over the state.
@@ -152,11 +165,37 @@ namespace RackCad.UI.Systems.PushBack
             LoadNew();
         }
 
+        /// <summary>
+        /// I-64 F4B PB-T2b (D-PBT2-05) - la ventana de WORKSPACE: carga una COPIA del estado del borrador, sin pasar por un diseno.
+        /// La ventana que devuelve no se muestra y no tiene dueno: los pone el host. Solo se llega aqui por <see cref="ForDraft"/>.
+        /// </summary>
+        private RackPushBackSystemWindow(PushBackDraftEditorLaunch launch)
+            : this(canInsertInAutoCad: false)
+        {
+            mode = PushBackEditorMode.Workspace;
+            draftPort = launch.Port;
+            editable = PushBackEditableStateComparer.Copy(launch.State);   // el editor, la cola, la autoridad de modulos y los portadores
+            var inputs = editable.BuildInputs(assembler);                  // lo que la carga clasica habria adoptado
+            UpdateCompositeEnabled();                                      // el sitio de LoadExisting
+            sourceProject = launch.SourceProject;
+            isEditingExisting = true;
+            session.Identity.Adopt(launch.RackId, editable.Name);
+            SyncName();
+            lastComputation = null;                                        // nada del LoadNew encadenado llega al borrador
+            hasValidModel = false;
+            session.SetModel(null, null);
+            LoadFromModel(inputs, editable.Name);
+            appliedState = PushBackEditableStateComparer.Copy(editable);   // W0: la referencia de «sin aplicar»
+            ApplyModeChrome();
+        }
+
         // ---- Test seams (internal) --------------------------------------------------------------------------------
 
         internal RackEditorSession<PushBackDesign, PushBackSystem> Session => session;
         internal PushBackEditorState State => state;
         internal PushBackEditorDesignAssembler Assembler => assembler;
+        internal PushBackEditableState EditableStateForTest => editable;
+        internal PushBackEditorMode ModeForTest => mode;
 
         /// <summary>The plan currently drawn in the preview (the selected view/corte). For the lateral view this is the
         /// SELECTED corte's plan, so changing "Corte 1"→"Corte 2" changes what the preview shows.</summary>
@@ -254,6 +293,11 @@ namespace RackCad.UI.Systems.PushBack
         public RackInsertionRequest InsertionRequest => session.InsertionRequest;
         public PushBackSystem SystemToInsert => (session.InsertionRequest as PushBackInsertionRequest)?.System;
         public PushBackDesign DesignToInsert => (session.InsertionRequest as PushBackInsertionRequest)?.Design;
+        public static RackPushBackSystemWindow ForDraft(PushBackDraftEditorLaunch launch)
+        {
+            if (launch == null) throw new ArgumentNullException(nameof(launch));
+            return new RackPushBackSystemWindow(launch);
+        }
 
         // ---- Public load paths ------------------------------------------------------------------------------------
 
@@ -261,22 +305,20 @@ namespace RackCad.UI.Systems.PushBack
         /// standard modular baseline. No identity is forced until insert; only "Insertar" is offered (no "Actualizar").</summary>
         public void LoadNew()
         {
+            if (mode == PushBackEditorMode.Workspace) throw new InvalidOperationException(WorkspaceLoadRefusalMessage);
             // I-42: un rack nuevo nace de UN solo sentido, como siempre. El lado B se declara despues, si se quiere.
-            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
-            composite.SetSideBPresent(false);
-            composite.LoadComposite(null);
-            var inputs = state.LoadNew();
+            var inputs = editable.LoadNewEditor();
             sourceProject = null;
             isEditingExisting = false;
             session.Identity.Adopt(null, null);
+            SyncName();
             LoadFromModel(inputs, string.Empty);
 
             // PB-VAL-04: a new rack opens with the catalog-driven safety defaults, exactly like the dynamic editor does.
             // The Push Back authority is the single filter (drops GUIA, deep-copies, restricts every family to the LOW end),
             // so no hard-coded list lives here and the shared defaults are never mutated. Seeded AFTER LoadFromModel,
             // which resets the selections for the loaded design.
-            safetySelections.Clear();
-            safetySelections.AddRange(new PushBackSafetyAuthority(catalog).Defaults());
+            editable.SeedDefaultSafety(catalog);
             Recompute();
         }
 
@@ -285,16 +327,16 @@ namespace RackCad.UI.Systems.PushBack
         /// only, no update.</summary>
         public void LoadDesignForNew(PushBackDesign design, string rackName, RackProject sourceProject = null)
         {
+            if (mode == PushBackEditorMode.Workspace) throw new InvalidOperationException(WorkspaceLoadRefusalMessage);
             if (design == null) return;
             // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
             // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
-            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
-            composite.SetSideBPresent(false);
-            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
-            LoadCompositeFromDesign(design);
+            var inputs = editable.LoadDesignEditor(design, assembler.Resolver);
+            UpdateCompositeEnabled();
             this.sourceProject = sourceProject;
             isEditingExisting = false;
             session.Identity.Adopt(null, rackName); // no id -> a fresh GUID is minted on insert
+            SyncName();
             LoadFromModel(inputs, rackName);
         }
 
@@ -302,66 +344,17 @@ namespace RackCad.UI.Systems.PushBack
         /// "Actualizar" and also allows requesting an additional linked view.</summary>
         public void LoadExisting(PushBackDesign design, string rackId, string rackName, RackProject sourceProject = null)
         {
+            if (mode == PushBackEditorMode.Workspace) throw new InvalidOperationException(WorkspaceLoadRefusalMessage);
             if (design == null) return;
             // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
             // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
-            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
-            composite.SetSideBPresent(false);
-            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
-            LoadCompositeFromDesign(design);
+            var inputs = editable.LoadDesignEditor(design, assembler.Resolver);
+            UpdateCompositeEnabled();
             this.sourceProject = sourceProject;
             isEditingExisting = true;
             session.Identity.Adopt(rackId, rackName);
+            SyncName();
             LoadFromModel(inputs, rackName);
-        }
-
-        /// <summary>
-        /// El diseño del lado A SOLO, sin la parte compuesta.
-        ///
-        /// <para>
-        /// El estado del editor se reconstruye desde el sistema RESUELTO, y el de un rack compuesto es la estructura
-        /// COMPARTIDA —A + hueco + B—: cargar el lado A contra ella le metia en su matriz los rangos del rack entero,
-        /// que no estan anidados, y el siguiente recalculo se caia con «los frentes con el menor numero de fondos
-        /// deben compartir la misma posicion inicial». El lado A se carga contra SU propio diseño, exactamente como
-        /// ya se hacia con el lado B; la parte compuesta se recupera despues, en su propio estado.
-        /// </para>
-        /// <para>
-        /// Un documento anterior a I-42 no trae parte compuesta, asi que devuelve el MISMO objeto y su carga es
-        /// literalmente la de siempre. La copia comparte las referencias del diseño: solo se retiran SideB y
-        /// Composite, y nada de lo que se comparte se muta en este camino.
-        /// </para>
-        /// </summary>
-        private static PushBackDesign SideAOnly(PushBackDesign design)
-        {
-            if (design == null || !design.IsComposite)
-            {
-                return design;
-            }
-
-            var copy = new PushBackDesign
-            {
-                // I-42 (A4-MOD-LIFECYCLE / N-1): la estructura que recibe el lado A es la SUYA. La secuencia
-                // persistida de un rack compuesto es la del RACK —M* + hueco + B:*—, y entregarla entera a la carga
-                // del lado A la llevaba al resolver de un solo sentido: alli los modulos no cuadraban con las
-                // posiciones y se reconstruia la receta estandar, de modo que reabrir con RACKEDITAR devolvia un
-                // rack sin ninguna de las personalizaciones guardadas. La cola —hueco y mitad B— se recupera por su
-                // propio camino, en el estado compuesto.
-                Structure = PushBackCompositeStructure.SideAStructure(design.Structure),
-                LegacyHighEndBeamPeralte = design.LegacyHighEndBeamPeralte,
-                RearTope = design.RearTope,
-
-                // I-42 (A1/B4) — el TIPO DE DEFENSA del lado A viaja en esta copia. Sin el, reabrir un rack
-                // compuesto le devolvia al lado A la pieza heredada: un «Ninguno» explicito resucitaba y una pieza
-                // distinta se perdia, mientras el lado B —que si lo recuperaba— quedaba bien.
-                DefensePieceId = design.DefensePieceId,
-            };
-
-            foreach (var front in design.Fronts)
-            {
-                copy.Fronts.Add(front);
-            }
-
-            return copy;
         }
 
         /// <summary>
@@ -369,7 +362,7 @@ namespace RackCad.UI.Systems.PushBack
         /// producto; uno cargado conserva el que la carga recupero —y, si venia sin marcador, el que esa unica
         /// frontera le asigno al re-expresarlo sin moverlo. La ventana solo lo guarda y lo devuelve.
         /// </summary>
-        private int? firstLevelDatum = (int)RackCad.Application.Systems.Shared.RackFirstLevelDatumMode.LowestUsablePunch;
+        private int? firstLevelDatum { get => editable.FirstLevelDatum; set => editable.FirstLevelDatum = value; }
 
         /// <summary>El datum vigente (seam de prueba).</summary>
         internal int? FirstLevelDatumForTest => firstLevelDatum;
@@ -379,10 +372,9 @@ namespace RackCad.UI.Systems.PushBack
             suppressSync = true;
             try
             {
+                editable.AdoptCarriers(inputs, catalog);
                 NameBox.Text = rackName ?? string.Empty;
-                firstLevelDatum = inputs.FirstLevelDatum;
                 var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
-                generalPallet = pallet;
                 DepthBox.SetNumber(pallet.Depth);
                 WeightUnitBox.SelectedItem = string.IsNullOrWhiteSpace(pallet.WeightUnit) ? "kg" : pallet.WeightUnit;
                 PalletsDeepBox.SetNumber(Math.Max(2, inputs.PalletsDeep));
@@ -391,14 +383,6 @@ namespace RackCad.UI.Systems.PushBack
                 PostPeralteBox.SetNumber(inputs.PostPeralte);
                 BeamDepthBox.SetNumber(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);
 
-                // I-35 (Owner round 2): adopt the four advanced scopes the load recovered, then paint them.
-                advanced.ManualHeaderHeightOverride = inputs.ManualHeaderHeightOverride;
-                advanced.DerivedPostReinforced = inputs.DerivedPostReinforced;
-                advanced.DerivedPostReinforcementHeight = inputs.DerivedPostReinforcementHeight;
-                advanced.DerivedPostHeight = inputs.DerivedPostHeight;
-                advanced.SeparatorCountOverride = inputs.SeparatorCountOverride;
-                advanced.SeparatorSpacingOverride = inputs.SeparatorSpacingOverride;
-
                 var options = inputs.Annotations ?? new DynamicAnnotationOptions();
                 NumberFrontsCheck.IsChecked = options.NumberFronts;
                 NumberLevelsCheck.IsChecked = options.NumberLevels;
@@ -406,12 +390,6 @@ namespace RackCad.UI.Systems.PushBack
                 AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
                 DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));
                 ShowDimensionViews(options.DimensionViews); // I-50 C-12: la política cargada, sin marcar «tocado»
-
-                safetySelections.Clear();
-                foreach (var safety in inputs.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())
-                {
-                    if (safety != null) safetySelections.Add(safety.DeepCopy());
-                }
 
                 RefreshFrontSelector();
                 RenderPushBackMatrix();
@@ -605,6 +583,7 @@ namespace RackCad.UI.Systems.PushBack
             if (suppressSync) return;
 
             RecomputePassesForTest++;
+            UpdateSideBEmptyNotice();
 
             // A control in error blocks the model rebuild: do NOT touch state/session/computation/baseline, keep the last
             // valid model as a preview reference only, and disable every action.
@@ -679,7 +658,14 @@ namespace RackCad.UI.Systems.PushBack
                 // I-35: the accepted module edit has landed on the new baseline, so it must not be re-applied by an
                 // unrelated recompute (an individual restore would otherwise fire again and again). The module list is
                 // rebuilt from the new structure and the reconciliation report reaches the panel.
+                var standardRestoreLanded = moduleOwner.ModuleCommit?.StandardRestoreRequested == true; // I-64 F4B PB-TC (D-PB-11)
                 moduleOwner.ClearModuleCommit();
+                if (standardRestoreLanded)
+                {
+                    state.RestoreAdvancedRackParameters(advanced);
+                    LoadAdvancedRackParameters();
+                }
+
                 RefreshModuleSelector();
                 RefreshHeaderDestinations();
 
@@ -794,11 +780,11 @@ namespace RackCad.UI.Systems.PushBack
                     LoadLevels = IntVal(LevelsBox, front.LoadLevels),
                     PalletsDeep = IntVal(FondosBox, front.PalletsDeep),
                     DepthStartPosition = IntVal(DepthStartBox, front.DepthStartPosition),
-                    FirstLevelHeight = Val(FirstLevelHeightBox, front.FirstLevelHeight),
-                    PalletFront = Val(CellPalletFrontBox, cell.PalletFront),
-                    PalletHeight = Val(CellPalletHeightBox, cell.PalletHeight),
-                    PalletWeight = Val(CellPalletWeightBox, cell.PalletWeight),
-                    ClearHeight = Val(CellClearBox, cell.ClearHeight),
+                    FirstLevelHeight = KeepCell(FirstLevelHeightBox, front.FirstLevelHeight),
+                    PalletFront = KeepCell(CellPalletFrontBox, cell.PalletFront),
+                    PalletHeight = KeepCell(CellPalletHeightBox, cell.PalletHeight),
+                    PalletWeight = KeepCell(CellPalletWeightBox, cell.PalletWeight),
+                    ClearHeight = KeepCell(CellClearBox, cell.ClearHeight),
                     InOutBeamCatalogId = CellInOutBeamBox.SelectedValue as string ?? cell.InOutBeamCatalogId,
                     InOutBeamDepth = SelectedPeralte(CellInOutPeralteBox, cell.InOutBeamDepth),
                     BeamLengthOverride = OptionalVal(CellBeamLengthOverrideBox, cell.BeamLengthOverride),
@@ -811,49 +797,26 @@ namespace RackCad.UI.Systems.PushBack
 
         private PushBackEditorInputs ReadInputs()
         {
-            var inputs = new PushBackEditorInputs
-            {
-                // PB-013: only Fondo and Unidad come from this panel. Frente/Alto/Peso keep the rack-wide values the
-                // design was loaded with — the boxes showing them are a mirror of the cell, not an input.
-                Pallet = new PalletSpecification(
-                    generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
-                    generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
-                PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
-
-                // I-42 (correccion aislada 3) — el datum de «Alto 1er nivel» se TRANSPORTA, no se fabrica. Este
-                // metodo construye unos inputs NUEVOS en cada recalculo, y sus valores por defecto imponian el datum
-                // del PRODUCTO a un documento que se guardo con la semantica historica: medido, un rack legacy con
-                // Alto = 5 saltaba de 4.6053 a 6.6053 al recalcular. La ventana no es autoridad de datum.
-                FirstLevelDatum = firstLevelDatum,
-
-                // I-35 (Owner round 2): the four advanced RACK-WIDE scopes travel verbatim from their carrier.
-                ManualHeaderHeightOverride = advanced.ManualHeaderHeightOverride,
-                DerivedPostReinforced = advanced.DerivedPostReinforced,
-                DerivedPostReinforcementHeight = advanced.DerivedPostReinforcementHeight,
-                DerivedPostHeight = advanced.DerivedPostHeight,
-                SeparatorCountOverride = advanced.SeparatorCountOverride,
-                SeparatorSpacingOverride = advanced.SeparatorSpacingOverride,
-                PostCatalogId = PostBox.SelectedId,
-                PostPeralte = Val(PostPeralteBox, 0.0),
-                PalletTolerance = Val(ToleranceBox, DynamicRackDefaults.DefaultPalletTolerance),
-                BeamDepth = Val(BeamDepthBox, DynamicRackDefaults.DefaultBeamDepth),
-                Annotations = new DynamicAnnotationOptions
-                {
-                    NumberFronts = NumberFrontsCheck.IsChecked == true,
-                    NumberLevels = NumberLevelsCheck.IsChecked == true,
-                    DrawRackName = DrawRackNameCheck.IsChecked == true,
-                    AnnotationScale = Val(AnnotationScaleBox, 1.0),
-                    Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex)),
-                    DimensionViews = SelectedDimensionViews() // I-50 C-12
-                }
-            };
-            // Only the authorized (GUIA-free) safety reaches the design; the assembler filters again, so a GUIA can never persist.
-            foreach (var safety in assembler.AuthorizedSafety(safetySelections))
-            {
-                inputs.SafetySelections.Add(safety);
-            }
-
-            return inputs;
+            // I-64 F4B PB-TC (D-PBTC-01): a rack-wide box the user did not edit hands back the exact value it was seeded
+            // from; an edited one wins and becomes the carrier. generalPallet is replaced, never mutated (the loaded
+            // object is the caller's).
+            generalPallet = new PalletSpecification(
+                generalPallet.Front, Keep(DepthBox, generalPallet.Depth), generalPallet.Height,
+                generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg");
+            rackTolerance = Keep(ToleranceBox, rackTolerance);
+            rackPostPeralte = Keep(PostPeralteBox, rackPostPeralte);
+            rackBeamDepth = Keep(BeamDepthBox, rackBeamDepth);
+            rackAnnotationScale = Keep(AnnotationScaleBox, rackAnnotationScale);
+            editable.PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep);
+            editable.PostCatalogId = PostBox.SelectedId ?? editable.PostCatalogId;
+            editable.NumberFronts = NumberFrontsCheck.IsChecked == true;
+            editable.NumberLevels = NumberLevelsCheck.IsChecked == true;
+            editable.DrawRackName = DrawRackNameCheck.IsChecked == true;
+            editable.Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex));
+            editable.DimensionsFrontal = DimensionsFrontalCheck.IsChecked == true;
+            editable.DimensionsLateral = DimensionsLateralCheck.IsChecked == true;
+            editable.DimensionsPlanta = DimensionsPlantaCheck.IsChecked == true;
+            return editable.BuildInputs(assembler);
         }
 
         // ---- Rear topes matrix -----------------------------------------------------------------------------------
@@ -1202,7 +1165,10 @@ namespace RackCad.UI.Systems.PushBack
         {
             if (suppressSync) return;
             session.Identity.SetName(NameBox.Text?.Trim());
+            SyncName();
         }
+
+        private void SyncName() => editable.Name = session.Identity.Name;
 
         private void Input_Changed(object sender, RoutedEventArgs e) => RequestRecompute();
 
@@ -1213,11 +1179,18 @@ namespace RackCad.UI.Systems.PushBack
         /// <c>null</c> es legacy: las tres casillas se muestran activas, pero recalcular sin tocarlas vuelve a escribir
         /// <c>null</c>, no 7.
         /// </summary>
-        private DimensionViewVisibility? loadedDimensionViews;
+        private DimensionViewVisibility? loadedDimensionViews { get => editable.LoadedDimensionViews; set => editable.LoadedDimensionViews = value; }
+
+        /// <summary>
+        /// I-64 F4B PB-TC (D-PB-06 (b), D-PBTC-02) — el estilo de cotas con nombre que trajo el modelo CARGADO. La ventana no
+        /// tiene selector de estilo: solo lo transporta, de <see cref="LoadFromModel"/> a cada pasada de
+        /// <see cref="ReadInputs"/>. <c>null</c> en un rack nuevo.
+        /// </summary>
+        private string loadedDimensionStyle { get => editable.DimensionStyle; set => editable.DimensionStyle = value; }
 
         /// <summary>Si el USUARIO cambió alguna de las tres casillas desde la última carga. Cargar, restaurar, recalcular o
         /// cambiar el nivel de cotas no cuentan.</summary>
-        private bool dimensionViewsTouched;
+        private bool dimensionViewsTouched { get => editable.DimensionViewsTouched; set => editable.DimensionViewsTouched = value; }
 
         /// <summary>
         /// Adopta <paramref name="views"/> como la política cargada y pinta las tres casillas desde ella bajo
@@ -1245,16 +1218,6 @@ namespace RackCad.UI.Systems.PushBack
 
         private static bool ShowsCotas(DimensionViewVisibility? views, DimensionViewKind kind)
             => DimensionViewPolicy.EffectiveDetail(DimensionDetail.Minimal, views, kind) != DimensionDetail.None;
-
-        /// <summary>La política que se guarda: la cargada, exacta, si el usuario no tocó las casillas; si las tocó, las tres
-        /// casillas con los bits desconocidos de la cargada conservados (<see cref="DimensionViewPolicy.FromEditor"/>).</summary>
-        private DimensionViewVisibility? SelectedDimensionViews()
-            => DimensionViewPolicy.FromEditor(
-                loadedDimensionViews,
-                dimensionViewsTouched,
-                DimensionsFrontalCheck.IsChecked == true,
-                DimensionsLateralCheck.IsChecked == true,
-                DimensionsPlantaCheck.IsChecked == true);
 
         /// <summary>Una casilla de vista cambiada por el usuario: marca «tocado» y recalcula.</summary>
         private void DimensionViews_Changed(object sender, RoutedEventArgs e)
@@ -1513,9 +1476,26 @@ namespace RackCad.UI.Systems.PushBack
         /// <remarks>
         /// I-33: los conteos salen de la AUTORIDAD compartida. Un frente en blanco aporta CERO, y un poste cuyos unicos
         /// vecinos estan en blanco tambien, de modo que su columna del desviador se dibuja SIN celdas.
+        /// <para>
+        /// T6 pb (PB-S17, punto 4): en un rack de DOS sentidos, los niveles de los DOS lados, poste a poste el mayor. El desviador es POR
+        /// POSTE y el dibujo lo pone en las camas de los dos lados (<see cref="PushBackDiverterPlan"/>), con una sola celda apagada por poste
+        /// y nivel. Con los del lado activo, abierta desde el lado mas bajo la rejilla no ofrecia los niveles que solo tiene el otro: no se
+        /// podia apagar un desviador dibujado, y «Aceptar» perdia una celda apagada alli. Un rack de un sentido no cambia.
+        /// </para>
         /// </remarks>
         internal IReadOnlyList<int> DesviadorLevelsPerPost()
-            => DynamicFrontActivation.EffectiveLevelsPerPost(state.Structure.EffectiveLevelCounts());
+        {
+            if (!composite.SideBPresent)
+            {
+                return DynamicFrontActivation.EffectiveLevelsPerPost(state.Structure.EffectiveLevelCounts());
+            }
+
+            var perSide = new[] { PushBackSide.A, PushBackSide.B }
+                .Select(side => DynamicFrontActivation.EffectiveLevelsPerPost(composite.Of(side).Structure.EffectiveLevelCounts()))
+                .ToList();
+            var posts = perSide.Max(levels => levels.Count);
+            return Enumerable.Range(0, posts).Select(post => perSide.Max(levels => post < levels.Count ? levels[post] : 0)).ToList();
+        }
 
         // ---- Advanced: per-module editing (I-35 / PB-011) ---------------------------------------------------------
 
@@ -1596,14 +1576,14 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            advanced.ManualHeaderHeightOverride = RackHeaderHeightBox.Value;
+            advanced.ManualHeaderHeightOverride = KeepOptional(RackHeaderHeightBox, advanced.ManualHeaderHeightOverride);
             advanced.DerivedPostReinforced = DerivedPostReinforcedCheck.IsChecked == true;
-            advanced.DerivedPostReinforcementHeight = DerivedPostReinforcementHeightBox.Value;
-            advanced.DerivedPostHeight = DerivedPostHeightBox.Value;
+            advanced.DerivedPostReinforcementHeight = KeepOptional(DerivedPostReinforcementHeightBox, advanced.DerivedPostReinforcementHeight);
+            advanced.DerivedPostHeight = KeepOptional(DerivedPostHeightBox, advanced.DerivedPostHeight);
             advanced.SeparatorCountOverride = RackSeparatorCountBox.Value.HasValue
                 ? (int?)(int)Math.Round(RackSeparatorCountBox.Value.Value)
                 : null;
-            advanced.SeparatorSpacingOverride = RackSeparatorSpacingBox.Value;
+            advanced.SeparatorSpacingOverride = KeepOptional(RackSeparatorSpacingBox, advanced.SeparatorSpacingOverride);
         }
 
         /// <summary>The reinforcement length is meaningless with no reinforcement: disabled, with the reason visible.</summary>
@@ -1862,7 +1842,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var length = Val(ModuleLengthBox, module.Length);
+            var length = Keep(ModuleLengthBox, module.Length);
             if (length <= 0.0 || Math.Abs(length - module.Length) < 0.0001)
             {
                 return;
@@ -2901,7 +2881,10 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var merged = PushBackDefenseSides.Copy(selection.DefensaPosts);
+            // T6 pb (revision de 2f1e9e4e, M1): la fusion parte de una lista VACIA, como la ventana (PushBackSafetyEdit.WriteDefense). Las
+            // dos secciones ya traen todos los registros del rack, cada una con su cara; partir de los de la seleccion conservaria la cara
+            // de un poste que una seccion devolvio a «Auto» (el defecto del punto 5) en cuanto el «Aceptar» del dialogo conservara DEFENSA.
+            var merged = new List<SafetyPostDefense>();
             if (sideA != null)
             {
                 merged = PushBackDefenseSides.Merge(merged, sideA.Posts, PushBackSide.A);
@@ -3277,22 +3260,51 @@ namespace RackCad.UI.Systems.PushBack
             // estado del lado activo le metia el hueco y los modulos del otro lado dentro de su matriz —casi el
             // doble de profundidad, `B:*` dentro de A y la configuracion de B destruida—.
             var design = lastComputation.Design;
-            composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
-            composite.SetSideBPresent(false);
-            var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
+            var inputs = editable.RestoreEditor(design, assembler.Resolver);
+            UpdateCompositeEnabled();
 
             // I-42 (A7 / A6V-1, decision del dueño): restaurar actua sobre el sistema EFECTIVO. Con el lado B
             // dormido su intencion no forma parte de ese sistema, asi que ni se restaura ni se borra; con el lado B
             // activo el rack efectivo lo incluye y el reset le alcanza como a cualquier otra parte.
-            LoadCompositeFromDesign(design, preserveDormantIntent: true);
             LoadFromModel(inputs, NameBox.Text);
             SetStatus("Valores restaurados al último sistema válido.", false);
         }
 
-        private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+            if (mode == PushBackEditorMode.Workspace)
+            {
+                ApplyToDraft();
+                return;
+            }
+
+            RequestDraw(null, -1, updateOnly: true);
+        }
+
+        private void ApplyToDraft()
+        {
+            if (!ApplyEditsToEditingState(WorkspaceInvalidMessage, WorkspaceBlockedMessage)) return;
+            if (!HasUnappliedDraftChanges())
+            {
+                SetStatus(WorkspaceNothingToApplyMessage, false);
+                return;
+            }
+
+            var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(editable));
+            if (result.Status != PushBackDraftApplyStatus.Applied)
+            {
+                SetStatus(WorkspaceNotEditableMessage, true);
+                return;
+            }
+
+            appliedState = PushBackEditableStateComparer.Copy(editable);
+            SetStatus(WorkspaceAppliedMessage, false);
+        }
 
         private void InsertBatch_Click(object sender, RoutedEventArgs e)
         {
+            if (RefuseInWorkspace()) return;
+
             if (moduleOwner.ModuleSession.HasPendingChanges) moduleOwner.CommitModuleEdits();
             RequestRecompute();
             if (!currentInputsAreValid || lastComputation?.System == null
@@ -3310,6 +3322,7 @@ namespace RackCad.UI.Systems.PushBack
                     "Lateral · poste " + (cut.PostIndex + 1), RackViewAddress.Post(cut.PostIndex)));
             if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PushBack, options, out var views)) return;
             session.Identity.SetName(NameBox.Text?.Trim());
+            SyncName();
             session.SetModel(lastComputation.Design, lastComputation.System);
             session.RequestInsertViews(views, ctx =>
             {
@@ -3320,8 +3333,17 @@ namespace RackCad.UI.Systems.PushBack
             Close();
         }
 
+        private bool RefuseInWorkspace()
+        {
+            if (mode != PushBackEditorMode.Workspace) return false;
+            SetStatus(WorkspaceRefusalMessage, true);
+            return true;
+        }
+
         private void RequestDraw(string view, int section, bool updateOnly)
         {
+            if (RefuseInWorkspace()) return;
+
             if (!canInsertInAutoCad)
             {
                 SetStatus("El dibujo en AutoCAD solo está disponible cuando la ventana se abre desde AutoCAD.", true);
@@ -3343,26 +3365,10 @@ namespace RackCad.UI.Systems.PushBack
             // Pulsar Actualizar o Insertar es aplicar lo que el panel muestra: se confirma primero. La transaccion
             // de I-35 no se debilita —«Cancelar» sigue siendo el UNICO descarte—, deja de haber un camino que
             // descarta sin decirlo.
-            if (moduleOwner.ModuleSession.HasPendingChanges)
-            {
-                moduleOwner.CommitModuleEdits();
-            }
-
-            RequestRecompute(); // synchronous validate + build
-            if (!currentInputsAreValid || session.System == null)
-            {
-                SetStatus("Corrige los datos: no se puede insertar un modelo inválido.", true);
-                return; // never fall back to the previous valid model
-            }
-
-            // I-42 (A3-GATE) — el recalculo de ARRIBA acaba de confirmar la edicion escenificada y de rehacer el
-            // sistema: el veredicto de salida que vale es el de AHORA, no el que habia cuando el usuario pulso.
-            if (OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado."))
-            {
-                return;
-            }
+            if (!ApplyEditsToEditingState("Corrige los datos: no se puede insertar un modelo inválido.", "Corrige los datos: no se puede dibujar un modelo bloqueado.")) return;
 
             session.Identity.SetName(NameBox.Text?.Trim());
+            SyncName();
             session.SetModel(lastComputation.Design, lastComputation.System);
             if (updateOnly)
             {
@@ -3376,6 +3382,30 @@ namespace RackCad.UI.Systems.PushBack
             }
 
             Close();
+        }
+
+        /// <summary>
+        /// I-64 F4B PB-T2b (D-PBT2-06 (1)) - «aplicar al estado de edicion»: el paso que comparten «Actualizar» e «Insertar» (CLASSIC) y
+        /// «Aplicar al borrador» (WORKSPACE), extraido de <see cref="RequestDraw"/> sin cambiar su orden, sus textos ni su efecto:
+        /// confirma la edicion de modulo escenificada, recalcula, comprueba las entradas y, por ultimo, la compuerta de salida.
+        /// </summary>
+        private bool ApplyEditsToEditingState(string invalidMessage, string blockedFallback)
+        {
+            if (moduleOwner.ModuleSession.HasPendingChanges)
+            {
+                moduleOwner.CommitModuleEdits();
+            }
+
+            RequestRecompute(); // synchronous validate + build
+            if (!currentInputsAreValid || session.System == null)
+            {
+                SetStatus(invalidMessage, true);
+                return false; // never fall back to the previous valid model
+            }
+
+            // I-42 (A3-GATE) — el recalculo de ARRIBA acaba de confirmar la edicion escenificada y de rehacer el
+            // sistema: el veredicto de salida que vale es el de AHORA, no el que habia cuando el usuario pulso.
+            return !OutputBlockedAfterRecompute(blockedFallback);
         }
 
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
@@ -3414,11 +3444,47 @@ namespace RackCad.UI.Systems.PushBack
         /// apertura, que es el dirty global artificial que ADR-0029 D8 no quiere: el contrato dice que dirty
         /// pertenece a un AMBITO y que «no aplicable» es un valor legitimo.</para>
         /// </summary>
-        internal EditorPendingWork PendingWork() => EditorPendingWork.When(
-            moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
-            "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+        internal EditorPendingWork PendingWork()
+        {
+            var modules = EditorPendingWork.When(
+                moduleOwner.ModuleSession != null && moduleOwner.ModuleSession.HasPendingChanges,
+                "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+
+            // I-64 F4B PB-T4c (D-PBT4-17; A-T2b-OWNER-01): a staged module AND unapplied changes ask one question that names both. In
+            // WORKSPACE a staged module always leaves unapplied changes (D-S10), so the module question alone is the one of CLASSIC, where
+            // there are never unapplied changes; unapplied changes alone ask the question of today.
+            if (modules.HasPendingWork && HasUnappliedDraftChanges()) return EditorPendingWork.When(true, WorkspaceStagedAndUnappliedQuestion);
+            return modules.HasPendingWork ? modules : EditorPendingWork.When(HasUnappliedDraftChanges(), WorkspaceUnappliedQuestion);
+        }
+
+        /// <summary>
+        /// I-64 F4B PB-T2b (D-PBT2-07) - solo en WORKSPACE: el estado editable difiere del ultimo aplicado al borrador. Es el segundo
+        /// ambito de <see cref="PendingWork"/>; la frontera la pone el borrador, y en CLASSIC es siempre <c>false</c>.
+        /// </summary>
+        private bool HasUnappliedDraftChanges()
+            => mode == PushBackEditorMode.Workspace && appliedState != null
+               && !PushBackEditableStateComparer.Instance.Equals(editable, appliedState);
+
+        // ---- WORKSPACE texts (D-PBT2-09) -------------------------------------------------------------------------
+
+        private const string WorkspaceApplyLabel = "Aplicar al borrador";
+        private const string WorkspaceApplyToolTip = "Guarda los cambios en el borrador. El dibujo cambia con «Actualizar» del panel.";
+        private const string WorkspaceApplyBlockedToolTip = "Corrige el diagnóstico bloqueante: el rack no puede pasar al borrador así.";
+        private const string WorkspaceRefusalMessage = "En el editor del borrador no se dibuja: aplica al borrador y actualiza desde el panel.";
+        private const string WorkspaceLoadRefusalMessage = "La ventana del borrador solo carga el estado del borrador.";
+        private const string WorkspaceInvalidMessage = "Corrige los datos: no se puede aplicar al borrador un modelo inválido.";
+        private const string WorkspaceBlockedMessage = "Corrige los datos: no se puede aplicar al borrador un modelo bloqueado.";
+        private const string WorkspaceNothingToApplyMessage = "No hay cambios que aplicar al borrador.";
+        private const string WorkspaceAppliedMessage = "Cambios aplicados al borrador. El dibujo cambia con «Actualizar» del panel.";
+        private const string WorkspaceNotEditableMessage = "El borrador no admite cambios ahora: cierra el editor y revisa el panel.";
+        private const string WorkspaceUnappliedQuestion = "Hay cambios sin aplicar al borrador que se perderán al cerrar. ¿Deseas continuar?";
+
+        // I-64 F4B PB-T4c (D-PBT4-17): the one question when a staged module and unapplied changes would be lost together.
+        private const string WorkspaceStagedAndUnappliedQuestion = "Hay un cambio de módulo sin confirmar y cambios sin aplicar al borrador; se perderán los dos al cerrar. ¿Deseas continuar?";
 
         // ---- BOM + library ---------------------------------------------------------------------------------------
+
+        internal Action<RackCad.Application.Bom.BillOfMaterials, Window> BomDialog;
 
         private void Bom_Click(object sender, RoutedEventArgs e)
         {
@@ -3435,8 +3501,16 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
+            if (BomDialog != null)
+            {
+                BomDialog(lastComputation.Bom, this);
+                return;
+            }
+
             new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
         }
+
+        internal Func<Window, string, string> LibraryPathDialog;
 
         private void SaveLibrary_Click(object sender, RoutedEventArgs e)
         {
@@ -3455,13 +3529,16 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            var path = UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema");
+            var path = LibraryPathDialog != null
+                ? LibraryPathDialog(this, NameBox.Text)
+                : UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema");
             if (path == null) return;
 
             try
             {
                 session.Identity.EnsureId();
                 session.Identity.SetName(NameBox.Text?.Trim());
+                SyncName();
                 // Save ONLY the active Push Back payload; WithSourceMetadataFrom preserves the opened project's unknown JSON
                 // fields + non-downgraded schema version (I-11). Saving never flags an insert.
                 var project = RackProject.ForPushBack(lastComputation.Design).WithSourceMetadataFrom(sourceProject);
@@ -3567,9 +3644,29 @@ namespace RackCad.UI.Systems.PushBack
             RestoreButton.ToolTip = lastComputation != null
                 ? "Vuelve todos los valores al último sistema válido."
                 : "Aún no hay un sistema válido que restaurar.";
+
+            if (mode == PushBackEditorMode.Workspace)
+            {
+                UpdateButton.IsEnabled = canOutput;
+                UpdateButton.ToolTip = outputIsBlocked ? WorkspaceApplyBlockedToolTip
+                    : currentInputsAreValid ? WorkspaceApplyToolTip : "Corrige los campos numéricos marcados.";
+            }
         }
 
         private void UpdateGuid() => GuidText.Text = session.Identity.HasId ? session.Identity.Id : "(se asigna al insertar)";
+
+        /// <summary>
+        /// I-64 F4B PB-T2b (D-PBT2-09) - solo en WORKSPACE, una vez, al final del constructor: el boton principal es «Aplicar al borrador»
+        /// y los de insercion no se muestran. En CLASSIC no cambia ningun rotulo.
+        /// </summary>
+        private void ApplyModeChrome()
+        {
+            UpdateButton.Content = WorkspaceApplyLabel;
+            foreach (var button in new[] { InsertButton, InsertLateralButton, InsertFrontalEntradaButton, InsertFrontalPosteriorButton, InsertPlantaButton, InsertBatchButton })
+            {
+                button.Visibility = Visibility.Collapsed;
+            }
+        }
 
         private void SetStatus(string message, bool isError) => UiSupport.SetStatus(StatusText, message, isError);
 
@@ -3591,14 +3688,12 @@ namespace RackCad.UI.Systems.PushBack
 
         private static double SelectedPeralte(ComboBox combo, double fallback) => combo?.SelectedItem is double value ? value : fallback;
 
-        private static double Val(NumericField field, double fallback) => field.Value ?? fallback;
-
         /// <summary>
         /// I-42 (A3-CELL, contrato del dueño) — LA LECTURA POR LADO DE UN OVERRIDE OPCIONAL.
         ///
         /// <para>
         /// <b>El defecto.</b> Los demas campos de la celda ya caian al valor DEL LADO que se escribe cuando el
-        /// control esta vacio (<see cref="Val"/>), que es lo que hace que «Ambos» con valores distintos no pise a
+        /// control esta vacio (hoy <see cref="Keep"/>), que es lo que hace que «Ambos» con valores distintos no pise a
         /// nadie. «Largo manual» se leia crudo —<c>CellBeamLengthOverrideBox.Value</c>—, asi que el hueco que pinta
         /// el estado mixto viajaba como <c>null</c> A LOS DOS LADOS. Medido: con A = 100 y B sin override, elegir
         /// «Ambos lados» sin tocar el campo dejaba A = null y B = null; con A = 100 y B = 120, los dos en null.
@@ -3623,7 +3718,39 @@ namespace RackCad.UI.Systems.PushBack
         /// </para>
         /// </summary>
         private double? OptionalVal(NumericField field, double? sideValue)
-            => field.Value ?? (IsMixed(field) ? sideValue : null);
+            => field.Value.HasValue
+                ? (MixedBoth(field) ? field.Value : KeepOptional(field, sideValue))
+                : (IsMixed(field) ? sideValue : null);
+
+        /// <summary>I-64 F4B PB-TC (D-PBTC-01) — el formato con el que <see cref="NumericField.SetNumber"/> pinta estas cajas.</summary>
+        private const string ShownFormat = "0.###";
+
+        /// <summary>I-64 F4B PB-TC — True cuando dos numeros se ven igual en una caja formateada con <see cref="ShownFormat"/>.</summary>
+        private static bool SameShown(double a, double b)
+            => string.Equals(
+                a.ToString(ShownFormat, System.Globalization.CultureInfo.InvariantCulture),
+                b.ToString(ShownFormat, System.Globalization.CultureInfo.InvariantCulture),
+                StringComparison.Ordinal);
+
+        /// <summary>
+        /// I-64 F4B PB-TC (D-PBTC-01, la regla de «Keep» de Cantilever) — el numero que lleva la caja, o el valor DE DONDE se sembro
+        /// cuando los dos se ven igual: una caja que el usuario no edito no cambia el diseño, y una editada a un numero que se ve
+        /// distinto manda. Con la caja vacia devuelve <paramref name="current"/>.
+        /// </summary>
+        private static double Keep(NumericField field, double current)
+            => !field.Value.HasValue || SameShown(field.Value.Value, current) ? current : field.Value.Value;
+
+        /// <summary>I-64 F4B PB-TC2 (D-PBTC2-03) — la regla de la caja anulable: vacia es nulo (el calculo), igual a como se ve el portador es el portador y otra cosa es la caja.</summary>
+        private static double? KeepOptional(NumericField field, double? current)
+            => !field.Value.HasValue ? null : (current.HasValue && SameShown(field.Value.Value, current.Value) ? current : field.Value);
+
+        /// <summary>I-64 F4B PB-TC2 (D-PBTC2-04) — True cuando la caja se pinta mixta con «Ambos lados» activo y el lado B presente.</summary>
+        private bool MixedBoth(NumericField field)
+            => IsMixed(field) && composite.ActiveSelection == PushBackSideSelection.Both && composite.SideBPresent;
+
+        /// <summary>I-64 F4B PB-TC2 (D-PBTC2-04, OWNER-1) — una caja mixta de «Ambos lados» que recibe un valor lo aplica a los dos lados; en cualquier otro caso, la regla de PB-TC.</summary>
+        private double KeepCell(NumericField field, double current)
+            => MixedBoth(field) && field.Value.HasValue ? field.Value.Value : Keep(field, current);
 
         private static int IntVal(NumericField field, int fallback) => field.Value.HasValue ? (int)Math.Round(field.Value.Value) : fallback;
     }

@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T2-BROWSER-UI",
+  "RunId": "R20261110T170317Z-c324",
+  "DelegationRunId": "R20261110T160525Z-e2f9",
+  "WorkRunId": "R20261110T160921Z-4b73",
+  "Attempt": 2,
+  "VerifiedSha": "206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, LaunchedPid=null; Notes report 0 persistent participants and 0 persistent unattributable processes."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists at the substituted ExpectedHandoffPath; TaskId, Attempt, DelegationRunId and RunId match; OutputWrittenUtc=2026-11-10T16:59:41Z is after Cession.StartUtc=2026-11-10T16:09:33Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only AuthorityRevision BaseSha listed 3 paths; all are UNIT_DOC entries in Authorities, with no EXTERNAL or UNIT_CHANGE path. Read AUTOMATION_PLAN.md, agent-execution/README.md and AGENTS.md from MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json match on AllowedWriteScope (16), ForbiddenWriteScope (89), Invariants (26), StopConditions, Authorities and RequiredTests; AuthorityRevision, MainSha and RoutingEnforcement also match. Planning relay records A1-A8 as pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Handoff branch and worktree match the delegation. git rev-parse HEAD and origin/architecture/workspace-persistente-rackcad both returned 206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4. merge-base --is-ancestor returned 0 for BaseSha..RedSha, RedSha..CurrentSha and BaseSha..CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: CurrentRun LsRemoteSha and HeadSha equal CurrentSha; OriginMainSha equals delegated MainSha 812baf879612320653094a8aaf46aca0bac81383. Current refs observed by git match."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 13 paths; the list equals worker-handoff.json FilesChanged, every path is in AllowedWriteScope and none intersects ForbiddenWriteScope. StopConditions in the handoff is empty."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 returned empty. git check-ignore -v confirmed the copied inputs path is ignored by .gitignore:3 (artifacts/). Relay Entry also records CleanTree=true."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push 42860103890 for refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs are success. RedRun 42855947104 is push on the same ref at RedSha; Core and UI test jobs failed as required for RED. TRX paths show Debug outputs."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed supplied TRX UnitTestResult names: CurrentSha filtered UI=222 passed and Core=902 passed, matching handoff TestResults and exceeding minima 203/891. RedSha filtered UI=222 (206 passed, 16 failed) and Core=902 (888 passed, 14 failed), matching handoff counts. RT has 5 test paths; all are in prior ChainRedFiles, so the union remains the same 8 listed in delegation.json. RedSha..CurrentSha changes 7 product paths and no tests."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show --format=%B for RedSha and CurrentSha shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> on both commits, matching worker-handoff.json Worker.Trailer and effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with Provider effort high. Work relay records launch alias sonnet, effective model claude-sonnet-5-5 and effective effort high; alias matches the subagent transport parameter rule."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against AUTOMATION_PLAN section 16.10; no listed term matched."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials, 6 tool errors with none pending, and no usage-limit warning."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Git identity, branch tip, remote tip, clean status and the handoff path all match the recorded delivery.",
+    "The supplied CurrentSha and RedSha TRX counts agree with handoff TestResults for both required filters.",
+    "AuthorityRevision..BaseSha contains only the three declared UNIT_DOC paths; the delivery diff contains 13 allowed paths."
+  ],
+  "RecommendedNextAction": "Registrar esta verificacion y continuar la coordinacion conforme a las autoridades vigentes."
+}

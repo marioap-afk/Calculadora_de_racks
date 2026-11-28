@@ -1,0 +1,51 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261112T065046Z-3387",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha lists seven paths. Six are covered by AllowedWriteScope; src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs is not. It is not covered by any exact entry or prefix in the 15-entry AllowedWriteScope. Per the contract, this is a failure even though it is not listed in ForbiddenWriteScope."
+  },
+  "OutputSha256": "6B75E08A7C5B8E0C985A9E5DBD63516C4713CBA68AE7D3EE228A64E8B82C7208",
+  "ManualFreeText1610": []
+}

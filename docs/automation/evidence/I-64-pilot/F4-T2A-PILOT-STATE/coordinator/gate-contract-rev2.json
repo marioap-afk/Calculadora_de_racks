@@ -1,0 +1,446 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F4",
+  "TaskId": "F4-T2A-PILOT-STATE",
+  "Objective": "Implementar en Application pura el estado del piloto acotado de Push Back (F4-PILOT-PUSHBACK-01, campo unico AnnotationScale, solo un lado) sobre el estado editable existente: PushBackPilotDraftState con origen inmutable, comparador y copiador con censo completo de campos, adaptador de texto pendiente, materializacion tipada desde el texto del sobre por la ruta existente, composicion para escribir desde la base vigente (IC-07), y la frontera de propiedad N-2 en el nucleo de borradores, respetando INV-F4T1-19; con pruebas de ida y vuelta, caracterizacion ventana frente a piloto y paridad de validacion. Sin AutoCAD, sin host, sin UI de producto y sin escrituras.",
+  "AuthorityRevision": "b43d8685c8453c5a5c0e8bd349789910112a1515",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-f4-t2-gate-contract-package.md",
+      "Section": "archivo completo; su seccion 6 y las decisiones D-T2-01 a D-T2-05 fijan esta tarea",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "D-10, D-11, D-12, D-13 y D-17; INV-16, INV-17, INV-18, INV-20, INV-21, INV-26; section 11 F4",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-implementation-clarifications.md",
+      "Section": "IC-04, IC-06 e IC-07",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-gate-contract-package.md",
+      "Section": "archivo completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "estado vigente completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "section 112 y siguientes",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/f4-dispositions.md",
+      "Section": "archivo completo, en particular F4-E09, F4-E16, F4-E17 y F4-E18",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f3-ratification-f4-authorization.md",
+      "Section": "archivo completo: orden del Owner",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4-disposition-2.md",
+      "Section": "archivo completo: orden del Owner",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t1-nc3-substitute.md",
+      "Section": "arranque de F4-T2 y requisitos heredados",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt3.json",
+      "Section": "INV-F4T1-01 a INV-F4T1-19, en particular INV-F4T1-19",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T2A-PILOT-STATE/coordinator/gate-contract-rev2.json",
+      "Section": "este contrato (revision 2: solo ForbiddenWriteScope reducido; sustituye a la revision 1 en docs/automation/evidence/I-64-pilot/F4-T2A-PILOT-STATE/coordinator/gate-contract.json)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2a-forbidden-simplification.md",
+      "Section": "orden del Coordinator: ForbiddenWriteScope reducido 139 -> 57; AllowedWriteScope es la lista blanca primaria y exacta",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T2A-PILOT-STATE/coordinator/reduced-scope-report.json",
+      "Section": "conjunto retenido y retirado y pruebas de la reduccion",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "Section": "nucleo de borradores; cambia solo segun INV-F4T2A-10",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+      "Section": "registro de borradores; cambia solo segun INV-F4T2A-10",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs",
+      "Section": "solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs",
+      "Section": "estado compuesto, Snapshot y Restore; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs",
+      "Section": "estado de un lado, Snapshot y Restore; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorState.Load.cs",
+      "Section": "LoadFromDesign y RecoverInputs; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorInputs.cs",
+      "Section": "inputs del rack; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs",
+      "Section": "BuildDesign compuesto; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs",
+      "Section": "BuildDesign de un lado; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Persistence/RackEmbedDocument.cs",
+      "Section": "RackEmbedStore; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Persistence/RackProjectStore.cs",
+      "Section": "TryDeserialize; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "Section": "LoadExisting, LoadFromModel, Recompute y ReadInputs; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "Section": "LoadCompositeFromDesign; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.UI/Controls/NumericFieldValidation.cs",
+      "Section": "regla de validacion de NumericField; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Formatting/LocalizedNumberParser.cs",
+      "Section": "TryDouble; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/adr/0032-selectivo-pendiente-comprometido-y-autoridades-por-fondo.md",
+      "Section": "D5 y D6",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md",
+      "Section": "D11 y D13",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "section 16.1 a section 16.10",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "celdas medidas y vigentes para Controller y Worker",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "relevo, Git e integracion",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+    "tests/RackCad.Tests/Fixtures/I64/"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/Systems/Cantilever/",
+    "src/RackCad.Application/Systems/Dynamic/",
+    "src/RackCad.Application/Systems/FlowBed/",
+    "src/RackCad.Application/Systems/Larguero/",
+    "src/RackCad.Application/Systems/Selective/",
+    "src/RackCad.Application/Systems/Shared/",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+    "tests/RackCad.Tests/Fixtures/I57/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md"
+  ],
+  "Invariants": [
+    "INV-F4T2A-01 (IC-06, D-T2-03): PushBackPilotDraftState agrupa UNA instancia existente de PushBackCompositeEditorState, UNA de PushBackEditorInputs y Origin, el texto authored crudo e inmutable (string) del sobre del que se materializo. No define un modelo paralelo, no persiste nada y no expone ninguna operacion que arme un diseno. Ningun tipo existente de src/ cambia.",
+    "INV-F4T2A-02 (D-T2-01, F4-PILOT-PUSHBACK-01): el unico campo editable del piloto es AnnotationScale (PushBackEditorInputs.Annotations.AnnotationScale), con clave de campo \"AnnotationScale\" por comparacion ordinal; cualquier otra clave es invalida. Validacion identica a AnnotationScaleBox: texto vacio o en blanco invalido; no numerico segun LocalizedNumberParser.TryDouble (cultura actual) invalido; valor <= 0 invalido; en otro caso valido. Paridad exacta con NumericFieldValidation.Validate(text, false, false, 0, null, minimumInclusive: false) en las culturas es-MX, en-US, de-DE e invariante, probada en RackCad.UI.Tests.",
+    "INV-F4T2A-03 (D-T2-01, ADR-0032 D6): PushBackPilotFieldAdapter implementa IDraftPendingTextAdapter<PushBackPilotDraftState>. Validate no muta nada. Apply devuelve el MISMO objeto current que recibe, con AnnotationScale aplicado en sitio, y el adaptador no conserva ninguna referencia a estados (no tiene campos de instancia de tipo estado); una prueba lo fija.",
+    "INV-F4T2A-04 (D-10, INV-26, D-T2-03): PushBackPilotStateComparer es un IEqualityComparer<PushBackPilotDraftState> reflexivo y simetrico, con igualdad exacta (double por valor) del contenido editable. Un censo por reflexion recorre TODOS los campos de instancia (publicos, privados y de respaldo) del grafo de PushBackCompositeEditorState, PushBackEditorState, sus matrices, frentes y celdas y PushBackEditorInputs, de forma recursiva, y obliga a clasificar cada uno en exactamente una de cuatro clases: Editable (lo cubre el comparador), Seleccion (SelectedFrontIndex, SelectedLevelIndex, SelectedCells, ActiveSide, ActiveSelection: los ignora), Autoridad de modulos y cola (WorkingBaseline, moduleSession, moduleCommit, moduleSignature, LastModuleReconciliation, DormantCompositeTail, DormantTailLineOverrides, dormantTailConsumed: los ignora) u Origen (Origin: lo ignora). Un campo sin clasificar hace fallar la prueba. La prueba muta cada campo Editable y exige desigualdad; muta cada campo de las otras clases y exige igualdad. Dos materializaciones del mismo origen, y de origenes con texto distinto y contenido equivalente, son iguales.",
+    "INV-F4T2A-05 (D-T2-03, copiador profundo): el copiador (Copy, en PushBackPilotStateComparer) devuelve una copia igual segun el comparador y con la misma seleccion; no comparte ningun objeto mutable con el original (censo por reflexion sobre todo el grafo; solo se comparten instancias de tipos inmutables, que el censo comprueba) y no copia la clase Autoridad de modulos y cola: la copia nace sin baseline, sin modulos y sin cola. Origin se comparte por ser inmutable.",
+    "INV-F4T2A-06 (D-T2-02, IC-07 punto 1, D-T2-04): PushBackPilotMaterializer.Materialize(originText, catalog) devuelve un resultado tipado Admitido(estado) | FueraDelPiloto(motivo) | Fallido(motivo), sin excepciones hacia fuera. Deserializa solo por la ruta existente: RackEmbedStore.Deserialize (null da Fallido), kind Push Back (otro da Fallido), RackProjectStore.TryDeserialize hasta PushBackDesign (version mayor incompatible da Fallido con el diagnostico de INV-17; otro fallo da Fallido). Un diseno IsComposite da FueraDelPiloto. Reproduce en este orden la parte de Application de LoadExisting: SetActiveSide(A) y SetSideBPresent(false); inputs = SideA.LoadFromDesign(design, resolver); SetSideBPresent(false) y LoadComposite(design.Composite); ClearDormantTail() y ParkDormantTail con los ids de cola (si queda cola: FueraDelPiloto); AlignSlotGrid(). No reproduce LoadFromModel ni el primer Recompute.",
+    "INV-F4T2A-07 (D-T2-03, IC-07 punto 2, D-12): ComposeForWrite(initial, current, catalog) es pura y total: materializa de nuevo desde initial.Origin (la base vigente), le transfiere el contenido Editable de current y devuelve el par (PushBackCompositeEditorState, PushBackEditorInputs) que consume PushBackCompositeEditorAssembler.BuildDesign; no muta initial ni current, ignora current.Origin y da un resultado tipado de rechazo si la base no admite la materializacion. Prueba obligatoria del escenario de Conservar: V1 abierto y escala editada; un V2 externo cambia SOLO la capa de modulos (una cabecera personalizada) con la misma escala; KeepMineOnCurrentVersion confirmado; la composicion lleva la cabecera de V2 y la escala del borrador; al devolver la escala a su valor original el borrador queda Limpio y la composicion arma un documento identico al de V2.",
+    "INV-F4T2A-08 (D-T2-04, ida y vuelta): sobre un corpus de al menos 6 disenos canonicos de un solo lado (armados con el ensamblador compuesto del producto; con modulos personalizados, fondos manuales, frentes en blanco, OffCells del tope trasero, selecciones de seguridad, parametros avanzados, AnnotationScale no predeterminada y DimensionStyle no nulo), Materialize, ComposeForWrite y BuildDesign dan un documento persistido identico al de origen; con una edicion de AnnotationScale la unica diferencia es ese campo. Sobre fixtures antiguos (sin datum, sin los campos de I-41, con poste nulo, con SideB no presente, con peralte heredado distinto de 3.5) la prueba afirma el delta exacto de canonicalizacion mas el campo editado. El corpus vive en archivos JSON de sobre bajo tests/RackCad.Tests/Fixtures/I64/ y los dos proyectos de prueba lo leen por ruta desde la raiz del repositorio.",
+    "INV-F4T2A-09 (D-T2-04, caracterizacion): WorkspaceDraftPilotWindowLoadCharacterizationTests, en STA con StaTestRunner y sin tocar producto, compara para cada diseno del corpus RackPushBackSystemWindow.LoadExisting mas LastComputation.Design frente a Materialize, ComposeForWrite y BuildDesign, con el MISMO texto de sobre y el MISMO catalogo (window.Session.Catalog); exige CurrentInputsAreValid antes de leer LastComputation y, si la ventana rechaza los valores, registra el caso como no admitido sin comparar. Fija el delta por diseno, que solo puede pertenecer a las clases (a) redondeo al formato 0.### de los controles, (b) perdida de DimensionStyle en ReadInputs, (c) sustitucion o ajuste por los controles en LoadFromModel (RackPushBackSystemWindow.xaml.cs:382-419) y (d) celda vuelta a comprometer desde los controles. Un delta de otra clase es STOP F4T2A-C03.",
+    "INV-F4T2A-10 (N-2, D-T2-05, INV-F4T1-19): el nucleo copia con el copiador inyectado todo estado que entra: InitialState de la lectura en Begin, DiscardAndReload, KeepMineOnCurrentVersion y el rebase de Applied y AppliedWithWarnings, y el argumento de SetCurrentDraftState. InitialDraftState devuelve una copia. CurrentDraftState sigue devolviendo la referencia interna (modelo de edicion en sitio de INV-F4T1-19, que no se enmienda). El resultado de adapter.Apply en CrossBoundary no se copia. IsDirty, Status, RacksAtRiskOf y la politica de cierre leen los campos privados, nunca el getter que copia.",
+    "INV-F4T2A-11 (N-2, pruebas adversariales): con el TState mutable de prueba y con PushBackPilotDraftState, cada una falla en el RED y pasa en el GREEN: (a) mutar el objeto de origen de la lectura tras Begin no cambia InitialDraftState ni dirty; (b) lo mismo tras DiscardAndReload, KeepMineOnCurrentVersion y el rebase de Applied; (c) mutar el objeto pasado a SetCurrentDraftState tras la llamada no cambia el estado actual; (d) mutar el objeto devuelto por InitialDraftState no cambia el estado inicial interno; (e) reutilizar un mismo objeto de origen para dos borradores (dos racks o dos sesiones) los deja independientes. Prueba de conservacion: con PushBackPilotDraftState, editar en sitio CurrentDraftState deja Dirty y EvaluateClose veta.",
+    "INV-F4T2A-12 (alcance de pruebas existentes): en WorkspaceDraftSessionTests.cs, WorkspaceDraftRegistryTests.cs y WorkspaceDraftApplyTests.cs solo cambian las aserciones de identidad sobre el estado inicial (Assert.Same), que pasan a no-identidad mas igualdad estructural completa (no el comparador de dirty, que ignora Source); las pruebas de edicion en sitio no cambian. Todos esos cambios van en el RED.",
+    "INV-F4T2A-13 (pureza y guardas, INV-21): ningun archivo de producto de la tarea referencia RackCad.Plugin, RackCad.UI, System.Windows, Autodesk, System.IO, Transaction ni LockDocument; los archivos de Drafts siguen sin nombrar sistemas; ninguna guarda existente se modifica ni se debilita.",
+    "INV-F4T2A-14 (sin escritura ni host): nada de la tarea escribe en un DWG, abre AutoCAD, suscribe eventos ni lee el host. Fuera de alcance: lectura del host y admision real (T2B), IC-04 (T2C), interfaz (T3) y mutacion (T4).",
+    "INV-F4T2A-15 (cobertura RED/GREEN): RED de comportamiento real que compila y falla por asercion, con los tipos nuevos como esqueleto inerte (valores por defecto, sin lanzar), sin pruebas artificiales, que cubre como minimo INV-F4T2A-02 a INV-F4T2A-12. El GREEN no toca ningun archivo de tests/ del RED."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 1300,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+      "MinSelected": 222,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate-contract valido; delegacion del Controller valida; aceptacion A1-A8 y nc4 (primera delegacion de la cadena F4-T2A) antes del Worker.",
+    "AllowedWriteScope de la delegacion = exactamente el AllowedWriteScope del contrato.",
+    "Commit RED y push propios antes del GREEN: pruebas que compilan y fallan por asercion en los dos proyectos; ChainRedSha y ChainRedFiles acreditados.",
+    "Commit GREEN y push con cambios solo dentro del AllowedWriteScope; ningun archivo de tests/ del RED cambia.",
+    "Filtros FullyQualifiedName~RackCad.Tests.Workspace y FullyQualifiedName~RackCad.UI.Tests.Workspace en verde sobre el GREEN; suites completas de los dos proyectos en verde; build Release sin avisos nuevos.",
+    "CI push del SHA exacto GREEN con los cuatro jobs en success.",
+    "worker-handoff.json conforme al esquema con RED, GREEN, alcance real, trailer, conteos de los filtros, mapa evidencia-por-invariante, el delta de caracterizacion por diseno y OpenQuestions vacia salvo ambiguedad material real.",
+    "Controller verification valida; nc1..nc4 segun README section 10; revision directa de la sesion y revision adversarial independiente del diff (F4-E02).",
+    "Sin AutoCAD: Application pura y pruebas."
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive or irreversible action not authorized"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch or worktree ownership conflict"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify AuthorityRevision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"
+    },
+    {
+      "Id": "S-14",
+      "Text": "I-64 Freeze or contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "config.toml no longer matches accepted Snapshot A, B, C or D"
+    },
+    {
+      "Id": "P-02",
+      "Text": "foreign live participant, unattributable process or more than one open delegation"
+    },
+    {
+      "Id": "P-03",
+      "Text": "delegation outside gate contract"
+    },
+    {
+      "Id": "P-04",
+      "Text": "BLOCKED cap reached"
+    },
+    {
+      "Id": "P-05",
+      "Text": "invocation differs from accepted delegation package"
+    },
+    {
+      "Id": "P-06",
+      "Text": "usage or credit-limit warning"
+    },
+    {
+      "Id": "P-07",
+      "Text": "another invocation would exceed the invocation budget"
+    },
+    {
+      "Id": "P-08",
+      "Text": "responsible session operates the worktree during cession"
+    },
+    {
+      "Id": "F4T2A-C01",
+      "Text": "the comparer or the copier cannot be made reliable without changing an existing type of src/"
+    },
+    {
+      "Id": "F4T2A-C02",
+      "Text": "the canonical round trip without edits does not give identity for some design of the corpus"
+    },
+    {
+      "Id": "F4T2A-C03",
+      "Text": "the window-versus-pilot characterization shows a delta outside classes (a) to (d); report it, do not pin it"
+    },
+    {
+      "Id": "F4T2A-C04",
+      "Text": "the classic window, any file of its dependency closure, an existing guard, a csproj, Plugin, UI product code or Domain would have to change"
+    },
+    {
+      "Id": "F4T2A-C05",
+      "Text": "host reading, real admission, a command, the UI surface or any mutation (F4-T2B, F4-T2C, F4-T3, F4-T4) would be required"
+    },
+    {
+      "Id": "F4T2A-C06",
+      "Text": "the frozen semantics of D-10, D-12, D-13 or D-17, or INV-F4T1-19, would have to change"
+    },
+    {
+      "Id": "F4T2A-C07",
+      "Text": "the task evaluates Long-horizon"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md: celda write-commit-push medida por U-04; effort high medido y usada como Worker real",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/process/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "process",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "sonda neutra de F4 R20261111T180028Z-32f7 (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT G 7C1516A9135D59FA38F6004D56B71C7E1313502D6C6BFEA6FB5D8F97A62DD723 antes y despues; F4-E13) sobre codex-cli 0.167.0-alpha.3.2, bin 5449c1f0f26f1f98, codex.exe SHA-256 4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17; acreditacion del binario: sonda R20261110T034758Z-6a68",
+      "VerifiedOn": "2026-11-11"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Sesion principal de I-64 (Claude) por las ordenes del Owner I-64 F3 RATIFICATION / F4 AUTHORIZATION, F4 OWNER / COORDINATOR DISPOSITION y nc3 CONTROL SUBSTITUTE DISPOSITION (docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/)",
+  "IssuedUtc": "2026-11-11T21:53:10Z"
+}

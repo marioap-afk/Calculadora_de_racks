@@ -1,0 +1,8 @@
+SideBPresent False False ever False False
+gap 0 0 topo 0 0 defTopo SoloA SoloA dir AToB AToB
+A fronts 3 3 B fronts 1 1
+B0 active True False pal 1 1 lev 3 3
+pallet kg kg post POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA | POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA dsty | views |
+scale 1.5 1.5 dim Standard Standard datum 1 1 name n|n
+safety 0 0
+eq=False

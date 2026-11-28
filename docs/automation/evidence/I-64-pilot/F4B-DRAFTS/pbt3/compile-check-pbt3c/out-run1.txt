@@ -1,0 +1,12 @@
+patch sha256 a81de435e70d62a40af8262d5d2d297eb36c6828053b0fce325c95af76004906
+esqueleto aplicado: 15 lineas
+core-tests rc=0 errores=0 avisos-del-esqueleto=0
+ui-tests rc=0 errores=0 avisos-del-esqueleto=0
+plugin rc=0 errores=0 avisos-del-esqueleto=0
+control positivo: RackViewBlockEraser=1 EraseInTransaction=1 en RackCad.Plugin.dll
+core-test rc=0
+counters {'total': '19124', 'executed': '19118', 'passed': '19118', 'failed': '0', 'notExecuted': '0'}
+failed methods 0 rows 0
+build-server shutdown rc=0
+MAINCO []
+rc=0

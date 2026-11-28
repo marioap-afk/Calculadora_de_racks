@@ -1,0 +1,135 @@
+{
+  "Schema": "rackcad-i64-architect-review-record/v1",
+  "RunId": "R20261109T062937Z-e1d0",
+  "Amendment": "I-64-A-8",
+  "Phase": "ARCHITECT_REVIEW",
+  "Authority": "orden del Coordinator I-64 - A-8 / I64-TESTFILTER-BRIDGE-01 COORDINATOR ARCHITECT ACCREDITATION + REVIEW ORDER (literal en artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a8-architect-accreditation-review-order.md, SHA-256 97E4C691540243B68511F00E84971617D31E7ADEB479A1729EC90D3F98CC4048); una revision formal autorizada tras la sonda PASS",
+  "ReviewedCommit": "d4a97950c2757d09f971a66621e7262e385ad818",
+  "PromptSha256": "B0D1A58508105091258E26020DEA2C397AC597DBC0CBFCC528C440102334F0DC",
+  "Participant": {
+    "Kind": "codex-cli",
+    "Profile": "ARCHITECTURE_REVIEW",
+    "ModelRequested": "gpt-6.1-sol",
+    "EffortRequested": "high",
+    "Sandbox": "read-only",
+    "ModelEffective": "gpt-6.1-sol",
+    "EffortEffective": "high",
+    "CliVersion": "0.167.0-alpha.3.2",
+    "CliBinary": "Codex/bin/f71a721e0e6193a9/codex.exe (SHA-256 4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382)",
+    "Launcher": "-s read-only -m gpt-6.1-sol -c model_reasoning_effort=\"high\" -c allow_login_shell=false",
+    "EffectiveSource": "rollout-2026-11-09T00-29-52-01a1beff-b72a-73c1-8af5-a43a0b26e3a6.jsonl",
+    "EffectiveSourceSha256": "6F7BD310FC9AA936763ADC052FC066F5EA03985D32A34EF66D3E0A36EC1F6452"
+  },
+  "Eligibility": "celda gpt-6.1-sol/high/read-only acreditada en este CLI por la sonda R20261109T062522Z-e8be (PASS: efectivo gpt-6.1-sol/high, CliVersion 0.167.0-alpha.3.2, read-only, red restringida, oraculo Git exacto); unico codex.exe en Codex/bin; config.toml = SNAPSHOT D",
+  "Cession": {
+    "StartUtc": "2026-11-09T06:29:51Z",
+    "EndUtc": "2026-11-09T06:34:44Z",
+    "SessionOperated": false
+  },
+  "Exit": {
+    "HeadSha": "d4a97950c2757d09f971a66621e7262e385ad818",
+    "LsRemoteSha": "d4a97950c2757d09f971a66621e7262e385ad818",
+    "OriginMainSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "CleanTree": true,
+    "GitOperationInProgress": false,
+    "ConfigSnapshot": "D",
+    "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+    "Participants": 0,
+    "Unattributable": 0
+  },
+  "Entry": {
+    "HeadSha": "d4a97950c2757d09f971a66621e7262e385ad818",
+    "CleanTree": true,
+    "ConfigSnapshot": "D",
+    "ConfigChanged": false,
+    "Participants": 0,
+    "Unattributable": 0,
+    "LauncherDead": true,
+    "AcadProcesses": 0
+  },
+  "Outcome": {
+    "ExitCode": 0,
+    "TerminalEvent": "turn.completed",
+    "OutputSha256": "7CB6A46968B11D39B5035F1A51834372F4CCFD2AE0B45AFFFD94E4A3DE58313A",
+    "SchemaValid": true,
+    "Coherent": true,
+    "SubjectMatches": true,
+    "NonAsciiBytes": 0,
+    "CommandCount": 34,
+    "NoProfileCommands": 34,
+    "NonZeroCommands": 1,
+    "RealF2T1BridgeExecution": [],
+    "GateTerms1610": [],
+    "LimitPatterns": {
+      "ion | frontera |\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1
+    }
+  },
+  "Result": {
+    "Verdict": "CHANGES REQUIRED",
+    "RequiredCount": 3,
+    "OptionalCount": 0,
+    "Answers": {
+      "Q01": [
+        "YES",
+        true
+      ],
+      "Q02": [
+        "YES",
+        true
+      ],
+      "Q03": [
+        "NO",
+        false
+      ],
+      "Q04": [
+        "NO",
+        false
+      ],
+      "Q05": [
+        "YES",
+        true
+      ],
+      "Q06": [
+        "YES",
+        true
+      ],
+      "Q07": [
+        "YES",
+        true
+      ],
+      "Q08": [
+        "YES",
+        true
+      ],
+      "Q09": [
+        "YES",
+        true
+      ],
+      "Q10": [
+        "YES",
+        true
+      ],
+      "Q11": [
+        "YES",
+        false
+      ],
+      "Q12": [
+        "NO",
+        true
+      ]
+    },
+    "RequiredFindings": [
+      "I64-A8-ORDINAL-FILTER-MISMATCH",
+      "I64-A8-COUNTER-COHERENCE",
+      "I64-A8-DUPLICATE-RESULT-FAIL-OPEN"
+    ],
+    "OptionalFindings": []
+  },
+  "Budget": "una revision formal autorizada (esta); sin reintento",
+  "Notes": [
+    "El dictamen no activa A-8 ni la deja activable: con CHANGES REQUIRED, A-8 sigue NOT ACTIVE (orden del Coordinator: STOP y devolver los hallazgos exactos).",
+    "Ninguna ejecucion del puente sobre evidencia real de F2-T1: las ordenes que nombran las herramientas de A-8 son git show y pruebas adversariales en memoria con entradas sinteticas (Limitations del dictamen); RealF2T1BridgeExecution = [].",
+    "La unica coincidencia de patron de limite en events.jsonl es la fila S-11 de AUTOMATION_PLAN 16.11 leida por el Architect: sin P-06.",
+    "Sin escrituras Git de la sesion durante la revision; HEAD = remoto = d4a97950 y arbol limpio en la entrada."
+  ]
+}

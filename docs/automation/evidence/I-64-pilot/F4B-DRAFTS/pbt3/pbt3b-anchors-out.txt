@@ -1,0 +1,138 @@
+# measure_pbt3b.py: la remedicion de PB-T3b sobre el cierre de PB-T3a (precondicion 2 y section 6.0 del paquete de PB-T3 v4.5): el seco del
+# generador sobre ese cierre, el censo de los disenos de las clases de F4 y el barrido de las guardas, frente a lo previsto.
+
+## La corrida
+- cierre de PB-T3a: c40eea4ad126ec6209dfef40e643e180b364bc97 (F4B-E43)
+- generador: make_pbt3b_contract.py, sha256 F0CD5F96E10616DF67FBF6357D3FF360C63AA86397B5FC7679E8A8BA2779D548
+- paquete: I-64-f4b-pbt3-gate-contract-package-v45.md, sha256 64ab03df27cc8f441883442ca999036e5f7555ede9269eb3f4f768ab8a07fdbd
+- barrido: sweep-pbt3b-close.txt, sha256 20e4506c18cdccdd8d8ce64e08f50d2454f0fe7dfe7825d50cffffac303d1d38 (de guard_sweep.py, sha256 1a0868817a3e42b2e1a90dc065eef8c3b73d2af04d37eacf72558db84c6038c3, y sweep_t3b_diff.py, sha256 f25a603e5a6a5c09c01eafe17324c0aa89891323041b3daf9801ae1dc669762c)
+- orden: python -I make_pbt3b_contract.py <IssuedUtc> <AuthorityRevision> <MainSha> --dry --objects-rev c40eea4a --repo <checkout-principal> --package-file I-64-f4b-pbt3-gate-contract-package-v45.md --json-out <temporal>
+- rc 0; contrato en seco: 15 entradas de evidencia, 64 autoridades
+
+## Frente a lo previsto: 1 DIFERENCIAS, 0 sin explicar
+DISTINTO src/ del ForbiddenWriteScope: previsto 98 (compat-pbt3-vs-pbt2.md section 3) | medido 99 | Draft/, la carpeta que creo PB-T3a, es una entrada mas del algoritmo de [PKC-C] (98 + 1); el resto, igual
+igual    tests/ (Core, UI): previsto 109 (28 + 76 + 5), 69 (68 + 1) | medido 109, 69
+igual    Workspace/ (archivos, lista explicita): previsto 79, 76 | medido 79, 76
+igual    D-1: S-1 a S-6 sin Skip, filas: previsto 10 (5 Fact y 5 de S-2) | medido 10
+igual    PBT3B-C13: nombres nuevos libres en Pilot/: previsto 19 | medido 19
+igual    linea base de la CI (Core, UI, Skipped): previsto 19107, 2451, 21 | medido 19107, 2451, 21 (run 44668584248 sobre 6919e17a)
+igual    MinSelected Core Workspace (3 271 - 10 filas de D-1): previsto 3261 | medido 3261
+igual    MinSelected Core PushBackFullDraft (contrato de PB-T3a): previsto 10 | medido 10
+igual    MinSelected Core PushBackDraftWriteGuardTests (contrato de PB-T3a): previsto 3 | medido 3
+igual    MinSelected UI Workspace (contrato de PB-T3a): previsto 547 | medido 547
+igual    MinSelected Core PushBackEditableState (contrato de PB-T3a): previsto 13 | medido 13
+igual    MinSelected Core PushBackEditorOutputGate (contrato de PB-T3a): previsto 1 | medido 1
+igual    MinSelected Core PushBackSharedReferenceGuardTests (contrato de PB-T3a): previsto 2 | medido 2
+igual    MinSelected Core PushBackWindowSharedReferenceGuardTests (contrato de PB-T3a): previsto 1 | medido 1
+igual    MinSelected Core PushBackWindowOnStateSourceGuardTests (contrato de PB-T3a): previsto 1 | medido 1
+igual    MinSelected UI PushBackWindowOnStateTests (contrato de PB-T3a): previsto 2 | medido 2
+igual    MinSelected UI PushBackClassicCharacterization (contrato de PB-T3a): previsto 55 | medido 55
+igual    MinSelected Core PushBackClassicCharacterization (contrato de PB-T3a): previsto 10 | medido 10
+igual    MinSelected UI PushBackFullEditorCharacterization (contrato de PB-T3a): previsto 16 | medido 16
+igual    MinSelected Core PushBackFullEditorCharacterization (contrato de PB-T3a): previsto 3 | medido 3
+igual    MinSelected UI PushBackStateNet (contrato de PB-T3a): previsto 14 | medido 14
+igual    MinSelected UI PushBackDeclaredCorrection (contrato de PB-T3a): previsto 14 | medido 14
+igual    MinSelected UI Cantilever (contrato de PB-T3a): previsto 67 | medido 67
+igual    MinSelected Core I58F1 (contrato de PB-T3a): previsto 10 | medido 10
+igual    MinSelected Core CustomPropertiesEnvelopeGuardTests (contrato de PB-T3a): previsto 9 | medido 9
+igual    MinSelected Core NamespaceFolderGuardTests (contrato de PB-T3a): previsto 7 | medido 7
+igual    MinSelected Core PushBackDraftStatePortTests (contrato de PB-T3a): previsto 3 | medido 3
+igual    MinSelected Core PushBackDraftPortSharedReferenceGuardTests (contrato de PB-T3a): previsto 1 | medido 1
+igual    MinSelected Core PushBackWorkspaceModeSourceGuardTests (contrato de PB-T3a): previsto 1 | medido 1
+igual    MinSelected Core PushBackWorkspaceSharedReferenceGuardTests (contrato de PB-T3a): previsto 1 | medido 1
+igual    MinSelected UI PushBackWorkspaceModeTests (contrato de PB-T3a): previsto 3 | medido 3
+igual    MinSelected UI PushBackWorkspaceApplyCloseTests (contrato de PB-T3a): previsto 4 | medido 4
+igual    MinSelected UI PushBackFieldValidationConcordanceTests (contrato de PB-T3a): previsto 1 | medido 1
+igual    MinSelected UI PushBackWorkspaceCarryoverTests (contrato de PB-T3a): previsto 3 | medido 3
+igual    AVISOS del cierre de PB-T3a: previsto 0 (solo de la emision de PB-T3b) | medido 0
+igual    disenos de las clases de F4: fuera de Fixtures/I64: previsto 0 | medido 0
+igual    gestos de un diseno bloqueado en las clases de F4 que llegan al plan: previsto 0 | medido 0
+igual    R-8: bloqueado=True en PushBackStateNetFingerprintTests.cs: previsto 0 | medido 0
+igual    barrido de las guardas sobre el cierre: colisiones nuevas con PP, UR o la interfaz: previsto 0 | medido 0
+
+## El censo de los disenos de las clases de comportamiento del piloto de F4 (precondicion 2; V2-09)
+Lectura estatica por objetos git (no se ejecuto nada): los fixtures de Fixtures/I64 que nombra cada clase y los terminos que fabrican un diseno
+bloqueado. El corpus de Fixtures/I64 no esta bloqueado (R-8: CT-PBT1A-14 da bloqueado=False en todas sus lineas). Un diseno hecho en codigo
+con otros gestos no se mide aqui: lo cubre PBT3B-C14 (una prueba de comportamiento del piloto que cae).
+- WorkspacePilotPrepareTests: 67 metodos (R-8: 67); llega al plan: si (13); fixtures: pb-01-base, pb-02-modulos; terminos de bloqueo: ninguno; gestos que los ponen: ninguno
+- WorkspacePilotUpdateRunTests: 49 metodos (R-8: 49); llega al plan: si (13); fixtures: pb-02-modulos, pb-20-ab; terminos de bloqueo: ninguno; gestos que los ponen: ninguno
+- WorkspaceDraftPilotMaterializationTests: 41 metodos (R-8: 41); llega al plan: no; fixtures: pb-01-base, pb-02-modulos, pb-10-sin-datum, pb-11-sin-i41, pb-12-poste-nulo, pb-13-sideb-no-presente, pb-14-peralte-heredado, pb-15-sin-composite, pb-20-ab, pb-21-cola, pb-31-v2-modulos; terminos de bloqueo: StructureOverrideA, StructureOverrideB; gestos que los ponen: ninguno
+- WorkspacePilotUpdateHostTests: 35 metodos (R-8: 35); llega al plan: si (1); fixtures: pb-02-modulos; terminos de bloqueo: ninguno; gestos que los ponen: ninguno
+- WorkspacePilotUpdateRequestTests: 44 metodos (R-8: 44); llega al plan: si (14); fixtures: pb-02-modulos; terminos de bloqueo: ninguno; gestos que los ponen: ninguno
+- WorkspacePilotReconciliationHostTests: 28 metodos (R-8: 28); llega al plan: no; fixtures: pb-01-base; terminos de bloqueo: ninguno; gestos que los ponen: ninguno
+- WorkspaceDraftPilotIntentReadTests: 63 metodos (R-8: 63); llega al plan: no; fixtures: pb-01-base, pb-02-modulos, pb-03-fondos, pb-04-blanco, pb-05-topes, pb-06-seguridad, pb-07-combinado, pb-08-redondeo, pb-10-sin-datum, pb-11-sin-i41, pb-12-poste-nulo, pb-13-sideb-no-presente, pb-14-peralte-heredado, pb-15-sin-composite, pb-20-ab, pb-21-cola, pb-31-v2-modulos; terminos de bloqueo: ninguno; gestos que los ponen: ninguno
+- WorkspaceDraftPilotStateTests: 27 metodos (R-8: 27); llega al plan: no; fixtures: pb-01-base, pb-02-modulos, pb-03-fondos, pb-04-blanco, pb-05-topes, pb-06-seguridad, pb-07-combinado, pb-08-redondeo, pb-10-sin-datum, pb-11-sin-i41, pb-12-poste-nulo, pb-13-sideb-no-presente, pb-14-peralte-heredado, pb-15-sin-composite; terminos de bloqueo: SeparatorCountOverride =, SeparatorSpacingOverride =, StructureOverrideA, StructureOverrideB; gestos que los ponen: ninguno
+- Fixtures/I64 en el cierre: 17; nombrados por las clases: 17, todos del corpus
+
+## El barrido de las guardas sobre el cierre (section 5.0 y 4.1; V45-03)
+corpus: Pilot/PP + UR (lo nuevo de PB-T3b)
+antes: scanned guard files: 91 | filas del corpus: 497
+despues: scanned guard files: 92 | filas del corpus: 521
+guardas con coincidencias (cualquier corpus): antes 77, despues 78; nuevas: tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+filas del corpus nuevas: 24 | perdidas: 0
+- la guarda nueva, PushBackDraftWriteGuardTests (PB-T3a): CT-12 deja nombrar el modelo a Draft/, PP y UR (MayNameTheModel: si) y busca PushBackFullDraftState, PushBackFullDraftReader, PushBackFullComposition, PushBackConflictClassifier, PushBackViewDispositions; la interfaz nueva no los nombra (PushBackPilotUnitResult, IPushBackPilotViewEraser, EraseUnit); CT-13 y CT-14 leen solo los ocho de Draft/ (si). Sin colision con PB-T3b
+
+## Las anclas y los recuentos del seco, tal cual
+DRY rev c40eea4a (objetos del checkout principal) allowed 11 forbidden 294 (src 99 tests 178 [core 109 ui 69] root 17 ) inv 15 stops 34 required 31 evidence 15 authorities 64 anchors-ok 98 bytes 73249 sha256 DA96B4B97E91839556278C42D036C6ABBF6AFD1770726D0BB504F4A38F2E7195
+anclaje: desciende de d8ccbcb8 (F4B-E29), 18e4b783 (F4B-E41), 485b5651 (reemision, F4B-E42), el GREEN 6919e17a y el cierre c40eea4a (F4B-E43); src y tests == el cierre == el GREEN de PB-T3a; los ocho de Draft/ | f4b-dispositions hasta F4B-E43
+contrato de PB-T3a: docs/automation/evidence/I-64-pilot/F4B-PBT3A-FULL-WRITE-MODEL/coordinator/gate-contract.json en c40eea4a | tests de PB-T3b: Core 109 (las 28 de PB-T3a sin el prefijo Workspace/, 76 de Workspace/ y 5 de PB-T3a) y UI 69 (68 + 1); src: 99
+D-1 (F4B-E29): S-1 a S-6 en WorkspacePilotPrepareGuardTests.cs, WorkspacePilotUpdateGuardTests.cs, WorkspacePilotUpdateIntegrationGuardTests.cs, sin Skip en la base; 10 filas (5 Fact y las 5 de S-2) | Workspace/: 79 archivos, 76 en la lista explicita
+PBT3B-C13: 19 nombres nuevos libres en Pilot/; Prepare, Precheck, Execute y ComparePost una vez; Execution con 14 miembros tipados en el piloto; censo de la base: PP 70 y UR 72 declaraciones
+PBT3B-C11: el bloque citado del paquete con 5 cambios (nc2 v2 de F4B-E43, nc1 PD-F4B-01 de F4B-E40, las diferencias admitidas, las variaciones que vuelven al Owner y el final); sustituto de nc1 en la revision con SHA-256 41440edc; sustituto de nc2 v2: SHA-256 fijado (c033e96c), por custodiar con su revision y sus limites
+nombres de custodia nuevos de F4B-DRAFTS/pbt3/ libres en la revision: 8 de 8
+Snapshot K (F4B-E37): ConfigSha256 E1F69847 y sonda neutra R20261119T154313Z-2a9a con Pass | C07, C18 y los comunes == los de PB-T3a | F4B-E35: preguntas 3 y 4 y RR-1 a RR-7 | ISSUE_AUTH = F4B-E35, pregunta 3
+BOUNDED_RESULT: EMITIBLE; B 0 / I 0 / M 4; sin importantes; sin decisiones nuevas del Owner; recomprobacion v4.5: EMITIBLE, B 0 / I 0 / M 1 | bounded_check: sin informe (ni en la revision ni --bounded-file) | ultima recomprobacion de CA-T3b: None
+tabla de RR-3 (filas de PB-T3b): 4 clases, una fila cada una; PushBackFullWritePrepareTests 21 lineas y 6 valores; PushBackFullWriteRunTests 16 lineas y 2 valores; PushBackWritePathGuardTests 5 lineas y 0 valores; PushBackPilotUpdateEquivalenceGuardTests 8 lineas y 0 valores; derivadas de 5.3 (no enumeradas en la fila): PushBackFullWritePrepareTests: las cuatro lineas literales de CT-10 -> 4; PushBackFullWritePrepareTests: la plantilla '<Fn> prepare=Ready diseno=[<valor>]' -> 11; PushBackFullWritePrepareTests: el literal cortado 'piloto-bloqueado admitido=True bloqueado=True prepare=Invalid motivo=[\u2026' -> 1
+D1: needs de build-plugin = ['tests', 'build-ui'] | F4B-E30: clases de UI de los filtros que crean el configurador real: 0 (de 53 archivos) | (A') en el contrato: 0
+RequiredTests (criterio de count_tests_git.py sobre los objetos de la revision):
+  Core PushBackFullWrite                         new  paquete=13    medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=13 ExpectRed=True
+  Core PushBackPilotUpdateEquivalenceGuardTests  new  paquete=6     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=6 ExpectRed=True
+  Core PushBackWritePathGuardTests               new  paquete=2     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+  Core Workspace                                 ws   paquete=-     medido: clases=74 ejecutables=3271 skip=0 memberdata=33 -> MinSelected=3261 ExpectRed=False
+       Workspace de Core: medido 3271 (el del contrato de PB-T3a) - 10 filas de D-1 = 3261 (la cota de los Passed del RED; DU)
+  Core PushBackFullDraft                         t3a  paquete=10    medido: clases=4 ejecutables=10 skip=0 memberdata=0 -> MinSelected=10 ExpectRed=False
+  Core PushBackDraftWriteGuardTests              t3a  paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  UI   Workspace                                 t3a  paquete=547   medido: clases=20 ejecutables=547 skip=0 memberdata=16 -> MinSelected=547 ExpectRed=False
+  Core PushBackEditableState                     t3a  paquete=13    medido: clases=3 ejecutables=13 skip=0 memberdata=0 -> MinSelected=13 ExpectRed=False
+  Core PushBackEditorOutputGate                  t3a  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackSharedReferenceGuardTests         t3a  paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+  Core PushBackWindowSharedReferenceGuardTests   t3a  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackWindowOnStateSourceGuardTests     t3a  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  UI   PushBackWindowOnStateTests                t3a  paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+  UI   PushBackClassicCharacterization           t3a  paquete=55    medido: clases=6 ejecutables=55 skip=0 memberdata=0 -> MinSelected=55 ExpectRed=False
+  Core PushBackClassicCharacterization           t3a  paquete=10    medido: clases=1 ejecutables=7 skip=0 memberdata=1 -> MinSelected=10 ExpectRed=False
+       estatico 7 (+1 Theory con MemberData) < 10: vale porque el contrato de PB-T3a fija el mismo filtro con 10
+  UI   PushBackFullEditorCharacterization        t3a  paquete=16    medido: clases=6 ejecutables=16 skip=2 memberdata=0 -> MinSelected=16 ExpectRed=False
+  Core PushBackFullEditorCharacterization        t3a  paquete=3     medido: clases=3 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  UI   PushBackStateNet                          t3a  paquete=14    medido: clases=6 ejecutables=14 skip=0 memberdata=0 -> MinSelected=14 ExpectRed=False
+  UI   PushBackDeclaredCorrection                t3a  paquete=14    medido: clases=7 ejecutables=14 skip=0 memberdata=0 -> MinSelected=14 ExpectRed=False
+  UI   Cantilever                                t3a  paquete=67    medido: clases=3 ejecutables=67 skip=0 memberdata=0 -> MinSelected=67 ExpectRed=False
+  Core I58F1                                     t3a  paquete=10    medido: clases=2 ejecutables=8 skip=0 memberdata=2 -> MinSelected=10 ExpectRed=False
+       estatico 8 (+2 Theory con MemberData) < 10: vale porque el contrato de PB-T3a fija el mismo filtro con 10
+  Core CustomPropertiesEnvelopeGuardTests        t3a  paquete=9     medido: clases=1 ejecutables=18 skip=0 memberdata=1 -> MinSelected=9 ExpectRed=False
+  Core NamespaceFolderGuardTests                 t3a  paquete=7     medido: clases=1 ejecutables=7 skip=0 memberdata=0 -> MinSelected=7 ExpectRed=False
+  Core PushBackDraftStatePortTests               t3a  paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  Core PushBackDraftPortSharedReferenceGuardTests t3a  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackWorkspaceModeSourceGuardTests     t3a  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  Core PushBackWorkspaceSharedReferenceGuardTests t3a  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  UI   PushBackWorkspaceModeTests                t3a  paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  UI   PushBackWorkspaceApplyCloseTests          t3a  paquete=4     medido: clases=1 ejecutables=4 skip=0 memberdata=0 -> MinSelected=4 ExpectRed=False
+  UI   PushBackFieldValidationConcordanceTests   t3a  paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+  UI   PushBackWorkspaceCarryoverTests           t3a  paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+AVISOS del seco (13), todos de la emision de PB-T3b (el commit X, la comprobacion acotada y el sustituto de nc2 v2):
+  - emision: el sustituto de nc2 ampliado (la v2, F4B-E43, SHA-256 c033e96c) aun no esta custodiado en la revision con su revision y sus limites: faltan docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py, docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/review/independent-review-substitute-f4b-v2.md, docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/limits-declared.md
+  - emision: F4B-E44 (la emision de F4B-PBT3B-FULL-WRITE-RUN) aun no esta en f4b-dispositions.md
+  - emision: la comprobacion acotada de PB-T3b (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/independent-review-pbt3b-check.md) aun no existe (ni en la revision ni --bounded-file)
+  - emision: a custodiar con la emision de PB-T3b, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/pbt3b-anchors-out.txt
+  - emision: a custodiar con la emision de PB-T3b, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/independent-review-pbt3b-check.md
+  - emision: al custodiado le faltan apartados (## PB-T3b; los trae el commit X): docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md
+  - emision: al custodiado le faltan apartados (## R-21.; los trae el commit X): docs/initiatives/I-64-f4b-pbt3-measurements.md
+  - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/independent-review-pbt3b-check-prompt.md
+  - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/make_pbt3b_contract-dry.txt
+  - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/measure_pbt3b.py
+  - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/guard_sweep.py
+  - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/sweep_t3b_diff.py
+  - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/sweep-pbt3b-close.txt
+
+## La linea base de la CI, en la ExpectedEvidence del contrato en seco
+Linea base de la CI: la del cierre de PB-T3a (run 44668584248 sobre 6919e17a: Core 19107; UI 2451 resultados, 21 Skipped y 2430 Passed). GREEN previsto, con la variante (A): Core + 21 (13 + 6 + 2) = 19128 resultados, con los seis metodos de D-1 en Skipped (+ 6 o + 10 Skipped, segun cuente la TRX las filas de la Theory S-2; R-11) y 0 Failed; UI sin cambio: 2451 resultados, 21 Skipped y 2430 Passed; o la diferencia explicada por el diff.

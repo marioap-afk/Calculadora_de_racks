@@ -1,0 +1,23 @@
+GREEN Core: filas 19586 {'Passed': 19125, 'NotExecuted': 457, 'Failed': 4}; inicio 2026-11-20T18:25:14.7810991-06:00; fin 2026-11-20T18:34:40.9102610-06:00
+  previsto 19 586 = 19 129 + 0 + 457: False
+  omitidas fuera de la lista (las 7 de la base): 7 ['RackCad.Tests.PushBackDraftWriteGuardTests.CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope', 'RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase', 'RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing', 'RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst', 'RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal']
+  FALLA RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullRedTests.RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullRedTests.ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePl | at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullRedTests.ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan() in <copia>\tests\RackCad.Tests\Wo
+  FALLA RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullRedTests.RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullRedTests.InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvali | at RackCad.Tests.FullPanelCopies.WorkspacePilotPrepareFullRedTests.InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView() in <copia>\test
+  FALLA RackCad.Tests.NamespaceFolderGuardTests.RackCad.Tests.NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace | at RackCad.Tests.NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace() in <copia>\tests\RackCad.Tests\NamespaceFolderGuardTests.cs:line 244
+  FALLA RackCad.Tests.WorkspaceHostHardeningGuardTests.RackCad.Tests.WorkspaceHostHardeningGuardTests.NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept | at RackCad.Tests.WorkspaceHostHardeningGuardTests.NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept() in <copia>\tests\RackCad.Tests\Workspace\WorkspaceHostHardeningGua
+  UI green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.trx: filas 1 {'Passed': 1}
+  UI green-ui-RackCad_UI_Tests_Workspace.trx: filas 672 {'Passed': 644, 'NotExecuted': 28}
+  UI green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.trx: filas 2 {'Passed': 2}
+  UI green-ui-RackCad_UI_Tests_PushBackClassicCharacterization.trx: filas 55 {'Passed': 55}
+  UI green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.trx: filas 18 {'Passed': 16, 'NotExecuted': 2}
+  UI green-ui-RackCad_UI_Tests_PushBackStateNet.trx: filas 14 {'Passed': 14}
+  UI green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.trx: filas 14 {'Passed': 14}
+  UI green-ui-RackCad_UI_Tests_Cantilever.trx: filas 67 {'Passed': 67}
+  UI green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.trx: filas 3 {'Passed': 3}
+  UI green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.trx: filas 4 {'Passed': 4}
+  UI green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.trx: filas 1 {'Passed': 1}
+  UI green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.trx: filas 3 {'Passed': 3}
+  UI green-ui-RackCad_UI_Tests_NumericFieldValidationTests.trx: filas 13 {'Passed': 13}
+  UI green-ui-RackCad_UI_Tests_NumericFieldTests.trx: filas 10 {'Passed': 10}
+  UI green-ui-RackCad_UI_Tests_FullPanelCopies.trx: filas 36 {'Passed': 36}
+GREEN: NO CUMPLE

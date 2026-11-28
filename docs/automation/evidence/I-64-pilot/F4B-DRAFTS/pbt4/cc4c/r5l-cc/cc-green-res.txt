@@ -1,0 +1,2 @@
+filas 5 {'Failed': 1, 'Passed': 4}; inicio 2026-11-21T13:06:43.2430533-06:00; fin 2026-11-21T13:06:43.3500323-06:00
+  Failed RackCad.Tests.TmpPbt4cTextCt15.CT15 | at RackCad.Tests.TmpPbt4cTextCt15.CT15() in <copia>\tests\RackCad.Tests\TmpPbt4cTextCt.cs:line 519 | Assert.Equal() Failure: Strings differ

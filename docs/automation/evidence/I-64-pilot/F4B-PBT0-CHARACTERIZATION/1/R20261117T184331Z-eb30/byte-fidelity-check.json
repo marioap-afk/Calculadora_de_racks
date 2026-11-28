@@ -1,0 +1,114 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4B-PBT0-CHARACTERIZATION",
+  "PlanningRunId": "R20261117T184331Z-eb30",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "50f367bf6d41ad418d87f145259fb2fecbb7485f9ce4201cab0aa61cbd59160c",
+  "ContractSha256": "49d04d1e0b5114f79299a57a29e04cfdaea1960bbd43a02b593cff41e8ef66e8",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "97db854b1db4027c883664f159ad3b7e6bb464daa22853e8ab3b0818fab438ba",
+      "OutputSha256": "97db854b1db4027c883664f159ad3b7e6bb464daa22853e8ab3b0818fab438ba",
+      "Differences": []
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "7a51e4b0b2b1f0cfeac0132057299972e74b046dad50db17b4e3b3b8046be2a4",
+      "OutputSha256": "7a51e4b0b2b1f0cfeac0132057299972e74b046dad50db17b4e3b3b8046be2a4",
+      "Differences": []
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "10ae76acf4ac538462775cd16db31fa94a423d8b85c7216734bbdc69e02c2cbd",
+      "OutputSha256": "10ae76acf4ac538462775cd16db31fa94a423d8b85c7216734bbdc69e02c2cbd",
+      "Differences": []
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "33ca596830e93bd5afb7e2bc944357cdd4c4d43d10ab7c4970ecbfe7460119a3",
+      "OutputSha256": "de7cc4309f3e0ed462b55ea2e19ba722692e9555a6ed01970cdacc1fb277ed22",
+      "Differences": [
+        {
+          "Index": 65,
+          "Offset": 82,
+          "Source": " y escala); en neto no cambia (el RED las muta solo segun la tabla cerrada)",
+          "Output": " y escala); en neto no cambia (el RED la muta solo segun la tabla cerrada)"
+        }
+      ]
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "5ad97bcf433ccd76ca6efa6c5eb49d054bf46948710860dcb52218034974d8b9",
+      "OutputSha256": "5ad97bcf433ccd76ca6efa6c5eb49d054bf46948710860dcb52218034974d8b9",
+      "Differences": []
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "e51f99170327f907ab45758ff77eabf7d3699a3ecf28b3756269c8934ef493bf",
+      "OutputSha256": "e51f99170327f907ab45758ff77eabf7d3699a3ecf28b3756269c8934ef493bf",
+      "Differences": []
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "1f33b325470cdfae9803aebf22b32569d0b820d5df84fd4073944f33621b762c",
+      "OutputSha256": "1f33b325470cdfae9803aebf22b32569d0b820d5df84fd4073944f33621b762c",
+      "Differences": []
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "a5fef89aeae939f22e70881ee55217fc80e35759a26a9304e8c4f5344ad538f5",
+      "OutputSha256": "8eac8d339d1560223363d02bd4c3c595c721bd9a257d6ad2fcc8aca465896255",
+      "Differences": [
+        {
+          "Index": 152,
+          "Offset": 24,
+          "Source": "src/RackCad.Application/Units/",
+          "Output": "src/RackCad.Application/Systems/Units/"
+        },
+        {
+          "Index": 153,
+          "Offset": 24,
+          "Source": "src/RackCad.Application/Views/",
+          "Output": "src/RackCad.Application/Systems/Views/"
+        },
+        {
+          "Index": 154,
+          "Offset": 24,
+          "Source": "src/RackCad.Application/Workspace/",
+          "Output": "src/RackCad.Application/Systems/Workspace/"
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": true,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 265,
+    "Output": 265
+  }
+}

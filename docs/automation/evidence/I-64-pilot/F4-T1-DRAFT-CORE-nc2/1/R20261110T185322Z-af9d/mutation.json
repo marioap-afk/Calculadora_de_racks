@@ -1,0 +1,80 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261110T185322Z-af9d",
+  "SourceVerification": "R20261110T184730Z-e455",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/1/R20261110T184730Z-e455/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftStaleBaseTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftStaleBaseTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+      "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftStaleBaseTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "B0D49A5CDCEFE97ABF14C9C9D66496CC93932D42EE1008CAC059FEA4D077C0BF",
+    "New": "485B4F05207BAF014317385372B9740FE998473129C74FC474CA50CCDBE4A9F2",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "06BC7E2EF80423D93D0CF5169334BF6100C2E53AD88DCEB6B8279A769E8CCC73",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "delegation.json": "485B4F05207BAF014317385372B9740FE998473129C74FC474CA50CCDBE4A9F2",
+    "gate-contract.json": "160BB80D1532FF201C896F0902F1E6210E8EA3AEFC88E399D992116C31CB3A16",
+    "relay-record-planning.json": "AE7DB1E2741B03DD2187EA1BB9BE8ED14A0FDDAB75DACB9D42980C85320A21B6",
+    "relay-record-work.json": "560A1CA7F8096CB50FC847C06F438D3811108BE60FCB3F4A42FC426369A952B7",
+    "worker-handoff.json": "1572299F584AA2F2616BAF848E8DDC3E9FB186AEABD792BEA43B751C9BAC9498",
+    "ci-core/42877329473/core.trx": "51A41102700E63EC8A8862BC7B5284ACA2451E1CE9536FCB1B1BD926D5028B89",
+    "ci-core-red/42877124150/core.trx": "736BA5DF39C54C28A0BCA10FAC756FC8DE0A6A8373727F465BBCCC29C0DD9801"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

@@ -1,0 +1,22 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..e7b94331 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3529,7 +3529,7 @@ namespace RackCad.UI.Systems.PushBack
+             SaveLibraryButton.IsEnabled = currentInputsAreValid;
+             if (!canInsertInAutoCad)
+             {
+-                InsertButton.ToolTip = "Disponible solo cuando la ventana se abre desde AutoCAD.";
++                InsertButton.ToolTip = "Disponible solo cuando la ventana se abre desde AutoCAD (x).";
+                 UpdateButton.ToolTip = InsertButton.ToolTip;
+             }
+             else
+@@ -3537,7 +3537,7 @@ namespace RackCad.UI.Systems.PushBack
+                 InsertButton.ToolTip = outputIsBlocked
+                     ? "Corrige el diagnóstico bloqueante: el rack no puede dibujarse ni cotizarse así."
+                     : currentInputsAreValid
+-                        ? "Inserta la vista seleccionada enlazada al sistema."
++                        ? "Inserta la vista seleccionada enlazada al sistema (x)."
+                         : "Corrige los campos numéricos marcados.";
+                 UpdateButton.ToolTip = isEditingExisting
+                     ? "Redibuja en sitio todas las vistas del sistema."

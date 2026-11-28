@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/UiSupport.cs b/src/RackCad.UI/UiSupport.cs
+index 1cab0a80..b25e3a39 100644
+--- a/src/RackCad.UI/UiSupport.cs
++++ b/src/RackCad.UI/UiSupport.cs
+@@ -78,7 +78,7 @@ namespace RackCad.UI
+                 InitialDirectory = libraryFolder
+             };
+ 
+-            return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
++            return dialog.ShowDialog((System.Windows.Window)owner) == true ? dialog.FileName : null;
+         }
+         /// <summary>Loads the catalog, or an empty one if the files are missing/corrupt (UI keeps working).</summary>
+         public static RackCatalog LoadCatalogSafe()

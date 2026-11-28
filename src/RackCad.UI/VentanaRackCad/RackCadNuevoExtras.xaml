@@ -1,0 +1,78 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.RackCadNuevoExtras"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FontFamily="Segoe UI"
+             FontSize="12">
+    <!-- The end of the page «Nuevo» of the RackCad window (I-64 A-14, line D, fourth batch, part «ut»; prototype «utilidades»): the recent
+         designs of the library, where each element of the classic menu went, and «Ver todas las órdenes», which opens «Órdenes y atajos» in
+         the window instead of the dialog of RACKAYUDA. Its data context is the view-model of the window. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/VentanaRackCad/RackCadUtilityStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <DockPanel Margin="0,4,0,0">
+            <Button x:Name="ShowLibraryButton" DockPanel.Dock="Right" Content="Ver la biblioteca" Style="{StaticResource UtLinkButton}"
+                    VerticalAlignment="Bottom" AutomationProperties.Name="Ver la biblioteca de diseños" Click="OnShowLibraryClick" />
+            <TextBlock Text="Recientes de la biblioteca" Style="{StaticResource UtBlockTitle}" />
+        </DockPanel>
+        <ItemsControl x:Name="RecentDesignList" ItemsSource="{Binding Library.Recent}" AutomationProperties.Name="Diseños recientes de la biblioteca">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel Margin="0,0,0,4">
+                        <Button DockPanel.Dock="Right" Content="Ver" Padding="10,2" Margin="8,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                AutomationProperties.Name="{Binding Name, StringFormat=Ver «{0}» en la biblioteca}" Click="OnRecentClick" />
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <TextBlock Foreground="{DynamicResource ShellTextSecondaryBrush}">
+                                <Run Text="{Binding KindLabel, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding ModifiedText, Mode=OneWay}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <!-- Review of part «ut», point 8: not read yet, not readable, no folder, only unreadable files or empty; nothing with recent designs. -->
+        <TextBlock x:Name="NoRecentText" Text="{Binding Library.RecentEmptyText}" Style="{StaticResource UtOptional}" />
+
+
+        <Expander x:Name="ClassicMenuMapExpander" Margin="0,10,0,0" AutomationProperties.Name="Dónde quedó el menú clásico (RACKMENU)">
+            <Expander.Header>
+                <TextBlock Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                    <Run Text="Dónde quedó el menú clásico (RACKMENU)" FontWeight="SemiBold" /><Run Text="  ·  11 elementos"
+                         Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </TextBlock>
+            </Expander.Header>
+            <StackPanel Margin="18,6,0,0">
+                <ItemsControl x:Name="ClassicMenuMapList" ItemsSource="{Binding ClassicMenuMap}" AutomationProperties.Name="Dónde quedó cada elemento del menú clásico">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Menu}" TextWrapping="Wrap" Margin="0,0,10,0"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <TextBlock Grid.Column="1" Text="{Binding Where}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Style="{StaticResource UtText}"
+                           Text="El menú entero sigue en «Menú clásico de RACKCAD», al pie de la columna, como respaldo hasta la fase 9 (Q-07)." />
+            </StackPanel>
+        </Expander>
+
+        <!-- T5 al (prototype «almacen»): RACKLAYOUT leaves the sentence; the layout of the warehouse is the section «Almacén». -->
+        <TextBlock Margin="0,12,0,4" Style="{StaticResource UtText}"
+                   Text="Siguen como órdenes de AutoCAD: RACKEDITAR (editor clásico), RACKPROYECTAR, RACKDUPLICAR y las demás. El layout de almacén está en «Almacén»." />
+        <Button x:Name="ShowAllCommandsButton" Content="Ver todas las órdenes" Style="{StaticResource UtLinkButton}"
+                AutomationProperties.Name="Ver todas las órdenes y atajos" Click="OnShowAllCommandsClick" />
+    </StackPanel>
+</UserControl>

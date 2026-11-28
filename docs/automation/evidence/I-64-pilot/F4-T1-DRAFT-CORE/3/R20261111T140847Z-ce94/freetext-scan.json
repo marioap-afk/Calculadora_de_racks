@@ -1,0 +1,33 @@
+{
+  "Source": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T140847Z-ce94/output.json",
+  "Terms": 16,
+  "StringFieldsScanned": 40,
+  "Matches": [
+    {
+      "Field": "Checks.FreeText.Evidence",
+      "Term": "Candidate",
+      "Context": "worker-handoff.json WorkCompleted finds the standalone term Candidate in the filename WorkspaceDraftBoundaryTests.green-candidate"
+    },
+    {
+      "Field": "Checks.FreeText.Evidence",
+      "Term": "Candidate",
+      "Context": "Candidate in the filename WorkspaceDraftBoundaryTests.green-candidate.cs, which matches the prohibited term Candidate case-insens"
+    },
+    {
+      "Field": "Checks.FreeText.Evidence",
+      "Term": "Candidate",
+      "Context": "Tests.green-candidate.cs, which matches the prohibited term Candidate case-insensitively."
+    },
+    {
+      "Field": "Findings[0]",
+      "Term": "Candidate",
+      "Context": "xt fails because WorkCompleted contains the standalone term Candidate in WorkspaceDraftBoundaryTests.green-candidate.cs."
+    },
+    {
+      "Field": "Findings[0]",
+      "Term": "Candidate",
+      "Context": "ndalone term Candidate in WorkspaceDraftBoundaryTests.green-candidate.cs."
+    }
+  ],
+  "Empty": false
+}

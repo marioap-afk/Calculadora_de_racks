@@ -1,0 +1,40 @@
+## INV-PBT1B-01 (alcance: arbol del GREEN contra la BaseSha; los commits se comprueban otra vez tras el push)
+tests/RackCad.Tests/PushBackEditableStateCopyTests.cs
+tests/RackCad.Tests/PushBackEditableStateLoadTests.cs
+tests/RackCad.Tests/PushBackEditorOutputGateTests.cs
+tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs
+tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs
+## cuenta
+5
+## diff vacio en los prohibidos de INV-PBT1B-01 (lineas del diff):
+0
+## diff de src contra la BaseSha (el GREEN restaura la implementacion de la BaseSha; lineas):
+0
+## INV-PBT1B-03: miembros publicos nuevos de ES y RMES (lineas anadidas, contra 4b0498e3, la base del intento 1)
++        public void CopyAuthorityFrom(PushBackEditorState source)
++        public RackModuleCommit Copy()
++        public bool SameAs(RackModuleCommit other)
++        public RackModuleEditSession Copy()
++        public bool SameEditAs(RackModuleEditSession other)
+## INV-PBT1B-04: declaraciones de campo de instancia anadidas en ES y RMES (contra 4b0498e3)
+(fin campos)
+## INV-PBT1B-04b: namespaces por archivo nuevo
+PushBackEditableState: 1 -> namespace RackCad.Application.Systems.PushBack
+PushBackEditableStateComparer: 1 -> namespace RackCad.Application.Systems.PushBack
+PushBackEditableStateOwnership: 1 -> namespace RackCad.Application.Systems.PushBack
+PushBackEditorOutputGate: 1 -> namespace RackCad.Application.Systems.PushBack
+tests/RackCad.Tests/PushBackEditableStateLoadTests.cs: namespace RackCad.Tests
+tests/RackCad.Tests/PushBackEditableStateCopyTests.cs: namespace RackCad.Tests
+tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs: namespace RackCad.Tests
+tests/RackCad.Tests/PushBackEditorOutputGateTests.cs: namespace RackCad.Tests
+tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs: namespace RackCad.Tests
+tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs: namespace RackCad.UI.Tests
+## INV-PBT1B-05 en los 4 archivos nuevos de src
+grep-exit=1 (1 = ninguna coincidencia)
+## INV-PBT1B-01 sobre los commits (git diff --name-only 2f5d3dec..HEAD, tras el push del GREEN)
+tests/RackCad.Tests/PushBackEditableStateCopyTests.cs
+tests/RackCad.Tests/PushBackEditableStateLoadTests.cs
+tests/RackCad.Tests/PushBackEditorOutputGateTests.cs
+tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs
+tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs
+## diff src BaseSha..HEAD (lineas): 0; diff tests RedSha..HEAD (lineas): 0

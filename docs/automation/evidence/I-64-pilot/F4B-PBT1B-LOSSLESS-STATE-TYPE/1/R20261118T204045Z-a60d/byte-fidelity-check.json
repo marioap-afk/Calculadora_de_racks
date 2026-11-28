@@ -1,0 +1,130 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4B-PBT1B-LOSSLESS-STATE-TYPE",
+  "PlanningRunId": "R20261118T204045Z-a60d",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "79a2b1290aeffa74ee393608bbe9e850eb181d667de5bf26feeea93ae25bae82",
+  "ContractSha256": "222f1343dcf651d89f41562aea1e412a75d52d222e4a329f94a039b3d26b16ee",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "9c846dc5e28b5714de48ff04d876eb97e960da5bb3b6b73e1352d1b82cdb2f56",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 15,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "72d65df792f9447acc7deea7a81b801fc2dc24465f4ede5bd3ea6334ece197ff",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 46,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "2c649dbbcef226135d3f627c2b4e13efb9845b6311e4c223c52597b84ab9db17",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 66,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "ac731daad05c5b247ca73243c2942e61f9209b704546ca24986f5ea9e0e5dd27",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 156,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "f2c3b321f58580912409a451e01e107798852e632e1b1d065d00f71601dfa622",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 8,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "b46102af33231d254003f5fa8ac15d08d68a3944e92ab4444b26c4770bdd0464",
+      "OutputSha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "Differences": [
+        {
+          "Index": 0,
+          "Offset": 0,
+          "Source": "Crear en Application el estado editable ",
+          "Output": ""
+        }
+      ]
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "943792145b7357e3a87c862df971ba9f5cec1e91509c1ea46cc27e38db6135f9",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 12,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "1ba4bac61ae8b4e15c94b537136161c16e2a2d1e2e22ed1fc398a2ddaf185bce",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 213,
+          "CountOutput": 0
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": false,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 213,
+    "Output": 0
+  }
+}

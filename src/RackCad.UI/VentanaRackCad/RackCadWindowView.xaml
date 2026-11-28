@@ -1,0 +1,754 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.RackCadWindowView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RackCad.UI.VentanaRackCad"
+             AutomationProperties.Name="RackCad"
+             FontFamily="Segoe UI"
+             FontSize="12"
+             Background="{DynamicResource WindowBackgroundBrush}">
+    <!-- The RackCad window (I-64 A-14, phases 1 and 2): the sections and the list of the racks of the drawing in a side column, and the page
+         of the active rack or of the section in the center. It does not block AutoCAD. No control writes the drawing: the sections open their
+         current windows through AutoCAD commands, and the page of the rack is the workspace panel with every rule it had. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="FlagToVisibility" />
+            <Style x:Key="OptionalText" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="Margin" Value="0,4,0,0" />
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="SideLabel" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,10,0,4" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+            </Style>
+            <!-- A flat button of the side column: the sections and the racks. The active one is marked by its own data. -->
+            <Style x:Key="SideItemButton" TargetType="Button">
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Padding" Value="8,5" />
+                <Setter Property="Margin" Value="0,1" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="PageTitle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+            </Style>
+            <Style x:Key="PageText" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+            </Style>
+            <Style x:Key="Banner" TargetType="Border">
+                <Setter Property="Padding" Value="10,8" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
+                <Setter Property="Background" Value="{DynamicResource ShellSurfaceBrush}" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header: the brand, the racks of the drawing and the switch of the side column. -->
+        <Border Grid.Row="0" Padding="12,8" BorderThickness="0,0,0,1"
+                Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}">
+            <DockPanel LastChildFill="True">
+                <!-- T6 at: «Actualizar todo (N)», outside the racks: every draft with changes of this drawing, in one operation (one «U»). -->
+                <Button x:Name="UpdateAllButton" DockPanel.Dock="Right" Padding="10,3" Margin="8,0,0,0"
+                        Style="{StaticResource PrimaryButtonStyle}" Content="{Binding UpdateAllLabel}" IsEnabled="{Binding CanUpdateAll}"
+                        Visibility="{Binding ShowUpdateAll, Converter={StaticResource FlagToVisibility}}"
+                        ToolTip="{Binding UpdateAllToolTip}" ToolTipService.ShowOnDisabled="True"
+                        AutomationProperties.Name="Actualizar todo: escribir en el dibujo todos los borradores con cambios"
+                        Click="OnUpdateAllClick" />
+                <!-- T4 ut (UT-09): «Ayuda» opens «Órdenes y atajos», a page of the window, without a sixth section in the column. -->
+                <Button x:Name="HelpButton" DockPanel.Dock="Right" Content="Ayuda" Padding="10,3" Margin="8,0,0,0"
+                        AutomationProperties.Name="Ayuda: órdenes y atajos" ToolTip="Órdenes y atajos de RackCad, sin bloquear AutoCAD."
+                        Click="OnHelpClick">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAyudaPage}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button x:Name="SideToggleButton" DockPanel.Dock="Right" Padding="10,3" Margin="8,0,0,0"
+                        Style="{StaticResource SecondaryButtonStyle}" Content="{Binding SideToggleText}"
+                        AutomationProperties.Name="Ocultar o mostrar la lista" Click="OnSideToggleClick" />
+                <CheckBox x:Name="SidePinCheck" DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center"
+                          Content="Fijar la lista" IsChecked="{Binding SidePinned, Mode=TwoWay}"
+                          AutomationProperties.Name="Fijar la lista"
+                          ToolTip="Fijada, la lista se queda. Sin fijar, se oculta sola al abrir un rack o una sección." />
+                <WrapPanel VerticalAlignment="Center">
+                    <TextBlock Text="RackCad" FontSize="15" FontWeight="Bold" Margin="0,0,10,0"
+                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    <TextBlock x:Name="HeaderText" Text="{Binding HeaderText}" VerticalAlignment="Center"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </WrapPanel>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="SideColumn" Width="250" MinWidth="0" />
+                <ColumnDefinition x:Name="SplitterColumn" Width="Auto" />
+                <ColumnDefinition Width="*" MinWidth="200" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Side column: the sections of RackCad and the racks of the drawing. -->
+            <DockPanel x:Name="SidePanel" Grid.Column="0" LastChildFill="True" Margin="10,4,6,8">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Text="RACKCAD" Style="{StaticResource SideLabel}" />
+                    <ItemsControl x:Name="SectionList" ItemsSource="{Binding Sections}" AutomationProperties.Name="Secciones de RackCad">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                <Button Click="OnSectionClick" AutomationProperties.Name="{Binding Label}">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource SideItemButton}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <TextBlock Text="{Binding Label}" TextWrapping="Wrap" />
+                                </Button>
+                                <!-- T4 new (SD-06): the drafts of «Nuevo» of the drawing, under «Nuevo», with their state (as the prototype of
+                                     Largueros puts its pages). A click opens the draft; «Nuevo» itself goes to its home. -->
+                                <ItemsControl ItemsSource="{Binding DataContext.Drafts, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                              Focusable="False" AutomationProperties.Name="Borradores de Nuevo">
+                                    <ItemsControl.Style>
+                                        <Style TargetType="ItemsControl">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Page}" Value="Nuevo">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ItemsControl.Style>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Click="OnDraftItemClick" Margin="14,1,0,1" Padding="8,3" ToolTip="{Binding StatusText}"
+                                                    AutomationProperties.Name="{Binding AccessibleName}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource SideItemButton}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Right" Text="{Binding Tag}" FontSize="11" Margin="6,0,0,0" VerticalAlignment="Center"
+                                                               FontWeight="Normal" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                                    <Ellipse Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" DockPanel.Dock="Left">
+                                                        <Ellipse.Style>
+                                                            <Style TargetType="Ellipse">
+                                                                <Setter Property="Fill" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding StatusKind}" Value="Modificado">
+                                                                        <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding StatusKind}" Value="Escribiendo">
+                                                                        <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Ellipse.Style>
+                                                    </Ellipse>
+                                                    <TextBlock Text="{Binding ColumnText}" TextTrimming="CharacterEllipsis" />
+                                                </DockPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="RACKS DEL DIBUJO" Style="{StaticResource SideLabel}" />
+                    <TextBox x:Name="RackSearchBox" Padding="4,3" AutomationProperties.Name="Buscar rack por nombre"
+                             Text="{Binding RackList.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Buscar rack por nombre" />
+                    <ComboBox x:Name="RackKindFilter" Margin="0,6,0,0" AutomationProperties.Name="Filtrar por sistema"
+                              ItemsSource="{Binding RackList.KindOptions}" DisplayMemberPath="Label" SelectedValuePath="Key"
+                              SelectedValue="{Binding RackList.SelectedKind, Mode=TwoWay}" />
+                    <CheckBox x:Name="RackOnlyChangedCheck" Margin="0,6,0,0"
+                              IsChecked="{Binding RackList.OnlyChanged, Mode=TwoWay}">
+                        <TextBlock Text="Solo con cambios sin escribir" TextWrapping="Wrap" />
+                    </CheckBox>
+                    <CheckBox x:Name="RackFollowSelectionCheck" Margin="0,4,0,0"
+                              IsChecked="{Binding RackList.FollowSelection, Mode=TwoWay}">
+                        <TextBlock Text="Seguir la selección de AutoCAD" TextWrapping="Wrap" />
+                    </CheckBox>
+                    <TextBlock x:Name="RackShownText" Text="{Binding RackList.ShownText}" Style="{StaticResource OptionalText}"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <TextBlock x:Name="RackListStatusText" Text="{Binding RackList.StatusText}" Style="{StaticResource OptionalText}"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <Border x:Name="RackSelectionBox" Margin="0,6,0,0" Padding="8" BorderThickness="1" CornerRadius="6"
+                            BorderBrush="{DynamicResource ShellSelectionPrimaryBrush}"
+                            Visibility="{Binding RackList.HasSelectionBox, Converter={StaticResource FlagToVisibility}}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding RackList.SelectionBoxText}" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <Button x:Name="RackOpenSelectedButton" Content="Abrir" HorizontalAlignment="Left" Margin="0,6,0,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Abrir el rack seleccionado"
+                                    Click="OnOpenSelectedClick" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom" Margin="0,6,0,0">
+                    <Button x:Name="RackListReloadButton" Content="Volver a leer la lista" HorizontalAlignment="Left" Padding="10,3"
+                            Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Volver a leer la lista del dibujo"
+                            Click="OnReloadListClick" />
+                    <Button x:Name="ClassicMenuButton" Content="Menú clásico de RACKCAD" HorizontalAlignment="Left" Margin="0,6,0,0" Padding="10,3"
+                            Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Abrir el menú clásico de RackCad"
+                            Tag="ClassicMenu" Click="OnClassicActionClick" />
+                </StackPanel>
+
+                <ScrollViewer x:Name="RackListScroll" Margin="0,6,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock x:Name="RackNoResultsText" Text="{Binding RackList.NoResultsText}" Style="{StaticResource OptionalText}"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <ItemsControl x:Name="RackGroupList" ItemsSource="{Binding RackList.Groups}" AutomationProperties.Name="Racks del dibujo">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,4,0,2">
+                                        <DockPanel Margin="2,0,2,2">
+                                            <TextBlock DockPanel.Dock="Right" Text="{Binding CountText}"
+                                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            <TextBlock Text="{Binding KindLabel}" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        </DockPanel>
+                                        <ItemsControl ItemsSource="{Binding Items}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Click="OnRackItemClick" ToolTip="{Binding StatusText}"
+                                                            AutomationProperties.Name="{Binding Name}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource SideItemButton}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionIncludedBrush}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                        <DockPanel>
+                                                            <Button DockPanel.Dock="Right" Content="Cerrar" Padding="6,0" Margin="6,0,0,0" FontSize="11"
+                                                                    Style="{StaticResource SecondaryButtonStyle}" ToolTip="Cerrar el rack abierto (si tiene un borrador, pregunta antes)"
+                                                                    AutomationProperties.Name="Cerrar el rack abierto"
+                                                                    Visibility="{Binding HasTab, Converter={StaticResource FlagToVisibility}}"
+                                                                    Click="OnRackItemCloseClick" />
+                                                            <Ellipse Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" DockPanel.Dock="Left">
+                                                                <Ellipse.Style>
+                                                                    <Style TargetType="Ellipse">
+                                                                        <Setter Property="Fill" Value="{DynamicResource ShellTextSecondaryBrush}" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding StatusKind}" Value="Limpio">
+                                                                                <Setter Property="Fill" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding StatusKind}" Value="Modificado">
+                                                                                <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding StatusKind}" Value="Obsoleto">
+                                                                                <Setter Property="Fill" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Ellipse.Style>
+                                                            </Ellipse>
+                                                            <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                                        </DockPanel>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+
+            <GridSplitter x:Name="SideSplitter" Grid.Column="1" Width="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" Background="{DynamicResource ShellBorderBrush}"
+                          AutomationProperties.Name="Ancho de la lista" />
+
+            <!-- Center: the message of the last door and the page that is shown. -->
+            <DockPanel Grid.Column="2" LastChildFill="True">
+                <Border x:Name="ActionMessagePanel" DockPanel.Dock="Top" Margin="10,8,10,0" Padding="10,6" BorderThickness="1" CornerRadius="6"
+                        Background="{DynamicResource ShellSurfaceBrush}"
+                        Visibility="{Binding HasActionMessage, Converter={StaticResource FlagToVisibility}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActionFailed}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Entendido" Padding="8,2" Margin="8,0,0,0" VerticalAlignment="Top"
+                                Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Quitar el mensaje"
+                                Click="OnDismissMessageClick" />
+                        <TextBlock x:Name="ActionMessageText" Text="{Binding ActionMessage}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    </DockPanel>
+                </Border>
+
+                <!-- I-64 A-14, line D: a request of the door waits for AutoCAD; the user can stop waiting. -->
+                <Border x:Name="WaitingPanel" DockPanel.Dock="Top" Margin="10,8,10,0" Padding="10,6" BorderThickness="1" CornerRadius="6"
+                        Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                        Visibility="{Binding IsWaitingForAutoCad, Converter={StaticResource FlagToVisibility}}">
+                    <DockPanel>
+                        <Button x:Name="StopWaitingButton" DockPanel.Dock="Right" Content="Dejar de esperar" Padding="8,2" Margin="8,0,0,0"
+                                VerticalAlignment="Top" Style="{StaticResource SecondaryButtonStyle}"
+                                IsEnabled="{Binding CanStopWaiting}" AutomationProperties.Name="Dejar de esperar a AutoCAD" Click="OnStopWaitingClick" />
+                        <TextBlock x:Name="WaitingText" Text="{Binding WaitingText}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    </DockPanel>
+                </Border>
+
+                <!-- T6 at: «Actualizar todo»: the question when a draft may be out of date and, after the click, what prevented it or the
+                     list when it ends (every draft with how it ended and why, or that another rack of the set failed). -->
+                <Border x:Name="UpdateAllPanel" DockPanel.Dock="Top" Margin="10,8,10,0" Padding="10,6" BorderThickness="1" CornerRadius="6"
+                        Background="{DynamicResource ShellSurfaceBrush}"
+                        Visibility="{Binding ShowUpdateAllPanel, Converter={StaticResource FlagToVisibility}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UpdateAllResultFailed}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsConfirmingUpdateAll}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel>
+                        <StackPanel x:Name="UpdateAllQuestion" Visibility="{Binding IsConfirmingUpdateAll, Converter={StaticResource FlagToVisibility}}">
+                            <TextBlock x:Name="UpdateAllQuestionText" Text="{Binding UpdateAllConfirmText}" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <WrapPanel Margin="0,6,0,0">
+                                <Button x:Name="ConfirmUpdateAllButton" Content="Escribir todo de todos modos" Padding="10,3" Margin="0,0,8,0"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        AutomationProperties.Name="Confirmar: escribir todos los borradores de todos modos" Click="OnConfirmUpdateAllClick" />
+                                <Button x:Name="CancelUpdateAllButton" Content="Cancelar" Padding="10,3"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        AutomationProperties.Name="Cancelar «Actualizar todo»" Click="OnCancelUpdateAllClick" />
+                            </WrapPanel>
+                        </StackPanel>
+                        <DockPanel x:Name="UpdateAllResultPanel" Visibility="{Binding HasUpdateAllResults, Converter={StaticResource FlagToVisibility}}">
+                            <Button DockPanel.Dock="Right" Content="Entendido" Padding="8,2" Margin="8,0,0,0" VerticalAlignment="Top"
+                                    Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Quitar la lista de «Actualizar todo»"
+                                    Click="OnDismissUpdateAllClick" />
+                            <StackPanel>
+                                <TextBlock x:Name="UpdateAllResultText" Text="{Binding UpdateAllResultText}" TextWrapping="Wrap" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <ItemsControl x:Name="UpdateAllResultList" ItemsSource="{Binding UpdateAllResults}" Focusable="False" Margin="0,4,0,0"
+                                              AutomationProperties.Name="Lo que hizo «Actualizar todo»">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Margin="0,2,0,0" AutomationProperties.Name="{Binding AccessibleName, Mode=OneWay}"
+                                                       Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                                                <Run Text="{Binding Name, Mode=OneWay}" FontWeight="SemiBold" />
+                                                <Run Text="{Binding SystemLabel, Mode=OneWay, StringFormat='({0})'}" />
+                                                <Run Text="{Binding OutcomeText, Mode=OneWay, StringFormat='· {0}'}" />
+                                                <Run Text="{Binding Cause, Mode=OneWay}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- T4 new (SD-06): the drafts of «Nuevo» of this drawing. On the home of «Nuevo», their list (open, copy or discard each
+                     one, a draft with changes asks first); with a draft open, its strip (back to the list, copy it, discard it). Its
+                     editor is the page below, in «Nuevo». -->
+                <Border x:Name="DraftsBar" DockPanel.Dock="Top" Margin="10,8,10,0" Padding="10,8" BorderThickness="1" CornerRadius="6"
+                        Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}"
+                        Visibility="{Binding ShowDraftsBar, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <StackPanel x:Name="DraftListPanel" Visibility="{Binding ShowDraftList, Converter={StaticResource FlagToVisibility}}">
+                            <TextBlock Text="Borradores sin insertar de este dibujo" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <TextBlock x:Name="DraftsIntroText" Text="{Binding DraftsIntroText}" Style="{StaticResource OptionalText}"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            <ItemsControl x:Name="DraftList" Margin="0,6,0,0" ItemsSource="{Binding Drafts}" Focusable="False"
+                                          AutomationProperties.Name="Borradores sin insertar">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,3">
+                                            <DockPanel>
+                                                <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                                    <Button Content="Abrir" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                            AutomationProperties.Name="{Binding OpenAccessibleName}" Click="OnDraftItemClick" />
+                                                    <Button Content="Duplicar" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                            IsEnabled="{Binding CanDuplicate}" AutomationProperties.Name="{Binding DuplicateAccessibleName}"
+                                                            ToolTip="Un borrador nuevo con una copia de este diseño, sin nombre." Click="OnDuplicateDraftClick" />
+                                                    <Button Content="Descartar el borrador" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                            IsEnabled="{Binding CanDiscard}" AutomationProperties.Name="{Binding DiscardAccessibleName}"
+                                                            Click="OnDiscardDraftClick" />
+                                                </WrapPanel>
+                                                <Ellipse Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" DockPanel.Dock="Left">
+                                                    <Ellipse.Style>
+                                                        <Style TargetType="Ellipse">
+                                                            <Setter Property="Fill" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding StatusKind}" Value="Modificado">
+                                                                    <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding StatusKind}" Value="Escribiendo">
+                                                                    <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Ellipse.Style>
+                                                </Ellipse>
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                    <TextBlock Text="{Binding DetailText}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                                </StackPanel>
+                                            </DockPanel>
+                                            <Border Margin="16,4,0,0" Padding="8,6" BorderThickness="1" CornerRadius="4"
+                                                    BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                                                    Visibility="{Binding IsConfirmingDiscard, Converter={StaticResource FlagToVisibility}}">
+                                                <DockPanel>
+                                                    <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                                        <Button Content="Descartar el borrador" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                                Foreground="{DynamicResource ShellStatusErrorBrush}"
+                                                                AutomationProperties.Name="{Binding ConfirmDiscardAccessibleName}" Click="OnConfirmDiscardDraftClick" />
+                                                        <Button Content="Cancelar" Padding="8,2" Margin="6,0,0,0" Style="{StaticResource SecondaryButtonStyle}"
+                                                                AutomationProperties.Name="{Binding CancelDiscardAccessibleName}" Click="OnCancelDiscardDraftClick" />
+                                                    </WrapPanel>
+                                                    <TextBlock Text="{Binding DiscardQuestion}" TextWrapping="Wrap" VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                </DockPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <StackPanel x:Name="ActiveDraftStrip" Visibility="{Binding ShowActiveDraftStrip, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel DataContext="{Binding ActiveDraft}">
+                                <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Button x:Name="DraftsHomeButton" Content="Todos los borradores" Padding="8,2" Margin="6,0,0,0"
+                                            Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Volver a la lista de borradores"
+                                            Click="OnDraftsHomeClick" />
+                                    <Button x:Name="DuplicateActiveDraftButton" Content="Duplicar" Padding="8,2" Margin="6,0,0,0"
+                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDuplicate}"
+                                            AutomationProperties.Name="Duplicar el borrador abierto"
+                                            ToolTip="Un borrador nuevo con una copia de este diseño, sin nombre." Click="OnDuplicateDraftClick" />
+                                    <Button x:Name="DiscardActiveDraftButton" Content="Descartar el borrador" Padding="8,2" Margin="6,0,0,0"
+                                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
+                                            AutomationProperties.Name="Descartar el borrador abierto" Click="OnDiscardDraftClick" />
+                                </WrapPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock x:Name="ActiveDraftTitle" Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <TextBlock x:Name="ActiveDraftDetail" Text="{Binding DetailText}" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </StackPanel>
+                            </DockPanel>
+                            <Border Margin="0,6,0,0" Padding="8,6" BorderThickness="1" CornerRadius="4" DataContext="{Binding ActiveDraft}"
+                                    BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                                    Visibility="{Binding IsConfirmingDiscard, Converter={StaticResource FlagToVisibility}, FallbackValue=Collapsed}">
+                                <DockPanel>
+                                    <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                        <Button x:Name="ConfirmDiscardActiveDraftButton" Content="Descartar el borrador" Padding="8,2" Margin="6,0,0,0"
+                                                Style="{StaticResource SecondaryButtonStyle}" Foreground="{DynamicResource ShellStatusErrorBrush}"
+                                                AutomationProperties.Name="Confirmar: descartar el borrador abierto" Click="OnConfirmDiscardDraftClick" />
+                                        <Button x:Name="CancelDiscardActiveDraftButton" Content="Cancelar" Padding="8,2" Margin="6,0,0,0"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                AutomationProperties.Name="Cancelar el descarte del borrador abierto" Click="OnCancelDiscardDraftClick" />
+                                    </WrapPanel>
+                                    <TextBlock Text="{Binding DiscardQuestion}" TextWrapping="Wrap" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Grid>
+                    <!-- The page of the rack: the workspace panel, placed here by the code-behind. -->
+                    <DockPanel x:Name="RackPage" LastChildFill="True"
+                               Visibility="{Binding IsRackPage, Converter={StaticResource FlagToVisibility}}">
+                        <TextBlock x:Name="NoRackText" DockPanel.Dock="Top" Margin="12,10,12,0" Text="{Binding NoRackText}"
+                                   Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <!-- I-64 A-14, line D: a Dinámico rack can be edited here, in the editor of the window, without blocking AutoCAD. -->
+                        <Border x:Name="DynamicOfferPanel" DockPanel.Dock="Top" Style="{StaticResource Banner}" Margin="10,8,10,0"
+                                Visibility="{Binding ShowDynamicOffer, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel>
+                                <Button x:Name="EditDynamicHereButton" DockPanel.Dock="Right" Content="Editar aquí" Padding="12,4" Margin="8,0,0,0"
+                                        Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Editar el Dinámico en la ventana"
+                                        Click="OnEditDynamicHereClick" />
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Este rack es Dinámico. Puedes editarlo aquí, con el editor nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el editor clásico." />
+                            </DockPanel>
+                        </Border>
+                        <!-- Selectivo E1-B: a Selectivo rack can be edited here too, with the same door and the same rules. -->
+                        <Border x:Name="SelectiveOfferPanel" DockPanel.Dock="Top" Style="{StaticResource Banner}" Margin="10,8,10,0"
+                                Visibility="{Binding ShowSelectiveOffer, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel>
+                                <Button x:Name="EditSelectiveHereButton" DockPanel.Dock="Right" Content="Editar aquí" Padding="12,4" Margin="8,0,0,0"
+                                        Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Editar el Selectivo en la ventana"
+                                        Click="OnEditSelectiveHereClick" />
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Este rack es Selectivo. Puedes editarlo aquí, con el editor nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el editor clásico." />
+                            </DockPanel>
+                        </Border>
+                        <!-- T4 cb: a cabecera of its own («Cabecera N» of the list) can be edited here, with its door and the same rules. -->
+                        <Border x:Name="CabeceraOfferPanel" DockPanel.Dock="Top" Style="{StaticResource Banner}" Margin="10,8,10,0"
+                                Visibility="{Binding ShowCabeceraOffer, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel>
+                                <Button x:Name="EditCabeceraHereButton" DockPanel.Dock="Right" Content="Editar aquí" Padding="12,4" Margin="8,0,0,0"
+                                        Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Editar la cabecera en la ventana"
+                                        Click="OnEditCabeceraHereClick" />
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Este rack es una cabecera. Puedes editarla aquí, con el editor de cabeceras nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el configurador clásico." />
+                            </DockPanel>
+                        </Border>
+                        <local:RackCadCamaOfferPanel x:Name="CamaOfferPanel" DockPanel.Dock="Top" Margin="10,8,10,0" Visibility="{Binding ShowCamaOffer, Converter={StaticResource FlagToVisibility}}" /> <!-- T5 cm: «Editar aquí» of a cama -->
+                        <!-- T5 ct (1 of 3): a Cantilever line can be edited here, with its door and the same rules (dolor 19). -->
+                        <Border x:Name="CantileverOfferPanel" DockPanel.Dock="Top" Style="{StaticResource Banner}" Margin="10,8,10,0"
+                                Visibility="{Binding ShowCantileverOffer, Converter={StaticResource FlagToVisibility}}">
+                            <DockPanel>
+                                <Button x:Name="EditCantileverHereButton" DockPanel.Dock="Right" Content="Editar aquí" Padding="12,4" Margin="8,0,0,0"
+                                        Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Editar la línea Cantilever en la ventana"
+                                        Click="OnEditCantileverHereClick" />
+                                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Este rack es Cantilever. Puedes editarlo aquí, con el editor nuevo, sin bloquear AutoCAD. RACKEDITAR sigue siendo el editor clásico." />
+                            </DockPanel>
+                        </Border>
+                        <!-- T4 bom (BM-10): «Ver su BOM» opens «BOM y lista de racks» with this rack chosen; the editors of the window have no BOM. -->
+                        <Button x:Name="ShowBomOfRackButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
+                                Style="{StaticResource SecondaryButtonStyle}" Content="Ver su BOM" AutomationProperties.Name="Ver el BOM de este rack"
+                                ToolTip="Abre «BOM y lista de racks» con este rack elegido."
+                                Visibility="{Binding CanShowBomOfRack, Converter={StaticResource FlagToVisibility}}" Click="OnShowBomOfRackClick" />
+                        <!-- T5 al (question 1 of «almacen»): «Llevar al almacén…» opens «Almacén» with this rack as the seed; without a planta it says why. -->
+                        <StackPanel x:Name="TakeToWarehousePanel" DockPanel.Dock="Top" Margin="10,6,10,0"
+                                    Visibility="{Binding ShowTakeToWarehouse, Converter={StaticResource FlagToVisibility}}">
+                            <Button x:Name="TakeToWarehouseButton" HorizontalAlignment="Left" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="Llevar al almacén…" AutomationProperties.Name="Llevar este rack al almacén" IsEnabled="{Binding CanTakeToWarehouse}"
+                                    ToolTip="Abre «Almacén» con este rack como semilla y lee su planta." Click="OnTakeToWarehouseClick" />
+                            <TextBlock x:Name="TakeToWarehouseReason" Text="{Binding TakeToWarehouseReason}" Style="{StaticResource OptionalText}"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        </StackPanel>
+                        <Button x:Name="PanelToggleButton" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="10,6,10,0" Padding="10,3"
+                                Style="{StaticResource SecondaryButtonStyle}" Content="{Binding PanelToggleText}"
+                                Visibility="{Binding HasRackEditor, Converter={StaticResource FlagToVisibility}}"
+                                Click="OnPanelToggleClick" />
+                        <ContentControl x:Name="RackPageHost" Focusable="False" />
+                    </DockPanel>
+
+                    <!-- Nuevo: the systems, each one opens its current editor. -->
+                    <!-- Nuevo with a new Dinámico being made here (step 4): its editor, until «Insertar en el dibujo…» places it. -->
+                    <ContentControl x:Name="NewRackHost" Focusable="False"
+                                    Visibility="{Binding ShowNewDynamicEditor, Converter={StaticResource FlagToVisibility}}" />
+                    <!-- E2 P3: Nuevo with a new Selectivo being made here, as the new Dinámico: its editor, until «Insertar en el dibujo…». -->
+                    <ContentControl x:Name="NewSelectiveRackHost" Focusable="False"
+                                    Visibility="{Binding ShowNewSelectiveEditor, Converter={StaticResource FlagToVisibility}}" />
+                    <ContentControl x:Name="NewCamaRackHost" Focusable="False" Visibility="{Binding ShowNewCamaEditor, Converter={StaticResource FlagToVisibility}}" /> <!-- T5 cm: a new cama of «Nuevo» -->
+                    <!-- T5 ct (2 of 3): Nuevo with a new Cantilever line being made here (a draft), until «Insertar en el dibujo…». -->
+                    <ContentControl x:Name="NewCantileverRackHost" Focusable="False"
+                                    Visibility="{Binding ShowNewCantileverEditor, Converter={StaticResource FlagToVisibility}}" />
+
+                    <ScrollViewer x:Name="NuevoPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                  Visibility="{Binding ShowNuevoCards, Converter={StaticResource FlagToVisibility}}">
+                        <StackPanel Margin="14,10">
+                            <TextBlock Text="Nuevo" Style="{StaticResource PageTitle}" />
+                            <!-- E2 P3: a new Selectivo edited here, without blocking AutoCAD (the text of the approved draft, with no predicted name). -->
+                            <Button x:Name="NewSelectiveHereButton" HorizontalAlignment="Left" Margin="0,0,0,8" Padding="12,6" MaxWidth="560"
+                                    Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanStartNewSelective}"
+                                    AutomationProperties.Name="Nuevo Selectivo en esta ventana" Click="OnNewSelectiveHereClick">
+                                <StackPanel>
+                                    <TextBlock Text="Selectivo en esta ventana" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="NewSelectiveHereText" TextWrapping="Wrap"
+                                               Text="Abre aquí, en «Nuevo», el editor de la ventana con los valores por defecto del editor clásico. Se coloca con «Insertar en el dibujo…» y, si no le pones nombre, toma el automático (I-60)." />
+                                </StackPanel>
+                            </Button>
+                            <!-- Step 4 of Dinámico: a new Dinámico edited here, without blocking AutoCAD. -->
+                            <Button x:Name="NewDynamicHereButton" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6"
+                                    Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanStartNewDynamic}"
+                                    AutomationProperties.Name="Nuevo Dinámico en esta ventana" Click="OnNewDynamicHereClick">
+                                <StackPanel>
+                                    <TextBlock Text="Dinámico en esta ventana" FontWeight="SemiBold" />
+                                    <TextBlock Text="El editor nuevo, sin bloquear AutoCAD. Se inserta con «Insertar en el dibujo…»." TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Button>
+                            <local:RackCadNewCamaButton x:Name="NewCamaHereBlock" /> <!-- T5 cm: «Cama en esta ventana» -->
+                            <!-- T5 ct (3 of 3): a new Cantilever line edited here, with the defaults of the classic editor (it resolves once «Lo esencial» is filled). -->
+                            <Button x:Name="NewCantileverHereButton" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6" MaxWidth="560"
+                                    Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanStartNewCantilever}"
+                                    AutomationProperties.Name="Nueva línea Cantilever en esta ventana" Click="OnNewCantileverHereClick">
+                                <StackPanel>
+                                    <TextBlock Text="Cantilever en esta ventana" FontWeight="SemiBold" />
+                                    <TextBlock TextWrapping="Wrap"
+                                               Text="La línea nueva lleva los valores por defecto del editor clásico y no se resuelve hasta elegir columna, base, brazo y sus largos (la lista «Para que la línea se resuelva» lleva a cada campo). Se inserta con «Insertar en el dibujo…» y, sin nombre, toma el automático (I-60)." />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Style="{StaticResource PageText}"
+                                       Text="Elige el sistema: se abre su editor en AutoCAD y, al insertarlo, el rack aparece en la lista." />
+                            <ItemsControl x:Name="NewSystemList" ItemsSource="{Binding NewSystems}" AutomationProperties.Name="Sistemas">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Margin="0,0,8,8" Padding="10,8" MinWidth="150" MaxWidth="260" HorizontalContentAlignment="Left"
+                                                Style="{StaticResource SecondaryButtonStyle}" Click="OnNewSystemClick"
+                                                AutomationProperties.Name="{Binding Title}">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="13" TextWrapping="Wrap" />
+                                                <TextBlock Text="{Binding Caption}" TextWrapping="Wrap" Margin="0,2,0,0"
+                                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Border Style="{StaticResource Banner}">
+                                <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Paso intermedio: mientras se migran los editores, «Nuevo» abre la ventana actual de ese sistema. La meta es editarlo aquí, sin bloquear AutoCAD." />
+                            </Border>
+                            <!-- T5 lg (LG-01 a LG-03): «Nuevo › Larguero», a draft in construction: a larguero from a section and a ménsula. -->
+                            <TextBlock Text="Componentes en esta ventana" FontSize="14" FontWeight="SemiBold" Margin="0,4,0,4"
+                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <Button x:Name="LargueroHereButton" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6" MaxWidth="560"
+                                    HorizontalContentAlignment="Left" Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Larguero en esta ventana, en construcción" Click="OnLargueroHereClick">
+                                <StackPanel>
+                                    <TextBlock Text="Larguero en esta ventana · en construcción" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="LargueroHereText" TextWrapping="Wrap"
+                                               Text="Arma un larguero con una sección (por catálogo y tipo) y una ménsula, y ve su resumen. Todavía no lo guarda ni lo dibuja; para guardarlo, usa la tarjeta «Larguero»." />
+                                </StackPanel>
+                            </Button>
+                            <!-- T4 ut: the recent designs of the library, where the classic menu went and «Ver todas las órdenes» (in the window). -->
+                            <vr:RackCadNuevoExtras xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="NuevoExtras" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- Variables -->
+                    <!-- T4 va: the page «Variables» of the drawing (prototype «variables»), hosted from the code (RackCadWindowView.Variables.cs);
+                         without the door of the page the section keeps its intermediate step below. -->
+                    <ContentControl x:Name="VariablesPageHost" Focusable="False">
+                        <ContentControl.Visibility>
+                            <MultiBinding Converter="{x:Static local:RackCadWindowView.AllFlagsToVisibility}">
+                                <Binding Path="IsVariablesPage" />
+                                <Binding Path="HasVariablesDoor" />
+                            </MultiBinding>
+                        </ContentControl.Visibility>
+                    </ContentControl>
+                    <ScrollViewer x:Name="VariablesPage" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <ScrollViewer.Visibility>
+                            <MultiBinding Converter="{x:Static local:RackCadWindowView.AllFlagsToVisibility}">
+                                <Binding Path="IsVariablesPage" />
+                                <Binding Path="ShowVariablesClassicStep" />
+                            </MultiBinding>
+                        </ScrollViewer.Visibility>
+                        <StackPanel Margin="14,10">
+                            <TextBlock Text="Variables" Style="{StaticResource PageTitle}" />
+                            <TextBlock Style="{StaticResource PageText}"
+                                       Text="Las variables del dibujo (nombre, expresión y valor) y los racks que las usan." />
+                            <!-- T6 rl: RACKVARIABLES opens this section now; the classic window of Variables is in the classic menu. -->
+                            <Border Style="{StaticResource Banner}">
+                                <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                           Text="Paso intermedio: la ventana clásica de Variables está en el menú clásico (RACKMENU), «Variables de proyecto (ventana clásica)». La meta es editarlas aquí." />
+                            </Border>
+                            <Button Content="Abrir el menú clásico" HorizontalAlignment="Left" Padding="12,4"
+                                    Style="{StaticResource PrimaryButtonStyle}" Tag="ClassicMenu" Click="OnClassicActionClick" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- T4 bom: BOM y lista de racks, the page of the window (RackBomPageView, placed here by the code-behind); the classic windows
+                         of the list and of the BOM total are no longer opened from here (RACKLISTA and RACKBOMTOTAL open this page too, BM-11). -->
+                    <ContentControl x:Name="BomPage" Focusable="False"
+                                    Visibility="{Binding IsBomPage, Converter={StaticResource FlagToVisibility}}" />
+
+                    <!-- T5 al: «Almacén», the page of the window (WarehousePageView, placed here by the code-behind; prototype «almacen»). -->
+                    <ContentControl x:Name="WarehousePage" Focusable="False"
+                                    Visibility="{Binding IsAlmacenPage, Converter={StaticResource FlagToVisibility}}" />
+
+                    <!-- T4 ut: «Biblioteca de diseños», «Configuración» and «Órdenes y atajos» (prototype «utilidades»), each a page of its own file. -->
+                    <vr:RackCadLibraryPage xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="BibliotecaPage"
+                                           Visibility="{Binding IsBibliotecaPage, Converter={StaticResource FlagToVisibility}}" />
+                    <vr:RackCadSettingsPage xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="ConfiguracionPage"
+                                            Visibility="{Binding IsConfiguracionPage, Converter={StaticResource FlagToVisibility}}" />
+                    <vr:RackCadHelpPage xmlns:vr="clr-namespace:RackCad.UI.VentanaRackCad" x:Name="AyudaPage"
+                                        Visibility="{Binding IsAyudaPage, Converter={StaticResource FlagToVisibility}}" />
+                    <!-- T5 lg: «Nuevo › Larguero», the page of its own view-model (made the first time it opens). -->
+                    <Grid x:Name="LargueroPageHost" Visibility="{Binding IsLargueroPage, Converter={StaticResource FlagToVisibility}}">
+                        <local:LargueroWorkbenchView x:Name="LargueroPage" DataContext="{Binding LargueroWorkbench}" />
+                    </Grid>
+                    <!-- T7 per: «Nuevo › Perfil estructural», the inspector of RACKSECCION (StructuralSectionPageView, placed here by the code-behind). -->
+                    <ContentControl x:Name="StructuralSectionPage" Focusable="False"
+                                    Visibility="{Binding IsStructuralSectionPage, Converter={StaticResource FlagToVisibility}}" />
+                </Grid>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>

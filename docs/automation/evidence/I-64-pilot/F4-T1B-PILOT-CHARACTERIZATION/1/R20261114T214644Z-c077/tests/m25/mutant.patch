@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Plugin/RackPushBackCommands.cs b/src/RackCad.Plugin/RackPushBackCommands.cs
+index 75db0c6a..d84854f1 100644
+--- a/src/RackCad.Plugin/RackPushBackCommands.cs
++++ b/src/RackCad.Plugin/RackPushBackCommands.cs
+@@ -276,7 +276,7 @@ namespace RackCad.Plugin
+                 if (decoded.Address.Kind == DimensionViewKind.Planta)
+                 {
+                     var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
+-                    result = new PushBackPlantaDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: false);
++                    result = new PushBackPlantaDrawService().RedrawInPlace(document, viewBlock.BlockId, system, payload, regen: (false));
+                     if (result != null && result.Success)
+                     {
+                         RackBlockRenamer.SyncName(document, viewBlock.BlockId, RackViewBaseName.LinkedPlanta(baseName));

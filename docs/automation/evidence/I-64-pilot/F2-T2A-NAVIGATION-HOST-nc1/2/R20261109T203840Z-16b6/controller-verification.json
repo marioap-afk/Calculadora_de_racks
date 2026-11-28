@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F2-T2A-NAVIGATION-HOST",
+  "RunId": "R20261109T203840Z-16b6",
+  "DelegationRunId": "R20261109T193332Z-bafe",
+  "WorkRunId": "R20261109T194127Z-31c0",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; OutputWrittenUtc=2026-11-09T20:12:06.132341+00:00, after Cession.StartUtc=2026-11-09T19:41:51Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt, DelegationRunId, WorkRunId, branch and worktree, and its write time follows cession start. Its CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, which disagrees with git rev-parse HEAD (44a692a4ec386e559cc6d330b3d78b87dbad6581), the work record Entry.HeadSha and RemoteFacts.CurrentRun.HeadSha. This is contradictory evidence."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 09a1499a46d16c8251ac4575d370b551603b6372 53302b85518a8d0eaaa07cf1af5affc97581aa95 returned 0. git diff --name-only AuthorityRevision BaseSha contains no changed EXTERNAL or UNIT_CHANGE authority paths. The referenced authority sections were located by normalized headings; transliterated section labels match."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json and delegation.json agree on TaskId, AuthorityRevision, MainSha, objective, authority list, forbidden scope, invariants, stop conditions, required tests and routing requirement. The delegated AllowedWriteScope is within the contract scope; the 10 changed paths are within the delegated scope."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD returned 44a692a4ec386e559cc6d330b3d78b87dbad6581; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returned the same SHA. Branch and worktree match the delegation, BaseSha 53302b85518a8d0eaaa07cf1af5affc97581aa95 is an ancestor, and RedSha 2da0e60d0bd250791d8eb8751e05c3f274756de2 is in range. Identity fails because handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, not HEAD."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records Entry.LsRemoteSha=44a692a4ec386e559cc6d330b3d78b87dbad6581 and Entry.OriginMainSha=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60, matching checked branch HEAD and delegated MainSha. Exit was BaseSha before cession, as expected."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..HEAD listed 10 paths, all in delegated AllowedWriteScope and none in ForbiddenWriteScope. The two RED commits changed only the two authorized navigation test files; the GREEN commit changed eight authorized product files."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain was empty. git check-ignore on artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST-nc1/2/R20261109T203840Z-16b6/inputs/worker-handoff.json returned that ignored path."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 42687835409 is event=push, ref=refs/heads/architecture/workspace-persistente-rackcad, head_sha=44a692a4ec386e559cc6d330b3d78b87dbad6581; all four required jobs succeeded. Its Core TRX has 15148/15148 passed; UI TRX has 1701 passed, 17 NotExecuted, 0 failed. RedRun 42687231210 is a push of RedSha 2da0e60d0bd250791d8eb8751e05c3f274756de2; Core job failed as required for RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core TRX filter FullyQualifiedName~RackCad.Tests.Workspace selected 756, all passed (minimum 656); UI filter FullyQualifiedName~RackCad.UI.Tests.Workspace selected 64, all passed (minimum 64). Red Core TRX selected 756, with 709 passed and 47 failed; the failures are the expected navigation behavior and guard assertions, including the corrected echo test and ProbedId case. git diff --name-only ChainBaseSha RedSha -- tests/ yields the seven ChainRedFiles. git diff --name-only RedSha HEAD touches only eight product paths and neither RT nor ChainRedFiles. The handoff TestResults counts agree with the TRX counts. ChainRedFiles remains the seven listed paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD shows the RED and GREEN commits; each includes Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective Worker model in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json requests claude-sonnet-5-5 / high. relay-record-work.json Notes report 110 assistant turns using claude-sonnet-5-5 with high effort; no routing discrepancy is recorded."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked worker-handoff.json free-text fields against AUTOMATION_PLAN section 16.10 terms; no matching prohibited term found."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero denials and no pending tool error. The two recorded errors were a process-list command returning code 1 and a malformed PowerShell argument; neither was a permission or credential denial and neither remained pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The handoff CurrentSha is the placeholder deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, while Git, the work record and the push CI identify 44a692a4ec386e559cc6d330b3d78b87dbad6581. This contradiction triggers S-04 and prevents identity verification.",
+    "The work record reports the expected 0 participants and 0 unattributable processes at exit and entry; the accepted config snapshot hash is unchanged at 377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8.",
+    "The handoff records ProbedId=null as F2T2A-KL-01; the RED TRX includes its new unreadable-fact test among the 47 expected failures, and the GREEN TRX passes the selected Core tests.",
+    "The UI full-suite TRX records 17 NotExecuted results, consistent with the handoff count; all 64 required workspace-filter results passed."
+  ],
+  "RecommendedNextAction": "Return the contradictory handoff SHA to the Coordinator for disposition before any further verification."
+}

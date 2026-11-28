@@ -1,0 +1,8 @@
+INV-PBT1C-01 sobre BaseSha d8ccbcb8..CurrentSha 161a0dad (INV-03 a 06 se miden frente a ChainBaseSha 833ea6bf, ver inv-chainbase-current.txt)
+rutas cambiadas:
+  src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+  src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+  tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs
+PASS INV-01 las rutas cambiadas estan dentro del AllowedWriteScope :: []
+PASS INV-01 en src/ solo W y WC :: ['src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs', 'src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs']
+PASS INV-01 el diff de XAML, Application, Domain, Plugin, Editor y Controls esta vacio

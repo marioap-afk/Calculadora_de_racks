@@ -1,0 +1,33 @@
+BaseSha=0dc623ca7a4bf1640654440276aa3d27147f48d4
+CurrentSha=c33ac6ac994af983ca176910c07f009155f3449e
+INV-PBT2A-01 rutas-cambiadas=4
+  src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs
+  src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs
+  tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs
+  tests/RackCad.Tests/PushBackDraftStatePortTests.cs
+INV-PBT2A-01 dentro-del-alcance=True
+INV-PBT2A-01 diff-zonas-vedadas-vacio=True
+INV-PBT2A-01 src-existentes-modificados-vacio=True
+INV-PBT2A-01 src-cambiados=True
+INV-PBT2A-03/C13 PushBackDraftEditorLaunch.cs declaraciones=Port,PushBackDraftEditorLaunch,RackId,SourceProject,State
+INV-PBT2A-03/C13 PushBackDraftEditorLaunch.cs fuera-de-la-lista-cerrada=ninguna
+INV-PBT2A-03/C13 PushBackDraftEditorLaunch.cs constructores=PushBackDraftEditorLaunch
+INV-PBT2A-03 literal-presente=False :: if (state == null) throw new ArgumentNullException(nameof(state));
+INV-PBT2A-03 literal-presente=False :: if (string.IsNullOrWhiteSpace(rackId)) throw new ArgumentException("A rack id is required.", nameof(rackId));
+INV-PBT2A-03 literal-presente=False :: if (port == null) throw new ArgumentNullException(nameof(port));
+INV-PBT2A-04 PushBackDraftEditorLaunch.cs campos-estaticos=0
+INV-PBT2A-04 PushBackDraftEditorLaunch.cs namespaces=[('RackCad.Application.Systems.PushBack', '{')]
+INV-PBT2A-05 PushBackDraftEditorLaunch.cs tokens-prohibidos=ninguno
+INV-PBT2A-03/C13 PushBackDraftStatePort.cs declaraciones=Applied,ApplyToDraft,IPushBackDraftStatePort,IsDirty,LaunchFor,NotEditable,PushBackDraftApplyResult,PushBackDraftApplyStatus,PushBackDraftSessionPort,Status
+INV-PBT2A-03/C13 PushBackDraftStatePort.cs fuera-de-la-lista-cerrada=ninguna
+INV-PBT2A-03/C13 PushBackDraftStatePort.cs constructores=PushBackDraftApplyResult,PushBackDraftSessionPort
+INV-PBT2A-03 literal-presente=False :: throw new ArgumentNullException(nameof(draft));
+INV-PBT2A-03 literal-presente=False :: throw new ArgumentNullException(nameof(edited));
+INV-PBT2A-03 literal-presente=False :: private readonly DraftSession<PushBackEditableState> draft;
+INV-PBT2A-03 literal-presente=False :: return new PushBackDraftEditorLaunch(draft.CurrentDraftState, draft.RackId, sourceProject, new PushBackDraftSessionPort(draft));
+INV-PBT2A-04 PushBackDraftStatePort.cs campos-estaticos=0
+INV-PBT2A-04 PushBackDraftStatePort.cs namespaces=[('RackCad.Application.Systems.PushBack', '{')]
+INV-PBT2A-05 PushBackDraftStatePort.cs tokens-prohibidos=ninguno
+INV-PBT2A-06 llamadas-al-borrador=[]
+INV-PBT2A-06 una-sola-SetCurrentDraftState(edited)=False
+INV-PBT2A-14 sin-copia-en-el-adaptador=True

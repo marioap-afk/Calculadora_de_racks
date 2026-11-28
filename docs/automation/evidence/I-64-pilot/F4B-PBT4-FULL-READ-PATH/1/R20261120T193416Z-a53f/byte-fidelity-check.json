@@ -1,0 +1,88 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4B-PBT4-FULL-READ-PATH",
+  "PlanningRunId": "R20261120T193416Z-a53f",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "04a8eacb2ec335ef8d23c2fa82ee41cac8b30dc7e7ae39767e30d0cd9c617f6e",
+  "ContractSha256": "893d6e521466cd938e9c89ee6dc660fb929cdefbd253d3f86f7ef2ad855cf584",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "39cf3b55a83b62a14edd67e46bab0ad55eaa977e1dbc419c4b48623ae48002db",
+      "OutputSha256": "39cf3b55a83b62a14edd67e46bab0ad55eaa977e1dbc419c4b48623ae48002db",
+      "Differences": []
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "283c8960262d23341c334275536856d9701a981ac3d8b0d480c620749aa06615",
+      "OutputSha256": "283c8960262d23341c334275536856d9701a981ac3d8b0d480c620749aa06615",
+      "Differences": []
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "dda264eae0eb400e8feda5328da97fabfd9b32a8de074bdcc882c36c6919f695",
+      "OutputSha256": "dda264eae0eb400e8feda5328da97fabfd9b32a8de074bdcc882c36c6919f695",
+      "Differences": []
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "82c0ea0cf6c9bc7aafcbc9884e38a07a80b93769aa7f2a70056847f39da4650f",
+      "OutputSha256": "82c0ea0cf6c9bc7aafcbc9884e38a07a80b93769aa7f2a70056847f39da4650f",
+      "Differences": []
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "b88624f2de1bf3269b4e673eff94c5d9ea28b4f4b4cc6ab851e2bc75b9cde867",
+      "OutputSha256": "b88624f2de1bf3269b4e673eff94c5d9ea28b4f4b4cc6ab851e2bc75b9cde867",
+      "Differences": []
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "f16c05087e7c120f2d877e17d12a7d53aca5cea507d0fe5a60e8dbd80e110328",
+      "OutputSha256": "f16c05087e7c120f2d877e17d12a7d53aca5cea507d0fe5a60e8dbd80e110328",
+      "Differences": []
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "48309810881fa342d84b6c540dc29222a6f0c311b7f2fe8983cda6413ae6109e",
+      "OutputSha256": "48309810881fa342d84b6c540dc29222a6f0c311b7f2fe8983cda6413ae6109e",
+      "Differences": []
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "3b1bd8239a45e468975a330497fb32603e81d3e5d4c540e41228c97f71aa23de",
+      "OutputSha256": "3b1bd8239a45e468975a330497fb32603e81d3e5d4c540e41228c97f71aa23de",
+      "Differences": []
+    }
+  ],
+  "Result": "PASS",
+  "AllowedWriteScopeElementwiseInOrder": true,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 316,
+    "Output": 316
+  }
+}

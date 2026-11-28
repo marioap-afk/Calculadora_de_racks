@@ -1,0 +1,4 @@
+green 49b5245c112e3d4f0b3b95114f9ff0444469b316a3ef912947cf3b696e0c6ebd src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+green bbc6882283833b02bab79c9bb70c082f3ac14b2a88650722bf8d72be0e13b5e2 src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+green 6eb9bf7ab81666b33c1280c832257624937c95a042e46f53dcc2c371baac4d7d src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+GREEN de PB-T4e escrito: 3 archivos de src/ cambiados; tests/ sin tocar

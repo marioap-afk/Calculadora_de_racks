@@ -1,0 +1,22 @@
+ensayo rapido; copia /d/r6n; salida r6n-qk; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 26734e7328f22ae3dd5aff48a25bfd43946567bd843ff53e419556880e9acf42 red-draft-3.txt
+  pieza 47ee55e0c154413199ac7084834288725ee5ce362e70e2ca00ad660155bdcbde red_pbt4d_v52.py
+  pieza f229e3e993472a1ed77190da5dfc66658f5423c67d4ce671b467e353c60e9c00 apply_red_pbt4d_v52.py
+  pieza efeeffe80e0853a3707ef02a0b58c863eccc5a0a87b3510d53bc4587a4907692 green_pbt4d_v52.py
+  pieza 4059860f629c7190d268fc874e7ae4fc430ba937de755bc3d84a2ea8aafa4932 pbt4d-green-v52.txt
+  pieza e09635609576325b6d73fc00e104efbf42f6ac152c2736f1a814e208baee6732 apply_green_pbt4d_v52.py
+  pieza 6b23c035b41d873686cec1587dd80ee827eeb326f6b3e3f366de9b0d34afed41 p6d_quick2_v52.sh
+RED de PB-T4d escrito: 26 archivos existentes de tests/ y 5 nuevos; src/ sin tocar
+r-core rc=0 errores=0 avisos-CS=0
+r-ui rc=0 errores=0 avisos-CS=0
+test red :: filas 747 {'Failed': 1, 'NotExecuted': 22, 'Passed': 724}; omitidas por origen {'PB-T4b': 11, 'PB-T4c': 1, 'otro': 10}
+  Failed RackCad.Tests.PushBackRetirePilotGuardTests.RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays | at RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfTh
+no pasan: 1
+GREEN de PB-T4d escrito: 4 archivos de src/ cambiados y 2 borrados
+g-core rc=0 errores=0 avisos-CS=0
+g-ui rc=0 errores=0 avisos-CS=0
+g-plugin rc=0 errores=0 avisos-CS=0
+test green :: filas 747 {'NotExecuted': 22, 'Passed': 725}; omitidas por origen {'PB-T4b': 11, 'PB-T4c': 1, 'otro': 10}
+no pasan: 0
+build-server shutdown rc=0
+MAINCO []

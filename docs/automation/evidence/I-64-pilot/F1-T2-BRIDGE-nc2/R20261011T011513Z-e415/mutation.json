@@ -1,0 +1,70 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261011T011513Z-e415",
+  "SourceVerification": "R20261010T225551Z-41fd",
+  "SourceInputs": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T225551Z-41fd/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+      "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "src/RackCad.Application/Workspace/IHostEventSource.cs",
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+    "CoveredByPrefix": "src/RackCad.Application/Workspace/",
+    "Old": [
+      "src/RackCad.Application/Workspace/",
+      "src/RackCad.Plugin/Workspace/",
+      "tests/RackCad.Tests/Workspace/"
+    ],
+    "New": [
+      "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "src/RackCad.Application/Workspace/Hints.cs",
+      "src/RackCad.Application/Workspace/IHostEventSource.cs",
+      "src/RackCad.Application/Workspace/SelectionContext.cs",
+      "src/RackCad.Application/Workspace/SessionId.cs",
+      "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+      "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+      "src/RackCad.Plugin/Workspace/",
+      "tests/RackCad.Tests/Workspace/"
+    ],
+    "Rule": "README 10: el prefijo que lo cubre se sustituye por la enumeracion de los demas archivos permitidos bajo el (git ls-tree en CurrentSha), de modo que exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "C5F3D482597C54C28065EA01AD8A228CF2EA15FB301F8A31ED2C292C2FAE5737",
+    "New": "FDAFABA7D452EA30575EC50533F211000B145E4930E8C40E7C1C3B8C8387C50F",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "0C05EF796950B84021C0B6BA8209FBBB0DA36ED024E9FAE9223A4EED904C6C98",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "coordinator-acceptance.md": "8321D1F0BFDB9094381D5522B4604A93745A96B415F0C453729355010B49DAB0",
+    "delegation.json": "FDAFABA7D452EA30575EC50533F211000B145E4930E8C40E7C1C3B8C8387C50F",
+    "gate-contract.json": "53E37B9456AEE9BBEC2431B0A19A532CB99508889661861C7083B8A68469DA33",
+    "owner-disposition-p01-allowlist.md": "9A83055D972FD53DF51660BE0A41AD0F2F0C094979AF936B5FDF9B9BF20720B0",
+    "owner-disposition-p01.md": "1D2ECF8C7CFF39A63AA1EA2DCEEE06BE9FD12CAB68E9BE9B753445771012C4FB",
+    "relay-record-planning.json": "91CC5C8DD8F63846DF426052E4329F433EAF6AE390980680865123EC3398E705",
+    "relay-record-work.json": "42B3BF6781F88798FC2D6AC782F0C19044D4A3910B18D5E15C7CA88C5E98E524",
+    "worker-handoff.json": "B47F905A81A4E2C4C249F3B9AA987C9971F219C174C126AF2A9950742809C0F4",
+    "ci-core/38085381131/core.trx": "7DF5A1D07E4B086558DECBAFFA3A35725A6088B072A0A6B36936F6988A9AFD57",
+    "ci-core-red/38084788650/core.trx": "21641C225F125A5F6103D6D3D8A29281BE302E354451A7E3CF8AE16819C741A4",
+    "ci-ui/38085381131/ui.trx": "D6BC123B32BBB926A57A86F5FC29D9BB1DFEF8C3E4D8E9676763E63019C4B3D6"
+  }
+}

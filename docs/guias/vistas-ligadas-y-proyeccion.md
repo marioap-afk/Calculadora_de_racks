@@ -46,7 +46,8 @@ colocarlas una tras otra (cola de vistas). Cada vista se coloca con su propio pu
   **conservan**; las que faltaban no se crean. El mensaje lo dice.
 - Una biblioteca de bloques incompleta no impide colocar la vista: se coloca y se **informa** qué pieza falta.
 - Un rack con propiedades personalizadas distintas entre sus vistas no admite vistas nuevas hasta unificarlas
-  con `RACKPROPIEDADES`.
+  con `RACKPROPIEDADES` (la pestaña «Propiedades» del rack en la ventana RackCad) o, si su editor no se abre, con
+  «Propiedades personalizadas (ventana clásica)» del menú clásico (`RACKMENU`).
 
 La cama de rodamiento no tiene cola de vistas.
 

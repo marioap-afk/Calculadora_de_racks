@@ -1,0 +1,4 @@
+Reading additional input from stdin...
+2026-11-19T22:08:37.248778Z ERROR codex_models_manager::manager: failed to refresh available models: request timed out
+2026-11-19T22:12:36.460762Z ERROR codex_core::session: failed to record rollout items: thread 01a1f5da-afbd-7ba1-a53a-65f83c69a004 not found
+2026-11-19T22:12:36.462153Z ERROR codex_core::session: failed to record rollout items: thread 01a1f5da-afbd-7ba1-a53a-65f83c69a004 not found

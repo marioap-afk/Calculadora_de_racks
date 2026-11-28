@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..91d7c12d 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -2623,7 +2623,7 @@ namespace RackCad.UI.Systems.PushBack
+             // ACCEPTED: apply the authorized safety AND the rear stop in ONE operation. Authorize deep-copies every
+             // selection, restricts it to the low end and refuses GUIA, PARRILLA and TOPE, so the stop can never travel
+             // as ordinary safety and the stored selections stay independent of the dialog's objects.
+-            var authorized = new PushBackSafetyAuthority(catalog).Authorize(chosen);
++            var authorized = new PushBackSafetyAuthority(catalog).Authorize(safetySelections);
+             using (session.Recompute.Defer())
+             {
+                 safetySelections.Clear();

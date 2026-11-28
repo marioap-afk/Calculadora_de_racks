@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T161527Z-21c8",
+  "DelegationRunId": "R20261011T081209Z-deae",
+  "WorkRunId": "R20261011T090257Z-3038",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, LaunchedPid=null; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe en la ruta esperada para WorkRunId R20261011T090257Z-3038; TaskId, Attempt=3 y DelegationRunId coinciden. Outcome.OutputWrittenUtc=2026-10-11T04:01:21.641724-06:00 es posterior a Cession.StartUtc=2026-10-11T09:04:36Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leidas las autoridades en AuthorityRevision para UNIT_DOC y en MainSha para EXTERNAL. git merge-base --is-ancestor c7f389cbb2eff4be42f861d8114adc2af753a1c9 f3a9f40e devolvio 0. git diff --name-only AuthorityRevision BaseSha solo lista docs/automation/evidence/I-64-evidence.md, docs/automation/state/I-64.yml y docs/initiatives/I-64-f1-t3b-gate-contract-package.md; ninguna ruta EXTERNAL ni seccion UNIT_CHANGE. Encabezados localizados con equivalencia ASCII para tildes y raya."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparados gate-contract.json y delegation.json: TaskId, AuthorityRevision, MainSha, scope permitido/prohibido, invariantes, RequiredTests y StopConditions concuerdan. coordinator-acceptance.md registra A1-A8 PASS y nc4 PASS; la interpretacion aceptada de ActiveSessionChanged es internal."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current = architecture/workspace-persistente-rackcad; git rev-parse HEAD = e0205b5a9f000bbd44aa1f7556d30f06411c3db7; refs/remotes/origin/architecture/workspace-persistente-rackcad coincide. BaseSha es ancestro de RedSha y RedSha de CurrentSha (ambos merge-base --is-ancestor devolvieron 0). El worktree coincide con ExpectedWorktree."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry.LsRemoteSha = CurrentSha e0205b5a9f000bbd44aa1f7556d30f06411c3db7; Entry.HeadSha coincide. git rev-parse refs/remotes/origin/main = MainSha bb0d5522e8411f66a51fdfb3f1f0d0514b737453."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha da 18 rutas, todas dentro de AllowedWriteScope y ninguna en ForbiddenWriteScope: 14 archivos nuevos bajo Workspace UI/UI.Tests y WorkspacePaletteHost.cs, WorkspacePaletteHostSourceGuardTests.cs; 4 archivos modificados: WorkspacePanelCommand.cs, AutoCadEventBridge.cs, WorkspaceController.cs y WorkspaceHostSourceGuardTests.cs. Los tres primeros diffs corresponden a los deltas permitidos. El diff exacto de WorkspaceHostSourceGuardTests.cs conserva G1/G2/G3 y el unico delta adicional es el espacio de HostCorePath indicado por coordinator-disposition.md; aplicado solo a esa linea exacta como T3B-SCOPE-NONSEMANTIC-WHITESPACE-01. git diff --name-only RedSha CurrentSha -- tests/ no devuelve rutas."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 sin salida; relay-record-work.json Entry.CleanTree=true. git check-ignore -v para el worker-handoff.json de inputs devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun: run 38129212761, event=push, ref=refs/heads/architecture/workspace-persistente-rackcad, head_sha=CurrentSha; los cuatro jobs requeridos terminan success. RedPart: run 38128156191 es push del RedSha; job Core y job UI fallan como esperado para RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX CurrentSha: Core 527/527 seleccionadas y superadas; UI 64/64 superadas. TRX RedSha: Core 527 seleccionadas, 504 superadas y 23 fallidas por asercion en guardas de fuente del host/controlador/puente; UI 64 seleccionadas, 14 superadas y 50 fallidas por asercion en contextos, estados, errores/reintentos, instrumentacion, reposo y vista. Filtro minimo UI=1 y Core=487 satisfecho. git diff --name-only ChainBaseSha RedSha -- tests/ define RT; git diff --name-only RedSha CurrentSha -- tests/ es vacio, por lo que GREEN no toca RT. Conteos concuerdan con TestResults. TRX UI registra 17 NotExecuted fuera del filtro como skips."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra los commits RED 9ac76ee2... y GREEN e0205b5a..., ambos con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>; coincide con Worker.Trailer y el modelo efectivo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant.ModelEffective=claude-sonnet-5-5 y EffortEffective=high; coinciden con Model y Effort solicitados en la delegacion con RoutingEnforcement=required."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "La exploracion de los campos de texto libre de worker-handoff.json encontro un termino prohibido por AUTOMATION_PLAN 16.10 en WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes informa cero denegaciones de permisos. El error de una orden heredoc fue superado en llamadas posteriores; no consta una orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [
+    "C-15"
+  ],
+  "Findings": [
+    "FreeText falla por un termino prohibido en WorkCompleted; la desviacion exige correccion y la delegacion registra CorrectionsAuthorized=false y AttemptsRemaining=0. Se activa C-15.",
+    "La excepcion de alcance se limita al espacio exacto en la linea HostCorePath; el resto de los cambios del archivo satisface G1/G2/G3.",
+    "Los TRX GREEN satisfacen ambos filtros. En RED, las 23 fallas Core son aserciones de guardas de fuente del host/controlador/puente; las 50 fallas UI son aserciones de presentacion, contencion, instrumentacion y consultas."
+  ],
+  "RecommendedNextAction": "Devolver el resultado al Coordinator por C-15; no hay correcciones autorizadas para este intento."
+}

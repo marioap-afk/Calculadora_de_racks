@@ -1,0 +1,70 @@
+v4.5: el bloque citado de PBT3x-C11, plegado, == PBT3B-C11 del contrato emitido de PB-T3b: False
+v4.6: el bloque citado de PBT3x-C11, plegado, == PBT3B-C11 del contrato emitido de PB-T3b: True
+RR-3 PushBackFullWritePrepareTests: v4.5 21 lineas y 6 valores (3 derivadas) -> v4.6 21 lineas y 6 valores (0 derivadas); solo en la v4.6 -, solo en la v4.5 -: lo previsto
+RR-3 PushBackFullWriteRunTests: v4.5 16 lineas y 2 valores (0 derivadas) -> v4.6 16 lineas y 2 valores (0 derivadas); solo en la v4.6 -, solo en la v4.5 -: lo previsto
+RR-3 PushBackWritePathGuardTests: v4.5 5 lineas y 0 valores (0 derivadas) -> v4.6 5 lineas y 0 valores (0 derivadas); solo en la v4.6 ['PushBackPilotUpdateRun.ExecuteFull'], solo en la v4.5 ['PushBackPilotUpdateRun.Execute']: lo previsto
+RR-3 PushBackPilotUpdateEquivalenceGuardTests: v4.5 8 lineas y 0 valores (0 derivadas) -> v4.6 8 lineas y 0 valores (0 derivadas); solo en la v4.6 -, solo en la v4.5 -: lo previsto
+RR-3 el doble (PilotEraseScopeDouble, PushBackFullWriteSupport.cs): una fila, con EraseUnit: y PreparedBlockMatches
+vinetas de ### 6.2 Contrato de PB-T3b (sangria 0): 10 en la v4.5, 10 en la v4.6; nuevas o cambiadas 3, quitadas 3; fuera de lo previsto: 0
+    + Objective (ASCII), con la variante (A), la elegida (F4B-E29): "Generalizar en su sitio el plan y la corrida de
+    + El esqueleto exacto del RED: en PP: PushBackFullPrepareInput completo (es un contenedor con su From); PrepareF
+    + StopConditions propias: PBT3B-C04: as PBT3A-C04. PBT3B-C13 (V2-30 y V3-02), con la variante (A), la elegida (F
+vinetas de ### 6.2 Contrato de PB-T3b (sangria 2): 25 en la v4.5, 25 en la v4.6; nuevas o cambiadas 3, quitadas 3; fuera de lo previsto: 0
+    + en PP: PushBackFullPrepareInput completo (es un contenedor con su From); PrepareFull devuelve WithInvalid(Miss
+    + en UR: Precheck completo devuelve Go(); ExecuteFull devuelve NotAppliedFailure(UpdateNotRunReason); ComparePos
+    + PBT3B-C13 (V2-30 y V3-02), con la variante (A), la elegida (F4B-E29): doing the task would require changing th
+vinetas de ### 6.0  (sangria 0): 77 en la v4.5, 83 en la v4.6; nuevas o cambiadas 8, quitadas 2; fuera de lo previsto: 0
+    + attempts: cada subtarea empieza en 1 de 3 (OB-10.1); PB-T3a y PB-T3b, en su reemision, van en el intento 2 de 
+    + PBT3x-C11, con los sustitutos de las decisiones del Owner (F4B-E40 y F4B-E43; V46-01, CA-T3b M-01; en la v4.5,
+    + El analisis de la sesion, sobre el intento 1: el Worker R20261120T055235Z-a45b (delegacion R20261120T054837Z-8
+    + La clasificacion (16.8): FailureClass StopCondition. ChainRedSha null y ChainRedFiles vacio, porque no hubo RE
+    + La correccion, C-1: los nombres de V46-06, y nada mas: ExecuteFull, ComparePostFull y PrepareFull, con la mism
+    + El RED del intento 2 es el RED entero del contrato (section 6.2): el esqueleto de PP, UR y la interfaz, las ci
+    + El esqueleto del intento 1 (blocked-skeleton.patch): la delegacion nueva puede partir de el con los tres nombr
+    + La reemision: con la precondicion 12 y el mismo TaskId. Lleva una AuthorityRevision nueva (el commit que custo
+vinetas de ### 5.3  (sangria 0): 15 en la v4.5, 15 en la v4.6; nuevas o cambiadas 0, quitadas 0; fuera de lo previsto: 0
+lo normativo de PB-T3b (D-PBT3-09, 10 y 13, 5.3 y 6.2, sin notas ni el registro de (A')): restos del API de la v4.5 en la v4.5 -> v4.6: a second `Execute` 1->0, a second `ComparePost` 1->0, a second `Prepare` 1->0, sobrecarga completa de 2->0, `Execute` completo 2->0, `Prepare` completo 4->0, las dos sobrecargas 1->0, las dos `Execute` 1->0, PushBackPilotUpdateRun.Execute` 1->0
+    los nombres nuevos en lo normativo: PrepareFull 16, ExecuteFull 9, ComparePostFull 7; Precheck sigue: 8
+    "a second `Execute`" fuera de lo normativo (registro e historia): lineas [1595]
+    "las dos `Execute`" fuera de lo normativo (registro e historia): lineas [147, 796, 800, 1721]
+    "sobrecarga completa de" fuera de lo normativo (registro e historia): lineas [34, 35, 1015]
+diff borrador de la v4.6 (5f8516c3) -> v4.6: 37 tramos, 38 lineas quitadas y 84 anadidas
+  @@ -5 +5 @@
+  @@ -19 +19 @@
+  @@ -23,3 +23,3 @@
+  @@ -30,2 +30,2 @@
+  @@ -33 +33,6 @@
+  @@ -217 +222 @@
+  @@ -232 +237 @@
+  @@ -258,0 +264 @@
+  @@ -270,0 +277,8 @@
+  @@ -696 +710 @@
+  @@ -715 +729 @@
+  @@ -785,0 +800,2 @@
+  @@ -792 +808 @@
+  @@ -796 +812 @@
+  @@ -798 +814 @@
+  @@ -805 +821 @@
+  @@ -810,3 +826,3 @@
+  @@ -814,0 +831,2 @@
+  @@ -833 +851 @@
+  @@ -910 +928 @@
+  @@ -994,0 +1013,12 @@
+  @@ -1047,0 +1078,7 @@
+  @@ -1133 +1170 @@
+  @@ -1139 +1176 @@
+  @@ -1141,2 +1178,2 @@
+  @@ -1144,2 +1181,2 @@
+  @@ -1147 +1184 @@
+  @@ -1163 +1200 @@
+  @@ -1263 +1300 @@
+  @@ -1348,0 +1386,8 @@
+  @@ -1387 +1432 @@
+  @@ -1504 +1549 @@
+  @@ -1514,2 +1559,2 @@
+  @@ -1543,2 +1588,2 @@
+  @@ -1567 +1612 @@
+  @@ -1640,0 +1686 @@
+  @@ -1652 +1698 @@
+diff v4.5 -> v4.6: 48 tramos, 45 lineas quitadas y 124 anadidas
+sin rutas locales; la v4.6: 313702 bytes, sha256 09210abe2ed5482c87bec1829f5798790d31090de490e615574c6c845d9e804a

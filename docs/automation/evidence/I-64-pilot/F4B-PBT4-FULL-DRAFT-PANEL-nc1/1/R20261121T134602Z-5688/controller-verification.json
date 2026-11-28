@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-FULL-DRAFT-PANEL",
+  "RunId": "R20261121T134602Z-5688",
+  "DelegationRunId": "R20261121T084940Z-a2b4",
+  "WorkRunId": "R20261121T085458Z-5ef5",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json identifica TaskId, Attempt, DelegationRunId, WorkRunId y fecha posteriores al inicio correctamente, pero declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, que no existe en Git; git rev-parse HEAD devuelve c065080d3fd1dd8bb1937b98b81e9a0c1714777b. La identidad del handoff no corresponde a la entrega medible."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor f5ff00eed6bf2c2b9dcd0994474ffefde88d5796 8f783df58fb0e5688d58299951fcbdcde727f33e: exit 0. git diff --name-only AuthorityRevision BaseSha lista 4 rutas: 2 UNIT_DOC y 2 no listadas en Authorities; ninguna es EXTERNAL ni UNIT_CHANGE. revision-diff.txt SHA-256=86E01E36956E39FFE9EC79AA909DDC62DF493C8D5A8E25FA4F18A415B4E949CF. Se consulto AUTOMATION_PLAN.md en MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "A3-A5 comparados: AllowedWriteScope 59/59, ForbiddenWriteScope 458/458, Invariants 14/14, StopConditions 35/35, Authorities 72/72 y RequiredTests 77/77 coinciden entre delegation.json y gate-contract.json. byte-fidelity-check.json: PASS en 8 colecciones."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; git rev-parse HEAD=c065080d3fd1dd8bb1937b98b81e9a0c1714777b; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=c065080d3fd1dd8bb1937b98b81e9a0c1714777b. git merge-base --is-ancestor BaseSha CurrentSha falla con bad object; BaseSha RedSha pasa."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json RemoteFacts registra ls-remote=c065080d3fd1dd8bb1937b98b81e9a0c1714777b y origin/main=812baf879612320653094a8aaf46aca0bac81383. origin/main coincide con MainSha, pero ls-remote no coincide con CurrentSha declarado deadbeefdeadbeefdeadbeefdeadbeefdeadbeef."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "AllowedWriteScope contiene 59 rutas exactas. El script comparo rutas de los cuatro diffs requeridos: git diff --name-only BaseSha CurrentSha y ChainBaseSha CurrentSha -- src tests fallan con bad object deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, por lo que no se puede acreditar el alcance de la identidad declarada. Como contraste, BaseSha..HEAD contiene 59 rutas y todas estan en AllowedWriteScope; BaseSha..RedSha contiene 55 rutas permitidas; RedSha..RedRepairSha contiene solo tests/RackCad.Tests/PushBackFullPanelTests.cs."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain devuelve salida vacia. git check-ignore -v artifacts/orchestration/I-64-F4B-PBT4-FULL-DRAFT-PANEL/1/R20261121T085458Z-5ef5/worker-handoff.json devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun y TRX run 44903818806 son push de refs/heads/architecture/workspace-persistente-rackcad para c065080d3fd1dd8bb1937b98b81e9a0c1714777b, con los cuatro jobs requeridos en success; no corresponden al CurrentSha declarado deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. RedPart: push 44893322578 del RedSha c1e4f4585217abc8c85d90b499a07bb93c84be2c registra Core y UI en failure, Build UI en success y Build Plugin omitido."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "fail",
+      "Evidence": "required-tests.txt SHA-256=9BCC07AA7F636D36C4C1E4E1B4ED7C80D283CF790319928A21CE49681769649C; sus 77 filas coinciden con RequiredTests. Los TRX de ci-core/ui reportan 19605=19147+0+458 y 2481=2433+0+48; RED y RR reportan 19605=18841+306+458 y 2481=2430+3+48. Los 21 filtros ExpectRed seleccionan y fallan como se requiere; no hay fallos fuera de esos filtros; los resultados del CT-PBT4B-20 pasan en core-red y core-green. Skip-check y copy-check no muestran errores; esqueleto verificado byte a byte; RR-3: 45 literales sin diferencias. Sin embargo, el CurrentSha declarado no existe, asi que los TRX verdes no se pueden atribuirle ni se puede ejecutar git diff --name-only RedRepairSha CurrentSha para acreditar RR-6 y la parte RED de Tests."
+    },
+    "Trailer": {
+      "Result": "fail",
+      "Evidence": "git log --format=%B BaseSha..HEAD muestra los commits RED, RED repair y GREEN con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al trailer declarado. No existe el objeto CurrentSha del handoff, por lo que no se puede verificar el rango BaseSha..CurrentSha exigido."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita modelo claude-sonnet-5-5 y effort high. relay-record-work.json registra ModelRequested=sonnet como alias de lanzamiento subagent, ModelEffective=claude-sonnet-5-5 y EffortEffective=high; worker-handoff.json concuerda con la solicitud."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Script de texto completo sobre los siete campos requeridos de worker-handoff.json: WorkCompleted 2142 caracteres, Evidence 11688, UnexpectedFindings 2475, KnownLimitations 1318, Deviations 2432, OpenQuestions 0, RecommendedNextAction 387; 0 coincidencias de los terminos de AUTOMATION_PLAN 16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones, 5 errores de herramienta ninguno pendiente y sin aviso de limite."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04",
+    "PBT4B-C18"
+  ],
+  "Findings": [
+    "CurrentSha declarado es deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad son c065080d3fd1dd8bb1937b98b81e9a0c1714777b.",
+    "Las comprobaciones de alcance, CI, pruebas, trailer y RR que dependen del CurrentSha declarado no pueden atribuirse a esa identidad; RR-6 y la comprobacion de Tests quedan sin acreditacion para el SHA declarado."
+  ],
+  "RecommendedNextAction": "Devolver la entrega al Coordinator para resolver la discrepancia del CurrentSha y emitir una nueva verificacion sobre la identidad comprobable."
+}

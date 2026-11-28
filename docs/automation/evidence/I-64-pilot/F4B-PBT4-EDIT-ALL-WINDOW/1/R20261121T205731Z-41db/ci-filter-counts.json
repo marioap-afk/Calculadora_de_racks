@@ -1,0 +1,1776 @@
+{
+  "Green": {
+    "PorFiltro": {
+      "FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests",
+        "Selected": 5,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests",
+        "Selected": 3,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 2,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests",
+        "Selected": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests",
+        "Selected": 87,
+        "Passed": 85,
+        "Failed": 0,
+        "Skipped": 2,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests",
+        "Selected": 125,
+        "Passed": 121,
+        "Failed": 0,
+        "Skipped": 4,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests",
+        "Selected": 2,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullWrite": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullWrite",
+        "Selected": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests",
+        "Selected": 2,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.Workspace": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+        "Selected": 3315,
+        "Passed": 2860,
+        "Failed": 0,
+        "Skipped": 455,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullDraft": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullDraft",
+        "Selected": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests",
+        "Selected": 3,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.Workspace": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+        "Selected": 672,
+        "Passed": 644,
+        "Failed": 0,
+        "Skipped": 28,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditableState": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditableState",
+        "Selected": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+        "Selected": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+        "Selected": 55,
+        "Passed": 55,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization",
+        "Selected": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+        "Selected": 18,
+        "Passed": 16,
+        "Failed": 0,
+        "Skipped": 2,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+        "Selected": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+        "Selected": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.Cantilever": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+        "Selected": 67,
+        "Passed": 67,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.I58F1": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.I58F1",
+        "Selected": 1912,
+        "Passed": 1912,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests",
+        "Selected": 22,
+        "Passed": 22,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests",
+        "Selected": 7,
+        "Passed": 7,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+        "Selected": 4,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests",
+        "Selected": 11,
+        "Passed": 11,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests",
+        "Selected": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+        "Selected": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+        "Selected": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests",
+        "Selected": 24,
+        "Passed": 24,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests",
+        "Selected": 69,
+        "Passed": 69,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests",
+        "Selected": 44,
+        "Passed": 44,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests",
+        "Selected": 47,
+        "Passed": 47,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests",
+        "Selected": 24,
+        "Passed": 24,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests",
+        "Selected": 57,
+        "Passed": 57,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests",
+        "Selected": 59,
+        "Passed": 59,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests",
+        "Selected": 17,
+        "Passed": 17,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests",
+        "Selected": 70,
+        "Passed": 70,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests",
+        "Selected": 53,
+        "Passed": 53,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests",
+        "Selected": 29,
+        "Passed": 29,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests",
+        "Selected": 18,
+        "Passed": 18,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests",
+        "Selected": 23,
+        "Passed": 23,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests",
+        "Selected": 5,
+        "Passed": 5,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests",
+        "Selected": 21,
+        "Passed": 21,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests",
+        "Selected": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests",
+        "Selected": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests",
+        "Selected": 17,
+        "Passed": 17,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests",
+        "Selected": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+        "Selected": 30,
+        "Passed": 30,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackOpenerClassicPathGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackOpenerClassicPathGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackDraftLaunchGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftLaunchGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+        "Selected": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllFullCopyGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllFullCopyGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      }
+    },
+    "Saltadas": {
+      "Base": 7,
+      "ListaCore": 3,
+      "ListaUi": 1,
+      "LineaBaseUi": 48,
+      "ListaSha256": "fc2a0ff6819a665b25a63a1d672deec2150d3d44387587582432a8a7d9d7be56"
+    },
+    "Totales": {
+      "core": [
+        19619,
+        19158,
+        0,
+        461
+      ],
+      "ui": [
+        2486,
+        2437,
+        0,
+        49
+      ]
+    },
+    "CoreAll": {
+      "Selected": 19619,
+      "Passed": 19158,
+      "Failed": 0,
+      "Skipped": 461
+    },
+    "UiAll": {
+      "Selected": 2486,
+      "Passed": 2437,
+      "Failed": 0,
+      "Skipped": 49
+    }
+  },
+  "Red": {
+    "PorFiltro": {
+      "FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests",
+        "Selected": 5,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests",
+        "Selected": 3,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 2,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests",
+        "Selected": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests",
+        "Selected": 87,
+        "Passed": 85,
+        "Failed": 0,
+        "Skipped": 2,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests",
+        "Selected": 125,
+        "Passed": 121,
+        "Failed": 0,
+        "Skipped": 4,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests",
+        "Selected": 2,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullWrite": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullWrite",
+        "Selected": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests",
+        "Selected": 2,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.Workspace": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+        "Selected": 3315,
+        "Passed": 2860,
+        "Failed": 0,
+        "Skipped": 455,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullDraft": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullDraft",
+        "Selected": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests",
+        "Selected": 3,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.Workspace": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+        "Selected": 672,
+        "Passed": 644,
+        "Failed": 0,
+        "Skipped": 28,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditableState": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditableState",
+        "Selected": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+        "Selected": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+        "Selected": 55,
+        "Passed": 55,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization",
+        "Selected": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+        "Selected": 18,
+        "Passed": 16,
+        "Failed": 0,
+        "Skipped": 2,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+        "Selected": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+        "Selected": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.Cantilever": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+        "Selected": 67,
+        "Passed": 67,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.I58F1": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.I58F1",
+        "Selected": 1912,
+        "Passed": 1912,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests",
+        "Selected": 22,
+        "Passed": 22,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests",
+        "Selected": 7,
+        "Passed": 7,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+        "Selected": 4,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 1,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests",
+        "Selected": 11,
+        "Passed": 11,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests",
+        "Selected": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+        "Selected": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+        "Selected": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+        "Selected": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests",
+        "Selected": 24,
+        "Passed": 24,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests",
+        "Selected": 69,
+        "Passed": 69,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests",
+        "Selected": 44,
+        "Passed": 44,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests",
+        "Selected": 47,
+        "Passed": 47,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests",
+        "Selected": 24,
+        "Passed": 24,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests",
+        "Selected": 57,
+        "Passed": 57,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests",
+        "Selected": 59,
+        "Passed": 59,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests",
+        "Selected": 17,
+        "Passed": 17,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests",
+        "Selected": 70,
+        "Passed": 70,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests",
+        "Selected": 53,
+        "Passed": 53,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests",
+        "Selected": 29,
+        "Passed": 29,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests",
+        "Selected": 18,
+        "Passed": 18,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests",
+        "Selected": 23,
+        "Passed": 23,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests",
+        "Selected": 5,
+        "Passed": 5,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests",
+        "Selected": 21,
+        "Passed": 21,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests",
+        "Selected": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests",
+        "Selected": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests",
+        "Selected": 17,
+        "Passed": 17,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests",
+        "Selected": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+        "Selected": 30,
+        "Passed": 30,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+        "Selected": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllTests",
+        "Selected": 6,
+        "Passed": 0,
+        "Failed": 6,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 6,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests",
+        "Selected": 3,
+        "Passed": 0,
+        "Failed": 3,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 3,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackOpenerClassicPathGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackOpenerClassicPathGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackDraftLaunchGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftLaunchGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+        "Selected": 4,
+        "Passed": 0,
+        "Failed": 4,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 4,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.Tests.PushBackEditAllFullCopyGuardTests": {
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllFullCopyGuardTests",
+        "Selected": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 0,
+        "ConMensajeDeExcepcion": 0
+      },
+      "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests": {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+        "Selected": 1,
+        "Passed": 0,
+        "Failed": 1,
+        "Skipped": 0,
+        "Other": 0,
+        "PorPilaEnTests": 1,
+        "ConMensajeDeExcepcion": 0
+      }
+    },
+    "Saltadas": {
+      "Base": 7,
+      "ListaCore": 3,
+      "ListaUi": 1,
+      "LineaBaseUi": 48,
+      "ListaSha256": "fc2a0ff6819a665b25a63a1d672deec2150d3d44387587582432a8a7d9d7be56"
+    },
+    "Totales": {
+      "core": [
+        19619,
+        19149,
+        9,
+        461
+      ],
+      "ui": [
+        2486,
+        2432,
+        5,
+        49
+      ]
+    },
+    "CoreAll": {
+      "Selected": 19619,
+      "Passed": 19149,
+      "Failed": 9,
+      "Skipped": 461
+    },
+    "UiAll": {
+      "Selected": 2486,
+      "Passed": 2432,
+      "Failed": 5,
+      "Skipped": 49
+    }
+  }
+}

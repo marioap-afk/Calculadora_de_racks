@@ -1,0 +1,7 @@
+inspect-loaded-rackcad (ligada a la PID) UTC 2026-11-08T07:09:39.1742334Z
+AUTHORIZED_AUTOCAD_PID = 39252; acad count = 1
+RackCad modules en la PID 39252 = 2
+  RackCad.Application.dll | <candidate-bin>\RackCad.Application.dll | sha256=12A7C29A851105F0A2CC067EC899CDB4BC98325FA1DC57845D89ED974BBE7558 | candidateBin=True | expected=MATCH
+  RackCad.Plugin.dll | <candidate-bin>\RackCad.Plugin.dll | sha256=0C0F2FDE0987C489BABAF2ACB9A46936117D044EAF45C706A303E6B5B1C56C0B | candidateBin=True | expected=MATCH
+LOADED en la PID 39252: RackCad.Plugin.dll path = <candidate-bin>\RackCad.Plugin.dll; sha256 = 0C0F2FDE0987C489BABAF2ACB9A46936117D044EAF45C706A303E6B5B1C56C0B
+VERDICT = PASS

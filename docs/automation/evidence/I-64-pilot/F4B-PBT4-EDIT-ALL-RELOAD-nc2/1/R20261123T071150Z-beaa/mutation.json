@@ -1,0 +1,80 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261123T071150Z-beaa",
+  "SourceVerification": "R20261123T070111Z-b46b",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T070111Z-b46b/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "tests/RackCad.Tests/PushBackEditAllReloadTests.cs",
+      "tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "tests/RackCad.Tests/PushBackEditAllReloadTests.cs",
+      "tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "tests/RackCad.Tests/PushBackEditAllReloadTests.cs",
+      "tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "128E358DA17BB40C53EC5306207CBB67A2ECD31CD43F6EC840E153F19A320D52",
+    "New": "3B03E001E999DB4D419704F58E79946E9E612D93859863FE917F8134F7CEDEE8",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "589E4A0F18D6B6E8AB0E057B5B7543982B0D921A152CCB2B4D6FBD76C560F55F",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "8A77077CF6C86B640D4F1EB7A879E3EAAF1B7C604594D395A0330FF9DECFEBF6",
+    "delegation.json": "3B03E001E999DB4D419704F58E79946E9E612D93859863FE917F8134F7CEDEE8",
+    "equivalents-check.json": "F331088B4627286F0C0F123F5317B29F1CBE23462F056EF6F05BCE64146C7896",
+    "gate-contract.json": "279A638C53B211352D14DB137F42AF73411D7A838E264DCC95930039FF696351",
+    "pbt4e-facts.json": "639DC538EFBFA0F5513CF7532643866AD2036B4F4C7E381CF3AEC71C4CAFC82D",
+    "red-literal.json": "0DCA142FA103A8F8EB0A65A15A9FC033650E888C617B1DCDEFDECEBF51F250EC",
+    "relay-record-planning.json": "9400FC139B107B07965CA9BF0E9E0C70483504AE233978423029D78534EABE1E",
+    "relay-record-work.json": "35B0B99EAA78288D525E5AB0A0E949EF9C85467DA35C9F8CE539650B2EF183D0",
+    "required-tests.txt": "5A215A3F9E515C4F406F5ABF7CF13A2D415EA0547A43F184503D6BB47EA8990D",
+    "revision-diff.txt": "2BA25C8FD0CE4452480586FD73E02DEC9217C132F0523BAB0F88932CE79BF84E",
+    "rr-rule.txt": "72888B84646B12C782FADCD1827DBEED7BC9EAE9C01A630AF3925958A76234A4",
+    "scope-lists.txt": "712FE5BCF557ABCA1B774E7288B59A3D89DD6D9EFA2D4AEDC5B63B61AAF5C44D",
+    "skip-check.json": "BE7373059A94B5DDCF07B3E002FC422A7886D79DBD7EC01DFE0DB0C0F618BFD8",
+    "warnings-cs.json": "1BAB8CAFD479D7CEE80F7A3D4BFE21DBA1AF4B606978BCD965ACB764C6BDF143",
+    "worker-handoff.json": "77F4BE74110A9CCE9C3730E7BE6FA60BE408CE8F756140715FEA8F417CCB99A5",
+    "ci-core/1/core.trx": "1504484EB657F5FD900B4A0FAB5AD9C9AD7ECCF9E146A07717D2D626B8FA37C7",
+    "ci-core-red/2/core.trx": "312A20FFA730201BCE722E8EFA4538E77609DDD87567490C16C93A5C05072038",
+    "ci-ui/1/ui.trx": "1E53F024BD638CBA352CCC473C095BBBF605878B34AA53DC89CE1C7BD9630FA6",
+    "ci-ui-red/2/ui.trx": "CC2B2BA41D8431AE19DCA4D559C92E9D1E79DDD62E0531E9F07CA91F3A6BA5AB"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

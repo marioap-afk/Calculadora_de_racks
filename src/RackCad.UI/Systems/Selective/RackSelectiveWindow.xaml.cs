@@ -37,7 +37,7 @@ namespace RackCad.UI.Systems.Selective
     /// the floor-referenced level Ys and the post height (tallest bay governs); <see cref="SelectiveFrontalBuilder"/>
     /// lays out the blocks. Click a cell to edit it, then apply the values to the cell / row / column / all.
     /// </summary>
-    public partial class RackSelectiveWindow : Window
+    public partial class RackSelectiveWindow : Window, ISelectiveEditOutcome
     {
         private static readonly Brush PostBrush = UiSupport.FrozenBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
         private static readonly Brush PostFill = UiSupport.FrozenBrush(Color.FromArgb(0x30, 0x3D, 0xC9, 0x86));
@@ -1007,7 +1007,13 @@ namespace RackCad.UI.Systems.Selective
             var fullWidth = TramosFullWidth(bay);
 
             // The dialog opens ONCE, seeded from the VISIBLE frente. Cancelling changes nothing anywhere (I-39).
-            var dialog = new SelectiveSegmentsWindow(bay + 1, baySegments[bay], fullWidth) { Owner = this };
+            // T6 bom (dolor 13, DG-10): the dialog checks the tramos as the resolver draws them, intermediate posts included, in the fondos
+            // it writes (the «Fondos destino»; the tightest of the ones that have the front), as the RackCad window does.
+            var system = lastSystem;
+            var targetFondos = state.TargetFondos.Fondos.ToList();
+            var dialog = new SelectiveSegmentsWindow(bay + 1, baySegments[bay], fullWidth,
+                (specified, count) => global::RackCad.Application.VentanaRackCad.SelectiveSegmentFit.Of(system, catalog, targetFondos, bay, specified, count),
+                Math.Max(1, fondoMatrices.Count) > 1) { Owner = this };
             if (dialog.ShowDialog() != true) return;
 
             using (DeferRecompute())
@@ -1336,7 +1342,8 @@ namespace RackCad.UI.Systems.Selective
             var parrillaPlan = resolved != null ? SelectiveParrillaPlan.Cells(resolved, catalog) : null;
 
             var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente, depthCount, parrillaPlan, catalog, resolved) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var accepted = SafetyWindowDialog != null ? SafetyWindowDialog(dialog) : dialog.ShowDialog(); // T6 seg: test seam
+            if (accepted != true)
             {
                 return;
             }
@@ -1350,10 +1357,23 @@ namespace RackCad.UI.Systems.Selective
         private static bool SafetyDraws(SelectiveSafetySelection s)
             => s != null && (s.Quantity > 0 || s.Side != SafetySide.None || s.PostSides.Any(p => p != null && p.Side != SafetySide.None));
 
-        /// <summary>Reflect the number of chosen safety accessories on the button label.</summary>
+        /// <summary>
+        /// T6 seg (I-64, sexta tanda) — seam de prueba de «Elementos de seguridad…», como el <c>SafetyWindowDialog</c> del editor clásico de Push
+        /// Back: sustituye UNICAMENTE el <c>ShowDialog</c>; el dialogo que recibe es el real, construido con los argumentos que ve el usuario.
+        /// </summary>
+        internal Func<SelectiveSafetyWindow, bool?> SafetyWindowDialog;
+
+        /// <summary>
+        /// Reflect the number of chosen safety accessories on the button label. T6 seg (the Owner, 2026-11-27: «Solo lo que dibuja»): only the
+        /// ones that place something in the drawing; one kept with everything off is not counted. The levels are the ones the dialog opens
+        /// with, from the last resolution (none yet: it counts, as before).
+        /// </summary>
         private void UpdateSafetyButton()
         {
-            var count = safetySelections.Count(SafetyDraws);
+            var levels = lastSystem != null ? SelectiveSafetyGrid.LevelCounts(lastSystem) : new List<int>();
+            var count = safetySelections.Count(s => SafetyDraws(s) && SelectiveSafetyWindow.PlacesSomething(s, catalog?.SafetyElements, levels,
+                desviador => SelectiveDesviadorPlan.Build(lastSystem, catalog, desviador).LevelCounts, MaxFrenteCount() + 1,
+                lateralFollowsTheRuleOfTheEnds: false));
             SafetyButton.Content = count > 0
                 ? "Elementos de seguridad (" + count.ToString(CultureInfo.InvariantCulture) + ")…"
                 : "Elementos de seguridad…";
@@ -2777,11 +2797,18 @@ namespace RackCad.UI.Systems.Selective
                 postRects.Clear();
                 postLabels.Clear();
                 pendingWarning = null; // the validation error supersedes any latched input warning
+                sayUnfitSplitsOnRecompute = false; // T6 bom (P-2): a load that does not recompose says its error, not this
                 SetStatus(error, true);
                 return;
             }
 
             lastSystem = system;
+            if (sayUnfitSplitsOnRecompute) // T6 bom (P-2): only the recomposition of a load says it; it changes nothing
+            {
+                sayUnfitSplitsOnRecompute = false;
+                LatchWarning(global::RackCad.Application.VentanaRackCad.SelectiveSegmentFit.OpeningNotice(system, catalog));
+            }
+            UpdateSafetyButton(); // T6 seg: the count reads the levels of this resolution
             // The frontal preview shows the fondo being edited (each fondo has its own levels); fondo 0 is the default.
             lastInstances = builder.Build(SelectiveDepthLayout.FondoSystemView(system, selectedFondo), catalog);
             UpdateSummary();
@@ -2886,8 +2913,34 @@ namespace RackCad.UI.Systems.Selective
                 return null;
             }
 
+            OwnCustomCabeceras(system); // T6 bom (ARQ-43-10)
             return system;
         }
+
+        /// <summary>
+        /// T6 bom (ARQ-43-10 in the classic editor): the resolver hands the custom cabeceras of the design to the system as they are, and they
+        /// are the objects of the state of this editor (<see cref="SelectiveEditorState.BuildDesign"/> copies the lists, not the cabeceras).
+        /// The readers of the drawing (the BOM, the cuts of «Insertar varias…», the planta, and the drawing in AutoCAD) impose the depth of
+        /// its fondo on every custom cabecera they read, in place (<see cref="SelectiveCabeceraAuthority.EffectiveCustomAt"/>, deferred on
+        /// purpose), so reading the system changed what this editor writes. The system gets its own copy of each one, with the single
+        /// canonical clone (<see cref="CloneCabecera"/>, I-17): the readers impose on the copy, the geometry and the counts are the same, and
+        /// the design keeps what it stores, as the RackCad window does (<c>SelectiveDraftEditor.Recompose</c>).
+        /// </summary>
+        private static void OwnCustomCabeceras(SelectiveRackSystem system)
+        {
+            for (var i = 0; i < system.PostCabeceras.Count; i++) system.PostCabeceras[i] = OwnCopy(system.PostCabeceras[i]);
+            foreach (var row in system.ExtraFondoPostCabeceras)
+            {
+                for (var i = 0; row != null && i < row.Count; i++) row[i] = OwnCopy(row[i]);
+            }
+        }
+
+        // The canonical clone refuses a cabecera that is not a usable frame (alto, fondo y postes); one like that is copied through its document,
+        // which is what a save and a load would give it.
+        private static RackFrameConfiguration OwnCopy(RackFrameConfiguration custom)
+            => custom == null ? null
+                : RackDesignValidation.IsUsableHeader(custom) ? CloneCabecera(custom)
+                : RackFrameProjectDocument.FromConfiguration(custom).ToConfiguration();
 
         /// <summary>Empty frentes (columns) that the current load had to pad with a default cell (the matrix can't edit
         /// zero-level columns yet); &gt; 0 makes <see cref="LoadDesign"/> warn instead of silently converting them.</summary>
@@ -3101,6 +3154,11 @@ namespace RackCad.UI.Systems.Selective
         /// SetStatus, so Recompute emits THIS instead of the generic success message when set.</summary>
         private string pendingWarning;
 
+        /// <summary>T6 bom (P-2 of the Owner, 2026-11-27): the recomposition of a rack just loaded says which «medio frente» does not fit
+        /// with its intermediate posts and is drawn as the whole front (<see cref="global::RackCad.Application.VentanaRackCad.SelectiveSegmentFit.OpeningNotice"/>).
+        /// Only the one of the load: the edits of this editor stay as they were (P-1, «Dejarlo así»).</summary>
+        private bool sayUnfitSplitsOnRecompute;
+
         /// <summary>
         /// Anade un aviso al de la operacion en curso en vez de pisarlo (I-43, gate 8.6H, R2-05).
         /// <para>
@@ -3123,6 +3181,7 @@ namespace RackCad.UI.Systems.Selective
             if (design == null || design.Bays.Count == 0) return;
 
             paddedEmptyFrentesOnLoad = 0;
+            sayUnfitSplitsOnRecompute = true; // T6 bom (P-2)
 
             // Assigning the toggles below (e.g. DrawBasePlateCheck) fires DrawToggle_Changed → Recompute on the
             // half-loaded state; defer so the whole load runs exactly ONE pipeline (the explicit call at the end).

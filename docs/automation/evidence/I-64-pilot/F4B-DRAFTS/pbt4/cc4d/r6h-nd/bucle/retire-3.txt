@@ -1,0 +1,54 @@
+# retirada del piloto, variante B, sobre 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+static\s+PushBackPilotComposition\s+ComposeForWrite\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+static\s+PushBackPilotDraftState\s+KeepPilotEditsOn\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+static\s+PushBackPilotPrepareResult\s+Prepare\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs private\s+static\s+PushBackPilotPrepareResult\s+Build\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+static\s+PushBackPilotPrepareInput\s+From\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+PushBackPilotPrecheck\s+Precheck\s*\(\s*DraftSession
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+DraftApplyOutcome<PushBackPilotDraftState>\s+Execute
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+sealed\s+class\s+PushBackPilotPrepareInput\b
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+sealed\s+class\s+PushBackPilotComposition\b
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+string\?\s+ComparePost\s*\(
+tests tests/RackCad.Tests/PushBackFullWritePrepareTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.Tests/PushBackFullWriteRunTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs: 20 miembros (20 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs: 17 miembros (17 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs: 17 miembros (17 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs: 1 miembros (1 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs: 15 miembros (17 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs: 8 miembros (8 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs: 3 miembros (3 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs: 3 miembros (3 tramos)
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+escrito cffdef1bff24a4212a6d26fefdc855659f1d52dcea955ff40831907152367d07 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+escrito 085bf86d387f6a471fb4aa296669e41730ca3eb55af9effbc2fa5d39850f7534 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+escrito 86ffeef60c3c2ad5aa6a597cc7590a31a913d18beea4947cf9276311c4c0d674 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+escrito 1c23ebef1a1e3ff0aebe0812e11f475fb1ec3c0ac1c5ae8d447df41eedd5e968 tests/RackCad.Tests/PushBackFullWritePrepareTests.cs
+escrito e171ba774b51e2411c352725b4182f239bc78df8480e02b144abe1a66a55b202 tests/RackCad.Tests/PushBackFullWriteRunTests.cs
+escrito afcc48becbc935c0fcadda71fd7bfd4b8c077d91a9daaa86de166c71b0311409 tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs
+escrito 67969c069858284ebc53b77e763fa77a00f617677c7376bb95d6cd9170c88917 tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs
+escrito 72b5d5d94332d428e24d8f0bb89c133802665bc7e1a22054d1ec1950de195cf8 tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs
+escrito bb6648b4b78c161e1830c82155d33ce3c41eefe9e3fd0e42dbeba0c18d1097bd tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs
+escrito 33311e3e3314d04161ade42c05404438fb0c203aceb3f52d6f673ee8770b3fbe tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs
+escrito 1526f298a55f1d7f9580d34fbc53b75a77eaf0b6e2dc84a11a520f020bfeeb6e tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs
+escrito 886bc697e02d7c93946696e4d09d70e57698b52480810dbe925004dd16895c5b tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs
+escrito d41d0a73e8849c3b0dc043c54933e01d15df46d1466d95efa392a91d3c634daa tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs
+escrito 986388094515db1a38803ec90c06e936d4394be99c30a1dd85375ac9df9207a5 tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs
+escrito 5b43ca430427beacc0da909c4a6359339bb0c9f4f225e94fdc1d9780e75aeb29 tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs
+escrito 1c8daa50a74760b7eb34c2901d07be5330ac0dd4d8c8a6031ec59c0b5add44e2 tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs
+escrito 04add2ee33281139fb50376840a21ab21e4c06b89caa7aaac04cb1fc376d4a75 tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs
+escrito fc61368ed22143fe000aefdf3a9e513af259e70bb0f15538429983461ba8ed06 tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs
+escrito fa602175df98ec1e810c2af18e371a360377df8414af1453ecf951b6399e44af tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs
+escrito fdbe9d59565e699ac416f47f1fd81bf4703869690beba157f0bec8ff0ee0eeda tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs
+escrito 1f0540d386bb706b9c5c70f9945537708bfa475e4a0163b4999e527b85fa6ffc tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs
+escrito 4fd618e48e73cda947c66df4bccb8fbe050caaf332c6ce1383c23ccb8c863bbf tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs

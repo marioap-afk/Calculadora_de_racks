@@ -16,6 +16,13 @@ namespace RackCad.Application.ProjectVariables
         Rename = 2,
         ChangeValue = 3,
         Remove = 4,
+
+        /// <summary>
+        /// I-64 A-14, cuarta tanda (va), VA-02: the whole register is replaced by the result of a batch of the page «Variables»
+        /// (<see cref="ProjectVariablesBatch"/>), and only over the register the batch was planned against. Declared change: before it,
+        /// Application planned one operation at a time.
+        /// </summary>
+        Replace = 5,
     }
 
     /// <summary>
@@ -56,6 +63,23 @@ namespace RackCad.Application.ProjectVariables
         public VariableDefinition Definition { get; }
 
         internal VariableDefinition ExpectedDefinition { get; }
+
+        /// <summary>The register a <see cref="RegistryMutationKind.Replace"/> writes. Null for every other kind.</summary>
+        internal ProjectVariablesDocument Replacement { get; private set; }
+
+        /// <summary>The register a <see cref="RegistryMutationKind.Replace"/> was planned against; the commit re-read must be it.</summary>
+        internal ProjectVariablesDocument ExpectedBase { get; private set; }
+
+        /// <summary>
+        /// VA-02 (cuarta tanda, va): the register that a batch of the page «Variables» leaves, over the register it was planned against.
+        /// Both are copies, so nothing the caller keeps reaches the plan.
+        /// </summary>
+        internal static RegistryMutation Replace(ProjectVariablesDocument replacement, ProjectVariablesDocument expectedBase)
+            => new RegistryMutation(RegistryMutationKind.Replace, default, null, VariableType.Length, null)
+            {
+                Replacement = ProjectVariableCloning.Clone(replacement) ?? ProjectVariablesDocument.CreateNew(),
+                ExpectedBase = ProjectVariableCloning.Clone(expectedBase),
+            };
 
         public static RegistryMutation None { get; } =
             new RegistryMutation(RegistryMutationKind.None, default, null, VariableType.Length, null);
@@ -101,6 +125,10 @@ namespace RackCad.Application.ProjectVariables
 
             switch (Kind)
             {
+                case RegistryMutationKind.Replace:
+                    // VA-02: the batch already decided the whole register; what it is applied over was checked by the commit.
+                    return ProjectVariableCloning.Clone(Replacement) ?? ProjectVariablesDocument.CreateNew();
+
                 case RegistryMutationKind.Add:
                     next.Variables.Add(new ProjectVariableDocument
                     {
@@ -265,6 +293,10 @@ namespace RackCad.Application.ProjectVariables
             PersistedBoundExpressionJson.AddConverter(options);
             return options;
         }
+
+        /// <summary>The persisted shape of a register, to compare two reads (VA-02). Null for a null document.</summary>
+        internal static string Canonical(ProjectVariablesDocument document)
+            => document == null ? null : JsonSerializer.Serialize(document, Options);
 
         internal static ProjectVariablesDocument Clone(ProjectVariablesDocument document)
             => document == null

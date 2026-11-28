@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..d21d916a 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -2130,7 +2130,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            var height = DerivedPostLineHeightBox.Value;
++            var height = (double?)null;
+             var result = moduleOwner.ModuleSession.ApplyDerivedPostHeightToLines(height, lines);
+             if (!result.Applied)
+             {

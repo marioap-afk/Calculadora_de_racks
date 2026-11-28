@@ -1,0 +1,13 @@
+sonda de los Skip; copia /d/r5a; salida /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4/v50/out-probe-skips-r5a; revision 6adff90d856026a7a51067c1e9d7248f3d81641c
+  guion 80775f9547e325eea2f6bfe49bf6879c05ac6d90fe1f885377684931bab182f6 probe_skips_pbt4c_v50.py
+  guion 643a3de9a827274a236ada9a7b6c80edbdc916c366366aec394e1383f2048af2 p6_check_v48.py
+  guion 462aeb71ce3d2c35fdd98af9546d873a4482e2f9b15f1eaeb3ce217cefcf8494 probe_skips_pbt4c_v50.sh
+copia exportada: 13895 archivos
+skip tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:155 ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot (crlf=True)
+skip tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs:306 CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses (crlf=True)
+sonda: 2 Skip puestos
+core-tests rc=0 errores=0 avisos-CS=0
+test core-skips.trx rc=1 segundos=662 trx-sha256=b6253f97da6a3da42ec9e1810118edcf328275d0fb49f6aa2904b049bbeac709 :: filas 19605 {'Passed': 19144, 'NotExecuted': 460, 'Failed': 1}; inicio 2026-11-21T08:55:40.2795072-06:00; fin 2026-11-21T09:06:36.0561629-06:00
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

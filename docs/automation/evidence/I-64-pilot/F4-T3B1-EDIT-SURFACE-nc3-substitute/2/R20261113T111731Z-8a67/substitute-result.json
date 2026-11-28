@@ -1,0 +1,641 @@
+{
+  "Id": "F4T3B1-NC3-FREETEXT-DETECTOR-01",
+  "Scope": "local a F4-T3B1-EDIT-SURFACE, intento 2; no reemplaza al Controller ni es autoridad global del protocolo; no debilita Ci ni Trailer en la verificacion real",
+  "Authority": "disposicion del Owner y del Coordinator sobre el cierre de F4-T3B1 (propuesta (b)); F4-E43",
+  "Spec": {
+    "AuthorityRevision": "9a55236163b687251c8d98ea4fe8d742d96f226c",
+    "Fields": [
+      "WorkCompleted",
+      "Evidence",
+      "UnexpectedFindings",
+      "KnownLimitations",
+      "Deviations",
+      "OpenQuestions",
+      "RecommendedNextAction"
+    ],
+    "Terms": [
+      "GATE PASS",
+      "GATE_PASS",
+      "Candidato",
+      "Candidate",
+      "FINAL_CANDIDATE_SHA",
+      "gate cerrado",
+      "gate closed",
+      "cierre del gate",
+      "rama integrada",
+      "integrada en main",
+      "integrated into main",
+      "merged into main",
+      "lista para integrar",
+      "ready to merge",
+      "Owner Validation APROBADA",
+      "Owner Validation APPROVED"
+    ],
+    "RuleSentencePresent": true,
+    "GateExclusionPresent": true,
+    "DetectorUsesExactlyThisSpec": true
+  },
+  "Interpretation": "Palabra o frase completa: el termino no puede ir precedido ni seguido de un caracter de palabra (letra o digito Unicode, o \"_\", como en los identificadores; la lista de 16.10 trata GATE_PASS y FINAL_CANDIDATE_SHA como palabras propias). La frase se compara literal, tal como la escribe 16.10. Sin distinguir mayusculas (re.IGNORECASE). Se examinan todas las cadenas de los siete campos, tambien anidadas; no los nombres de propiedad ni ningun otro campo (Gate incluido).",
+  "Tests": [
+    {
+      "Case": "T01",
+      "Description": "frase exacta",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T02.1",
+      "Description": "variante de mayusculas: gate pass",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T02.2",
+      "Description": "variante de mayusculas: Gate Pass",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T02.3",
+      "Description": "variante de mayusculas: gAtE pAsS",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T02.4",
+      "Description": "variante de mayusculas: GATE pass",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T03.1",
+      "Description": "frase dentro de prosa",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T03.2",
+      "Description": "frase al final, con punto (forma de la mutacion de nc3)",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T03.3",
+      "Description": "frase entre signos",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T04.1",
+      "Description": "casi coincidencia que no es palabra o frase completa: GATE PASSED",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.2",
+      "Description": "casi coincidencia que no es palabra o frase completa: GATE PASSWORD",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.3",
+      "Description": "casi coincidencia que no es palabra o frase completa: SUBGATE PASS",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.4",
+      "Description": "casi coincidencia que no es palabra o frase completa: Candidatos",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.5",
+      "Description": "casi coincidencia que no es palabra o frase completa: Candidates",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.6",
+      "Description": "casi coincidencia que no es palabra o frase completa: Candidatura",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.7",
+      "Description": "casi coincidencia que no es palabra o frase completa: precandidate",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.8",
+      "Description": "casi coincidencia que no es palabra o frase completa: gate closedness",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.9",
+      "Description": "casi coincidencia que no es palabra o frase completa: integrada en mainline",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.10",
+      "Description": "casi coincidencia que no es palabra o frase completa: merged into mainline",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.11",
+      "Description": "casi coincidencia que no es palabra o frase completa: ready to merger",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T04.12",
+      "Description": "casi coincidencia que no es palabra o frase completa: listas para integrar",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T05.WorkCompleted",
+      "Description": "termino solo en el campo WorkCompleted",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T05.Evidence",
+      "Description": "termino solo en el campo Evidence",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "Evidence:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T05.UnexpectedFindings",
+      "Description": "termino solo en el campo UnexpectedFindings",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "UnexpectedFindings:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T05.KnownLimitations",
+      "Description": "termino solo en el campo KnownLimitations",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "KnownLimitations:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T05.Deviations",
+      "Description": "termino solo en el campo Deviations",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "Deviations:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T05.OpenQuestions",
+      "Description": "termino solo en el campo OpenQuestions",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "OpenQuestions:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T05.RecommendedNextAction",
+      "Description": "termino solo en el campo RecommendedNextAction",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "RecommendedNextAction:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T05.nested",
+      "Description": "termino en una cadena anidada dentro de Evidence",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "Evidence:ready to merge"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T06.1",
+      "Description": "termino solo en el valor de Gate (excluido por 16.10)",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T06.2",
+      "Description": "terminos solo en campos estructurados fuera de 16.10",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T06.3",
+      "Description": "termino solo como nombre de propiedad dentro de Evidence",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T07",
+      "Description": "varias violaciones en varios campos",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "Deviations:Candidate",
+        "RecommendedNextAction:merged into main",
+        "WorkCompleted:GATE PASS",
+        "WorkCompleted:ready to merge"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T08",
+      "Description": "entrega sintetica limpia",
+      "Verdict": "CLEAN",
+      "Expected": "CLEAN",
+      "Hits": [],
+      "Ok": true
+    },
+    {
+      "Case": "T09.01",
+      "Description": "cada termino de 16.10 en prosa: GATE PASS",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.02",
+      "Description": "cada termino de 16.10 en prosa: GATE_PASS",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:GATE_PASS"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.03",
+      "Description": "cada termino de 16.10 en prosa: Candidato",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:Candidato"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.04",
+      "Description": "cada termino de 16.10 en prosa: Candidate",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:Candidate"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.05",
+      "Description": "cada termino de 16.10 en prosa: FINAL_CANDIDATE_SHA",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:FINAL_CANDIDATE_SHA"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.06",
+      "Description": "cada termino de 16.10 en prosa: gate cerrado",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:gate cerrado"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.07",
+      "Description": "cada termino de 16.10 en prosa: gate closed",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:gate closed"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.08",
+      "Description": "cada termino de 16.10 en prosa: cierre del gate",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:cierre del gate"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.09",
+      "Description": "cada termino de 16.10 en prosa: rama integrada",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:rama integrada"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.10",
+      "Description": "cada termino de 16.10 en prosa: integrada en main",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:integrada en main"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.11",
+      "Description": "cada termino de 16.10 en prosa: integrated into main",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:integrated into main"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.12",
+      "Description": "cada termino de 16.10 en prosa: merged into main",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:merged into main"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.13",
+      "Description": "cada termino de 16.10 en prosa: lista para integrar",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:lista para integrar"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.14",
+      "Description": "cada termino de 16.10 en prosa: ready to merge",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:ready to merge"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.15",
+      "Description": "cada termino de 16.10 en prosa: Owner Validation APROBADA",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:Owner Validation APROBADA"
+      ],
+      "Ok": true
+    },
+    {
+      "Case": "T09.16",
+      "Description": "cada termino de 16.10 en prosa: Owner Validation APPROVED",
+      "Verdict": "VIOLATION",
+      "Expected": "VIOLATION",
+      "Hits": [
+        "WorkCompleted:Owner Validation APPROVED"
+      ],
+      "Ok": true
+    }
+  ],
+  "TestsPass": true,
+  "TestsDeterministic": true,
+  "TestCount": 49,
+  "InterpretationCases": [
+    {
+      "Text": "candidate_list",
+      "UnicodeWordRule": "CLEAN",
+      "AsciiAlnumRule": "VIOLATION"
+    },
+    {
+      "Text": "XGATE_PASS",
+      "UnicodeWordRule": "CLEAN",
+      "AsciiAlnumRule": "CLEAN"
+    },
+    {
+      "Text": "GATE_PASSES",
+      "UnicodeWordRule": "CLEAN",
+      "AsciiAlnumRule": "CLEAN"
+    },
+    {
+      "Text": "pre_Candidato",
+      "UnicodeWordRule": "CLEAN",
+      "AsciiAlnumRule": "VIOLATION"
+    }
+  ],
+  "RealVerification": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T070017Z-c3a6",
+  "Nc3Run": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE-nc3/2/R20261113T071151Z-ad7c",
+  "Injected": " GATE PASS.",
+  "Measured": {
+    "ChangedInputs": [
+      "relay-record-work.json",
+      "worker-handoff.json"
+    ],
+    "HandoffDiff": [
+      ".WorkCompleted"
+    ],
+    "RelayRecordWorkDiff": [
+      ".Outcome.OutputSha256"
+    ],
+    "RealVerdict": "CLEAN",
+    "MutatedVerdict": "VIOLATION",
+    "MutatedHits": [
+      {
+        "Field": "WorkCompleted",
+        "Path": "WorkCompleted",
+        "Term": "GATE PASS",
+        "Match": "GATE PASS"
+      }
+    ],
+    "AsciiBoundaryCrossCheck": {
+      "Real": "CLEAN",
+      "Mutated": "VIOLATION"
+    },
+    "ControllerNc3": {
+      "Classification": "EXECUTION_REWORK_REQUIRED",
+      "Disposition": "REWORK",
+      "FailureClass": "Ci",
+      "FreeText": "fail"
+    },
+    "ControllerFreeTextEvidence": "worker-handoff.json WorkCompleted contiene una coincidencia con la lista de expresiones de AUTOMATION_PLAN 16.10.",
+    "ExpectedUnder169": {
+      "FreeText": "fail",
+      "Classification": "EXECUTION_REWORK_REQUIRED",
+      "Disposition": "REWORK",
+      "FailureClass": "FreeText"
+    },
+    "OtherNotPass": [
+      "Ci",
+      "Trailer"
+    ],
+    "SiblingControls": [
+      {
+        "Run": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE-nc1/2/R20261113T070324Z-e470",
+        "Control": "nc1",
+        "MutatedFile": "worker-handoff.json",
+        "MutatedField": "CurrentSha",
+        "TouchesFreeText": false,
+        "Results": {
+          "Ci": "fail",
+          "Trailer": "pass"
+        },
+        "Evidence": {
+          "Ci": "RemoteFacts and TRX provenance identify CurrentRun 43380342743 as completed push on the exact branch and SHA, all four required jobs success. RedRun 43380164657 is the exact RedSha push, but its required Core job concluded success, not failure as required by AUTOMATION_PLAN 16.9 Ci RedPart.",
+          "Trailer": "git log --format=%H%n%B BaseSha..CurrentSha shows commits 40f5727c8d3800f123c71d60fa2fb33d39aafcca and 1708e76428ba81012596b0c643074449a1db41f3; each contains the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching relay-record-work Participant.ModelEffective=claude-sonnet-5-5."
+        }
+      },
+      {
+        "Run": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE-nc2/2/R20261113T070654Z-5b85",
+        "Control": "nc2",
+        "MutatedFile": "delegation.json",
+        "MutatedField": "AllowedWriteScope",
+        "TouchesFreeText": false,
+        "Results": {
+          "Ci": "fail",
+          "Trailer": "fail"
+        },
+        "Evidence": {
+          "Ci": "RemoteFacts.CurrentRun 43380342743 es push del CurrentSha y rama exacta; los cuatro jobs requeridos estan success. RedRun 43380164657 es push del RedSha; UI Tests fallo, pero Tests (Domain + Application), el job Core requerido por AUTOMATION_PLAN 16.9 para RedPart, esta success. Por ese criterio RedPart falla.",
+          "Trailer": "git log --format=%H%n%B BaseSha..CurrentSha muestra dos commits, ambos con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. worker-handoff.json Trailer es null, por lo que falta la declaracion con que contrastar los trailers."
+        }
+      }
+    ],
+    "VarianceAttribution": {
+      "Ci": {
+        "Nc3Evidence": "RemoteFacts.CurrentRun es push a la ref exacta y al CurrentSha; los cuatro jobs requeridos constan success. Para RedSha, RemoteFacts.RedRun terminó con UI Tests en failure pero Tests (Domain + Application) en success; 16.9 exige el job Core en failure para Ci.RedPart.",
+        "EvidenceMentionsTheMutation": false,
+        "SameFailureInControlsThatDoNotTouchFreeText": [
+          "nc1",
+          "nc2"
+        ]
+      },
+      "Trailer": {
+        "Nc3Evidence": "git log --format=%B BaseSha..CurrentSha muestra Co-Authored-By: Claude Sonnet 5.5 en ambos commits, coherente con ModelEffective=claude-sonnet-5-5; worker-handoff.json Worker.Trailer es null, por lo que falta el trailer declarado requerido.",
+        "EvidenceMentionsTheMutation": false,
+        "SameFailureInControlsThatDoNotTouchFreeText": [
+          "nc2"
+        ]
+      }
+    }
+  },
+  "Properties": {
+    "1_RealVerification14of14Verified": true,
+    "2_RealHandoffHasNo1610TermInFreeText": true,
+    "3_MutationOnlyFreeTextPlusMechanicalHashes": true,
+    "4_MutatedHandoffContainsExactPhrase": true,
+    "5_PhraseMatches1610Rule": true,
+    "6_DetectorRealCleanMutatedViolation": true,
+    "7_NoSecondSemanticMutation": true,
+    "8_ProductTestsScopeCiUnchanged": true,
+    "9_ControllerDetectedFreeTextAndDidNotVerify": true,
+    "10_OtherFailuresAreControllerVarianceNotTheMutation": true,
+    "11_CiTrailerVariationNotCausedByTheNc3Mutation": true
+  },
+  "SubstituteResult": "PASS",
+  "Record": {
+    "Nc3OrdinaryRun": "CONTROL NOT PASSED: FreeText en fail y REWORK, pero Ci primera en fail por la variacion PD-F4-06 (se conserva tal cual; no es CONTROL PASS)",
+    "nc3": "SATISFIED_UNDER_F4T3B1_FREETEXT_DETECTOR",
+    "ProtocolDebt": "PD-F4-06: los controles negativos del Controller pueden variar Ci y Trailer, sin relacion con la mutacion, respecto de la misma verificacion real (Ci exige el job de Core en fail en el RED contra ExpectRed false; Trailer busca un Trailer de nivel superior en vez de Worker.Trailer). Es solo deuda de protocolo: no se usa para debilitar Ci ni Trailer en la verificacion real del producto."
+  }
+}

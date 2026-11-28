@@ -1,0 +1,13 @@
+Imagenes contemporaneas de la herramienta de escritorio de la sesion para los pasos con captura tapada (785a).
+Etiqueta (disposition/coordinator-capture-defect-disposition.md): SUPPORTING EVIDENCE; DERIVED / CROPPED FROM OPERATOR-VISIBLE CAPTURE; NOT ORIGINAL FULL-SCREEN T3D CAPTURE.
+No son reemplazos autoritativos de las capturas de T3D; SM-17, SM-26, SM-27b y SM-34 siguen en NEEDS CLEAN AUTHORITATIVE CAPTURE.
+Origen: las imagenes que la herramienta devolvio durante la ocurrencia, guardadas por la app en la carpeta de resultados de la sesion
+(fuera de la evidencia). Esas imagenes ocultan las ventanas de apps sin permiso, entre ellas la de la app de Claude; el contenido de AutoCAD es el de la pantalla.
+Recortes = region del marco 1456x819 x 1213-1456, y 152-756 (solo la paleta acoplada a la derecha). Las pantallas completas no se copian.
+No sustituyen a las capturas de Save-ScreenRegion: las de SM-17-derecha, SM-26, SM-27b y SM-34 se conservan tal como salieron (tapadas).
+
+SM-17 acoplada a la derecha | recorte tool-SM-17-derecha-palette-crop.png | sha256 DB8BEB42B5BD50FF67AAB9F0A89D73DB16C213F8ABBFDA600994F9407B2A39DC | origen (pantalla completa, no custodiada) sha256 7CF165D22B7DC10F3F446005D496131194ED56FD26C1BF2461E4FFBD93DFD4BF | guardada 2026-11-05T19:23:27.3642466Z
+SM-26 Sin documento | recorte tool-SM-26-palette-crop.png | sha256 38946A7CFF743E8E7619BAEC996EBD5A3364DB76F93D93F1BCE63224F7646286 | origen (pantalla completa, no custodiada) sha256 3D411F8D2732C839556431416B1E77AB2EBF83B13634F8F300673B8EBDD1F6D4 | guardada 2026-11-05T19:31:29.4913161Z
+SM-27b pestana Start | zoom de la paleta tool-SM-27b-palette-zoom.jpg | sha256 0BAB7EA291E00B73FA5C9C1189B74534749949DF3B3412E6077AAA948700F7F3 | copia exacta | guardada 2026-11-05T19:32:36.4502738Z
+SM-34 editor abierto | recorte tool-SM-34-palette-crop.png | sha256 03957691BAA1E9CE847F99B4756AD545C792CD8B975DC302D24B6169FE2E2ECB | origen (pantalla completa, no custodiada) sha256 DAF55D57242CA78EE05ED2A5B1B7C643A9564DF5B326BBEBAE230F482295D783 | guardada 2026-11-05T19:43:51.7544038Z
+SM-34 editor abierto, 5 s despues | zoom de la paleta tool-SM-34-palette-zoom.jpg | sha256 2C9258943E6EF92E83BC5848CF41C17B28AC98D7EB26B73F05CDC1F356705E26 | copia exacta | guardada 2026-11-05T19:44:29.1698098Z

@@ -1,0 +1,14 @@
+{
+  "RunId": "R20261109T054710Z-53af",
+  "Assertions": {
+    "InputsByteEqualTo46c1": true,
+    "PromptIs46c1PlusAppendedOnly": true,
+    "PromptShaMatchesDelta": true,
+    "AnalysisBlobVersionedInHead": true,
+    "HandoffCurrentShaExact": true,
+    "CurrentShaTokensWellFormed": true,
+    "All40HexResolve": true,
+    "LauncherNoGitNoSha": true
+  },
+  "Pass": true
+}

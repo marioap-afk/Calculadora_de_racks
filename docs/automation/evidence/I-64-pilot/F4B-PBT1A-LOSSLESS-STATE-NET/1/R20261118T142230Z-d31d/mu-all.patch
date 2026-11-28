@@ -1,0 +1,143 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+index c8dd9d93..30924c2d 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+@@ -206,7 +206,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            composite.SetCentralSeparator(CentralSeparatorCheck.IsChecked == true);
++            composite.SetCentralSeparator(false);
+             RequestRecompute();
+         }
+ 
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..c1e16a7c 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -310,7 +310,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// "Actualizar" and also allows requesting an additional linked view.</summary>
+         public void LoadExisting(PushBackDesign design, string rackId, string rackName, RackProject sourceProject = null)
+         {
+-            if (design == null) return;
++            if (design == null || design.Structure?.PalletTolerance <= 0.0) return;
+             // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
+             // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
+             composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+@@ -416,7 +416,7 @@ namespace RackCad.UI.Systems.PushBack
+                 NumberLevelsCheck.IsChecked = options.NumberLevels;
+                 DrawRackNameCheck.IsChecked = options.DrawRackName;
+                 AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
+-                rackAnnotationScale = options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0;
++                rackAnnotationScale = 1.0;
+                 DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));
+                 ShowDimensionViews(options.DimensionViews); // I-50 C-12: la política cargada, sin marcar «tocado»
+ 
+@@ -693,7 +693,7 @@ namespace RackCad.UI.Systems.PushBack
+                 // I-35: the accepted module edit has landed on the new baseline, so it must not be re-applied by an
+                 // unrelated recompute (an individual restore would otherwise fire again and again). The module list is
+                 // rebuilt from the new structure and the reconciliation report reaches the panel.
+-                var standardRestoreLanded = moduleOwner.ModuleCommit?.StandardRestoreRequested == true; // I-64 F4B PB-TC (D-PB-11)
++                var standardRestoreLanded = moduleOwner.ModuleCommit != null;
+                 moduleOwner.ClearModuleCommit();
+                 if (standardRestoreLanded)
+                 {
+@@ -814,7 +814,7 @@ namespace RackCad.UI.Systems.PushBack
+                     PalletCount = IntVal(PositionsBox, front.PalletCount),
+                     LoadLevels = IntVal(LevelsBox, front.LoadLevels),
+                     PalletsDeep = IntVal(FondosBox, front.PalletsDeep),
+-                    DepthStartPosition = IntVal(DepthStartBox, front.DepthStartPosition),
++                    DepthStartPosition = front.DepthStartPosition,
+                     FirstLevelHeight = KeepCell(FirstLevelHeightBox, front.FirstLevelHeight),
+                     PalletFront = KeepCell(CellPalletFrontBox, cell.PalletFront),
+                     PalletHeight = KeepCell(CellPalletHeightBox, cell.PalletHeight),
+@@ -824,7 +824,7 @@ namespace RackCad.UI.Systems.PushBack
+                     InOutBeamDepth = SelectedPeralte(CellInOutPeralteBox, cell.InOutBeamDepth),
+                     BeamLengthOverride = OptionalVal(CellBeamLengthOverrideBox, cell.BeamLengthOverride),
+                     IntermediateBeamCatalogId = CellIntermediateBeamBox.SelectedValue as string ?? cell.IntermediateBeamCatalogId,
+-                    IntermediateBeamDepth = SelectedPeralte(CellIntermediatePeralteBox, cell.IntermediateBeamDepth)
++                    IntermediateBeamDepth = cell.IntermediateBeamDepth
+                 },
+                 HighEndBeamPeralte = RearPeralteBox.SelectedItem is double p ? p : push.HighEndBeamPeralte,
+             };
+@@ -849,7 +849,7 @@ namespace RackCad.UI.Systems.PushBack
+                 // design was loaded with — the boxes showing them are a mirror of the cell, not an input.
+                 Pallet = new PalletSpecification(
+                     generalPallet.Front, generalPallet.Depth, generalPallet.Height,
+-                    generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
++                    generalPallet.Weight, "kg"),
+                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+ 
+                 // I-42 (correccion aislada 3) — el datum de «Alto 1er nivel» se TRANSPORTA, no se fabrica. Este
+@@ -871,7 +871,7 @@ namespace RackCad.UI.Systems.PushBack
+                 BeamDepth = rackBeamDepth,
+                 Annotations = new DynamicAnnotationOptions
+                 {
+-                    NumberFronts = NumberFrontsCheck.IsChecked == true,
++                    NumberFronts = NumberLevelsCheck.IsChecked == true,
+                     NumberLevels = NumberLevelsCheck.IsChecked == true,
+                     DrawRackName = DrawRackNameCheck.IsChecked == true,
+                     AnnotationScale = rackAnnotationScale,
+@@ -1168,7 +1168,7 @@ namespace RackCad.UI.Systems.PushBack
+         // I-42: añadir o quitar un frente cambia la RETICULA, que es del rack: los dos lados crecen y decrecen a la
+         // vez, igual que al escribir el numero en el campo. La asimetria se declara con la presencia por frente.
+         private void AddFront_Click(object sender, RoutedEventArgs e)
+-            => MutateStructure(() => composite.SetSlotCount(state.Structure.Count + 1));
++            => MutateStructure(() => composite.SetSlotCount(state.Structure.Count + 2));
+ 
+         private void RemoveFront_Click(object sender, RoutedEventArgs e)
+             => MutateStructure(() => composite.SetSlotCount(Math.Max(1, state.Structure.Count - 1)));
+@@ -1507,7 +1507,7 @@ namespace RackCad.UI.Systems.PushBack
+             using (session.Recompute.Defer())
+             {
+                 var frontTargets = targets.ToList();
+-                ForEachEditedSide(side => side.Structure.ApplyFrontValuesTo(ReadCellValues(side).Dynamic, frontTargets));
++                ForEachEditedSide(side => side.Structure.ApplyFrontValuesTo(ReadCellValues().Dynamic, frontTargets));
+                 suppressSync = true;
+                 try
+                 {
+@@ -2130,7 +2130,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            var height = DerivedPostLineHeightBox.Value;
++            var height = (double?)null;
+             var result = moduleOwner.ModuleSession.ApplyDerivedPostHeightToLines(height, lines);
+             if (!result.Applied)
+             {
+@@ -2679,7 +2679,7 @@ namespace RackCad.UI.Systems.PushBack
+ 
+                 // I-42 (S1E): y cada seccion de botas escribe la configuracion de SU lado, entera. Editar A no
+                 // puede tocar B ni al reves, que es lo que las dos secciones vienen a garantizar.
+-                ApplyBootSections(bootSectionA, bootSectionB);
++                ;
+ 
+                 // Cada seccion aplica a SU lado: editar el tope de A no toca el de B, que es el contrato de
+                 // StopA/StopB que las rondas anteriores cerraron.
+@@ -3565,7 +3565,7 @@ namespace RackCad.UI.Systems.PushBack
+             var canOutput = currentInputsAreValid && !outputIsBlocked;
+             InsertButton.IsEnabled = canInsertInAutoCad && canOutput;
+             UpdateButton.IsEnabled = canInsertInAutoCad && canOutput && isEditingExisting;
+-            BomButton.IsEnabled = canOutput;
++            BomButton.IsEnabled = canOutput && SideBEmptyNoticeText.Visibility != Visibility.Visible;
+             SaveLibraryButton.IsEnabled = currentInputsAreValid;
+             if (!canInsertInAutoCad)
+             {
+@@ -3663,7 +3663,7 @@ namespace RackCad.UI.Systems.PushBack
+         private double? OptionalVal(NumericField field, double? sideValue)
+             => field.Value.HasValue
+                 ? (MixedBoth(field) ? field.Value : KeepOptional(field, sideValue))
+-                : (IsMixed(field) ? sideValue : null);
++                : null;
+ 
+         /// <summary>I-64 F4B PB-TC (D-PBTC-01) — el formato con el que <see cref="NumericField.SetNumber"/> pinta estas cajas.</summary>
+         private const string ShownFormat = "0.###";
+@@ -3681,7 +3681,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// distinto manda. Con la caja vacia devuelve <paramref name="current"/>.
+         /// </summary>
+         private static double Keep(NumericField field, double current)
+-            => !field.Value.HasValue || SameShown(field.Value.Value, current) ? current : field.Value.Value;
++            => !field.Value.HasValue ? current : field.Value.Value;
+ 
+         /// <summary>I-64 F4B PB-TC2 (D-PBTC2-03) — la regla de la caja anulable: vacia es nulo (el calculo), igual a como se ve el portador es el portador y otra cosa es la caja.</summary>
+         private static double? KeepOptional(NumericField field, double? current)

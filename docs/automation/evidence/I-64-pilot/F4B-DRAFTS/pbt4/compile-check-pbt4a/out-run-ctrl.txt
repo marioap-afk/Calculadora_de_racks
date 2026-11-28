@@ -1,0 +1,12 @@
+con el parche: sha256 42d2733e7a73d493bfae0eb9a5cd937325a7acb0949809c81304007539862ff9; Skip en el archivo: 1
+sin el Skip (el de la base): sha256 a53274528f24a27922f388ad8fa5fc101c3ad53d36cbc100250241be71780383; Skip en el archivo: 0
+build sin Skip rc=0 errores=0
+sin Skip: rc=0
+filas 1 {'Passed': 1}
+restaurado: sha256 42d2733e7a73d493bfae0eb9a5cd937325a7acb0949809c81304007539862ff9
+build restaurado rc=0 errores=0
+restaurado: rc=0
+filas 1 {'NotExecuted': 1}
+build-server shutdown rc=0
+MAINCO []
+rc=0

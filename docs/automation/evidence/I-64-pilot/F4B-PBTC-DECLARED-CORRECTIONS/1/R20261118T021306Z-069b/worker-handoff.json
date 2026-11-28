@@ -1,0 +1,745 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4B-PBTC-DECLARED-CORRECTIONS",
+  "RunId": "R20261118T021306Z-069b",
+  "DelegationRunId": "R20261118T020622Z-7171",
+  "Initiative": "I-64",
+  "Gate": "F4B",
+  "Attempt": 1,
+  "BaseSha": "48fe199e3a024d98be28dc697c1e9ce0324e95a5",
+  "RedSha": "f665edac046014533f031adfa797291a3d027df2",
+  "CurrentSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionDimensionStyleTests.cs",
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs",
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionRoundingTests.cs",
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSideBNoticeTests.cs",
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionStandardRestoreTests.cs",
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs",
+    "tests/RackCad.UI.Tests/PushBackDimensionViewsWindowTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs"
+  ],
+  "WorkCompleted": "Entregadas las correcciones declaradas de la ventana clasica de Push Back segun el paquete PB-TC v2.2: (a) regla Keep en diez cajas (cinco del rack con cuatro portadores y generalPallet, cinco de la celda) y OptionalVal con SameShown; (b) estilo de cotas cargado en cada pasada; D-PB-08 aviso SideBEmptyNoticeText en la banda de estado; D-PB-11 reinicio de los controles avanzados tras Restaurar estandar. RED publicado antes del GREEN con seis archivos nuevos de pruebas (diez metodos que fallan por asercion) y la sustitucion declarada SUS-01..SUS-04; GREEN solo en los tres archivos de la ventana. CI del RED con ui-tests en failure y el resto en success; CI del GREEN 4/4 en success con UI 2418 (0 Failed, 21 Skipped, 2397 Passed) y Core 19070 Passed. Paso 1: F1 y M-02 sin lineas bajo Modules ni HeaderLineOverrides y sin efecto material (PBTC-C14 no se activa). Sin AutoCAD.",
+  "TestsExecuted": [
+    {
+      "RunRef": "e1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection\" --logger \"trx;LogFileName=e1.trx\" --results-directory e1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection RED /tests/e1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "e1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection RED /tests/e1/e1.trx"
+    },
+    {
+      "RunRef": "p1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Cantilever\" --logger \"trx;LogFileName=p1.trx\" --results-directory p1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.Cantilever RED /tests/p1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.Cantilever RED /tests/p1/p1.trx"
+    },
+    {
+      "RunRef": "p2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=p2.trx\" --results-directory p2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization RED /tests/p2 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization RED /tests/p2/p2.trx"
+    },
+    {
+      "RunRef": "p3",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=p3.trx\" --results-directory p3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization RED /tests/p3 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization RED /tests/p3/p3.trx"
+    },
+    {
+      "RunRef": "p4",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests\" --logger \"trx;LogFileName=p4.trx\" --results-directory p4 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests RED /tests/p4 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p4 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests RED /tests/p4/p4.trx"
+    },
+    {
+      "RunRef": "p5",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests\" --logger \"trx;LogFileName=p5.trx\" --results-directory p5 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests RED /tests/p5 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p5 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests RED /tests/p5/p5.trx"
+    },
+    {
+      "RunRef": "p6",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests\" --logger \"trx;LogFileName=p6.trx\" --results-directory p6 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests RED /tests/p6 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p6 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests RED /tests/p6/p6.trx"
+    },
+    {
+      "RunRef": "p7",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests\" --logger \"trx;LogFileName=p7.trx\" --results-directory p7 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests RED /tests/p7 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p7 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests RED /tests/p7/p7.trx"
+    },
+    {
+      "RunRef": "p8",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=p8.trx\" --results-directory p8 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization RED /tests/p8 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p8 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization RED /tests/p8/p8.trx"
+    },
+    {
+      "RunRef": "p9",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=p9.trx\" --results-directory p9 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization RED /tests/p9 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p9 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization RED /tests/p9/p9.trx"
+    },
+    {
+      "RunRef": "p10",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackBlankFrontAuthorityTests\" --logger \"trx;LogFileName=p10.trx\" --results-directory p10 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackBlankFrontAuthorityTests RED /tests/p10 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p10 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackBlankFrontAuthorityTests RED /tests/p10/p10.trx"
+    },
+    {
+      "RunRef": "p11",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackModuleEditorCharacterizationTests\" --logger \"trx;LogFileName=p11.trx\" --results-directory p11 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackModuleEditorCharacterizationTests RED /tests/p11 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": "p11 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackModuleEditorCharacterizationTests RED /tests/p11/p11.trx"
+    },
+    {
+      "RunRef": "m10",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10\" --logger \"trx;LogFileName=m10.trx\" --results-directory m10 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10 MUTATION /tests/m10 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "m10 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10 MUTATION /tests/m10/m10.trx"
+    },
+    {
+      "RunRef": "red1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection\" --logger \"trx;LogFileName=red1.trx\" --results-directory red1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection RED f665edac046014533f031adfa797291a3d027df2/tests/red1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection RED f665edac046014533f031adfa797291a3d027df2/tests/red1/red1.trx"
+    },
+    {
+      "RunRef": "red2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Cantilever\" --logger \"trx;LogFileName=red2.trx\" --results-directory red2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.Cantilever RED f665edac046014533f031adfa797291a3d027df2/tests/red2 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.Cantilever RED f665edac046014533f031adfa797291a3d027df2/tests/red2/red2.trx"
+    },
+    {
+      "RunRef": "red3",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=red3.trx\" --results-directory red3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization RED f665edac046014533f031adfa797291a3d027df2/tests/red3 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization RED f665edac046014533f031adfa797291a3d027df2/tests/red3/red3.trx"
+    },
+    {
+      "RunRef": "red4",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=red4.trx\" --results-directory red4 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization RED f665edac046014533f031adfa797291a3d027df2/tests/red4 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red4 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization RED f665edac046014533f031adfa797291a3d027df2/tests/red4/red4.trx"
+    },
+    {
+      "RunRef": "red5",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests\" --logger \"trx;LogFileName=red5.trx\" --results-directory red5 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests RED f665edac046014533f031adfa797291a3d027df2/tests/red5 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red5 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests RED f665edac046014533f031adfa797291a3d027df2/tests/red5/red5.trx"
+    },
+    {
+      "RunRef": "red6",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests\" --logger \"trx;LogFileName=red6.trx\" --results-directory red6 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests RED f665edac046014533f031adfa797291a3d027df2/tests/red6 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red6 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests RED f665edac046014533f031adfa797291a3d027df2/tests/red6/red6.trx"
+    },
+    {
+      "RunRef": "red7",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests\" --logger \"trx;LogFileName=red7.trx\" --results-directory red7 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests RED f665edac046014533f031adfa797291a3d027df2/tests/red7 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red7 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests RED f665edac046014533f031adfa797291a3d027df2/tests/red7/red7.trx"
+    },
+    {
+      "RunRef": "red8",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests\" --logger \"trx;LogFileName=red8.trx\" --results-directory red8 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests RED f665edac046014533f031adfa797291a3d027df2/tests/red8 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red8 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests RED f665edac046014533f031adfa797291a3d027df2/tests/red8/red8.trx"
+    },
+    {
+      "RunRef": "red9",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=red9.trx\" --results-directory red9 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization RED f665edac046014533f031adfa797291a3d027df2/tests/red9 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red9 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization RED f665edac046014533f031adfa797291a3d027df2/tests/red9/red9.trx"
+    },
+    {
+      "RunRef": "red10",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=red10.trx\" --results-directory red10 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization RED f665edac046014533f031adfa797291a3d027df2/tests/red10 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red10 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization RED f665edac046014533f031adfa797291a3d027df2/tests/red10/red10.trx"
+    },
+    {
+      "RunRef": "red11",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackBlankFrontAuthorityTests\" --logger \"trx;LogFileName=red11.trx\" --results-directory red11 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackBlankFrontAuthorityTests RED f665edac046014533f031adfa797291a3d027df2/tests/red11 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red11 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackBlankFrontAuthorityTests RED f665edac046014533f031adfa797291a3d027df2/tests/red11/red11.trx"
+    },
+    {
+      "RunRef": "red12",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.PushBackModuleEditorCharacterizationTests\" --logger \"trx;LogFileName=red12.trx\" --results-directory red12 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackModuleEditorCharacterizationTests RED f665edac046014533f031adfa797291a3d027df2/tests/red12 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "f665edac046014533f031adfa797291a3d027df2",
+      "ResultsFile": "red12 tests/RackCad.Tests/RackCad.Tests.csproj FullyQualifiedName~RackCad.Tests.PushBackModuleEditorCharacterizationTests RED f665edac046014533f031adfa797291a3d027df2/tests/red12/red12.trx"
+    },
+    {
+      "RunRef": "g1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection\" --logger \"trx;LogFileName=g1.trx\" --results-directory g1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection GREEN 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/g1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "g1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection GREEN 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/g1/g1.trx"
+    },
+    {
+      "RunRef": "g2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection\" --logger \"trx;LogFileName=g2.trx\" --results-directory g2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection GREEN 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/g2 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "g2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection GREEN 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/g2/g2.trx"
+    },
+    {
+      "RunRef": "g3",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection\" --logger \"trx;LogFileName=g3.trx\" --results-directory g3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection GREEN 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/g3 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "g3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection GREEN 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/g3/g3.trx"
+    },
+    {
+      "RunRef": "gu1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Cantilever\" --logger \"trx;LogFileName=gu1.trx\" --results-directory gu1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.Cantilever RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "gu1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.Cantilever RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu1/gu1.trx"
+    },
+    {
+      "RunRef": "gu2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=gu2.trx\" --results-directory gu2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu2 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "gu2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu2/gu2.trx"
+    },
+    {
+      "RunRef": "gu3",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=gu3.trx\" --results-directory gu3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu3 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "gu3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu3/gu3.trx"
+    },
+    {
+      "RunRef": "gu4",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests\" --logger \"trx;LogFileName=gu4.trx\" --results-directory gu4 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu4 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "gu4 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu4/gu4.trx"
+    },
+    {
+      "RunRef": "gu5",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests\" --logger \"trx;LogFileName=gu5.trx\" --results-directory gu5 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu5 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "gu5 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu5/gu5.trx"
+    },
+    {
+      "RunRef": "gu6",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests\" --logger \"trx;LogFileName=gu6.trx\" --results-directory gu6 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu6 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "gu6 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu6/gu6.trx"
+    },
+    {
+      "RunRef": "gu7",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests\" --logger \"trx;LogFileName=gu7.trx\" --results-directory gu7 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu7 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "gu7 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gu7/gu7.trx"
+    },
+    {
+      "RunRef": "gcore",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --logger \"trx;LogFileName=gcore.trx\" --results-directory gcore tests/RackCad.Tests/RackCad.Tests.csproj  RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gcore --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "4440f67d4c76fb2ec019a566231353acdcca61f6",
+      "ResultsFile": "gcore tests/RackCad.Tests/RackCad.Tests.csproj  RELEVANT 4440f67d4c76fb2ec019a566231353acdcca61f6/tests/gcore/gcore.trx"
+    },
+    {
+      "RunRef": "s1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheWindowAndThePilotDifferOnlyInTheKnownClasses\" --logger \"trx;LogFileName=s1.trx\" --results-directory s1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheWindowAndThePilotDifferOnlyInTheKnownClasses MUTATION /tests/s1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "s1 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheWindowAndThePilotDifferOnlyInTheKnownClasses MUTATION /tests/s1/s1.trx"
+    },
+    {
+      "RunRef": "s2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests.T19_H1\" --logger \"trx;LogFileName=s2.trx\" --results-directory s2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests.T19_H1 MUTATION /tests/s2 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "s2 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackDimensionViewsWindowTests.T19_H1 MUTATION /tests/s2/s2.trx"
+    },
+    {
+      "RunRef": "s3",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19\" --logger \"trx;LogFileName=s3.trx\" --results-directory s3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19 MUTATION /tests/s3 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "s3 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19 MUTATION /tests/s3/s3.trx"
+    },
+    {
+      "RunRef": "s4",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05\" --logger \"trx;LogFileName=s4.trx\" --results-directory s4 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05 MUTATION /tests/s4 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "s4 tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05 MUTATION /tests/s4/s4.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "e1",
+      "Selected": 10,
+      "Passed": 0,
+      "Failed": 10,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests.CT_PBTC_07_TheSideBNoticeShowsExactlyWhileSideBIsDeclaredWithoutAnActiveFront",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_03_AnEditedBoxWinsAndAnUneditedOrReselectedBoxKeepsTheExactValue",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionStandardRestoreTests.CT_PBTC_14_AStandardRestoreResetsTheAdvancedControlsAndReachesTheUpdate",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_02_UpdateInRackeditarAndTheLibraryLoadCarryTheExactValues",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_01_TheLoadedFieldsKeepTheirExactValueAfterLoading",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionDimensionStyleTests.CT_PBTC_04_TheLoadedDimensionStyleSurvivesTheLoadsAndTheGestures",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionDimensionStyleTests.CT_PBTC_05_UpdateInRackeditarCarriesTheNamedStyleToEveryDimension",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests.CT_PBTC_08_TheSideBNoticeIsTextOnlyAndBlocksNoAction",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10_TheWindowAndThePilotWriteTheSameDesignForEveryExactFieldAndForCustomModules"
+      ]
+    },
+    {
+      "RunRef": "p1",
+      "Selected": 67,
+      "Passed": 67,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p2",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p3",
+      "Selected": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p4",
+      "Selected": 17,
+      "Passed": 17,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p5",
+      "Selected": 13,
+      "Passed": 13,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p6",
+      "Selected": 9,
+      "Passed": 9,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p7",
+      "Selected": 13,
+      "Passed": 13,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p8",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p9",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p10",
+      "Selected": 9,
+      "Passed": 9,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "p11",
+      "Selected": 15,
+      "Passed": 15,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m10",
+      "Selected": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10_TheWindowAndThePilotWriteTheSameDesignForEveryExactFieldAndForCustomModules"
+      ]
+    },
+    {
+      "RunRef": "red1",
+      "Selected": 10,
+      "Passed": 0,
+      "Failed": 10,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_03_AnEditedBoxWinsAndAnUneditedOrReselectedBoxKeepsTheExactValue",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_01_TheLoadedFieldsKeepTheirExactValueAfterLoading",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionDimensionStyleTests.CT_PBTC_05_UpdateInRackeditarCarriesTheNamedStyleToEveryDimension",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionStandardRestoreTests.CT_PBTC_14_AStandardRestoreResetsTheAdvancedControlsAndReachesTheUpdate",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests.CT_PBTC_08_TheSideBNoticeIsTextOnlyAndBlocksNoAction",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests.CT_PBTC_07_TheSideBNoticeShowsExactlyWhileSideBIsDeclaredWithoutAnActiveFront",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests.CT_PBTC_02_UpdateInRackeditarAndTheLibraryLoadCarryTheExactValues",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10_TheWindowAndThePilotWriteTheSameDesignForEveryExactFieldAndForCustomModules",
+        "RackCad.UI.Tests.PushBackDeclaredCorrectionDimensionStyleTests.CT_PBTC_04_TheLoadedDimensionStyleSurvivesTheLoadsAndTheGestures"
+      ]
+    },
+    {
+      "RunRef": "red2",
+      "Selected": 67,
+      "Passed": 67,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red3",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red4",
+      "Selected": 18,
+      "Passed": 16,
+      "Failed": 0,
+      "Skipped": 2,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red5",
+      "Selected": 4,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 1,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red6",
+      "Selected": 13,
+      "Passed": 12,
+      "Failed": 0,
+      "Skipped": 1,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red7",
+      "Selected": 9,
+      "Passed": 9,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red8",
+      "Selected": 13,
+      "Passed": 13,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red9",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red10",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red11",
+      "Selected": 9,
+      "Passed": 9,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "red12",
+      "Selected": 15,
+      "Passed": 15,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g2",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g3",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gu1",
+      "Selected": 67,
+      "Passed": 67,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gu2",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gu3",
+      "Selected": 18,
+      "Passed": 16,
+      "Failed": 0,
+      "Skipped": 2,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gu4",
+      "Selected": 4,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 1,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gu5",
+      "Selected": 13,
+      "Passed": 12,
+      "Failed": 0,
+      "Skipped": 1,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gu6",
+      "Selected": 9,
+      "Passed": 9,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gu7",
+      "Selected": 13,
+      "Passed": 13,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gcore",
+      "Selected": 19070,
+      "Passed": 19070,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "s1",
+      "Selected": 14,
+      "Passed": 11,
+      "Failed": 3,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheWindowAndThePilotDifferOnlyInTheKnownClasses(fixture: \"pb-06-seguridad\")",
+        "RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheWindowAndThePilotDifferOnlyInTheKnownClasses(fixture: \"pb-07-combinado\")",
+        "RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheWindowAndThePilotDifferOnlyInTheKnownClasses(fixture: \"pb-08-redondeo\")"
+      ]
+    },
+    {
+      "RunRef": "s2",
+      "Selected": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackDimensionViewsWindowTests.T19_H1_TheDimensionStyleStillComesOutNull"
+      ]
+    },
+    {
+      "RunRef": "s3",
+      "Selected": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19_TheFieldsThatPassThroughAFormattedControlComeBackRoundedToThreeDecimals"
+      ]
+    },
+    {
+      "RunRef": "s4",
+      "Selected": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05_TheSixAdvancedParametersAfterRestoreStandardAreResetInTheOutputAndComeBackOnUpdate"
+      ]
+    }
+  ],
+  "Evidence": [
+    "Verificacion previa: SHA-256 del prompt = D76A5825BB6C6EC6AD002057EE7963ED8AA0ED71DB124A6869FB3A0A169C6BE3 (coincide). Precondiciones: arbol limpio, HEAD = BaseSha = remoto, origin/main = MainSha.",
+    "Paso 0, prueba de limpieza ANTES y DESPUES (sin rutas; System.Xml.XmlElement/tests/cleanup-before.txt y cleanup-after.txt): archivo de disposicion del configurador sha256=7AAB8FF7A3E52CE52399DE3B2C8A8AFEEC0C01720D90DAD0CA49D108BFF82621 mtimeUtc=2026-11-14T22:55:38.2474250Z; carpeta de biblioteca mtimeUtc=2026-10-13T21:42:51.4479430Z, listado (11 archivos) sha256=37A96C2DD1946EA9D17B6DFBE26CA62AD8D0C769EEC564BFDAC0FF04BFC86E7F. ANTES y DESPUES IDENTICOS. El checkout principal no recibio escrituras (git status vacio).",
+    "Builds Release por proyectos (lineas de aviso brutas del log; los avisos unicos son la mitad). Linea base BaseSha (b0): Core 0 errores, 132 lineas xUnit (66 avisos unicos: xUnit1026x20, 2000x6, 2010x4, 2012x2, 2013x34, 2017x2, 2029x32, 2031x32 lineas brutas); UI 0 errores, 28 lineas xUnit (14 unicos); Plugin 0 errores, 104 lineas MSB3277 (2 avisos unicos). RED (r1): identico a la linea base en los tres, tras corregir un CS0184 propio de una prueba (aviso is Control) antes del commit RED. GREEN (rg1): identico a la linea base en los tres. Logs: System.Xml.XmlElement/tests/b0, r1, rg1 (build-*.log).",
+    "Mapa CT -> metodo (tests/RackCad.UI.Tests/): CT-PBTC-01 PushBackDeclaredCorrectionRoundingTests.CT_PBTC_01_TheLoadedFieldsKeepTheirExactValueAfterLoading; CT-PBTC-02 PushBackDeclaredCorrectionRoundingTests.CT_PBTC_02_UpdateInRackeditarAndTheLibraryLoadCarryTheExactValues; CT-PBTC-03 PushBackDeclaredCorrectionRoundingTests.CT_PBTC_03_AnEditedBoxWinsAndAnUneditedOrReselectedBoxKeepsTheExactValue; CT-PBTC-04 PushBackDeclaredCorrectionDimensionStyleTests.CT_PBTC_04_TheLoadedDimensionStyleSurvivesTheLoadsAndTheGestures; CT-PBTC-05 PushBackDeclaredCorrectionDimensionStyleTests.CT_PBTC_05_UpdateInRackeditarCarriesTheNamedStyleToEveryDimension; CT-PBTC-06 PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns; CT-PBTC-07 PushBackDeclaredCorrectionSideBNoticeTests.CT_PBTC_07_TheSideBNoticeShowsExactlyWhileSideBIsDeclaredWithoutAnActiveFront; CT-PBTC-08 PushBackDeclaredCorrectionSideBNoticeTests.CT_PBTC_08_TheSideBNoticeIsTextOnlyAndBlocksNoAction; CT-PBTC-10 PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10_TheWindowAndThePilotWriteTheSameDesignForEveryExactFieldAndForCustomModules; CT-PBTC-14 PushBackDeclaredCorrectionStandardRestoreTests.CT_PBTC_14_AStandardRestoreResetsTheAdvancedControlsAndReachesTheUpdate. Ayudante: PushBackDeclaredCorrectionSupport (internal static, sin pruebas).",
+    "Primera diferencia de cada CT en la BASE (mensaje del TRX e1, corrida sin commit, y TRX red1 sobre el commit RED; los diez Failed por asercion, ninguno por excepcion; el mecanico de INV-PBTC-02 se verifico en red1 y en el TRX de la CI del RED):",
+    "CT_PBTC_01 (base, TRX e1, falla por asercion): Assert.Equal() Failure: Collections differ / Expected: string[] [\"F1 pb-01-base Structure.PalletDepth exacto=48.0004\"···, \"F2 pb-01-base Structure.PostPeralte exacto=3.00044\"···, \"F3 pb-01-base Structure.PalletTolerance exacto=4.0\"···, \"F4 pb-01-base Structure.BeamDepth exacto=6.00044 s\"···, \"F5 pb-01-base Structure.AnnotationScale exacto=1.5\"···, ···] / Actual: List<string> [\"F1 pb-01-base Structure.PalletDepth exacto=48.0004\"···, \"F2 pb-01-base Structure.PostPeralte exacto=3.00044\"···, \"F3 pb-01-base Structure.PalletTolerance exacto=4.0\"···, \"F4 pb-01-base Structure.BeamDepth exacto=6.00044 s\"···, \"F5 pb-01-base Structure.AnnotationScale exacto=1.5\"···, ···]",
+    "CT_PBTC_02 (base, TRX e1, falla por asercion): Assert.Equal() Failure: Collections differ / Expected: string[] [\"F1 RACKEDITAR peticion=True updateOnly=True vistas\"···, \"F2 RACKEDITAR peticion=True updateOnly=True vistas\"···, \"F3 RACKEDITAR peticion=True updateOnly=True vistas\"···, \"F4 RACKEDITAR peticion=True updateOnly=True vistas\"···, \"F5 RACKEDITAR peticion=True updateOnly=True vistas\"···, ···] / Actual: List<string> [\"F1 RACKEDITAR peticion=True updateOnly=True vistas\"···, \"F2 RACKEDITAR peticion=True updateOnly=True vistas\"···, \"F3 RACKEDITAR peticion=True updateOnly=True vistas\"···, \"F4 RACKEDITAR peticion=True updateOnly=True vistas\"···, \"F5 RACKEDITAR peticion=True updateOnly=True vistas\"···, ···]",
+    "CT_PBTC_03 (base, TRX e1, falla por asercion): Assert.Equal() Failure: Collections differ / Expected: string[] [\"carga AnnotationScale=1.23456 c00=61.23456 c10=60.\"···, \"AnnotationScaleBox=2.5 AnnotationScale=2.5 c00=61.\"···, \"CellPalletHeightBox texto=61.2350 c00=61.23456\", \"CellPalletHeightBox=70.5 c00=70.5\", \"seleccion(1,0) caja=60 c00=70.5 c10=60.00044\", ···] / Actual: List<string> [\"carga AnnotationScale=1.235 c00=61.235 c10=60.0004\"···, \"AnnotationScaleBox=2.5 AnnotationScale=2.5 c00=61.\"···, \"CellPalletHeightBox texto=61.2350 c00=61.235\", \"CellPalletHeightBox=70.5 c00=70.5\", \"seleccion(1,0) caja=60 c00=70.5 c10=60\", ···]",
+    "CT_PBTC_04 (base, TRX e1, falla por asercion): Assert.Equal() Failure: Collections differ / Expected: string[] [\"ESTILO_PB carga=ESTILO_PB\", \"ESTILO_PB gesto DimensionsLateralCheck=False estil\"···, \"pb-06-seguridad carga=STANDARD-ISO\", \"pb-07-combinado carga=SIMPLEX\", \"pb-07-combinado biblioteca=SIMPLEX\", ···] / Actual: List<string> [\"ESTILO_PB carga=<null>\", \"ESTILO_PB gesto DimensionsLateralCheck=False estil\"···, \"pb-06-seguridad carga=<null>\", \"pb-07-combinado carga=<null>\", \"pb-07-combinado biblioteca=<null>\", ···]",
+    "CT_PBTC_05 (base, TRX e1, falla por asercion): Assert.Equal() Failure: Collections differ / Expected: string[] [\"pb-06-seguridad peticion=True updateOnly=True dise\"···, \"pb-07-combinado peticion=True updateOnly=True dise\"···] / Actual: List<string> [\"pb-06-seguridad peticion=True updateOnly=True dise\"···, \"pb-07-combinado peticion=True updateOnly=True dise\"···]",
+    "CT_PBTC_06 (base, TRX e1, falla por asercion): Assert.Equal() Failure: Collections differ / Expected: string[] [···, \"pb-04-blanco admitida=True delta=[]\", \"pb-05-topes admitida=True delta=[]\", \"pb-06-seguridad admitida=True delta=[]\", \"pb-07-combinado admitida=True delta=[]\", \"pb-08-redondeo admitida=True delta=[]\", ···] / Actual: List<string> [···, \"pb-04-blanco admitida=True delta=[]\", \"pb-05-topes admitida=True delta=[]\", \"pb-06-seguridad admitida=True delta=[$.PushBack.St\"···, \"pb-07-combinado admitida=True delta=[$.PushBack.St\"···, \"pb-08-redondeo admitida=True delta=[$.PushBack.Str\"···, ···]",
+    "CT_PBTC_07 (base, TRX e1, falla por asercion): Assert.IsType() Failure: Value is null / Expected: typeof(System.Windows.Controls.TextBlock) / Actual: null",
+    "CT_PBTC_08 (base, TRX e1, falla por asercion): Assert.IsType() Failure: Value is null / Expected: typeof(System.Windows.Controls.TextBlock) / Actual: null",
+    "CT_PBTC_10 (base, TRX e1, falla por asercion): Assert.Equal() Failure: Collections differ / Expected: string[] [\"F1 admitida=True delta=[]\", \"F2 admitida=True delta=[]\", \"F3 admitida=True delta=[]\", \"F4 admitida=True delta=[]\", \"F5 admitida=True delta=[]\", ···] / Actual: List<string> [\"F1 admitida=True delta=[$.PushBack.Structure.Palle\"···, \"F2 admitida=True delta=[$.PushBack.Structure.Modul\"···, \"F3 admitida=True delta=[$.PushBack.Structure.Palle\"···, \"F4 admitida=True delta=[]\", \"F5 admitida=True delta=[$.PushBack.Structure.Annot\"···, ···]",
+    "CT_PBTC_14 (base, TRX e1, falla por asercion): Assert.Equal() Failure: Collections differ / Expected: string[] [···, \"pb-06-seguridad A0 controles: RackHeaderHeightBox=\"···, \"pb-06-seguridad A1 salida: ManualHeaderHeightOverr\"···, \"pb-06-seguridad A1 controles: RackHeaderHeightBox=\"···, \"pb-06-seguridad A2 peticion: ManualHeaderHeightOve\"···, \"pb-07-combinado A0 salida: ManualHeaderHeightOverr\"···, ···] / Actual: List<string> [···, \"pb-06-seguridad A0 controles: RackHeaderHeightBox=\"···, \"pb-06-seguridad A1 salida: ManualHeaderHeightOverr\"···, \"pb-06-seguridad A1 controles: RackHeaderHeightBox=\"···, \"pb-06-seguridad A2 peticion: ManualHeaderHeightOve\"···, \"pb-07-combinado A0 salida: ManualHeaderHeightOverr\"···, ···]",
+    "Detalle de la primera diferencia en la base: CT-01 y CT-02 en F1 (salida 48 en vez de 48.00044); CT-03 linea 1 (la carga da AnnotationScale=1.235 c00=61.235 c10=60.0004...; el paso 3 da c00=61.235 y el paso 5 c10=60); CT-04 linea 1 (carga=<null>); CT-05 (diseno, sistema y estilos = <null>); CT-06 en pb-06-seguridad (pos 5); CT-07 y CT-08 en Aviso(w), Assert.IsType: Value is null; CT-10 en F1; CT-14 en pos 3 = 'pb-06-seguridad A1 controles' (valores cargados).",
+    "PASO 1 (D-PBTC-10), corrida temporal m10 sobre la base con las pruebas nuevas sin commit, con Assert.Fail(string.Join) en lugar del Assert.Equal final y K1..K4 de la formula de CT-PB0-21 sobre ventana frente a piloto (codigo temporal TempMeasureK, retirado y guardado como System.Xml.XmlElement/tests/m10/temp-measure-k.cs.txt; TRX System.Xml.XmlElement/tests/m10/m10.trx, log run.log, mensaje completo m10-message.txt). DELTA DE LA BASE DE CT-PBTC-10, fila por fila (ventana -> piloto), transcrito del TRX:",
+    "F1 admitida=True delta=[$.PushBack.Structure.PalletDepth: 48 -> 48.00044]",
+    "F2 admitida=True delta=[$.PushBack.Structure.Modules[0].Header.PostPeralte: 3 -> 3.00044 ;; $.PushBack.Structure.Modules[2].Header.PostPeralte: 3 -> 3.00044 ;; $.PushBack.Structure.Modules[5].Header.PostPeralte: 3 -> 3.00044 ;; $.PushBack.Structure.Modules[7].Header.PostPeralte: 3 -> 3.00044 ;; $.PushBack.Structure.PostPeralte: 3 -> 3.00044]",
+    "F3 admitida=True delta=[$.PushBack.Structure.PalletTolerance: 4 -> 4.00044]",
+    "F4 admitida=True delta=[]",
+    "F5 admitida=True delta=[$.PushBack.Structure.AnnotationScale: 1.5 -> 1.50044]",
+    "F6 admitida=True delta=[$.PushBack.Structure.FirstLevelHeight: 4 -> 4.00044 ;; $.PushBack.Structure.Fronts[0].FirstLevelHeight: 4 -> 4.00044]",
+    "F7 admitida=True delta=[$.PushBack.Structure.Fronts[0].Levels[0].PalletFront: 42 -> 42.00044]",
+    "F8 admitida=True delta=[$.PushBack.Structure.Fronts[0].Levels[0].PalletHeight: 60 -> 60.00044]",
+    "F9 admitida=True delta=[$.PushBack.Structure.Fronts[0].Levels[0].PalletWeight: 1000 -> 1000.00044]",
+    "F10 admitida=True delta=[$.PushBack.Structure.Fronts[0].Levels[0].ClearHeight: 6 -> 6.00044]",
+    "F11 admitida=True delta=[$.PushBack.Structure.Fronts[0].Levels[0].BeamLengthOverride: 100 -> 100.00044]",
+    "M-02 admitida=True delta=[$.PushBack.Structure.PalletDepth: 48 -> 48.00044]",
+    "K1..K4 de F1 y M-02 (TRX m10): K F1 K1=[] K1o=[] K2=False K3=False K4=[] K4'=[] K5=[] material=False maxDelta=0 detalle=[corte-0:geo=0,otro=0; corte-1:geo=0,otro=0; corte-2:geo=0,otro=0; corte-3:geo=0,otro=0; frontal-es:geo=0,otro=0; frontal-post:geo=0,otro=0; lateral:geo=0,otro=0; planta:geo=0,otro=0] || K M-02 K1=[] K1o=[] K2=False K3=False K4=[] K4'=[] K5=[] material=False maxDelta=0 detalle=[corte-0:geo=0,otro=0; corte-1:geo=0,otro=0; corte-2:geo=0,otro=0; corte-3:geo=0,otro=0; frontal-es:geo=0,otro=0; frontal-post:geo=0,otro=0; lateral:geo=0,otro=0; planta:geo=0,otro=0]",
+    "Resultado del paso 1: ni F1 ni M-02 tienen lineas bajo $.PushBack.Structure.Modules ni HeaderLineOverrides; K1=[], K2=False, K3=False, K4=[] en las dos (maxDelta 0 en los ocho planos): no material; PBTC-C14 NO se activa. Observaciones: F2 (no gobernada por PBTC-C14) trae cuatro lineas Modules[n].Header.PostPeralte, consecuencia directa del valor exacto del propio campo; F6 trae dos lineas (FirstLevelHeight del diseno y del frente, ICT2 N-05); F4 delta vacio.",
+    "Contraste con la CI del RED: la primera diferencia de CT-PBTC-10 en el TRX de la CI del RED (run 44223960356, System.Xml.XmlElement/tests/redci/ui/ui.trx) es 'Collections differ' en pos 0 (Expected 'F1 admitida=True delta=[]'; Actual 'F1 admitida=True delta=[$.PushBack.Structure.Palle'...), coherente con la linea F1 transcrita arriba (el TRX trunca a 50 caracteres, H-PB-45).",
+    "RED: commit f665edac046014533f031adfa797291a3d027df2 (6 archivos nuevos de tests/ y la linea del atributo de SUS-01..SUS-04; ningun archivo de src/). Push hecho. CI del RED (run 44223960356, push): UI Tests = failure; Tests (Domain + Application), Build UI y Build Plugin = success; sin blame-hang ni timeout. TRX en System.Xml.XmlElement/tests/redci. UI 2418 resultados: 10 Failed, 21 Skipped, 2387 Passed; Core 19070 Passed (igual que la prevision de 6.9). Los 10 Failed son los PushBackDeclaredCorrection: outcome Failed, Message sin el prefijo de tipo, primera linea de StackTrace bajo tests/, ninguno NotExecuted ni Skipped entre ellos; Failed == Selected == 10 >= 10; ninguna prueba existente fallo.",
+    "Filtros del RED (TRX red1..red12; Passed/Failed/Skipped): ExpectRed 0/10/0 (Selected 10); Cantilever 67/0/0; ClassicCharacterization UI 55/0/0; FullEditorCharacterization UI 16/0/2 (Skipped = CT_PB0_19 y CT_PB0_05); WLC 3/0/1 (Skipped = la Theory, SUS-01); DimensionViews 12/0/1 (Skipped = T19_H1, SUS-02); AdvancedRackParameters 9/0/0; ModuleEditorWindow 13/0/0; Core ClassicCharacterization 10/0/0; Core FullEditorCharacterization 3/0/0; Core BlankFrontAuthority 9/0/0; Core ModuleEditorCharacterization 15/0/0. Los unicos Skipped son SUS-01..SUS-04.",
+    "GREEN: commit 4440f67d4c76fb2ec019a566231353acdcca61f6 (solo RackPushBackSystemWindow.xaml.cs, .Composite.cs y .xaml; ningun archivo de tests/; git diff --name-only RedSha..CurrentSha = esas tres rutas). Push hecho; HEAD = remoto. Salida de INV-PBTC-01/02/03/15/19 sobre el diff en System.Xml.XmlElement/tests/inv-checks.txt y parche -U0 completo en System.Xml.XmlElement/tests/diff-src-u0.patch: ninguna linea con SetNumber( anadida ni quitada; desaparecen las diez lineas Val( (cinco de ReadCellValues, W:819 y W:837-839/845) y aparecen diez llamadas Keep( (5 en ReadCellValues sobre FirstLevelHeightBox, CellPalletFrontBox, CellPalletHeightBox, CellPalletWeightBox y CellClearBox; 5 en ReadInputs sobre DepthBox, ToleranceBox, PostPeralteBox, BeamDepthBox y AnnotationScaleBox) mas la declaracion de Keep; Val sigue declarada y usada en ModuleLengthBox; OptionalVal cambia solo su cuerpo; cero bytes de diff en Controls, Cantilever, Application, Domain y Plugin; 0 lineas con forceRebuild: o forceRebuild) en W; W conserva RequestStandardRestore() (1); 0 lineas anadidas con RequestRecompute(; D-PB-11: una linea 'var standardRestoreLanded = moduleOwner.ModuleCommit?.StandardRestoreRequested == true;' antes de ClearModuleCommit y, tras ella, un if con exactamente state.RestoreAdvancedRackParameters(advanced); y LoadAdvancedRackParameters();. Los hunks de W caen en la lista cerrada de INV-PBTC-15 (LoadFromModel solo portadores y loadedDimensionStyle; Recompute solo la llamada del aviso y las lineas de D-PB-11; ReadCellValues; ReadInputs; OptionalVal; miembros nuevos ShownFormat, SameShown y Keep entre OptionalVal e IntVal; los cuatro portadores tras generalPallet; loadedDimensionStyle tras loadedDimensionViews); WC solo la constante y UpdateSideBEmptyNotice; WX solo el TextBlock. Ningun hunk toca Gap_Changed, GapBox, ModuleLength_Changed, ModuleLengthBox, LoadAdvancedRackParameters, SetOptional, ReadAdvancedRackParameters, su manejador, RestoreRackParameters_Click, Val ni IntVal.",
+    "CI del GREEN (run 44225456328, push sobre 4440f67d4c76fb2ec019a566231353acdcca61f6): los cuatro trabajos en success (UI Tests, Tests, Build UI, Build Plugin), sin blame-hang ni timeout. TRX en System.Xml.XmlElement/tests/greenci. UI 2418 resultados: 0 Failed, 21 Skipped, 2397 Passed; Core 19070 Passed: igual que la prevision de 6.9, sin diferencia que explicar.",
+    "Filtros del GREEN en local (TRX g1..g3, gu1..gu7 y gcore; mismo arbol que el commit GREEN, ejecutados antes de confirmarlo): ExpectRed 10/0/0 en las TRES corridas consecutivas g1, g2 y g3; Cantilever 67/0/0; ClassicCharacterization UI 55/0/0; FullEditorCharacterization UI 16/0/2; WLC 3/0/1; DimensionViews 12/0/1; AdvancedRackParameters 9/0/0; ModuleEditorWindow 13/0/0. Suite completa de tests/RackCad.Tests en Debug (gcore): 19070 Passed, 0 Failed, 0 Skipped (incluye los filtros de Core y la guarda Fact3, G-10 e I-55). La suite completa de UI solo la corrio la CI.",
+    "Tabla de SUS (corrida temporal sin Skip sobre el GREEN, sin commit; TRX s1..s4 y run.log en System.Xml.XmlElement/tests/s1..s4; archivos restaurados con git restore):",
+    "SUS-01 (WLC TheWindowAndThePilotDifferOnlyInTheKnownClasses, Theory en WLC:231; la vieja pasa en la base: p4 17/0/0): sin Skip sobre el GREEN fallan pb-06-seguridad, pb-07-combinado y pb-08-redondeo y pasan las otras 11 filas (s1: 14 resultados, 11 Passed, 3 Failed).",
+    "SUS-02 (PushBackDimensionViewsWindowTests.T19_H1_TheDimensionStyleStillComesOutNull; la vieja pasa en la base: p5): sin Skip falla en la linea del estilo: Assert.Null() Failure: Value is not null / Expected: null / Actual: ESTILO_PB (s2).",
+    "SUS-03 (CT_PB0_19; la vieja pasa en la base: p3): sin Skip y con Assert.Fail(string.Join) el mensaje (s3) da CONSERVA con el valor exacto en F1 48.00044, F2 3.00044, F3 4.00044, F5 1.50044, F6 4.00044, F7 42.00044, F8 60.00044, F9 1000.00044, F10 6.00044 y F11 100.00044, frente a las esperadas viejas (salida redondeada y REDONDEA): DIEZ lineas difieren; la de F4 (F4 pb-01-base Structure.BeamDepth exacto=6.00044 salida=6 REDONDEA) COINCIDE con la vieja.",
+    "SUS-04 (CT_PB0_05; la vieja pasa en la base: p3): sin Skip y con Assert.Fail(string.Join) el mensaje (s4) tiene diez lineas; frente a las esperadas viejas (ModuleTests.cs:199-208) difieren CUATRO (A1 controles y A2 peticion de pb-06-seguridad y de pb-07-combinado: controles vacios con DerivedPostReinforcedCheck=True y peticion con los seis valores reiniciados) y coinciden SEIS (A0 salida, A0 controles y A1 salida de cada diseno).",
+    "Literal de D-PB-08 tal como quedo (constante SideBEmptyNoticeMessage en WC, UTF-8, comprobado byte a byte contra el de owner-pbtc-decisions.md y el del paquete; el mismo literal esta en CT-PBTC-07): Lado B declarado sin ningún frente activo: así no se guardará. Para conservarlo, elige «Lado B» y desmarca «En blanco» en al menos un frente. TextBlock SideBEmptyNoticeText, ultimo hijo del StackPanel de StatusContent, detras de StatusText, con los atributos de INV-PBTC-05.",
+    "Literales de Skip (INV-PBTC-06): los cuatro del paquete, byte a byte, en el orden SUS-01..SUS-04; en cada archivo el diff es exactamente la linea del atributo (1 linea quitada y 1 anadida por archivo).",
+    "Artefactos de las corridas temporales (rutas relativas): System.Xml.XmlElement/tests/m10/ (m10.trx, run.log, m10-message.txt, temp-measure-k.cs.txt); System.Xml.XmlElement/tests/s1/, s2/, s3/ y s4/ (sN.trx y run.log). Otros: System.Xml.XmlElement/tests/e1 (ExpectRed en la base), p1..p11 (filtros en la base con las pruebas sin commit), red1..red12, g1..g3, gu1..gu7, gcore, redci, greenci, b0/r1/rg1 (builds), cleanup-before.txt, cleanup-after.txt, inv-checks.txt, diff-src-u0.patch.",
+    "Correccion (b): el estilo viaja por el portador loadedDimensionStyle (sin ningun control nuevo de estilo en WX); un rack nuevo sigue sin estilo (CT-PBTC-04: nuevo estilo=<null>). H-31 (GapBox, ModuleLengthBox y las cuatro cajas avanzadas anulables) NO se toco.",
+    "Fin del trabajo: dotnet build-server shutdown ejecutado; no queda nada del Worker vivo; arbol limpio (git status vacio) en CurrentSha."
+  ],
+  "UnexpectedFindings": [
+    "En la base, la salida de la ventana frente a la del piloto en F2 incluye cuatro lineas Structure.Modules[n].Header.PostPeralte ademas de PostPeralte (el valor exacto de F2 se propaga a las cabeceras de modulo); no afecta a PBTC-C14 (solo F1 y M-02) y desaparece en el GREEN.",
+    "Un aviso CS0184 propio de una prueba nueva (aviso is Control con aviso de tipo TextBlock) aparecio en la build Release del RED antes del commit; se corrigio con una conversion a DependencyObject y las lineas de aviso volvieron a la linea base antes del commit RED."
+  ],
+  "KnownLimitations": [
+    "No se ejecuto AutoCAD: lo que no se puede comprobar sin AutoCAD (el dibujo real de RACKEDITAR con el estilo y los valores exactos, la geometria resultante del reinicio de D-PB-11, la presentacion visual del aviso con teclado y foco reales, el modo WORKSPACE del paso 4 de D-PB-06 y del aviso) queda para Smoke-PB y PB-T2.",
+    "No se puede observar el uso del equipo por otras personas durante las corridas ni la actividad de otros procesos; las corridas locales usaron un equipo compartido.",
+    "Las corridas locales e1, p1..p11, m10 y s1..s4 se hicieron sobre arboles sin commit (codigo temporal retirado); g1..g3, gu1..gu7 y gcore se ejecutaron sobre el arbol identico al del commit GREEN antes de confirmarlo, por eso su TreeSha es el del GREEN.",
+    "La suite completa de UI no se corrio en local (INV-PBTC-13); la valida solo la CI.",
+    "H-31 (GapBox, ModuleLengthBox y las cuatro cajas avanzadas anulables) sigue sin corregir por decision del Owner y vuelve a el antes del contrato de PB-T1."
+  ],
+  "Deviations": [
+    "El shell de herramientas movio por si mismo a segundo plano dos esperas largas lanzadas en primer plano (la suite completa de Core local y la espera de la CI del GREEN) y otra tanda de filtros del RED; el trabajo las espero hasta su fin y no se lanzo ningun proceso propio en segundo plano salvo un monitor de espera de archivo que termino solo.",
+    "La politica de ejecucion de scripts de PowerShell esta deshabilitada: la prueba de limpieza se ejecuto como bloque de script en memoria con la misma logica, antes y despues.",
+    "Las corridas locales e1, p* y m10 no tienen commit propio; sus TreeSha son null."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre RedSha y CurrentSha, revisiones directa e independiente, nc1..nc3 segun README seccion 10; la sesion crea el registro de sustitucion, lo pasa a EJECUTADA con los SHA y anota el paso 6 de D-PB-06 y las obligaciones de PB-T2 y de H-31.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

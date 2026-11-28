@@ -1,0 +1,98 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4B-PBT3B-FULL-WRITE-RUN",
+  "RunId": "R20261120T055235Z-a45b",
+  "DelegationRunId": "R20261120T054837Z-814c",
+  "Initiative": "I-64",
+  "Gate": "F4B",
+  "Attempt": 1,
+  "BaseSha": "eab27a9e340afa9ffe66a4a9866949806b6dfee3",
+  "RedSha": null,
+  "CurrentSha": "eab27a9e340afa9ffe66a4a9866949806b6dfee3",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": false,
+  "FilesChanged": [],
+  "WorkCompleted": "STOP before any commit (PBT3B-C02, with PBT3B-C07 as the root cause). Preconditions held: prompt sha256 and size matched, worktree clean, HEAD = remote = BaseSha, origin/main = MainSha. Step 0 done on BaseSha: Release builds of RackCad.Tests (0 errors, 66 warnings: xUnit1026 10, xUnit2000 3, xUnit2010 2, xUnit2012 1, xUnit2013 17, xUnit2017 1, xUnit2029 16, xUnit2031 16), RackCad.UI.Tests (0 errors, 14 warnings) and the Plugin to a temporary output (0 errors, 2 warnings MSB3277); Core filter RackCad.Tests.Workspace on BaseSha: Passed 3482, Failed 0, Skipped 0 (3482 results, the theory rows counted); cleanliness probe before. Step 1 anchors read from the package and the sources: PP and UR as described (Prepare, ComposeMemberEnvelope with four parameters, Precheck, Execution with _input), the six D-1 methods exist with a plain attribute, IntentKit, PilotKit, PrepareKit, PilotUpdateScopeDouble and the Draft/ model exist. Step 2 started: I wrote the exact skeleton of section 6.2 (PushBackFullPrepareInput, second Prepare returning WithInvalid(MissingInputReason), Erasures, PostOriginKey, ErasedKeys, the new constructors and constants in PP; second Precheck returning Go(), second Execute returning NotAppliedFailure(UpdateNotRunReason), second ComparePost returning PostRereadMissingReason and the two constants in UR; and IPushBackPilotViewEraser.cs) and compiled RackCad.Tests in Debug on that tree. The compilation FAILS with 2 errors CS0121 (ambiguous call) in two existing tests that the contract forbids editing: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs line 669 (PushBackPilotUpdateRun.Execute(null!, setup.Request, setup.Port)) and line 799 (PushBackPilotUpdateRun.ComparePost(plan, null)). With a second public overload of Execute (DraftSession<PushBackFullDraftState>) and of ComparePost (PushBackFullIntentResult?) a literal null argument fits both overloads and neither is better, so the whole test project stops compiling, in the RED and in the GREEN. The design of D-PBT3-09 and D-PBT3-10 and the list of PBT3B-C13 prescribe exactly those public overloads, and the package states that no existing signature changes because the F4 tests compile against them; that fact does not hold. Solving it needs one of: editing those two existing lines (PBT3B-C02), or a different shape of the new API (PBT3B-C13 and the design). The Worker chooses neither. No commit, no push, no test of the new classes was written. The working tree was restored to HEAD and the new file removed; the skeleton is saved as a single patch.",
+  "TestsExecuted": [
+    {
+      "RunRef": "b0a",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental -v:minimal > artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0/build-core-release.log 2>&1",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": null
+    },
+    {
+      "RunRef": "b0b",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental -v:minimal > artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0/build-ui-release.log 2>&1",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": null
+    },
+    {
+      "RunRef": "b0c",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0/plugin-out > artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0/build-plugin-release.log 2>&1",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": null
+    },
+    {
+      "RunRef": "b0w",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=ws.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0 --blame-hang-timeout 10m --blame-hang-dump-type none > artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0/test-ws.log 2>&1",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0/ws.trx"
+    },
+    {
+      "RunRef": "s0",
+      "Command": "<datos-locales-del-usuario>/Microsoft/dotnet/dotnet.exe build tests/RackCad.Tests/RackCad.Tests.csproj -c Debug -v:minimal > artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/s0/build-core-debug.log 2>&1",
+      "Phase": "RED",
+      "TreeSha": null,
+      "ResultsFile": null
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "b0w",
+      "Selected": 3482,
+      "Passed": 3482,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/s0/build-core-debug.log: the two compiler errors on the tree with the exact skeleton of section 6.2 (not committed): tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs(669,86): error CS0121 between PushBackPilotUpdateRun.Execute(DraftSession<PushBackFullDraftState>, PushBackPilotUpdateRequest, IPushBackPilotUpdatePort) and PushBackPilotUpdateRun.Execute(DraftSession<PushBackPilotDraftState>, PushBackPilotUpdateRequest, IPushBackPilotUpdatePort); tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs(799,93): error CS0121 between PushBackPilotUpdateRun.ComparePost(PushBackPilotUpdatePlan, PushBackFullIntentResult?) and PushBackPilotUpdateRun.ComparePost(PushBackPilotUpdatePlan, PushBackPilotIntentResult?)",
+    "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/blocked-skeleton.patch: git diff HEAD of the skeleton tried (PP, UR and the new interface file), sha256 4abfa01adeb1d56a55a7577c8de85c2d0cae5c33539a6c0936eddcb8e6f927e1; it was not applied nor committed",
+    "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0/build-core-release.log, build-ui-release.log and build-plugin-release.log: the three Release baselines on BaseSha",
+    "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/tests/b0/test-ws.log and ws.trx: the Workspace filter of Core on BaseSha (Passed 3482, Failed 0, Skipped 0)",
+    "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/clean/before.txt and clean/after.txt: the cleanliness probe before and after, identical (the configurator layout file: same SHA-256 and same modification time; the design library folder: same listing hash, same entry count, same modification time)",
+    "git status of the worktree is empty after the restore, HEAD = origin branch = BaseSha, and the main checkout status is empty"
+  ],
+  "UnexpectedFindings": [
+    "The Workspace filter of Core reports 3482 results on BaseSha, not 3271: the filter FullyQualifiedName~RackCad.Tests.Workspace also counts the rows of the theories. The MinSelected of the contract (3261) is a lower bound and still holds.",
+    "D-PBT3-09 and D-PBT3-10 say that no existing signature changes and that the F4 tests compile against them, but a second public Execute, a second public ComparePost and a second Precheck are overloads that make a literal null ambiguous. Two existing lines pass null (WorkspacePilotUpdateRunTests.cs:669 and :799); Precheck has no such caller. The dry measurement of the session did not compile the skeleton."
+  ],
+  "KnownLimitations": [
+    "I cannot observe the use of the machine while tests run.",
+    "No test of the new classes, no RED and no GREEN exist: the work stopped at the compilation of the skeleton.",
+    "Everything that needs AutoCAD, PB-T3c and PB-T4 is outside this step, as the package says."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [
+    "How does the Owner want the two ambiguous lines solved (WorkspacePilotUpdateRunTests.cs:669 and :799)? The Worker chooses none of the options."
+  ],
+  "WorkerStatus": "BLOCKED",
+  "Disposition": "STOP",
+  "TriggeredStopConditions": [
+    "PBT3B-C02",
+    "PBT3B-C07"
+  ],
+  "RecommendedNextAction": "Return to the Owner through the session before any new delegation. The package v4.5 (D-PBT3-09, D-PBT3-10, PBT3B-C13) has to be corrected on this point, because with the public overloads that it prescribes the existing project RackCad.Tests does not compile in the RED nor in the GREEN. Options for the Owner, not chosen by the Worker: (1) authorize a declared minimal edit of the two existing lines so that the null argument is typed (the same kind of record as D-1: add the file tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs to the AllowedWriteScope for those two lines, take it out of the ForbiddenWriteScope list, and register it in the superseding characterization with its equivalent), or (2) change the shape of the new public API so that a null argument stays unambiguous, which changes D-PBT3-09, D-PBT3-10 and the PBT3B-C13 list. The skeleton tried is saved as a single patch and can be reused after the correction.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

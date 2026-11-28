@@ -1,0 +1,148 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4-T2B2A-INTENT-WIRING/1/R20261112T142947Z-4456",
+  "SourceRoot": "artifacts/orchestration/I-64/F4-T2B2A-INTENT-WIRING/1/R20261112T142947Z-4456",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 13,
+    "EXCLUDED": 7
+  },
+  "Files": [
+    {
+      "Path": "acceptance-precheck-reasons.json",
+      "Bytes": 98,
+      "Sha256": "b2dcfc71301916ecc25e280246ba6518341f6a06d16b770be5a1453773f5ed06",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F1-T2-BRIDGE/F1-T2-BRIDGE/3/R20261010T082206Z-21c1/acceptance-precheck-reasons.json, ya custodiado"
+    },
+    {
+      "Path": "acceptance-precheck.json",
+      "Bytes": 112,
+      "Sha256": "f480469b0ef19d2edfe2b1217b4506cda97a55a7af1d1b393fc95ce7ee666d5f",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F1-T2-BRIDGE/F1-T2-BRIDGE/3/R20261010T082206Z-21c1/acceptance-precheck.json, ya custodiado"
+    },
+    {
+      "Path": "byte-fidelity-check.json",
+      "Bytes": 3218,
+      "Sha256": "08d662c236db7a0bb8728d8ed954aa232ad77f95681a708a3109f698f3860322",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "6061989e0f8f526aac678c059eeca7588845a4757ad30e25cc2157a8654cea01",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "fb7e4cb807d6cbe62bb595eb3282cd97f19ff1274245b9fd005059a2c54f8b4b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-entry.json",
+      "Bytes": 3434,
+      "Sha256": "6d628dcfbacc30e844cfb4caec3ee5834c6d0cd151d5daf37f8bed516ec54d3e",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-exit.json",
+      "Bytes": 3434,
+      "Sha256": "552d0ff2747c42d0077fc7b08aedb84e3cba685f156024f46e10b09fef92fffe",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "delegation.json",
+      "Bytes": 28006,
+      "Sha256": "ada84ff6a316e1800c1dffceaf28006a2046551ba84493cd82a0ad549e5afe5a",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2e084a4dc5ff9a2d9d9cb013fd3b175420b1a87623304ce8a8bd2bba29b125c7",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "events.jsonl",
+      "Bytes": 290693,
+      "Sha256": "b239e297741410d6b0e3fc0a3970347a4340c47f23a3c4ba977fc89dc4e48e65",
+      "Disposition": "EXCLUDED",
+      "Reason": "eventos JSONL del CLI de Codex: no se versionan (16.12); quedan su SHA-256 y los campos extraidos en el resultado y el registro de relevo"
+    },
+    {
+      "Path": "exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F2-T1-NAVIGATION-CORE/probe-R20261108T181131Z-3b8b/exit-code.txt, ya custodiado"
+    },
+    {
+      "Path": "gate-contract.json",
+      "Bytes": 28937,
+      "Sha256": "a841f9ecdc377ea70bfd77591cecb0408a8a43110ccf0f5a4bcf2e6f119d9438",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4-T2B2A-INTENT-WIRING/1/R20261112T134333Z-a409/gate-contract.json, ya custodiado"
+    },
+    {
+      "Path": "launcher-pid.txt",
+      "Bytes": 6,
+      "Sha256": "164f29515447084461b0cc03e0e6eaffe796e0bef2de1ffa12e0dbb0e6e20fa7",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "launcher-winpid.txt",
+      "Bytes": 6,
+      "Sha256": "14a740d7d00f86603b29ffc34b46a00d3a8abd7ada9a5e24cd394293e5ad9dce",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "output.json",
+      "Bytes": 28006,
+      "Sha256": "ada84ff6a316e1800c1dffceaf28006a2046551ba84493cd82a0ad549e5afe5a",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F4-T2B2A-INTENT-WIRING/1/R20261112T142947Z-4456/delegation.json, ya custodiado"
+    },
+    {
+      "Path": "processes-entry.json",
+      "Bytes": 1281,
+      "Sha256": "5b2ab032e5cee9cbd6c0467a9a20ba8525955d42f9681a2322c20a7a5d0ca7c7",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "932efa9c60966d3943ca731c9e78843b72cb53643416f63ea194407874ebdbd8",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "processes-exit.json",
+      "Bytes": 1284,
+      "Sha256": "2727335a9deb15120802a2b4aeb1ddee00bbba86fc6324a0a27e4d627455d141",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "af9339e51c477b3ad94b29810c63239979596437a398a0e2a1645b02464a3b5e",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "prompt.md",
+      "Bytes": 13766,
+      "Sha256": "35f50fa9c989f39e31e094d15fe4ca9ed98c0cb43d453992c8287f9d09dba225",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "relay-record.json",
+      "Bytes": 11262,
+      "Sha256": "08080d435772226d9dd43b89e4ebfde367670030c2bf24bede023c9916da33ef",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "session-extra-checks.json",
+      "Bytes": 1836,
+      "Sha256": "82e14cc15e6e819d244a9aa0627f5707b372d2912485136ba09fa1fe571f594b",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F2-T1-NAVIGATION-CORE/probe-R20261108T181131Z-3b8b/stderr.txt, ya custodiado"
+    }
+  ]
+}

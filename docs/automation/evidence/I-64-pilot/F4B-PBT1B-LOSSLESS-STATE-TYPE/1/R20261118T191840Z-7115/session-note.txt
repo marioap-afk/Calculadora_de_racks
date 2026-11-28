@@ -1,0 +1,5 @@
+Nota de la sesion principal. Esta carpeta es la preparacion de la reanudacion del Worker de la delegacion R20261118T185409Z-c45c tras la pausa del Owner, y NO se lanzo.
+
+La comprobacion de salida (config-exit.json) dio config.toml = 57B0FED6..., distinto de la Snapshot I aceptada: parada P-01 antes de invocar al Worker. Causa: tras el reinicio del equipo, la app de Codex se actualizo (26.1111.21308 -> 26.1111.2228.0) y reescribio config.toml; mismos 104 nombres y el inventario seguro de 68 valores identico al de la I.
+
+El Owner decidio "Sonda neutra, luego J (Recomendado)". Sonda R20261118T193210Z-d32c: Pass. La configuracion actual es la Snapshot J (artifacts/orchestration/I-64/F4-ENVIRONMENT/snapshot-j.json). La reanudacion se prepara de nuevo en otra carpeta.

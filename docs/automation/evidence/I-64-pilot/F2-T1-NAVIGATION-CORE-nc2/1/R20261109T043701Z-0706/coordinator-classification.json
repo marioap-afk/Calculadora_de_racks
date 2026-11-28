@@ -1,0 +1,15 @@
+{
+  "RunId": "R20261109T043701Z-0706",
+  "Control": "nc2",
+  "CoordinatorClassification": {
+    "Outcome": "VALID CONTROLLER OUTPUT / RELATIVE ORACLE NOT MET",
+    "Label": "CONTROL FAIL / HISTORICAL CONTROLLER SCOPE DEFECT REPRODUCED",
+    "NotInvalidOutput": "the evidence preceding Scope is factually sound; SHA identity is correct; Remote evidence is properly sourced; Tests uses the correct FQN semantics; Termination uses the Worker relay evidence",
+    "Reason": "the Controller evaluates Scope against the gate contract's AllowedWriteScope instead of the MUTATED delegation AllowedWriteScope (Scope = pass, DiffersFromReal = [])",
+    "Nc2OrdinaryRunsBudget": "EXHAUSTED",
+    "A4": "I64-SCOPE-BRIDGE-01 AUTHORIZED (one execution for F2-T1)"
+  },
+  "NotRecordedAs": "nc2 = PASS",
+  "OutputUnchanged": "output.json, controller-verification.json, oracle-result.json, evidence-validation.json, prescope-validation.json, preinvocation-assertions.json and relay-record.json of this run are kept exactly as emitted",
+  "Source": "coordinator/coordinator-f2t1-nc2-0706-a4-disposition.md (literal received through the chat of the responsible session; I-64 F2-T1 FINAL nc2 RETRY / A-4 DISPOSITION)"
+}

@@ -1,0 +1,117 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261010T024843Z-f965",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "153b48118156eadc7b210eafdcfdbf10169be119",
+    "AmendmentId": "A-2",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "A1": {
+      "Path": "docs/initiatives/I-64-A-1.md",
+      "Blob": "fb6a49c2e8e96689f82a2ad01fda7994fc2397b0"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-2.md",
+      "Blob": "de6f6088356b0dec0e7a33431c7d00d0ba0d396b"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+      "Blob": "093a570f71a359e8e004b8983ea9625e74ebbc87"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-result.json",
+      "Blob": "05ec88362f6e2d5935d4b82bc93bdc307238aae1"
+    },
+    "OwnerMandate": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/owner-mandate-emergency.md",
+      "Blob": "4271dd7e128b001e5aaf8d1bbedcafbfc40faadd"
+    }
+  },
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-2:78-91,156-167 changes satisfaction of a mandatory protocol negative control. LIFECYCLE at bb0d5522:86 defines M-04 without restricting it to product behavior; lines 194-207 require Architect + Coordinator for material amendments. A-2 correctly requires both."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "owner-mandate-emergency.md:12-30 explicitly authorizes alternative B, an independently verifiable substitute applicable ONLY to I-64, requires all competent authorities before use, and prohibits changing I-61 normative text or I-62. Coordinator phase B expressly records this as Owner authority for the unit exception. This supplies the authority missing from A-1; it does not itself establish activation."
+    },
+    "Q03": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-2:70-71 preserves both predicates of AUTOMATION_PLAN at bb0d5522:617. Verifier:114-115 implements the exact-file or slash-terminated-prefix coverage rule of 16.5; lines 204-230 obtain Git paths and reject every uncovered path and every forbidden intersection. No-renames, nonempty-diff and syntax checks strengthen rejection."
+    },
+    "Q04": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "For the Scope predicate, verifier:223-230 directly computes OutsideAllowed and ForbiddenHits; either makes the result FAIL. A-2:127 requires the excluded path exactly and exclusively OUTSIDE_ALLOWED_WRITE_SCOPE, preserving the substance of README Sec.10 nc2. The separate malformed-identity acceptance defect is reported under Q10."
+    },
+    "Q05": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-2:77-91,143-146 preserves the historical FAIL and prohibits retry or budget reset. Historical nc2 oracle-result.json records OracleRelative=false and CONTROL NOT PASSED, while its controller-verification.json records Scope=pass. The earlier Coordinator stop review expressly permits a new authoritative replacement through alternative B. The inspected diff leaves historical pilot evidence unchanged."
+    },
+    "Q06": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-2:13,66,76,94-104 limits applicability to I-64 and requires escalation if global semantics would need changing. Its tool and evidence locations are unit-local, its verifier blob is pinned, and other controls remain obligatory. No authority is granted to other units."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Freeze Sec.13 retains I-61 until I-62 integration. A-2:97-98 and owner-mandate-emergency.md:12-13,26,30 authorize the unit exception independently of I-62 and prohibit consuming unmerged I-62 implementation. The replacement uses Python standard library and Git."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Against LIFECYCLE Sec.3, this amendment does not transfer ownership of the Scope rule, change product persistence or existing documents, alter a contract consumed by another system, create a reusable extension or transversal framework, or change an accepted architectural decision globally. The new JSON is unit evidence. A-2:164-171 correctly classifies the amendment delta; it does not negate materiality already recorded for the product Freeze."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "As specified obligations, A-2:80-89,126-129 requires accepted real evidence, unchanged handoff and SHAs, all prerequisite checks passing, exact verifier identity, REAL PASS/exit 0, and ADVERSARIAL nonzero FAIL exclusively for OUTSIDE_ALLOWED_WRITE_SCOPE with exactly the excluded file. Other outcomes cannot satisfy the control. These criteria are sufficient for the substitute Scope control, conditional on correcting the implementation defect in Q10."
+    },
+    "Q10": {
+      "Answer": "YES",
+      "Conforming": false,
+      "Evidence": "Verifier:25,162 uses a dollar-terminated regex with match for delegation.RunId. Python's dollar anchor also matches immediately before a final LF. A valid-looking RunId followed by LF therefore passes Delegation.RunId; if handoff.DelegationRunId contains the same malformed string, line 164 also passes. With otherwise valid inputs and an allowed diff, the verifier can return PASS/exit 0 despite the adopted RunId-format obligation. None of the 23 self-test cases covers this boundary."
+    },
+    "Q11": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "A-2 openly changes the nc2 satisfaction mechanism for I-64 under explicit Owner authority, rather than claiming that no protocol exception exists. It does not authorize a global actor/method substitution. The inspected branch diff contains no edits to AUTOMATION_PLAN, agent-execution normative files, WORKFLOW or AGENTS. The Q10 correction can remain entirely unit-local."
+    },
+    "Q12": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "The requested 819955d6..bb0d5522 diff --stat is empty for all listed authority paths. The requested log records I-63 integration, not an I-61/I-62 protocol replacement. The earlier Coordinator decision already permits alternative B; phase B supersedes phase A's incorrect authority classification, and NIGHT RUN supplies the previously missing literal mandate. Historical states remain historical and do not grant activation or evidence reuse on a rebased SHA."
+    }
+  },
+  "Findings": [
+    {
+      "Id": "I64-A2-RUNID-FAIL-OPEN",
+      "Severity": "REQUIRED",
+      "Question": "Q10",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py:25,162-165",
+      "Defect": "RunId validation accepts a trailing LF because RUNID_RE ends with a dollar anchor and is evaluated with match. For example, R20000101T000000Z-0001 followed by LF passes the format check. Putting that same malformed string in handoff.DelegationRunId also passes the equality check. No later check rejects it, so otherwise valid in-scope evidence can produce PASS and exit 0. This is acceptance of malformed identity evidence, even though the Scope membership arithmetic itself remains correct.",
+      "Authority": "A-2:87 requires evidence ambiguity to fail closed; A-2:120 adopts A-1 Sec.3, whose line 107 requires delegation.RunId to have the RunId format. AUTOMATION_PLAN at bb0d5522 Sec.16.6:552 defines that format. Owner mandate:23-24 requires unambiguous evidence and fail-closed mismatch handling. LIFECYCLE Sec.5 treats an unverified frozen guarantee as REQUIRED.",
+      "Correction": "Use a whole-string RunId match, such as RUNID_RE.fullmatch, and add a synthetic behavioral regression with a trailing LF in both identity fields that requires DELEGATION_RUNID_INVALID and nonzero exit. Demonstrate the regression failing against the current verifier and passing after correction. Preserve A-1/A-2; authorize the corrected verifier blob and updated self-test evidence in the next A-n, then review that exact object before use, as A-2:115-116 requires.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "RequiredCount": 1,
+  "OptionalCount": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "Limitations": [
+    "Static review only. Neither verifier nor self-test was executed; the committed 23/23 result was inspected but not independently reproduced.",
+    "No concrete T1 path was evaluated for AllowedWriteScope membership. Historical outcomes are reported from the versioned verification and oracle records.",
+    "No live CI, runtime eligibility, remote state, build, test suite or Owner validation was independently measured. This review establishes neither activation nor task/gate closure.",
+    "The initial shell invocation emitted a profile-loading error. Subsequent reads and repeated Git checks used login=false successfully; no conclusion depends on that error."
+  ]
+}

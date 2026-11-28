@@ -1,0 +1,23 @@
+fase probe; copia /d/r4i; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957; paquete sha256 6543b99d6278ad95d5ce77c1f225a1e893932795d687560d6e77d3c0b7ef31cb
+copia exportada: 12886 archivos
+ESCRITOS 47 archivos; conjunto 25394db702fdcb44d2c1ab4f1c1baf6e45ab34f2ce5d4fc7460c668400e62e8d
+probe-core-tests rc=0 errores=0 avisos-CS=0
+probe-ui-tests rc=0 errores=0 avisos-CS=0
+probe-plugin rc=0 errores=0 avisos-CS=0
+probe: errores 0, avisos CS 0 (en total, hasta aqui)
+  binario dc17d5ad5ddb216d14a4099ead68168691866667a135ff43653f34221450f773 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Application.dll
+  binario a551163947209ee584ae1af01a45d4ab0f3d08720eb3f915933bc4e6809f759b tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Tests.dll
+  binario 3906c80c0f617c836f1376ebb15c972b0ed0214cdfee42fe854b0167d3383267 tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario a41cad972a342a69036b0b2a63140a8f181c6749a4e33f143051dc0b6763f315 _plugin-out-probe/RackCad.Plugin.dll
+test core-probe.trx rc=1 segundos=418 trx-sha256=4f3d6586101f39fd5193d2e82d7869f21a46bd9add6de8030b2750d59eb6e0d2 :: filas 613 {'Failed': 292, 'Passed': 321}; inicio 2026-11-20T17:14:12.3302918-06:00; fin 2026-11-20T17:21:08.1439731-06:00
+test ui-probe.trx rc=0 segundos=3 trx-sha256=5065bf29692ae38ea51a6aa54451bb7e6b6be17c14a211f633f030eaeacf2b8e :: filas 36 {'Passed': 36}; inicio 2026-11-20T17:21:10.6003437-06:00; fin 2026-11-20T17:21:12.7240189-06:00
+partition red rc=1
+PARA:
+  WorkspaceLifecycleHostTests.cs.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively: resultados ['Failed', 'Passed']
+  WorkspacePilotEditGuardTests.cs.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance: resultados ['Failed', 'Passed']
+  WorkspacePilotPrepareTests.cs.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing: resultados ['Failed', 'Passed']
+  WorkspacePilotPrepareTests.cs.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading: resultados ['Failed', 'Passed']
+build-server shutdown rc=0
+procesos: 0
+MAINCO []
+exit 0

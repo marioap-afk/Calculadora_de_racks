@@ -1,0 +1,3 @@
+filas 1 {'Failed': 1}; omitidas por origen {}
+  Failed RackCad.Tests.TmpPbt4dFullCopyProbe.RackCad.Tests.TmpPbt4dFullCopyProbe.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList | at RackCad.Tests.TmpPbt4dFullCopyProbe.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList() in <copia>\tests\RackCad.Tests\TmpFullcopy.cs:line 657 | ESPERADO
+no pasan: 1

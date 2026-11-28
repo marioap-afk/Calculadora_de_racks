@@ -1,0 +1,52 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261116T043014Z-9a0e",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope",
+    "Tests"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha returned 11 paths. Ten are in delegation AllowedWriteScope; src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs is absent from that 10-path list. It is permitted by the contract scope, but not by the delegation scope; 16.9 Scope failure is STOP."
+  },
+  "OutputSha256": "C34FE19D09FEFE9152EBC16C67231A08F994988E75172F6F1FA9C9F9DDD4A44A",
+  "ManualFreeText1610": []
+}

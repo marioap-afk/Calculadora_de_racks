@@ -1,0 +1,4 @@
+PB-T2b: generador=make_pbt2b_contract.py informe=independent-review-pbt2b-v23-check.md errores=0 ascii=True
+   control (sin la mencion de la v2.8): errores=1
+PB-T2c: generador=make_pbt2c_contract.py informe=independent-review-pbt2c-v25-check.md errores=0 ascii=True
+   control (sin la mencion de la v2.8): errores=1

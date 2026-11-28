@@ -1,0 +1,55 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261114T044123Z-a383",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Contract",
+    "Scope"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04",
+    "F4T4A1-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha lists 21 paths. Delegation.json AllowedWriteScope has 20 exact paths and omits src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs, which is in the diff and handoff FilesChanged. No forbidden prefix intersects the diff, but the exact whitelist is not satisfied. Trigger F4T4A1-C01."
+  },
+  "OutputSha256": "86D76765CCE40C1DCC96659E4130185127C54E75C07FB52D78F343F9223F2BC0",
+  "ManualFreeText1610": []
+}

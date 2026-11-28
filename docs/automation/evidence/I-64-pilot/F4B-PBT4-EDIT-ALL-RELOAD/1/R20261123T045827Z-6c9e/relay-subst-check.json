@@ -1,0 +1,103 @@
+{
+ "Copias": {
+  "Particion": {
+   "DelContrato": false,
+   "Medida": {},
+   "Sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "PorClase": {}
+ },
+ "CopySha": {
+  "Copias": 0,
+  "Mal": {}
+ },
+ "Equivalentes": null,
+ "Firmas": {},
+ "Forma": "sin copias",
+ "GreenLiteral": {
+  "Archivos": [
+   "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+   "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+   "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+   "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs"
+  ],
+  "Pieza": "pbt4e-green-v56.txt"
+ },
+ "Kit": {
+  "Custodiado": null,
+  "Ruta": null,
+  "Sha256DelRed": null
+ },
+ "Lista": {
+  "Filas": 0,
+  "Ruta": null,
+  "Sha256": null
+ },
+ "MapaDeLaCopia": {
+  "Ruta": null,
+  "Sha256": null
+ },
+ "ModuloDeMotivos": null,
+ "Precondicion6": {
+  "Claves": [
+   "Alone",
+   "BaseCoverage",
+   "Builds",
+   "Control",
+   "Coverage",
+   "CoverageExisting",
+   "CsWarnings",
+   "Green",
+   "GreenFiles",
+   "GreenUiCoverage",
+   "GreenWithCoverage",
+   "List",
+   "NewLineDS19",
+   "Outcome",
+   "Package",
+   "Pieces",
+   "Probe",
+   "Red",
+   "RedFiles",
+   "RequiredTests",
+   "Revision",
+   "Schema",
+   "SuiteDurationSeconds",
+   "Task",
+   "Totals"
+  ],
+  "Ruta": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4e-precondition6.json"
+ },
+ "Retirada": null,
+ "SaltadasEnElRed": {
+  "Detalle": {},
+  "PorArchivo": {},
+  "Sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "Total": 0
+ },
+ "TrxSaltadasDeLaLista": {
+  "Green": [],
+  "Red": []
+ },
+ "WarningsCS": {
+  "ConWarning": {},
+  "RegistrosLeidos": [
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/b0/build-RackCad.Plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/b0/build-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/b0/build-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/b0/test-core-full.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/g0/build-RackCad.Plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/g0/build-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/g0/build-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/gf/test-core-full.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r0/build-RackCad.Plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r0/build-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r0/build-RackCad.UI.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r2/test-core-full.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r4/build-RackCad.Plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r4/build-RackCad.Tests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-RELOAD/1/R20261123T045827Z-6c9e/tests/r4/build-RackCad.UI.Tests.log"
+  ],
+  "Sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+ }
+}

@@ -34,7 +34,7 @@ namespace RackCad.UI.Systems.Dynamic
     /// header configurator window), draws a richer side view, lets each module be selected/edited,
     /// and opens the existing header configurator to edit a header module's configuration.
     /// </summary>
-    public partial class RackDynamicSystemWindow : Window
+    public partial class RackDynamicSystemWindow : Window, IDynamicEditOutcome
     {
         private const string KindHeader = "Cabecera";
         private const string KindSeparator = "Separador";
@@ -125,6 +125,10 @@ namespace RackCad.UI.Systems.Dynamic
             return design;
         }
 
+        /// <summary>Test seam (I-64 A-14, line D): the matrix of the window, so an equivalence test can make the same edit in the
+        /// editor of the RackCad window and here. Not used in production.</summary>
+        internal DynamicFrontMatrix MatrixForTest => matrix;
+
         /// <summary>The shared editor session (I-15): the catalog, the rack identity (GUID + name) and the insert/update
         /// contract. Its coalescing gate is unused here (the dynamic editor recomputes synchronously via Recompose); the
         /// internal editor state (system/design/modules) stays in the window (its extraction is I-21).</summary>
@@ -154,7 +158,8 @@ namespace RackCad.UI.Systems.Dynamic
             builder = new DynamicRackSystemBuilder(catalog);
             resolver = new DynamicRackSystemResolver(catalog);
             assembler = new DynamicEditorDesignAssembler(catalog, builder, resolver);
-            safetySelections.AddRange(DynamicSafetyDefaults.Build(catalog).Select(selection => selection.DeepCopy()));
+            // I-64, cuarta tanda (decision of the Owner, 2026-11-26): a new Dinámico reads its desviador by post.
+            safetySelections.AddRange(DynamicSafetyDefaults.BuildForDynamic(catalog).Select(selection => selection.DeepCopy()));
             defaultPostCatalogId = catalog.Defaults.Post;
             defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
             computedHeaderHeight = defaultHeaderHeight;
@@ -672,10 +677,13 @@ namespace RackCad.UI.Systems.Dynamic
                 bootUsesPlacementNames: true,
                 // Por POSTE y SOLO para el desviador; la forma de la rejilla no decide nada más.
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
+                // I-64, cuarta tanda (decision of the Owner, 2026-11-26): a desviador chosen here for the first time is read by post.
+                newDesviadorByPost: true,
                 allowBlankFrontColumns: true,
                 // El Dinámico SÍ elige cara de pasillo: el selector queda visible (default explícito por claridad).
                 showDesviadorSide: true) { Owner = this };
-            if (dialog.ShowDialog() != true)
+            var accepted = SafetyWindowDialog != null ? SafetyWindowDialog(dialog) : dialog.ShowDialog(); // T6 seg: test seam
+            if (accepted != true)
             {
                 return;
             }
@@ -696,9 +704,20 @@ namespace RackCad.UI.Systems.Dynamic
             Recompose();
         }
 
+        /// <summary>
+        /// T6 seg (I-64, sexta tanda) — seam de prueba de «Elementos de seguridad…», como el <c>SafetyWindowDialog</c> del editor clásico de Push
+        /// Back: sustituye UNICAMENTE el <c>ShowDialog</c>; el dialogo que recibe es el real, construido con los argumentos que ve el usuario.
+        /// </summary>
+        internal Func<SelectiveSafetyWindow, bool?> SafetyWindowDialog;
+
+        // T6 seg (the Owner, 2026-11-27: «Solo lo que dibuja»): only the families that place something in the drawing; one kept with everything
+        // off is not counted. The levels and the posts are the ones the dialog opens with.
         private void UpdateSafetyButton()
         {
-            var count = safetySelections.Count(DynamicEditorSafety.Draws);
+            var posts = Math.Max(2, (system?.Fronts.Count ?? matrix.Count) + 1);
+            var levels = SafetyLevelsPerFrente();
+            var count = safetySelections.Count(s => DynamicEditorSafety.Draws(s) && SelectiveSafetyWindow.PlacesSomething(s, catalog?.SafetyElements,
+                levels, _ => DesviadorLevelsPerPost(), posts, lateralFollowsTheRuleOfTheEnds: true));
             SafetyButton.Content = count > 0
                 ? "Elementos de seguridad (" + count.ToString(CultureInfo.InvariantCulture) + ")…"
                 : "Elementos de seguridad…";

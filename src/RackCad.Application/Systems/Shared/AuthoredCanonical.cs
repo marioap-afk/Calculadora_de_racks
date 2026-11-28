@@ -75,6 +75,9 @@ namespace RackCad.Application.Systems.Shared
             Require(!f.LoadLevels.HasValue || f.LoadLevels > 0, "Dynamic.Front.LoadLevels");
             Require(!f.PalletsDeep.HasValue || f.PalletsDeep >= 2, "Dynamic.Front.PalletsDeep");
             Require(!f.DepthStartPosition.HasValue || f.DepthStartPosition > 0, "Dynamic.Front.DepthStartPosition");
+            Require(!f.RollerPitch.HasValue || f.RollerPitch > 0, "Dynamic.Front.RollerPitch");
+            Require(!f.BrakeEveryRollers.HasValue || f.BrakeEveryRollers > 0, "Dynamic.Front.BrakeEveryRollers");
+            Require(!f.SlopePerFoot.HasValue || f.SlopePerFoot >= 0, "Dynamic.Front.SlopePerFoot");
             f.IsActive ??= true;
             f.LoadLevels ??= Math.Max(1, levels);
             f.PalletsDeep ??= Math.Max(2, deep);
@@ -133,6 +136,7 @@ namespace RackCad.Application.Systems.Shared
             s.DesviadorPrimerNivelAltura ??= SelectiveSafetyDefaults.DesviadorPrimerNivelAltura;
             s.ParrillaFrontal ??= true; s.ParrillaLateral ??= true;
             s.ParrillaFrente ??= 0; s.ParrillaCantidad ??= 0; s.BotaSidesDeclared ??= false;
+            s.DesviadorCellsByPost ??= false; // I-64, cuarta tanda: absent = the historic reading of the desviador
             foreach (var d in Items(s.DefensaPosts))
             {
                 Require(d != null && d.PostIndex >= 0, "Safety.DefensaPosts");

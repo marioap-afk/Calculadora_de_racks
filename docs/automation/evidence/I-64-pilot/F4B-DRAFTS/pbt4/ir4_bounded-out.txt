@@ -1,0 +1,4 @@
+BOUNDED (472 chars, ascii True)
+sections ('20', '21')
+cat4b_report: sections found ['20', '21']; slice 460 lines
+bounded_check: 0 error(s)

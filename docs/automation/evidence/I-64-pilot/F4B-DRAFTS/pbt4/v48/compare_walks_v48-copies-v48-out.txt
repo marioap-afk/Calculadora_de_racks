@@ -1,0 +1,2 @@
+pruebas recorridas en las dos: 1096 (de la revision, las mismas: 1033; solo en una, de las copias: 1)
+cambian de categoria o de diferencias: 0; pasan a marcadas (A o B): 0; de ellas fuera de la lista pbt4b-substitution-list-478.tsv y sin ser copia ni kit: 0

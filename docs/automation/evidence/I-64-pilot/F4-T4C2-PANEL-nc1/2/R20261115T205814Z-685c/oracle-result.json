@@ -1,0 +1,54 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261115T205814Z-685c",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "Git confirms branch architecture/workspace-persistente-rackcad; BaseSha a912f645933c476e8b4e0c1cdbb42ac46966546d is an ancestor; RedSha f1f1c7eef7653150eec09ad9ec8ed1fb762492e9 is between BaseSha and HEAD. HEAD=origin branch=b88dabf254645e83d71ec42d4fd621d19c9b87b7, which conflicts with the handoff CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef."
+  },
+  "OutputSha256": "7E78F5DA15B343628CBA052A0AE264358C8A65185DAF710A8BDF204C49C1CDE1",
+  "ManualFreeText1610": []
+}

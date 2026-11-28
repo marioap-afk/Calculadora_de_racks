@@ -1,0 +1,22 @@
+filtros de UI por separado con cobertura; copia /d/r6w; salida r6w-bc; filtros ui_filters_base19_v53.txt 07c32df84345fe20; procesos al empezar: 0 (07:56:39)
+  ui base-uif-01 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests :: filas 1 {'Passed': 1}; omitidas por origen {} json=ea6cc45f19d15102
+  ui base-uif-02 rc=0 FullyQualifiedName~RackCad.UI.Tests.Workspace :: filas 672 {'NotExecuted': 28, 'Passed': 644}; omitidas por origen {'PB-T4b': 27, 'otro': 1} json=a1c9edbedb78a699
+  ui base-uif-03 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests :: filas 2 {'Passed': 2}; omitidas por origen {} json=18a3cc4eaadc0639
+  ui base-uif-04 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization :: filas 55 {'Passed': 55}; omitidas por origen {} json=2d3cbff7789d4083
+  ui base-uif-05 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization :: filas 18 {'NotExecuted': 2, 'Passed': 16}; omitidas por origen {'otro': 2} json=2e6761ba7884f5d5
+  ui base-uif-06 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet :: filas 14 {'Passed': 14}; omitidas por origen {} json=2a50b753dd9a20d6
+  ui base-uif-07 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection :: filas 14 {'Passed': 14}; omitidas por origen {} json=edac5d84e5c7dbec
+  ui base-uif-08 rc=0 FullyQualifiedName~RackCad.UI.Tests.Cantilever :: filas 67 {'Passed': 67}; omitidas por origen {} json=91bcad8132dd143d
+  ui base-uif-09 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests :: filas 3 {'Passed': 3}; omitidas por origen {} json=098c051a2f2e5ee2
+  ui base-uif-10 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests :: filas 4 {'NotExecuted': 1, 'Passed': 3}; omitidas por origen {'PB-T4c': 1} json=4f2ad045e4709cda
+  ui base-uif-11 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests :: filas 1 {'Passed': 1}; omitidas por origen {} json=f56f009ad561c33a
+  ui base-uif-12 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests :: filas 3 {'Passed': 3}; omitidas por origen {} json=5d8b0c7fb903d114
+  ui base-uif-13 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests :: filas 3 {'Passed': 3}; omitidas por origen {} json=95c8eff51250932a
+  ui base-uif-14 rc=0 FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests :: filas 13 {'Passed': 13}; omitidas por origen {} json=7c4294bbb87784f6
+  ui base-uif-15 rc=0 FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests :: filas 10 {'Passed': 10}; omitidas por origen {} json=20e175d673a119ce
+  ui base-uif-16 rc=0 FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests :: filas 30 {'Passed': 30}; omitidas por origen {} json=87781bde878d8278
+  ui base-uif-17 rc=0 FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests :: filas 6 {'Passed': 6}; omitidas por origen {} json=17f42dd06e85ade3
+  ui base-uif-18 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests :: filas 1 {'Passed': 1}; omitidas por origen {} json=ed95d1f3874825a7
+  ui base-uif-19 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests :: filas 4 {'Passed': 4}; omitidas por origen {} json=98ef918d8943821a
+build-server shutdown rc=0
+procesos al acabar: 0 (08:05:49)

@@ -1,0 +1,23 @@
+{
+  "CheckedUtc": "2026-11-07T19:58:53Z",
+  "AcadCount": 0,
+  "RamElementsCount": 0,
+  "ChatGptOldestStartUtc": "2026-11-07T18:05:08.0793590Z",
+  "Rows": [
+    {
+      "Pid": 99164,
+      "ParentPid": 44348,
+      "Name": "codex.exe",
+      "CreationDateUtc": "2026-11-07T18:05:36.3112530Z",
+      "Classification": "ajeno: hijo de ChatGPT.exe, no lanzado por esta sesion"
+    },
+    {
+      "Pid": 65944,
+      "ParentPid": 44348,
+      "Name": "codex.exe",
+      "CreationDateUtc": "2026-11-07T18:06:34.6650400Z",
+      "Classification": "ajeno: hijo de ChatGPT.exe, no lanzado por esta sesion"
+    }
+  ],
+  "SessionModelInvocations": 0
+}

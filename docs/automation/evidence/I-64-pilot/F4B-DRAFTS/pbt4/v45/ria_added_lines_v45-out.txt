@@ -1,0 +1,191 @@
+lineas anadidas o cambiadas de RIA: 11
+  + _full = new System.Lazy<PushBackFullIntentResult>(full);
+  + internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full, PushBackPilotIntentScan input)
+  + {
+  + Pilot = pilot;
+  + _full = full;
+  + Input = input;
+  + FailureReason = string.Empty;
+  + }
+  + private readonly System.Lazy<PushBackFullIntentResult>? _full;
+  + internal PushBackFullIntentResult? Full => _full?.Value;
+  + return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftReader.Read(input, catalog)), input);
+archivos que leen el Plugin o todo src/: 152
+== tests/RackCad.Tests/BomExcel/ConsolidatedBomXlsxDetailTests.cs (1)
+   'Rack' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+== tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/CantileverPluginSourceGuardTests.cs (2)
+   '[CommandMethod("RACKCANTILEVER")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RCT")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationGuardTests.cs (1)
+   '\\b(?:public|private|internal|protected)\\s+(?:static\\s+)?[\\w<>\\[\\],.?]+\\s+' ~ private readonly System.Lazy<PushBackFullIntentResult>? _full;
+== tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs (5)
+   '[CommandMethod("RACKPROPIEDADES")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RACKPROPIEDADESPROYECTO")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RPR")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RPR")] [CommandMethod("RPRO")]' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+   '[CommandMethod("rpr")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/CustomPropertiesEdgeGuardTests.cs (2)
+   'Read' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'string' ~ FailureReason = string.Empty;
+== tests/RackCad.Tests/CustomPropertiesEnvelopeTests.cs (1)
+   '[1,{"b":null}]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/ElevationOverrideSourceGuardTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/G16FirstViewCorrectiveTests.cs (1)
+   'Rack' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+== tests/RackCad.Tests/HeaderBatchContractTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/I55DeferredProductFixCharacterizationTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/MainMenuStructuralSectionAccessGuardTests.cs (1)
+   '[CommandMethod("RACKSECCION")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/NamespaceFolderGuardTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/ProjectVariablesWorkspaceTests.cs (1)
+   '[CommandMethod("RACKVARIABLES")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackCellConfigurationDeliveryTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs (3)
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'PushBackFullDraftReader' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs (4)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RACKEDITAR")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RACKPUSHBACK")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RPB")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs (2)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RACKEDITAR")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs (3)
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackViewEraseGuardTests.cs (4)
+   ' || definition.IsLayout' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'PushBackPilot\\w*|RackPilot\\w*|RackCad\\.Application\\.Systems\\.PushBack\\.Pilot' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   '\\b(?:internal|private|public|protected)\\b' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+== tests/RackCad.Tests/PushBackWritePathGuardTests.cs (2)
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackWritePathPluginGuardTests.cs (2)
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/RackCountInvariantCharacterizationTests.cs (1)
+   'Rack' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+== tests/RackCad.Tests/RackEditPreflightCharacterizationTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/RackProjectionCommandGuardTests.cs (2)
+   '[CommandMethod("RACKPROYECTAR")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RPY")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/SelectiveDuplicationFailClosedTests.cs (2)
+   '\\b(?:public|private|internal|protected)\\s+(?:(?:static|override|virtual|sealed|async|unsaf' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   '\\b(?:throw|return|break|continue)\\b' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/SharedViewFoundationF1CharacterizationTests.cs (3)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[Fact]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[Theory]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisCantileverBoundaryTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisPluginCommandGuardTests.cs (5)
+   '[CommandMethod( "RACKRAMPAQUETE")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("Grupo", "RACKRAMPAQUETE", CommandFlags.Modal)]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RACKRAMPAQUETE")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RACKRAMPAQUETE", CommandFlags.Modal)]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("rackrampaquete")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsDumpSourceTests.cs (1)
+   'System' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/StructuralSectionPluginSourceGuardTests.cs (1)
+   '[CommandMethod("RACKSECCION")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/Workspace/WorkspaceBridgeObjectSubjectGuardTests.cs (1)
+   '\\bHandle\\b|\\bObjectId\\b|\\.\\s*Id\\b|\\.\\s*Database\\b|GetObject|OpenMode|\\.\\s*Read\\w*\\s*\\(|\\.\\' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspaceBrowserSummaryTests.cs (3)
+   'Rack' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'Read' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'Tab|Subscription|Editor|Draft' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs (2)
+   'Read' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   '\\breturn\\b' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs (6)
+   'PushBack|Selectiv|Cantilever|Cabecera|Dynamic|FlowBed|Cama|Tarima|Fondo|Header' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'System' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '\\basync\\b|\\bawait\\b|\\bTask\\b|Task\\.|\\bThread\\b|ThreadPool|\\bTimer\\b|System\\.Timers|\\bevent' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'private ' ~ private readonly System.Lazy<PushBackFullIntentResult>? _full;
+   'readonly' ~ private readonly System.Lazy<PushBackFullIntentResult>? _full;
+   'string' ~ FailureReason = string.Empty;
+== tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs (3)
+   'Pilot' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'PushBackPilotIntent|RackCad\\.Application\\.Systems\\.PushBack\\.Pilot' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+== tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs (2)
+   'Rack' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'pilot' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+== tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs (8)
+   'Draft|Navigation|PushBackPilot|Document|Autodesk' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'EditIntent|PilotIntent|RackPilotIntentAdapter|PushBackPilot|TryBeginPilotEdit|TryCheckPilo' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'Intent' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'PushBackPilot|RackCad\\.Application\\.Systems' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'RackCad\\.Application\\.Systems\\.PushBack\\.Pilot|\\bPushBackPilot\\w*' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'ReadIntent|_editIntentReader|\\bChosenReference\\b|\\bWitness\\b|HasWitnessWithoutKey|\\bPassGa' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   '\\bpilot\\b' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   'pilot' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+== tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs (1)
+   '\\breturn\\b' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs (2)
+   'System' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '^\\s*(?!public\\b|namespace\\b|using\\b)[\\w<>?,\\[\\]]+\\s+(\\w+)\\s*\\(' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+== tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs (1)
+   '[CommandMethod("RACKPANEL")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs (1)
+   '(?<![\\w.])OnIdle\\b|\\bDrained\\b|BeginInvoke|_idleScheduler|\\bTryDrain\\b|StartTransaction|Lo' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs (1)
+   '\\b(?:try|switch|case|return|foreach|if)\\b' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs (2)
+   'Subscription|Editor|Draft' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+   'Tab|Subscription|Draft|Handler' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs (3)
+   'Draft|\\bDirty\\b|\\bEditor\\b|Subscription|Commit\\(|Transaction|Provider|Metric' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+   '[CommandMethod("X")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'return' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs (5)
+   'Draft|Editor|Subscription|Tab' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+   '\\bDraft\\w*|\\bPushBack\\w*|RackCad\\.Application\\.Systems|Workspace\\.Drafts' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '\\bPushBackPilot\\w*|RackCad\\.Application\\.Systems\\.PushBack\\.Pilot' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   '\\b[A-Za-z_]\\w*\\b' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'return' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs (2)
+   '\\bprivate\\b' ~ private readonly System.Lazy<PushBackFullIntentResult>? _full;
+   '\\bprivate\\b|\\breadonly\\b|\\bstatic\\s+[^(){};=]*[;=]' ~ private readonly System.Lazy<PushBackFullIntentResult>? _full;
+== tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs (5)
+   'GetObject|StartTransaction|LockDocument|OpenMode|\\.Database\\b|\\.Read\\w*\\s*\\(' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+   'PushBackPilot\\w*|RackPilot\\w*|RackCad\\.Application\\.Systems\\.PushBack\\.Pilot' ~ internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full
+   '[CommandMethod("X")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '\\b(?:private|internal|public|protected)\\s+(?:static\\s+|readonly\\s+)*[\\w.<>?\\[\\],]+\\s+\\w+\\s' ~ private readonly System.Lazy<PushBackFullIntentResult>? _full;
+   'string.Empty' ~ FailureReason = string.Empty;
+== tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs (2)
+   '[CommandMethod("RACKPANEL")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '[CommandMethod("RACKPANELDESCARTAR")]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.UI.Tests/DialogWindowCharacterizationTests.cs (1)
+   'Result' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.UI.Tests/DynamicHeaderReuseWindowTests.cs (1)
+   '[override]' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.UI.Tests/EditorVisualShellTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs (1)
+   'PushBack' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+== tests/RackCad.Tests/PushBackFullReadPathTests.cs (2)
+   'PushBackFullDraftReader\\.Read\\s*\\(' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+   'PushBackFullDraftReader\\.Read\\s*\\(\\s*input\\s*,\\s*catalog\\s*\\)' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe
+== tests/RackCad.Tests/PushBackFullReadGuardTests.cs (3)
+   '(?:\\bvar|[\\w<>\\[\\]?,.]+)?\\s+(\\w+)\\s*=(?![=>])\\s*([^;{}]*)' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   '(?:\\s*\\??\\.\\s*\\w+(?:\\s*\\([^()]*\\))?|\\s*\\[[^\\]]*\\])' ~ _full = new System.Lazy<PushBackFullIntentResult>(full);
+   'PushBackFullDraftReader' ~ return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftRe

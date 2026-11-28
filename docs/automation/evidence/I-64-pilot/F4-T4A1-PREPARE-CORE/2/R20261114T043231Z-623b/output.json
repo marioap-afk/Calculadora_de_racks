@@ -1,0 +1,75 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4A1-PREPARE-CORE",
+  "RunId": "R20261114T043231Z-623b",
+  "DelegationRunId": "R20261114T033032Z-81dc",
+  "WorkRunId": "R20261114T033524Z-deb3",
+  "Attempt": 2,
+  "VerifiedSha": "bbd9a35e242788f7fa5864dccb3e9d3353b043ee",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true; cession started 2026-11-14T03:35:36Z; handoff OutputWrittenUtc=2026-11-13T22:10:51.801789-06:00, which is later."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json has TaskId F4-T4A1-PREPARE-CORE, Attempt 2, DelegationRunId R20261114T033032Z-81dc, RunId R20261114T033524Z-deb3; path matches ExpectedHandoffPath after WorkRunId substitution; output hash matches relay-record-work.json."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git show -s --format='%H %P' BaseSha returned 443b5b3a... with sole parent 6d7c2223...; merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha listed only three docs/ unit records. Diff of listed EXTERNAL paths from MainSha to AuthorityRevision was empty."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json Result=PASS; all 8 collections have equal decoded values and UTF-8 bytes, including invariants, tests, stop conditions, authorities and scopes. Planning record reports A1-A8=8 pass; delegation identity fields match the contract."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned bbd9a35e...; branch and worktree match delegation. merge-base --is-ancestor BaseSha CurrentSha and RedSha CurrentSha both exited 0. git show confirmed RED 921e3a36... then GREEN bbd9a35e...."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=bbd9a35e..., OriginMainSha=812baf87..., equal to CurrentSha and MainSha respectively; CurrentRun head matches CurrentSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha listed 21 paths; all 21 match exact entries in delegation.json AllowedWriteScope; zero paths outside that list and zero ForbiddenWriteScope matches. git diff --name-only RedSha..CurrentSha lists 4 src paths and no tests/ paths."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the handoff path returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 43554278196 is completed push to refs/heads/architecture/workspace-persistente-rackcad at bbd9a35e...; all four required jobs succeeded. RedRun 43553634960 is completed push to the same ref at 921e3a36...; Tests (Domain + Application) failed as required for RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX filter by UnitTestResult testName containing RackCad.Tests.Workspace / RackCad.UI.Tests.Workspace: Current Core 2914 selected, 2914 passed; RED Core 2914 selected, 2817 passed, 97 failed. Current and RED UI each selected 460, all passed. Handoff local results report Core RED 2843 selected/97 failed and GREEN 2843 passed; UI 458 passed; counts exceed minima and RED failure count agrees. RT=ChainRedFiles: 13 paths from git diff --name-only ChainBaseSha RedSha -- tests/: CustomPropertiesEnvelopeGuardTests.cs, CustomPropertiesEnvelopeTests.cs, WorkspaceCommandAdvisorTests.cs, WorkspaceDraftPilotMaterializationTests.cs, WorkspaceDraftRegistryTests.cs, WorkspaceEditIntentGuardTests.cs, WorkspaceEditIntentHostTests.cs, WorkspaceHostHardeningGuardTests.cs, WorkspaceLifecycleGuardTests.cs, WorkspacePilotEditGuardTests.cs, WorkspacePilotPrepareGuardTests.cs, WorkspacePilotPrepareTests.cs, RackCad.Tests.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs. GREEN diff touches none of RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha returned two commits; both contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer and effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with Deep/high. relay-record-work.json records the permitted transport alias sonnet, effective model claude-sonnet-5-5 and effective effort high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against the AUTOMATION_PLAN 16.10 terms; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials, 0 tool errors and none pending; no limit warning. Outcome confirms the Worker completed."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [],
+  "RecommendedNextAction": "Registrar esta verificacion y devolver el resultado al Coordinator."
+}

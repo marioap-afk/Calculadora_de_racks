@@ -1,0 +1,189 @@
+::class WorkspacePilotFieldViewModel
+WorkspacePilotFieldViewModel::const NoDraftMarker
+WorkspacePilotFieldViewModel::enum ChoiceKind
+WorkspacePilotFieldViewModel.ChoiceKind::enum-member None
+WorkspacePilotFieldViewModel.ChoiceKind::enum-member DiscardAndReload
+WorkspacePilotFieldViewModel.ChoiceKind::enum-member KeepMine
+WorkspacePilotFieldViewModel::const UnchangedText
+WorkspacePilotFieldViewModel::const StillInConflictText
+WorkspacePilotFieldViewModel::const NotEditableConfirmedText
+WorkspacePilotFieldViewModel::const ExternalChangeText
+WorkspacePilotFieldViewModel::const ConflictOwnWorkText
+WorkspacePilotFieldViewModel::const ConflictPendingTextText
+WorkspacePilotFieldViewModel::const NotEditableConflictText
+WorkspacePilotFieldViewModel::const RecoveredText
+WorkspacePilotFieldViewModel::const NotCheckedSuffix
+WorkspacePilotFieldViewModel::const UnknownConflictText
+WorkspacePilotFieldViewModel::const ChangedDuringCheckText
+WorkspacePilotFieldViewModel::const DraftGoneText
+WorkspacePilotFieldViewModel::const WhatChangedPrefix
+WorkspacePilotFieldViewModel::const CausePrefix
+WorkspacePilotFieldViewModel::const NoDetailText
+WorkspacePilotFieldViewModel::const UnknownCheckText
+WorkspacePilotFieldViewModel::const UnknownAppliedText
+WorkspacePilotFieldViewModel::const PendingBlocksKeepText
+WorkspacePilotFieldViewModel::const DiscardWithWorkText
+WorkspacePilotFieldViewModel::const DiscardPendingSuffix
+WorkspacePilotFieldViewModel::const ReloadWithoutWorkText
+WorkspacePilotFieldViewModel::const KeepPrefix
+WorkspacePilotFieldViewModel::const KeepSuffix
+WorkspacePilotFieldViewModel::const NoValueText
+WorkspacePilotFieldViewModel::const ReloadAppliedText
+WorkspacePilotFieldViewModel::const ReloadedText
+WorkspacePilotFieldViewModel::const KeptText
+WorkspacePilotFieldViewModel::const NotAppliedChoiceText
+WorkspacePilotFieldViewModel::const NothingDoneSuffix
+WorkspacePilotFieldViewModel::const SituationChangedText
+WorkspacePilotFieldViewModel::const ChoiceCancelledText
+WorkspacePilotFieldViewModel::const SurfaceChangedText
+WorkspacePilotFieldViewModel::const ApplyingText
+WorkspacePilotFieldViewModel::const UpdateAppliedText
+WorkspacePilotFieldViewModel::const UpdateAppliedWithWarningsPrefix
+WorkspacePilotFieldViewModel::const UpdateConflictPrefix
+WorkspacePilotFieldViewModel::const UpdateNotAppliedPrefix
+WorkspacePilotFieldViewModel::const UpdateClosedInErrorPrefix
+WorkspacePilotFieldViewModel::const UpdateClosedDetachedText
+WorkspacePilotFieldViewModel::const UpdateAnotherInProgressText
+WorkspacePilotFieldViewModel::const UpdateUnrecognizedText
+WorkspacePilotFieldViewModel::const UpdateNotStartedSuffix
+WorkspacePilotFieldViewModel::const UpdateNotStartedPrefix
+WorkspacePilotFieldViewModel::const UpdateAbortedPrefix
+WorkspacePilotFieldViewModel::const UpdateKeptText
+WorkspacePilotFieldViewModel::const UpdateRefusedPrefix
+WorkspacePilotFieldViewModel::const UpdateNothingToApplyPrefix
+WorkspacePilotFieldViewModel::const UpdatePendingTextPrefix
+WorkspacePilotFieldViewModel::const UpdateRejectedPrefix
+WorkspacePilotFieldViewModel::const UpdateNoDraftPrefix
+WorkspacePilotFieldViewModel::const UpdateNotApplicablePrefix
+WorkspacePilotFieldViewModel::const UpdateFailedPrefix
+WorkspacePilotFieldViewModel::const UpdateUnavailablePrefix
+WorkspacePilotFieldViewModel::const UpdateWaitingPrefix
+WorkspacePilotFieldViewModel::const UpdateBusyPrefix
+WorkspacePilotFieldViewModel::const DifferencesPrefix
+WorkspacePilotFieldViewModel::const WarningsPrefix
+WorkspacePilotFieldViewModel::const ListSeparator
+WorkspacePilotFieldViewModel::const EditAllNotOpenedPrefix
+WorkspacePilotFieldViewModel::const EditAllAppliedText
+WorkspacePilotFieldViewModel::const EditAllNothingAppliedText
+WorkspacePilotFieldViewModel::const ClassifiedAppliedName
+WorkspacePilotFieldViewModel::const ClassifiedAppliedWithWarningsName
+WorkspacePilotFieldViewModel::const ClassifiedConflictName
+WorkspacePilotFieldViewModel::const ClassifiedAdmissionName
+WorkspacePilotFieldViewModel::const ClassifiedPreflightName
+WorkspacePilotFieldViewModel::const ClassifiedFailureName
+WorkspacePilotFieldViewModel::const ClassifiedCommitThrewName
+WorkspacePilotFieldViewModel::const ClassifiedPostRereadName
+WorkspacePilotFieldViewModel::const ClassifiedNoneName
+WorkspacePilotFieldViewModel::field/property _port
+WorkspacePilotFieldViewModel::field/property _changed
+WorkspacePilotFieldViewModel::field/property _session
+WorkspacePilotFieldViewModel::field/property _rack
+WorkspacePilotFieldViewModel::field/property _isPreview
+WorkspacePilotFieldViewModel::field/property _view
+WorkspacePilotFieldViewModel::field/property _text
+WorkspacePilotFieldViewModel::field/property _editable
+WorkspacePilotFieldViewModel::field/property _showEdit
+WorkspacePilotFieldViewModel::field/property _showReload
+WorkspacePilotFieldViewModel::field/property _showDiscard
+WorkspacePilotFieldViewModel::field/property _stateText
+WorkspacePilotFieldViewModel::field/property _messageText
+WorkspacePilotFieldViewModel::field/property _noticeText
+WorkspacePilotFieldViewModel::field/property _diagnostic
+WorkspacePilotFieldViewModel::field/property _hint
+WorkspacePilotFieldViewModel::field/property _readyNote
+WorkspacePilotFieldViewModel::field/property _failure
+WorkspacePilotFieldViewModel::field/property _inFlight
+WorkspacePilotFieldViewModel::field/property _persistDiagnostic
+WorkspacePilotFieldViewModel::field/property _persistHint
+WorkspacePilotFieldViewModel::field/property _choice
+WorkspacePilotFieldViewModel::field/property _choiceSession
+WorkspacePilotFieldViewModel::field/property _choiceRack
+WorkspacePilotFieldViewModel::field/property _choiceState
+WorkspacePilotFieldViewModel::field/property _choiceProtected
+WorkspacePilotFieldViewModel::field/property _choicePending
+WorkspacePilotFieldViewModel::field/property _choiceCommitted
+WorkspacePilotFieldViewModel::field/property _choiceOrigin
+WorkspacePilotFieldViewModel::field/property _choiceText
+WorkspacePilotFieldViewModel::field/property _keepWitness
+WorkspacePilotFieldViewModel::field/property _keepLines
+WorkspacePilotFieldViewModel::method WorkspacePilotFieldViewModel(IWorkspacePilotEditPort port, Action changed = null)
+WorkspacePilotFieldViewModel::field/property IsAvailable
+WorkspacePilotFieldViewModel::field/property Text
+WorkspacePilotFieldViewModel::field/property IsEditable
+WorkspacePilotFieldViewModel::field/property IsReadOnly
+WorkspacePilotFieldViewModel::field/property ShowEditButton
+WorkspacePilotFieldViewModel::field/property ShowEditAllButton
+WorkspacePilotFieldViewModel::field/property CanOpenByGesture
+WorkspacePilotFieldViewModel::field/property ShowReloadButton
+WorkspacePilotFieldViewModel::field/property ShowDiscardButton
+WorkspacePilotFieldViewModel::field/property ShowCheckButton
+WorkspacePilotFieldViewModel::field/property ShowUpdateButton
+WorkspacePilotFieldViewModel::field/property ShowDiscardAndReloadButton
+WorkspacePilotFieldViewModel::field/property ShowKeepMineButton
+WorkspacePilotFieldViewModel::field/property HasChoice
+WorkspacePilotFieldViewModel::field/property ChoiceText
+WorkspacePilotFieldViewModel::field/property KeepMinePresentationText
+WorkspacePilotFieldViewModel::field/property ShowKeepMinePresentation
+WorkspacePilotFieldViewModel::field/property ReconcileText
+WorkspacePilotFieldViewModel::field/property StateText
+WorkspacePilotFieldViewModel::field/property MessageText
+WorkspacePilotFieldViewModel::field/property NoticeText
+WorkspacePilotFieldViewModel::field/property NotEditableText
+WorkspacePilotFieldViewModel::field/property ClassicEditorHintText
+WorkspacePilotFieldViewModel::method Show(SessionId session, string rackId, bool isPreview)
+WorkspacePilotFieldViewModel::method Clear()
+WorkspacePilotFieldViewModel::method Fail(Exception exception)
+WorkspacePilotFieldViewModel::method ShowNotice(string notice)
+WorkspacePilotFieldViewModel::method BeginEdit()
+WorkspacePilotFieldViewModel::method EditAll()
+WorkspacePilotFieldViewModel::method CommitPending()
+WorkspacePilotFieldViewModel::method Rematerialize()
+WorkspacePilotFieldViewModel::method CheckNow()
+WorkspacePilotFieldViewModel::method Update()
+WorkspacePilotFieldViewModel::method RequestDiscardAndReload()
+WorkspacePilotFieldViewModel::method RequestKeepMine()
+WorkspacePilotFieldViewModel::method ConfirmChoice()
+WorkspacePilotFieldViewModel::method CancelChoice()
+WorkspacePilotFieldViewModel::method Origin()
+WorkspacePilotFieldViewModel::method IsMine(SessionId session, string rack)
+WorkspacePilotFieldViewModel::method ResetSurfaceState()
+WorkspacePilotFieldViewModel::method ClearNotices()
+WorkspacePilotFieldViewModel::method RemoveChoice()
+WorkspacePilotFieldViewModel::method Render()
+WorkspacePilotFieldViewModel::method EditableOf(PilotFieldView view)
+WorkspacePilotFieldViewModel::method OnPinnedSurface(PilotFieldView view)
+WorkspacePilotFieldViewModel::method OffersCheck(PilotFieldView view)
+WorkspacePilotFieldViewModel::method OffersChoice(PilotFieldView view, ChoiceKind kind)
+WorkspacePilotFieldViewModel::method AskChoice(ChoiceKind kind)
+WorkspacePilotFieldViewModel::method ChoiceTextOf(ChoiceKind kind, PilotFieldView view)
+WorkspacePilotFieldViewModel::method PresentSurfaceChange()
+WorkspacePilotFieldViewModel::method PresentConfirm(EditConfirmOutcome outcome)
+WorkspacePilotFieldViewModel::method ConfirmNoticeOf(EditConfirmOutcome outcome)
+WorkspacePilotFieldViewModel::method PresentCheck(EditCheckOutcome outcome)
+WorkspacePilotFieldViewModel::method CheckNoticeOf(EditCheckOutcome outcome)
+WorkspacePilotFieldViewModel::method PresentChoice(ChoiceKind kind, EditIntentOutcome outcome)
+WorkspacePilotFieldViewModel::method OffersUpdate(PilotFieldView view)
+WorkspacePilotFieldViewModel::method PresentProgress(EditUpdateProgress progress, bool paint)
+WorkspacePilotFieldViewModel::method PresentStart(EditUpdateStart start)
+WorkspacePilotFieldViewModel::method PresentStopped(PilotBoundaryResult crossed)
+WorkspacePilotFieldViewModel::method AbortReasonOf(PilotBoundaryResult crossed)
+WorkspacePilotFieldViewModel::method UpdateStartPrefixOf(EditUpdateStartStatus status)
+WorkspacePilotFieldViewModel::method UpdateNoticeOf(EditUpdateOutcome outcome)
+WorkspacePilotFieldViewModel::method ClosedInErrorTextOf(EditUpdateOutcome outcome)
+WorkspacePilotFieldViewModel::method ClassificationNameOf(EditUpdateStatus classification)
+WorkspacePilotFieldViewModel::method JoinOrNoDetail(IReadOnlyList<string> lines)
+WorkspacePilotFieldViewModel::method ReconcileTextOf(PilotFieldView view)
+WorkspacePilotFieldViewModel::method Apply(PilotFieldView view)
+WorkspacePilotFieldViewModel::method StateOf(PilotFieldView view)
+WorkspacePilotFieldViewModel::method ErrorDetailOf(PilotFieldView view)
+WorkspacePilotFieldViewModel::method NameOf(PilotFieldState state)
+WorkspacePilotFieldViewModel::method EnterFailure(Exception exception)
+WorkspacePilotFieldViewModel::method RaiseAll()
+WorkspacePilotFieldViewModel::method RefusalOf(PilotFieldResult result)
+WorkspacePilotFieldViewModel::method DetailOf(string reason)
+WorkspacePilotFieldViewModel::method Describe(EditIntentStatus status, string reason)
+WorkspacePilotFieldViewModel::method EditAllNoticeOf(EditAllOutcome outcome)
+WorkspacePilotFieldViewModel::method SentenceOf(string text)
+WorkspacePilotFieldViewModel::method CheckPrefixOf(EditConfirmStatus status)
+WorkspacePilotFieldViewModel::method CheckPrefixOf(EditCheckStatus status)
+WorkspacePilotFieldViewModel::method ChoicePrefixOf(EditIntentStatus status)

@@ -1,0 +1,12 @@
+Serie de pruebas para <copia>\tests\RackCad.UI.Tests\bin\Debug\net8.0-windows\RackCad.UI.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:06.62]     RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05_TheSixAdvancedParametersAfterRestoreStandardAreResetInTheOutputAndComeBackOnUpdate [SKIP]
+  Omitidas RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05_TheSixAdvancedParametersAfterRestoreStandardAreResetInTheOutputAndComeBackOnUpdate [1 ms]
+[xUnit.net 00:00:09.39]     RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19_TheFieldsThatPassThroughAFormattedControlComeBackRoundedToThreeDecimals [SKIP]
+  Omitidas RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19_TheFieldsThatPassThroughAFormattedControlComeBackRoundedToThreeDecimals [1 ms]
+Archivo de resultados: <copia>\_trx\ui-05.trx
+
+Correctas! - Con error:     0, Superado:    16, Omitido:     2, Total:    18, Duración: 13 s - RackCad.UI.Tests.dll (net8.0)

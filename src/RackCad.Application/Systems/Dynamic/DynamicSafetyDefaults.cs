@@ -46,6 +46,22 @@ namespace RackCad.Application.Systems.Dynamic
 
             return result;
         }
+
+        /// <summary>
+        /// The defaults of a NEW Dinámico (I-64, cuarta tanda; decision of the Owner of 2026-11-26): <see cref="Build"/>, with the off cells
+        /// of its desviador read by post (<see cref="SelectiveDesviadorConfig.CellsByPost"/>), so its last post governs its own desviador.
+        /// Push Back keeps <see cref="Build"/>: its authority already reads them by post (PB-002).
+        /// </summary>
+        public static IReadOnlyList<SelectiveSafetySelection> BuildForDynamic(RackCatalog catalog)
+        {
+            var result = Build(catalog);
+            foreach (var selection in result.Where(s => SelectiveSafetyFamilies.SelectedOfType(new[] { s }, catalog?.SafetyElements, SelectiveSafetyDefaults.DesviadorType) != null))
+            {
+                selection.Desviador.CellsByPost = true;
+            }
+
+            return result;
+        }
     }
 
     /// <summary>

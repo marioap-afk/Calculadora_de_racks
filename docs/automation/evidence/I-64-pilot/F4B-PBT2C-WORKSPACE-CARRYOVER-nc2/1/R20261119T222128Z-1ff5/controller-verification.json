@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT2C-WORKSPACE-CARRYOVER",
+  "RunId": "R20261119T222128Z-1ff5",
+  "DelegationRunId": "R20261119T203120Z-65ce",
+  "WorkRunId": "R20261119T203340Z-05b7",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true, TreeKilled=false, LaunchedPid=null; terminal event is final subagent completion."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists and has matching TaskId, DelegationRunId, Attempt=1, WorkRunId; Outcome.OutputWrittenUtc=2026-11-19T16:06:55.570544-06:00 is after Cession.StartUtc=2026-11-19T20:33:46Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 92232ed3ded1422ae375a06ed5858600faceaf0c 05beabfdd9efa5bb530860dc156f5832e4e452c2 exited 0; git show confirms BaseSha has AuthorityRevision as its only parent. git diff --name-only AuthorityRevision BaseSha lists four docs paths; none is EXTERNAL or UNIT_CHANGE in delegation.json."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json: 11 invariants and 39 RequiredTests match; delegated AllowedWriteScope has two entries covered by the contract scope, and forbidden prefixes are consistent. byte-fidelity-check.json records PASS for all eight collections; relay-record-planning.json records A1-A8 8/8 and nc4."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Handoff CurrentSha=b19683412ec1202bac141aa80654eddad274a023; git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return that SHA. Branch and worktree match delegation.json. git merge-base --is-ancestor BaseSha CurrentSha exits 0; RedSha 7aeb61707b7ffaccd2e15c1366ade039c7ecd674 is between BaseSha and CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records Exit LsRemoteSha=BaseSha and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383=MainSha; Entry LsRemoteSha=CurrentSha. No main movement is recorded."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "Read-only scope comparison used git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests against all 2 exact delegation AllowedWriteScope entries. BaseSha..CurrentSha has tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs, allowed=false. BaseSha..RedSha has that path (false) plus W and WC (true); ChainBaseSha..CurrentSha -- src tests has the test path (false)."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned no entries. git check-ignore on artifacts/orchestration/I-64/F4B-PBT2C-WORKSPACE-CARRYOVER-nc2/1/R20261119T222128Z-1ff5/inputs/worker-handoff.json returned the ignored path."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records push run 44619492077 for CurrentSha on the exact branch, completed success; all four required jobs are success. Push run 44618262418 for RedSha is completed failure: Core and UI tests fail, Build UI succeeds, Plugin build is skipped. RedPart matches the contract."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed the four supplied CI TRX files. Current Core: 19094 passed, 0 failed; Current UI: 2450 total, 2429 passed, 0 failed, 21 skipped. All 39 RequiredTests filters meet MinSelected and have no CurrentSha failures. The RED Carryover filter selected 3 and failed all 3 with no skipped results; each isolated mutant TRX records its row CT failing (m1: CT-PBT2C-01; m2: CT-PBT2C-02; m3: CT-PBT2C-03 and CT-PBT2C-02). RED CI records 1 Core failure and 23 UI failures; relay Notes records the existing failing tests and no unnamed failures in the delivery. git diff --name-only RedSha CurrentSha -- tests is empty; ChainRedFiles is tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows the RED and GREEN commits each include Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json requests claude-sonnet-5-5 and effort high. relay-record-work.json records ModelRequested=sonnet (subagent family launch alias), ModelEffective=claude-sonnet-5-5, and EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only PowerShell scan of the complete seven worker-handoff free-text fields against all 16.10 terms, case-insensitive and whole-word/phrase: no matches. Field lengths: WorkCompleted 11429, Evidence 3821, UnexpectedFindings 1283, KnownLimitations 849, Deviations 0, OpenQuestions 0, RecommendedNextAction 294."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes records 0 permission denials and 5 tool results with errors, none pending; no failed order remains. Entry has 0 persistent participants and 0 persistent unattributable processes."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "PBT2C-C01"
+  ],
+  "Findings": [
+    "The test class changed between BaseSha and CurrentSha but is absent from the delegation's exact AllowedWriteScope. This also makes it absent from the closed scope comparison for the RED and chain ranges."
+  ],
+  "RecommendedNextAction": "Issue a corrected delegation that includes the new test class path in AllowedWriteScope, then verify the delivery against that scope."
+}

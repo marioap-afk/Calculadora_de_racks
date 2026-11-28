@@ -1,0 +1,13 @@
+origen	ruta	miembro
+compilacion v0 CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotStateComparer' no se encontró (¿falta una directiva using o una referencia de ensamblado?)	tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs	Comparer
+compilacion v0 CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotComposition' no se encontró (¿falta una directiva using o una referencia de ensamblado?)	tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs	Assemble
+compilacion v0 CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotStateComparer' no se encontró (¿falta una directiva using o una referencia de ensamblado?)	tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs	Comparer
+compilacion v0 CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual	tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs	Key
+compilacion v0 CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual	tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs	AnInvalidTextAndTheGestureOfTheFieldAnswerInvalidKeepTheTextAsTypedAndLeaveTheValue
+compilacion v0 CS0117: 'PushBackPilotMaterializer' no contiene una definición para 'ComposeForWrite'	tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs	PilotoEscribe
+compilacion v0 CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual	tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs	Iguales
+compilacion v0 CS0117: 'PushBackPilotMaterializer' no contiene una definición para 'ComposeForWrite'	tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs	AssertRoundTripByteForByte
+compilacion v0 CS0246: El nombre del tipo o del espacio de nombres 'PushBackPilotFieldAdapter' no se encontró (¿falta una directiva using o una referencia de ensamblado?)	tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs	TheAdapterGivesTheSameVerdictAndMessageAsTheClassicBoxInEveryCulture
+compilacion v0 CS0103: El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual	tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs	AValidTextAppliesTheSameNumberTheClassicBoxParses
+compilacion v0 CS0117: 'PushBackPilotMaterializer' no contiene una definición para 'ComposeForWrite'	tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs	PilotWrites
+compilacion v0 CS0103: El nombre 'PushBackPilotStateComparer' no existe en el contexto actual	tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs	TheDocumentThePilotWritesAfterKeepMineOpensInTheClassicWindowWithTheNewBaseAndTheScaleOfTheDraft

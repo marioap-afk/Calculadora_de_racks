@@ -1,0 +1,17 @@
+lector 7585a87e6af828ad8847249ee44b4a5545b399455231eebbc3e5d09edf38b0b8
+paquete d19dd8300d32244a609281b2f819e4b298da5acdd49efc64ec439b2c77dbcfe7
+errores 0
+PushBackEditAllTests                         tipo=ct       filas=1 lineas=45 valores=['2.5', '3'] pendiente=0 = las de sus CT
+PushBackEditAllGuardTests                    tipo=ct       filas=1 lineas=11 valores=[] pendiente=0 = las de sus CT
+PushBackOpenerClassicPathGuardTests          tipo=ct       filas=1 lineas=54 valores=[] pendiente=0 = las de sus CT
+PushBackDraftLaunchGuardTests                tipo=ct       filas=1 lineas=26 valores=[] pendiente=0 
+PushBackEditAllWindowTests                   tipo=ct       filas=1 lineas=15 valores=['4.5'] pendiente=0 = las de sus CT
+PushBackEditAllPortEquivalenceGuardTests     tipo=sin-fila filas=0 lineas=0 valores=[] pendiente=1 
+    PENDIENTE la clase no tiene fila en la tabla de RR-3 de PB-T4c
+PushBackEditAllNameWritersGuardTests         tipo=sin-fila filas=0 lineas=0 valores=[] pendiente=1 
+    PENDIENTE la clase no tiene fila en la tabla de RR-3 de PB-T4c
+PushBackEditAllFullCopyGuardTests            tipo=sin-fila filas=0 lineas=0 valores=[] pendiente=1 
+    PENDIENTE la clase no tiene fila en la tabla de RR-3 de PB-T4c
+PushBackEditAllApplyCloseTests               tipo=sin-fila filas=0 lineas=0 valores=[] pendiente=1 
+    PENDIENTE la clase no tiene fila en la tabla de RR-3 de PB-T4c
+RESULTADO PASA

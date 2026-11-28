@@ -1,0 +1,88 @@
+{
+  "RunId": "R20261109T062522Z-e8be",
+  "ExitCode": 0,
+  "EventTypes": [
+    "item.completed",
+    "item.started",
+    "thread.started",
+    "turn.completed",
+    "turn.started"
+  ],
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1befc-a5ab-72a3-85cd-8be748e0f5c0",
+  "Usage": {
+    "input_tokens": 49378,
+    "cached_input_tokens": 24448,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 298,
+    "reasoning_output_tokens": 0
+  },
+  "Commands": [
+    {
+      "Command": "<pwsh> -NoProfile -Command 'git rev-parse HEAD'",
+      "Exit": 0,
+      "NoProfile": true
+    },
+    {
+      "Command": "<pwsh> -NoProfile -Command 'git rev-parse origin/main'",
+      "Exit": 0,
+      "NoProfile": true
+    },
+    {
+      "Command": "<pwsh> -NoProfile -Command 'git rev-parse HEAD:docs/automation/state/I-64.yml'",
+      "Exit": 0,
+      "NoProfile": true
+    }
+  ],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OracleMatch": {
+    "HeadSha": true,
+    "OriginMainSha": true,
+    "StateBlob": true
+  },
+  "OutputSha256": "97BEAD4399B2212330A35E3D0202A9808B6D086DAD2505B5179EC60F91F10310",
+  "Oracle": {
+    "HeadSha": "d4a97950c2757d09f971a66621e7262e385ad818",
+    "OriginMainSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "StateBlob": "0061dc2166fed116531a5bc45b39110f5b0f525f"
+  },
+  "CliVersion": "0.167.0-alpha.3.2",
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "PermissionProfile": {
+    "type": "managed",
+    "file_system": {
+      "type": "restricted",
+      "entries": [
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "root"
+            }
+          },
+          "access": "read"
+        }
+      ]
+    },
+    "network": "restricted"
+  },
+  "CollaborationSettings": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "developer_instructions": null
+  },
+  "Effective": [
+    "gpt-6.1-sol",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-11-09T00-26-31-01a1befc-a5ab-72a3-85cd-8be748e0f5c0.jsonl",
+  "EffectiveSourceSha256": "D4C807FF08408ED996BC0599E6BED0613A81180128E0A3D6403ABF8E4BC133C7",
+  "LimitPatternContexts": {},
+  "EventsSha256": "A4684A9F0DCB4309984F5F58627F5CFD6095DF6F1ACBBEB4E5B9135DB5AE37C5",
+  "StderrBytes": 39,
+  "StderrText": "Reading additional input from stdin...\n",
+  "Pass": true
+}

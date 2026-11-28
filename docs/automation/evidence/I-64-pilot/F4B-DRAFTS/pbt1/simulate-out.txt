@@ -1,0 +1,60 @@
+
+== variante A (retira tambien los comentarios de documentacion)
+  hunks de difflib W=37 WC=4 (ediciones previstas W=37 WC=4)
+  INV-PBT1C-03 W con los rangos de members.py: hunks=37 fuera=3 [('@@ -101,1', {'fuera de todo miembro': [], 'miembros fuera de la lista': ['lastComputation']}), ('@@ -324,49', {'fuera de todo miembro': ['325-341'], 'miembros fuera de la lista': []}), ('@@ -1288,10', {'fuera de todo miembro': ['1288-1290'], 'miembros fuera de la lista': []})]
+  INV-PBT1C-03 WC con los rangos de members.py: hunks=4 fuera=1 [('@@ -811,124', {'fuera de todo miembro': ['811-812', '815-826'], 'miembros fuera de la lista': []})]
+  INV-PBT1C-03 W con generalPallet=W:101: hunks=37 fuera=2 [('@@ -324,49', {'fuera de todo miembro': ['325-341'], 'miembros fuera de la lista': []}), ('@@ -1288,10', {'fuera de todo miembro': ['1288-1290'], 'miembros fuera de la lista': []})]
+  INV-PBT1C-03 W con generalPallet=W:101 y la documentacion de los retirados: hunks=37 fuera=0 []
+  INV-PBT1C-03 WC con la documentacion de los retirados: hunks=4 fuera=0 []
+  lineas anadidas=46 quitadas=298
+  T-SG sobre la simulacion: {'CT-22': True, 'S-9': True, 'S-7': True, 'CT-23': True, 'CT-19': True}
+  linea siguiente a cada SetName/Adopt: [(277, 'SyncName();'), (301, 'SyncName();'), (317, 'SyncName();'), (1132, 'SyncName();'), (3234, 'SyncName();'), (3288, 'SyncName();'), (3388, 'SyncName();')]
+  .RequestUpdate( en W: 1
+  tokens prohibidos en lineas anadidas: []
+  literal PhysicalPostIndex(LateralSectionBox.SelectedItem)    en W: True
+  literal corte.PostIndex == section                           en W: True
+  literal RequestStandardRestore()                             en W: True
+  literal desviadorLevelsPerPost: DesviadorLevelsPerPost()     en W: True
+  literal showDesviadorSide: false                             en W: True
+  forceRebuild: / forceRebuild) en W: False False
+  SetNumber( en lineas anadidas=0 quitadas=0
+  siembras de D-13 (4) en LoadFromModel, identicas y en orden: True
+  primera sentencia del try de LoadFromModel: editable.AdoptCarriers(inputs, catalog);
+  linea siguiente a editable.LoadDesignEditor( ['UpdateCompositeEnabled();', 'UpdateCompositeEnabled();']
+  linea siguiente a editable.RestoreEditor( ['UpdateCompositeEnabled();']
+  costuras base=40 sim=41; nuevas: ['internal PushBackEditableState EditableStateForTest => editable;']; perdidas: []
+  CT-PBT1C-03 (sim): campos=[] SideAOnly=False LoadCompositeFromDesign=False ParkDormantTail(=False IsBlocked=True AdoptCarriers-primera=True BuildInputs=True costura=True
+  CT-PBT1C-03 (base): campos=['safetySelections', 'generalPallet', 'rackTolerance', 'rackPostPeralte', 'rackBeamDepth', 'rackAnnotationScale', 'advanced', 'firstLevelDatum', 'loadedDimensionViews', 'loadedDimensionStyle', 'dimensionViewsTouched'] SideAOnly=True LoadCompositeFromDesign=True ParkDormantTail(=True IsBlocked=False AdoptCarriers-primera=False BuildInputs=False costura=False
+  lineas anadidas que asignan Name de una referencia de D2: []
+  G-L1 CT-PBT1C-04 base 2f5d3dec (W, WC): miembros=320 {'1': 0, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} alias=[('module', 'lambda'), ('outputIsBlocked', 'asignacion'), ('reconciliation', 'asignacion')]
+  G-L1 CT-PBT1C-04 simulacion A (W, WC): miembros=310 {'1': 0, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} alias=[('module', 'lambda'), ('outputIsBlocked', 'asignacion'), ('reconciliation', 'asignacion')]
+
+== variante B (solo el rango del miembro)
+  hunks de difflib W=37 WC=5 (ediciones previstas W=37 WC=5)
+  INV-PBT1C-03 W con los rangos de members.py: hunks=37 fuera=1 [('@@ -101,1', {'fuera de todo miembro': [], 'miembros fuera de la lista': ['lastComputation']})]
+  INV-PBT1C-03 WC con los rangos de members.py: hunks=5 fuera=0 []
+  INV-PBT1C-03 W con generalPallet=W:101: hunks=37 fuera=0 []
+  INV-PBT1C-03 W con generalPallet=W:101 y la documentacion de los retirados: hunks=37 fuera=0 []
+  INV-PBT1C-03 WC con la documentacion de los retirados: hunks=5 fuera=0 []
+
+== G-L1 de CT-PBT1B-14 sobre 2f5d3dec (los 4 archivos nuevos, ES, EL, CS, CA, DA, RMES, RackModuleReconciliation.cs y Workspace/)
+  archivos=51 (existen 51)
+  G-L1 CT-PBT1B-14: miembros=1063 {'1': 0, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} alias=[('baseline', 'asignacion'), ('rebuildShape', 'asignacion'), ('signature', 'asignacion'), ('structure', 'asignacion')]
+
+== autopruebas en negativo (cada una sola en un miembro neutro), con la regla 1b tambien sobre los alias
+  a                      {'1': 1, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  b                      {'1': 0, '1b': 0, '1c': 0, '2(1)': 1, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  c                      {'1': 0, '1b': 1, '1c': 0, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  d                      {'1': 1, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  e                      {'1': 0, '1b': 0, '1c': 0, '2(1)': 1, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  f1                     {'1': 1, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  f2                     {'1': 1, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  f3                     {'1': 1, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  g1                     {'1': 0, '1b': 1, '1c': 0, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  g2                     {'1': 0, '1b': 1, '1c': 0, '2(1)': 1, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  h1                     {'1': 0, '1b': 0, '1c': 0, '2(1)': 1, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  h2                     {'1': 0, '1b': 0, '1c': 0, '2(1)': 1, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  i                      {'1': 1, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  j                      {'1': 0, '1b': 0, '1c': 1, '2(1)': 0, '2(1b)': 0} -> SALTA; sin aplicar 1b a los alias: SALTA
+  k-alias+molde (I01)    {'1': 0, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 1} -> SALTA; sin aplicar 1b a los alias: NO SALTA
+  k2-alias+molde-C       {'1': 0, '1b': 0, '1c': 0, '2(1)': 0, '2(1b)': 1} -> SALTA; sin aplicar 1b a los alias: NO SALTA

@@ -1,0 +1,148 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.RackCadSafetyInspectorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RackCad.UI.VentanaRackCad"
+             FontFamily="Segoe UI"
+             FontSize="12"
+             AutomationProperties.Name="Variante y medidas">
+    <!-- T4 seg (I-64, cuarta tanda; the prototype «seguridad», SG-01, SG-06 and SG-07): the inspector of one family of «Extremos y seguridad»,
+         shared by the Selectivo and the Dinámico of the window. Its DataContext is the RackCadSafetyInspector of the panel. The variant and the
+         measures that were in the six grids of the classic dialog; «Sin variante» asks inline first what is lost. Beside the tab when it is
+         wide, below it when it is narrow (it places itself in the Grid that holds it, as the inspector of «Matriz»). -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="FlagToVisibility" />
+            <Style x:Key="OptionalText" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <DataTemplate x:Key="Bullet">
+                <DockPanel Margin="0,1">
+                    <TextBlock DockPanel.Dock="Left" Text="•" Margin="0,0,6,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <TextBlock Text="{Binding Mode=OneWay}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                </DockPanel>
+            </DataTemplate>
+            <!-- A measure: label, box with its unit, hint and the error of a value refused (it stays in its field). -->
+            <DataTemplate DataType="{x:Type local:DynamicFieldItem}">
+                <StackPanel Margin="0,0,0,8">
+                    <TextBlock Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <DockPanel Margin="0,2,0,0">
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding Unit}" Margin="6,0,0,0" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBox Padding="4,3" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsReadOnly}"
+                                 AutomationProperties.Name="{Binding Label}" AutomationProperties.HelpText="{Binding Hint}"
+                                 KeyDown="OnFieldKeyDown" LostFocus="OnFieldLostFocus" />
+                    </DockPanel>
+                    <TextBlock Text="{Binding Error}" Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                    <TextBlock Text="{Binding Hint}" Style="{StaticResource OptionalText}" FontStyle="Italic" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </StackPanel>
+            </DataTemplate>
+            <!-- A list: label, list, hint and the error. -->
+            <DataTemplate DataType="{x:Type local:SelectiveChoiceItem}">
+                <StackPanel Margin="0,0,0,8">
+                    <TextBlock Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <ComboBox Margin="0,2,0,0" ItemsSource="{Binding Options}" DisplayMemberPath="Label" SelectedValuePath="Value"
+                              SelectedValue="{Binding SelectedValue, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}" AutomationProperties.Name="{Binding Label}" />
+                    <TextBlock Text="{Binding Error}" Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                    <TextBlock Text="{Binding Hint}" Style="{StaticResource OptionalText}" FontStyle="Italic" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </StackPanel>
+            </DataTemplate>
+            <!-- A box that writes at once. -->
+            <DataTemplate DataType="{x:Type local:RackCadSafetyCheckField}">
+                <StackPanel Margin="0,0,0,8">
+                    <CheckBox Content="{Binding Label}" IsChecked="{Binding IsChecked, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}"
+                              AutomationProperties.Name="{Binding Label}" />
+                    <TextBlock Text="{Binding Hint}" Style="{StaticResource OptionalText}" FontStyle="Italic" Margin="20,2,0,0"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </StackPanel>
+            </DataTemplate>
+            <!-- A line that only says. -->
+            <DataTemplate DataType="{x:Type local:RackCadSafetyTextField}">
+                <StackPanel Margin="0,0,0,8">
+                    <TextBlock Text="{Binding Label}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Border x:Name="InspectorBorder" Padding="10" BorderThickness="1" CornerRadius="6"
+            BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <TextBlock Text="Variante y medidas" FontSize="11" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
+                    <Border Margin="0,0,8,0" Padding="3,0" CornerRadius="3" BorderThickness="1" VerticalAlignment="Center"
+                            BorderBrush="{DynamicResource ShellStatusSuccessBrush}"
+                            Visibility="{Binding HasLetter, Converter={StaticResource FlagToVisibility}}">
+                        <TextBlock Text="{Binding Letter}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource ShellStatusSuccessBrush}" />
+                    </Border>
+                    <TextBlock x:Name="FamilyTitle" Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                </StackPanel>
+                <TextBlock Text="{Binding Sub}" Style="{StaticResource OptionalText}" Margin="0,0,0,8" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+
+                <ContentControl x:Name="VariantField" Content="{Binding Variant}" Focusable="False" />
+
+                <!-- SG-06: «Sin variante» asks first, inline, what is lost. -->
+                <Border x:Name="AskPanel" Margin="0,0,0,8" Padding="8" BorderThickness="1" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                        AutomationProperties.Name="{Binding AskTitle}"
+                        Visibility="{Binding IsAsking, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding AskTitle}" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBlock Text="Se pierden:" Margin="0,4,0,2" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <ItemsControl ItemsSource="{Binding AskLoss}" ItemTemplate="{StaticResource Bullet}" Margin="6,0,0,0" />
+                        <TextBlock Text="Va al borrador: el dibujo no cambia hasta «Actualizar», y «Descartar» lo recupera." TextWrapping="Wrap" Margin="0,4,0,0"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <WrapPanel Margin="0,6,0,0">
+                            <Button x:Name="AskYesButton" Content="{Binding AskYesLabel}" Margin="0,0,6,0" Padding="10,3"
+                                    AutomationProperties.Name="{Binding AskYesLabel}" Click="OnAskYesClick">
+                                <!-- The style of danger of the approved prototype: the secondary one with the error token (as «Restaurar lo marcado»). -->
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                                        <Setter Property="Foreground" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button x:Name="AskNoButton" Content="Conservar" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                                    AutomationProperties.Name="Conservar la variante" Click="OnAskNoClick" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock x:Name="NoVariantInfo" Text="{Binding NoVariantText}" TextWrapping="Wrap" Margin="0,0,0,8"
+                           Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                           Visibility="{Binding HasNoVariant, Converter={StaticResource FlagToVisibility}}" />
+
+                <StackPanel Visibility="{Binding HasVariant, Converter={StaticResource FlagToVisibility}}">
+                    <ItemsControl x:Name="FieldList" ItemsSource="{Binding Fields}" Focusable="False" />
+                    <TextBlock x:Name="WarningText" Text="{Binding Warning}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
+                               Foreground="{DynamicResource ShellStatusWarningBrush}" />
+                    <TextBlock x:Name="PiecesText" Text="{Binding Pieces}" Style="{StaticResource OptionalText}" Margin="0,0,0,6" FontWeight="SemiBold"
+                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    <ItemsControl x:Name="ActionList" ItemsSource="{Binding Actions}" Margin="0,0,0,6">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding Label}" Margin="0,0,6,6" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}"
+                                        IsEnabled="{Binding IsEnabled}" AutomationProperties.Name="{Binding Name}" Click="OnActionClick" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <ItemsControl x:Name="NoteList" ItemsSource="{Binding Notes}" ItemTemplate="{StaticResource Bullet}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

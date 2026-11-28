@@ -1,0 +1,58 @@
+{
+  "CheckedUtc": "2026-10-02T18:40:22.8380664Z",
+  "CheckerPid": 39420,
+  "Rows": [
+    {
+      "Pid": 27468,
+      "ParentPid": 16040,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-01T21:07:31.4279790Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 7356,
+      "ParentPid": 27468,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-01T22:14:59.1560940Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 10384,
+      "ParentPid": 1244,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-10-01T23:08:07.6177480Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null
+    },
+    {
+      "Pid": 39420,
+      "ParentPid": 42372,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-10-02T18:40:15.7034050Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 36612,
+      "ParentPid": 40812,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-10-02T18:40:18.7103030Z",
+      "Classification": "unattributable",
+      "Reread": "GONE"
+    },
+    {
+      "Pid": 36404,
+      "ParentPid": 36612,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-10-02T18:40:18.9477860Z",
+      "Classification": "unattributable",
+      "Reread": "GONE"
+    }
+  ],
+  "ReadableNonParticipants": 31,
+  "Participants": 0,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 2
+}

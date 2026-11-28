@@ -1,0 +1,18 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+index 7d7e2aec..92f0f97a 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+@@ -35,6 +35,13 @@
+          handlers, NumericField/CatalogCombo, selection and multi-selection are unchanged; the code-behind is NOT
+          touched; the shell, the action bar, the status band and the technical preview stay exactly as they were. -->
+     <shell:RackEditorVisualShell x:Name="Shell">
++        <shell:RackEditorVisualShell.Resources>
++            <ResourceDictionary>
++                <ResourceDictionary.MergedDictionaries>
++                    <ResourceDictionary />
++                </ResourceDictionary.MergedDictionaries>
++            </ResourceDictionary>
++        </shell:RackEditorVisualShell.Resources>
+ 
+         <!-- ============================ SIDEBAR: settings, selected-cell editor and safety (the shell provides the scroll) ============================ -->
+         <shell:RackEditorVisualShell.SidePanelContent>

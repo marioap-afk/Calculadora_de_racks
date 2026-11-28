@@ -1,0 +1,42 @@
+== CT -> clase.metodo
+CT-PBT4B-01 PushBackFullPanelTests.CT_PBT4B_01_TheDraftOfThePanelIsTheFullOneAndAReadWithoutTheFullModelBeginsNoDraft
+CT-PBT4B-02 PushBackFullPanelTests.CT_PBT4B_02_ABRackOpensItsFullDraftAndTheTailAndTheFutureVersionStayRejected
+CT-PBT4B-03 PushBackFullPanelTests.CT_PBT4B_03_TheScaleFieldChangesOnlyTheScaleOfTheFullDraftAndValidatesWithTheOneRule
+CT-PBT4B-04 PushBackFullPanelFieldTests.CT_PBT4B_04_TheRuleOfTheScaleOfTheApplicationAndTheScaleBoxOfARealWindowAcceptAndRejectTheSameTexts
+CT-PBT4B-05 PushBackFullPanelTests.CT_PBT4B_05_UpdateRunsTheFullWriteAndErasesTheViewThatTheDraftLeavesObsolete
+CT-PBT4B-06 PushBackFullPanelTests.CT_PBT4B_06_TheFirstYesOfKeepMineOnlyPresentsTheChangesByGroupsAndTheDraftDoesNotChange
+CT-PBT4B-07 PushBackFullPanelTests.CT_PBT4B_07_TheSecondYesKeepsOnlyWithTheWitnessThatStillHoldsAndOtherwisePresentsAgain
+CT-PBT4B-08 PushBackFullPanelTests.CT_PBT4B_08_AfterKeepingAndUpdatingEveryMemberCarriesTheDesignOfTheDraftOverTheRestOfTheCurrentRack
+CT-PBT4B-09 PushBackFullPanelTests.CT_PBT4B_09_ASideBDeclaredWithoutFrontsIsWrittenWithoutSideBAndTheDraftKeepsTheDeclarationUntilTheRebase
+CT-PBT4B-10 PushBackFullPanelTests.CT_PBT4B_10_NoOperationOfThePanelMutatesTheResolvedRackOrTheModuleReportOfTheDraft
+CT-PBT4B-11 PushBackFullPanelTests.CT_PBT4B_11_AModuleLengthThatIsNaNInTheCurrentStateOfThePanelDraftIsNotEqualToItsOwnCopy
+CT-PBT4B-12 PushBackFullPanelGuardTests.CT_PBT4B_12_NothingTranslatesAStateOfThePilotIntoAFullOneAndTheHostDoesNotNameThePilot
+CT-PBT4B-13 PushBackFullPanelCensusGuardTests.CT_PBT4B_13_OnlyTheFolderOfTheModelThePlanTheRunTheAdapterOfThePluginAndTheHostNameItsTypes
+CT-PBT4B-14 PushBackFullPanelFieldTests.CT_PBT4B_14_KeepMineAsksTwiceYesTheFirstPresentsTheChangesByGroupsAboveYesAndNoAndTheSecondKeeps
+CT-PBT4B-15 PushBackFullPanelGuardTests.CT_PBT4B_15_TheViewModelCallsKeepMineOnceInsideTheChoiceCarriesTheWitnessAndComposesNoText
+CT-PBT4B-16 PushBackFullPanelGuardTests.CT_PBT4B_16_TheHostHasOneStaticAdapterOfTheFieldThatCallsTheOneRuleAndTheControllerAssignsNoRule
+CT-PBT4B-17 PushBackFullPanelTests.CT_PBT4B_17_AfterAnUpdateThatErasesTheViewOfTheOriginTheDraftIsCleanAndTheNextRereadIsAtTheNewOrigin
+CT-PBT4B-18 PushBackFullPanelFieldTests.CT_PBT4B_18_TheRuleOfTheApplicationAndTheValidationOfTheNumericBoxGiveTheSameResult
+CT-PBT4B-19 PushBackPanelDraftGuardTests.CT_PBT4B_19_TheThreeNewFilesOfTheFolderOfTheFullModelDoNotMutateTheResolvedRackAreProbablyPureAndCoverApply
+CT-PBT4B-20 WorkspaceFullCopyGuardTests.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList
+CT-PBT4B-21 PushBackFullPanelGuardTests.CT_PBT4B_21_TheFullModelIsMaterializedOnceByReadTheAdapterDefersItAndTheRereadAtTheOriginDoesNotAskForTheOneOfThePrimary
+== CT -> la asercion que falla en el RED reparado: la linea de la prueba bajo tests/ y la primera divergencia de las lineas esperadas
+CT-PBT4B-01 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "begin tipo=PushBackFullDraftState piloto="··· | actual "begin tipo=null piloto=no-nulo editable-i"···
+CT-PBT4B-02 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "pb-20-ab estado=Admitted borrador=PushBac"··· | actual "pb-20-ab estado=NotAdmitted borrador=null"···
+CT-PBT4B-03 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "campo commit=Applied escala=2.5 resto-igu"··· | actual "EXCEPCION NullReferenceException: Object "···
+CT-PBT4B-04 | tests/RackCad.UI.Tests/PushBackFullPanelFieldTests.cs:line 83 | esperado ···"=True mensaje-igual=True\ntexto-2 valido-i"··· | actual ···"=True mensaje-igual=False\ntexto-2 valido-"···
+CT-PBT4B-05 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "actualizar estado=Applied begin-mutation="··· | actual "EXCEPCION NullReferenceException: Object "···
+CT-PBT4B-06 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "presentar estado=Presented testigo-clave="··· | actual "EXCEPCION NullReferenceException: Object "···
+CT-PBT4B-07 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "segundo-si testigo-viejo estado=Presented"··· | actual "EXCEPCION NullReferenceException: Object "···
+CT-PBT4B-08 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "tras-conservar-y-actualizar estado=Applie"··· | actual "EXCEPCION NullReferenceException: Object "···
+CT-PBT4B-09 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "lado-b-sin-frentes diseno-escrito-sin-lad"··· | actual "EXCEPCION NullReferenceException: Object "···
+CT-PBT4B-10 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado ···"uellas-iguales=True\nCommitField huellas-i"··· | actual ···"uellas-iguales=True\nEXCEPCION NullReferen"···
+CT-PBT4B-11 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "nan-longitud-modulo igual-a-su-copia=Fals"··· | actual "EXCEPCION NullReferenceException: Object "···
+CT-PBT4B-12 | tests/RackCad.Tests/PushBackFullPanelGuardTests.cs:line 110 | esperado ···"sin-piloto nombres=[]\nwhc-actualizar Exec"··· | actual ···"sin-piloto nombres=[pilot.Read, KeepPilot"···
+CT-PBT4B-14 | tests/RackCad.UI.Tests/PushBackFullPanelFieldTests.cs:line 181 | esperado ···"presentacion texto=[Cambiado fuera: el no"··· | actual ···"presentacion texto=[] visible=False\nxaml "···
+CT-PBT4B-15 | tests/RackCad.Tests/PushBackFullPanelGuardTests.cs:line 151 | esperado ···"eticion-con-testigo=True\nfvm presentacion"··· | actual ···"eticion-con-testigo=False\nfvm presentacio"···
+CT-PBT4B-16 | tests/RackCad.Tests/PushBackFullPanelGuardTests.cs:line 182 | esperado ···"eldAdapter estatico=1 instancia=0\nadaptad"··· | actual ···"eldAdapter estatico=0 instancia=0\nadaptad"···
+CT-PBT4B-17 | tests/RackCad.Tests/PushBackFullPanelTests.cs:line 51 | esperado "borrador estado=Clean origen-es-la-primer"··· | actual "EXCEPCION NullReferenceException: Object "···
+CT-PBT4B-18 | tests/RackCad.UI.Tests/PushBackFullPanelFieldTests.cs:line 236 | esperado ···"caso-1 estado-igual=True valor-igual=True"··· | actual ···"caso-1 estado-igual=False valor-igual=Tru"···
+CT-PBT4B-21 | tests/RackCad.Tests/PushBackFullPanelGuardTests.cs:line 256 | esperado ···"completo=1 diferido=1\nria-resultado Full-"··· | actual ···"completo=1 diferido=0\nria-resultado Full-"···
+pasan en el RED (ExpectRed false): CT-PBT4B-13, CT-PBT4B-19, CT-PBT4B-20

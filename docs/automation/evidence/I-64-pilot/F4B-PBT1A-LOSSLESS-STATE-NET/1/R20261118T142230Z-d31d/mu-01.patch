@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..921529cf 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -871,7 +871,7 @@ namespace RackCad.UI.Systems.PushBack
+                 BeamDepth = rackBeamDepth,
+                 Annotations = new DynamicAnnotationOptions
+                 {
+-                    NumberFronts = NumberFrontsCheck.IsChecked == true,
++                    NumberFronts = NumberLevelsCheck.IsChecked == true,
+                     NumberLevels = NumberLevelsCheck.IsChecked == true,
+                     DrawRackName = DrawRackNameCheck.IsChecked == true,
+                     AnnotationScale = rackAnnotationScale,

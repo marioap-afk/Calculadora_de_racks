@@ -1,0 +1,12 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..6177c8d8 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -2635,7 +2635,6 @@ namespace RackCad.UI.Systems.PushBack
+                 // I-42 (ronda 7D): cada seccion de defensa funde SU cara sobre los registros por poste. A/Pn y
+                 // B/Pn comparten la linea y son dos intenciones distintas, asi que la fusion escribe un extremo y
+                 // deja el otro exactamente como estaba.
+-                ApplyDefenseSections(defenseSectionA, defenseSectionB, defenseCarrierId);
+ 
+                 // I-42 (S1E): y cada seccion de botas escribe la configuracion de SU lado, entera. Editar A no
+                 // puede tocar B ni al reves, que es lo que las dos secciones vienen a garantizar.

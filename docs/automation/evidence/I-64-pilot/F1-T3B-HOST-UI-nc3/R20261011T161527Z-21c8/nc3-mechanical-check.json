@@ -1,0 +1,19 @@
+{
+  "OnlyFreeTextDiffers": true,
+  "FailureClassFreeText": true,
+  "ClassDispMatch": false,
+  "NoC15S11Transform": false,
+  "DeniesSameAsReal": true,
+  "EvidenceSound": true,
+  "Valid": false,
+  "StopOnlyByAttemptRules": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "TriggeredStopConditions": [
+    "C-15"
+  ],
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "Outcome": "INVALID_OUTPUT (FreeText detectado; REWORK sintetico convertido en STOP solo por C-15/S-11; REGLA DE nc3 PARA F1-T3B-HOST-UI, explicita en el contrato)"
+}

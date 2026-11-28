@@ -1,0 +1,20 @@
+necesidad de las bajas, variante B; copia /d/r6g; salida r6g-nd; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 4d7a6fdc8713d4b518881c28cef74e884d90b12c4b922d58d41b8c6465f113f5 measure_need_v52.py
+  pieza ba521e9d1981efd5004f397dc6608ae25498c19d79dd26acd15698bf2c2327f7 measure_retire_v52.py
+  pieza 920c57cacfdf6dc5b94e6ed6deba04db1b312418fe9779dbf8e631e1602cb96c retire_pbt4d_v52.py
+  pieza 3d172421b24d6bd64655e349c52906463f8de779b42a30a319da6ad1d8fb82a1 lists_core.py
+  pieza d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c pbt4d-retire-list-138.tsv
+  pieza 3a02c4789cf6acb36c55fcf9a4caee701904361b7f111d74aacfeb741d3347a0 bajas-4.tsv
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+  pieza f7c7ada64a34c3a3fcba04553b5d3448ddafffa66adc69ae9c210f129f1f62b6 run_classes_v51.py
+  pieza 19182fbc10012c160453df237ad2657568affdc586e2f7ce9cad8feccdef7815 ui_filters_pbt4c_v50b.txt
+  pieza 6ca678c60968009c7ad77941940f14ba103541a1445f39c5744feb1dea2166cc p6d_need_v52.sh
+copia exportada: 14571 archivos
+vuelta 0: bajas 0, errores 42 (distintos 20), miembros nuevos 11, sin resolver 4
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:232 CS0103 El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:233 CS0103 El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:234 CS0103 El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:235 CS0103 El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual
+bajas por compilacion 0; de las 235 de B: necesarias 0, no necesarias 235; fuera de B 0
+PARA: el bucle de compilacion no cerro (rc=6)
+MAINCO []

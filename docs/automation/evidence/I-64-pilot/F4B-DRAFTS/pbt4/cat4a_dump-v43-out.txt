@@ -1,0 +1,515 @@
+sha256 7ea2e372f5e806fba92f5528c4552cf3bf9df133c60e0e77484330713d988d6f bytes 64270
+ascii-only True
+top-level keys: Schema, Unit, Gate, TaskId, Objective, AuthorityRevision, MainSha, Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, ExpectedEvidence, StopConditions, EligibleCells, RoutingEnforcement, CorrectionsAuthorized, IssuedBy, IssuedUtc
+  Schema: "rackcad-gate-contract/v1"
+  Unit: "I-64"
+  Gate: "F4B"
+  TaskId: "F4B-PBT4-FULL-READ-PATH"
+  Objective: "Hacer que la lectura de la intencion de edicion del Workspace de Push Back traiga tambien el modelo completo de PB-T3 sobre el mismo escaneo: el adaptador del Plugin llama al lector completo tras el del piloto y el resultado de la lectura lleva la lectura completa y el catalogo junto a la del pilot...(1155)
+  AuthorityRevision: "7f0d9aa377ca1e3301bfce3716bd29d602d762dd"
+  MainSha: "812baf879612320653094a8aaf46aca0bac81383"
+  Authorities: list(47)
+  AllowedWriteScope: list(10)
+  ForbiddenWriteScope: list(316)
+  Invariants: list(14)
+  RequiredTests: list(38)
+  ExpectedEvidence: list(15)
+  StopConditions: list(34)
+  EligibleCells: list(2)
+  RoutingEnforcement: "required"
+  CorrectionsAuthorized: true
+  IssuedBy: "Sesion principal de I-64 (Claude), emision de la primera subtarea de PB-T4 (F4B-E50) por F4B-E49, pregunta 4 (la emision condicional de PB-T4a, PB-T4b y PB-T4c en ese orden; owner-pbt4-decisions.md): PB-T4a tras el cierre de PB-T3c (7f0d9aa3, F4B-E48; CLOSED / PASS WITH LIMITATIONS sobre 938a35f0, ...(744)
+  IssuedUtc: "2026-11-20T00:00:00Z"
+
+=== Authorities (47)
+[0] {"Path": "docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md", "Section": "archivo completo (v4.3, sha256 4f482279): D-PBT4-02 y D-PBT4-03 (el texto literal del GREEN); section 4.1; section 5.0 y 5.1 (CT-PBT4A-01 a 08, un [Fact] cada una); section 6.0 (identidad, paradas, RR y la tabla de RR-3) y 6.1 (el contrato de PB-T4a, sus literales de 6.1.1)", "Class": "UNIT_DOC"}
+[1] {"Path": "docs/initiatives/I-64-f4b-pbt4-measurements.md", "Section": "el registro de mediciones de PB-T4 (R-0 a R-43)", "Class": "UNIT_DOC"}
+[2] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4-decisions.md", "Section": "archivo completo (F4B-E49): las cuatro decisiones del Owner sobre PB-T4, literales; la pregunta 4, la emision condicional de PB-T4a, PB-T4b y PB-T4c en ese orden, que autoriza esta emision", "Class": "UNIT_DOC"}
+[3] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-retire-list-decisions.md", "Section": "archivo completo (F4B-E49): las dos decisiones del Owner sobre PB-T4b, literales: el codigo del piloto se retira en una subtarea nueva, PB-T4d, despues de PB-T4c, que vuelve al Owner antes de emitirse; la lista de PB-T4b son 470 pruebas, la que vio; PB-T4a y PB-T4c, sin cambios", "Class": "UNIT_DOC"}
+[4] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4-substitution-lists.md", "Section": "la lista de sustituciones de PB-T4: la de PB-T4a, CT-PBT3A-12 (CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes)", "Class": "UNIT_DOC"}
+[5] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/independent-review-pbt4a-check.md", "Section": "la comprobacion acotada de PB-T4a (CA-T4a), sobre el contrato en seco y la v4.3", "Class": "UNIT_DOC"}
+[6] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md", "Section": "el registro declarado de las sustituciones: su entrada de PB-T4a (el Skip de CT-PBT3A-12, su motivo literal y CT-PBT4A-06)", "Class": "UNIT_DOC"}
+[7] {"Path": "docs/initiatives/I-64-f4b-push-back-completo-package.md", "Section": "paquete de la fase F4B v3.1 ([P]): la fila de PB-T4 del section 5; OB-01.1 a 6, OB-03.2, OB-05.1 a 5, R-PB-10; section 7.3 y 7.4", "Class": "UNIT_DOC"}
+[8] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md", "Section": "archivo completo ([OD]): la fila de PB-T4, D-PB-01, D-PB-05 y D-PB-10; el bloque sobre T1B (el registro declarado)", "Class": "UNIT_DOC"}
+[9] {"Path": "docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md", "Section": "el paquete de PB-T1 ([PT1]): A-5, A-9, A-10 y R-T1-17; section 6.0 (C08, C12 y C17)", "Class": "UNIT_DOC"}
+[10] {"Path": "docs/initiatives/I-64-f4b-pbt3-gate-contract-package.md", "Section": "el paquete de PB-T3 v4.7 ([P3]): section 6.0 (RR) y section 10 (A-T3-1 a A-T3-11; A-T3-8 es el que aplica PB-T4a)", "Class": "UNIT_DOC"}
+[11] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-d1-d2-decisions.md", "Section": "archivo completo ([OD2], F4B-E11): D2 con sus diez condiciones y su limite, el texto literal de PBT4A-C17", "Class": "UNIT_DOC"}
+[12] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-procedure-decisions.md", "Section": "archivo completo ([DP], F4B-E03): firmas exactas de los sustitutos y la replanificacion unica", "Class": "UNIT_DOC"}
+[13] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1a-nc1-decisions.md", "Section": "archivo completo (F4B-E15): las tres comprobaciones deterministas de la verificacion", "Class": "UNIT_DOC"}
+[14] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-config-snapshot-k-decision.md", "Section": "archivo completo (F4B-E37): la Snapshot K (docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-K/snapshot-k.json, ConfigSha256 E1F69847), la que cita P-01", "Class": "UNIT_DOC"}
+[15] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-opaque-collections-decision.md", "Section": "archivo completo (F4B-E21): la sesion pone byte a byte las ocho colecciones opacas del contrato", "Class": "UNIT_DOC"}
+[16] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt1b-rework-decisions.md", "Section": "archivo completo (F4B-E22): el texto correcto de INV-13, C13 y la CI del RED", "Class": "UNIT_DOC"}
+[17] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-correction-unit-change-decision.md", "Section": "archivo completo (F4B-E25): las rutas UNIT_CHANGE en una correccion; PB-T4a declara WEI, WHC, RIA y NH", "Class": "UNIT_DOC"}
+[18] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3-d1-decision.md", "Section": "archivo completo (F4B-E29): D-1, la variante (A)", "Class": "UNIT_DOC"}
+[19] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-pbt3-emission-red-repair-decisions.md", "Section": "archivo completo (F4B-E35): pregunta 4, la regla de la reparacion del RED, RR-1 a RR-7, con el tramo RedSha..RedRepairSha que en PB-T4a no toca src/ ni PushBackDraftWriteGuardTests.cs", "Class": "UNIT_DOC"}
+[20] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt2c-nc1-decision.md", "Section": "archivo completo (F4B-E40): la firma nueva de nc1 PD-F4B-01 y su sustituto, el de PBT4A-C11", "Class": "UNIT_DOC"}
+[21] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py", "Section": "el sustituto de nc1 de PD-F4B-01 (F4B-E40), SHA-256 41440edc4a963bef890e4336dccb885837424008c027cdb172d2b926e0f49b40, revisado; PBT4A-C11 lo usa con --task PBT4", "Class": "UNIT_DOC"}
+[22] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3a-nc2-decision.md", "Section": "archivo completo (F4B-E43): el sustituto de nc2 ampliado (PBT4A-C11)", "Class": "UNIT_DOC"}
+[23] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py", "Section": "el sustituto de nc2 v2 (F4B-E43), SHA-256 c033e96ce147963feb9c04733e9bfbec7493fea33d8ff79b1c2e8ab860798e45: el de PBT4A-C11, con --task PBT4 y su lista cerrada de literales", "Class": "UNIT_DOC"}
+[24] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/limits-declared.md", "Section": "la version revisada del sustituto de nc2 v2 y sus limites declarados (M-V1 a M-V4)", "Class": "UNIT_DOC"}
+[25] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/review/independent-review-substitute-f4b-v2.md", "Section": "la revision independiente del sustituto de nc2 y su seccion \"Recomprobacion v2\": APTO, B 0 / I 0 / M 4", "Class": "UNIT_DOC"}
+[26] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3b-overload-decision.md", "Section": "archivo completo (F4B-E45): la leccion de las sobrecargas y la reflexion (el barrido de PB-T4a)", "Class": "UNIT_DOC"}
+[27] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3b-nc3-decision.md", "Section": "archivo completo (F4B-E46): una evidencia esperada que dependa de como cuente la TRX lleva el total exacto de cada rama ([14] de este contrato, en su unica rama)", "Class": "UNIT_DOC"}
+[28] {"Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/f4b-dispositions.md", "Section": "archivo completo: F4B-E01 a F4B-E48", "Class": "UNIT_DOC"}
+[29] {"Path": "docs/automation/evidence/I-64-pilot/F4B-PBT3C-FULL-WRITE-ERASE/coordinator/gate-contract.json", "Section": "el contrato de PB-T3c (F4B-E47): las listas de tests/, los filtros y sus MinSelected, las celdas, las paradas estandar, PBT3C-C11 (que este contrato lleva con PBT4) y la primera ExpectedEvidence", "Class": "UNIT_DOC"}
+[30] {"Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/f4-dispositions.md", "Section": "las fuentes de PD-F4-01 y PD-F4-04", "Class": "UNIT_DOC"}
+[31] {"Path": "docs/initiatives/I-64-proposal-v5.md", "Section": "la Proposal V5 congelada de I-64: D-10, D-13, D-15 (punto 5) y D-16", "Class": "UNIT_DOC"}
+[32] {"Path": "docs/initiatives/I-64-f4b-pbtc-gate-contract-package.md", "Section": "el paquete de PB-TC ([PKC-C]): el algoritmo del ForbiddenWriteScope", "Class": "UNIT_DOC"}
+[33] {"Path": "docs/initiatives/I-64-f4b-pbtc2-gate-contract-package.md", "Section": "el paquete de PB-TC2 ([PKC2]): las 17 paradas estandar y la raiz; las celdas (:655)", "Class": "UNIT_DOC"}
+[34] {"Path": "docs/automation/state/I-64.yml", "Section": "estado vigente completo", "Class": "UNIT_DOC"}
+[35] {"Path": "docs/automation/evidence/I-64-evidence.md", "Section": "las secciones de F4B (231 y siguientes)", "Class": "UNIT_DOC"}
+[36] {"Path": "docs/automation/evidence/I-64-pilot/F4B-PBT3C-FULL-WRITE-ERASE/task-close-package.md", "Section": "el cierre de PB-T3c (F4B-E48): la base de PB-T4a, con su linea base de la CI (44757675821)", "Class": "UNIT_DOC"}
+[37] {"Path": "docs/automation/evidence/I-64-pilot/F4B-PBT4-FULL-READ-PATH/coordinator/gate-contract.json", "Section": "este contrato", "Class": "UNIT_DOC"}
+[38] {"Path": "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs", "Section": "el resultado de la lectura de la intencion: FullRead, Catalog y FromReads (D-PBT4-02; section 6.0 del paquete, F4B-E25)", "Class": "UNIT_CHANGE"}
+[39] {"Path": "src/RackCad.Application/Workspace/WorkspaceHostCore.cs", "Section": "el anfitrion del Workspace: la sentencia en linea de la relectura con el origen en cinco cuerpos (D-PBT4-03)", "Class": "UNIT_CHANGE"}
+[40] {"Path": "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs", "Section": "el adaptador de la lectura del Plugin: el lector completo sobre el mismo escaneo y AtOrigin (D-PBT4-02 y 03)", "Class": "UNIT_CHANGE"}
+[41] {"Path": "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs", "Section": "el anfitrion de la navegacion del Plugin: ReadIntentAtOrigin en el lector anidado y FromReads (D-PBT4-02 y 03)", "Class": "UNIT_CHANGE"}
+[42] {"Path": "docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md", "Section": "D12 y D13", "Class": "EXTERNAL"}
+[43] {"Path": "docs/AUTOMATION_PLAN.md", "Section": "section 16.3, 16.5, 16.8, 16.9, 16.10 y 16.11", "Class": "EXTERNAL"}
+[44] {"Path": "docs/automation/agent-execution/README.md", "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)", "Class": "EXTERNAL"}
+[45] {"Path": "docs/automation/agent-execution/routing.md", "Section": "archivo completo", "Class": "EXTERNAL"}
+[46] {"Path": "docs/automation/agent-execution/model-catalog.md", "Section": "celdas medidas y vigentes para Controller y Worker", "Class": "EXTERNAL"}
+
+=== AllowedWriteScope (10)
+[0] "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs"
+[1] "src/RackCad.Application/Workspace/IWorkspaceEditIntentOriginReader.cs"
+[2] "src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs"
+[3] "src/RackCad.Application/Workspace/WorkspaceHostCore.cs"
+[4] "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs"
+[5] "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs"
+[6] "tests/RackCad.Tests/PushBackFullReadPathTests.cs"
+[7] "tests/RackCad.Tests/PushBackFullReadGuardTests.cs"
+[8] "tests/RackCad.Tests/PushBackFullReadSupport.cs"
+[9] "tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs"
+
+=== ForbiddenWriteScope (316)
+[0] "src/RackCad.Application/BlockNaming.cs"
+[1] "src/RackCad.Application/Bom/"
+[2] "src/RackCad.Application/Catalogs/"
+[3] "src/RackCad.Application/ComputedParameters/"
+[4] "src/RackCad.Application/CustomProperties/"
+[5] "src/RackCad.Application/Diagnostics/"
+[6] "src/RackCad.Application/Drawing/"
+[7] "src/RackCad.Application/Expressions/"
+[8] "src/RackCad.Application/Formatting/"
+[9] "src/RackCad.Application/Geometry/"
+[10] "src/RackCad.Application/Layout/"
+[11] "src/RackCad.Application/Persistence/"
+[12] "src/RackCad.Application/ProjectVariables/"
+[13] "src/RackCad.Application/RackCad.Application.csproj"
+[14] "src/RackCad.Application/RackFrames/"
+[15] "src/RackCad.Application/Settings/"
+[16] "src/RackCad.Application/StructuralAnalysis/"
+[17] "src/RackCad.Application/StructuralSections/"
+[18] "src/RackCad.Application/Systems/Cantilever/"
+[19] "src/RackCad.Application/Systems/Dynamic/"
+[20] "src/RackCad.Application/Systems/FlowBed/"
+[21] "src/RackCad.Application/Systems/Larguero/"
+[22] "src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs"
+[23] "src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs"
+[24] "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs"
+[25] "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs"
+[26] "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs"
+[27] "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs"
+[28] "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs"
+[29] "src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs"
+[30] "src/RackCad.Application/Systems/PushBack/Pilot/"
+[31] "src/RackCad.Application/Systems/PushBack/PushBackAdvancedRackParameters.cs"
+[32] "src/RackCad.Application/Systems/PushBack/PushBackBedRotation.cs"
+[33] "src/RackCad.Application/Systems/PushBack/PushBackBedSlope.cs"
+[34] "src/RackCad.Application/Systems/PushBack/PushBackBedSpan.cs"
+[35] "src/RackCad.Application/Systems/PushBack/PushBackBomBuilder.cs"
+[36] "src/RackCad.Application/Systems/PushBack/PushBackBootPlan.cs"
+[37] "src/RackCad.Application/Systems/PushBack/PushBackCellDepth.cs"
+[38] "src/RackCad.Application/Systems/PushBack/PushBackCompositeContent.cs"
+[39] "src/RackCad.Application/Systems/PushBack/PushBackCompositeDiagnostics.cs"
+[40] "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs"
+[41] "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs"
+[42] "src/RackCad.Application/Systems/PushBack/PushBackCompositeFrontal.cs"
+[43] "src/RackCad.Application/Systems/PushBack/PushBackCompositePlanta.cs"
+[44] "src/RackCad.Application/Systems/PushBack/PushBackCompositeResolver.cs"
+[45] "src/RackCad.Application/Systems/PushBack/PushBackCompositeStructure.cs"
+[46] "src/RackCad.Application/Systems/PushBack/PushBackDefensePlan.cs"
+[47] "src/RackCad.Application/Systems/PushBack/PushBackDefenseSides.cs"
+[48] "src/RackCad.Application/Systems/PushBack/PushBackDiverterPlan.cs"
+[49] "src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs"
+[50] "src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs"
+[51] "src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs"
+[52] "src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs"
+[53] "src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs"
+[54] "src/RackCad.Application/Systems/PushBack/PushBackEditorCell.cs"
+[55] "src/RackCad.Application/Systems/PushBack/PushBackEditorComputation.cs"
+[56] "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs"
+[57] "src/RackCad.Application/Systems/PushBack/PushBackEditorFront.cs"
+[58] "src/RackCad.Application/Systems/PushBack/PushBackEditorInputs.cs"
+[59] "src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs"
+[60] "src/RackCad.Application/Systems/PushBack/PushBackEditorState.Load.cs"
+[61] "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs"
+[62] "src/RackCad.Application/Systems/PushBack/PushBackEditorValues.cs"
+[63] "src/RackCad.Application/Systems/PushBack/PushBackElevations.cs"
+[64] "src/RackCad.Application/Systems/PushBack/PushBackFlowBedGeometry.cs"
+[65] "src/RackCad.Application/Systems/PushBack/PushBackFlowBedLateralBuilder.cs"
+[66] "src/RackCad.Application/Systems/PushBack/PushBackFunctionalSides.cs"
+[67] "src/RackCad.Application/Systems/PushBack/PushBackHeaderHeight.cs"
+[68] "src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs"
+[69] "src/RackCad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs"
+[70] "src/RackCad.Application/Systems/PushBack/PushBackLoadBeamGeometry.cs"
+[71] "src/RackCad.Application/Systems/PushBack/PushBackMirror.cs"
+[72] "src/RackCad.Application/Systems/PushBack/PushBackPalletProjection.cs"
+[73] "src/RackCad.Application/Systems/PushBack/PushBackPlacements.cs"
+[74] "src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs"
+[75] "src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs"
+[76] "src/RackCad.Application/Systems/PushBack/PushBackResolver.cs"
+[77] "src/RackCad.Application/Systems/PushBack/PushBackRunGeometry.cs"
+[78] "src/RackCad.Application/Systems/PushBack/PushBackRunSupports.cs"
+[79] "src/RackCad.Application/Systems/PushBack/PushBackRuns.cs"
+[80] "src/RackCad.Application/Systems/PushBack/PushBackSafetyAuthority.cs"
+[81] "src/RackCad.Application/Systems/PushBack/PushBackSideAnnotations.cs"
+[82] "src/RackCad.Application/Systems/PushBack/PushBackSideConfiguration.cs"
+[83] "src/RackCad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs"
+[84] "src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs"
+[85] "src/RackCad.Application/Systems/PushBack/PushBackSystemPlantaBuilder.cs"
+[86] "src/RackCad.Application/Systems/PushBack/PushBackTarimaPlacement.cs"
+[87] "src/RackCad.Application/Systems/PushBack/PushBackTopeSurface.cs"
+[88] "src/RackCad.Application/Systems/PushBack/PushBackTroquelGrid.cs"
+[89] "src/RackCad.Application/Systems/Selective/"
+[90] "src/RackCad.Application/Systems/Shared/"
+[91] "src/RackCad.Application/Units/"
+[92] "src/RackCad.Application/Views/"
+[93] "src/RackCad.Application/Workspace/BridgeOutcomes.cs"
+[94] "src/RackCad.Application/Workspace/BridgeSource.cs"
+[95] "src/RackCad.Application/Workspace/BrowserRackSummaries.cs"
+[96] "src/RackCad.Application/Workspace/BrowserSession.cs"
+[97] "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs"
+[98] "src/RackCad.Application/Workspace/Drafts/"
+[99] "src/RackCad.Application/Workspace/EventBridgeCore.cs"
+[100] "src/RackCad.Application/Workspace/Hints.cs"
+[101] "src/RackCad.Application/Workspace/IHostEventSource.cs"
+[102] "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs"
+[103] "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs"
+[104] "src/RackCad.Application/Workspace/IWorkspaceEditIntentReader.cs"
+[105] "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs"
+[106] "src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs"
+[107] "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs"
+[108] "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs"
+[109] "src/RackCad.Application/Workspace/NavigationActions.cs"
+[110] "src/RackCad.Application/Workspace/NavigationEcho.cs"
+[111] "src/RackCad.Application/Workspace/NavigationFacts.cs"
+[112] "src/RackCad.Application/Workspace/NavigationTargetSet.cs"
+[113] "src/RackCad.Application/Workspace/NavigationTargets.cs"
+[114] "src/RackCad.Application/Workspace/SelectionContext.cs"
+[115] "src/RackCad.Application/Workspace/SessionId.cs"
+[116] "src/RackCad.Application/Workspace/WorkspaceCloseAdvisorRelay.cs"
+[117] "src/RackCad.Application/Workspace/WorkspaceDocumentDiscardCommand.cs"
+[118] "src/RackCad.Application/Workspace/WorkspaceHostPolicy.cs"
+[119] "src/RackCad.Application/Workspace/WorkspaceHostSnapshot.cs"
+[120] "src/RackCad.Application/Workspace/WorkspaceIdleScheduler.cs"
+[121] "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs"
+[122] "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs"
+[123] "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs"
+[124] "src/RackCad.Application/Workspace/WorkspaceSelectionRead.cs"
+[125] "src/RackCad.Application/Workspace/WorkspaceSession.cs"
+[126] "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+[127] "src/RackCad.Domain/"
+[128] "src/RackCad.Plugin/CustomPropertiesData.cs"
+[129] "src/RackCad.Plugin/CustomPropertiesExecutor.cs"
+[130] "src/RackCad.Plugin/Drawing/"
+[131] "src/RackCad.Plugin/InDocumentTransaction.cs"
+[132] "src/RackCad.Plugin/KindHandlers/"
+[133] "src/RackCad.Plugin/LayerHelper.cs"
+[134] "src/RackCad.Plugin/PluginInitializer.cs"
+[135] "src/RackCad.Plugin/ProjectVariableMutationExecutor.cs"
+[136] "src/RackCad.Plugin/ProjectVariablesData.cs"
+[137] "src/RackCad.Plugin/ProjectVariablesRegistry.cs"
+[138] "src/RackCad.Plugin/RackAyudaCommands.cs"
+[139] "src/RackCad.Plugin/RackBlockFinder.cs"
+[140] "src/RackCad.Plugin/RackCabeceraCommands.cs"
+[141] "src/RackCad.Plugin/RackCad.Plugin.csproj"
+[142] "src/RackCad.Plugin/RackCamaCommands.cs"
+[143] "src/RackCad.Plugin/RackCantileverCommands.cs"
+[144] "src/RackCad.Plugin/RackCatalogLoader.cs"
+[145] "src/RackCad.Plugin/RackCloner.cs"
+[146] "src/RackCad.Plugin/RackCommandSupport.cs"
+[147] "src/RackCad.Plugin/RackDinamicoCommands.cs"
+[148] "src/RackCad.Plugin/RackDuplicarCommands.cs"
+[149] "src/RackCad.Plugin/RackEnvelopeRestamp.cs"
+[150] "src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs"
+[151] "src/RackCad.Plugin/RackInventarioCommands.cs"
+[152] "src/RackCad.Plugin/RackLayoutCommands.Fill.cs"
+[153] "src/RackCad.Plugin/RackLayoutCommands.cs"
+[154] "src/RackCad.Plugin/RackMenuCommands.cs"
+[155] "src/RackCad.Plugin/RackPropiedadesCommands.cs"
+[156] "src/RackCad.Plugin/RackProyectarCommands.cs"
+[157] "src/RackCad.Plugin/RackPushBackCommands.cs"
+[158] "src/RackCad.Plugin/RackRamElementsCommands.cs"
+[159] "src/RackCad.Plugin/RackSeccionCommands.cs"
+[160] "src/RackCad.Plugin/RackSelectivoCommands.cs"
+[161] "src/RackCad.Plugin/RackSelectivoInsertIntegration.cs"
+[162] "src/RackCad.Plugin/RackUnitsGuard.cs"
+[163] "src/RackCad.Plugin/RackVariablesCommands.cs"
+[164] "src/RackCad.Plugin/StructuralSectionCatalogAccess.cs"
+[165] "src/RackCad.Plugin/StructuralSectionCommandFlow.cs"
+[166] "src/RackCad.Plugin/Systems/"
+[167] "src/RackCad.Plugin/Views/RackPilotUpdateCommandContext.cs"
+[168] "src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs"
+[169] "src/RackCad.Plugin/Views/RackProjectionCommandPort.cs"
+[170] "src/RackCad.Plugin/Views/RackProjectionKindSessions.cs"
+[171] "src/RackCad.Plugin/Views/RackProjectionSnapshotReader.cs"
+[172] "src/RackCad.Plugin/Views/RackProjectionWriteScope.cs"
+[173] "src/RackCad.Plugin/Views/RackSiblingScan.cs"
+[174] "src/RackCad.Plugin/Views/RackUnsupportedSiblingInsert.cs"
+[175] "src/RackCad.Plugin/Views/RackViewBatchDriver.cs"
+[176] "src/RackCad.Plugin/Views/RackViewBatchExecution.cs"
+[177] "src/RackCad.Plugin/Views/RackViewBatchProductSession.cs"
+[178] "src/RackCad.Plugin/Views/RackViewBatchProducts.cs"
+[179] "src/RackCad.Plugin/Views/RackViewBlockEraser.cs"
+[180] "src/RackCad.Plugin/Views/RackViewPlacement.cs"
+[181] "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs"
+[182] "src/RackCad.Plugin/Workspace/WorkspaceController.cs"
+[183] "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs"
+[184] "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs"
+[185] "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs"
+[186] "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs"
+[187] "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs"
+[188] "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs"
+[189] "src/RackCad.UI/"
+[190] "tests/RackCad.Tests/Fixtures/"
+[191] "tests/RackCad.Tests/Workspace/"
+[192] "tests/RackCad.Tests/StructuralAnalysis/"
+[193] "tests/RackCad.Tests/RackCad.Tests.csproj"
+[194] "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs"
+[195] "tests/RackCad.Tests/NamespaceFolderGuardTests.cs"
+[196] "tests/RackCad.Tests/PushBackDimensionLegacyCharacterizationTests.cs"
+[197] "tests/RackCad.Tests/BlankFrontBoundaryTests.cs"
+[198] "tests/RackCad.Tests/RackModuleEditSessionTests.cs"
+[199] "tests/RackCad.Tests/I55DeferredProductFixCharacterizationTests.cs"
+[200] "tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests.cs"
+[201] "tests/RackCad.Tests/ProductPolicyIndependenceGuardTests.cs"
+[202] "tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs"
+[203] "tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs"
+[204] "tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs"
+[205] "tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs"
+[206] "tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs"
+[207] "tests/RackCad.Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs"
+[208] "tests/RackCad.Tests/PushBackEditableStateLoadTests.cs"
+[209] "tests/RackCad.Tests/PushBackEditableStateCopyTests.cs"
+[210] "tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs"
+[211] "tests/RackCad.Tests/PushBackEditorOutputGateTests.cs"
+[212] "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs"
+[213] "tests/RackCad.Tests/PushBackWindowOnStateSourceGuardTests.cs"
+[214] "tests/RackCad.Tests/PushBackWindowSharedReferenceGuardTests.cs"
+[215] "tests/RackCad.Tests/PushBackDraftStatePortTests.cs"
+[216] "tests/RackCad.Tests/PushBackDraftPortSharedReferenceGuardTests.cs"
+[217] "tests/RackCad.Tests/PushBackWorkspaceModeSourceGuardTests.cs"
+[218] "tests/RackCad.Tests/PushBackWorkspaceSharedReferenceGuardTests.cs"
+[219] "tests/RackCad.Tests/PushBackFullDraftLoadTests.cs"
+[220] "tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs"
+[221] "tests/RackCad.Tests/PushBackFullDraftViewTests.cs"
+[222] "tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs"
+[223] "tests/RackCad.Tests/PushBackFullWritePrepareTests.cs"
+[224] "tests/RackCad.Tests/PushBackFullWriteRunTests.cs"
+[225] "tests/RackCad.Tests/PushBackWritePathGuardTests.cs"
+[226] "tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs"
+[227] "tests/RackCad.Tests/PushBackFullWriteSupport.cs"
+[228] "tests/RackCad.Tests/PushBackViewEraseGuardTests.cs"
+[229] "tests/RackCad.Tests/PushBackWritePathPluginGuardTests.cs"
+[230] "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj"
+[231] "tests/RackCad.UI.Tests/StaTestRunner.cs"
+[232] "tests/RackCad.UI.Tests/EditorWindowTestSupport.cs"
+[233] "tests/RackCad.UI.Tests/EditorDiscardPromptCollection.cs"
+[234] "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs"
+[235] "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs"
+[236] "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionRoundingTests.cs"
+[237] "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionDimensionStyleTests.cs"
+[238] "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs"
+[239] "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSideBNoticeTests.cs"
+[240] "tests/RackCad.UI.Tests/PushBackDeclaredCorrectionStandardRestoreTests.cs"
+[241] "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationStateTests.cs"
+[242] "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs"
+[243] "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCompositeTests.cs"
+[244] "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSubdialogTests.cs"
+[245] "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCatalogTests.cs"
+[246] "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs"
+[247] "tests/RackCad.UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs"
+[248] "tests/RackCad.UI.Tests/PushBackClassicCharacterizationCloseTests.cs"
+[249] "tests/RackCad.UI.Tests/PushBackClassicCharacterizationIntentTests.cs"
+[250] "tests/RackCad.UI.Tests/PushBackClassicCharacterizationOwnerTests.cs"
+[251] "tests/RackCad.UI.Tests/PushBackClassicCharacterizationResourceTests.cs"
+[252] "tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs"
+[253] "tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs"
+[254] "tests/RackCad.UI.Tests/EditorClosePolicyTests.cs"
+[255] "tests/RackCad.UI.Tests/RichEditorCharacterizationTests.cs"
+[256] "tests/RackCad.UI.Tests/RichEditorCloseContractTests.cs"
+[257] "tests/RackCad.UI.Tests/RichEditorContractTests.cs"
+[258] "tests/RackCad.UI.Tests/PushBackShellAdoptionTests.cs"
+[259] "tests/RackCad.UI.Tests/PushBackModuleEditorWindowTests.cs"
+[260] "tests/RackCad.UI.Tests/PushBackSafetyPerPostFlowTests.cs"
+[261] "tests/RackCad.UI.Tests/PushBackSidebarCompositionTests.cs"
+[262] "tests/RackCad.UI.Tests/UiSystemBoundaryGuardTests.cs"
+[263] "tests/RackCad.UI.Tests/WindowCensusGuardTests.cs"
+[264] "tests/RackCad.UI.Tests/PushBackAdvancedRackParametersWindowTests.cs"
+[265] "tests/RackCad.UI.Tests/PushBackCompositeWindowTests.cs"
+[266] "tests/RackCad.UI.Tests/PushBackCompositeLifecycleWiringTests.cs"
+[267] "tests/RackCad.UI.Tests/PushBackCompositeLoadExistingModulesTests.cs"
+[268] "tests/RackCad.UI.Tests/PushBackBothModeCellBeamOverrideTests.cs"
+[269] "tests/RackCad.UI.Tests/PushBackA1EditorTests.cs"
+[270] "tests/RackCad.UI.Tests/PushBackDormantRestoreTests.cs"
+[271] "tests/RackCad.UI.Tests/PushBackDormantTailTransactionTests.cs"
+[272] "tests/RackCad.UI.Tests/PushBackEditorSideOwnershipTests.cs"
+[273] "tests/RackCad.UI.Tests/PushBackLibrarySaveGateTests.cs"
+[274] "tests/RackCad.UI.Tests/PushBackOutputGateAfterRecomputeTests.cs"
+[275] "tests/RackCad.UI.Tests/PushBackHeaderLineWindowTests.cs"
+[276] "tests/RackCad.UI.Tests/CantileverAdvancedPanelWindowTests.cs"
+[277] "tests/RackCad.UI.Tests/CantileverComponentEditorTests.cs"
+[278] "tests/RackCad.UI.Tests/CantileverEditorWindowTests.cs"
+[279] "tests/RackCad.UI.Tests/NumericFieldTests.cs"
+[280] "tests/RackCad.UI.Tests/NumericFieldValidationTests.cs"
+[281] "tests/RackCad.UI.Tests/PushBackDeclaredCorrection2RoundingTests.cs"
+[282] "tests/RackCad.UI.Tests/PushBackDeclaredCorrection2MixedBoxTests.cs"
+[283] "tests/RackCad.UI.Tests/PushBackStateNetSupport.cs"
+[284] "tests/RackCad.UI.Tests/PushBackStateNetRackControlsTests.cs"
+[285] "tests/RackCad.UI.Tests/PushBackStateNetCellAndFrontTests.cs"
+[286] "tests/RackCad.UI.Tests/PushBackStateNetCompositeTests.cs"
+[287] "tests/RackCad.UI.Tests/PushBackStateNetModuleAndSafetyTests.cs"
+[288] "tests/RackCad.UI.Tests/PushBackStateNetActionsTests.cs"
+[289] "tests/RackCad.UI.Tests/PushBackStateNetFingerprintTests.cs"
+[290] "tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs"
+[291] "tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs"
+[292] "tests/RackCad.UI.Tests/Workspace/"
+[293] "tests/RackCad.UI.Tests/PushBackWorkspaceSupport.cs"
+[294] "tests/RackCad.UI.Tests/PushBackWorkspaceModeTests.cs"
+[295] "tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs"
+[296] "tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs"
+[297] "tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs"
+[298] "tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs"
+[299] "docs/"
+[300] ".github/"
+[301] "eng/"
+[302] "tools/"
+[303] "assets/"
+[304] "deploy/"
+[305] "RackCad.sln"
+[306] "Directory.Build.props"
+[307] "Directory.Build.targets"
+[308] "global.json"
+[309] "NuGet.Config"
+[310] "README.md"
+[311] "AGENTS.md"
+[312] "CLAUDE.md"
+[313] ".editorconfig"
+[314] ".gitattributes"
+[315] ".gitignore"
+
+=== Invariants (14)
+[0] "INV-PBT4A-01. Alcance: dentro de las 10 rutas. git diff BaseSha..CurrentSha -- src/RackCad.UI src/RackCad.Domain vacio; en src/RackCad.Plugin solo RIA y NH; en src/RackCad.Application solo WEI, WHC, IWorkspaceEditIntentOriginReader.cs y Draft/PushBackOriginByText.cs; en tests/ solo las tres clases nuevas y la linea del Skip de PushBackDraftWriteGuardTests.cs."
+[1] "INV-PBT4A-02. RED y GREEN: el RED son las tres clases nuevas de tests/, el esqueleto exacto (WEI con FromReads inerte, la interfaz nueva completa y PushBackOriginByText inerte) y el Skip de CT-PBT3A-12, con WHC, RIA y NH sin cambio; el GREEN solo toca WEI, PushBackOriginByText.cs, WHC, RIA y NH. En el RED, cada filtro con ExpectRed da todos Failed por asercion (la primera linea del StackTrace bajo tests/), con Failed == Selected; el filtro de las guardas pasa y sus autopruebas fallan sobre el texto inyectado. Con una reparacion del RED (F4B-E35, RR): RedSha..RedRepairSha solo toca clases de prueba que anadio el RED y ningun archivo de src/ ni PushBackDraftWriteGuardTests.cs; el criterio se repite entero sobre RedRepairSha; y RedRepairSha..CurrentSha es el GREEN de arriba."
+[2] "INV-PBT4A-03. La API: exactamente la de D-PBT4-02 y D-PBT4-03, con el texto literal del GREEN del paquete donde lo prescribe; la firma de RackPilotIntentAdapter.Read no cambia (EIG:139-141)."
+[3] "INV-PBT4A-04. Una CaptureDrawing y una LockDocument por lectura; AtOrigin no lee el dibujo (sin CaptureDrawing, bloqueo, transaccion, literal de cadena ni ex.Message) y solo llama a PushBackOriginByText.ReadAt, que hace en Draft/ las dos relecturas puras; RIA conserva un PushBackPilotIntentReader.Read(, un PushBackFullDraftReader.Read( y un new PushBackPilotIntentScan(, los tres en Read (EIG:350-364), StartTransaction 1 y LockDocument 1, y NH LockDocument 2 (G-9)."
+[4] "INV-PBT4A-05. El tipo del borrador del panel no cambia: Find<PushBackPilotDraftState> en las nueve lineas; WHC solo cambia en las cinco sentencias de lectura, con el texto literal de D-PBT4-03, y no declara nada nuevo."
+[5] "INV-PBT4A-06. Ningun archivo de src/ fuera de Draft/, PP, UR y RIA nombra los cinco tipos del modelo (CT-PBT4A-06)."
+[6] "INV-PBT4A-07. Las redes: section 5 en verde. Ninguna prueba existente se edita, se salta, se reactiva ni se borra, con una unica salvedad: el Skip de CT-PBT3A-12, con su motivo literal. En CurrentSha, el git diff -U0 BaseSha..CurrentSha de PushBackDraftWriteGuardTests.cs solo lleva la linea de atributo con Skip."
+[7] "INV-PBT4A-08. Las pruebas de UI: las reglas de section 5.0."
+[8] "INV-PBT4A-09. Determinismo: GUID fijo, cultura invariante, \"R\" y orden ordinal; ni hora ni aleatoriedad."
+[9] "INV-PBT4A-10. Las corridas locales: solo los filtros del contrato en UI; nunca la suite completa de UI en local; la de Core, si; sin copias de arboles; las corridas temporales terminan en Assert.Fail(string.Join(\"\\n\", lineas)), corren dentro de EditorDiscardPrompt.Substitute cuando abren ventanas, no entran en ningun commit y guardan TRX y log como artefactos."
+[10] "INV-PBT4A-11. La evidencia: rutas relativas comprobadas en worker-handoff.json; TreeSha real o null; el Trailer, el real; el Worker no escribe en docs/."
+[11] "INV-PBT4A-12. Las reglas de F4B; sin AutoCAD; la verificacion con las tres comprobaciones deterministas de F4B-E15."
+[12] "INV-PBT4A-13. Las declaraciones nuevas en src/: las de la lista cerrada de PBT4A-C13 (con ReadAt), y ninguna mas, por nombre y acotada a los archivos que tocan, sobrecargas incluidas. No se admite ningun ayudante privado, tampoco en los dos archivos nuevos: el texto literal del paquete no lo necesita."
+[13] "INV-PBT4A-14. D2: fuera de las dos referencias de cada lado, ninguna copia comparte un objeto mutable con su original. Ninguna linea anadida muta un PushBackSystem ni un RackModuleReconciliationResult adoptado."
+
+=== RequiredTests (38)
+[0] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests", "MinSelected": 5, "ExpectRed": true}
+[1] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests", "MinSelected": 3, "ExpectRed": false}
+[2] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests", "MinSelected": 4, "ExpectRed": false}
+[3] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests", "MinSelected": 1, "ExpectRed": false}
+[4] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests", "MinSelected": 86, "ExpectRed": false}
+[5] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests", "MinSelected": 123, "ExpectRed": false}
+[6] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests", "MinSelected": 2, "ExpectRed": false}
+[7] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests", "MinSelected": 1, "ExpectRed": false}
+[8] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullWrite", "MinSelected": 13, "ExpectRed": false}
+[9] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests", "MinSelected": 6, "ExpectRed": false}
+[10] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests", "MinSelected": 2, "ExpectRed": false}
+[11] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.Workspace", "MinSelected": 3261, "ExpectRed": false}
+[12] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullDraft", "MinSelected": 10, "ExpectRed": false}
+[13] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests", "MinSelected": 2, "ExpectRed": false}
+[14] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace", "MinSelected": 547, "ExpectRed": false}
+[15] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditableState", "MinSelected": 13, "ExpectRed": false}
+[16] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate", "MinSelected": 1, "ExpectRed": false}
+[17] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests", "MinSelected": 1, "ExpectRed": false}
+[18] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests", "MinSelected": 1, "ExpectRed": false}
+[19] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests", "MinSelected": 2, "ExpectRed": false}
+[20] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization", "MinSelected": 55, "ExpectRed": false}
+[21] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization", "MinSelected": 10, "ExpectRed": false}
+[22] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization", "MinSelected": 16, "ExpectRed": false}
+[23] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization", "MinSelected": 3, "ExpectRed": false}
+[24] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet", "MinSelected": 14, "ExpectRed": false}
+[25] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection", "MinSelected": 14, "ExpectRed": false}
+[26] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever", "MinSelected": 67, "ExpectRed": false}
+[27] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.I58F1", "MinSelected": 10, "ExpectRed": false}
+[28] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests", "MinSelected": 9, "ExpectRed": false}
+[29] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests", "MinSelected": 7, "ExpectRed": false}
+[30] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests", "MinSelected": 3, "ExpectRed": false}
+[31] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests", "MinSelected": 1, "ExpectRed": false}
+[32] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests", "MinSelected": 1, "ExpectRed": false}
+[33] {"Project": "tests/RackCad.Tests/RackCad.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests", "MinSelected": 1, "ExpectRed": false}
+[34] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests", "MinSelected": 3, "ExpectRed": false}
+[35] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests", "MinSelected": 4, "ExpectRed": false}
+[36] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests", "MinSelected": 1, "ExpectRed": false}
+[37] {"Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj", "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests", "MinSelected": 3, "ExpectRed": false}
+
+=== ExpectedEvidence (15)
+[0] "antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte sobre la delegacion final, A1-A8 y nc4;"
+[1] "el commit RED y su push antes del GREEN; con una reparacion del RED (F4B-E35, RR-4; V43-04), ademas, el commit \"RED repair\" y su push antes del GREEN, con su CI, registrada como la del RED reparado, y los TRX de cada filtro con ExpectRed sobre RedRepairSha;"
+[2] "la CI del RED como en section 6.0 (tests en failure, ui-tests y build-ui en success, build-plugin omitido, sin cuelgue); la del RED reparado, si lo hay, da lo mismo;"
+[3] "la tabla \"CT -> la asercion que falla en el RED\" y las autopruebas de CT-PBT4A-07 y CT-PBT4A-08;"
+[4] "el GREEN y su CI 4/4;"
+[5] "en local: el build Release con el Plugin sin avisos nuevos, los filtros sobre el RED, sobre RedRepairSha si hay reparacion, y sobre el GREEN, y tres corridas en verde de los filtros con ExpectRed sobre el GREEN;"
+[6] "la entrega con el mapa CT -> metodo, las rutas relativas comprobadas y el Trailer real de los commits RED, \"RED repair\" (si lo hay) y GREEN; con una reparacion del RED, ademas, RedRepairSha, la prueba y la linea corregidas, el error y por que no cambia ninguna linea esperada, con el diff, y RedSha, que sigue siendo el commit RED original (F4B-E35, RR-5);"
+[7] "la verificacion con las tres comprobaciones de F4B-E15, y nc1 a nc3;"
+[8] "con una reparacion del RED, la verificacion la lee como parte de la entrega (F4B-E35, RR-7; section 6.0; V43-05 y V44-04, CA-T3a M-01): n.o 10 (Tests): el RED se acredita con RedSha y con la CI del RED original, y sus TRX, con los filtros con ExpectRed entre los fallidos. La clausula \"git diff --name-only RedSha CurrentSha no toca RT U ChainRedFiles\" se comprueba desde RedRepairSha: git diff --name-only RedRepairSha CurrentSha. n.o 11 (Trailer): el trailer va tambien en el commit \"RED repair\". Lo que el Controller comprueba de RR (si algo falla, es C18): RR-1, un solo commit \"RED repair\", hijo directo de RedSha y anterior al GREEN; RR-2, git diff --name-only RedSha RedRepairSha dentro de las clases de prueba que anadio el RED (git diff --name-only --diff-filter=A BaseSha RedSha -- tests/); RR-4, la CI de RedRepairSha, registrada como la del RED reparado, y los TRX de los filtros con ExpectRed sobre el; RR-5, la declaracion de la entrega, con el diff, y RedSha, el commit RED original; RR-6, con el tramo RedSha..RedRepairSha. En PB-T4a, ademas: RedSha..RedRepairSha no toca ningun archivo de src/ (el esqueleto) ni PushBackDraftWriteGuardTests.cs (el Skip de CT-PBT3A-12). La ayuda mecanica de RR-3: es parada C07, una violacion cierta de RR-3, que un literal de la lista cerrada de la clase reparada (section 6.0 del paquete, la tabla de RR-3) cambie entre RedSha y RedRepairSha: una linea o un fragmento, si no aparece como subcadena exacta el mismo numero de veces; un valor de gesto, si no aparece como token el mismo numero de veces. Indicios para la revision, no parada: una cadena <campo>= anadida o quitada en git diff -U0 RedSha RedRepairSha, o un cambio en el primer argumento de un Assert.Equal. Pueden dar falsos positivos, como una linea que solo se mueve de sitio, asi que van a Findings y a la revision, con la declaracion de RR-5."
+[9] "la CI del RED con tests en failure, ui-tests y build-ui en success y build-plugin omitido;"
+[10] "la del GREEN 4/4, con el Plugin compilado;"
+[11] "el censo de declaraciones de WEI, WHC, RIA y NH, y de los dos archivos nuevos, en BaseSha y en CurrentSha, contadas una a una con su nombre (una sobrecarga es una declaracion mas): la diferencia es la lista cerrada de PBT4A-C13;"
+[12] "el Trailer real;"
+[13] "la entrada \"## PB-T4a\" de superseding-characterization.md, escrita por la sesion en el commit de emision, con el Skip de CT-PBT3A-12, su motivo literal y CT-PBT4A-06, que la sustituye; su tabla de ejecucion se completa al cerrar."
+[14] "Linea base de la CI: la del cierre de PB-T3c (F4B-E48): run 44757675821 sobre el GREEN 938a35f0, Core 19 129 resultados, con 19 123 Passed y 6 Skipped, los de D-1, y UI 2 451, con 2 430 Passed y 21 Skipped. Previstos, con el total exacto de cada rama (F4B-E46): PB-T4a anade ocho [Fact] y un Skip de un [Fact], sin ninguna Theory, asi que hay una sola rama. El RED: Core 19 137 resultados, con 19 125 Passed, 5 Failed (CT-PBT4A-01 a 04 y 07) y 7 Skipped. El GREEN: Core 19 137, con 19 130 Passed, 0 Failed y 7 Skipped. UI, en los dos: 2 451, con 2 430 Passed y 21 Skipped."
+
+=== StopConditions (34)
+[0] {"Id": "S-02", "Text": "architecture outside Freeze"}
+[1] {"Id": "S-03", "Text": "material ambiguity"}
+[2] {"Id": "S-04", "Text": "contradictory evidence"}
+[3] {"Id": "S-05", "Text": "destructive or irreversible action not authorized"}
+[4] {"Id": "S-07", "Text": "conflict with another active owner"}
+[5] {"Id": "S-08", "Text": "branch or worktree ownership conflict"}
+[6] {"Id": "S-12", "Text": "Worker loses context or cannot verify AuthorityRevision"}
+[7] {"Id": "S-13", "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"}
+[8] {"Id": "S-14", "Text": "I-64 Freeze or contract explicitly says STOP"}
+[9] {"Id": "P-01", "Text": "config.toml no longer matches the accepted Snapshot in force (today Snapshot K, docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-K/snapshot-k.json)"}
+[10] {"Id": "P-02", "Text": "foreign live participant, unattributable process or more than one open delegation"}
+[11] {"Id": "P-03", "Text": "delegation outside gate contract"}
+[12] {"Id": "P-04", "Text": "BLOCKED cap reached"}
+[13] {"Id": "P-05", "Text": "invocation differs from accepted delegation package"}
+[14] {"Id": "P-06", "Text": "usage or credit-limit warning"}
+[15] {"Id": "P-07", "Text": "another invocation would exceed the invocation budget"}
+[16] {"Id": "P-08", "Text": "responsible session operates the worktree during cession"}
+[17] {"Id": "PBT4A-C01", "Text": "doing the task would require writing outside the AllowedWriteScope."}
+[18] {"Id": "PBT4A-C02", "Text": "it would require editing, skipping, re-enabling or deleting an existing test or helper, or touching InternalsVisibleTo, the packages, a .csproj or Fixtures/I64. Only one exception: the Skip of CT-PBT3A-12 in PushBackDraftWriteGuardTests.cs, with its literal reason. Any existing test that fails, outside that list, returns to the Owner."}
+[19] {"Id": "PBT4A-C03", "Text": "an observable change of RACKEDITAR appears, or of the pilot in the panel other than the declared one (the five rereads of an open draft go to the origin of the draft by its text, A-T3-8). STOP and return to the Owner."}
+[20] {"Id": "PBT4A-C04", "Text": "a method of a filter with ExpectRed passes on the skeleton, or fails by an exception and not by an assertion."}
+[21] {"Id": "PBT4A-C05", "Text": "a CT would need AutoCAD, a real MessageBox, the real configurator, the BOM, \"Guardar en biblioteca\", \"Insertar\", real keyboard or focus, or writing to the profile or to disk."}
+[22] {"Id": "PBT4A-C06", "Text": "the GREEN CI fails outside the new tests, reproducibly and not attributable to them."}
+[23] {"Id": "PBT4A-C07", "Text": "a fact of section 2 does not hold in a way that changes a CT or the design; or an expected line is not met in the GREEN; or a self-checking recipe (the self-tests of CT-PBT4A-07 and CT-PBT4A-08) does not exercise its path. The Worker does not adjust what is expected; except under F4B-E35 (the RED repair rule, RR): a writing error in a new test of this task, found after the RED push and before the GREEN, is repaired without this stop and without spending an attempt by one declared RED repair commit that touches only test files the RED added and changes only the when or the how of a reading or a gesture the package already prescribes, and no expected line, literal or oracle of the package or the contract, with the full RED criterion rerun on RedRepairSha; a second writing error in the same attempt, a repair that needs an expected line changed, or a literal line the package fixes for the repaired class (an expected line or a literal) that does not stay byte for byte in it, is this stop."}
+[24] {"Id": "PBT4A-C08", "Text": "a planning output rejected ONLY by the literal byte-fidelity comparison of the collections before the Worker allows ONE replanning with a reinforced prompt, without consuming an attempt ([DP] question 2); a second planning fidelity rejection is STOP and returns to the Owner; any other planning rejection (A1-A8 or another cause) is STOP and returns to the Owner"}
+[25] {"Id": "PBT4A-C09", "Text": "a test would hang, leave a window, a modal or a dispatcher alive, write to the profile or depend on machine paths."}
+[26] {"Id": "PBT4A-C10", "Text": "doing the task would require what the scope of PB-T4a excludes: changing the type of the draft of the panel; beginning a draft from the full read; the window, Editar todo or Conservar mi borrador in two steps; the rule of the scale; creating views; touching the classic editor or RACKEDITAR; opening AUTH-13; or changing the signature of RackPilotIntentAdapter.Read."}
+[27] {"Id": "PBT4A-C11", "Text": "a negative control (nc1, nc2 or nc3) does not give CONTROL PASS: its ordinary output is kept as is and there are only two exits without returning to the Owner ([DP] question 1, \"Extender firmas exactas\"): (1) nc2 with the EXACT signature of PD-F4-01 (source f4-dispositions.md:1103-1106: Scope in fail on the removed path; Contract in fail only by the exactness clause; EXECUTION_BLOCKED/STOP; applied literally at :1540: no check other than the real verification differs; the exactness clause includes Contract evidence citing the contrast of the narrowed AllowedWriteScope with the contract or with byte-fidelity-check.json, f4-dispositions.md:520, :562, and nothing else) -> substitute PBT4-NC2-EXACT-WHITELIST-F4B-01, the version 2 of PBTx-NC2-EXACT-WHITELIST-F4B-01 (F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py, SHA-256 c033e96ce147963feb9c04733e9bfbec7493fea33d8ff79b1c2e8ab860798e45; owner-pbt3a-nc2-decision.md, \"Aceptar y ampliar el sustituto\"), whose property 8 admits only the closed list of the exact literals of the evidence entry of the byte-by-byte comparison, one per package (PB-T2 and PB-T3), with its reviewed text unchanged and run with --task PBT4 in the F4B-E21 mode with the injection note and the raw output of this task's accepted planning, recorded as nc2 = SATISFIED_UNDER_PBT4_EXACT_WHITELIST_SUBSTITUTE_F4B; if inject_opaque.py changed since that run, the substitute is reviewed before it is reused; (2) nc1 with the signature PD-F4B-01, the false SHA cascade (F4B-E40: owner-pbt2c-nc1-decision.md, its conditions (a) to (f): the mutation only changes the CurrentSha of the handoff to a SHA that does not exist in the repository; EXECUTION_BLOCKED / STOP with S-04 among the stops; Handoff is the first check in fail; the failing checks are a subset of Handoff, Identity, Remote, Scope, Ci and Tests that always includes Handoff and Identity, and all the others pass as in the real verification; each failing evidence cites the false SHA and none attributes the failure to another cause; the Identity evidence also writes the real HEAD), of which the EXACT signature of PD-F4-04 (source owner-f4t3-authorization.md:255-265; as applied in F4, f4-dispositions.md:1657-1660) is a particular case -> substitute PBT3x-NC1-CASCADE-SIGNAL-01 (F4B-E40 and F4B-E43: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc1-cascade-substitute/nc1_cascade_signal_substitute.py, SHA-256 41440edc4a963bef890e4336dccb885837424008c027cdb172d2b926e0f49b40, reviewed APTO, with its declared limits), with its reviewed text unchanged and run with --task PBT4, recorded as nc1 = SATISFIED_UNDER_PBT4_NC1_CASCADE_SUBSTITUTE. Matching is decided never by check name: the control output is compared with the real verification check by check (the set of failing checks, the first failing check, Outcome and StopClass, and the evidence text); the only admitted differences are those listed for each signature in section 6.0 of the PB-T1 contract package ([PT1], docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md) and, for PD-F4B-01, its conditions (a) to (f); the session records the comparison table in f4b-dispositions.md. Any other signature or variation (PD-F4-05, PD-F4-06, nc2 with Ci or Trailer also in fail, any nc1 that does not meet PD-F4B-01 - the one-off acceptances of nc1 in PB-TC (F4B-E08), in PB-TC2 attempt 1 (F4B-E12), in PB-T2a (F4B-E34), in PB-T2b (F4B-E38) and in PB-T2c (F4B-E40) do not extend -, an nc2 that the version 2 of the substitute does not give PASS - the disposition of the Owner on the nc2 of PB-T3a (F4B-E43) does not extend -, a substitute that does not give PASS, any failure of nc3, or an evidence text that cannot be assigned to an admitted difference) returns to the Owner before any substitute or acceptance; no one-off acceptance extends to PB-T4a"}
+[28] {"Id": "PBT4A-C12", "Text": "a correction would be attempt 3 of 3: it returns to the Owner before it is issued (D-PB-10)"}
+[29] {"Id": "PBT4A-C13", "Text": "doing the task would require touching a file of src/ other than WEI, WHC, RIA, NH, IWorkspaceEditIntentOriginReader.cs and Draft/PushBackOriginByText.cs; or adding a declaration of any visibility (type, constructor, method, property, field, constant, enum member or nested type; an overload is one more) whose name is not in this closed list: in WorkspaceEditIntent.cs, the properties FullRead and Catalog of EditIntentReadResult and its method FromReads; in IWorkspaceEditIntentOriginReader.cs, the interface IWorkspaceEditIntentOriginReader and its method ReadIntentAtOrigin; in Draft/PushBackOriginByText.cs, the class PushBackOriginByText and its methods Choose, AtKey and ReadAt; in RackPilotIntentAdapter.cs, the second constructor of RackPilotIntentReadResult, its properties Full and Input, and the method AtOrigin of RackPilotIntentAdapter; in WorkspaceNavigationHost.cs, the method ReadIntentAtOrigin of the nested reader. Two changes of existing members are prescribed and are not new declarations: the private constructor of EditIntentReadResult gains two parameters, and ReadOnActiveDocument gains the parameter originText. In WorkspaceHostCore.cs, no new declaration: only the inline statement of D-PBT4-03 in five bodies (the pattern variable originReader is not a member). The Worker stops before adding it."}
+[30] {"Id": "PBT4A-C14", "Text": "a design of the corpus changes its admission or its lock (the pilot reader, the full reader, AUTH-13 or the parked tail)."}
+[31] {"Id": "PBT4A-C16", "Text": "an existing test outside the closed list of substitutions of PB-T4a (CT-PBT3A-12) fails, including one that reads the text in a way only seen when it runs. It returns to the Owner (owner-pbt4-decisions.md, question 4)."}
+[32] {"Id": "PBT4A-C17", "Text": "(F4B-E11, D2, IMPORTANT LIMIT) doing the task would need to MUTATE the resolved rack (PushBackSystem) or the module report (RackModuleReconciliationResult) inside the editing or draft lifetime, or to share by reference any other mutable object between a copy of the state and its original, or a measurement already finds such a mutation in the editing path: STOP and L-1 is reopened. The Owner text, literal: \"This is NOT authorization for general shallow copying. It is exactly: two declared shared references. If later PB-T1/PB-T2/PB-T3 needs to mutate either: resolved rack; module report; inside the Workspace draft lifetime: STOP and reopen L-1. At that point the object must either: be cloned; be made immutable; or be replaced by a value snapshot appropriate to the draft model.\" The Worker chooses none of the three exits: the Owner does"}
+[33] {"Id": "PBT4A-C18", "Text": "a RED repair does not meet the F4B-E35 rule (RR-1 to RR-6): it is not after the RED push and before the GREEN, or it is the second one in the attempt; it touches a file the RED did not add, an existing test, src/, a fixture or anything outside the AllowedWriteScope; it changes an expected line, literal or oracle, or anything other than the when or the how of a reading or a gesture the package already prescribes (RR-3); the full RED criterion and its CI are not rerun on RedRepairSha; or it is not declared as RR-5 says. The rule does not apply and the repair counts as touching tests/ after the RED (AUTOMATION_PLAN 16.8): STOP."}
+
+=== EligibleCells (2)
+[0] {"Cell": "anthropic/subagent/claude-sonnet-5-5", "Provider": "Anthropic", "Model": "claude-sonnet-5-5", "Transport": "subagent", "Capabilities": ["read", "tool-use", "write-commit-push", "effort-applied"], "TestedEfforts": ["high"], "Source": "docs/automation/agent-execution/model-catalog.md: celda write-commit-push medida por U-04; effort high medido y usada como Worker real", "VerifiedOn": "2026-09-30"}
+[1] {"Cell": "openai/process/gpt-6-luna", "Provider": "OpenAI", "Model": "gpt-6-luna", "Transport": "process", "Capabilities": ["read", "tool-use", "effort-applied"], "TestedEfforts": ["high"], "Source": "sonda neutra de F4 R20261111T180028Z-32f7 (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT G 7C1516A9135D59FA38F6004D56B71C7E1313502D6C6BFEA6FB5D8F97A62DD723 antes y despues; F4-E13) sobre codex-cli 0.167.0-alpha.3.2, bin 5449c1f0f26f1f98, codex.exe SHA-256 4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17; acreditacion del binario: sonda R20261110T034758Z-6a68", "VerifiedOn": "2026-11-11"}
+

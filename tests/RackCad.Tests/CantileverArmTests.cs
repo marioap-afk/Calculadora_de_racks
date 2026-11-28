@@ -606,10 +606,33 @@ namespace RackCad.Tests
 
             Assert.True(blocked.IsBlocked);
             Assert.Null(blocked.MountingPlate);
-            Assert.Contains(
-                "VerticalPunchCount",
-                blocked.Diagnostics.Single(d => d.Code == CantileverDiagnostics.ArmPlateTooShortForBody).Message,
-                StringComparison.Ordinal);
+            // T6 ui (O-4 b): it asks for more rows by the name of the field of the window, not of the property.
+            var message = blocked.Diagnostics.Single(d => d.Code == CantileverDiagnostics.ArmPlateTooShortForBody).Message;
+            Assert.Contains("Aumenta «Troqueles verticales»: más troqueles", message, StringComparison.Ordinal);
+            Assert.DoesNotContain("VerticalPunchCount", message, StringComparison.Ordinal);
+        }
+
+        // T6 ui, correction 5 of the review (sobre 331f9f18): the plates by the names of the window, with accents.
+        [Fact]
+        public void ThePlatesAreSaidWithTheNamesOfTheWindow()
+        {
+            var noPlate = Design();
+            noPlate.MountingPlate.Thickness = 0.0;
+            Assert.Contains(Resolve(noPlate).Diagnostics,
+                d => d.Message == "El valor del espesor de la placa de montaje debe ser un número positivo; se recibió 0.");
+
+            var noCap = Design(endMode: CantileverArmEndPlateMode.Cap);
+            noCap.EndPlate.Thickness = 0.0;
+            Assert.Contains(Resolve(noCap).Diagnostics,
+                d => d.Message == "El valor del espesor de la placa de extremo debe ser un número positivo; se recibió 0.");
+
+            var noStop = Design(endMode: CantileverArmEndPlateMode.Stop, extraStop: 0.0);
+            Assert.Contains(Resolve(noStop).Diagnostics,
+                d => d.Message == "Un tope necesita una «Altura extra de tope» finita y positiva; se recibió 0.");
+
+            var sloped = Resolve(Design(slope: 0.4375));
+            Assert.Contains(sloped.Diagnostics, d => d.Code == CantileverDiagnostics.ArmSquareCutAtSlopedPlate
+                && d.Message.StartsWith("El perfil va cortado a escuadra y la placa de montaje es un plano vertical, así que la ", StringComparison.Ordinal));
         }
 
         [Fact]
@@ -1331,7 +1354,7 @@ namespace RackCad.Tests
             Assert.Contains("NO queda a ras", message, StringComparison.Ordinal);
             Assert.Contains("penetra", message, StringComparison.Ordinal);
             Assert.Contains("holgura", message, StringComparison.Ordinal);
-            Assert.Contains("aproximacion visual declarada", message, StringComparison.Ordinal);
+            Assert.Contains("aproximación visual declarada", message, StringComparison.Ordinal); // T6 ui (correction 5): with its accent
             Assert.DoesNotContain("no se traslapan", message, StringComparison.Ordinal);
         }
 

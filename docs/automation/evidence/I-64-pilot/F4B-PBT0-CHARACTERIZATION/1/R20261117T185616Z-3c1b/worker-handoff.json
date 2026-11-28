@@ -1,0 +1,743 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4B-PBT0-CHARACTERIZATION",
+  "RunId": "R20261117T185616Z-3c1b",
+  "DelegationRunId": "R20261117T185020Z-e1ae",
+  "Initiative": "I-64",
+  "Gate": "F4B",
+  "Attempt": 1,
+  "BaseSha": "f2eedd9a0d03c13edc0a92a0949d2c0b64bd78f4",
+  "RedSha": "8f75a89b092947e4572e7383cc37696776903de1",
+  "CurrentSha": "28e38d8d51108c22305a5fc41ce84070a2efdbe7",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs",
+    "tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs",
+    "tests/RackCad.Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCatalogTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCompositeTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationStateTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSubdialogTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs"
+  ],
+  "WorkCompleted": "PB-T0 hecho como CARACTERIZACION pura, sin AutoCAD y sin cambio neto de producto. Se escribieron las nueve clases de prueba y el ayudante PushBackFullEditorCharacterizationSupport (internal static, sin pruebas): 21 metodos [Fact], uno por CT-PB0-01..21, sin Theory ni Skip, todas las clases de UI en EditorDiscardPromptCollection. Core: 3 metodos (CT-10, CT-18, CT-21). UI: 18 metodos (CT-01..09, 11..17, 19, 20). Orden de trabajo: paso 0 (lineas base de build y huella de limpieza ANTES), paso 1 (mediciones sobre la BaseSha con codigo temporal que no entro en ningun commit), paso 2 (pruebas definitivas en verde sobre el producto intacto: filtros 3/3 y 18/18, Core completo 19070 en verde), paso 3 (cada mutante MU-PB0-01..20 SOLO sobre la BaseSha con git apply de su parche y git restore, ambos filtros y, para MU-04, 05, 07, 09, 17 y 20, la suite completa de Core), paso 4 (RED con los 20 mutantes juntos: 21 de 21 resultados nuevos Failed por asercion; commit RED 8f75a89b y push; CI del RED), paso 5 (GREEN: git restore --source=BaseSha --staged --worktree de los seis archivos de MutantScope; commit 28e38d8d y push; CI del GREEN 4 de 4 en success). Los 20 mutantes de la tabla cerrada se usaron en su forma PRINCIPAL (ninguna alternativa) y cada uno hace fallar el metodo de su fila en aislado, por asercion. Ningun mutante fuera de la tabla, ningun archivo fuera de las 16 rutas. git diff BaseSha..CurrentSha -- src esta vacio; git diff --name-only BaseSha..CurrentSha da exactamente los diez archivos nuevos de prueba. DESVIACION DECLARADA (unica sobre el contrato): en CT-17 se agrego el caso c-16 (Dimensions = 3, el limite valido) porque con los casos c-10 y c-11 del contrato (7 y -1) el mutante MU-PB0-16 NO discriminaba: el almacen del producto normaliza 7 y -1 a 0 antes de que la ventana los vea (DynamicRackSystemDocument.cs:322,429), de modo que nunca llegan al recorte de W:407; la alternativa de la fila (W:387, kg a lb) tampoco alcanzaba porque la unidad vacia o en blanco tambien la normaliza el almacen a kg. Se corrigio la PRUEBA (no se invento mutante) para que caracterice el limite que el CT dice cubrir; con c-16 MU-PB0-16 falla CT-17 por asercion. Los mutantes MU-01 a MU-15 se probaron en aislado ANTES de agregar c-16 (el CT-17 anterior); MU-16 y la conjuncion del RED se corrieron con el CT-17 definitivo; ningun resultado de MU-01..15 cambia por c-16 (c-16 solo es sensible a W:407).",
+  "TestsExecuted": [
+    {
+      "RunRef": "m01",
+      "Command": "git apply mutants/mu01.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m01 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m01 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m01/ui.trx"
+    },
+    {
+      "RunRef": "m02",
+      "Command": "git apply mutants/mu02.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m02 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m02 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m02/ui.trx"
+    },
+    {
+      "RunRef": "m03",
+      "Command": "git apply mutants/mu03.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m03 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m03 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m03/ui.trx"
+    },
+    {
+      "RunRef": "m04",
+      "Command": "git apply mutants/mu04.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m04 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m04 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m04/ui.trx"
+    },
+    {
+      "RunRef": "m04f",
+      "Command": "git apply mutants/mu04.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m04 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m04/corefull.trx"
+    },
+    {
+      "RunRef": "m05",
+      "Command": "git apply mutants/mu05.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m05 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m05 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m05/ui.trx"
+    },
+    {
+      "RunRef": "m05f",
+      "Command": "git apply mutants/mu05.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m05 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m05/corefull.trx"
+    },
+    {
+      "RunRef": "m06",
+      "Command": "git apply mutants/mu06.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m06 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m06 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m06/ui.trx"
+    },
+    {
+      "RunRef": "m07",
+      "Command": "git apply mutants/mu07.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m07 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m07 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m07/ui.trx"
+    },
+    {
+      "RunRef": "m07f",
+      "Command": "git apply mutants/mu07.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m07 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m07/corefull.trx"
+    },
+    {
+      "RunRef": "m08",
+      "Command": "git apply mutants/mu08.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m08 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m08 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m08/ui.trx"
+    },
+    {
+      "RunRef": "m09",
+      "Command": "git apply mutants/mu09.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m09 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m09 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m09/ui.trx"
+    },
+    {
+      "RunRef": "m09f",
+      "Command": "git apply mutants/mu09.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m09 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m09/corefull.trx"
+    },
+    {
+      "RunRef": "m10",
+      "Command": "git apply mutants/mu10.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m10 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m10 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m10/ui.trx"
+    },
+    {
+      "RunRef": "m11",
+      "Command": "git apply mutants/mu11.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m11 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m11 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m11/ui.trx"
+    },
+    {
+      "RunRef": "m12",
+      "Command": "git apply mutants/mu12.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m12 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m12 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m12/ui.trx"
+    },
+    {
+      "RunRef": "m13",
+      "Command": "git apply mutants/mu13.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m13 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m13 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m13/ui.trx"
+    },
+    {
+      "RunRef": "m14",
+      "Command": "git apply mutants/mu14.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m14 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m14 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m14/ui.trx"
+    },
+    {
+      "RunRef": "m15",
+      "Command": "git apply mutants/mu15.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m15 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m15 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m15/ui.trx"
+    },
+    {
+      "RunRef": "m16",
+      "Command": "git apply mutants/mu16.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m16 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m16 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m16/ui.trx"
+    },
+    {
+      "RunRef": "m17",
+      "Command": "git apply mutants/mu17.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m17 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m17 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m17/ui.trx"
+    },
+    {
+      "RunRef": "m17f",
+      "Command": "git apply mutants/mu17.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m17 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m17/corefull.trx"
+    },
+    {
+      "RunRef": "m18",
+      "Command": "git apply mutants/mu18.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m18 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m18 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m18/ui.trx"
+    },
+    {
+      "RunRef": "m19",
+      "Command": "git apply mutants/mu19.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m19 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m19 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m19/ui.trx"
+    },
+    {
+      "RunRef": "m20",
+      "Command": "git apply mutants/mu20.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m20 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m20 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m20/ui.trx"
+    },
+    {
+      "RunRef": "m20f",
+      "Command": "git apply mutants/mu20.patch; dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m20 --blame-hang-timeout 10m --blame-hang-dump-type none; git restore --source=<BaseSha> -- <archivo mutado>",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/m20/corefull.trx"
+    },
+    {
+      "RunRef": "c1",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/c1 --blame-hang-timeout 10m --blame-hang-dump-type none (BaseSha mas las pruebas nuevas, sin mutantes)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/c1/core-full.trx"
+    },
+    {
+      "RunRef": "r0",
+      "Command": "git apply mutants/red-all.patch (los 20 mutantes juntos); dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/r0 --blame-hang-timeout 10m --blame-hang-dump-type none; dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/r0 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "8f75a89b092947e4572e7383cc37696776903de1",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/r0/ui.trx"
+    },
+    {
+      "RunRef": "r0f",
+      "Command": "RED con los 20 mutantes: dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/r0 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "8f75a89b092947e4572e7383cc37696776903de1",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/r0/corefull.trx"
+    },
+    {
+      "RunRef": "g0",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g0 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "28e38d8d51108c22305a5fc41ce84070a2efdbe7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g0/core.trx"
+    },
+    {
+      "RunRef": "g1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g1 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "28e38d8d51108c22305a5fc41ce84070a2efdbe7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g1/ui.trx"
+    },
+    {
+      "RunRef": "g2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g2 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "28e38d8d51108c22305a5fc41ce84070a2efdbe7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g2/ui.trx"
+    },
+    {
+      "RunRef": "g3",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g3 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "28e38d8d51108c22305a5fc41ce84070a2efdbe7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g3/ui.trx"
+    },
+    {
+      "RunRef": "g4",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --logger \"trx;LogFileName=corefull.trx\" --results-directory artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g4 --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "28e38d8d51108c22305a5fc41ce84070a2efdbe7",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/g4/corefull.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "m01",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationStateTests.CT_PB0_01_TheWindowStateAfterLoadingDiffersFromTheEnvelopeOnlyInTheCharacterizedWays"
+      ]
+    },
+    {
+      "RunRef": "m02",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationStateTests.CT_PB0_02_TheSecondPassOfUpdateEqualsTheFirstPassOutputForEveryDesignOfTheCorpusAndX01"
+      ]
+    },
+    {
+      "RunRef": "m03",
+      "Selected": 21,
+      "Passed": 17,
+      "Failed": 4,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_03_StagingConfirmingAndCancellingAModuleEditInALoadedRackMovesTheOutputOnlyOnConfirm",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_04_AddingDepthRebuildsTheModulesAndRestoringTheStandardReturnsEveryModuleToCalculated",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05_TheSixAdvancedParametersAfterRestoreStandardAreResetInTheOutputAndComeBackOnUpdate",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_12_TheHeaderConfiguratorSeamStagesWhatItReturnsAndNullStagesNothing"
+      ]
+    },
+    {
+      "RunRef": "m04",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_04_AddingDepthRebuildsTheModulesAndRestoringTheStandardReturnsEveryModuleToCalculated"
+      ]
+    },
+    {
+      "RunRef": "m04f",
+      "Selected": 19070,
+      "Passed": 19068,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackCompositeLifecycleTests.CompositeModules_StandardRestoreResetsBothATailAndBTailCustomizations",
+        "RackCad.Tests.PushBackModuleAdoptionTests.AStandardRestore_DiscardsEveryCustomization_AtOnce"
+      ]
+    },
+    {
+      "RunRef": "m05",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05_TheSixAdvancedParametersAfterRestoreStandardAreResetInTheOutputAndComeBackOnUpdate"
+      ]
+    },
+    {
+      "RunRef": "m05f",
+      "Selected": 19070,
+      "Passed": 19070,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "m06",
+      "Selected": 21,
+      "Passed": 17,
+      "Failed": 4,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCompositeTests.CT_PB0_06_TheDormantTailIsParkedAtLoadConsumedWhenSideBHasAFrontAndParkedAgainWhenSideBIsRetired",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_03_StagingConfirmingAndCancellingAModuleEditInALoadedRackMovesTheOutputOnlyOnConfirm",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationStateTests.CT_PB0_01_TheWindowStateAfterLoadingDiffersFromTheEnvelopeOnlyInTheCharacterizedWays",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationStateTests.CT_PB0_02_TheSecondPassOfUpdateEqualsTheFirstPassOutputForEveryDesignOfTheCorpusAndX01"
+      ]
+    },
+    {
+      "RunRef": "m07",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCompositeTests.CT_PB0_07_RetiringAndDeclaringSideBMovesTheCompositeFlagsTheAbsentSlotsAndTheDefaultTopology"
+      ]
+    },
+    {
+      "RunRef": "m07f",
+      "Selected": 19070,
+      "Passed": 19069,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackCompositeMultiFrontTests.DeclaringSideB_MakesTheDefaultTopologyTwoSided"
+      ]
+    },
+    {
+      "RunRef": "m08",
+      "Selected": 21,
+      "Passed": 19,
+      "Failed": 2,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCompositeTests.CT_PB0_08_AddingRemovingAndBlankingFrontsWithoutSideBMovesTheFrontsTheAbsentSlotsAndTheLateralCuts",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCompositeTests.CT_PB0_09_AddingRemovingAndBlankingFrontsWithSideBMovesTheFrontsTheAbsentSlotsTheCutsAndTheCompositeFlag"
+      ]
+    },
+    {
+      "RunRef": "m09",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackFullEditorCharacterizationLateralCutTests.CT_PB0_10_TheLateralCutsAndTheObsoleteViewsAfterEachFrontEditAreTheOnesThePureDecisionGives"
+      ]
+    },
+    {
+      "RunRef": "m09f",
+      "Selected": 19070,
+      "Passed": 19065,
+      "Failed": 5,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.ProjectionAvailabilityPolicyTests.PushBackUsesPhysicalPostIdentityWithoutAnOrdinalRemap",
+        "RackCad.Tests.PushBackFullEditorCharacterizationLateralCutTests.CT_PB0_10_TheLateralCutsAndTheObsoleteViewsAfterEachFrontEditAreTheOnesThePureDecisionGives",
+        "RackCad.Tests.WorkspacePilotPrepareTests.InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView",
+        "RackCad.Tests.WorkspacePilotPrepareTests.ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan",
+        "RackCad.Tests.WorkspacePilotUpdateRunTests.AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflightAndNothingIsImported"
+      ]
+    },
+    {
+      "RunRef": "m10",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationStateTests.CT_PB0_11_RenamingTrimsTheNameAndAnEmptyOrBlankNameIsKeptAsItIs"
+      ]
+    },
+    {
+      "RunRef": "m11",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_12_TheHeaderConfiguratorSeamStagesWhatItReturnsAndNullStagesNothing"
+      ]
+    },
+    {
+      "RunRef": "m12",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_13_AcceptedSafetyAppliesTheReturnedListAndTheDefenseFamilyIsRecreatedByItsSections"
+      ]
+    },
+    {
+      "RunRef": "m13",
+      "Selected": 21,
+      "Passed": 17,
+      "Failed": 4,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_13_AcceptedSafetyAppliesTheReturnedListAndTheDefenseFamilyIsRecreatedByItsSections",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_14_ThePerPostBootGridResultReachesTheOutputThroughTheBootSection",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_15_ThePerPostDefenseRecordsReachTheOutputThroughTheDefenseSection",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_16_TheRearTopeDialogResultReachesTheOutputInASingleSidedRack"
+      ]
+    },
+    {
+      "RunRef": "m14",
+      "Selected": 21,
+      "Passed": 17,
+      "Failed": 4,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_13_AcceptedSafetyAppliesTheReturnedListAndTheDefenseFamilyIsRecreatedByItsSections",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_14_ThePerPostBootGridResultReachesTheOutputThroughTheBootSection",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_15_ThePerPostDefenseRecordsReachTheOutputThroughTheDefenseSection",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_16_TheRearTopeDialogResultReachesTheOutputInASingleSidedRack"
+      ]
+    },
+    {
+      "RunRef": "m15",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_16_TheRearTopeDialogResultReachesTheOutputInASingleSidedRack"
+      ]
+    },
+    {
+      "RunRef": "m16",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCatalogTests.CT_PB0_17_CatalogDependenciesAndTheSubstitutionsOfLoadFromModelProduceTheCharacterizedDelta"
+      ]
+    },
+    {
+      "RunRef": "m17",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackFullEditorCharacterizationDimensionStyleLossTests.CT_PB0_18_TheDimensionStyleNameOfTheDesignReachesEveryDimensionOfEveryPlanAndEveryCorteAsItIs"
+      ]
+    },
+    {
+      "RunRef": "m17f",
+      "Selected": 19070,
+      "Passed": 19057,
+      "Failed": 13,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.DynamicDimensionLegacyCharacterizationTests.T04_FrontalSalidaAndEntrada_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.DynamicDimensionLegacyCharacterizationTests.T04_LateralAndEveryCorte_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.DynamicDimensionLegacyCharacterizationTests.T04_Planta_KeepsItsLegacyCotasAndLabels",
+        "RackCad.Tests.DynamicDimensionLegacyCharacterizationTests.T04_TheScenario_ExercisesCotasNumberingNameAndTodaysReach",
+        "RackCad.Tests.DynamicSystemMultiViewBuilderTests.LinkedViews_DrawRequestedNumbersDimensionsAndRackName",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_Composite_LateralAndEveryCorte_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_Composite_Planta_KeepsItsLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_Composite_TheFourFrontalCuts_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_SingleSided_FrontalEntradaSalidaAndPosterior_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_SingleSided_LateralAndEveryCorte_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_SingleSided_Planta_KeepsItsLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_TheScenarios_ExerciseCotasNumberingSidesAndTodaysReach",
+        "RackCad.Tests.PushBackFullEditorCharacterizationDimensionStyleLossTests.CT_PB0_18_TheDimensionStyleNameOfTheDesignReachesEveryDimensionOfEveryPlanAndEveryCorteAsItIs"
+      ]
+    },
+    {
+      "RunRef": "m18",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19_TheFieldsThatPassThroughAFormattedControlComeBackRoundedToThreeDecimals"
+      ]
+    },
+    {
+      "RunRef": "m19",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_20_TheFieldsThatDoNotPassThroughAFormattedControlKeepTheirExactValue"
+      ]
+    },
+    {
+      "RunRef": "m20",
+      "Selected": 21,
+      "Passed": 20,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackFullEditorCharacterizationRoundingEffectTests.CT_PB0_21_TheEffectOfRoundingEachFieldToThreeDecimalsOnPlansStructureAndBomIsTheOneTheFormulaGives"
+      ]
+    },
+    {
+      "RunRef": "m20f",
+      "Selected": 19070,
+      "Passed": 19069,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackFullEditorCharacterizationRoundingEffectTests.CT_PB0_21_TheEffectOfRoundingEachFieldToThreeDecimalsOnPlansStructureAndBomIsTheOneTheFormulaGives"
+      ]
+    },
+    {
+      "RunRef": "c1",
+      "Selected": 19070,
+      "Passed": 19070,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "r0",
+      "Selected": 21,
+      "Passed": 0,
+      "Failed": 21,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.PushBackFullEditorCharacterizationDimensionStyleLossTests.CT_PB0_18_TheDimensionStyleNameOfTheDesignReachesEveryDimensionOfEveryPlanAndEveryCorteAsItIs",
+        "RackCad.Tests.PushBackFullEditorCharacterizationLateralCutTests.CT_PB0_10_TheLateralCutsAndTheObsoleteViewsAfterEachFrontEditAreTheOnesThePureDecisionGives",
+        "RackCad.Tests.PushBackFullEditorCharacterizationRoundingEffectTests.CT_PB0_21_TheEffectOfRoundingEachFieldToThreeDecimalsOnPlansStructureAndBomIsTheOneTheFormulaGives",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCatalogTests.CT_PB0_17_CatalogDependenciesAndTheSubstitutionsOfLoadFromModelProduceTheCharacterizedDelta",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCompositeTests.CT_PB0_06_TheDormantTailIsParkedAtLoadConsumedWhenSideBHasAFrontAndParkedAgainWhenSideBIsRetired",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCompositeTests.CT_PB0_07_RetiringAndDeclaringSideBMovesTheCompositeFlagsTheAbsentSlotsAndTheDefaultTopology",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCompositeTests.CT_PB0_08_AddingRemovingAndBlankingFrontsWithoutSideBMovesTheFrontsTheAbsentSlotsAndTheLateralCuts",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationCompositeTests.CT_PB0_09_AddingRemovingAndBlankingFrontsWithSideBMovesTheFrontsTheAbsentSlotsTheCutsAndTheCompositeFlag",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_03_StagingConfirmingAndCancellingAModuleEditInALoadedRackMovesTheOutputOnlyOnConfirm",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_04_AddingDepthRebuildsTheModulesAndRestoringTheStandardReturnsEveryModuleToCalculated",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationModuleTests.CT_PB0_05_TheSixAdvancedParametersAfterRestoreStandardAreResetInTheOutputAndComeBackOnUpdate",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19_TheFieldsThatPassThroughAFormattedControlComeBackRoundedToThreeDecimals",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_20_TheFieldsThatDoNotPassThroughAFormattedControlKeepTheirExactValue",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationStateTests.CT_PB0_01_TheWindowStateAfterLoadingDiffersFromTheEnvelopeOnlyInTheCharacterizedWays",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationStateTests.CT_PB0_02_TheSecondPassOfUpdateEqualsTheFirstPassOutputForEveryDesignOfTheCorpusAndX01",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationStateTests.CT_PB0_11_RenamingTrimsTheNameAndAnEmptyOrBlankNameIsKeptAsItIs",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_12_TheHeaderConfiguratorSeamStagesWhatItReturnsAndNullStagesNothing",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_13_AcceptedSafetyAppliesTheReturnedListAndTheDefenseFamilyIsRecreatedByItsSections",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_14_ThePerPostBootGridResultReachesTheOutputThroughTheBootSection",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_15_ThePerPostDefenseRecordsReachTheOutputThroughTheDefenseSection",
+        "RackCad.UI.Tests.PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_16_TheRearTopeDialogResultReachesTheOutputInASingleSidedRack"
+      ]
+    },
+    {
+      "RunRef": "r0f",
+      "Selected": 19070,
+      "Passed": 19048,
+      "Failed": 22,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.DynamicDimensionLegacyCharacterizationTests.T04_FrontalSalidaAndEntrada_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.DynamicDimensionLegacyCharacterizationTests.T04_LateralAndEveryCorte_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.DynamicDimensionLegacyCharacterizationTests.T04_Planta_KeepsItsLegacyCotasAndLabels",
+        "RackCad.Tests.DynamicDimensionLegacyCharacterizationTests.T04_TheScenario_ExercisesCotasNumberingNameAndTodaysReach",
+        "RackCad.Tests.DynamicSystemMultiViewBuilderTests.LinkedViews_DrawRequestedNumbersDimensionsAndRackName",
+        "RackCad.Tests.ProjectionAvailabilityPolicyTests.PushBackUsesPhysicalPostIdentityWithoutAnOrdinalRemap",
+        "RackCad.Tests.PushBackCompositeLifecycleTests.CompositeModules_StandardRestoreResetsBothATailAndBTailCustomizations",
+        "RackCad.Tests.PushBackCompositeMultiFrontTests.DeclaringSideB_MakesTheDefaultTopologyTwoSided",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_Composite_LateralAndEveryCorte_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_Composite_Planta_KeepsItsLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_Composite_TheFourFrontalCuts_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_SingleSided_FrontalEntradaSalidaAndPosterior_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_SingleSided_LateralAndEveryCorte_KeepTheirLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_SingleSided_Planta_KeepsItsLegacyCotasAndLabels",
+        "RackCad.Tests.PushBackDimensionLegacyCharacterizationTests.T05_TheScenarios_ExerciseCotasNumberingSidesAndTodaysReach",
+        "RackCad.Tests.PushBackFullEditorCharacterizationDimensionStyleLossTests.CT_PB0_18_TheDimensionStyleNameOfTheDesignReachesEveryDimensionOfEveryPlanAndEveryCorteAsItIs",
+        "RackCad.Tests.PushBackFullEditorCharacterizationLateralCutTests.CT_PB0_10_TheLateralCutsAndTheObsoleteViewsAfterEachFrontEditAreTheOnesThePureDecisionGives",
+        "RackCad.Tests.PushBackFullEditorCharacterizationRoundingEffectTests.CT_PB0_21_TheEffectOfRoundingEachFieldToThreeDecimalsOnPlansStructureAndBomIsTheOneTheFormulaGives",
+        "RackCad.Tests.PushBackModuleAdoptionTests.AStandardRestore_DiscardsEveryCustomization_AtOnce",
+        "RackCad.Tests.WorkspacePilotPrepareTests.InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView",
+        "RackCad.Tests.WorkspacePilotPrepareTests.ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan",
+        "RackCad.Tests.WorkspacePilotUpdateRunTests.AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflightAndNothingIsImported"
+      ]
+    },
+    {
+      "RunRef": "g0",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1",
+      "Selected": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g2",
+      "Selected": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g3",
+      "Selected": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g4",
+      "Selected": 19070,
+      "Passed": 19070,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "MAPA CT -> METODO (clase | metodo). CT-01 PushBackFullEditorCharacterizationStateTests.CT_PB0_01_TheWindowStateAfterLoadingDiffersFromTheEnvelopeOnlyInTheCharacterizedWays; CT-02 StateTests.CT_PB0_02_TheSecondPassOfUpdateEqualsTheFirstPassOutputForEveryDesignOfTheCorpusAndX01; CT-03 PushBackFullEditorCharacterizationModuleTests.CT_PB0_03_StagingConfirmingAndCancellingAModuleEditInALoadedRackMovesTheOutputOnlyOnConfirm; CT-04 ModuleTests.CT_PB0_04_AddingDepthRebuildsTheModulesAndRestoringTheStandardReturnsEveryModuleToCalculated; CT-05 ModuleTests.CT_PB0_05_TheSixAdvancedParametersAfterRestoreStandardAreResetInTheOutputAndComeBackOnUpdate; CT-06 PushBackFullEditorCharacterizationCompositeTests.CT_PB0_06_TheDormantTailIsParkedAtLoadConsumedWhenSideBHasAFrontAndParkedAgainWhenSideBIsRetired; CT-07 CompositeTests.CT_PB0_07_RetiringAndDeclaringSideBMovesTheCompositeFlagsTheAbsentSlotsAndTheDefaultTopology; CT-08 CompositeTests.CT_PB0_08_AddingRemovingAndBlankingFrontsWithoutSideBMovesTheFrontsTheAbsentSlotsAndTheLateralCuts; CT-09 CompositeTests.CT_PB0_09_AddingRemovingAndBlankingFrontsWithSideBMovesTheFrontsTheAbsentSlotsTheCutsAndTheCompositeFlag; CT-10 (Core, RackCad.Tests) PushBackFullEditorCharacterizationLateralCutTests.CT_PB0_10_TheLateralCutsAndTheObsoleteViewsAfterEachFrontEditAreTheOnesThePureDecisionGives; CT-11 StateTests.CT_PB0_11_RenamingTrimsTheNameAndAnEmptyOrBlankNameIsKeptAsItIs; CT-12 PushBackFullEditorCharacterizationSubdialogTests.CT_PB0_12_TheHeaderConfiguratorSeamStagesWhatItReturnsAndNullStagesNothing; CT-13 SubdialogTests.CT_PB0_13_AcceptedSafetyAppliesTheReturnedListAndTheDefenseFamilyIsRecreatedByItsSections; CT-14 SubdialogTests.CT_PB0_14_ThePerPostBootGridResultReachesTheOutputThroughTheBootSection; CT-15 SubdialogTests.CT_PB0_15_ThePerPostDefenseRecordsReachTheOutputThroughTheDefenseSection; CT-16 SubdialogTests.CT_PB0_16_TheRearTopeDialogResultReachesTheOutputInASingleSidedRack; CT-17 PushBackFullEditorCharacterizationCatalogTests.CT_PB0_17_CatalogDependenciesAndTheSubstitutionsOfLoadFromModelProduceTheCharacterizedDelta; CT-18 (Core) PushBackFullEditorCharacterizationDimensionStyleLossTests.CT_PB0_18_TheDimensionStyleNameOfTheDesignReachesEveryDimensionOfEveryPlanAndEveryCorteAsItIs; CT-19 PushBackFullEditorCharacterizationRoundingLossTests.CT_PB0_19_TheFieldsThatPassThroughAFormattedControlComeBackRoundedToThreeDecimals; CT-20 RoundingLossTests.CT_PB0_20_TheFieldsThatDoNotPassThroughAFormattedControlKeepTheirExactValue; CT-21 (Core) PushBackFullEditorCharacterizationRoundingEffectTests.CT_PB0_21_TheEffectOfRoundingEachFieldToThreeDecimalsOnPlansStructureAndBomIsTheOneTheFormulaGives. Archivos: tests/RackCad.UI.Tests/PushBackFullEditorCharacterization{State,Module,Composite,Subdialog,Catalog,RoundingLoss}Tests.cs y PushBackFullEditorCharacterizationSupport.cs; tests/RackCad.Tests/PushBackFullEditorCharacterization{LateralCut,DimensionStyleLoss,RoundingEffect}Tests.cs.",
+    "TABLA DE MUTANTES (fila | archivo:linea medido en la BaseSha, que coincide con la tabla | cambio exacto | alternativa | pruebas que fallan en la corrida AISLADA | parche). Todos los fallos de los metodos nuevos son por asercion (Assert.Equal o Assert.True), con la primera linea del StackTrace bajo tests/. W = src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs; WC = el Composite.cs de la misma carpeta; CS = src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs; DA = PushBackEditorDesignAssembler.cs (misma carpeta); RVA = src/RackCad.Application/Systems/Shared/RackViewAvailability.cs; DVD = src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs. Parches en artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/mutants/muNN.patch y red-all.patch (los 20 juntos).",
+    "MU-PB0-01 | W:315 | if (design.IsComposite) inputs.PalletTolerance += 1.0; antes de LoadFromModel en LoadExisting | no | falla CT-01 (solo ese) | mu01.patch | corrida m01",
+    "MU-PB0-02 | W:3365 | lastComputation.Design.Structure.PalletTolerance += 1.0; antes de SetName en RequestDraw | no | falla CT-02 (solo ese) | mu02.patch | m02",
+    "MU-PB0-03 | W:2463 | se quita RequestRecompute(); de ConfirmModule_Click | no | fallan CT-03 (el de su fila), CT-04, CT-05 y CT-12 (usan el gesto Confirmar) | mu03.patch | m03",
+    "MU-PB0-04 | DA:211-213 | mustRebuild sin el termino standardRestore || | no | falla CT-04 (solo ese); Core completo: PushBackCompositeLifecycleTests.CompositeModules_StandardRestoreResetsBothATailAndBTailCustomizations y PushBackModuleAdoptionTests.AStandardRestore_DiscardsEveryCustomization_AtOnce | mu04.patch | m04 y m04f",
+    "MU-PB0-05 | DA:300 | if (standardRestore && editorInputs == null) | no (la alternativa W:2499 no hizo falta) | falla CT-05 (solo ese); Core completo en verde | mu05.patch | m05 y m05f",
+    "MU-PB0-06 | WC:839-840 | primer argumento de ParkDormantTail -> structure.Modules.Take(0) | no | fallan CT-06 (su fila), CT-03, CT-01 y CT-02 | mu06.patch | m06",
+    "MU-PB0-07 | CS:320-323 | se quita la rama else if (!present && DefaultTopology == Encontradas) | no (principal; R-02 no se re-estima) | falla CT-07 (solo ese en UI); Core completo: PushBackCompositeMultiFrontTests.DeclaringSideB_MakesTheDefaultTopologyTwoSided | mu07.patch | m07 y m07f",
+    "MU-PB0-08 | W:1138 | SetSlotCount(state.Structure.Count + 1) -> + 2 | no | fallan CT-08 y CT-09 | mu08.patch | m08",
+    "MU-PB0-09 | RVA:111 | return posts.Contains(address.Variant.Index) || address.Variant.Index >= 0; | no | falla CT-10 (Core, solo ese); Core completo: ProjectionAvailabilityPolicyTests.PushBackUsesPhysicalPostIdentityWithoutAnOrdinalRemap, WorkspacePilotPrepareTests.InvalidE_AMutableMember..., WorkspacePilotPrepareTests.ThePilotNeverErasesAViewAPhantom... y WorkspacePilotUpdateRunTests.AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflight... | mu09.patch | m09 y m09f",
+    "MU-PB0-10 | W:3365 | SetName(NameBox.Text?.Trim()) -> SetName(NameBox.Text) | no | falla CT-11 (solo ese) | mu10.patch | m10",
+    "MU-PB0-11 | W:1946 | StageHeaderConfiguration(module, edited); -> (module, copy); | no | falla CT-12 (solo ese) | mu11.patch | m11",
+    "MU-PB0-12 | W:2626 | Authorize(chosen) -> Authorize(safetySelections) | no | falla CT-13 (solo ese) | mu12.patch | m12",
+    "MU-PB0-13 | W:2642 | se quita ApplyBootSections(bootSectionA, bootSectionB); | no | fallan CT-13, CT-14 (su fila), CT-15 y CT-16 | mu13.patch | m13",
+    "MU-PB0-14 | W:2638 | se quita ApplyDefenseSections(defenseSectionA, defenseSectionB, defenseCarrierId); | no | fallan CT-13, CT-14, CT-15 (su fila) y CT-16 | mu14.patch | m14",
+    "MU-PB0-15 | W:2653 | se quita state.LoadRearTopeConfig(topeSection.Config); queda else { } | no | falla CT-16 (solo ese) | mu15.patch | m15",
+    "MU-PB0-16 | W:407 | Math.Min((int)DimensionDetail.Detailed, ...) -> Standard | no (la alternativa W:387 tampoco discrimina, ver la desviacion) | falla CT-17 SOLO con el caso c-16 agregado; con c-10 y c-11 no discriminaba | mu16.patch | m16 (con el CT-17 definitivo)",
+    "MU-PB0-17 | DVD:402 | DimensionStyleName = style -> style?.ToLowerInvariant() | no | falla CT-18 (Core, solo ese); Core completo: 12 existentes (DynamicDimensionLegacyCharacterizationTests.T04_x4, DynamicSystemMultiViewBuilderTests.LinkedViews_DrawRequestedNumbersDimensionsAndRackName, PushBackDimensionLegacyCharacterizationTests.T05_x7) | mu17.patch | m17 y m17f",
+    "MU-PB0-18 | W:406 | AnnotationScaleBox.SetNumber(..., 0.######) | no | falla CT-19 (solo ese) | mu18.patch | m18",
+    "MU-PB0-19 | W:819 | tercer argumento -> Math.Round(generalPallet.Height, 3) | no | falla CT-20 (solo ese) | mu19.patch | m19",
+    "MU-PB0-20 | DVD:329 | ? system.AnnotationScale : -> ? Math.Round(system.AnnotationScale, 3) : | sin alternativa | falla CT-21 (Core, solo ese); Core completo: solo CT-21 (ninguna existente) | mu20.patch | m20 y m20f",
+    "CONJUNCION (RunRef r0, los 20 mutantes juntos con red-all.patch; MU-02/MU-10 y MU-16/MU-18 comparten contexto, asi que en la conjuncion se aplicaron los otros 18 con git apply y esos dos con la edicion equivalente): Core 3 de 3 Failed y UI 18 de 18 Failed (Failed == Selected >= MinSelected, ninguno NotExecuted ni Skipped, todos por asercion: ningun Message con el prefijo de tipo, primera linea del StackTrace en un archivo bajo tests/). Core completo con los 20 mutantes (r0f): 22 Failed = 3 nuevos + 19 existentes, ninguna cuelga. Builds Release con los mutantes sin avisos nuevos (ver mas abajo).",
+    "TABLA DE BYTES (SHA-256 del blob con git cat-file blob SHA:ruta | sha256sum, y el id de blob de git). BaseSha = ChainBaseSha f2eedd9a; RedSha 8f75a89b; CurrentSha 28e38d8d. En CurrentSha cada archivo es IGUAL al de ChainBaseSha y distinto en RedSha. DynamicViewDecorations.cs: base 1d1f947b730cc161f45e5268f055e6e71d201d9aff0c3af611f3aa6deb58cf28, red bc99471f45ca7d9efd16eef42a001f170cc8e96a0959d2e098d93604155bae41, green igual a base, blob c4615c849751c9ebaf07a9e1cc1b8f326ffe7345. PushBackCompositeEditorState.cs: base f20a0c152954ac1a379f0a92809824e573920c7c14461c51fe6782ab54876817, red 50599f6e6f0e59e9281def5a0931f38c8f534baeb9587ccdb246533ec1a87bf6, green igual, blob 2a64f8d334ced431572afda7f5430847608befed. PushBackEditorDesignAssembler.cs: base 9df4aff6fc21c234d2642db946e21627ce36650f91a8576a043afeeabe9c2432, red 964baab90227b1ff887ef07b29db72930ce9222d1cc5095126b00c279d271776, green igual, blob 5f59ac3b88cc683c4a71bfde5e624bacce686d16. RackViewAvailability.cs: base fe495657ff3c9bc269d1afe14aaa14f5edde062bef6f9d396defcf566f22aef8, red de7f14985f0850b6f0ad5f5e8535528c321bc93fcbfd0b5b6854b9feb4495920, green igual, blob 74e1a1aba691e42e03d3744bf6631e444aa1d696. RackPushBackSystemWindow.Composite.cs: base ef6da8b0f0f6cf7088aba23fb8c2aa7977dc53ff93a2c2ee56c3b34c3a9a3dba, red 2874b6de028e57f7bdbd955d327d4e6e0a683522f7ed4dfd496f1bb7b6bc5566, green igual, blob 4752b3947cb95d50b3e97be06e830734864d9cef. RackPushBackSystemWindow.xaml.cs: base 5f198f78710650c39bb87bab9f02e4c82439de2b8ef7ef06a49dd7207caf2989, red 6fb04db7afbb07d34983166e52b7e91652925c6deb58ac41fcfe7940f1bc14db, green igual, blob 205d3889b38f99691a3300e035320bcc55fde6f8. git diff ChainBaseSha..CurrentSha -- src vacio; arbol de RedSha e7f217a1, de CurrentSha 398239da.",
+    "MEDICIONES DEL PASO 1 (que | como | resultado; todas sobre la BaseSha, con codigo temporal ya retirado). M1 carga frente al sobre de pb-20-ab, pb-21-cola, pb-31-v2-modulos y X-01 | Abrir, Salida, Sobre y Delta | pb-20-ab, pb-31 y X-01: delta vacio, sin lineas (a)/(b); pb-21-cola: 667 lineas (cola de B aparcada: 9 modulos GAP y B:*, el objeto SideB y AbsentSlotsB[0]). M2 segunda pasada de los 17 diseños y X-01 | pulsar UpdateButton | todos habilitados, PETICION con UpdateOnly True, 0 vistas y delta vacio (no hay rarezas de la segunda pasada en el corpus). M3 modulos de pb-31 y pb-20-ab | escenificar, Confirmar, Cancelar, Fondo + 6, Fondos + 1, Restaurar estandar | ver CT-03 y CT-04; PalletsDeepBox + 1 no mueve la secuencia. M4 avanzados de pb-06 y pb-07 | A0, A1 y A2 | ver T-4. M5 composicion | pb-21-cola, pb-20-ab y pb-01-base con los gestos reales | ver CT-06 a CT-09. M6 renombrar | tres textos | RackName recortado, vacio y blanco quedan vacios, RackId igual al del sobre, SystemToInsert.Name vacio incluso con nombre. M7 subdialogos | costuras de H-03 | n y huella SHA-256 del delta en las pruebas. M8 catalogo | 16 casos con comparacion contra el piloto Application (para separar causa en Application de causa solo en la ventana) | solo c-02 es de la ventana. M9 sonda Dimensions y unidad | seis valores de Dimensions y cinco de unidad | Dimensions 7 y -1 llegan a la ventana como 0 (DynamicRackSystemDocument.cs:322,429); unidad vacia o en blanco llega como kg; ton conserva ton en el diseño aunque el desplegable muestre kg. M10 redondeo | 11 filas F y 9 filas G | F1..F11 REDONDEAN y G1..G9 CONSERVAN; efecto en CT-21 (T-3).",
+    "PRUEBA DE LIMPIEZA (INV-PBT0-06), sin rutas. ANTES (paso 0, BaseSha): archivo de disposicion del configurador SHA-256 7AAB8FF7A3E52CE52399DE3B2C8A8AFEEC0C01720D90DAD0CA49D108BFF82621, modificado 2026-11-14T22:55:38.2474250Z; carpeta de biblioteca: fecha UTC de la carpeta 2026-10-13T21:42:51.4479430Z, 11 archivos, SHA-256 del listado recursivo ordenado BB21C85D0D5A5990C2539D9923050093B985853557D8E907698EE15AE32A1D87. DESPUES (tras todas las corridas locales y el GREEN): identico en los tres datos. Ninguna prueba ejecuto SaveLibrary_Click, PromptSaveToLibrary, RackProjectStore.Save, Bom_Click, RackBomWindow, InsertBatch_Click, InsertViewAt ni Insertar; ninguna instancio RackFrameConfiguratorWindow ni asigno HeaderConfiguratorPresenter ni SafetyWindowDialog; la UI se corrio solo con los dos filtros (nunca la suite completa en local).",
+    "BUILDS RELEASE (por proyectos, sin escribir la carpeta bin del Plugin; Plugin con -o bajo artifacts). Linea base en la BaseSha: Core 0 errores y 66 avisos (20 xUnit1026, 6 xUnit2000, 4 xUnit2010, 2 xUnit2012, 34 xUnit2013, 2 xUnit2017, 32 xUnit2029, 32 xUnit2031 contados en el log con duplicados); UI 0 errores y 28 (2 xUnit1026, 4 xUnit2013, 4 xUnit2029, 2 xUnit2030, 16 xUnit2031); Plugin 0 errores y 104 lineas MSB3277 (los 2 avisos de referencias de AutoCAD, repetidos por proyecto). RED con los 20 mutantes (RunRef red1) y GREEN (RunRef g5): exactamente los mismos conteos por codigo, 0 errores, ningun aviso CS, NU, NETSDK ni MSB distinto; en particular ningun CS0162, CS0168, CS0169, CS0219, CS0414 ni CS8321. Logs en artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/{b0,red1,g5}/.",
+    "CI DEL RED (commit 8f75a89b, run 44174025134): UI Tests failure, Tests (Domain + Application) failure, Build UI success, Build Plugin without AutoCAD skipped; sin blame-hang ni timeout (UI 5m17s, Core 3m11s). TRX descargados en tests/redci/. Core: 22 Failed = los 3 nuevos + 19 existentes, identico a la corrida local r0f. UI: 2421 resultados, 123 Failed (los 18 nuevos + 105 existentes) y 17 NotExecuted que ya estaban en la base (en la CI de la base 2403 resultados con los mismos 17 NotExecuted). CI DEL GREEN (commit 28e38d8d, run 44175320836): los 4 jobs success; UI 2421 resultados, 2404 Passed y 17 NotExecuted de la base; los 18 nuevos en verde.",
+    "T-8 ATRIBUCION DE LAS EXISTENTES ROTAS DEL RED (por analisis declarado; union de la CI del RED). CORE (19, coinciden con las corridas aisladas por mutante de Application): MU-04 (DA:211-213) rompe PushBackCompositeLifecycleTests.CompositeModules_StandardRestoreResetsBothATailAndBTailCustomizations (test linea 256) y PushBackModuleAdoptionTests.AStandardRestore_DiscardsEveryCustomization_AtOnce (linea 190); MU-07 (CS:320-323) rompe PushBackCompositeMultiFrontTests.DeclaringSideB_MakesTheDefaultTopologyTwoSided (357); MU-09 (RVA:111) rompe ProjectionAvailabilityPolicyTests.PushBackUsesPhysicalPostIdentityWithoutAnOrdinalRemap (106), WorkspacePilotPrepareTests.InvalidE_... (1770), WorkspacePilotPrepareTests.ThePilotNeverErasesAViewAPhantom... (2006) y WorkspacePilotUpdateRunTests.AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflight... (204); MU-17 (DVD:402) rompe 12: DynamicDimensionLegacyCharacterizationTests.T04_x4 (109 y 156), DynamicSystemMultiViewBuilderTests.LinkedViews_DrawRequestedNumbersDimensionsAndRackName (372) y PushBackDimensionLegacyCharacterizationTests.T05_x7 (177 y 249). MU-05 y MU-20 no rompen ninguna. Los mutantes de W y WC no alcanzan a Core. UI (105 resultados, por clase; primera linea de fallo de la prueba entre parentesis; mecanismo declarado): PushBackBootSidesUiFlowTests 9 (292-702), PushBackBootUiFlowTests 6 (218-371) y PushBackSafetyPerPostFlowTests 3 (84, 129, 240): MU-13 W:2642 (ApplyBootSections no aplica la rejilla de botas). PushBackDefensePerPostEndToEndTests 10 (184-454), PushBackDefenseSideSectionsTests 10 (353-628) y PushBackDefenseTypePerSideTests 15 (292-727): MU-14 W:2638 (ApplyDefenseSections no aplica la defensa por poste). PushBackSafetyFlowTests.AcceptingTheDialog_AppliesSafetyAndTheRearTope_InOnePass (240), PushBackTopeSectionInSafetyTests.TheStop_NeverBecomesASafetySelection (166), PushBackTopeOnlyInSafetyTests.FrontScopes_WriteTheWholeFrente (283) y PushBackRearTopePerSideAndNoneTests.RearTope_None_IsOfferedInASingleSidedRack (530): MU-15 W:2653 (el tope trasero no se carga). PushBackSafetyFlowTests.AcceptingSafety_ThroughTheRealButton_ChangesTheDesignAndTheBom (91): MU-12 W:2626 (la lista del dialogo no se autoriza). Cabeceras 37: PushBackHeaderAuthorityWindowTests 7 (105-371), PushBackHeaderCartesianTests 8 (121-391), PushBackHeaderLifecycleTests 5 (95), PushBackHeaderLineWindowTests.CopyingIntoALine... (235) y E2E_OneLineChanges... (182), PushBackHeaderOwnerRoundTwoTests 4 (171-382), PushBackPhysicalHeaderScopeTests 7 (143-362) y PushBackModuleEditorWindowTests 4 (127, 217, 273, 293): MU-03 W:2463 (Confirmar no recalcula, la edicion o la cabecera escenificada no llega al diseño) y, donde la prueba configura la cabecera, MU-11 W:1946 (se escenifica la copia sin editar); las dos pruebas de Restaurar (273, 293) tambien las alcanza MU-04 (Core). Frentes 4: PushBackHeaderLineWindowTests.TheLineSelector_ListsTheLinesTheRackActuallyHas (117) y ThePresets_OnlySelect_AndChangeNothingByThemselves (140), PushBackEditorWindowTests.ChangingFrontsAndLevels_SyncsMatrixAndState (225) y PushBackCompositeWindowTests.TheAddFrontButton_GrowsTheGrid_NotOneSide (1133): MU-08 W:1138 (el boton agrega dos frentes). Carga de compuestos 4: PushBackCompositeLoadExistingModulesTests 2 (95), PushBackCompositeLifecycleWiringTests.LoadExistingComposite_FailureAndRetry... (109) y PushBackDormantRestoreTests.ActiveSideB_RestoreValuesTreatsBExactlyLikeA (182): MU-01 W:315 (la tolerancia +1 reconstruye la estructura y pierde las personalizaciones de modulo 30 y 40). WorkspaceDraftPilotWindowLoadCharacterizationTests 2 filas: pb-06-seguridad (Dimensions 3, linea 248) por MU-16 W:407 y pb-08-redondeo (249, ya no hay delta (a) de AnnotationScale) por MU-18 W:406. Suma: 18+35+4+1+37+4+4+2 = 105. Ningun cuelgue ni timeout.",
+    "T-1 CENSO CONTROL -> PRUEBA (MB H-029 a H-031). H-029: DepthBox CT-19 F1, CT-03 y CT-04; WeightUnitBox CT-17 c-08 y c-09 (solo carga; ninguna prueba lo cambia por el control: HUECO de escritura); PalletsDeepBox CT-04 (c-12 lo rechaza el almacen); PostBox CT-17 c-01 y c-02; PostPeralteBox CT-19 F2; ToleranceBox CT-19 F3 (c-13 lanza al abrir); BeamDepthBox CT-19 F4 y CT-17 c-14; NumberFrontsCheck, NumberLevelsCheck y DrawRackNameCheck HUECO (solo identidad en CT-01 y CT-02); AnnotationScaleBox CT-19 F5 y c-15; DimensionsBox CT-17 c-10, c-11, c-16; las tres casillas de cotas por vista HUECO. H-030: PositionsBox, LevelsBox, FondosBox y DepthStartBox HUECO (solo identidad en CT-01, CT-02 y CT-08); FirstLevelHeightBox CT-19 F6; CellPalletFrontBox, CellPalletHeightBox, CellPalletWeightBox y CellClearBox CT-19 F7 a F10; CellInOutBeamBox y CellInOutPeralteBox CT-17 c-04, c-05 y c-07; CellBeamLengthOverrideBox CT-19 F11; CellIntermediateBeamBox CT-17 c-06; CellIntermediatePeralteBox HUECO; RearPeralteBox CT-17 c-03. H-031: CellFondoOverrideBox y CellDrawPalletCheck HUECO; GapBox CT-20 G7 (solo carga; su manejador HUECO); CentralSeparatorCheck, StructureOverrideBox, CellTopologyBox, RunDirectionBox y TopologyScopeBox HUECO; FrontCountBox HUECO; NameBox CT-11; cajas avanzadas CT-05; ModuleLengthBox CT-03 y CT-04; DerivedPostLineHeightBox HUECO; SideBPresentCheck CT-06 a CT-09; SideSelectorBox CT-06, CT-07 y CT-09.",
+    "T-2 CASOS ALCANZABLES (construccion y ruta | antes -> despues | clase y archivo:linea | alcance | CT). CARGA-APPLICATION pb-21-cola (rack de un sentido que guarda la cola de B): carga con LoadExisting; 9 modulos (GAP y B:M8..B:M1, 8 y 154 hojas de delta) del sobre -> ausentes de la salida; PushBackCompositeEditorAssembler.cs:53-64, PushBackEditorDesignAssembler.cs:279-287, RackPushBackSystemWindow.Composite.cs:838-842; por la interfaz (abrir un rack asi); CT-01 y CT-06. CARGA-APPLICATION pb-21-cola: SideB (10 hojas) -> ausente; PushBackCompositeEditorState.cs:1026-1029 y PushBackCompositeEditorAssembler.cs:52-65; CT-01. OTRA pb-21-cola: Composite.AbsentSlotsB null -> [0]; PushBackCompositeEditorAssembler.cs:81-87; CT-01. c-01 HeaderPostCatalogId vacio -> poste por defecto: CARGA-APPLICATION, DynamicRackSystemResolver.cs:64-66, por documento; CT-17. c-02 HeaderPostCatalogId inexistente -> poste por defecto: clase (c) de la ventana (PostBox.SelectedId, RackPushBackSystemWindow.xaml.cs:390 y 836; el piloto Application lo conserva); por documento; CT-17. c-03 HighEndBeamPeraltes[0] 7.25 -> 3.5: CARGA-APPLICATION, PushBackEditorDesignAssembler.cs:155 y PushBackEditorState.cs:259-269; por documento. c-04 y c-06 viga inexistente -> LARGUERO_IN_OUT_C6 y LARGUERO_ESCALON_INFINITO: CARGA-APPLICATION, DynamicRackLevelGeometry.cs:41,48,200-204; por documento. c-05 y c-07 InOutBeamDepth 6.5 -> 6 (frentes 0 y 1): CARGA-APPLICATION, DynamicRackLevelGeometry.cs:42-45 y DynamicLoadBeamGeometry.cs:52; la clase (d) NO se alcanza: la misma sustitucion ocurre en Application en las celdas de los dos frentes. c-08 y c-09 unidad vacia o ton: sin delta (el almacen normaliza la vacia a kg; ton se conserva). c-10 y c-11 Dimensions 7 y -1: sin delta, el almacen los normaliza a 0 antes de la ventana (DynamicRackSystemDocument.cs:322,429); c-16 Dimensions 3: sin delta (limite valido). c-12 PalletsDeep 1: RECHAZADO por el almacen antes de la ventana (InvalidOperationException, RackProjectStore.cs:348); CARGA-APPLICATION. c-13 PalletTolerance 0: LoadExisting LANZA ArgumentException desde el resolver (DynamicRackSystemResolver.cs:474 por :45, sin captura en la ventana); CARGA-APPLICATION, hallazgo. c-14 BeamDepth 0 -> 6: CARGA-APPLICATION, PushBackEditorState.Load.cs:200. c-15 AnnotationScale 0: sin delta. Clases (a) y (b): solo en CT-18 a CT-20. Clase (d): no alcanzada.",
+    "T-3 EFECTO DEL REDONDEO (CT-21; E = valor exacto, R = R3; K1 piezas, K1o orden, K2 forma, K3 BOM, K4 mas de 0.001, K4' mas de 1e-9, K5 texto y giro; maximo |delta| medido). R0 (pb-08 tal cual contra sus dos campos en R3): K4, K4' y K5 en las 8 claves (corte-0..3, frontal-es, frontal-post, lateral, planta); max 0.01848; material SI (K4). R1 F1 PalletDepth 48.00044: nada; max 0; material NO. R2 F2 PostPeralte 3.00044: K4 y K4' en frontal-es, frontal-post y planta; max 0.00132; material SI. R3 F3 tolerancia: nada; NO. R4 F4 BeamDepth: nada; NO. R5 F5 AnnotationScale 1.23456 contra 1.235: igual a R0 (8 claves en K4, K4' y K5); max 0.01848; SI. R6 F6 FirstLevelHeight: nada; NO. R7 F7 PalletFront 42.00044: K1o en frontal-post y planta, K3 SI (cambia el BOM), K4 en planta, K4' en corte-0, corte-1, frontal-es, frontal-post y planta; max 106.988 (medido con el emparejamiento por grupo de firma y orden de aparicion de K1o); material SI. R8 F8 PalletHeight 61.23456 contra 61.235: nada; NO. R9 F9 PalletWeight: nada; NO. R10 F10 ClearHeight: nada; NO. R11 F11 BeamLengthOverride 100.00044: K3 SI, K4' en corte-0, corte-1, frontal-es, frontal-post y planta, K4 vacia; max 0.00044; material SI (por K3). K2 y K1 vacias en todas las filas. La decision de OB-06.4 es del Owner; el Worker no juzga la aceptabilidad.",
+    "T-4 H-PB-28 (A0 carga, A1 tras Restaurar estandar y Confirmar, A2 tras Actualizar). pb-06-seguridad: A0 salida ManualHeaderHeightOverride=150, DerivedPostReinforced=false, DerivedPostReinforcementHeight=null, DerivedPostHeight=null, SeparatorCountOverride=3, SeparatorSpacingOverride=18 y los seis controles lo muestran; A1 salida 150 a null, DerivedPostReinforced true, SeparatorCountOverride y SeparatorSpacingOverride null, pero los seis controles SIGUEN mostrando 150, false, 3 y 18; A2 la peticion vuelve a escribir 150, false, 3 y 18 (la restauracion se pierde). pb-07-combinado: A0 DerivedPostHeight=140 (control 140); A1 salida DerivedPostHeight=null con el control en 140; A2 vuelve a 140. INCUMPLIMIENTO CARACTERIZADO de PushBackEditorDesignAssembler.cs:296-299 (restaurar estandar es un reset de TODO el rack); no se corrige.",
+    "T-5 COBERTURA CRUZADA por fila del 6.2 (lo que NO se duplica). Propiedad del estado: WLC mas WorkspaceDraftPilotMaterializationTests.cs:682 y LegacyDeltas (:706) para los 14 de un sentido; CT-01 y CT-02 lo nuevo. Modulos: PushBackModuleAdoptionTests y PushBackCompositeModuleSequenceTests y RackModuleEditSessionTests.cs:381-399 (Core), PushBackModuleEditorWindowTests:104-302 (UI); CT-03. Cola aparcada: pruebas de cola de MB H-047 sin corpus; CT-06. A/B: PushBackBlankFrontAuthorityTests y PushBackCompositeWindowTests:82-138, 610-680 y 1366-1418; CT-07. Frentes: PushBackViewTests:152, BlankFrontBoundaryTests:223,235,310 y PushBackCompositeWindowTests:1121; CT-08 a CT-10. Anadir y quitar modulos: PushBackModuleEditorWindowTests:280-302 y PushBackModuleAdoptionTests:175; CT-04 y CT-05. Renombrar: T1B CT-05 y CT-06; CT-11. Borrado de vistas: guardas de MA H-121 y BlankFrontBoundaryTests:223; CT-10. Subdialogos: PushBackModuleEditorWindowTests:167-245, PushBackSafetyFlowTests, T1B CT-17, PushBackBootUiFlowTests, PushBackBootSidesUiFlowTests, PushBackSafetyPerPostFlowTests, las tres clases de defensa, PushBackTopeSectionInSafetyTests y PushBackRearTopePerSideAndNoneTests; CT-12 a CT-16. Catalogo: WLC sin delta (c) y pb-12-poste-nulo; CT-17. Perdida (b): PushBackDimensionLegacyCharacterizationTests:249-251, T19_H1 y WLC; CT-18. Perdida (a): WLC pb-08; CT-19 y CT-20. Efecto del redondeo: nada; CT-21.",
+    "T-6 ANCLAS (aserciones sin mutante propio; metodo que si lo tiene). CT-01: lineas de pb-21-cola, huellas vacias de pb-31 y X-01, indicadores de compuesto y lineas retiradas; el metodo lo detecta MU-01 (pb-20-ab y X-01). CT-02: habilitado, PETICION, UpdateOnly y 0 vistas; el metodo lo detecta MU-02 (el delta de las 18 filas). CT-03: la linea de carga y los pasos 1, 3 y 4; el metodo lo detecta MU-03 (paso 2). CT-04: carga y pasos 1 a 3; el metodo lo detecta MU-04 (paso 4). CT-05: A0 y los controles de A1, y A2; el metodo lo detecta MU-05 (salida de A1). CT-06: los pasos que no son la carga; MU-06. CT-07: carga, declarar B y todas en blanco; MU-07 (retirar B). CT-08 y CT-09: los pasos que no son anadir frente; MU-08. CT-10: la lista de indicadores de compuesto; MU-09 (estados). CT-11: RackId, insertRequested y SystemToInsert.Name; MU-10 (recorte). CT-12: argumento PanelClear 44, cuenta de llamadas y el caso nulo; MU-11. CT-13: el paso (i) y la lista recibida; MU-12 (paso ii). CT-14, CT-15 y CT-16: la cuenta de llamadas a la costura; MU-13, MU-14 y MU-15. CT-17: todos los casos salvo c-16; MU-16 (c-16). CT-18: ids, estilos resueltos y cuenta de cotas por plan; MU-17 (conjuntos de estilo). CT-19: las filas distintas de F5; MU-18. CT-20: las filas distintas de G2; MU-19. CT-21: las filas distintas de R0 y R5; MU-20.",
+    "T-7 COSTURAS USADAS (de H-03; ninguna nueva, sin cambios en InternalsVisibleTo, paquetes ni P/Invoke). LastComputation, CurrentInputsAreValid y CompositeState: todos los CT de UI (lectura de salida y estado compuesto: CT-01 a CT-09, 11 a 17, 19, 20). PendingWork(): CT-03 y CT-12. PendingHeaderConfigurationForTest: CT-12. OutputIsBlockedForTest: CT-02 (clasifica BLOQUEADO). EditorStateForTest (ModuleSession y LastModuleReconciliation): CT-03, CT-04 y CT-05 mediante SelectModule. SafetySelections: CT-13. SafetyDialog: CT-13, CT-14, CT-15 y CT-16. HeaderConfiguratorDialog: CT-12. RearTopeDialog: CT-16. DefenseDialog: CT-15. BootPerPostWindowDialog: CT-14. BootSectionForTest.Configure(): CT-14. DefenseSectionForTest.Configure(): CT-15. RearTopeSectionForTest.Configure(): CT-16. SafetyPerPostWindow.SetForTest y BuildResultForTest: CT-14. Ayudantes de H-18: EditorWindowTestSupport.ClickNamed (casi todos), SetFrontBlank (CT-01, 06 a 09) y SetText (CT-11); StaTestRunner.Run por Sta(); EditorDiscardPromptCollection en todas las clases de UI. Contrato publico de la ventana: InsertRequested, UpdateOnly, RackId, RackName, InsertionRequest, SystemToInsert y DesignToInsert. SetNumberAndCommit no se uso: los campos se escriben con SetNumber(valor, R) y LostFocus elevado, sin teclado ni foco real.",
+    "TRES CORRIDAS CONSECUTIVAS DEL FILTRO DE UI en el GREEN (RunRef g1, g2 y g3): 18 de 18 Passed cada una, sin uso interactivo del equipo por parte del Worker. Ademas g0 (filtro de Core GREEN, 3 de 3) y g4 (suite completa de Core en el GREEN: 19070 Passed).",
+    "ARTEFACTOS: TRX y logs en artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/tests/ con RunRef cortos (b0 linea base, c1, m01..m20, r0, red1, redci, g0..g5, greenci, baseci); parches en .../mutants/; ninguna copia de arboles. Los dos filtros se registran sobre el RED en la corrida r0 (arbol identico al commit RED, ejecutada antes de crear el commit)."
+  ],
+  "UnexpectedFindings": [
+    "LoadExisting lanza una ArgumentException no capturada cuando el diseño trae PalletTolerance 0 (La holgura transversal debe ser mayor que cero; DynamicRackSystemResolver.cs:474 llamado desde :45), mientras que PalletsDeep 1 lo rechaza antes el almacen (RackProjectStore.cs:348). Caracterizado en CT-17 c-12 y c-13; no se corrige.",
+    "Los valores de Dimensions fuera de rango (7 y -1) nunca llegan a la ventana: el almacen los normaliza a 0 (DynamicRackSystemDocument.cs:322,429), de modo que el recorte de W:407 solo se ejerce con valores validos; por eso el contrato original no discriminaba MU-PB0-16.",
+    "SystemToInsert.Name queda vacio aunque el rack se renombre: solo RackName e InsertionRequest.RackName llevan el nombre (CT-11).",
+    "Fondos + 1 (PalletsDeepBox) no mueve la secuencia de modulos de pb-31 (CT-04 paso 2).",
+    "La Unidad ton se conserva en el diseño aunque el desplegable de la ventana solo ofrece kg y lb (WeightUnitBox muestra kg).",
+    "pb-21-cola (un sentido con cola de B) pierde en la salida de la ventana 667 hojas de documento (la cola GAP y B:*, el objeto SideB) frente al sobre; es la rareza mas grande del corpus y esta fijada en CT-01.",
+    "H-PB-28 confirmado: Restaurar estandar se pierde en Actualizar porque el portador advanced de la ventana no se reinicia (T-4)."
+  ],
+  "KnownLimitations": [
+    "Sin AutoCAD: no se fija el dibujo ni su efecto en el DWG; eso es el bloque M, aparte, que no consume intentos. Ninguna prueba ejercita gestos de teclado ni el foco real; LostFocus se eleva con RaiseEvent.",
+    "HUECO de T-1 (controles sin prueba que los cambie): NumberFrontsCheck, NumberLevelsCheck, DrawRackNameCheck, las tres casillas de cotas por vista, WeightUnitBox (solo carga), PositionsBox, LevelsBox, FondosBox, DepthStartBox, CellIntermediatePeralteBox, CellFondoOverrideBox, CellDrawPalletCheck, el manejador de GapBox, CentralSeparatorCheck, StructureOverrideBox, CellTopologyBox, RunDirectionBox, TopologyScopeBox, FrontCountBox y DerivedPostLineHeightBox.",
+    "No se caracteriza la clase (d) (celda comprometida otra vez desde los controles): en este corpus no se alcanza (T-2); ni las clases de escritura (A) y (C), que fija F4-T1B.",
+    "El uso del equipo por otras personas durante las corridas locales no se puede observar; las corridas con la ventana de CT-14 mostrada fuera de pantalla se hicieron sin uso interactivo del Worker. El bloque M no se opero mientras corrian los filtros de UI en local segun la informacion que el Worker tenia.",
+    "Los numeros de CT-21 se fijan solo como claves, booleanos y los umbrales 0.001 y 1e-9; el maximo |delta| por fila (T-3) es informativo y se midio en una corrida con codigo temporal ya retirado, no queda aseverado.",
+    "La atribucion T-8 de las 105 existentes de UI es por analisis declarado (nunca se corrio la suite completa de UI en local); la CI del RED es la evidencia de la union.",
+    "Los mutantes MU-01..15 se probaron en aislado con la version de CT-17 anterior a agregar c-16; MU-16 y la conjuncion con la definitiva.",
+    "Las rutas locales no aparecen en la entrega salvo el worktree; los parches y TRX estan solo bajo artifacts/orchestration/I-64/F4B-PBT0-CHARACTERIZATION/1/R20261117T185616Z-3c1b/."
+  ],
+  "Deviations": [
+    "CT-17: se agrego el caso c-16 (Dimensions = 3) a la lista c-01..c-15 del contrato para que MU-PB0-16 discrimine su CT; sin el, MU-PB0-16 (y su alternativa) no fallaba y habria sido PBT0-C10. Se corrigio la prueba, no se invento ningun mutante (declarado en WorkCompleted).",
+    "CT-17 captura con try y catch la excepcion de Abrir en los casos c-12 y c-13 (el producto rechaza o lanza antes de mostrar la ventana) y fija su tipo y mensaje como CARGA-APPLICATION, en vez de dejar que la prueba falle por excepcion.",
+    "La conjuncion del RED se armo aplicando 18 parches con git apply y MU-PB0-10 y MU-PB0-18 con la edicion equivalente, porque sus parches de la BaseSha comparten contexto con los de MU-02 y MU-16; los parches aislados siguen siendo los de la BaseSha.",
+    "Las corridas de los dos filtros sobre el RED (r0) se hicieron con el arbol de trabajo identico al del commit RED, antes de crearlo; TreeSha se registra como el RedSha."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Verificacion del Controller sobre 28e38d8d y los controles nc1..nc3 segun README seccion 10; revision directa e independiente, con la tabla T-8 y la desviacion de c-16 a la vista.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

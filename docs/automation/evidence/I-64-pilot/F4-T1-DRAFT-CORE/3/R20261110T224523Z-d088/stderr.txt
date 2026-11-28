@@ -1,0 +1,8 @@
+Reading additional input from stdin...
+2026-11-10T22:46:55.011115Z ERROR codex_api::endpoint::responses_websocket: failed to connect to Responses WebSocket stage=Unknown
+2026-11-10T22:46:55.544944Z ERROR codex_api::endpoint::responses_websocket: failed to connect to Responses WebSocket stage=Unknown
+2026-11-10T22:46:56.502053Z ERROR codex_api::endpoint::responses_websocket: failed to connect to Responses WebSocket stage=Unknown
+2026-11-10T22:46:58.328616Z ERROR codex_api::endpoint::responses_websocket: failed to connect to Responses WebSocket stage=Unknown
+2026-11-11T01:49:23.374973Z ERROR codex_api::endpoint::responses_websocket: failed to connect to Responses WebSocket stage=Unknown
+2026-11-11T01:49:26.045561Z ERROR codex_models_manager::manager: failed to refresh available models: Connection failed: error sending request
+2026-11-11T13:14:47.960232Z ERROR codex_models_manager::manager: failed to refresh available models: Connection failed: error sending request

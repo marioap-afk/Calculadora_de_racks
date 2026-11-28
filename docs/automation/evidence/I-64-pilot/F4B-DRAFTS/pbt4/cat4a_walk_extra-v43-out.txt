@@ -1,0 +1,12 @@
+package csharp blocks: 11
+DRAFT == package block: True
+IFACE == package block: True
+RIA AtOrigin == package block: True
+NH method == package block (indent-insensitive): True
+WEI ctor+props in package block: True; FromReads in package block: True
+RIA ctor/props in package block: True
+WHC statement in package: True; in GREEN x5
+skeleton new files: ['src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs', 'src/RackCad.Application/Workspace/IWorkspaceEditIntentOriginReader.cs']
+IFACE skeleton == GREEN: True
+FLAG tests/RackCad.Tests/NamespaceFolderGuardTests.cs (4): ';' WorkspaceEditIntent.cs [154, 154]->[164, 164] || 'Preview' PushBackOriginByText.cs [0, 0]->[1, 1] || 'PushBack' WorkspaceEditIntent.cs [8, 8]->[13, 13] || 'RackCad.Application.Systems' WorkspaceEditIntent.cs [1, 1]->[2, 2]
+clean 0 of 1

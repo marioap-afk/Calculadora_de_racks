@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1B-LOSSLESS-STATE-TYPE",
+  "RunId": "R20261119T021056Z-448d",
+  "DelegationRunId": "R20261118T222843Z-e354",
+  "WorkRunId": "R20261118T223111Z-4c04",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-18T22:31:17Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4B-PBT1B-LOSSLESS-STATE-TYPE, Attempt 2, DelegationRunId R20261118T222843Z-e354 and WorkRunId R20261118T223111Z-4c04. Outcome.OutputWrittenUtc=2026-11-18T19:45:36.715469-06:00, after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 5e52aaa34037d8cc6b46849c89d1fce946187324 2f5d3decb237913e3980aa0bbd84346a7ff91f19 returned 0. AuthorityRevision..BaseSha has no EXTERNAL routes. For both UNIT_CHANGE routes, git log --format=%H showed only attempt-1 Worker commits 2d9febc6087280e0ba9f7a6c72e77b283506891d and a0a5f699b138c1b5251fb0c88d28e3ca9e1610c3; both routes are in delegation-intento1.json AllowedWriteScope and no session commit touches them. This meets coordinator-disposition.md rule 2."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json reports PASS, with decoded and UTF-8 byte equality for all eight collections. relay-record-planning.json records A1-A8 8/8 and nc4; delegation and contract RequiredTests and stop-condition collections match."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json CurrentSha=a18ba345eddc5333c22b8bacbad5c2ed4dbf5959; git rev-parse HEAD=a18ba345eddc5333c22b8bacbad5c2ed4dbf5959; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=a18ba345eddc5333c22b8bacbad5c2ed4dbf5959. Branch and worktree match; BaseSha and RedSha are ancestors of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun ls-remote and HeadSha equal CurrentSha a18ba345eddc5333c22b8bacbad5c2ed4dbf5959; OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, matching MainSha."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "Deterministic scope script read AllowedWriteScope from delegation.json: 11 exact entries. git diff --name-only BaseSha..CurrentSha returned five paths; tests/RackCad.Tests/PushBackEditableStateCopyTests.cs is not an exact entry. The same out-of-list path appears in BaseSha..RedSha and ChainBaseSha..CurrentSha -- src tests. Other listed paths match. This violates exact whitelist scope and triggers PBT1B-C01."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore on artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE-nc2/2/R20261119T021056Z-448d/inputs returned that path as ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts and supplied TRX identify push runs on refs/heads/architecture/workspace-persistente-rackcad. Current run 44438060317 matches CurrentSha and all four required jobs succeeded. Red run 44430615074 matches RedSha; Core and UI test jobs failed, UI build succeeded, Plugin build was skipped. TRX totals match the handoff: current Core 19086 passed, current UI 2416 passed/21 skipped/0 failed; RED Core 19072 passed/14 failed, RED UI 2415 passed/21 skipped/1 failed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Required filters were found at or above all MinSelected counts in the supplied TRX; the three ExpectRed filters selected 13, 1 and 1 and failed by Assert.Equal in RED with first stack lines under tests/, then passed in CurrentSha. SharedReferenceGuard selected 2 and passed in both; remaining RequiredTests filters passed in CurrentSha. TRX totals match TestResults. RT consists of five test paths; GREEN diff RedSha..CurrentSha touches only the six src paths and no tests, so it does not alter RT union ChainRedFiles. Scope has a separate failure."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows RED 126fd65ff138afe839e67788061960c0e911cf1c and GREEN a18ba345eddc5333c22b8bacbad5c2ed4dbf5959; both carry the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, consistent with effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5, effort high, required routing. relay-record-work.json records ModelRequested=sonnet, ModelEffective=claude-sonnet-5-5, EffortRequested=high, EffortEffective=high; subagent transport launch alias is sonnet."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Deterministic case-insensitive whole-word/phrase scan of the complete seven free-text fields against all AUTOMATION_PLAN 16.10 terms found no matches. Field character counts: WorkCompleted 14793; Evidence 7631; UnexpectedFindings 773; KnownLimitations 1864; Deviations 847; OpenQuestions 0; RecommendedNextAction 183."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials and no pending tool errors."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "PBT1B-C01"
+  ],
+  "Findings": [
+    "The BaseSha..CurrentSha diff includes tests/RackCad.Tests/PushBackEditableStateCopyTests.cs, which is absent from the delegation AllowedWriteScope.",
+    "The same out-of-scope test path occurs in the RED and chain diffs. The exact whitelist check fails and PBT1B-C01 is triggered."
+  ],
+  "RecommendedNextAction": "Return the scope finding to the Coordinator for the required disposition."
+}

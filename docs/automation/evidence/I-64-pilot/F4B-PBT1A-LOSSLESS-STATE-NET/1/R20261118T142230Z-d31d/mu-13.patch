@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..3d75ef0d 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -310,7 +310,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// "Actualizar" and also allows requesting an additional linked view.</summary>
+         public void LoadExisting(PushBackDesign design, string rackId, string rackName, RackProject sourceProject = null)
+         {
+-            if (design == null) return;
++            if (design == null || design.Structure?.PalletTolerance <= 0.0) return;
+             // I-42: primero el lado A, por el camino de siempre, y luego la parte compuesta. Un documento
+             // anterior a I-42 no trae ninguna, asi que el rack se abre como el de un solo sentido que es.
+             composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);

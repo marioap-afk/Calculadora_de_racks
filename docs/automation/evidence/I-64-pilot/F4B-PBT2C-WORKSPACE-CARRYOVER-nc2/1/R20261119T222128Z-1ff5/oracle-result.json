@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261119T222128Z-1ff5",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "PBT2C-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "Read-only scope comparison used git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests against all 2 exact delegation AllowedWriteScope entries. BaseSha..CurrentSha has tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs, allowed=false. BaseSha..RedSha has that path (false) plus W and WC (true); ChainBaseSha..CurrentSha -- src tests has the test path (false)."
+  },
+  "OutputSha256": "8941E29D12E7B6FF454F9BD6829BEE556D382EF7D31829C3DACC5530F08A8C69",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,203 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F2-T2A-NAVIGATION-HOST",
+  "RunId": "R20261109T175557Z-a639",
+  "DelegationRunId": "R20261109T174847Z-5d33",
+  "Initiative": "I-64",
+  "Gate": "F2",
+  "Attempt": 1,
+  "BaseSha": "d9d386e91aa6df5db64fbb6946b7edb3542baace",
+  "RedSha": "4fcea652d413414552d52f70998ce16f94f4c31b",
+  "CurrentSha": "4fcea652d413414552d52f70998ce16f94f4c31b",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+    "src/RackCad.Application/Workspace/NavigationEcho.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs"
+  ],
+  "WorkCompleted": "RED commit 4fcea652 pushed (13 paths, all inside the AllowedWriteScope): compilable skeleton of the two new Application files and the three new Plugin files, WorkspaceHostCore.cs with the optional NavigationEcho constructor parameter only, the two new test files (WorkspaceNavigationEchoTests, WorkspaceNavigationHostTests) and the exact guard deltas (exact-file exceptions for WorkspaceNavigationHost/Facts/Effects in WorkspaceBridgeSourceGuardTests, WorkspaceSourceGuardExceptionTests, WorkspaceHostSourceGuardTests; nine Plugin/Workspace files and 45 Fact/Theory metacount in WorkspacePaletteHostSourceGuardTests; facts reader exception and extended event-side/effect-side check in WorkspaceNavigationAuthorityTests). RED run: Core filter selected 755, 46 failed by assertion, 709 passed; UI filter 64 passed. The full GREEN implementation was written and verified in the WORKING TREE ONLY (NOT committed, NOT pushed; patch saved at artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T175557Z-a639/green-uncommitted-worktree.patch): NavigationEcho (set-equality echo by session with End/PurgeDead), IWorkspaceNavigationPort.cs (WorkspaceNavigationStatus, readonly record struct WorkspaceNavigationResult, WorkspaceNavigationRequest, IWorkspaceNavigationPort with the exact ExecuteAsync signature, pure WorkspaceNavigationRunner with lazy purge/OnDrained/Run), WorkspaceNavigationFacts (RackBlockFinder.ScanEnvelopes unchanged + direct Model Space reference handles), WorkspaceNavigationEffects (SetImpliedSelection, view with 10 percent margin through the DCS transform, center preserving scale; single read-only GetObject on the selected target), WorkspaceNavigationHost (one NavigationTargets, one NavigationActionPolicy, await DocumentCollection.ExecuteInCommandContextAsync once, result captured then Window.Focus() in an isolated method), plus WorkspaceController/WorkspaceSelectionReader/WorkspaceHostCore wiring of the shared echo. With that working tree: Core filter 755 selected, 754 passed, 1 failed (a defective RED test, see StopConditions); the Plugin Release build gives 0 errors, 0 CS/NU/NETSDK and only the 2 MSB3277 warnings; Release builds of both test projects have 0 warnings of CS/NU/NETSDK/MSB. Per the profile rule (a test would need to change after RED) the GREEN commit was NOT created.",
+  "TestsExecuted": [
+    {
+      "RunRef": "red-core",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.Workspace --logger trx",
+      "Phase": "RED",
+      "TreeSha": "4fcea652d413414552d52f70998ce16f94f4c31b",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T175557Z-a639/tests/red-core/red-core.trx"
+    },
+    {
+      "RunRef": "red-ui",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --filter FullyQualifiedName~RackCad.UI.Tests.Workspace --logger trx",
+      "Phase": "RED",
+      "TreeSha": "4fcea652d413414552d52f70998ce16f94f4c31b",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T175557Z-a639/tests/red-ui/red-ui.trx"
+    },
+    {
+      "RunRef": "wt-core-filter",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.Tests.Workspace --logger trx (uncommitted working tree with the full implementation)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T175557Z-a639/tests/green-core/green-core.trx"
+    },
+    {
+      "RunRef": "wt-core-full",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --logger trx (uncommitted working tree)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T175557Z-a639/tests/wt/wt-core-full.trx"
+    },
+    {
+      "RunRef": "wt-ui-full",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --logger trx (uncommitted working tree)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T175557Z-a639/tests/wt/wt-ui-full.trx"
+    },
+    {
+      "RunRef": "wt-ui-filter",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build --filter FullyQualifiedName~RackCad.UI.Tests.Workspace (uncommitted working tree)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": null
+    },
+    {
+      "RunRef": "wt-plugin-build",
+      "Command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o artifacts/.../tests/plugin-build-green (uncommitted working tree)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2A-NAVIGATION-HOST/1/R20261109T175557Z-a639/tests/plugin-build-green.log"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "red-core",
+      "Selected": 755,
+      "Passed": 709,
+      "Failed": 46,
+      "Skipped": 0,
+      "FailedTests": [
+        "26 tests of RackCad.Tests.WorkspaceNavigationHostTests (new behavior and source guards)",
+        "14 tests of RackCad.Tests.WorkspaceNavigationEchoTests (new behavior and source guards)",
+        "RackCad.Tests.WorkspaceHostSourceGuardTests.TheAsyncExceptionIsTheNavigationHostFileAndTheApprovedCommandContextPatternOnly",
+        "RackCad.Tests.WorkspaceHostSourceGuardTests.TheEffectsWriteExceptionOpensNoOtherWriteNoSystemVariableNoLayoutAndNoAuthoredData",
+        "RackCad.Tests.WorkspaceHostSourceGuardTests.TheReaderApisAreUsedInNoOtherFileOfThePluginWorkspace",
+        "RackCad.Tests.WorkspaceNavigationAuthorityTests.NoEventSideFileCanReachTheNavigationEffectsOrThePolicy",
+        "RackCad.Tests.WorkspaceNavigationAuthorityTests.OnlyTheAuthorityTraversesTheReferenceHandlesOfTheFacts",
+        "RackCad.Tests.WorkspaceSourceGuardExceptionTests.TheAsynchronousPatternIsAllowedOnlyInTheHostFileAndOnlyInTheCommandContextForm"
+      ]
+    },
+    {
+      "RunRef": "red-ui",
+      "Selected": 64,
+      "Passed": 64,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "wt-core-filter",
+      "Selected": 755,
+      "Passed": 754,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceNavigationEchoTests.NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles"
+      ]
+    },
+    {
+      "RunRef": "wt-core-full",
+      "Selected": 15147,
+      "Passed": 15146,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceNavigationEchoTests.NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles"
+      ]
+    },
+    {
+      "RunRef": "wt-ui-full",
+      "Selected": 1718,
+      "Passed": 1699,
+      "Failed": 2,
+      "Skipped": 17,
+      "FailedTests": [
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne",
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers"
+      ]
+    },
+    {
+      "RunRef": "wt-ui-filter",
+      "Selected": 64,
+      "Passed": 64,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "wt-plugin-build",
+      "Selected": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "INV-F2T2A-01: HostTests.TheHostInstantiatesExactlyOneTargetsAuthorityAndOnePolicyAndNothingElseDoes (RED, source guard)",
+    "INV-F2T2A-02: HostTests.EveryReadAndEveryEffectOfTheActionHappensInsideTheCommandContextCallbackInTheApprovedOrder; runner tests ARequestRejectedByTheSession..., ATargetThatVanished..., AReferenceThatLeft..., OutsideModelSpace... (RED)",
+    "INV-F2T2A-03: HostTests.TheHostNeverBlocksDetachesOrSchedules...; HostSourceGuard.TheAsyncExceptionIsTheNavigationHostFile...; GuardException.TheAsynchronousPatternIsAllowedOnlyInTheHostFile... (RED)",
+    "INV-F2T2A-04: HostTests.TheFocusReturnsToTheDrawingInOneIsolatedMethodWithThePublicWindowApiAndFailsSafely (RED)",
+    "INV-F2T2A-05: HostTests.TheFactsAdapterConsumesTheIntegratedScan...; AuthorityTests.OnlyTheAuthorityTraversesTheReferenceHandlesOfTheFacts (RED)",
+    "INV-F2T2A-06: HostTests.TheEffectsAdapter* (3 tests); HostSourceGuard.TheEffectsWriteException...; HostSourceGuard.TheReaderApisAreUsedInNoOtherFile... (RED)",
+    "INV-F2T2A-07: HostTests.TheResultIsAnImmutableReadonlyRecordStruct..., ThePortHasTheExactSignature..., EachVerdictOfThePolicyHasOneStatus... (RED, these pass on the skeleton by design)",
+    "INV-F2T2A-08: EchoTests (set equality, subset/superset, per-session, consumed observation, host-core context unchanged with zero effect calls, first different selection resumes) (RED)",
+    "INV-F2T2A-09: HostTests.ThePurge*, APurgedSessionIsNeverRevived..., TheLazyPurgeRunsRightBeforeEveryAction, ADrainPurgesFirst...; EchoTests.ADrainPurgesTheEchoState... (RED)",
+    "INV-F2T2A-10: GuardException tests for exact-file exceptions (Facts, Effects, Host), full-path equality, no folder/prefix/wildcard; palette guard nine files and 45 metacount (RED)",
+    "INV-F2T2A-11, 12: existing guards (transactions in using, no host-object fields, three += in the controller, one subscriber) pass on the working tree; HostTests.TheControllerCreatesTheNavigationHostLazily... (RED)",
+    "INV-F2T2A-13: WorkspaceNavigationPrivacyGuardTests unchanged and green on the working tree",
+    "INV-F2T2A-14: git diff --name-only BaseSha..working tree = 15 paths, all in AllowedWriteScope (7 new files, 8 existing); F2-T1 files and forbidden paths untouched",
+    "INV-F2T2A-15: no WPF, no command, no new subscription; UI filter 64 green",
+    "INV-F2T2A-16: RED compiles and fails by assertion (46 of 755); GREEN not committed because of the blocked defect below"
+  ],
+  "UnexpectedFindings": [
+    "DEFECT IN MY OWN RED TEST: WorkspaceNavigationEchoTests.NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles asserts that WorkspaceSession.cs code does not match the regex 'Echo|Navigation', but the unchanged, out-of-scope WorkspaceSession.cs legitimately contains DrainOperation.InvalidateNavigationCaches. The test can never pass without editing WorkspaceSession.cs (forbidden) or the test (forbidden after RED). It also failed in the RED run for this wrong reason, not for the intended behavior. The fix is to narrow the regex (for example 'NavigationEcho|WorkspaceNavigation|IWorkspaceNavigationPort') in a new RED.",
+    "Two UI tests fail in the full UI suite on the working tree: RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne and ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers (Assert.NotNull failure at PendingTextFieldTests.cs line 81). RackCad.UI and tests/RackCad.UI.Tests are untouched by this delegation and the two tests do not reference the Workspace area; likely pre-existing or environmental, but NOT verified against BaseSha (no checkout of other SHAs is allowed). The required UI Workspace filter is 64/64 green.",
+    "WorkspaceNavigationFacts cannot fill NavigationDefinitionFact.ProbedId: RackBlockFinder.ScanEnvelopes (unchanged, mandated) does not expose the raw envelope JSON, and RackBlockData/RackEmbedStore are forbidden outside the reader by the existing guard. ProbedId is always null, so an unreadable member known only by the probe never yields an UnreadableMember diagnostic from this adapter."
+  ],
+  "KnownLimitations": [
+    "No claim about real AutoCAD behavior: SELECT surviving the command, VIEW, CENTER, LOCATE, focus return, echo and cross-document isolation are only compiled (Plugin Release build against the local AutoCAD 2025 DLLs) and tested by source guards; they belong to Smoke-NAV SN-01..SN-10.",
+    "The CI run on an exact GREEN SHA does not exist: no GREEN commit was created.",
+    "View framing uses the DCS transform of the current view record (identical to the ZoomToRack framing in plan view); behavior in perspective or twisted views is not demonstrated.",
+    "SetImpliedSelection does not change PICKFIRST; with PICKFIRST=0 the written selection may not be visible (the reader already reflects that state).",
+    "The facts adapter reads all rack definitions per fact read (one ScanEnvelopes pass plus the direct references of each); NavigationTargets re-reads once more in Decide, so each action costs at least two scans on a cold cache."
+  ],
+  "Deviations": [
+    "The GREEN commit was deliberately not created or pushed (profile rule: a RED test would need to change after RED -> stop with a structured block). The complete implementation exists only as uncommitted changes in the worktree and as a patch under artifacts/."
+  ],
+  "OpenQuestions": [
+    "Should the Coordinator authorize a corrective delegation that re-issues the RED with the single regex fix in WorkspaceNavigationEchoTests.cs, with the saved patch as the GREEN starting point?"
+  ],
+  "WorkerStatus": "BLOCKED",
+  "Disposition": "BLOCKED",
+  "TriggeredStopConditions": [
+    "PROFILE-RULE: a RED test file would need to change after the RED commit (defective test WorkspaceNavigationEchoTests.NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles); GREEN must not touch RED test files"
+  ],
+  "RecommendedNextAction": "Open a corrective delegation (Attempt 2): fix the one regex in WorkspaceNavigationEchoTests.NothingChangedInTheSelectionReadOrTheSessionToCarryTheHandles in a new RED commit, then apply green-uncommitted-worktree.patch (or the identical uncommitted worktree changes) as the GREEN, run the contracted filters and suites, push and run the exact-SHA CI. Also check whether the two PendingTextFieldTests failures reproduce at BaseSha.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

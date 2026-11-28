@@ -1,0 +1,16 @@
+p = src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs | len AWS 37 | len diff 37 | set(diff) == set(AWS): True
+sha cruda 7F081AEF9D179A65802E4CDF91960475DE73AB4877FFBB7559BBDC1D9ADFE33B | sha nota CEA953715003A588C1FD8635804059092845E83157DC17052593195E4DB671BD
+True  sha(cruda) = nota.OutputSha256 = relevo real
+True  cruda con las 8 colecciones vacias
+True  cruda + 8 del contrato = delegation.json (bytes)
+True  relevo nc2 = sha(delegacion mutada)
+True  bfc.OutputSha256 = sha(delegacion real); bfc.ContractSha256 = sha(contrato)
+True  nota.DelegationSha256 y ContractSha256
+True  RunId igual en nota, bfc, relevo y delegacion
+True  AWS real = AWS contrato (en orden)
+True  solo cambia AllowedWriteScope entre real y nc2
+True  mutado = real sin sorted(diff)[0], en orden
+True  diff dentro del alcance real y fuera del prohibido
+True  p fuera del alcance mutado
+True  p no prohibido (forma cerrada de la 10)
+TODO True

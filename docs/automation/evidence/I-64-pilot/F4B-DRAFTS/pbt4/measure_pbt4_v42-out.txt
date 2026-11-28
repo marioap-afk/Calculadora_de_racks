@@ -1,0 +1,45 @@
+# PB-T4a: las guardas sobre el texto literal del GREEN (rev 7f0d9aa3)
+
+WHC: la sentencia de D-PBT4-03 en 5 cuerpos (TryCheckPilotEdit, TryReloadPilotEdit, TryConfirmPilotBase, TryKeepPilotEdit, TryDiscardAndReloadPilotEdit); NH y RIA: las ediciones literales de D-PBT4-02 y 03.
+
+| Guarda | Qué se comprueba | Sobre el GREEN |
+|---|---|---|
+| EIG:568-574 | Begin: orden, 1 `.ReadIntent(` y 1 `_editIntentReader` seguido de `.`/`!` | **verde** |
+| EIG:569-574 | «Comprobar ahora»: orden, 1 `.ReadIntent(` y 1 `_editIntentReader` seguido de `.`/`!` | **verde** |
+| EIG:578-579 | PassGate no lee | **verde** |
+| EIG:604 | el drenaje del núcleo no nombra la intención | **verde** |
+| EIG:620-623 | solo WHC llama a `.ReadIntent(` (NH y RIA del GREEN no) | **verde** |
+| EIG:636 | el drenaje sigue limpio (autoprueba) | **verde** |
+| EIG:671-688 | la base solo llega a sus consumidores; las cuentas por operación de `pilot.Read` y `.StaleBase` | **verde** |
+| EIG:695-718 | las cuentas de los tres cuerpos de la reconciliación | **verde** |
+| EIG:733-736 | seis `var pilot = read.PilotRead;` y seis `.ReadIntent(` en WHC | **verde** |
+| EIG:761-769 | los tres cuerpos: orden, 1 `.ReadIntent(`, 1 `_editIntentReader` con `.`/`!` y la marca después de la lectura | **verde** |
+| EIG:1124-1130 | «Actualizar» no lee | **verde** |
+| WLG:369 | AdviseClose | **verde** |
+| WLG:442 | SessionDestroyed | **verde** |
+| WLG:623 | el drenaje | **verde** |
+| WLG:634 | MarkPilotDraftsPossiblyStale | **verde** |
+| WLG:645-656 | la recarga: orden, 1 `.ReadIntent(`, 1 `_editIntentReader` con `.`/`!`, 1 `pilot.Read` | **verde** |
+| WLG:687 | el descarte explícito del anfitrión | **verde** |
+| PEG:288 y :297 | solo cambian los cinco cuerpos que ya leían (ninguna operación sin lectura ni de «Actualizar»): check, confirm, discard, keep, reload | **verde** |
+| Reflexión (EIH:993-1104, WLG:357-358, PEG:383-385, WPUH:503, IG:427-428) | WHC no declara nada nuevo: los mismos miembros declarados | **verde** |
+| EIG:409-431 | el lector anidado: los ocho pasos en orden; 1 `LoadCatalog(`, 1 `RackPilotIntentAdapter.Read(` y 1 `_targets.Revalidate(` en NH | **verde** |
+| EIG:441-453 | NH: dos clases y el lector anidado implementa la interfaz | **verde** |
+| EIG:465-470 | NH: un `read.Pilot` y ningún `PushBackPilot` ni `RackCad.Application.Systems` | **verde** |
+| RG:696-712 | cada `_authorize(` del lector tiene la forma exacta | **verde** |
+| CAG:410-451 (NH) | ReadOnActiveDocument: los tres motivos en español y ninguno en inglés | **verde** |
+| NHT:418-559 y WBHG:72-168 | las cuentas de NH (`RackLog.Exception(` 1, `ReturnFocusToDrawing(` 2, `.Focus(` 1, sin async/await; los `+=` 2 de NHT:984 y WBHG:218 son de la paleta, no de NH) | **verde** |
+| IG:684-685 (G-9) | NH: `LockDocument` 2 | **verde** |
+| EIG:132-147 | RIA: la firma de `Read` (:139-141), tres clases de resultado y nada público | **verde** |
+| EIG:150-160 | RIA: ningún campo de un objeto del anfitrión ni campo estático | **verde** |
+| EIG:384-388 | RIA no sabe nada del Workspace ni de la navegación | **verde** |
+| CAG:410-464 (RIA) | Read: los cinco motivos en español y dos `ex.Message` | **verde** |
+| IG:684 (G-9) | RIA: `StartTransaction` 1 y `LockDocument` 1 | **verde** |
+| EIG:350-364 (B-08) | RIA: un `new PushBackPilotIntentScan(` y un `PushBackPilotIntentReader.Read(` en todo el archivo, y el orden de `Read` | **verde** |
+| EIG:322-336 y :338-347 | RIA: un `CaptureDrawing(` (y en `Read`), un `new Handle(`, sin `Handle.Parse` ni `GetObjectId(` | **verde** |
+| CT-PBT4A-07 (nueva) | `AtOrigin` solo llama a `ReadAt`: sin lecturas propias, sin `CaptureDrawing`, bloqueo, transacción, literal de cadena ni `ex.Message`; RIA nombra una vez cada lector, en `Read` | **verde** |
+| CT-PBT4A-04 y 08 (Draft) | `PushBackOriginByText`: `Choose`, `AtKey` y `ReadAt`, con un lector de cada; ningún término de la pureza de CT-PBT3A-14 | **verde** |
+| Contrafactual (EIG:139-141) | si `Read` ganara `originText` como parámetro obligatorio, la firma fijada por la guarda deja de casar | **ROJA (esperada)** |
+| Contrafactual (EIG:139-141) | si `Read` ganara `originText` como parámetro con valor por defecto, la firma fijada por la guarda deja de casar | **ROJA (esperada)** |
+
+rojas=0 de 35 sobre el GREEN; contrafactuales en rojo=2 de 2

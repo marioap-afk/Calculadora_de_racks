@@ -1,0 +1,30 @@
+{
+  "GreenCore": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+    "Selected": 1919,
+    "Passed": 1919,
+    "Failed": 0,
+    "Other": 0
+  },
+  "GreenUi": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+    "Selected": 248,
+    "Passed": 248,
+    "Failed": 0,
+    "Other": 0
+  },
+  "RedCore": {
+    "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+    "Selected": 1919,
+    "Passed": 1791,
+    "Failed": 128,
+    "Other": 0
+  },
+  "RedUi": {
+    "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+    "Selected": 248,
+    "Passed": 248,
+    "Failed": 0,
+    "Other": 0
+  }
+}

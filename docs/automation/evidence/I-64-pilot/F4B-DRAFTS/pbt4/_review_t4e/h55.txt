@@ -1,0 +1,12 @@
+## La cabecera de la v5.4, sin cambio salvo lo que dice el registro v5.4 → v5.5
+
+**Estado:** v5.4, **solo de texto**. Corrige la v5.3 de **PB-T4d** (`F4B-PBT4-RETIRE-PILOT`) tras la recomprobación 1 de CA-T4d (al final de `independent-review-pbt4d-check.md`, sha256 `76a10c8bde8a3c0532d0c7ffa1dda18d339882d22873fedcd0ecc2854b1b679f`: EMITIBLE, B 0 / I 0 / M 6, M-08 a M-13), sobre la misma base (`6c2820ba`). No se repite ninguna corrida de pruebas: los cambios del RED son solo de comentarios (el código sin comentarios es el de la v5.3) y los del GREEN, solo su cabecera; las piezas de la v5.4 se reaplicaron en una copia nueva (`/d/r70`), con 0 errores y 0 `warning CS`, y la cobertura se volvió a leer de los mismos JSON.
+
+**Las decisiones:** sin decisiones nuevas del Owner. **La sesión:** D-S16 con su nota (`session-pbt4d-design-decisions.md`, sha256 `bd02d2103c7a671c51c1de8901bf76608e4944f98ad0fabcca1fdd253d3801c8`): cada entrada de «Bajan» nombra la corrida, no la prueba, y ESTABLE solo por la UI exige también un filtro en su proceso.
+
+**Lo que cambia:** la cabecera (este registro) y la de la v5.3 (M-10); §4.4; §6.4.1 y §6.4.2; §7; §8.5; §11 y el anexo, que pasa a V54-A; las cifras de la lista en §0 y §8.3. **Lo que no cambia:** el resto de PB-T4d, PB-T4a, PB-T4b y PB-T4c.
+
+**Lo que sale de la v5.4 (PB-T4d):** las piezas `pbt4d-red-v54.txt` y `pbt4d-green-v54.txt` (con los módulos y aplicadores de la v5.3, `--pieza`), `pbt4d_test_edits_v54.py`, `v54/make_red_v54.py`, `v54/make_list_v54.py` y la lista `pbt4d-retire-list-271.tsv`; `cov_p6_v54.py`, `p6_json_pbt4d_v54.py`, `post_p6_v54.sh` y `p6_reapply_v54.sh`; y `make_v54.py`, que arma esta versión. Lo de la v5.3, como historia.
+
+---
+

@@ -1,0 +1,271 @@
+== P-0. Identidad
+$ git -C <worktree-de-I-64> rev-parse HEAD
+  5043b49a2bbf707520296b353a204995b90a1d79
+$ git -C <worktree-de-I-64> status --short
+  <vacio>
+$ git -C <worktree-de-I-64> log --oneline -6
+  5043b49a I-64 F4B PB-T1a: cadena, decisiones del Owner y cierre (F4B-E14, F4B-E15, F4B-E16)
+  73d30982 I-64 F4B PB-T1a: GREEN, revierte los quince mutantes de la ventana clasica de Push Back
+  15f1f225 I-64 F4B PB-T1a: RED con mutantes deliberados, revertidos en el GREEN (CT-PBT1A-01..14)
+  a3b63ccc I-64 F4B PB-T1a: emite el contrato de gate (AuthorityRevision 95c8126b)
+  95c8126b I-64 F4B PB-T1: paquete del contrato v2.4, remedido sobre el producto de PB-TC2 (F4B-E13)
+  cd47523b I-64 F4B PB-TC2: cadena, decisiones D1/D2 del Owner y cierre (F4B-E11, F4B-E12)
+$ git -C <worktree-de-I-64> diff --stat a3b63ccc 5043b49a -- src
+  <vacio>
+$ git -C <worktree-de-I-64> diff --stat b5c09f0b HEAD -- src
+  <vacio>
+$ git -C <worktree-de-I-64> diff --stat 5043b49a -- src   (el arbol de trabajo frente al cierre de PB-T1a)
+  <vacio>
+$ git -C <worktree-de-I-64> diff --name-status b5c09f0b HEAD -- tests
+  A	tests/RackCad.UI.Tests/PushBackStateNetActionsTests.cs
+  A	tests/RackCad.UI.Tests/PushBackStateNetCellAndFrontTests.cs
+  A	tests/RackCad.UI.Tests/PushBackStateNetCompositeTests.cs
+  A	tests/RackCad.UI.Tests/PushBackStateNetFingerprintTests.cs
+  A	tests/RackCad.UI.Tests/PushBackStateNetModuleAndSafetyTests.cs
+  A	tests/RackCad.UI.Tests/PushBackStateNetRackControlsTests.cs
+  A	tests/RackCad.UI.Tests/PushBackStateNetSupport.cs
+$ git -C <worktree-de-I-64> diff --quiet cd47523b HEAD -- docs/automation/agent-execution
+  rc=0 (sin cambios)
+$ lineas (git show HEAD:<ruta>)
+  ES      622  src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs
+  EL      234  src/RackCad.Application/Systems/PushBack/PushBackEditorState.Load.cs
+  CS     1213  src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs
+  DA      578  src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs
+  CA      300  src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs
+  RMES    851  src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs
+  W      3700  src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+  WC      936  src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+
+== P-1. Las anclas por miembro y linea (D-PBT1-02 a D-PBT1-11, D-PBT1-15, el esqueleto y los CT de la section 5.3)
+  OK   ES-65     ES:65  workingBaseline(65-65)  [HT1-01; D-PBT1-15 cond. 1]  | private PushBackSystem workingBaseline;
+  OK   ES-71     ES:71  WorkingBaseline(71-71)  [D-PBT1-15 cond. 1]  | public PushBackSystem WorkingBaseline => workingBaseline;
+  OK   ES-99     ES:99  AdoptLoadedBaseline(99-106)  [D-PBT1-15 (ES:99-106)]  | public void AdoptLoadedBaseline(PushBackSystem baseline)
+  OK   ES-105    ES:105  AdoptLoadedBaseline(99-106)  [D-PBT1-15 (ES:105)]  | LastModuleReconciliation = null;
+  OK   ES-110    ES:110  moduleSession(110-110)  [HT1-01 (ES:110-112); INV-PBT1B-04]  | private RackModuleEditSession moduleSession;
+  OK   ES-111    ES:111  moduleCommit(111-111)  [HT1-01]  | private RackModuleCommit moduleCommit;
+  OK   ES-112    ES:112  moduleSignature(112-112)  [HT1-01]  | private string moduleSignature;
+  OK   ES-124    ES:124  -  [D-PBT1-06 (ES:124-133)]  | public RackModuleEditSession ModuleSession
+  OK   ES-143    ES:143  LastModuleReconciliation(143-143)  [HT1-01; D-PBT1-15 cond. 1]  | public RackModuleReconciliationResult LastModuleReconciliation { get; set; }
+  OK   ES-176    ES:176  ReseedModuleSession(176-186)  [D-PBT1-06 (ES:176-187)]  | private void ReseedModuleSession()
+  OK   CS-58     CS:58  DormantCompositeTail(58-58)  [HT1-01]  | public List<DynamicRackModuleDesign> DormantCompositeTail { get; } = new List<DynamicRackModuleDesign>();
+  OK   CS-61     CS:61  DormantTailLineOverrides(61-61)  [HT1-01]  | public List<DynamicHeaderLineOverride> DormantTailLineOverrides { get; } = new List<DynamicHeaderLineOverride>();
+  OK   CS-74     CS:74  ParkDormantTail(74-96)  [D-PBT1-05 paso 2]  | public void ParkDormantTail(
+  OK   CS-116    CS:116  MarkDormantTailConsumed(116-117)  [D-PBT1-05 (CS:116-117)]  | public void MarkDormantTailConsumed() => dormantTailConsumed = DormantCompositeTail.Count > 0
+  OK   CS-145    CS:145  DormantTailConsumptionPending(145-145)  [D-PBT1-05]  | public bool DormantTailConsumptionPending => dormantTailConsumed;
+  OK   CS-147    CS:147  dormantTailConsumed(147-147)  [HT1-01; CT-PBT1B-06 (T)]  | private bool dormantTailConsumed;
+  OK   CS-167    CS:167  ActiveSide(167-167)  [HT1-01]  | public PushBackSide ActiveSide { get; private set; } = PushBackSide.A;
+  OK   CS-179    CS:179  ActiveSelection(179-179)  [HT1-01]  | public PushBackSideSelection ActiveSelection { get; private set; } = PushBackSideSelection.A;
+  OK   CS-629    CS:629  IntentDiagnostics(629-631)  [HT1-19 (CS:629-631)]  | public IReadOnlyList<PushBackCompositeDiagnostic> IntentDiagnostics()
+  OK   RMES-16   RMES:16  -  [D-PBT1-07 (RMES:16-50)]  | public sealed class RackModuleCommit
+  OK   RMES-18   RMES:18  -  [D-PBT1-07 (RMES:18)]  | internal RackModuleCommit(
+  OK   RMES-74   RMES:74  clone(74-74)  [D-PBT1-07 (RMES:74)]  | private readonly RackFrameProjectStore clone = new RackFrameProjectStore();
+  OK   RMES-82   RMES:82  committedLines(82-82)  [CT-PBT1B-07 (RMES:82-83)]  | private Dictionary<LineKey, RackFrameConfiguration> committedLines = new Dictionary<LineKey, RackFrameConfiguration>();
+  OK   RMES-83   RMES:83  workingLines(83-83)  [CT-PBT1B-07 (RMES:82-83)]  | private Dictionary<LineKey, RackFrameConfiguration> workingLines = new Dictionary<LineKey, RackFrameConfiguration>();
+  OK   RMES-91   RMES:91  -  [D-PBT1-03 (M-3: CopyIntent privado)]  | committed = baseline.Select(CopyIntent).ToList();
+  OK   RMES-732  RMES:732  CopyLines(732-742)  [D-PBT1-07 (RMES:732-742)]  | private Dictionary<LineKey, RackFrameConfiguration> CopyLines(
+  OK   RMES-744  RMES:744  AreEquivalentDerivedPosts(744-746)  [D-PBT1-07 (RMES:744-746)]  | private static bool AreEquivalentDerivedPosts(Dictionary<int, double> left, Dictionary<int, double> right)
+  OK   RMES-750  RMES:750  AreEquivalentLines(750-769)  [D-PBT1-07 (RMES:750-769)]  | private bool AreEquivalentLines(
+  OK   RMES-818  RMES:818  AreEquivalent(818-846)  [D-PBT1-06/07 (RMES:818-846)]  | private bool AreEquivalent(
+  OK   DA-57     DA:57  ModuleIntents(57-69)  [D-PBT1-06 (DA:57-81)]  | private static IReadOnlyList<DynamicRackModuleDesign> ModuleIntents(
+  OK   DA-101    DA:101  AcceptComputation(101-107)  [D-PBT1-15 (DA:101-107)]  | public void AcceptComputation(PushBackEditorState state, PushBackEditorComputation computation)
+  OK   DA-155    DA:155  BuildDesign(141-436)  [HT1-10 (DA:155-159)]  | state.NormalizePeraltes(pushResolver.AllowedHighEndPeraltes());
+  OK   DA-169    DA:169  BuildDesign(141-436)  [D-PBT1-09 (DA:169-171)]  | var postId = string.IsNullOrWhiteSpace(editorInputs.PostCatalogId)
+  OK   DA-176    DA:176  BuildDesign(141-436)  [D-PBT1-09b (c-09)]  | var pallet = ClonePallet(editorInputs.Pallet);
+  OK   DA-183    DA:183  BuildDesign(141-436)  [D-PBT1-09b (OWNER-3)]  | var depthLayout = DynamicDepthGeometry.Resolve(envelopeFronts, Math.Max(2, editorInputs.PalletsDeep));
+  OK   DA-211    DA:211  BuildDesign(141-436)  [D-PBT1-09b (DA:211-218)]  | var mustRebuild = standardRestore
+  OK   DA-213    DA:213  BuildDesign(141-436)  [D-PBT1-09b]  | || DynamicEditorDesignAssembler.MustRebuild(rebuildShape, pallet, depthLayout);
+  OK   DA-218    DA:218  BuildDesign(141-436)  [D-PBT1-09b]  | system = builder.BuildDefault(pallet, depthLayout, RackFrameTemplateCatalog.Default, postId, headerHeight, postPeralte);
+  OK   DA-273    DA:273  BuildDesign(141-436)  [D-PBT1-09b]  | system = CopyStructureSystem(baseline);
+  OK   DA-302    DA:302  BuildDesign(141-436)  [D-PBT1-04 (DA:302)]  | PushBackAdvancedRackParameters.Reset(editorInputs);
+  OK   DA-325    DA:325  BuildDesign(141-436)  [D-PBT1-15 (DA:325)]  | state.LastModuleReconciliation = reconciliation.Reconcile(intents, system, restoredIds);
+  OK   DA-557    DA:557  AttachDormantTail(535-571)  [D-PBT1-03/07 (DA:557-566)]  | system.Modules.Add(new DynamicRackModule
+  OK   DA-565    DA:565  AttachDormantTail(535-571)  [D-PBT1-03/07]  | AssociatedFrameConfiguration = headerClone.DeepCopy(module.HeaderConfiguration),
+  OK   DA-576    DA:576  ClonePallet(573-576)  [D-PBT1-09b (ClonePallet)]  | : new PalletSpecification(pallet.Front, pallet.Depth, pallet.Height, pallet.Weight, pallet.WeightUnit);
+  OK   CA-180    CA:180  ParkTailOf(180-242)  [HT1-12 (CA:180-242)]  | private static void ParkTailOf(PushBackCompositeEditorState state)
+  OK   CA-189    CA:189  ParkTailOf(180-242)  [HT1-12 (CA:188-190)]  | var lines = baseline.HeaderLineOverrides
+  OK   CA-202    CA:202  ParkTailOf(180-242)  [HT1-12 (CA:201-239)]  | var commit = state.SideA?.ModuleCommit;
+  OK   CA-241    CA:241  ParkTailOf(180-242)  [HT1-12]  | state.ParkDormantTail(parked, lines);
+  OK   PCS-777   PCS:777  ToTailDesign(777-777)  [HT1-12 (PCS:777)]  | public static DynamicRackModuleDesign ToTailDesign(DynamicRackModule module) => ToDesign(module, module?.ModuleId);
+  OK   PCS-809   PCS:809  ToDesign(800-811)  [HT1-12 (PCS:800-811)]  | HeaderConfiguration = module.AssociatedFrameConfiguration,
+  OK   PC-37     PC:37  GetHashCode(37-49)  [D-PBT1-06 (PC:37-49)]  | public int GetHashCode(PushBackPilotDraftState obj)
+  OK   PC-58     PC:58  Copy(58-62)  [HT1-20 (PC:58-111)]  | public static PushBackPilotDraftState Copy(PushBackPilotDraftState state)
+  OK   PC-64     PC:64  CopyEditor(64-83)  [D-PBT1-05 (PC:64-83)]  | private static PushBackCompositeEditorState CopyEditor(PushBackCompositeEditorState source)
+  OK   PC-134    PC:134  EditorsEqual(134-149)  [D-PBT1-06 (PC:134-249)]  | private static bool EditorsEqual(PushBackCompositeEditorState x, PushBackCompositeEditorState y)
+  OK   PC-309    PC:309  -  [D-PBT1-06 (PC:309-350)]  | private static class StructuralEquality
+  OK   PM-108    PM:108  DormantTailOutOfPilotReason(108-108)  [D-PBT1-10; CT-PBT1B-04]  | public const string DormantTailOutOfPilotReason = "El diseño aparca una cola compuesta: fuera del piloto.";
+  OK   PM-160    PM:160  Materialize(126-181)  [D-PBT1-10 (PM:160-170)]  | editor.ClearDormantTail();
+  OK   RMR-16    RMR:16  -  [D-PBT1-15 cond. 1]  | public sealed class RackModuleReconciliationResult
+  OK   RMR-212   RMR:212  Reconcile(125-213)  [D-PBT1-15]  | return new RackModuleReconciliationResult(preserved, adapted, removed, incompatible, restored);
+  OK   RFPS-87   RFPS:87  DeepCopy(87-104)  [D-PBT1-03 (RFPS:87)]  | public RackFrameConfiguration DeepCopy(RackFrameConfiguration configuration)
+  OK   UIS-124   UIS:124  -  [D-PBT1-09 (UiSupport.cs:124-133)]  | public static List<CatalogOption> ToOptions<T>(IEnumerable<T> entries) where T : CatalogEntryBase
+  OK   BOG-49    BOG:49  For(49-59)  [HT1-19 (RackBomOutputGate.cs:49-59)]  | public static RackBomOutputVerdict For(PushBackSystem system)
+  OK   DDA-44    DDA:44  MustRebuild(44-48)  [D-PBT1-09b]  | public static bool MustRebuild(DynamicRackSystem system, PalletSpecification pallet, DynamicDepthLayout depthLayout)
+  OK   DDA-50    DDA:50  SamePallet(50-61)  [D-PBT1-09b (DDA:50-61)]  | private static bool SamePallet(PalletSpecification a, PalletSpecification b)
+  OK   DDA-60    DDA:60  SamePallet(50-61)  [D-PBT1-09b: SamePallet no mira la unidad]  | && Math.Abs(a.Weight - b.Weight) < 1e-6;
+  OK   DDA-65    DDA:65  UpdateHeaderHeightInPlace(65-84)  [G-L1 regla 1c]  | public void UpdateHeaderHeightInPlace(DynamicRackSystem system, double newHeight, string postId)
+  OK   DRS-146   DRS:146  RecalculatePositions(146-158)  [G-L1 regla 1]  | public void RecalculatePositions()
+  OK   DRSB-137  DRSB:137  Refresh(137-152)  [G-L1 regla 1c]  | public void Refresh(DynamicRackSystem system)
+  OK   BPMB-11   BPMB:11  RefreshPhysicalModel(11-47)  [G-L1 regla 1c]  | public void RefreshPhysicalModel(RackFrameConfiguration configuration)
+  OK   PSYS-143  PSYS:143  -  [D-PBT1-15 cond. 8]  | set { if (Structure != null) { Structure.Name = value; } }
+  OK   PBDD-469  PBDD:469  ToDomain(465-514)  [CT-PBT1B-01 (N-M-04)]  | Gap = Gap.HasValue && Gap.Value > 0.0 ? Gap.Value : 0.0,
+  OK   W-148     W:148  -  [D-PBT1-09b (c-09)]  | WeightUnitBox.ItemsSource = new[] { "kg", "lb" };
+  OK   W-149     W:149  -  [D-PBT1-09b (c-09)]  | WeightUnitBox.SelectedIndex = 0;
+  OK   W-273     W:273  LoadNew(270-289)  [D-PBT1-03 (W:273-276)]  | composite.SetActiveSide(RackCad.Domain.Systems.PushBack.PushBackSide.A);
+  OK   W-286     W:286  LoadNew(270-289)  [D-PBT1-03 (W:286-287)]  | safetySelections.Clear();
+  OK   W-301     W:301  LoadDesignForNew(294-307)  [D-PBT1-03 (W:299-302)]  | var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
+  OK   W-318     W:318  LoadExisting(311-324)  [D-PBT1-03 (W:316-319)]  | var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
+  OK   W-391     W:391  LoadFromModel(385-440)  [D-PBT1-03 (W:391-427)]  | firstLevelDatum = inputs.FirstLevelDatum;
+  OK   W-392     W:392  LoadFromModel(385-440)  [D-PBT1-03; c-09]  | var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
+  OK   W-393     W:393  LoadFromModel(385-440)  [D-PBT1-09b (c-09)]  | generalPallet = pallet;
+  OK   W-395     W:395  LoadFromModel(385-440)  [D-PBT1-09b (c-09)]  | WeightUnitBox.SelectedItem = string.IsNullOrWhiteSpace(pallet.WeightUnit) ? "kg" : pallet.WeightUnit;
+  OK   W-396     W:396  LoadFromModel(385-440)  [D-PBT1-03; OWNER-3]  | PalletsDeepBox.SetNumber(Math.Max(2, inputs.PalletsDeep));
+  OK   W-399     W:399  LoadFromModel(385-440)  [D-PBT1-09 (c-01, c-02)]  | PostBox.SelectedId = string.IsNullOrWhiteSpace(inputs.PostCatalogId) ? catalog?.Defaults?.Post : inputs.PostCatalogId;
+  OK   W-838     W:838  ReadInputs(833-890)  [D-PBT1-09b (W:838-840)]  | generalPallet = new PalletSpecification(
+  OK   W-840     W:840  ReadInputs(833-890)  [D-PBT1-09b: generalPallet conserva la cargada]  | generalPallet.Weight, generalPallet.WeightUnit);
+  OK   W-852     W:852  ReadInputs(833-890)  [D-PBT1-09b: la salida lleva la de la caja]  | generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
+  OK   W-853     W:853  ReadInputs(833-890)  [D-PBT1-09b (OWNER-3)]  | PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+  OK   W-868     W:868  ReadInputs(833-890)  [D-PBT1-09 (c-02)]  | PostCatalogId = PostBox.SelectedId,
+  OK   W-2682    W:2682  Safety_Click(2574-2698)  [D-PBT1-09b (OWNER-4)]  | ApplyBootSections(bootSectionA, bootSectionB);
+  OK   W-3322    W:3322  Restore_Click(3307-3330)  [D-PBT1-03 (W:3320-3327)]  | var inputs = state.LoadFromDesign(SideAOnly(design), assembler.Resolver);
+  OK   W-3327    W:3327  Restore_Click(3307-3330)  [D-PBT1-03]  | LoadCompositeFromDesign(design, preserveDormantIntent: true);
+  OK   WC-783    WC:783  CompositeDiagnostics(783-786)  [D-PBT1-11 (WC:783-786)]  | private IReadOnlyList<PushBackCompositeDiagnostic> CompositeDiagnostics()
+  OK   WC-789    WC:789  CompositeStatusOr(789-801)  [D-PBT1-11 (WC:789-801)]  | private string CompositeStatusOr(string fallback)
+  OK   WC-806    WC:806  CompositeHasBlocking(803-807)  [D-PBT1-11 (WC:806)]  | return CompositeDiagnostics().Any(diagnostic => diagnostic.IsBlocking);
+  OK   WC-827    WC:827  LoadCompositeFromDesign(827-934)  [D-PBT1-03 (WC:827-934)]  | private void LoadCompositeFromDesign(PushBackDesign design, bool preserveDormantIntent)
+  OK   WC-933    WC:933  LoadCompositeFromDesign(827-934)  [D-PBT1-03 (WC:933)]  | UpdateCompositeEnabled();
+  OK   WDPS-211  WDPS:211  -  [CT-PBT1B-06 (:211-369)]  | public static readonly IReadOnlyDictionary<string, PilotFieldClass> Table = new Dictionary<string, PilotFieldClass>(StringComparer.Ordinal)
+  OK   WDPS-501  WDPS:501  -  [CT-PBT1B-07 (:501-529)]  | public static HashSet<object> AllObjects(object root)
+  OK   WDPS-531  WDPS:531  -  [CT-PBT1B-07 (:531-536)]  | public static bool IsImmutable(Type type)
+  OK   POG-41    POG:41  Blocking(39-46)  [CT-PBT1B-01/12 (Blocking, :41-48)]  | var design = PushBackCompositeStructureTests.Composite(
+  OK   WDPM-706  WDPM:706  -  [CT-PBT1B-02 (:706-735)]  | public static readonly IReadOnlyDictionary<string, string[]> LegacyDeltas = new Dictionary<string, string[]>
+  OK   PPT-20    PPT:20  CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns(20-56)  [CT-PBT1B-02 (:20-26)]  | public void CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns()
+  OK   HBC-524   HBC:524  C10_GUARDA_SHARED_NO_CONTIENE_POLITICA_DE_COBERTURA_STAGEINERT_NI_EJECUTOR_GENERICO(493-563)  [D-PBT1-07 (C-10, :524-537)]  | var engineVerbs = new[] { "Execute", "Run", "Resolve", "Prepare", "Mutate", "Recompute", "Apply", "Commit", "Cancel", "Confirm", "Reconcile", "Invoke"
+  OK   SNRC-133  SNRC:133  CT_PBT1A_02_TheWeightUnitTheLoadedTonUnitAndTheDeepPalletsBoxReachTheOutput(133-207)  [CT-PBT1B-17 (oraculo)]  | public void CT_PBT1A_02_TheWeightUnitTheLoadedTonUnitAndTheDeepPalletsBoxReachTheOutput()
+  anclas=104 diferencias=0
+
+== P-2. c-09: la regla de hoy y su oraculo
+$ git show HEAD:tests/RackCad.UI.Tests/PushBackStateNetRackControlsTests.cs | sed -n 195,205p   (las lineas esperadas de CT-PBT1A-02)
+  195:             Assert.Equal(
+  196:             new[]
+  197:             {
+  198:                 "carga [PalletDepth=48 PalletWeightUnit=\"kg\" PalletWeight=1000]",
+  199:                 "WeightUnitBox=lb [PalletDepth=48 PalletWeightUnit=\"kg\" PalletWeight=1000]",
+  200:                 "DepthBox=54 [PalletDepth=54 PalletWeightUnit=\"lb\" PalletWeight=1000] descartes=0",
+  201:                 "carga ton caja=[kg] salida=[PalletDepth=48 PalletWeightUnit=\"ton\" PalletWeight=1000] actualizar=[PalletDepth=48 PalletWeightUnit=\"ton\" PalletWeight=1000] descartes=0",
+  202:                 "carga ton y DepthBox=54 [PalletDepth=54 PalletWeightUnit=\"kg\" PalletWeight=1000] descartes=0",
+  203:                 "PalletsDeepBox=9 PalletsDeep=8 Fronts[0].PalletsDeep=8",
+  204:                 "+ frente PalletsDeep=8 Fronts=4 Fronts[3].PalletsDeep=8 descartes=0",
+  205:             },
+$ la unidad de las 17 fixtures de I64 (git ls-tree + git show; PalletWeightUnit)
+  fixtures=17 unidades={'kg': 17}
+
+== P-3. Las rutas de PB-T1b y la lista de archivos de G-L1 (CT-PBT1B-14)
+  EXISTE    src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs
+  EXISTE    src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs
+  NO-EXISTE src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs
+  NO-EXISTE src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs
+  NO-EXISTE src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs
+  NO-EXISTE src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs
+  NO-EXISTE tests/RackCad.Tests/PushBackEditableStateLoadTests.cs
+  NO-EXISTE tests/RackCad.Tests/PushBackEditableStateCopyTests.cs
+  NO-EXISTE tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs
+  NO-EXISTE tests/RackCad.Tests/PushBackEditorOutputGateTests.cs
+  NO-EXISTE tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs
+  NO-EXISTE tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs
+  G-L1 (CT-PBT1B-14): 4 nuevos + ES, EL, CS, CA, DA, RMES, RackModuleReconciliation.cs + Workspace/ (40 .cs) = 47 que existen
+  prefijo PushBackEditableState                    en tests/: 0
+  prefijo PushBackEditorOutputGate                 en tests/: 0
+  prefijo PushBackSharedReferenceGuardTests        en tests/: 0
+  prefijo PushBackWindowSharedReferenceGuardTests  en tests/: 0
+  prefijo PushBackWindowOnState                    en tests/: 0
+
+== P-4. G-L1 de la v2.4 sobre los archivos de su lista (remeasure_gl1_v24.py)
+$ python -I remeasure_gl1_v24.py <worktree-de-I-64>
+  == CT-PBT1B-14 (Application, archivos que existen) archivos 47
+     alias PushBackEditorState.cs asignacion structure
+     alias PushBackEditorState.cs asignacion signature
+     alias PushBackCompositeEditorAssembler.cs asignacion baseline
+     alias PushBackEditorDesignAssembler.cs asignacion baseline
+     alias PushBackEditorDesignAssembler.cs asignacion rebuildShape
+    miembros=997 alias={'asignacion': 5}
+    TOTAL regla1=0 regla1b=0 regla1c=0 regla2=0
+  == CT-PBT1C-04 (W y WC) archivos 2
+     alias RackPushBackSystemWindow.xaml.cs asignacion outputIsBlocked
+     alias RackPushBackSystemWindow.xaml.cs lambda module
+     alias RackPushBackSystemWindow.xaml.cs asignacion reconciliation
+    miembros=320 alias={'asignacion': 2, 'lambda': 1}
+    TOTAL regla1=0 regla1b=0 regla1c=0 regla2=0
+  == autopruebas en negativo (cada una sola, dentro de un miembro neutro)
+    a              regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+    b              regla1=0 regla1b=0 regla1c=0 regla2=1 -> SALTA
+    c              regla1=0 regla1b=1 regla1c=0 regla2=0 -> SALTA
+    d              regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+    e              regla1=0 regla1b=0 regla1c=0 regla2=1 -> SALTA
+    f1             regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+    f2             regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+    f3             regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+    g1             regla1=0 regla1b=1 regla1c=0 regla2=0 -> SALTA
+    g2             regla1=0 regla1b=1 regla1c=0 regla2=1 -> SALTA
+    h1             regla1=0 regla1b=0 regla1c=0 regla2=1 -> SALTA
+    h2             regla1=0 regla1b=0 regla1c=0 regla2=1 -> SALTA
+    i              regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+    j              regla1=0 regla1b=0 regla1c=1 regla2=0 -> SALTA
+    L1-alias2      regla1=0 regla1b=0 regla1c=0 regla2=0 -> NO SALTA
+    L2-anidado     regla1=0 regla1b=0 regla1c=0 regla2=0 -> NO SALTA
+    L3-otro-metodo regla1=0 regla1b=0 regla1c=0 regla2=0 -> NO SALTA
+
+== P-5. Los recuentos estaticos de RequiredTests (count_tests.py)
+$ python -I count_tests.py <worktree-de-I-64> UI PushBackStateNet PushBackClassicCharacterization PushBackFullEditorCharacterization PushBackDeclaredCorrectionRoundingTests PushBackDeclaredCorrectionDimensionStyleTests PushBackDeclaredCorrectionPilotParityTests PushBackDeclaredCorrectionSideBNoticeTests PushBackDeclaredCorrectionStandardRestoreTests PushBackDeclaredCorrection2 Cantilever PushBackEditableStateParityTests PushBackWindowOnState PushBack BlankFront WindowCensusGuardTests RichEditor Workspace PushBackRichPreviewTests
+  UI PushBackStateNet: clases=6 ejecutables=14 skip=0 theory-memberdata=0
+  UI PushBackClassicCharacterization: clases=6 ejecutables=55 skip=0 theory-memberdata=0
+  UI PushBackFullEditorCharacterization: clases=6 ejecutables=16 skip=2 theory-memberdata=0
+  UI PushBackDeclaredCorrectionRoundingTests: clases=1 ejecutables=3 skip=0 theory-memberdata=0
+  UI PushBackDeclaredCorrectionDimensionStyleTests: clases=1 ejecutables=2 skip=0 theory-memberdata=0
+  UI PushBackDeclaredCorrectionPilotParityTests: clases=1 ejecutables=2 skip=0 theory-memberdata=0
+  UI PushBackDeclaredCorrectionSideBNoticeTests: clases=1 ejecutables=2 skip=0 theory-memberdata=0
+  UI PushBackDeclaredCorrectionStandardRestoreTests: clases=1 ejecutables=1 skip=0 theory-memberdata=0
+  UI PushBackDeclaredCorrection2: clases=2 ejecutables=4 skip=0 theory-memberdata=0
+  UI Cantilever: clases=3 ejecutables=67 skip=0 theory-memberdata=0
+  UI PushBackEditableStateParityTests: clases=0 ejecutables=0 skip=0 theory-memberdata=0
+  UI PushBackWindowOnState: clases=0 ejecutables=0 skip=0 theory-memberdata=0
+  UI PushBack: clases=68 ejecutables=556 skip=3 theory-memberdata=0
+  UI BlankFront: clases=3 ejecutables=33 skip=0 theory-memberdata=0
+  UI WindowCensusGuardTests: clases=1 ejecutables=8 skip=0 theory-memberdata=0
+  UI RichEditor: clases=4 ejecutables=25 skip=4 theory-memberdata=0
+  UI Workspace: clases=20 ejecutables=547 skip=0 theory-memberdata=16
+  UI PushBackRichPreviewTests: clases=1 ejecutables=9 skip=0 theory-memberdata=0
+$ python -I count_tests.py <worktree-de-I-64> Core PushBackEditableState PushBackEditorOutputGate PushBackSharedReferenceGuardTests PushBackWindowSharedReferenceGuardTests PushBackWindowOnState Workspace PushBackOutputGateTests PushBackBlankFrontAuthorityTests PushBackModuleEditorCharacterizationTests RackModuleEditSessionTests NamespaceFolderGuardTests HeaderBatchContractTests PushBackClassicCharacterization PushBackFullEditorCharacterization I55DeferredProductFixCharacterizationTests PushBack
+  Core PushBackEditableState: clases=0 ejecutables=0 skip=0 theory-memberdata=0
+  Core PushBackEditorOutputGate: clases=0 ejecutables=0 skip=0 theory-memberdata=0
+  Core PushBackSharedReferenceGuardTests: clases=0 ejecutables=0 skip=0 theory-memberdata=0
+  Core PushBackWindowSharedReferenceGuardTests: clases=0 ejecutables=0 skip=0 theory-memberdata=0
+  Core PushBackWindowOnState: clases=0 ejecutables=0 skip=0 theory-memberdata=0
+  Core Workspace: clases=74 ejecutables=3271 skip=0 theory-memberdata=33
+  Core PushBackOutputGateTests: clases=1 ejecutables=8 skip=0 theory-memberdata=0
+  Core PushBackBlankFrontAuthorityTests: clases=1 ejecutables=9 skip=0 theory-memberdata=0
+  Core PushBackModuleEditorCharacterizationTests: clases=1 ejecutables=15 skip=0 theory-memberdata=0
+  Core RackModuleEditSessionTests: clases=1 ejecutables=25 skip=0 theory-memberdata=0
+  Core NamespaceFolderGuardTests: clases=1 ejecutables=7 skip=0 theory-memberdata=0
+  Core HeaderBatchContractTests: clases=1 ejecutables=17 skip=0 theory-memberdata=2
+  Core PushBackClassicCharacterization: clases=1 ejecutables=7 skip=0 theory-memberdata=1
+  Core PushBackFullEditorCharacterization: clases=3 ejecutables=3 skip=0 theory-memberdata=0
+  Core I55DeferredProductFixCharacterizationTests: clases=1 ejecutables=3 skip=0 theory-memberdata=0
+  Core PushBack: clases=132 ejecutables=1584 skip=0 theory-memberdata=59
+
+== P-6. La linea base de la CI (gh, solo lectura)
+$ gh run list --branch architecture/workspace-persistente-rackcad --limit 5 --json databaseId,headSha,status,conclusion,event,createdAt,name
+  44361363873	5043b49a	push	completed	success	2026-11-18T17:41:00Z
+  44338475965	73d30982	push	completed	success	2026-11-18T15:41:08Z
+  44333116533	15f1f225	push	completed	failure	2026-11-18T15:13:27Z
+  44322004186	a3b63ccc	push	completed	success	2026-11-18T14:14:02Z
+  44321940755	95c8126b	push	completed	success	2026-11-18T14:13:42Z
+  ultimo run verde: 44361363873
+$ gh run view 44361363873 --json jobs
+  135003334401	success	Build UI (WPF, valida API de Application)
+  135003334936	success	UI Tests (WPF controls, net8.0-windows)
+  135003335042	success	Tests (Domain + Application)
+  135005344025	success	Build Plugin without AutoCAD
+$ gh run view --job 135003334936 --log | grep -E 'Passed!|Failed!'   (UI Tests (WPF controls, net8.0-windows))
+  UI Tests (WPF controls, net8.0-windows)	dotnet test UI controls (TRX + blame-hang)	2026-11-18T17:45:56.0760346Z Passed!  - Failed:     0, Passed:  2415, Skipped:    21, Total:  2436, Duration: 3 m 18 s - RackCad.UI.Tests.dll (net8.0)
+$ gh run view --job 135003335042 --log | grep -E 'Passed!|Failed!'   (Tests (Domain + Application))
+  Tests (Domain + Application)	dotnet test Core (TRX + blame-hang; Cobertura solo en Candidato y trunk)	2026-11-18T17:44:00.1088278Z Passed!  - Failed:     0, Passed: 19070, Skipped:     0, Total: 19070, Duration: 1 m 39 s - RackCad.Tests.dll (net8.0)

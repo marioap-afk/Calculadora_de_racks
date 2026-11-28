@@ -1,0 +1,2 @@
+src/RackCad.Application/RackCad.Application.csproj]
+tests/RackCad.Tests/RackCad.Tests.csproj]

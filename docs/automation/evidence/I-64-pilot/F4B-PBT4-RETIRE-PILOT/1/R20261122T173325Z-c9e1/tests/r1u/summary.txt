@@ -1,0 +1,19 @@
+ui01 | FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests | exit=0 | Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.UI.Tests.dll (net8.0)
+ui02 | FullyQualifiedName~RackCad.UI.Tests.Workspace | exit=0 | Correctas! - Con error:     0, Superado:   626, Omitido:    27, Total:   653, Duración: 5 s - RackCad.UI.Tests.dll (net8.0)
+ui03 | FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests | exit=0 | Correctas! - Con error:     0, Superado:     2, Omitido:     0, Total:     2, Duración: 7 s - RackCad.UI.Tests.dll (net8.0)
+ui04 | FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization | exit=0 | Correctas! - Con error:     0, Superado:    55, Omitido:     0, Total:    55, Duración: 9 s - RackCad.UI.Tests.dll (net8.0)
+ui05 | FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization | exit=0 | Correctas! - Con error:     0, Superado:    16, Omitido:     2, Total:    18, Duración: 10 s - RackCad.UI.Tests.dll (net8.0)
+ui06 | FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet | exit=0 | Correctas! - Con error:     0, Superado:    14, Omitido:     0, Total:    14, Duración: 25 s - RackCad.UI.Tests.dll (net8.0)
+ui07 | FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection | exit=0 | Correctas! - Con error:     0, Superado:    12, Omitido:     0, Total:    12, Duración: 8 s - RackCad.UI.Tests.dll (net8.0)
+ui08 | FullyQualifiedName~RackCad.UI.Tests.Cantilever | exit=0 | Correctas! - Con error:     0, Superado:    67, Omitido:     0, Total:    67, Duración: 2 s - RackCad.UI.Tests.dll (net8.0)
+ui09 | FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests | exit=0 | Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 686 ms - RackCad.UI.Tests.dll (net8.0)
+ui10 | FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests | exit=0 | Correctas! - Con error:     0, Superado:     3, Omitido:     1, Total:     4, Duración: 5 s - RackCad.UI.Tests.dll (net8.0)
+ui11 | FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests | exit=0 | Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 13 s - RackCad.UI.Tests.dll (net8.0)
+ui12 | FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests | exit=0 | Correctas! - Con error:     0, Superado:     3, Omitido:     0, Total:     3, Duración: 47 ms - RackCad.UI.Tests.dll (net8.0)
+ui13 | FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests | exit=0 | Correctas! - Con error:     0, Superado:    13, Omitido:     0, Total:    13, Duración: 60 ms - RackCad.UI.Tests.dll (net8.0)
+ui14 | FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests | exit=0 | Correctas! - Con error:     0, Superado:    10, Omitido:     0, Total:    10, Duración: 58 ms - RackCad.UI.Tests.dll (net8.0)
+ui15 | FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests | exit=0 | Correctas! - Con error:     0, Superado:    30, Omitido:     0, Total:    30, Duración: 69 ms - RackCad.UI.Tests.dll (net8.0)
+ui16 | FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests | exit=0 | Correctas! - Con error:     0, Superado:     6, Omitido:     0, Total:     6, Duración: 488 ms - RackCad.UI.Tests.dll (net8.0)
+ui17 | FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests | exit=0 | Correctas! - Con error:     0, Superado:     4, Omitido:     0, Total:     4, Duración: 1 s - RackCad.UI.Tests.dll (net8.0)
+ui18 | FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests | exit=0 | Correctas! - Con error:     0, Superado:     1, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.UI.Tests.dll (net8.0)
+DONE

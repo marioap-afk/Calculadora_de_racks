@@ -1,0 +1,155 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T4A2-PREPARE-UI",
+  "RunId": "R20261114T162137Z-b48d",
+  "DelegationRunId": "R20261114T161620Z-f15d",
+  "Initiative": "I-64",
+  "Gate": "F4",
+  "Attempt": 2,
+  "BaseSha": "f8ccef4678bbe78d520550aea515481e5b2209c6",
+  "RedSha": "f2bb4d6ff9ca1801be3c0addbf7dec20a01ac219",
+  "CurrentSha": "ae0a7b404d2799ef690b3771c6083e988637a5a3",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs"
+  ],
+  "WorkCompleted": "Correccion del intento 2 de F4-T4A2 en dos commits propios, cada uno con su push, sobre la entrega del intento 1 (RED 1fe36cf9, GREEN 9333396d, que se conserva). RED f2bb4d6ff9ca1801be3c0addbf7dec20a01ac219: solo pruebas y guardas (6 archivos, ningun cambio de producto). GREEN ae0a7b404d2799ef690b3771c6083e988637a5a3: solo src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs (M-1); ningun archivo de tests/ cambia entre el RED y el GREEN. Antes del RED se comprobo, sin commit, que la correccion completa hace pasar todos los filtros (p1 Core 2923 de 2923 y p2 UI 601 de 601) y el parche del producto se guardo como un solo archivo (m1-viewmodel.patch, SHA-256 5ac8c939234c1d5faa186da1c7581ecac84b2df59c8b1df27d981ccb9f99a1ba, identico al diff real RED a GREEN de src) y el producto volvio al HEAD. Correcciones, cada una con la prueba o guarda que la fija. I-1: la positiva de la regla 5 sobre WorkspaceNavigationHost.cs (TheReaderOfThePluginAuthorizes... de WorkspacePilotReconciliationGuardTests) ya no fija ninguna cuenta exacta de _authorize: exige al menos una llamada dentro de PilotIntentReader y al menos una fuera de la clase; las autopruebas de la regla 5 (incluida TheGuardOfTheReaderDoesNotAskForAUniqueCall...) siguen; ninguna prueba ni guarda de la tarea congela el numero de llamadas del archivo. M-1 (unico cambio de producto): en PresentConfirm, PresentCheck y PresentChoice, tras Render, si el campo quedo en fallo se retorna sin presentar el resultado (en PresentChoice el aviso se calcula en una variable local y solo se asigna si no hay fallo); pruebas nuevas en WorkspacePilotReconciliationTests: ACheckWhoseMemoryCannotBeReadAgainAfterTheMatchIsNeverNoChangesAndLeavesTheErrorOfTheField (ReadHook que hace lanzar GetField tras la operacion, ConfirmBaseResponder Confirmed sin diagnostico sobre Clean, Dirty posiblemente obsoleto y Conflict), ACheckOfAnUnknownDraftWhoseMemoryCannotBeReadAgainAfterTheRecoveryIsNeverPresentedAsRecovered (Recovered) y AChoiceWhoseMemoryCannotBeReadAgainAfterTheOperationIsNeverPresentedAsDone (Reloaded y Kept); comprueban que NoticeText no es A2-01, A2-02, A2-35, A2-37, A2-07 ni el aviso de recarga o de conservacion y que StateText empieza por Error. Las tres fallan por asercion contra 9333396d (Assert.NotEqual: el texto falso limpio aparece) y pasan con el GREEN. M-2: prueba nueva IfTheMemoryChangedBetweenTheOfferAndTheReadTheCheckReadsNothingAndSaysTheSituationChanged (vista mostrada en Clean, memoria del doble en Applying: Reads vacio y A2-34); la desviacion se declara abajo. M-3: la prueba ADiscardFromTheBrowserOfTheDraftThatTheChoiceWasAboutWithdrawsTheChoiceToo fija el NoticeText real tras el descarte (vacio) ademas de HasChoice false y cero llamadas; desviacion declarada abajo. M-4: la regla 1 de WorkspacePilotReconciliationGuardTests exige la forma de invocacion _port.TryConfirmBase(request), _port.TryCheckNow(request), _port.TryKeepMine(request) y _port.TryDiscardAndReload(request) (espacios flexibles), una vez cada una en el archivo del VM y una vez cada una en su cuerpo, ademas del token; autoprueba nueva TheGuardOfWhoReadsSeesAnOperationCapturedAsAMethodGroupInsideItsOwnGesture con un solo Replace del texto real que inyecta _keep = _port.TryKeepMine; dentro de ConfirmChoice (y las analogas de TryDiscardAndReload, TryConfirmBase y TryCheckNow). M-5: regla 4: autoprueba TheGuardOfNoFalseCleanSeesTheReferenceMovedOutOfTheCaseThatSaysItWithoutRemovingTheLabelOfTheCase (un solo Replace que mueve return UnchangedText; fuera del caso Confirmed sin quitar la etiqueta; falla por is not referenced inside y no por there is no case); las de las mitades son ahora un solo Replace del texto real (Content de Comprobar ahora del XAML por el texto o su mitad) precedido de Assert.Contains en Mutate; FolderText enumera todos los .xaml de src/RackCad.UI/Workspace/ (con TheFolderOfTheRuleReadsEveryXamlOfTheWorkspaceFolderOfTheUi); regla 3: QuestionOrderViolations comprueba que BrowserFieldChoiceText esta dentro de BrowserFieldChoicePanel y va antes que Si, con sus dos autopruebas por intercambio de x:Name. M-6: prueba nueva NoOnTheChoiceOfAnUnknownDraftThatWasAppliedCallsNothingChangesNothingAndKeepsTheTextOfTheApplication (No sobre la eleccion de Unknown con PostReread: cero llamadas, borrador igual, A2-36 y A2-12 en ReconcileText). M-7: cada prueba que retira una eleccion afirma HasChoice true tras su Request (TheChoiceIsWithdrawnInSilence..., TheChoiceIsWithdrawnWithTheSituationNotice..., IfTheViewDiffersFromWhatJustifiedTheChoice..., IfTheViewChangedAfterAskingForKeep..., NoCalls... y la nueva de Unknown); WorkspaceDraftPilotCanonicalLineEndingTests: EachOfTheEightCanonicalDesignsIsAFileOfTheFixturesFolderAndItsRoundTripIsByteForByte comprueba que cada uno de los ocho nombres es un archivo de tests/RackCad.Tests/Fixtures/I64/ y hace la ida y vuelta byte a byte sobre cada uno (la teoria por diseno se conserva); la prueba de la marca de obsolescencia (AMatchOfACleanOrDirtyDraft...) afirma StateText Limpio, Modificado y Modificado (posiblemente obsoleto) segun el caso y se quito el caso duplicado sin marca; la prueba de vista TheReconcileTextIsShownForAConflictAndLeavingTheBoxDoesNotCommitWhileTheChoiceWaits provoca UIElement.LostFocusEvent sobre la caja real BrowserFieldBox en lugar de llamar a CommitPending. M-8: AssertHeld de WorkspacePilotReconciliationHostTests compara la StaleBase y el CurrentDraftState por referencia (Assert.Same con las referencias guardadas antes) y el pendiente por valor; el InitialDraftState se compara con el comparador del piloto sobre la copia guardada (ver Deviations). M-9: se retiro de WorkspaceEditIntentGuardTests la cuenta exacta Assert.Equal(2, ...) de pilot.Read.(IsAdmitted|Admission) en todo el nucleo; la de M-3 del paquete (una aparicion del patron del diagnostico) se mantiene. El host, el XAML, el codigo subyacente y el doble no cambian. Cero escrituras authored; sin AutoCAD. Builds: Plugin Release (p3, -o a artifacts, --no-incremental) 0 errores y 2 avisos MSB3277 de linea base; Plugin Debug (p4, otra carpeta de artifacts) 0 errores y los mismos 2 avisos; el Plugin nunca se compilo a su carpeta bin; RackCad.sln Release con OutDir bajo artifacts (s1 con el esqueleto del RED y s2 con el GREEN) 0 errores y 81 avisos identicos (solo MSB3277 de referencias y avisos del analizador xUnit ya existentes; ningun CS, NU ni NETSDK); los dos proyectos de prueba en Release --no-incremental (b1) sin avisos MSB, CS, NU ni NETSDK propios.",
+  "TestsExecuted": [
+    {
+      "RunRef": "r1",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~RackCad.Tests.Workspace -c Debug --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/r1",
+      "Phase": "RED",
+      "TreeSha": "f2bb4d6ff9ca1801be3c0addbf7dec20a01ac219",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/r1/core.trx"
+    },
+    {
+      "RunRef": "r2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter FullyQualifiedName~RackCad.UI.Tests.Workspace -c Debug --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/r2",
+      "Phase": "RED",
+      "TreeSha": "f2bb4d6ff9ca1801be3c0addbf7dec20a01ac219",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/r2/ui.trx"
+    },
+    {
+      "RunRef": "p1",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~RackCad.Tests.Workspace -c Debug --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/p1",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/p1/core.trx"
+    },
+    {
+      "RunRef": "p2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter FullyQualifiedName~RackCad.UI.Tests.Workspace -c Debug --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/p2",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/p2/ui.trx"
+    },
+    {
+      "RunRef": "g1",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~RackCad.Tests.Workspace -c Debug --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g1",
+      "Phase": "GREEN",
+      "TreeSha": "ae0a7b404d2799ef690b3771c6083e988637a5a3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g1/core.trx"
+    },
+    {
+      "RunRef": "g2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter FullyQualifiedName~RackCad.UI.Tests.Workspace -c Debug --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g2",
+      "Phase": "GREEN",
+      "TreeSha": "ae0a7b404d2799ef690b3771c6083e988637a5a3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g2/ui.trx"
+    },
+    {
+      "RunRef": "g3",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter FullyQualifiedName~RackCad.Tests.Workspace -c Release --logger \"trx;LogFileName=core.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g3",
+      "Phase": "GREEN",
+      "TreeSha": "ae0a7b404d2799ef690b3771c6083e988637a5a3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g3/core.trx"
+    },
+    {
+      "RunRef": "g4",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter FullyQualifiedName~RackCad.UI.Tests.Workspace -c Release --logger \"trx;LogFileName=ui.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g4",
+      "Phase": "GREEN",
+      "TreeSha": "ae0a7b404d2799ef690b3771c6083e988637a5a3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g4/ui.trx"
+    },
+    {
+      "RunRef": "g5",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --logger \"trx;LogFileName=core-full.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g5",
+      "Phase": "RELEVANT",
+      "TreeSha": "ae0a7b404d2799ef690b3771c6083e988637a5a3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g5/core-full.trx"
+    },
+    {
+      "RunRef": "g6",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --no-build --logger \"trx;LogFileName=ui-full.trx\" --results-directory artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g6",
+      "Phase": "RELEVANT",
+      "TreeSha": "ae0a7b404d2799ef690b3771c6083e988637a5a3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/g6/ui-full.trx"
+    }
+  ],
+  "TestResults": [
+    { "RunRef": "r1", "Selected": 2923, "Passed": 2923, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    {
+      "RunRef": "r2",
+      "Selected": 601,
+      "Passed": 598,
+      "Failed": 3,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspacePilotReconciliationTests.ACheckWhoseMemoryCannotBeReadAgainAfterTheMatchIsNeverNoChangesAndLeavesTheErrorOfTheField",
+        "RackCad.UI.Tests.WorkspacePilotReconciliationTests.AChoiceWhoseMemoryCannotBeReadAgainAfterTheOperationIsNeverPresentedAsDone",
+        "RackCad.UI.Tests.WorkspacePilotReconciliationTests.ACheckOfAnUnknownDraftWhoseMemoryCannotBeReadAgainAfterTheRecoveryIsNeverPresentedAsRecovered"
+      ]
+    },
+    { "RunRef": "p1", "Selected": 2923, "Passed": 2923, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "p2", "Selected": 601, "Passed": 601, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "g1", "Selected": 2923, "Passed": 2923, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "g2", "Selected": 601, "Passed": 601, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "g3", "Selected": 2923, "Passed": 2923, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "g4", "Selected": 601, "Passed": 601, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "g5", "Selected": 18461, "Passed": 18461, "Failed": 0, "Skipped": 0, "FailedTests": [] },
+    { "RunRef": "g6", "Selected": 2255, "Passed": 2238, "Failed": 0, "Skipped": 17, "FailedTests": [] }
+  ],
+  "Evidence": [
+    "RED f2bb4d6ff9ca1801be3c0addbf7dec20a01ac219 sobre BaseSha f8ccef4678bbe78d520550aea515481e5b2209c6, con push antes del GREEN: 6 archivos de tests, ningun cambio de producto (todos dentro del AllowedWriteScope de 15 rutas; los archivos creados por la tarea en el intento 1 no son guardas ni pruebas existentes). Core r1: seleccion 2923 (minimo 2843), 0 fallos, ExpectRed false como cambio declarado. UI r2: seleccion 601 (minimo 458), 3 fallos, todos por asercion (Assert.NotEqual: el texto de A2-01, A2-07 y A2-30 aparece con el campo en Error) y solo en las tres pruebas nuevas de M-1 contra 9333396d; las demas 598 en verde; ExpectRed true. Se reviso el mensaje de cada fallo: ninguna prueba falla por excepcion ni por un motivo ajeno a la correccion. Las pruebas nuevas o corregidas de I-1 y M-2 a M-9 pasan en el RED por ser pruebas y guardas de comportamiento ya existente. Build del RED en local: RackCad.sln Release con OutDir bajo artifacts (s1) 0 errores y 81 avisos (MSB3277 de linea base y analizador xUnit), igual que el GREEN (s2); Plugin Release de linea base medido en el BaseSha antes de editar (p0): 0 errores y 2 avisos MSB3277.",
+    "GREEN ae0a7b404d2799ef690b3771c6083e988637a5a3 = HEAD = remoto, arbol limpio. El diff RED a GREEN toca solo src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs: ningun archivo de tests/ cambia. Parche de la implementacion comprobada antes del RED: artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/m1-viewmodel.patch (SHA-256 5ac8c939234c1d5faa186da1c7581ecac84b2df59c8b1df27d981ccb9f99a1ba, identico al diff real). Filtros Debug g1 (Core 2923 de 2923) y g2 (UI 601 de 601); filtros Release g3 y g4 en verde; suites completas en Debug g5 (Core 18461 de 18461) y g6 (UI 2255 seleccionadas, 2238 en verde, 17 omitidas de linea base, 0 fallos). La suite completa de UI en Release no se ejecuto (PendingTextFieldTests.ShowOnADirtyField_* dependen de DEBUG, condicion previa conocida). Las corridas g1 a g6 se hicieron sobre el arbol de trabajo con el mismo contenido que el commit GREEN, antes de crearlo; p1 y p2 son las corridas previas al RED con la correccion completa.",
+    "Builds sobre el GREEN: Plugin Release (p3, -o a artifacts, --no-incremental) 0 errores y 2 avisos MSB3277 (linea base de las referencias de AutoCAD); Plugin Debug (p4, otra carpeta de artifacts) 0 errores y los mismos 2 avisos; RackCad.Tests y RackCad.UI.Tests en Release --no-incremental (b1) 0 errores y sin avisos MSB, CS, NU ni NETSDK (solo avisos del analizador xUnit ya existentes); RackCad.sln Release con OutDir bajo artifacts (s2) 0 errores y 81 avisos, el mismo numero y clase que el RED y la linea base (solo MSB3277 y analizador xUnit; ningun CS, NU ni NETSDK). El Plugin nunca se compilo a su carpeta bin. Resultados y logs bajo artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T162137Z-b48d/tests/. Al terminar se ejecuto dotnet build-server shutdown.",
+    "Mapa de la correccion: I-1 = WorkspacePilotReconciliationGuardTests.TheReaderOfThePluginAuthorizes... (positiva sin cuentas exactas: al menos una llamada dentro de PilotIntentReader y al menos una fuera) con las autopruebas existentes TheGuardOfTheReaderSees... y TheGuardOfTheReaderDoesNotAskForAUniqueCall...; M-1 = las tres pruebas nuevas de WorkspacePilotReconciliationTests (RED de la correccion) y el cambio del VM; M-2 = IfTheMemoryChangedBetweenTheOfferAndTheReadTheCheckReadsNothingAndSaysTheSituationChanged; M-3 = ADiscardFromTheBrowserOfTheDraftThatTheChoiceWasAbout... (NoticeText real); M-4 = regla 1 con la forma de invocacion y TheGuardOfWhoReadsSeesAnOperationCapturedAsAMethodGroupInsideItsOwnGesture; M-5 = regla 4 (autoprueba de la referencia movida, Replace unico del texto real, todos los .xaml) y regla 3 (QuestionOrderViolations); M-6 = NoOnTheChoiceOfAnUnknownDraftThatWasApplied...; M-7 = HasChoice true antes de retirar, EachOfTheEightCanonicalDesignsIsAFileOfTheFixturesFolder..., marca de obsolescencia afirmada, LostFocusEvent sobre BrowserFieldBox; M-8 = AssertHeld de WorkspacePilotReconciliationHostTests; M-9 = cuenta exacta retirada de WorkspaceEditIntentGuardTests.",
+    "Mapa por invariante (sin cambios de significado respecto del intento 1; solo lo reforzado). INV-F4T4A2-01 cero escrituras: el VM y la vista solo llaman a las seis lecturas del puerto y a GetField; el doble no tiene escritura; TheFieldNeverCallsAnOperationOfTheDrawingWithoutAGestureOfTheUser, AskingForAnOptionCallsNoOperationOfThePortAndOnlyReadsItsMemory, guardas existentes WorkspacePilotSurfaceGuardTests, WorkspacePilotEditGuardTests y las de la via de lectura, y la regla 1 reforzada por M-4. INV-02 accion explicita: reglas 1 y 2 de WorkspacePilotReconciliationGuardTests con la forma de invocacion _port.X(request) y la autoprueba de grupo de metodos. INV-03 despacho: pruebas de oferta y despacho de WorkspacePilotReconciliationTests mas M-2. INV-04 sin falso limpio: tablas de seccion 3, teorias de sin falso limpio, las tres pruebas de M-1 (la relectura de memoria que lanza), regla 4 con la autoprueba de la referencia movida y las mitades por Replace unico. INV-05 confirmacion Si/No: pruebas de VM, de vista (clic real, LostFocusEvent real sobre la caja) y regla 3 con el orden de la pregunta; No de las tres elecciones (M-6). INV-06 Conservar: pruebas de oferta. INV-07: regla 1 y pruebas de Si. INV-08 texto pendiente: pruebas del pendiente en VM y Core. INV-09 diagnostico persistente: pruebas de VM y de Core. INV-10 unico cambio del host: WorkspacePilotReconciliationHostTests (AssertHeld reforzado), la linea 993 y las guardas M-2 y M-3 (sin la cuenta exacta no declarada, M-9). INV-11 C2-M-1 y C2-M-2: WorkspaceCommandAdvisorGuardTests con las 15 mutaciones, sin cambio en este intento. INV-12 Authorize por forma exacta: regla 5 sin cuenta exacta de _authorize (I-1). INV-13 menores de F4-T4A1: M-2, M-3, M-4, M-8 y M-9 sin cambio de significado; AssertHeld con Assert.Same para base y estado actual. INV-14 regla RED: el RED de la correccion lleva solo pruebas y guardas; Core ExpectRed false y UI ExpectRed true con las tres pruebas de M-1 fallando por asercion. INV-15 arrastre (5) de F4-E25: WorkspaceDraftPilotCanonicalLineEndingTests con los ocho nombres como archivos y la ida y vuelta byte a byte (M-7). INV-16 TOCTOU: sin plan ni autorizacion de escritura; la prueba por reflexion de EditConfirmOutcome sigue en verde. INV-17 limites: sin AutoCAD; no cambian el navegador (33 firmas), el panel, la navegacion, el Plugin, Drafts, la via de lectura, el host, el XAML, el codigo subyacente ni el doble. INV-18 correccion: RED nuevo sobre el producto de 9333396d y GREEN que solo cambia WorkspacePilotFieldViewModel.cs.",
+    "Mapa por cada una de las 18 pruebas de la orden. 1 Sin cambios: existentes de WorkspacePilotPrepareTests, AMatchOfACleanOrDirtyDraft... (ahora con StateText por caso) y AMatchThatTheHostReportedWhileTheViewIsInConflict.... 2 Cambio externo de la escala: Core ConfirmWithAChangeOnlyOfTheTextOfTheScaleIsAConflictOfTheOriginAndNothingElse; UI AConflictWithoutDiagnosticIsTheExternalChange.... 3 Otro campo: Core ConfirmWithAChangeOnlyOfAnotherFieldIsAConflictToo. 4 Los dos: Core ConfirmWithAChangeOfTheScaleAndOfAnotherField.... 5 Rack borrado: Core ARackDeletedFromTheDrawingReadsAnEmptyBase..., ConfirmOfADeletedRack..., KeepAndDiscardOfADeletedRack...; UI ANotAdmittedReadIsAPersistentDiagnostic..., AKeyOnTheBox.... 6 Ya no editable: Core ConfirmOfARackThatIsNoLongerEditable...; UI ADraftThatIsCleanAndPossiblyStale..., AnAnswerThatDidNotRereadTheDrawing.... 7 Sobre ilegible: linea 993 y Core ConfirmOfAnUnreadableEnvelope..., KeepAndDiscardOfAnUnreadableEnvelope.... 8 Excepcion de lectura o de comparacion: Core ADefaultReadResultAnswersFailed... y AnExceptionInsideTheComparisonOfTheGeneralCheck...; UI teorias de sin falso limpio, TheDefaultValueTheUnknownValueAndAnException... y, nuevas en este intento (M-1), las tres pruebas de la relectura de memoria que lanza (Confirmed, Recovered, Reloaded y Kept). 9 La recarga sustituye base e inicial juntas: existentes de Core y UI YesOnDiscardAndReload.... 10 y 11 Conservar solo lo del piloto y adopta lo authored: existentes de Core y UI KeepIsOfferedOnlyWhen.... 12 Cancelar no toca nada: UI NoCallsNothingChangesNothingAndSaysSoForEachOfTheTwoChoices, ARealClickOnNoCallsNothing... y, nueva (M-6), NoOnTheChoiceOfAnUnknownDraftThatWasApplied.... 13 Texto pendiente: Core AnInvalidPendingTextDoesNotBlockTheThreeOperations... y ConfirmOfAConflictWithAnInvalidPendingText...; UI TheCheckKeepsAnInvalidPendingTextByteForByte..., KeepIsNotOfferedWithAPendingText..., DiscardAndReloadWarnsThatThePendingTextIsLost.... 14 y 15 Sesion inexistente y documento no activo: Core de WorkspacePilotReconciliationHostTests; UI filas Rejected de las teorias. 16 Cero escrituras: guardas existentes, regla 1 y doble sin escritura. 17 Inversion de Si y No: VM, vista y fuente (reglas 2 y 3 con autopruebas de intercambio). 18 Authorize: C2-M-2 con sus mutaciones y regla 5 sin cuenta exacta (I-1).",
+    "Pendiente de la sesion y del Controller (no de este paso): CI push del SHA exacto GREEN con los cuatro jobs en success y del RED con el job de UI en failure y el de Core en success (ExpectRed false en Core y true en UI, INV-F4T4A2-18); verificacion del Controller; revision directa e independiente; controles nc1 a nc3 con la deuda de controles de la orden."
+  ],
+  "UnexpectedFindings": [
+    "El InitialDraftState de DraftSession es una COPIA por contrato (N-2: cada lectura hace una nueva), de modo que la comparacion por referencia pedida en M-8 es imposible para ese estado; no hay cambio posible en Drafts dentro del alcance. Se comparo por referencia lo que si es una referencia estable (StaleBase y CurrentDraftState) y el estado inicial con PushBackPilotStateComparer sobre la copia guardada mas su Origin; ninguna prueba existente necesito cambio."
+  ],
+  "KnownLimitations": [
+    "Via TryCheckNow sin diagnostico: el host no lleva el diagnostico de admision en EditCheckOutcome, de modo que NOT_FOUND y NO_LONGER_EDITABLE se ven como Conflict (A2-09) hasta la eleccion, que lo revela con NotAdmitted (A2-32). Asignado a F4-T4B.",
+    "El diagnostico persistente es memoria de la superficie: al volver a la pestana el borrador vuelve a mostrarse editable y la admision de Actualizar en F4-T4B lo rechaza (D-T4A1-04).",
+    "Los escenarios de reconciliacion con racks reales (S2-R-01 a S2-R-12) son de Smoke-2, despues de cerrar F4-T4B; este paso se probo sin AutoCAD con el doble del puerto, la vista WPF real y el host real con el lector doble; el Plugin solo lo cubren las guardas de fuente.",
+    "La suite completa de UI en Release no se ejecuto: PendingTextFieldTests.ShowOnADirtyField_* dependen de DEBUG y pasan en Debug (condicion previa conocida)."
+  ],
+  "Deviations": [
+    "M-2 (primera desviacion de producto del intento 1, que no cambia): la rama de CheckNow que encuentra el estado cambiado entre la oferta del boton y la lectura de la vista no llama al puerto y muestra A2-34; el paquete solo define A2-34 para la eleccion. Ahora tiene su prueba (IfTheMemoryChangedBetweenTheOfferAndTheReadTheCheckReadsNothingAndSaysTheSituationChanged).",
+    "M-2 (segunda desviacion de producto del intento 1, que no cambia): ReconcileText es vacio con un fallo del campo, donde el paquete dice que en Conflict siempre da A2-10; es la opcion conservadora y no ofrece nada ante la duda.",
+    "M-3: tras un descarte desde el navegador, la eleccion pendiente la retira en silencio el Rematerialize del navegador (que llama a ClearNotices despues del Rebuild), sin el A2-34 que prometia el paquete; el navegador no se puede tocar (F4T4A2-C04). La prueba fija el NoticeText real (vacio), HasChoice false y cero llamadas.",
+    "M-8: el InitialDraftState no se compara con Assert.Same porque DraftSession lo entrega como copia por contrato; StaleBase y CurrentDraftState se comparan por referencia (Assert.Same) y el estado inicial con el comparador del piloto y su Origin, el pendiente por valor."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "La sesion ejecuta la CI push del SHA exacto GREEN y del RED, la verificacion del Controller, las revisiones directa e independiente y los controles nc1 a nc3; despues F4-T4B con el paquete propio, que debe prever los cambios de guarda de M-3 y de la regla 5 que la revision independiente anoto para esa tarea.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

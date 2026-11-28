@@ -1,0 +1,4 @@
+# PB-T4c v5.0: los tres equivalentes sobre 6adff90d (sha256 del texto con \n, EquivalentSha)
+1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250 tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs lineas=103
+3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs lineas=186
+4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs lineas=660

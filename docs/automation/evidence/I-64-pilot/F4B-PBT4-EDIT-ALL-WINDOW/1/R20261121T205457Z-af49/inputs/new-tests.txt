@@ -1,0 +1,9 @@
+tests/RackCad.Tests/PushBackEditAllTests.cs
+tests/RackCad.Tests/PushBackEditAllGuardTests.cs
+tests/RackCad.Tests/PushBackOpenerClassicPathGuardTests.cs
+tests/RackCad.Tests/PushBackDraftLaunchGuardTests.cs
+tests/RackCad.UI.Tests/PushBackEditAllWindowTests.cs
+tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs
+tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs
+tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs
+tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs

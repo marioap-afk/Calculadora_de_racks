@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..722a6f00 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -693,7 +693,7 @@ namespace RackCad.UI.Systems.PushBack
+                 // I-35: the accepted module edit has landed on the new baseline, so it must not be re-applied by an
+                 // unrelated recompute (an individual restore would otherwise fire again and again). The module list is
+                 // rebuilt from the new structure and the reconciliation report reaches the panel.
+-                var standardRestoreLanded = moduleOwner.ModuleCommit?.StandardRestoreRequested == true; // I-64 F4B PB-TC (D-PB-11)
++                var standardRestoreLanded = moduleOwner.ModuleCommit != null;
+                 moduleOwner.ClearModuleCommit();
+                 if (standardRestoreLanded)
+                 {

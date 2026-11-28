@@ -1,0 +1,3 @@
+filas 1 {'Failed': 1}
+  Failed RackCad.Tests.PushBackSharedReferenceGuardTests.CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses
+      Assert.Equal() Failure: Collections differ ↓ (pos 0) Expected: string[] ["archivos=14", "asignaciones=7", "RackMenuCommands.cs: header.Configuration.Name = S"···, "RackMenuCommands.cs: dynamic.System.

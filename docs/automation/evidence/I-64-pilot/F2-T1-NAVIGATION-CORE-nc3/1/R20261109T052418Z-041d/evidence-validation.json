@@ -1,0 +1,31 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261109T052418Z-041d",
+  "OutputUnresolvedHex": [],
+  "OutputUnresolvedHexByCheck": {},
+  "CommandUnresolvedHex": [],
+  "GitFatalLines": [],
+  "NonZeroExit": [
+    {
+      "Command": 1,
+      "Exit": 1
+    },
+    {
+      "Command": 7,
+      "Exit": 1
+    }
+  ],
+  "ConstrainedLanguageErrors": 55,
+  "DisplayNameSelectionCommands": [
+    7,
+    8
+  ],
+  "TestsEvidenceNumbers": [
+    "14997",
+    "15048",
+    "51",
+    "724"
+  ],
+  "TestsEvidenceDisplayCount": false,
+  "MaterialHexDefect": false
+}

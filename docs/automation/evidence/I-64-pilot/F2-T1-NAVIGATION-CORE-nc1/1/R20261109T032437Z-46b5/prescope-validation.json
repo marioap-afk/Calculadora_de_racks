@@ -1,0 +1,55 @@
+{
+  "RunId": "R20261109T032437Z-46b5",
+  "MutatedCheck": "Identity",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T18:46:05Z",
+          "Utc": "2026-11-08T18:46:05+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true; Worker final notification received. Cession ended 2026-11-08T18:46:05Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T12:45:41.225211-06:00",
+          "Utc": "2026-11-08T18:45:41+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        },
+        {
+          "Quoted": "2026-11-08T18:28:11Z",
+          "Utc": "2026-11-08T18:28:11+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [],
+      "Evidence": "worker-handoff.json exists at the expected WorkRunId path. TaskId, Attempt=1, DelegationRunId, RunId and worktree match the delegation; OutputWrittenUtc=2026-11-08T12:45:41.225211-06:00 is after Cession.StartUtc=2026-11-08T18:28:11Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git merge-base --is-ancestor 90f5872e89660655a93606e16d50f4bc19aa3c9c 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb succeeded. git diff --name-only AuthorityRevision BaseSha lists only docs/automation paths; none are the declared EXTERNAL authorities or UNIT_CHANGE sections. Located the referenced authority sections in Git using their transliterated headings."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Compared delegation.json with gate-contract.json: task, authority, scope, invariants, required tests and stop conditions match. relay-record-planning.json records A1-A8 all pass; contract-equivalence.json records the ASCII reissue equivalence; nc4 rejection is recorded as required."
+    }
+  },
+  "Findings": [],
+  "Pass": true
+}

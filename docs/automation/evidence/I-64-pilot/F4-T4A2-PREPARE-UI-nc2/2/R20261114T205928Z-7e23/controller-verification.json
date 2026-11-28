@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4A2-PREPARE-UI",
+  "RunId": "R20261114T205928Z-7e23",
+  "DelegationRunId": "R20261114T161620Z-f15d",
+  "WorkRunId": "R20261114T162137Z-b48d",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-14T16:21:41Z. OutputWrittenUtc=2026-11-14T10:46:51.116671-06:00, equivalent to 16:46:51Z, after cession start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present with Schema=rackcad-worker-handoff/v1, TaskId=F4-T4A2-PREPARE-UI, RunId=R20261114T162137Z-b48d, DelegationRunId=R20261114T161620Z-f15d, Attempt=2. Its output time is after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha returned 3 paths: docs/automation/evidence/I-64-evidence.md, docs/automation/state/I-64.yml, and docs/automation/evidence/I-64-pilot/F4-T4A2-PREPARE-UI/coordinator/gate-contract-attempt2.json. All are unit documentation; none is EXTERNAL or UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "fail",
+      "Evidence": "The delegation and contract match on Invariants (18), RequiredTests (2), StopConditions (26), Authorities (40), ExpectedEvidence (9), Objective, and ForbiddenWriteScope (129). However, AllowedWriteScope differs: delegation has 14 entries and excludes src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs; contract has 15 and includes it. byte-fidelity-check.json claims byte equality and PASS for all eight collections, contradicting the actual inputs."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Local git rev-parse HEAD=c3ae1c970c908ef541840fc583680b86376cae0b; branch=architecture/workspace-persistente-rackcad; local origin remote-tracking ref resolves to the same SHA. Per clarification-note.md Part 2, CurrentSha ae0a7b404d2799ef690b3771c6083e988637a5a3 is an ancestor of HEAD; git diff --name-only CurrentSha..HEAD is the 46 listed docs/ paths, with zero src/ or tests/ paths. BaseSha is an ancestor of CurrentSha; ChainRedSha and RedSha are in the expected ranges. Worktree is the expected path."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "Per clarification-note.md Part 2, the session measured refs/heads/architecture/workspace-persistente-rackcad at c3ae1c970c908ef541840fc583680b86376cae0b and origin/main at 812baf879612320653094a8aaf46aca0bac81383, matching the custody HEAD and MainSha. No network Git command was run."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha returned 7 paths. Six test paths are in delegation.json AllowedWriteScope; the seventh, src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs, is absent from that exact whitelist, although it appears in the contract whitelist. The delegation whitelist is the controlling scope for this check."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 returned no entries. git check-ignore -v for the handoff package path reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts.CurrentRun: push 43617317131, exact branch ref and CurrentSha, completed/success; all four required jobs are success. RedRun 43616238873 is the exact RedSha push; UI job failed as expected and Core job succeeded as specified by RequiredTests. TRX results agree."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed all four TRX files. Current Core Workspace selection: 2923 selected, 2923 passed; Current UI Workspace: 601 selected, 601 passed. Red Core: 2923 selected, 2923 passed. Red UI: 601 selected, 598 passed, 3 expected M-1 tests failed by Assert.NotEqual, matching the handoff. Current full runs: Core 18461 passed; UI 2255 total, 2238 passed, 17 skipped, 0 failed. git diff RedSha..CurrentSha touches only src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs and no tests. RT and ChainRedFiles resolve to these 10 paths: tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs; WorkspaceEditIntentGuardTests.cs; WorkspacePilotPrepareGuardTests.cs; WorkspacePilotPrepareTests.cs; WorkspacePilotReconciliationGuardTests.cs; WorkspacePilotReconciliationHostTests.cs; tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs; WorkspacePilotEditPortDouble.cs; WorkspacePilotReconciliationTests.cs; WorkspacePilotReconciliationViewTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both commits with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer and the effective claude-sonnet-5-5 model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant: ModelRequested=sonnet, the subagent launch alias; ModelEffective=claude-sonnet-5-5 and EffortEffective=high. These match the delegation model and effort; EffectiveSource records 176 assistant turns with that model."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction against the AUTOMATION_PLAN 16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record 0 permission denials and 1 tool error with none pending. Denials is null; no failed order remains pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "TriggeredStopConditions": [
+    "S-04",
+    "F4T4A2-C01"
+  ],
+  "Findings": [
+    "The byte-fidelity record asserts equality for AllowedWriteScope, but the input delegation has 14 entries and the contract has 15. The extra contract entry is src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs.",
+    "The Git range BaseSha..CurrentSha changes that file, which is outside the delegation's exact AllowedWriteScope. The Scope check fails and triggers F4T4A2-C01.",
+    "The clarification for F4T4A2-C04 is consistent with the measured diff: none of the listed browser, panel, navigation, Plugin, read-path, Themes, Controls, or Drafts paths changed."
+  ],
+  "RecommendedNextAction": "Coordinator revisa la discrepancia entre el alcance delegado y el registro byte-fidelity y decide el siguiente paso conforme a la autoridad aplicable."
+}

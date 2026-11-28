@@ -1,0 +1,12 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..334320ff 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3526,6 +3526,7 @@ namespace RackCad.UI.Systems.PushBack
+             InsertButton.IsEnabled = canInsertInAutoCad && canOutput;
+             UpdateButton.IsEnabled = canInsertInAutoCad && canOutput && isEditingExisting;
+             BomButton.IsEnabled = canOutput;
++            InsertBatchButton.IsEnabled = canOutput;
+             SaveLibraryButton.IsEnabled = currentInputsAreValid;
+             if (!canInsertInAutoCad)
+             {

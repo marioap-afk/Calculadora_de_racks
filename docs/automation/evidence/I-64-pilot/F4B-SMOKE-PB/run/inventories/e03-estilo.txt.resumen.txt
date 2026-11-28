@@ -1,0 +1,8 @@
+inventario: e03-estilo.txt
+sha256: bd478421c963f9f6809abae6b40222e6c4c561ede05dc7f18557d608973bfac6
+bytes: 10
+
+REF 0
+DEF 0
+BLK 0 ; DEF entre las BLK: True
+NEST 0

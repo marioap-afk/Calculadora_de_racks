@@ -1,0 +1,7 @@
+[2026-11-10T07:13:28.940Z] WARN NAVDIAG: ExecuteAsync begin action=View copy=0 isAppCtx=True mdiActive=True
+[2026-11-10T07:13:28.972Z] WARN NAVDIAG: callback enter isAppCtx=False cmdNames=EXECUTEFUNCTION
+[2026-11-10T07:13:28.974Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:13:29.013Z] WARN NAVDIAG: before SetCurrentView center=(50,30) w=184.6268221574344 h=66
+[2026-11-10T07:13:29.019Z] WARN NAVDIAG: after SetCurrentView current center=(50,30)
+[2026-11-10T07:13:29.080Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=4 refresh=False
+[2026-11-10T07:13:29.091Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=

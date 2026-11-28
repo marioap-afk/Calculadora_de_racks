@@ -1,0 +1,9 @@
+== RED (RIA del GREEN de PB-T4a)
+CT-PBT4A-07: IGUAL a sus 13 lineas
+CT-PBT4B-21: DISTINTA (cae por asercion): ria-Read completo=1 diferido=0 | ria-resultado Full-diferido=0 campo=0 de-un-valor=0 de-una-lectura-diferida=0 | ria-AtOrigin Full-del-Primary=0 | nh-Full=1 dentro-del-bloqueo=True tras-AtOrigin=True | readat completo=1 | autoprueba-completo-inmediato=pasa | autoprueba-Full-del-Primary-en-AtOrigin=falla | autoprueba-segundo-Full-en-NH=falla | autoprueba-Full-sin-diferir=pasa | autoprueba-segundo-completo-en-ReadAt=falla
+cuentas: b08 escaneos=1 piloto=1 completo=1 en-Read=1,1,1 orden=True | cag literales-de-Read=7 ex.Message-de-Read=2 | g9 StartTransaction=1 LockDocument=1 | inv14 AssertNoOpenTransaction-de-Read=2 | publico=0
+== GREEN v4.5
+CT-PBT4A-07: IGUAL a sus 13 lineas
+CT-PBT4B-21: IGUAL a sus 10 lineas
+cuentas: b08 escaneos=1 piloto=1 completo=1 en-Read=1,1,1 orden=True | cag literales-de-Read=7 ex.Message-de-Read=2 | g9 StartTransaction=1 LockDocument=1 | inv14 AssertNoOpenTransaction-de-Read=2 | publico=0
+las cuentas de B-08, CAG, G-9 e INV-14 son iguales en el RED y en el GREEN

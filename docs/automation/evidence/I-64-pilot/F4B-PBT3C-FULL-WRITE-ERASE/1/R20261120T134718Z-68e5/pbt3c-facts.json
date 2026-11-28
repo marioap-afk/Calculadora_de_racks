@@ -1,0 +1,33 @@
+{
+  "ExpectedCounts": {
+    "red": [
+      19129,
+      19119,
+      4,
+      6
+    ],
+    "green": [
+      19129,
+      19123,
+      0,
+      6
+    ],
+    "ui": [
+      2451,
+      2430,
+      0,
+      21
+    ]
+  },
+  "SkeletonPath": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/pbt3c-skeleton.patch",
+  "SkeletonSha256": "a81de435e70d62a40af8262d5d2d297eb36c6828053b0fce325c95af76004906",
+  "WorkspaceMinSelected": 3261,
+  "Nc2ExactEvidenceEntries": [
+    0
+  ],
+  "Nc2SubstituteSha256": "C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45",
+  "Rr3": {
+    "PushBackViewEraseGuardTests": 16,
+    "PushBackWritePathPluginGuardTests": 11
+  }
+}

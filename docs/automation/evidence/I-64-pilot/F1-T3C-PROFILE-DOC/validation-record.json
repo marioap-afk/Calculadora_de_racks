@@ -1,0 +1,369 @@
+{
+  "Schema": "rackcad-i64-t3c-validation/v1",
+  "TaskId": "F1-T3C-PROFILE-DOC",
+  "DateUtc": "2026-10-11",
+  "Authority": "revision del cierre de T3B (coordinator-close-review.md, evidencia Sec.57): CONTRACT / DOCUMENT PREPARATION ONLY",
+  "NonAuthoritative": "las capturas DRYRUN de esta validacion NO son una BASELINE de Smoke-1 ni sustituyen el acuse de I-52; no se versionan (solo sus hashes y recuentos)",
+  "Conditions": {
+    "AutoCADRunning": false,
+    "Elevated": false,
+    "RunFrom": "directorio de trabajo fuera del repositorio",
+    "AcadProcessCountBefore": 0,
+    "AcadProcessCountAfter": 0
+  },
+  "Tools": {
+    "Capture-ProfileState.ps1": {
+      "GitBlob": "ef215539536fff3cdf6fd533f87bb2b622118e78",
+      "Sha256Lf": "750a9097d4d84a75ac1787a7bf40032c44556c64399182aac0b95694b48226e1",
+      "ParseErrors": 0,
+      "ForbiddenWriteHits": {},
+      "Ascii": true,
+      "FileWriteCalls": 1,
+      "NewItemCalls": 0
+    },
+    "Compare-ProfileState.ps1": {
+      "GitBlob": "d314293a6ed1a8cb048a284da24e85104f24078d",
+      "Sha256Lf": "de642515371b19a59230940ef9659f3d84413f66c8831be201abf55fa73cbd65",
+      "ParseErrors": 0,
+      "ForbiddenWriteHits": {},
+      "Ascii": true,
+      "FileWriteCalls": 2,
+      "NewItemCalls": 0
+    },
+    "Test-ProfileDiff.ps1": {
+      "GitBlob": "c7d2c35ff4cf07e1f0a47bd06317fc563ea9e001",
+      "Sha256Lf": "0171df447b3f2d55c31403fea148372ae9db8d8f7257193614fbd12b0a71ea80",
+      "ParseErrors": 0,
+      "ForbiddenWriteHits": {},
+      "Ascii": true,
+      "FileWriteCalls": 3,
+      "NewItemCalls": 2
+    }
+  },
+  "StaticScanPatterns": [
+    "Set/New/Remove/Rename/Clear/Copy/Move-ItemProperty",
+    "Set/Remove/Clear/Copy/Move/Rename-Item, Set/Add/Clear-Content, Out-File",
+    "CreateSubKey, DeleteSubKey(Tree), DeleteValue, SetValue, SetAccessControl, Flush",
+    "OpenSubKey con escritura, RegistryKeyPermissionCheck, RegistryRights",
+    "reg add/delete/import/copy/restore/load/unload/save/flags",
+    "Set-Acl, icacls, cacls, takeown",
+    "Start-Process, Invoke-Item, Invoke-Expression, operador de llamada sobre acad",
+    "SetEnvironmentVariable, setx",
+    "NETLOAD, acedCmd, SendStringToExecute",
+    "[System.IO.File|Directory]::Delete/Move/Replace/Copy"
+  ],
+  "SelfTest": {
+    "Runs": 2,
+    "Result": "PASS",
+    "Passed": 26,
+    "Total": 26,
+    "OutputSha256Run1": "2981350c0738159abc8edeeb8fb2662130eaa98f14d7043ac4d04704766a5b3d",
+    "OutputSha256Run2": "2981350c0738159abc8edeeb8fb2662130eaa98f14d7043ac4d04704766a5b3d",
+    "IdenticalOutputs": true,
+    "CompareSha256Lf": "de642515371b19a59230940ef9659f3d84413f66c8831be201abf55fa73cbd65",
+    "SelfTestSha256Lf": "d0bb54be83291e060aeaf4d2ec792743d70fc0f621202a1e24ee2fb41de94d8b",
+    "Cases": [
+      {
+        "Id": "T01-identical",
+        "ExpectedCode": 0,
+        "ActualCode": 0,
+        "ActualDisposition": "CLEAN",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T02-trustedpaths-value",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T03-secureload",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T04-current-profile",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T05-application-registered",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T06-bundle-installed",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T07-settings-changed",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T08-racklog-grows",
+        "ExpectedCode": 0,
+        "ActualCode": 0,
+        "ActualDisposition": "CLEAN",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T09-palette-key",
+        "ExpectedCode": 10,
+        "ActualCode": 10,
+        "ActualDisposition": "REPORT_REQUIRED_STOP",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T10-palette-key-accepted",
+        "ExpectedCode": 11,
+        "ActualCode": 11,
+        "ActualDisposition": "REPORTED_ACCEPTED",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T11-existing-window-placement",
+        "ExpectedCode": 0,
+        "ActualCode": 0,
+        "ActualDisposition": "CLEAN",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T12-guid-key",
+        "ExpectedCode": 10,
+        "ActualCode": 10,
+        "ActualDisposition": "REPORT_REQUIRED_STOP",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T13-autocad-activity",
+        "ExpectedCode": 0,
+        "ActualCode": 0,
+        "ActualDisposition": "CLEAN",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T14-acad-identity",
+        "ExpectedCode": 30,
+        "ActualCode": 30,
+        "ActualDisposition": "INVALID",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T15-sidecar-tampered",
+        "ExpectedCode": 30,
+        "ActualCode": 30,
+        "ActualDisposition": "INVALID",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T16-ledger-tampered",
+        "ExpectedCode": 30,
+        "ActualCode": 30,
+        "ActualDisposition": "INVALID",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T17-persistent-env-var",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T18-pickfirst",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T19-workspace-dialog",
+        "ExpectedCode": 10,
+        "ActualCode": 10,
+        "ActualDisposition": "REPORT_REQUIRED_STOP",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T20-fixedprofile-rackcad",
+        "ExpectedCode": 10,
+        "ActualCode": 10,
+        "ActualDisposition": "REPORT_REQUIRED_STOP",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T21-acad-running-post",
+        "ExpectedCode": 30,
+        "ActualCode": 30,
+        "ActualDisposition": "INVALID",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T22-unreadable",
+        "ExpectedCode": 30,
+        "ActualCode": 30,
+        "ActualDisposition": "INVALID",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T23-new-window-type",
+        "ExpectedCode": 10,
+        "ActualCode": 10,
+        "ActualDisposition": "REPORT_REQUIRED_STOP",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T24-localappdata-layout",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T25-loaded-entry",
+        "ExpectedCode": 20,
+        "ActualCode": 20,
+        "ActualDisposition": "FORBIDDEN_DRIFT",
+        "Result": "PASS"
+      },
+      {
+        "Id": "T26-candidate-dll-changed",
+        "ExpectedCode": 30,
+        "ActualCode": 30,
+        "ActualDisposition": "INVALID",
+        "Result": "PASS"
+      }
+    ]
+  },
+  "DryRunCaptures": {
+    "A": {
+      "Exit": 0,
+      "CanonicalSha256": "a03d9675c7e1055705720031aa45ba41e35dac5a4ee71b69ff3c0b1880db13b4",
+      "LedgerLineCount": 2229,
+      "Counts": {
+        "Keys": 399,
+        "Values": 1767,
+        "FileEntries": 16,
+        "PluginEntries": 3,
+        "EnvironmentEntries": 0,
+        "Unreadable": 0
+      }
+    },
+    "B": {
+      "Exit": 0,
+      "CanonicalSha256": "a03d9675c7e1055705720031aa45ba41e35dac5a4ee71b69ff3c0b1880db13b4",
+      "LedgerLineCount": 2229,
+      "Counts": {
+        "Keys": 399,
+        "Values": 1767,
+        "FileEntries": 16,
+        "PluginEntries": 3,
+        "EnvironmentEntries": 0,
+        "Unreadable": 0
+      }
+    },
+    "Reproducible": true,
+    "FileSha256Differ": true,
+    "FileSha256DifferReason": "campos efimeros (CapturedUtc, RunLabel) fuera del libro canonico, como define el procedimiento",
+    "PreSmokeChecksAgainstLastI52Record": {
+      "TRUSTEDPATHS.ChainSha256": "MATCH",
+      "SECURELOAD": "MATCH",
+      "CurrentProfile": "MATCH",
+      "AcadExeSha256": "MATCH"
+    },
+    "InformativeFacts": {
+      "CurrentProfile": "<<Unnamed Profile>>",
+      "ProfileCount": "1",
+      "SECURELOAD": "1",
+      "TRUSTEDPATHS.EntryCount": "19",
+      "TRUSTEDPATHS.EmptySegments": "0",
+      "TRUSTEDPATHS.ChainSha256": "a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498",
+      "AcadExeFileVersion": "R25.0.171.0.0",
+      "AcadExeSha256": "2a75996fd2a5c5ee0376fd5ba7cced227a098193ff495e8ceeda3a96fe326422",
+      "RackCadEnvUser": "0",
+      "RackCadEnvMachine": "0",
+      "Unreadable": "0",
+      "ToolSha256": "750a9097d4d84a75ac1787a7bf40032c44556c64399182aac0b95694b48226e1"
+    },
+    "PICKFIRSTNote": "el unico valor PICKFIRST capturado es el del Monitor de variables (SysvarMonitor), no el valor efectivo de la variable",
+    "PluginEntries": [
+      "P|PLUGINS_PROGRAMFILESX86|Autodesk AppManager.bundle|DIR",
+      "P|PLUGINS_PROGRAMFILESX86|Autodesk FeaturedApps.bundle|DIR",
+      "P|PLUGINS_PROGRAMFILES|AcVBA2025.Bundle|DIR"
+    ],
+    "RackCadNamedKeys": 20
+  },
+  "DryRunDiff": {
+    "Exit": 0,
+    "Disposition": "CLEAN",
+    "ChangeCounts": {
+      "ADDED": 0,
+      "REMOVED": 0,
+      "CHANGED": 0
+    },
+    "ClassCounts": {
+      "INVALID": 0,
+      "FORBIDDEN": 0,
+      "REPORT": 0,
+      "ALLOWED": 0
+    },
+    "Entries": 0
+  },
+  "ReadOnlyProof": {
+    "Method": "reg export (solo lectura del registro) de los seis arboles capturados antes y despues de toda la validacion, y SHA-256 de los archivos de los dos directorios RackCad; los .reg y las listas quedan fuera del repositorio",
+    "RegistryExportSha256": {
+      "profile": {
+        "Before": "863ffb3c6bae15a97710c3f8508fcd719a7647422a45f7b1f31d0acc380fe3f3",
+        "After": "863ffb3c6bae15a97710c3f8508fcd719a7647422a45f7b1f31d0acc380fe3f3",
+        "Equal": true
+      },
+      "fixedprofile": {
+        "Before": "d2ef893431812cd22241b4e26e1d67a04d08fe42d66140eb99ffe178e67db23f",
+        "After": "d2ef893431812cd22241b4e26e1d67a04d08fe42d66140eb99ffe178e67db23f",
+        "Equal": true
+      },
+      "applications": {
+        "Before": "13430739eb82fd1c9f6898a5acb2056bb71961fc583662cc7e04004f9e4e0e59",
+        "After": "13430739eb82fd1c9f6898a5acb2056bb71961fc583662cc7e04004f9e4e0e59",
+        "Equal": true
+      },
+      "installed": {
+        "Before": "be9ec134f9b1c638e838a74769252999ee6cad6a6e9dce560c744f3032d549ea",
+        "After": "be9ec134f9b1c638e838a74769252999ee6cad6a6e9dce560c744f3032d549ea",
+        "Equal": true
+      },
+      "loaded": {
+        "Before": "dd27f202b0ec94eaf72dd7b57e42a34036b8a4456c56b70701f36faf26daef8b",
+        "After": "dd27f202b0ec94eaf72dd7b57e42a34036b8a4456c56b70701f36faf26daef8b",
+        "Equal": true
+      },
+      "hklmapps": {
+        "Before": "7d1debf2173e0da569184589110e931fb7efbed46d2d4ac7891f551b12665f9f",
+        "After": "7d1debf2173e0da569184589110e931fb7efbed46d2d4ac7891f551b12665f9f",
+        "Equal": true
+      }
+    },
+    "RackCadFilesSetSha256": {
+      "Before": "35126e09531ca85ad804fd6703fc2e0dd01db2a54112fab21eb7c1ae19a2d387",
+      "After": "35126e09531ca85ad804fd6703fc2e0dd01db2a54112fab21eb7c1ae19a2d387",
+      "Equal": true
+    },
+    "RegistryUnchanged": true
+  },
+  "Deviations": [
+    "Primer intento de validacion abortado: la autoprueba llamaba H a una funcion auxiliar y PowerShell resuelve primero el alias h (Get-History); fallo antes de su primer caso. Hasta ese punto solo se habia hecho la exportacion de lectura previa; no se capturo nada ni se escribio fuera del directorio de trabajo. Se renombro la funcion (Get-TextSha) y la validacion completa se repitio en un directorio nuevo; este registro es de esa repeticion.",
+    "El primer analisis estatico marco la palabra NETLOAD en un comentario de Capture-ProfileState.ps1 (no una llamada); se reescribio el comentario y el analisis se repitio sin coincidencias antes de la validacion."
+  ]
+}

@@ -1,0 +1,20 @@
+diagnostico; copia /d/r4p; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957; sonda 9201727d8b892026ac9aa5a6107c8802caa73b70169762e470520dadec04f301
+ESCRITOS 47 archivos; conjunto edc904269f7896fd8060db2ffbbe60d994b0f64a7ff61daf8ad50be1f6afb1d5
+core-tests rc=0 errores=0 avisos-CS=0
+test phantom rc=1 trx-sha256=6cd26d4b5bd8d94b5984c732207cc301fe31cbc4264499ef1353212019d86802
+== RackCad.Tests.TmpPhantomProbe.ThePrepareOfThePilotAndOfTheFullModelOverTheCasesOfTheTwoCopies Failed
+piloto   phantom-lateral kind=Invalid plan=null reason=El piloto no borra vistas y la vista B2 ya no está disponible en el sistema saliente: usa RACKEDITAR.
+completo phantom-lateral kind=Ready plan=miembros=A1 borrados=B2 reason=null
+piloto   side-b kind=Invalid plan=null reason=El piloto no borra vistas y la vista B2 ya no está disponible en el sistema saliente: usa RACKEDITAR.
+completo side-b kind=Invalid plan=null reason=La vista B2 es un frontal del lado B en un rack sin lado B: el panel no la borra ni la redibuja; usa RACKEDITAR.
+piloto   corrupt-descriptor kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+completo corrupt-descriptor kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+piloto   section-out-of-range kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+completo section-out-of-range kind=Invalid plan=null reason=El descriptor de la vista B2 no se puede interpretar: usa RACKEDITAR.
+piloto   existing-lateral kind=Ready plan=miembros=A1,B2 borrados= reason=null
+completo existing-lateral kind=Ready plan=miembros=A1,B2 borrados= reason=null
+prefijos ViewUnavailable=[El piloto no borra vistas y la vista ] FrontalBOfOneWay=[La vista ] ViewAddress=[El descriptor de la vista ]
+build-server shutdown rc=0
+procesos: 3
+MAINCO []
+rc=0

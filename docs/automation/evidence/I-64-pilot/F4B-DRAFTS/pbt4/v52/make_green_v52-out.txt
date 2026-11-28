@@ -1,0 +1,35 @@
+# PB-T4d v5.2: la pieza del GREEN de src/ desde la retirada B medida, sobre 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+borrar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs (base c3215b25716144de23493df62f975f76d7ecc250c47cd5aa6bde33f84dbba407)
+borrar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs (base 37a3aa52486e00a52e15b2df3cd4ee564b7db7bc3b7c1713bf09fa4ed6f22348)
+editar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs lineas 55-89 de la base (35 borradas, 0 de contexto)
+editar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs lineas 183-251 de la base (69 borradas, 0 de contexto)
+archivo src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs: 2 bloques; base 6b3a7bebeb7a8a5f5eecb0b36b0f56c424a74da65ec73386a8eddce2bc22be23; green cffdef1bff24a4212a6d26fefdc855659f1d52dcea955ff40831907152367d07
+editar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs lineas 15-72 de la base (58 borradas, 0 de contexto)
+editar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs lineas 408-440 de la base (33 borradas, 0 de contexto)
+editar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs lineas 473-493 de la base (21 borradas, 0 de contexto)
+archivo src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 3 bloques; base 3a7e317e443ee76411e570f85d10355d24913aa1c1014422c9bb532d02fe7424; green 085bf86d387f6a471fb4aa296669e41730ca3eb55af9effbc2fa5d39850f7534
+editar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs lineas 126-143 de la base (18 borradas, 0 de contexto)
+editar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs lineas 159-196 de la base (38 borradas, 0 de contexto)
+editar src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs lineas 236-247 de la base (12 borradas, 0 de contexto)
+archivo src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs: 3 bloques; base 710797430d3715f1245ccfde95b1a8b51f62a58c27f941f5587a80f411c03980; green 86ffeef60c3c2ad5aa6a597cc7590a31a913d18beea4947cf9276311c4c0d674
+limpieza src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs: 2 lineas -> 1
+limpieza src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 2 lineas -> 2
+limpieza src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 1 lineas -> 1
+limpieza src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 1 lineas -> 1
+limpieza src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 3 lineas -> 2
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 4 lineas -> 0
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 2 lineas -> 1
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 2 lineas -> 2
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 2 lineas -> 1
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 2 lineas -> 2
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 1 lineas -> 1
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 1 lineas -> 1
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 4 lineas -> 2
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 3 lineas -> 2
+rama muerta src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 1 lineas -> 1
+pieza 4059860f629c7190d268fc874e7ae4fc430ba937de755bc3d84a2ea8aafa4932 pbt4d-green-v52.txt
+green cffdef1bff24a4212a6d26fefdc855659f1d52dcea955ff40831907152367d07 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+green 1ae67b271974dfee9422b93adc275b92a6fdc54bbcd4469585a166ff44d99188 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+green 86ffeef60c3c2ad5aa6a597cc7590a31a913d18beea4947cf9276311c4c0d674 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+green a545dbffe26c25e147a0821470b00e7ea300bb77b8b4b1451cc2b7ed098d9f97 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+comprobado: green_pbt4d_v52.green(pieza) da el texto de la medida B con la limpieza de D-S15 y la rama muerta de BuildCore en los 4 archivos y borra los 2

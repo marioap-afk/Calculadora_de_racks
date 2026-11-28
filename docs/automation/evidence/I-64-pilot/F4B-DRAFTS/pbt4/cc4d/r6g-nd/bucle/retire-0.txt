@@ -1,0 +1,16 @@
+# retirada del piloto, variante B, sobre 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+static\s+PushBackPilotComposition\s+ComposeForWrite\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+static\s+PushBackPilotDraftState\s+KeepPilotEditsOn\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+static\s+PushBackPilotPrepareResult\s+Prepare\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs private\s+static\s+PushBackPilotPrepareResult\s+Build\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+static\s+PushBackPilotPrepareInput\s+From\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+PushBackPilotPrecheck\s+Precheck\s*\(\s*DraftSession
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+DraftApplyOutcome<PushBackPilotDraftState>\s+Execute
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+sealed\s+class\s+PushBackPilotPrepareInput\b
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+sealed\s+class\s+PushBackPilotComposition\b
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+string\?\s+ComparePost\s*\(
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+escrito cffdef1bff24a4212a6d26fefdc855659f1d52dcea955ff40831907152367d07 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+escrito 085bf86d387f6a471fb4aa296669e41730ca3eb55af9effbc2fa5d39850f7534 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+escrito 86ffeef60c3c2ad5aa6a597cc7590a31a913d18beea4947cf9276311c4c0d674 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs

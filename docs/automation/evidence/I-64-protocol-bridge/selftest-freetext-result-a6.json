@@ -1,0 +1,819 @@
+{
+  "Schema": "rackcad-i64-freetext-bridge-selftest/v1",
+  "VerifierSha256": "e760858883926744a606d9438099ed8abf040eea07814275e94b1843307474d4",
+  "EmbeddedSectionSha256": "767662276555c2fafffad3450fe9e264ad691e58e0ddb870e8b739c5dbf76864",
+  "Cases": 49,
+  "Passed": 49,
+  "Failed": 0,
+  "Result": "PASS",
+  "Results": [
+    {
+      "Id": "T01",
+      "Name": "standard mutation: real clean, mutated appends GATE PASS to WorkCompleted",
+      "ExpectedExit": 0,
+      "ActualExit": 0,
+      "ExpectedCodes": [],
+      "ActualResult": "PASS",
+      "ActualCodes": [],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T02",
+      "Name": "real handoff already contains a forbidden term",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_HAS_FORBIDDEN_TERM"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "REAL_HAS_FORBIDDEN_TERM"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T03",
+      "Name": "mutation also changes a second field",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "GOVERNED_FIELD_CHANGED",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T04",
+      "Name": "mutation changes identity (CurrentSha)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "IDENTITY_CHANGED"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "IDENTITY_CHANGED",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T05",
+      "Name": "mutation changes FilesChanged",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "IDENTITY_CHANGED"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "IDENTITY_CHANGED",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T06",
+      "Name": "mutation removes text before appending",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "NOT_EXACT_AUTHORIZED_APPEND"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "NOT_EXACT_AUTHORIZED_APPEND"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T07",
+      "Name": "forbidden term placed in another governed field instead",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE",
+        "NO_FORBIDDEN_TERM_INTRODUCED"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "GOVERNED_FIELD_CHANGED",
+        "NOT_EXACT_AUTHORIZED_APPEND",
+        "NO_FORBIDDEN_TERM_INTRODUCED",
+        "UNAUTHORIZED_FIELD_CHANGE",
+        "UNAUTHORIZED_TERM_PLACEMENT"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T08",
+      "Name": "malformed JSON in the mutated handoff",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T09",
+      "Name": "duplicate JSON key",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T10",
+      "Name": "NaN constant",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T11",
+      "Name": "Infinity constant",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T12",
+      "Name": "lone surrogate escape",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T13",
+      "Name": "WorkCompleted missing in both handoffs",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_SCHEMA_INVALID"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T14",
+      "Name": "term set missing",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "TERM_SET_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "TERM_SET_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T15",
+      "Name": "term set ambiguous: two 16.10 sections",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "TERM_SET_AMBIGUOUS"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "TERM_SET_AMBIGUOUS"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T16",
+      "Name": "term set without the matching-semantics sentence",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "TERM_SET_AMBIGUOUS"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "TERM_SET_AMBIGUOUS"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T17",
+      "Name": "term set with a malformed term enumeration",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "TERM_SET_AMBIGUOUS"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "TERM_SET_AMBIGUOUS"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T18",
+      "Name": "case variant (lowercase) in the real handoff is a forbidden hit",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_HAS_FORBIDDEN_TERM"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "REAL_HAS_FORBIDDEN_TERM"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T19",
+      "Name": "case variant (uppercase) in the real handoff is a forbidden hit",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_HAS_FORBIDDEN_TERM"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "REAL_HAS_FORBIDDEN_TERM"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T20",
+      "Name": "substrings that are not whole words or phrases are not hits",
+      "ExpectedExit": 0,
+      "ActualExit": 0,
+      "ExpectedCodes": [],
+      "ActualResult": "PASS",
+      "ActualCodes": [],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T21",
+      "Name": "a different appended term (GATE_PASS) is not the authorized mutation",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "NOT_EXACT_AUTHORIZED_APPEND"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "NOT_EXACT_AUTHORIZED_APPEND"
+      ],
+      "Introduced": [
+        "GATE_PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T22",
+      "Name": "whitespace variant GATE  PASS is neither the mutation nor a term",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "NOT_EXACT_AUTHORIZED_APPEND",
+        "NO_FORBIDDEN_TERM_INTRODUCED"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "NOT_EXACT_AUTHORIZED_APPEND",
+        "NO_FORBIDDEN_TERM_INTRODUCED",
+        "UNAUTHORIZED_TERM_PLACEMENT"
+      ],
+      "Introduced": [],
+      "Pass": true
+    },
+    {
+      "Id": "T23",
+      "Name": "no mutation at all",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE",
+        "NO_FORBIDDEN_TERM_INTRODUCED"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "NOT_EXACT_AUTHORIZED_APPEND",
+        "NO_FORBIDDEN_TERM_INTRODUCED",
+        "UNAUTHORIZED_FIELD_CHANGE",
+        "UNAUTHORIZED_TERM_PLACEMENT"
+      ],
+      "Introduced": [],
+      "Pass": true
+    },
+    {
+      "Id": "T24",
+      "Name": "extra top-level key in the mutated handoff",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T25",
+      "Name": "top-level key order changed",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "KEY_ORDER_CHANGED"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "KEY_ORDER_CHANGED"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T26",
+      "Name": "byte order mark",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T27",
+      "Name": "not UTF-8 (latin-1 byte)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T28",
+      "Name": "wrong handoff schema",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T29",
+      "Name": "governed field with a non-string, non-list type",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "GOVERNED_FIELD_TYPE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "GOVERNED_FIELD_TYPE",
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T30",
+      "Name": "term set with carriage returns",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "TERM_SET_AMBIGUOUS"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "TERM_SET_AMBIGUOUS"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T31",
+      "Name": "forbidden term disappears from another field to compensate",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_HAS_FORBIDDEN_TERM",
+        "COMPENSATING_DISAPPEARANCE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "COMPENSATING_DISAPPEARANCE",
+        "GOVERNED_FIELD_CHANGED",
+        "REAL_HAS_FORBIDDEN_TERM",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T32",
+      "Name": "nested duplicate key (Worker object)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_UNREADABLE"
+      ],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T33",
+      "Name": "type change of a non-governed field (Attempt 1 -> true)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "IDENTITY_CHANGED"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "IDENTITY_CHANGED",
+        "MUTATED_SCHEMA_INVALID",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T37",
+      "Name": "exponent overflow 1e999 in an otherwise uninspected numeric location (both handoffs)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_SCHEMA_INVALID",
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T38",
+      "Name": "exponent overflow -1e999 (both handoffs)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_SCHEMA_INVALID",
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T39",
+      "Name": "REAL 1.0 versus MUTATED 1.00000000000000001 with no authorized relation",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T40",
+      "Name": "REAL 0 versus MUTATED 1e-999 (underflow)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T41",
+      "Name": "integer 0 versus boolean false in a nested integer field",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T42",
+      "Name": "integer-required field in decimal form 1.0 (both handoffs)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_SCHEMA_INVALID",
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T42b",
+      "Name": "integer-required field in exponent form 1e0 (both handoffs)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "REAL_SCHEMA_INVALID",
+        "MUTATED_SCHEMA_INVALID"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T43",
+      "Name": "valid large integer handled exactly (PASS)",
+      "ExpectedExit": 0,
+      "ActualExit": 0,
+      "ExpectedCodes": [],
+      "ActualResult": "PASS",
+      "ActualCodes": [],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T43b",
+      "Name": "large integers differing in the last digit",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T45",
+      "Name": "REAL 0.0 versus MUTATED 1e-999 (float underflow would equate them)",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T46",
+      "Name": "integer lexeme -0 versus 0 is a difference, not a normalization",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T47",
+      "Name": "decimal lexeme 1.0 versus 1.00",
+      "ExpectedExit": 1,
+      "ActualExit": 1,
+      "ExpectedCodes": [
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "ActualResult": "FAIL",
+      "ActualCodes": [
+        "MUTATED_SCHEMA_INVALID",
+        "REAL_SCHEMA_INVALID",
+        "UNAUTHORIZED_FIELD_CHANGE"
+      ],
+      "Introduced": [
+        "GATE PASS"
+      ],
+      "Pass": true
+    },
+    {
+      "Id": "T44",
+      "Name": "exact numeric primitive: finite decimals parsed without float loss and compared exactly (rackcad-worker-handoff/v1 has no unconstrained numeric field)",
+      "ExpectedExit": 0,
+      "ActualExit": 0,
+      "ExpectedCodes": [],
+      "ActualResult": "PROBE",
+      "ActualCodes": [],
+      "Introduced": {
+        "close_decimals_distinct": true,
+        "decimal_lexeme_kept": true,
+        "identical_decimals_equal": true,
+        "overflow_finite_and_distinct": true,
+        "parsed_without_float_loss": true,
+        "underflow_distinct_from_zero": true
+      },
+      "Pass": true
+    },
+    {
+      "Id": "T34",
+      "Name": "usage error -h",
+      "ExpectedExit": 2,
+      "ActualExit": 2,
+      "ExpectedCodes": [],
+      "ActualResult": "USAGE",
+      "ActualCodes": [],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T35",
+      "Name": "usage error --real-handoff x",
+      "ExpectedExit": 2,
+      "ActualExit": 2,
+      "ExpectedCodes": [],
+      "ActualResult": "USAGE",
+      "ActualCodes": [],
+      "Introduced": null,
+      "Pass": true
+    },
+    {
+      "Id": "T36",
+      "Name": "usage error --real-handoff x --mutated-handoff y --term-set z --extra",
+      "ExpectedExit": 2,
+      "ActualExit": 2,
+      "ExpectedCodes": [],
+      "ActualResult": "USAGE",
+      "ActualCodes": [],
+      "Introduced": null,
+      "Pass": true
+    }
+  ]
+}

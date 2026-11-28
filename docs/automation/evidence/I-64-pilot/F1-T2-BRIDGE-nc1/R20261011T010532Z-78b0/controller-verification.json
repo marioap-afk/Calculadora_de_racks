@@ -1,0 +1,83 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261011T010532Z-78b0",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "WorkRunId": "R20261010T202008Z-3df4",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, ExitCode=0. OutputWrittenUtc=2026-10-10T14:52:30.34814-06:00, after Cession.StartUtc=2026-10-10T20:23:57Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt, DelegationRunId, RunId, branch, worktree, BaseSha and RedSha; its CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. The Owner disposition names e2f642b86197441eea0838c8055c1db666606f11 as CurrentSha."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN.md Sec.16 and agent-execution/README.md Sec.8 at the declared authority sources. AuthorityRevision d5bdcb7aff31ba54901a3a0acdbfd81be92ab516 is an ancestor of BaseSha. git merge-base MainSha AuthorityRevision returned bb0d5522e8411f66a51fdfb3f1f0d0514b737453; git diff --name-only MainSha..AuthorityRevision for declared EXTERNAL paths was empty."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json and gate-contract.json: AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, Authorities and RequiredTests agree. RequiredTests is Core with FullyQualifiedName~RackCad.Tests.Workspace, MinSelected=1, ExpectRed=true."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD and git rev-parse origin/architecture/workspace-persistente-rackcad both returned e2f642b86197441eea0838c8055c1db666606f11; BaseSha is its ancestor and RedSha 31e3c57a66025ba339acb2c796298e71153126cc is between BaseSha and HEAD. Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, not HEAD or the branch ref."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Entry.LsRemoteSha and RemoteFacts.CurrentRun.HeadSha are e2f642b86197441eea0838c8055c1db666606f11; RemoteFacts.OriginMainSha is bb0d5522e8411f66a51fdfb3f1f0d0514b737453, matching MainSha. Exit values are the pre-cession BaseSha as described by the relay semantics."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-status BaseSha..HEAD lists 10 paths, all additions under the three AllowedWriteScope prefixes; none intersect ForbiddenWriteScope. worker-handoff.json FilesChanged matches this list. The five tests/RackCad.Tests/Workspace paths are all added in RED; the GREEN diff touches no tests/. No T1 product paths changed."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 returned empty. git check-ignore -v for the verification package path reported .gitignore:3: artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 38085381131 is push on refs/heads/architecture/workspace-persistente-rackcad, status completed, with all four required jobs success and HeadSha e2f642b86197441eea0838c8055c1db666606f11. It does not match the handoff's deadbeef CurrentSha, so it cannot accredit the handoff-declared SHA. RedPart passes: RedRun 38084788650 is a push for RedSha 31e3c57a66025ba339acb2c796298e71153126cc with Core failure, as expected for RED."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "Read all three TRX files. Current Core TRX has 12754/12754 passed; Workspace selection is 159/159. RED Core TRX has 12754 total, 62 failed; Workspace selection is 159 with 97 passed and 62 failed. Failures are assertion failures, including 'no live session for native id 100'; none are compile failures. RT is the five Workspace test files from git diff BaseSha RedSha -- tests/; git diff RedSha HEAD -- tests/ is empty, so GREEN did not modify RT. RED is credited as ChainRedFiles=the five RT paths. Current Core TRX belongs to the observed e2f642b86197441eea0838c8055c1db666606f11 run, not the handoff-declared deadbeef SHA, so its results cannot validate that declared SHA. UI TRX: 1654 total, 1637 passed, 17 UnitTestResult outcome=NotExecuted; Counters.notExecuted=0, consistent with the stated logger convention."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD shows both RED and GREEN commits include Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective Worker model in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report the effective Worker model claude-sonnet-5-5 and effort high. These match delegation.json requested model and effort; RoutingEnforcement is required."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked worker-handoff.json free-text fields WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against AUTOMATION_PLAN Sec.16.10 terms; no listed term found."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report no permission denials and no pending failed order. The transient script error is recorded as recovered in later calls. The unattributable process was CLEARED_BY_REREAD per the supplied Coordinator disposition; no evidence shows it touched Git, config or the worktree. P-01 is resolved for this invocation by the supplied Owner dispositions and exact two-hash allowlist."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04",
+    "C-15"
+  ],
+  "Findings": [
+    "The handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, while git HEAD, the origin branch ref, the accepted Owner disposition and the CurrentRun CI HeadSha identify e2f642b86197441eea0838c8055c1db666606f11. This is contradictory identity evidence.",
+    "Because the handoff SHA is invalid, the observed CurrentSha CI and Core TRX cannot be attributed to the SHA declared by the handoff. The underlying run and test counts are green for the observed e2f642b86197441eea0838c8055c1db666606f11.",
+    "RED evidence matches RedSha: 159 Workspace tests selected, 62 assertion failures, and the GREEN commit changes none of the five RED test files.",
+    "The work record shows a config.toml hash transition, but the supplied Owner dispositions accept the two exact snapshots, confirm the 105-name inventory and declare the Worker result eligible; this is not a P-01 stop for this verification."
+  ],
+  "RecommendedNextAction": "Stop this verification chain and ask the Coordinator to resolve the invalid handoff SHA and the unauthorized correction condition before any further verification."
+}

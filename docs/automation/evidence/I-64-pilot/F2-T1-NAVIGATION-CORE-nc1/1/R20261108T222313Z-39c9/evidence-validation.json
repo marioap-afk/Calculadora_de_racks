@@ -1,0 +1,23 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261108T222313Z-39c9",
+  "OutputUnresolvedHex": [],
+  "OutputUnresolvedHexByCheck": {},
+  "CommandUnresolvedHex": [],
+  "GitFatalLines": [],
+  "NonZeroExit": [],
+  "ConstrainedLanguageErrors": 2,
+  "DisplayNameSelectionCommands": [
+    4,
+    7
+  ],
+  "TestsEvidenceNumbers": [
+    "14997",
+    "15048",
+    "51",
+    "676",
+    "727"
+  ],
+  "TestsEvidenceDisplayCount": true,
+  "MaterialHexDefect": false
+}

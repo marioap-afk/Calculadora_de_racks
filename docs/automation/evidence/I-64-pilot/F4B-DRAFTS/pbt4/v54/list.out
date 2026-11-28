@@ -1,0 +1,26 @@
+filas 284, con accion 271; pbt4d-retire-list-271.tsv
+  fila nueva (M-04 b): PushBackPilotUpdateEquivalenceGuardTests.cs E3Violations reescribir con registro 111, 126-130, 132
+  fila nueva (M-04 b): PushBackPilotUpdateEquivalenceGuardTests.cs E5Violations reescribir con registro 192
+  fila nueva (M-04 b): WorkspaceDraftPilotOwnershipTests.cs Kinds reescribir con registro 74
+  fila nueva (M-04 b): WorkspacePilotEditGuardTests.cs HostViolations reescribir con registro 279-280
+  fila nueva (M-04 b): WorkspacePilotEditGuardTests.cs WriteViolations reescribir con registro 906
+  fila nueva (M-04 b): WorkspacePilotPrepareGuardTests.cs AfterMatchViolations reescribir con registro 157, 159-160, 162, 166-168
+  fila nueva (M-04 b): WorkspaceDraftPilotIntentStaleBaseTests.cs using RackCad.Application.Systems.PushBack.Draft; reescribir con registro anadida (linea 7 del RED)
+sha256 05a4d3d1905529c5bc4d53e0684d27d97eaa96502098eebeb9d16bfd931c75ac
+  C-7 | borrar con registro | 75
+  C-7 | reescribir con registro | 27
+  C-7 | se queda | 7
+  C-7 | sustituir con registro | 29
+  M-03 | borrar con registro | 35
+  M-04 | reescribir con registro | 3
+  SUS-01 | borrar con registro | 1
+  apoyo | borrar con registro | 21
+  apoyo | reescribir con registro | 2
+  apoyo | se queda | 6
+  ayudante-editado | reescribir con registro | 6
+  compilacion | borrar con registro | 11
+  compilacion | sustituir con registro | 1
+  directiva | reescribir con registro | 1
+  ejecucion | sustituir con registro | 3
+  lenta | acotar con registro | 1
+  original | borrar con registro | 55

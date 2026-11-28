@@ -1,0 +1,15 @@
+UTC 2026-11-07T18:05:20.6527902Z
+Monitores:
+  primario=False x=-1920 y=0 w=1536 h=864
+  primario=True x=0 y=0 w=1920 h=1080
+Ventanas visibles, de arriba abajo (proceso, rectangulo fisico; en marco 1456x819 entre corchetes):
+  explorer               x 0..1920 y 1032..1080  [0..1920 , 1032..1080]
+  explorer               x -1920..0 y 1020..1080  [-1920..0 , 1020..1080]
+  claude                 x -1920..0 y 0..1020  [-1920..0 , 0..1020]
+  <otra-app>                    x -31993..-31847 y -32000..-31979  [-31993..-31847 , -32000..-31979] minimizada
+  <otra-app>                  x -31993..-31847 y -32000..-31972  [-31993..-31847 , -32000..-31972] minimizada
+  <otra-app>               x -31993..-31847 y -32000..-31972  [-31993..-31847 , -32000..-31972] minimizada
+  <otra-app>                 x -1920..0 y 0..1020  [-1920..0 , 0..1020]
+  explorer               x -1920..1920 y 0..1080  [-1920..1920 , 0..1080]
+acad.exe: 
+RAMElements.exe: 

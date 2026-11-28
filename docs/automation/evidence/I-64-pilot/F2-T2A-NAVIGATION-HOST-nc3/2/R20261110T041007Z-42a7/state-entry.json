@@ -1,0 +1,23 @@
+{
+  "Real": {
+    "ForEachRefSha256": "dd6a4efea57b0a6401cc041936be350b221d7acd642516d94432fd5da8e8c0af",
+    "Head": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "TrackingMain": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "TrackingBranch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "StatusPorcelain": "",
+    "Files": {
+      "packed-refs": "eec99b0cd30d9a17762eea714e4d49c4df9f8d4aaae0446c10ef251751b31db7",
+      "worktree-HEAD": "151bd1a723664b51bba2799a134cbd64e9d96700ae415d3fd237f879cc4a9206",
+      "worktree-index": "e13eb7c0bcb2964d9f4f1280f186d446fe2180a915dd9a8e87501b4cfacbef16",
+      "config": "a42bb2f8b1fa581e34a8aba6ddbd9fcb4f0286433e28db35dde4df79a0cf4dc6"
+    }
+  },
+  "MirrorRefsSha256": "12b825305c23a880d0fdcaebb2ffdebd41a93da2071c6e2c89726e62c50cd16c",
+  "MirrorHead": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+  "MirrorIndexSha256": "e13eb7c0bcb2964d9f4f1280f186d446fe2180a915dd9a8e87501b4cfacbef16",
+  "CodexExes": [
+    "OpenAI/Codex/bin/5449c1f0f26f1f98/codex.exe"
+  ],
+  "BinarySha256": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+  "ConfigSha256": "2EEDDAAB28C1147A5D927B4EF1E4C69229197E04CB6B114161FFFF04A16588C8"
+}

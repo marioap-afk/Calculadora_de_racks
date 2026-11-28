@@ -1,0 +1,2 @@
+filas 1 {'Failed': 1}; inicio 2026-11-21T11:05:31.4765409-06:00; fin 2026-11-21T11:05:31.4765551-06:00
+  Failed RackCad.UI.Tests.PushBackEditAllApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied | at RackCad.UI.Tests.PushBackEditAllApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied() in <copia>\tests\RackCad.UI.Tests\PushBackEditAllApplyCloseTests.cs:line 160 | Assert.Equal() Failure: Collections differ

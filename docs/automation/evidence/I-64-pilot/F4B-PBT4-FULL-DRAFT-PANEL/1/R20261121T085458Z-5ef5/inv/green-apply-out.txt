@@ -1,0 +1,11 @@
+dfc1c273beba6821201b24937389b647ef087976a3046bcfbe64122b2d52ab01     5094  src/RackCad.Application/Formatting/NumericTextRule.cs
+46f273543bdfe16b75b2ee18b7cd6dfe203de0e078e55dbb305694798f174461      996  src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs
+9133768aeb4331eb7ea2a0bcf547414e56bbf29d86d7261101ac710079f27447     2592  src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs
+f4464699e5c8f483ebabb6555c009962d6e558e7cb215931f841277b8a03e980     6832  src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs
+151b3437fd27d691b91563bc6fe8bbea4c71db5c90df0aaa69f19ec7f604a5d5    37245  src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+958c86f053c223fed8563e275eece502f52e5f4a60299594b2f6dab10e7aff47   106938  src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+4a935bea91dfa56b6a151716073cf216c44f36a5056085887b1300c355c909be    11620  src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+1fc5f129ceace4d74e8cbcbc7a58321254507ba3b58cdd03bdf97e2c0049ed70     4401  src/RackCad.UI/Controls/NumericFieldValidation.cs
+7d8b172edb687a80f1c6c9dc11a9c5abafb33e881275c6cda850c00f7ae5cccc    29671  src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+29e702b7bac13863248f8011e5633f61320d98597a6a1f62bb1a4d5f606cfe51    64890  src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+ESCRITOS 10 archivos

@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4-HOST-C1",
+  "RunId": "R20261116T042516Z-ed82",
+  "DelegationRunId": "R20261116T030940Z-6019",
+  "WorkRunId": "R20261116T031655Z-e758",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-16T03:17:00Z; Outcome.OutputWrittenUtc=2026-11-16T04:03:23.794875+00:00, despues del inicio."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json identifica TaskId=F4-T4-HOST-C1, Attempt=1, RunId=R20261116T031655Z-e758 y DelegationRunId=R20261116T030940Z-6019; fue escrito despues del inicio. Sin embargo, declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, que no coincide con el HEAD existente."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor b28e75ad8a31bd490d67adbc74a294f35082c17c 16ce44459f05c6b80d48dee63e1210b1acd5f3e1 devolvio 0. git diff --name-only AuthorityRevision BaseSha produjo solo tres rutas: docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T4-HOST-C1/coordinator/gate-contract.json y docs/automation/state/I-64.yml; todas son UNIT_DOC en Authorities."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json frente a gate-contract.json: byte-fidelity-check.json da PASS con igualdad de bytes y valores para los ocho campos, y relay-record-planning.json registra A1-A8 pass (8/8) y nc4. Las entradas de alcance e invariantes del contrato coinciden con la delegacion."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dieron ambos b86c3cfe2c39e7b0fea7ff6e62f431c68751d3b1. git merge-base --is-ancestor BaseSha HEAD y BaseSha RedSha devolvieron 0; RedSha CurrentSha declarado no existe: la entrega declara deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Por tanto HEAD no coincide con CurrentSha declarado."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=b86c3cfe2c39e7b0fea7ff6e62f431c68751d3b1, OriginMainSha=812baf879612320653094a8aaf46aca0bac81383; coincide con HEAD y MainSha del contrato."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..HEAD contiene 11 rutas; las 11 estan cubiertas por AllowedWriteScope de delegation.json y ninguna coincide con ForbiddenWriteScope (119 entradas)."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no produjo salida. git check-ignore devolvio la ruta artifacts/orchestration/I-64/F4-T4-HOST-C1-nc1/1/R20261116T042516Z-ed82/inputs/gate-contract.json."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts registra el push 43801607010 con ref exacta, head_sha b86c3cfe2c39e7b0fea7ff6e62f431c68751d3b1 y los cuatro jobs requeridos en success; no acredita el CurrentSha deadbeef declarado en la entrega. Para RedSha, el push 43799572094 coincide con 61ffc8288e4cb3af5ac63906e752a9600dafecfb y el job Core fallo."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX CurrentSha real: Core 19063 seleccionadas, 19063 passed, 0 failed; UI 2403, 2386 passed, 0 failed, 17 skipped. Los filtros contractuales Core seleccionaron al menos sus minimos (Workspace 3482; los otros 23 filtros, de 1 a 81) y UI Workspace 694, PushBackClassicCharacterization 55. TRX RED: Workspace 3482 con 11 fallas por asercion, incluyendo nombre esperado frente a null y errores Assert; los otros filtros requeridos no fallaron y ambos filtros UI pasaron. git diff --name-only ChainBaseSha RedSha -- tests/ y git diff --name-only RedSha HEAD muestran las mismas seis rutas de pruebas: WorkspaceAssociativeBookkeepingTests.cs, WorkspaceBridgeFacadeSourceGuardTests.cs, WorkspaceBridgeObjectSubjectGuardTests.cs, WorkspaceLifecycleGuardTests.cs, WorkspacePilotUpdateGuardTests.cs y WorkspacePilotUpdateRunTests.cs; ChainRedFiles=esas seis rutas."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show de los commits RED 61ffc8288e4cb3af5ac63906e752a9600dafecfb y GREEN b86c3cfe2c39e7b0fea7ff6e62f431c68751d3b1 muestra en ambos Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual a Worker.Trailer y coherente con ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 y effort high. relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; ambos coinciden."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Busque los terminos de AUTOMATION_PLAN 16.10 en WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json; no hubo coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes declara 0 denegaciones, 0 resultados de herramientas con error y ninguno pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "La entrega declara un CurrentSha inexistente que no coincide con HEAD ni con refs/remotes/origin de la rama.",
+    "La corrida CI registrada acredita b86c3cfe2c39e7b0fea7ff6e62f431c68751d3b1, no el CurrentSha declarado."
+  ],
+  "RecommendedNextAction": "Corregir la identidad CurrentSha de la entrega y repetir la verificacion sobre el SHA confirmado por Git."
+}

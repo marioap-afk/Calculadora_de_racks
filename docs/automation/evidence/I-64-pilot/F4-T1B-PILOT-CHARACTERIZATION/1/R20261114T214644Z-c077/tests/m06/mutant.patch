@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..d26b0581 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3374,8 +3374,6 @@ namespace RackCad.UI.Systems.PushBack
+                 session.RequestInsert(view, section, ctx => new PushBackInsertionRequest(
+                     lastComputation.System, lastComputation.Design, ctx.Id, ctx.Name, ctx.View, ctx.Section, sourceProject));
+             }
+-
+-            Close();
+         }
+ 
+         private void Close_Click(object sender, RoutedEventArgs e) => Close();

@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-EDIT-ALL-WINDOW",
+  "RunId": "R20261121T235550Z-2fc5",
+  "DelegationRunId": "R20261121T205457Z-af49",
+  "WorkRunId": "R20261121T205731Z-41db",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-21T20:57:41Z; OutputWrittenUtc=2026-11-21T23:10:51Z. Entry reread records no persistent worker processes."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt=1, DelegationRunId, RunId, branch and worktree; OutputWrittenUtc is after Cession.StartUtc. BaseSha=d502601477c21972ca2109b0d5c25c6fddfe4989, RedSha=280c79beac61d31b03f86488c03686eef4f694bc, CurrentSha=7cc1076eae8159294a1498ab556851977223b64c."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor a8e9cbe686785eef5f741a798f1e54f4419f35a1 d502601477c21972ca2109b0d5c25c6fddfe4989 exited 0. git diff --name-only between those SHAs lists 4 docs paths: 3 UNIT_DOC and 1 unlisted; none EXTERNAL or UNIT_CHANGE. revision-diff.txt SHA-256 matches 7AB33D08FA50662A0824A0262FDF3500ED4DDA576EC6BC9BBEAEDC0AC9437DFC. Read AUTOMATION_PLAN and AGENTS.md from MainSha and agent-execution README from AuthorityRevision with git show."
+    },
+    "Contract": {
+      "Result": "fail",
+      "Evidence": "A3 scope subset, A4 forbidden scope subset, and A5 invariants, StopConditions, Authorities and RequiredTests comparisons pass. However, delegation.json AllowedWriteScope has 25 entries and omits src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs, while gate-contract.json has 26 and includes it. byte-fidelity-check.json reports PASS and AllowedWriteScopeElementwiseInOrder=true with matching hashes, contradicting the actual lists. This triggers S-04."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=7cc1076eae8159294a1498ab556851977223b64c; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=7cc1076eae8159294a1498ab556851977223b64c; both equal handoff CurrentSha. Branch and worktree match the delegation."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: current run 44959653142 is push to refs/heads/architecture/workspace-persistente-rackcad at exact CurrentSha; LsRemoteSha equals CurrentSha and OriginMainSha equals MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "Read delegation.json AllowedWriteScope: 25 exact paths. Read-only comparison script checked git diff --name-only BaseSha CurrentSha (26 paths), BaseSha RedSha (21 src/tests paths), and ChainBaseSha CurrentSha -- src tests (26 paths); each has one path outside the exact list: src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs. No changed path intersects ForbiddenWriteScope. This triggers PBT4C-C01."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the input package returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts current push run 44959653142 has all four required jobs success: Tests, UI Tests, Build UI and Build Plugin without AutoCAD. Red push run 44956801926 has Tests and UI Tests failure, Build UI success and Build Plugin skipped, as expected. TRX totals match their run records."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "required-tests.txt SHA-256=D50C2EE8BDCFEECCFE02D8D39FD95A8AE5D755DF68B0FAA4057A0CEF41FCE332; 85 filters parsed and compared with contract RequiredTests; all meet MinSelected and expected RED/GREEN outcomes. RED failures are exactly the 9 Core and 5 UI expected failures, all in ExpectRed filters; GREEN has no failures. TRX totals: Core RED 19619=19149 Passed+9 Failed+461 NotExecuted; Core GREEN 19619=19158 Passed+461 NotExecuted; UI RED 2486=2432 Passed+5 Failed+49 NotExecuted; UI GREEN 2486=2437 Passed+49 NotExecuted. RT has 13 test paths; GREEN adds no test paths. Worker UI runs use class filters from RequiredTests, with no full UI suite or method filter."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both RED and GREEN commits have Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. relay-record-work.json records ModelEffective=claude-sonnet-5-5 and EffortEffective=high; subagent launch alias sonnet matches the transport rule."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only full-field scan of the seven required worker-handoff text fields found zero matches for all AUTOMATION_PLAN 16.10 terms. Character counts: WorkCompleted 1026, Evidence 11436, UnexpectedFindings 699, KnownLimitations 1015, Deviations 1681, OpenQuestions 0, RecommendedNextAction 108."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json reports zero permission denials; its Notes report 4 tool errors, none pending. No unresolved failed order or credential issue is recorded."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "TriggeredStopConditions": [
+    "S-04",
+    "PBT4C-C01"
+  ],
+  "Findings": [
+    "The byte-fidelity record claims the delegation and contract AllowedWriteScope values match, but the files differ: the delegation omits PushBackFullDraftLaunch.cs.",
+    "That omitted path is changed in BaseSha..CurrentSha, outside the delegation's exact 25-path AllowedWriteScope."
+  ],
+  "RecommendedNextAction": "Resolve the scope and byte-fidelity discrepancy, then issue a consistent delegation before rerunning verification."
+}

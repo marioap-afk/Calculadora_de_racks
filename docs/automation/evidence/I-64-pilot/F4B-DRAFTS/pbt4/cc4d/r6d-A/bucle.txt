@@ -1,0 +1,5 @@
+vuelta 0: bajas 223, errores 4 (distintos 1), miembros nuevos 1, sin resolver 0
+vuelta 1: bajas 224, errores 10 (distintos 5), miembros nuevos 4, sin resolver 0
+vuelta 2: bajas 228, errores 70 (distintos 18), miembros nuevos 3, sin resolver 0
+vuelta 3: bajas 231, errores 0 (distintos 0), miembros nuevos 0, sin resolver 0
+bajas finales 231 (de la lista 222, SUS-01 1, por compilacion 8)

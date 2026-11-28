@@ -1,0 +1,173 @@
+{
+  "Schema": "rackcad-i64-architect-review-record/v1",
+  "RunId": "R20261123T212253Z-ab02",
+  "Amendment": "I-64-A-14",
+  "Phase": "ARCHITECT_REVIEW",
+  "Authority": "orden del Coordinator I-64 - COORDINATOR A-14 REVIEW ORDER (literal en esta carpeta, coordinator-a14-review-order.md, SHA-256 C37B9E780E689206A0585482F9B385A672239A539E8F87846467FE3DE15008CB), ajustada a la Snapshot M por la decision del Owner de la quinta ronda de A-14 (Sonda neutra, luego M); una revision formal autorizada sobre el commit exacto de la rama lateral tras su CI exacta",
+  "ReviewedCommit": "ab0170b76c34249b4d772ac18cc571c1b5a587f1",
+  "PromptSha256": "F3AB203323326B2464FFC2E931786B6CD227886DD688887C350C5BC314C9D963",
+  "SchemaSha256": "51368529804836DB06FF17BC9E71E5D82CC299BC8C82ECB7F6F0DD648FE8F16C",
+  "Participant": {
+    "Kind": "codex-cli",
+    "Profile": "ARCHITECTURE_REVIEW",
+    "ModelRequested": "gpt-6-luna",
+    "EffortRequested": "high",
+    "Sandbox": "read-only",
+    "ModelEffective": "gpt-6-luna",
+    "EffortEffective": "high",
+    "SandboxEffective": "read-only",
+    "ApprovalPolicyEffective": "never",
+    "CliVersion": "0.167.0-alpha.3.2",
+    "CliBinary": "Codex/bin/5449c1f0f26f1f98/codex.exe (SHA-256 4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17)",
+    "Launcher": "-s read-only -m gpt-6-luna -c model_reasoning_effort=\"high\" --output-schema <esquema> -o output.json --json",
+    "WorkingDirectory": "el worktree lateral de A-14 en el commit exacto (env -C y -C); CwdIsLateralWorktree = True",
+    "EffectiveSource": "rollout-2026-11-23T15-23-22-01a20a4a-c1bb-70b1-860e-205854096fd4.jsonl",
+    "EffectiveSourceSha256": "48EF72D1C879FADE698833475B978FE6F74489AB6FA6D135C46C9E21248BCF89"
+  },
+  "Eligibility": "celda gpt-6-luna/high/read-only acreditada en este CLI por la sonda neutra R20261123T211742Z-282c (Snapshot M, desde el worktree lateral, PASS); decision Q-C2 del Coordinator; mismo binario antes y despues; unico codex.exe en Codex/bin; config.toml = SNAPSHOT M",
+  "Cession": {
+    "StartUtc": "2026-11-23T21:23:19Z",
+    "EndUtc": "2026-11-23T21:26:14Z",
+    "SessionOperated": false
+  },
+  "Exit": {
+    "SideHeadSha": "ab0170b76c34249b4d772ac18cc571c1b5a587f1",
+    "SideRemoteSha": "ab0170b76c34249b4d772ac18cc571c1b5a587f1",
+    "SideTrackingSha": "ab0170b76c34249b4d772ac18cc571c1b5a587f1",
+    "ProductRemoteSha": "fa59bd82acff7ce276a1605c60d426c45a3e3b8d",
+    "OriginMainSha": "812baf879612320653094a8aaf46aca0bac81383",
+    "CleanTree": true,
+    "MainCheckoutClean": true,
+    "GitOperationsInProgress": [],
+    "ExactShaCi": "run 45263171189 = success, 4/4 jobs (medida antes de lanzar)",
+    "ConfigSnapshot": "M",
+    "ConfigSha256": "3E9BC35B0E72641A81241EC3E32BF45010B8CC3CC93FDD4E3C5E8188E6D19FFC",
+    "Participants": 0,
+    "Unattributable": 0
+  },
+  "Entry": {
+    "SideHeadSha": "ab0170b76c34249b4d772ac18cc571c1b5a587f1",
+    "SideRemoteSha": "ab0170b76c34249b4d772ac18cc571c1b5a587f1",
+    "ProductRemoteSha": "fa59bd82acff7ce276a1605c60d426c45a3e3b8d",
+    "CleanTree": true,
+    "MainCheckoutClean": true,
+    "ConfigSnapshot": "M",
+    "ConfigChanged": false,
+    "Participants": 0,
+    "Unattributable": 0,
+    "LauncherDead": true,
+    "AcadProcesses": 1,
+    "AcadNote": "medido (no fijo como en A-13): un acad.exe del Owner, abierto desde el Explorador de Windows a las 2026-11-23T20:45:07Z, antes de la sonda y de la revision; ni la sesion ni la revision lo usaron"
+  },
+  "Outcome": {
+    "ExitCode": 0,
+    "TerminalEvent": "turn.completed",
+    "OutputSha256": "54006336C613876556C616D326568A307D4291441E4D8D8C91469FB96BD726D7",
+    "SchemaValid": true,
+    "Coherent": true,
+    "SubjectMatches": true,
+    "SubjectMismatches": [],
+    "CoordinatorOrderSha256Matches": true,
+    "NonAsciiBytes": 0,
+    "CommandCount": 24,
+    "NoProfileCommands": 0,
+    "NonZeroCommands": 1,
+    "GitWriteCommands": [],
+    "FileWriteCandidates": 1,
+    "GateTerms1610": [
+      "FINAL_CANDIDATE_SHA"
+    ],
+    "LimitPatterns": {},
+    "InvalidOutputReasons": [],
+    "CountsAsTheValidReview": true
+  },
+  "Result": {
+    "Verdict": "AGREED",
+    "RequiredCount": 0,
+    "OptionalCount": 0,
+    "Materiality": {
+      "M01": "YES",
+      "M02": "YES",
+      "M03": "YES",
+      "M04": "YES",
+      "M05": "YES",
+      "M06": "YES",
+      "M07": "YES",
+      "M08": "YES"
+    },
+    "Answers": {
+      "Q01": [
+        "YES",
+        true
+      ],
+      "Q02": [
+        "YES",
+        true
+      ],
+      "Q03": [
+        "YES",
+        true
+      ],
+      "Q04": [
+        "YES",
+        true
+      ],
+      "Q05": [
+        "YES",
+        true
+      ],
+      "Q06": [
+        "YES",
+        true
+      ],
+      "Q07": [
+        "YES",
+        true
+      ],
+      "Q08": [
+        "YES",
+        true
+      ],
+      "Q09": [
+        "YES",
+        true
+      ],
+      "Q10": [
+        "YES",
+        true
+      ],
+      "Q11": [
+        "YES",
+        true
+      ],
+      "Q12": [
+        "YES",
+        true
+      ],
+      "Q13": [
+        "YES",
+        true
+      ],
+      "Q14": [
+        "NO",
+        true
+      ],
+      "Q15": [
+        "NO",
+        true
+      ]
+    },
+    "RequiredFindings": [],
+    "OptionalFindings": []
+  },
+  "Budget": "una revision formal autorizada; un solo reintento declarado, solo por fallo de transporte (encargo de la sesion; la orden admite hasta dos invocaciones extra)",
+  "Notes": [
+    "Una sola invocacion; sin reintento.",
+    "La carpeta de la corrida fue la de la sesion, fuera del repositorio: el encargo prohibe escribir en el worktree lateral hasta que la revision termine. Por eso --output-schema y -o llevan su ruta absoluta, y no hubo git fetch (SideRemote por ls-remote; SideTracking local).",
+    "El prompt es a14-architect-prompt.md byte a byte salvo {{RUN_ID}} y {{ORDER_SHA256}}. Su linea de la orden nombra artifacts/orchestration/I-64/A-14-review/<RunId>/coordinator-a14-review-order.md, que no existe en el worktree por la regla anterior; ninguna orden del revisor la nombra, y el CoordinatorOrderSha256 que devuelve casa con el de la orden custodiada aqui.",
+    "El prompt conserva el texto de Q-C2 (config Snapshot L); la orden, ajustada por reemplazo exacto, nombra la Snapshot M, que es la medida a la salida y a la entrada.",
+    "La orden conserva su cabecera (PREPARADA, SIN EMITIR) y sus campos [COORDINATOR] tal como se prepararon; el lanzamiento se hizo por el encargo de la sesion principal, con la autoridad de la quinta ronda del Owner.",
+    "GateTerms1610: FINAL_CANDIDATE_SHA aparece en una evidencia del revisor que describe C-12 de A-14; se copia sin interpretar.",
+    "FileWriteCandidates: 1, un python -c del revisor que solo calcula e imprime los SHA-256 de A-14/ contra sha256.txt (el patron casa con >=); GitWriteCommands: 0."
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261119T183325Z-14dd",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "PBT2B-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only 59839c71 03b16c88 y git diff --name-status 59839c71 a3b86134 muestran cambios en ocho rutas. AllowedWriteScope de delegation.json enumera siete rutas y no incluye src/RackCad.UI/Systems/PushBack/PushBackEditorMode.cs; esa ruta no pertenece a la lista blanca exacta."
+  },
+  "OutputSha256": "BEF4B9DB02AC3E45F20B59C6FB32BF456DD7DFCC01925B0F2B73F9CF97FAE147",
+  "ManualFreeText1610": []
+}

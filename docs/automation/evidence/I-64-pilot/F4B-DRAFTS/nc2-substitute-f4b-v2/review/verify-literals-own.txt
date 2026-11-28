@@ -1,0 +1,177 @@
+{
+ "TupleLen": 2,
+ "Types": [
+  "str",
+  "str"
+ ],
+ "Ascii": true,
+ "Distinct": true,
+ "LiteralSha256": [
+  "5FD8F808807E6384F29592DD213AF98885782D32175E1008B681932A334D7953",
+  "AA2AF7562427A15E1846063426DA6911C5F6AF414203676FC592A655F2F81FE0"
+ ],
+ "Sources": {
+  "PB-T2a copia v2": {
+   "Sha256": "319683F7F6F037269DA41224C601B2F2F981A332D1117EFC48C75EE38A017F5F",
+   "TaskId": "F4B-PBT2A-DRAFT-STATE-PORT",
+   "EECount": 9,
+   "ExactHits(index->literal)": {
+    "0": [
+     0
+    ]
+   },
+   "LiteralBytesPresent": [
+    0
+   ],
+   "EntriesWithByteAByte": [
+    0
+   ],
+   "EE0EqualsLiteral": [
+    0
+   ]
+  },
+  "PB-T2a copia v1 (mi primera revision)": {
+   "Sha256": "319683F7F6F037269DA41224C601B2F2F981A332D1117EFC48C75EE38A017F5F",
+   "TaskId": "F4B-PBT2A-DRAFT-STATE-PORT",
+   "EECount": 9,
+   "ExactHits(index->literal)": {
+    "0": [
+     0
+    ]
+   },
+   "LiteralBytesPresent": [
+    0
+   ],
+   "EntriesWithByteAByte": [
+    0
+   ],
+   "EE0EqualsLiteral": [
+    0
+   ]
+  },
+  "PB-T2a git c40eea4a coordinator": {
+   "Sha256": "319683F7F6F037269DA41224C601B2F2F981A332D1117EFC48C75EE38A017F5F",
+   "TaskId": "F4B-PBT2A-DRAFT-STATE-PORT",
+   "EECount": 9,
+   "ExactHits(index->literal)": {
+    "0": [
+     0
+    ]
+   },
+   "LiteralBytesPresent": [
+    0
+   ],
+   "EntriesWithByteAByte": [
+    0
+   ],
+   "EE0EqualsLiteral": [
+    0
+   ]
+  },
+  "PB-T2b git c40eea4a coordinator": {
+   "Sha256": "E46F8B650A374B52E39C21CA988A4A64768D38AE7C074481FC6B3551240AD89E",
+   "TaskId": "F4B-PBT2B-WORKSPACE-MODE-WINDOW",
+   "EECount": 10,
+   "ExactHits(index->literal)": {
+    "0": [
+     0
+    ]
+   },
+   "LiteralBytesPresent": [
+    0
+   ],
+   "EntriesWithByteAByte": [
+    0,
+    8
+   ],
+   "EE0EqualsLiteral": [
+    0
+   ]
+  },
+  "PB-T2c git c40eea4a coordinator": {
+   "Sha256": "CB83AE8F74C2F6565BE02F23C48B372527106F1994F40B7A99308031E8E38A90",
+   "TaskId": "F4B-PBT2C-WORKSPACE-CARRYOVER",
+   "EECount": 10,
+   "ExactHits(index->literal)": {
+    "0": [
+     0
+    ]
+   },
+   "LiteralBytesPresent": [
+    0
+   ],
+   "EntriesWithByteAByte": [
+    0,
+    8
+   ],
+   "EE0EqualsLiteral": [
+    0
+   ]
+  },
+  "PB-T3a copia v2": {
+   "Sha256": "B37FF5E93E6D8065A7E3EC2EFA6E7AF1DA77D20FFFF6F258347A96B3FB1A0E72",
+   "TaskId": "F4B-PBT3A-FULL-WRITE-MODEL",
+   "EECount": 10,
+   "ExactHits(index->literal)": {
+    "0": [
+     1
+    ]
+   },
+   "LiteralBytesPresent": [
+    1
+   ],
+   "EntriesWithByteAByte": [
+    0
+   ],
+   "EE0EqualsLiteral": [
+    1
+   ]
+  },
+  "PB-T3a git 485b5651 coordinator": {
+   "Sha256": "B37FF5E93E6D8065A7E3EC2EFA6E7AF1DA77D20FFFF6F258347A96B3FB1A0E72",
+   "TaskId": "F4B-PBT3A-FULL-WRITE-MODEL",
+   "EECount": 10,
+   "ExactHits(index->literal)": {
+    "0": [
+     1
+    ]
+   },
+   "LiteralBytesPresent": [
+    1
+   ],
+   "EntriesWithByteAByte": [
+    0
+   ],
+   "EE0EqualsLiteral": [
+    1
+   ]
+  },
+  "PB-T3a git c40eea4a coordinator": {
+   "Sha256": "B37FF5E93E6D8065A7E3EC2EFA6E7AF1DA77D20FFFF6F258347A96B3FB1A0E72",
+   "TaskId": "F4B-PBT3A-FULL-WRITE-MODEL",
+   "EECount": 10,
+   "ExactHits(index->literal)": {
+    "0": [
+     1
+    ]
+   },
+   "LiteralBytesPresent": [
+    1
+   ],
+   "EntriesWithByteAByte": [
+    0
+   ],
+   "EE0EqualsLiteral": [
+    1
+   ]
+  }
+ },
+ "PBT3a_EE_byte_entries": {
+  "0": "antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte sobre la delegacion final, A1-A"
+ },
+ "PBT3a_other_fields_with_byte_a_byte": [
+  "Authorities"
+ ],
+ "PBT2aDataSameAsFirstReview": true,
+ "PBT2aDataDiffs": []
+}

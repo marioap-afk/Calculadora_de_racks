@@ -1,0 +1,896 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4B-PBTC2-DECLARED-CORRECTIONS",
+  "RunId": "R20261118T113927Z-037c",
+  "DelegationRunId": "R20261118T055036Z-c73e",
+  "Initiative": "I-64",
+  "Gate": "F4B",
+  "Attempt": 1,
+  "BaseSha": "eedb069ce8ae79cda684f2620694949fd402051d",
+  "RedSha": "3677847c59e92b34567fa42c600eb2c01e65576c",
+  "CurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrection2MixedBoxTests.cs",
+    "tests/RackCad.UI.Tests/PushBackDeclaredCorrection2RoundingTests.cs"
+  ],
+  "WorkCompleted": "Reanudacion (D1 del Owner, F4B-E11) de F4B-PBTC2-DECLARED-CORRECTIONS sin consumir intento. Paso 0 (lineas base de build y prueba de limpieza), paso 1 (medicion temporal D-PBTC2-07: transcripcion IDENTICA a la de R20261118T055535Z-38d3, el efecto de T2-3 ratificado por el Owner, MaxDelta maximo 0.00044, sin parada), RED (dos clases nuevas, CT-PBTC2-01..04, 4 de 4 fallan por asercion, CI del RED con ui-tests en failure y los otros tres jobs en success), GREEN solo en W y WC conforme a D-PBTC2-01..05 (hueco y longitud del modulo con Keep; cuatro avanzadas anulables con KeepOptional; ReadCellValues con KeepCell y OptionalVal con MixedBoth; Val retirado y sus dos cref corregidos), 4 de 4 en verde tres veces seguidas, RequiredTests y Core completo en verde, CI del GREEN 4/4 con UI 2422 (0 Failed, 21 Skipped, 2401 Passed) y Core 19070.",
+  "TestsExecuted": [
+    {
+      "RunRef": "b0-core",
+      "Command": "dotnet build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "e79148f0445f98c4d86dfc4bc4896f4ea8088b0f",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b0/build-core.log"
+    },
+    {
+      "RunRef": "b0-ui",
+      "Command": "dotnet build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "e79148f0445f98c4d86dfc4bc4896f4ea8088b0f",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b0/build-ui.log"
+    },
+    {
+      "RunRef": "b0-plugin",
+      "Command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o <tests/b0/plugin-out>",
+      "Phase": "RELEVANT",
+      "TreeSha": "e79148f0445f98c4d86dfc4bc4896f4ea8088b0f",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b0/build-plugin.log"
+    },
+    {
+      "RunRef": "m8b",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection2\" --logger \"trx;LogFileName=m8b.trx\" --results-directory <tests/m8b> --blame-hang-timeout 10m --blame-hang-dump-type none (medicion temporal D-PBTC2-07 sobre BaseSha, con un metodo temporal que no esta en ningun commit)",
+      "Phase": "MUTATION",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/m8b/m8b.trx"
+    },
+    {
+      "RunRef": "r1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection2\" --logger \"trx;LogFileName=r1.trx\" --results-directory <tests/r1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RED",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/r1/r1.trx"
+    },
+    {
+      "RunRef": "q1-u01",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests\" --logger \"trx;LogFileName=u01.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u01.trx"
+    },
+    {
+      "RunRef": "q1-u02",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionDimensionStyleTests\" --logger \"trx;LogFileName=u02.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u02.trx"
+    },
+    {
+      "RunRef": "q1-u03",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests\" --logger \"trx;LogFileName=u03.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u03.trx"
+    },
+    {
+      "RunRef": "q1-u04",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests\" --logger \"trx;LogFileName=u04.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u04.trx"
+    },
+    {
+      "RunRef": "q1-u05",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionStandardRestoreTests\" --logger \"trx;LogFileName=u05.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u05.trx"
+    },
+    {
+      "RunRef": "q1-u06",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=u06.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u06.trx"
+    },
+    {
+      "RunRef": "q1-u07",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=u07.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u07.trx"
+    },
+    {
+      "RunRef": "q1-u08",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.Cantilever\" --logger \"trx;LogFileName=u08.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u08.trx"
+    },
+    {
+      "RunRef": "q1-u09",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests\" --logger \"trx;LogFileName=u09.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u09.trx"
+    },
+    {
+      "RunRef": "q1-u10",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests\" --logger \"trx;LogFileName=u10.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u10.trx"
+    },
+    {
+      "RunRef": "q1-u11",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackCompositeWindowTests\" --logger \"trx;LogFileName=u11.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u11.trx"
+    },
+    {
+      "RunRef": "q1-u12",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackCompositeLifecycleWiringTests\" --logger \"trx;LogFileName=u12.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u12.trx"
+    },
+    {
+      "RunRef": "q1-u13",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackCompositeLoadExistingModulesTests\" --logger \"trx;LogFileName=u13.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u13.trx"
+    },
+    {
+      "RunRef": "q1-u14",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackBothModeCellBeamOverrideTests\" --logger \"trx;LogFileName=u14.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/u14.trx"
+    },
+    {
+      "RunRef": "q1-c01",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=c01.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/c01.trx"
+    },
+    {
+      "RunRef": "q1-c02",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=c02.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/c02.trx"
+    },
+    {
+      "RunRef": "q1-c03",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackModuleEditorCharacterizationTests\" --logger \"trx;LogFileName=c03.trx\" --results-directory <tests/q1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q1/c03.trx"
+    },
+    {
+      "RunRef": "b1-core",
+      "Command": "dotnet build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b1/build-core.log"
+    },
+    {
+      "RunRef": "b1-ui",
+      "Command": "dotnet build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b1/build-ui.log"
+    },
+    {
+      "RunRef": "b1-plugin",
+      "Command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o <tests/b1/plugin-out>",
+      "Phase": "RELEVANT",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b1/build-plugin.log"
+    },
+    {
+      "RunRef": "redci-ui",
+      "Command": "CI push del commit RED (run 44298811020), job UI Tests: dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug (suite completa)",
+      "Phase": "RED",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/redci/ui/ui.trx"
+    },
+    {
+      "RunRef": "redci-core",
+      "Command": "CI push del commit RED (run 44298811020), job Tests (Domain + Application): suite completa de tests/RackCad.Tests",
+      "Phase": "RED",
+      "TreeSha": "fc8d6ed4067e21666bbfda7f5f069960f1ec7726",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/redci/core/core.trx"
+    },
+    {
+      "RunRef": "g1",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection2\" --logger \"trx;LogFileName=g1.trx\" --results-directory <tests/g1> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/g1/g1.trx"
+    },
+    {
+      "RunRef": "g2",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection2\" --logger \"trx;LogFileName=g2.trx\" --results-directory <tests/g2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/g2/g2.trx"
+    },
+    {
+      "RunRef": "g3",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection2\" --logger \"trx;LogFileName=g3.trx\" --results-directory <tests/g3> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "GREEN",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/g3/g3.trx"
+    },
+    {
+      "RunRef": "q2-u01",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionRoundingTests\" --logger \"trx;LogFileName=u01.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u01.trx"
+    },
+    {
+      "RunRef": "q2-u02",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionDimensionStyleTests\" --logger \"trx;LogFileName=u02.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u02.trx"
+    },
+    {
+      "RunRef": "q2-u03",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests\" --logger \"trx;LogFileName=u03.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u03.trx"
+    },
+    {
+      "RunRef": "q2-u04",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionSideBNoticeTests\" --logger \"trx;LogFileName=u04.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u04.trx"
+    },
+    {
+      "RunRef": "q2-u05",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrectionStandardRestoreTests\" --logger \"trx;LogFileName=u05.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u05.trx"
+    },
+    {
+      "RunRef": "q2-u06",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=u06.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u06.trx"
+    },
+    {
+      "RunRef": "q2-u07",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=u07.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u07.trx"
+    },
+    {
+      "RunRef": "q2-u08",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.Cantilever\" --logger \"trx;LogFileName=u08.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u08.trx"
+    },
+    {
+      "RunRef": "q2-u09",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackModuleEditorWindowTests\" --logger \"trx;LogFileName=u09.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u09.trx"
+    },
+    {
+      "RunRef": "q2-u10",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackAdvancedRackParametersWindowTests\" --logger \"trx;LogFileName=u10.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u10.trx"
+    },
+    {
+      "RunRef": "q2-u11",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackCompositeWindowTests\" --logger \"trx;LogFileName=u11.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u11.trx"
+    },
+    {
+      "RunRef": "q2-u12",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackCompositeLifecycleWiringTests\" --logger \"trx;LogFileName=u12.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u12.trx"
+    },
+    {
+      "RunRef": "q2-u13",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackCompositeLoadExistingModulesTests\" --logger \"trx;LogFileName=u13.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u13.trx"
+    },
+    {
+      "RunRef": "q2-u14",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.PushBackBothModeCellBeamOverrideTests\" --logger \"trx;LogFileName=u14.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/u14.trx"
+    },
+    {
+      "RunRef": "q2-c01",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization\" --logger \"trx;LogFileName=c01.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/c01.trx"
+    },
+    {
+      "RunRef": "q2-c02",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization\" --logger \"trx;LogFileName=c02.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/c02.trx"
+    },
+    {
+      "RunRef": "q2-c03",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~RackCad.Tests.PushBackModuleEditorCharacterizationTests\" --logger \"trx;LogFileName=c03.trx\" --results-directory <tests/q2> --blame-hang-timeout 10m --blame-hang-dump-type none",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/q2/c03.trx"
+    },
+    {
+      "RunRef": "cf",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --no-build --logger \"trx;LogFileName=cf.trx\" --results-directory <tests/cf> --blame-hang-timeout 10m --blame-hang-dump-type none (suite completa de Core)",
+      "Phase": "GREEN",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/cf/cf.trx"
+    },
+    {
+      "RunRef": "b2-core",
+      "Command": "dotnet build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b2/build-core.log"
+    },
+    {
+      "RunRef": "b2-ui",
+      "Command": "dotnet build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b2/build-ui.log"
+    },
+    {
+      "RunRef": "b2-plugin",
+      "Command": "dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o <tests/b2/plugin-out>",
+      "Phase": "RELEVANT",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/b2/build-plugin.log"
+    },
+    {
+      "RunRef": "gci-ui",
+      "Command": "CI push del commit GREEN (run 44300874797), job UI Tests: dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug (suite completa)",
+      "Phase": "GREEN",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/gci/ui/ui.trx"
+    },
+    {
+      "RunRef": "gci-core",
+      "Command": "CI push del commit GREEN (run 44300874797), job Tests (Domain + Application): suite completa de tests/RackCad.Tests",
+      "Phase": "GREEN",
+      "TreeSha": "6d5d2dfcf18138767cfaf2caa35667db4bedbe78",
+      "ResultsFile": "artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/gci/core/core.trx"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "m8b",
+      "Selected": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.TEMP_MedicionD07"
+      ]
+    },
+    {
+      "RunRef": "r1",
+      "Selected": 4,
+      "Passed": 0,
+      "Failed": 4,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_02_PassingThroughTheModuleLengthKeepsACalculatedModuleAndAnEditMakesItManual",
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2MixedBoxTests.CT_PBTC2_04_AMixedBoxThatReceivesAValueAppliesItToBothSidesAndANonMixedBoxKeepsTheExactValue",
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_03_UneditedNullableAdvancedBoxesKeepTheExactValueAndAnEmptyBoxIsTheCalculation",
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_01_AnUneditedGapBoxKeepsTheExactGapUpToTheUpdate"
+      ]
+    },
+    {
+      "RunRef": "q1-u01",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u02",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u03",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u04",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u05",
+      "Selected": 1,
+      "Passed": 1,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u06",
+      "Selected": 18,
+      "Passed": 16,
+      "Failed": 0,
+      "Skipped": 2,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u07",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u08",
+      "Selected": 67,
+      "Passed": 67,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u09",
+      "Selected": 13,
+      "Passed": 13,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u10",
+      "Selected": 9,
+      "Passed": 9,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u11",
+      "Selected": 52,
+      "Passed": 52,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u12",
+      "Selected": 7,
+      "Passed": 7,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u13",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-u14",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-c01",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-c02",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q1-c03",
+      "Selected": 15,
+      "Passed": 15,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "redci-ui",
+      "Selected": 2422,
+      "Passed": 2397,
+      "Failed": 4,
+      "Skipped": 21,
+      "FailedTests": [
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_02_PassingThroughTheModuleLengthKeepsACalculatedModuleAndAnEditMakesItManual",
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2MixedBoxTests.CT_PBTC2_04_AMixedBoxThatReceivesAValueAppliesItToBothSidesAndANonMixedBoxKeepsTheExactValue",
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_01_AnUneditedGapBoxKeepsTheExactGapUpToTheUpdate",
+        "RackCad.UI.Tests.PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_03_UneditedNullableAdvancedBoxesKeepTheExactValueAndAnEmptyBoxIsTheCalculation"
+      ]
+    },
+    {
+      "RunRef": "redci-core",
+      "Selected": 19070,
+      "Passed": 19070,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1",
+      "Selected": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g2",
+      "Selected": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g3",
+      "Selected": 4,
+      "Passed": 4,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u01",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u02",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u03",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u04",
+      "Selected": 2,
+      "Passed": 2,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u05",
+      "Selected": 1,
+      "Passed": 1,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u06",
+      "Selected": 18,
+      "Passed": 16,
+      "Failed": 0,
+      "Skipped": 2,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u07",
+      "Selected": 55,
+      "Passed": 55,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u08",
+      "Selected": 67,
+      "Passed": 67,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u09",
+      "Selected": 13,
+      "Passed": 13,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u10",
+      "Selected": 9,
+      "Passed": 9,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u11",
+      "Selected": 52,
+      "Passed": 52,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u12",
+      "Selected": 7,
+      "Passed": 7,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u13",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-u14",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-c01",
+      "Selected": 10,
+      "Passed": 10,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-c02",
+      "Selected": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "q2-c03",
+      "Selected": 15,
+      "Passed": 15,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "cf",
+      "Selected": 19070,
+      "Passed": 19070,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gci-ui",
+      "Selected": 2422,
+      "Passed": 2401,
+      "Failed": 0,
+      "Skipped": 21,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "gci-core",
+      "Selected": 19070,
+      "Passed": 19070,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "REANUDACION (orden del Owner D1, F4B-E11): \"CONTINUE WITH THE FIX. Ratify exact-value preservation.\" y \"resume/relaunch the same correction work WITHOUT consuming a product attempt\". Esta invocacion es la reanudacion de la misma delegacion tras la parada PBTC2-C14 de R20261118T055535Z-38d3; Attempt sigue en 1. Tambien dijo \"Do NOT reintroduce rounding merely to preserve the previous BOM grouping\" y \"Do not invent such a tolerance inside PB-TC2\": ni el diseno ni el BOM se cambiaron para reagrupar.",
+    "Precondiciones: git status limpio, HEAD = BaseSha, el remoto de la rama = BaseSha y origin/main (tras fetch) = 812baf879612320653094a8aaf46aca0bac81383 = MainSha.",
+    "Paso 0 (BaseSha, antes de escribir): builds Release por proyecto con 0 errores. Avisos por codigo en la base: Core 66 lineas (xUnit1026 20, xUnit2000 6, xUnit2010 4, xUnit2012 2, xUnit2013 34, xUnit2017 2, xUnit2029 32, xUnit2031 32), UI 14 (xUnit1026 2, xUnit2013 4, xUnit2029 4, xUnit2030 2, xUnit2031 16), Plugin 2 (MSB3277 104 ocurrencias en el log). Logs: tests/b0/build-*.log.",
+    "Prueba de limpieza ANTES (tests/b0/clean-before.txt): layout del configurador sha256=7AAB8FF7A3E52CE52399DE3B2C8A8AFEEC0C01720D90DAD0CA49D108BFF82621, mtime UTC 2026-11-14T22:55:38.2474250Z; carpeta de biblioteca (ResolveDesignLibraryPath: el valor de settings o la carpeta Designs por defecto) mtime UTC 2026-10-13T21:42:51.4479430Z, 11 entradas, sha256 del listado recursivo ordenado (ruta relativa|longitud|mtime UTC, orden ordinal, separador LF, UTF-8) = 37A96C2DD1946EA9D17B6DFBE26CA62AD8D0C769EEC564BFDAC0FF04BFC86E7F. DESPUES del GREEN (tests/b0/clean-after-green.txt): IDENTICA byte a byte. El layout y las fechas coinciden con los de la invocacion anterior; el SHA del listado difiere solo porque el formato del listado de esa invocacion no estaba documentado y se definio uno propio.",
+    "Paso 1 (BaseSha, sin commit): medicion temporal D-PBTC2-07 con RunRef m8b. Se reutilizo el parche del metodo temporal de la invocacion anterior (artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T055535Z-38d3/temp-measurement-t2.patch), aplicado con git apply y retirado en el mismo worktree (git status limpio despues). TRX y log: tests/m8b/m8b.trx y tests/m8b/m8b.log.",
+    "COMPARACION con R20261118T055535Z-38d3 (lineas Evidence que empiezan por 'm8> '): 82 lineas frente a 82, comparacion sobre el texto despues del prefijo, DIFERENCIAS = 0. La transcripcion es IDENTICA linea a linea: el efecto de T2-3 (BOM de 15 lineas con el valor exacto frente a 14 con el redondeado: postes 150 x32 y 150.0004 x4 frente a 150 x36) esta RATIFICADO por el Owner (F4B-E11, D1) y no es una parada. Ninguna fila nueva es material (K1, K1o, K2 y K4 vacias en las seis filas), y MaxDelta maximo = 0.00044 < 0.0005 (no se declara nada). PBTC2-C14 no se activa por esta razon.",
+    "Transcripcion del paso 1 (K1, K1o, K2, K3, K4, K4', MaxDelta, detalle del BOM; prefijo m8b> = linea del Assert.Fail de la corrida temporal):",
+    "m8b> T2-1 pb-20-ab Composite.Gap=54.00044",
+    "m8b> T2-1 base-tras-gesto=[54] fila-a-mano=[54] coincide=True",
+    "m8b> T2-1 green-sin-gesto=[54.00044] esperado-green=[54.00044] coincide=True",
+    "m8b> T2-1 delta-diseno(E->R)=[$.PushBack.Composite.Gap: 54.00044 -> 54 ;; $.PushBack.Structure.Modules[8].Length: 54 -> 54.00044]",
+    "m8b> T2-1 BuildFrom E.valid=True R.valid=True E.error= R.error=",
+    "m8b> T2-1 K1=[] K1o=[] K2=False K3=False K4=[] K4'=[corte-0,corte-1,corte-2,lateral,planta] K5=[] MaxDelta=0.00044000000002597517 material=False",
+    "m8b> T2-1 BOM lineas E=11 R=11",
+    "m8b> T2-1 BOM propiedades-distintas=0 max|delta|=0",
+    "m8b> T2-2 pb-31-v2-modulos Structure.Modules[1].Length=47.99213",
+    "m8b> T2-2 base-tras-gesto=[Length=47.992 IsManualOverride=True IsCalculated=False] fila-a-mano=[Length=47.992 IsManualOverride=True IsCalculated=False] coincide=True",
+    "m8b> T2-2 green-sin-gesto=[Length=47.99213 IsManualOverride=False IsCalculated=True] esperado-green=[Length=47.99213 IsManualOverride=False IsCalculated=True] coincide=True",
+    "m8b> T2-2 delta-diseno(E->R)=[$.PushBack.Structure.Modules[1].IsCalculated: true -> false ;; $.PushBack.Structure.Modules[1].IsManualOverride: false -> true ;; $.PushBack.Structure.Modules[1].Length: 47.99213 -> 47.992]",
+    "m8b> T2-2 BuildFrom E.valid=True R.valid=True E.error= R.error=",
+    "m8b> T2-2 K1=[] K1o=[] K2=False K3=True K4=[] K4'=[corte-0,corte-1,corte-2,corte-3,lateral,planta] K5=[corte-0,corte-1,corte-2,corte-3,lateral] MaxDelta=0.00013000000001284207 material=True",
+    "m8b> T2-2 BOM lineas E=13 R=13",
+    "m8b> T2-2 BOM[7] Length E=47.9921 R=47.992 delta=-0.00010000000000331966",
+    "m8b> T2-2 BOM propiedades-distintas=1 max|delta|=0.00010000000000331966",
+    "m8b> T2-3 pb-06-seguridad Structure.ManualHeaderHeightOverride=150.00044",
+    "m8b> T2-3 base-tras-gesto=[150] fila-a-mano=[150] coincide=True",
+    "m8b> T2-3 green-sin-gesto=[150.00044] esperado-green=[150.00044] coincide=True",
+    "m8b> T2-3 delta-diseno(E->R)=[$.PushBack.Structure.ManualHeaderHeightOverride: 150.00044 -> 150 ;; $.PushBack.Structure.Modules[0].Header.Height: 150.00044 -> 150 ;; $.PushBack.Structure.Modules[0].Header.Horizontals[4].Elevation: 146.0004 -> 146 ;; $.PushBack.Structure.Modules[2].Header.Height: 150.00044 -> 150 ;; $.PushBack.Structure.Modules[2].Header.Horizontals[4].Elevation: 146.0004 -> 146 ;; $.PushBack.Structure.Modules[5].Header.Height: 150.00044 -> 150 ;; $.PushBack.Structure.Modules[5].Header.Horizontals[4].Elevation: 146.0004 -> 146 ;; $.PushBack.Structure.Modules[7].Header.Height: 150.00044 -> 150 ;; $.PushBack.Structure.Modules[7].Header.Horizontals[4].Elevation: 146.0004 -> 146]",
+    "m8b> T2-3 BuildFrom E.valid=True R.valid=True E.error= R.error=",
+    "m8b> T2-3 K1=[] K1o=[] K2=False K3=True K4=[] K4'=[corte-0,corte-1,corte-2,corte-3,frontal-es,frontal-post,lateral] K5=[] MaxDelta=0.00043999999999755346 material=True",
+    "m8b> T2-3 BOM lineas E=15 R=14",
+    "m8b> T2-3 BOM-E[0] Category=Poste;ProfileId=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA;Description=Poste Omega 3x3 calibre 14;Length=150;Quantity=32",
+    "m8b> T2-3 BOM-E[1] Category=Placa base;ProfileId=PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16;Description=Placa base atornillable;Length=0;Quantity=36",
+    "m8b> T2-3 BOM-E[2] Category=Horizontal;ProfileId=TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14;Description=Travesaño;Length=54;Quantity=40",
+    "m8b> T2-3 BOM-E[3] Category=Diagonal;ProfileId=TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14;Description=Travesaño;Length=69.66;Quantity=24",
+    "m8b> T2-3 BOM-E[4] Category=Horizontal;ProfileId=TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14;Description=Travesaño;Length=48;Quantity=40",
+    "m8b> T2-3 BOM-E[5] Category=Diagonal;ProfileId=TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14;Description=Travesaño;Length=65.12;Quantity=24",
+    "m8b> T2-3 BOM-E[6] Category=Poste;ProfileId=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA;Description=Poste omega atornillable con\r",
+    "m8b> troquel gota de agua de cinta\r",
+    "m8b> calibre 14;Length=150.0004;Quantity=4",
+    "m8b> T2-3 BOM-E[7] Category=Separador;ProfileId=SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12;Description=Separador de cabecera formado calibre 12;Length=48;Quantity=48",
+    "m8b> T2-3 BOM-E[8] Category=Seguridad;ProfileId=DEFENSA_MONTACARGAS;Description=Defensa de montacargas;Length=12;Quantity=2",
+    "m8b> T2-3 BOM-E[9] Category=Seguridad;ProfileId=DEFENSA_MONTACARGAS;Description=Defensa de montacargas;Length=36;Quantity=2",
+    "m8b> T2-3 BOM-E[10] Category=Seguridad;ProfileId=PROTECTOR_BOTA_H_3_16_18;Description=Protector bota tipo H;Length=0;Quantity=4",
+    "m8b> T2-3 BOM-E[11] Category=Larguero IN/OUT;ProfileId=LARGUERO_IN_OUT_C6;Description=Larguero in n out de canal de 6\" · Peralte 6\";Length=50;Quantity=9",
+    "m8b> T2-3 BOM-E[12] Category=Larguero troquel redondo;ProfileId=LARGUERO_ESCALON_TROQUEL_REDONDO;Description=Larguero escalon troquel redondo · Peralte 3.5\";Length=50;Quantity=9",
+    "m8b> T2-3 BOM-E[13] Category=Tope posterior;ProfileId=LARGUERO_ESCALON_TOPE_DE_3;Description=Larguero tope de 3;Length=50.25;Quantity=9",
+    "m8b> T2-3 BOM-E[14] Category=Larguero intermedio;ProfileId=LARGUERO_ESCALON_INFINITO;Description=Larguero escalón de ajuste infinito · Peralte 3.5\";Length=50;Quantity=63",
+    "m8b> T2-3 BOM-R[0] Category=Poste;ProfileId=POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA;Description=Poste Omega 3x3 calibre 14;Length=150;Quantity=36",
+    "m8b> T2-3 BOM-R[1] Category=Placa base;ProfileId=PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16;Description=Placa base atornillable;Length=0;Quantity=36",
+    "m8b> T2-3 BOM-R[2] Category=Horizontal;ProfileId=TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14;Description=Travesaño;Length=54;Quantity=40",
+    "m8b> T2-3 BOM-R[3] Category=Diagonal;ProfileId=TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14;Description=Travesaño;Length=69.66;Quantity=24",
+    "m8b> T2-3 BOM-R[4] Category=Horizontal;ProfileId=TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14;Description=Travesaño;Length=48;Quantity=40",
+    "m8b> T2-3 BOM-R[5] Category=Diagonal;ProfileId=TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14;Description=Travesaño;Length=65.12;Quantity=24",
+    "m8b> T2-3 BOM-R[6] Category=Separador;ProfileId=SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12;Description=Separador de cabecera formado calibre 12;Length=48;Quantity=48",
+    "m8b> T2-3 BOM-R[7] Category=Seguridad;ProfileId=DEFENSA_MONTACARGAS;Description=Defensa de montacargas;Length=12;Quantity=2",
+    "m8b> T2-3 BOM-R[8] Category=Seguridad;ProfileId=DEFENSA_MONTACARGAS;Description=Defensa de montacargas;Length=36;Quantity=2",
+    "m8b> T2-3 BOM-R[9] Category=Seguridad;ProfileId=PROTECTOR_BOTA_H_3_16_18;Description=Protector bota tipo H;Length=0;Quantity=4",
+    "m8b> T2-3 BOM-R[10] Category=Larguero IN/OUT;ProfileId=LARGUERO_IN_OUT_C6;Description=Larguero in n out de canal de 6\" · Peralte 6\";Length=50;Quantity=9",
+    "m8b> T2-3 BOM-R[11] Category=Larguero troquel redondo;ProfileId=LARGUERO_ESCALON_TROQUEL_REDONDO;Description=Larguero escalon troquel redondo · Peralte 3.5\";Length=50;Quantity=9",
+    "m8b> T2-3 BOM-R[12] Category=Tope posterior;ProfileId=LARGUERO_ESCALON_TOPE_DE_3;Description=Larguero tope de 3;Length=50.25;Quantity=9",
+    "m8b> T2-3 BOM-R[13] Category=Larguero intermedio;ProfileId=LARGUERO_ESCALON_INFINITO;Description=Larguero escalón de ajuste infinito · Peralte 3.5\";Length=50;Quantity=63",
+    "m8b> T2-4 pb-06-seguridad Structure.SeparatorSpacingOverride=18.00044",
+    "m8b> T2-4 base-tras-gesto=[18] fila-a-mano=[18] coincide=True",
+    "m8b> T2-4 green-sin-gesto=[18.00044] esperado-green=[18.00044] coincide=True",
+    "m8b> T2-4 delta-diseno(E->R)=[$.PushBack.Structure.SeparatorSpacingOverride: 18.00044 -> 18]",
+    "m8b> T2-4 BuildFrom E.valid=True R.valid=True E.error= R.error=",
+    "m8b> T2-4 K1=[] K1o=[] K2=False K3=False K4=[] K4'=[] K5=[] MaxDelta=0 material=False",
+    "m8b> T2-4 BOM lineas E=14 R=14",
+    "m8b> T2-4 BOM propiedades-distintas=0 max|delta|=0",
+    "m8b> T2-5 pb-07-combinado Structure.DerivedPostHeight=140.00044",
+    "m8b> T2-5 base-tras-gesto=[140] fila-a-mano=[140] coincide=True",
+    "m8b> T2-5 green-sin-gesto=[140.00044] esperado-green=[140.00044] coincide=True",
+    "m8b> T2-5 delta-diseno(E->R)=[$.PushBack.Structure.DerivedPostHeight: 140.00044 -> 140]",
+    "m8b> T2-5 BuildFrom E.valid=True R.valid=True E.error= R.error=",
+    "m8b> T2-5 K1=[] K1o=[] K2=False K3=True K4=[] K4'=[corte-0,corte-1,corte-2,corte-3,corte-4,lateral] K5=[] MaxDelta=0.00043999999999755346 material=True",
+    "m8b> T2-5 BOM lineas E=14 R=14",
+    "m8b> T2-5 BOM[7] Length E=140.0004 R=140 delta=-0.0004000000000132786",
+    "m8b> T2-5 BOM propiedades-distintas=1 max|delta|=0.0004000000000132786",
+    "m8b> T2-6 pb-07-combinado Structure.DerivedPostReinforcementHeight=24.00044",
+    "m8b> T2-6 base-tras-gesto=[24] fila-a-mano=[24] coincide=True",
+    "m8b> T2-6 green-sin-gesto=[24.00044] esperado-green=[24.00044] coincide=True",
+    "m8b> T2-6 delta-diseno(E->R)=[$.PushBack.Structure.DerivedPostReinforcementHeight: 24.00044 -> 24]",
+    "m8b> T2-6 BuildFrom E.valid=True R.valid=True E.error= R.error=",
+    "m8b> T2-6 K1=[] K1o=[] K2=False K3=True K4=[] K4'=[corte-0,corte-1,corte-2,corte-3,corte-4,lateral] K5=[] MaxDelta=0.0004400000000011062 material=True",
+    "m8b> T2-6 BOM lineas E=15 R=15",
+    "m8b> T2-6 BOM[8] Length E=24.0004 R=24 delta=-0.00039999999999906777",
+    "m8b> T2-6 BOM propiedades-distintas=1 max|delta|=0.00039999999999906777",
+    "m8b> STOPS=[T2-3 PBTC2-C14: distinto numero de lineas del BOM]",
+    "RED primera diferencia (TRX r1, PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_02_PassingThroughTheModuleLengthKeepsACalculatedModuleAndAnEditMakesItManual): ↓ (pos 1) | Expected: string[]     [\"M2 texto=47.992\", \"sin editar pendiente=False\", \"sin editar peticion M2 Length=47.99213 IsCalculate\"···, \"editado pendiente=True\", \"editado peticion M2 Length=56 IsCalculated=False I\"···] | Actual:   List<string> [\"M2 texto=47.992\", \"sin editar pendiente=True\", \"sin editar peticion M2 Length=47.992 IsCalculated=\"···, \"editado pendiente=True\", \"editado peticion M2 Length=56 IsCalculated=False I\"···] | ↑ (pos 1)",
+    "RED primera diferencia (TRX r1, PushBackDeclaredCorrection2MixedBoxTests.CT_PBTC2_04_AMixedBoxThatReceivesAValueAppliesItToBothSidesAndANonMixedBoxKeepsTheExactValue): ↓ (pos 2) | Expected: string[]     [\"mixta carga A.alto=61.23456 B.alto=60 A.largo=100.\"···, \"mixta Ambos CellPalletHeightBox texto=[] CellBeamL\"···, \"mixta CellPalletHeightBox=61.235 A.alto=61.235 B.a\"···, \"mixta CellBeamLengthOverrideBox=100 A.largo=100 B.\"···, \"no mixta carga A.alto=61.23456 B.alto=61.23456\", ···] | Actual:   List<string> [\"mixta carga A.alto=61.23456 B.alto=60 A.largo=100.\"···, \"mixta Ambos CellPalletHeightBox texto=[] CellBeamL\"···, \"mixta CellPalletHeightBox=61.235 A.alto=61.23456 B\"···, \"mixta CellBeamLengthOverrideBox=100 A.largo=100.00\"···, \"no mixta carga A.alto=61.23456 B.alto=61.23456\", ···] | ↑ (pos 2)",
+    "RED primera diferencia (TRX r1, PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_03_UneditedNullableAdvancedBoxesKeepTheExactValueAndAnEmptyBoxIsTheCalculation): ↓ (pos 2) | Expected: string[]     [\"pb-06-seguridad carga ManualHeaderHeightOverride=1\"···, \"pb-06-seguridad textos RackHeaderHeightBox=150 Rac\"···, \"pb-06-seguridad sin editar ManualHeaderHeightOverr\"···, \"pb-06-seguridad RackSeparatorSpacingBox=21.5 Manua\"···, \"pb-06-seguridad RackHeaderHeightBox vacia ManualHe\"···, ···] | Actual:   List<string> [\"pb-06-seguridad carga ManualHeaderHeightOverride=1\"···, \"pb-06-seguridad textos RackHeaderHeightBox=150 Rac\"···, \"pb-06-seguridad sin editar ManualHeaderHeightOverr\"···, \"pb-06-seguridad RackSeparatorSpacingBox=21.5 Manua\"···, \"pb-06-seguridad RackHeaderHeightBox vacia ManualHe\"···, ···] | ↑ (pos 2)",
+    "RED primera diferencia (TRX r1, PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_01_AnUneditedGapBoxKeepsTheExactGapUpToTheUpdate): ↓ (pos 2) | Expected: string[]     [\"carga Gap=54.00044\", \"GapBox texto=54\", \"GapBox sin editar Gap=54.00044\", \"peticion Gap=54.00044 descartes=0\", \"GapBox=60 Gap=60 descartes=0\"] | Actual:   List<string> [\"carga Gap=54.00044\", \"GapBox texto=54\", \"GapBox sin editar Gap=54\", \"peticion Gap=54 descartes=0\", \"GapBox=60 Gap=60 descartes=0\"] | ↑ (pos 2)",
+    "Mapa CT -> metodo: CT-PBTC2-01 -> PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_01_AnUneditedGapBoxKeepsTheExactGapUpToTheUpdate; CT-PBTC2-02 -> PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_02_PassingThroughTheModuleLengthKeepsACalculatedModuleAndAnEditMakesItManual; CT-PBTC2-03 -> PushBackDeclaredCorrection2RoundingTests.CT_PBTC2_03_UneditedNullableAdvancedBoxesKeepTheExactValueAndAnEmptyBoxIsTheCalculation; CT-PBTC2-04 -> PushBackDeclaredCorrection2MixedBoxTests.CT_PBTC2_04_AMixedBoxThatReceivesAValueAppliesItToBothSidesAndANonMixedBoxKeepsTheExactValue.",
+    "Primera diferencia en la base por CT (mensaje del TRX r1, Assert.Equal() Failure: Collections differ; el ultimo estado de las listas ya esta arriba): CT-01 en la posicion 2 (linea 3): esperado 'GapBox sin editar Gap=54.00044', real 'GapBox sin editar Gap=54' (y la linea 4 'peticion Gap=54 descartes=0'); CT-02 en la posicion 1 (linea 2 de la ventana 1): esperado 'sin editar pendiente=False', real 'sin editar pendiente=True' (y la linea 3 con Length=47.992); CT-03 en la posicion 2 (la linea 3 'pb-06-seguridad sin editar'): el esperado lleva 150.00044 y 18.00044 y la base da 150 y 18 (la medicion m8b, filas T2-3 y T2-4, da la salida real de la base 150 y 18); CT-04 en la posicion 2 (la linea 3 de la ventana mixta): esperado 'mixta CellPalletHeightBox=61.235 A.alto=61.235 B.alto=61.235 ...', real con A.alto=61.23456 (B.alto=61.235 segun el paquete). Los cuatro fallan por asercion, en la linea que dice cada CT.",
+    "Criterio del RED (INV-PBTC2-02) sobre los TRX de la CI del RED (run 44298811020, tests/redci/ui/ui.trx): los 4 resultados del filtro PushBackDeclaredCorrection2 con outcome Failed; Message 'Assert.Equal() Failure: Collections differ' que NO casa con ^(?:[A-Za-z_][\\w]*[.+])+[A-Za-z_][\\w]* : ; primera linea de StackTrace en tests/RackCad.UI.Tests/PushBackDeclaredCorrection2*.cs; ninguno NotExecuted ni Skipped; Failed = Selected = 4 >= 4. UI de la CI del RED: 2422 resultados, 4 Failed, 21 Skipped, 2397 Passed; Core 19070 Passed. Jobs: ui-tests failure; tests, build-ui y build-plugin success; sin blame-hang ni timeout.",
+    "Commits: RED 3677847c59e92b34567fa42c600eb2c01e65576c (solo los dos archivos de prueba nuevos, ningun archivo de src/), push; GREEN b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4 (solo W y WC, ningun archivo de tests/), push. git diff --name-only 3677847c59e92b34567fa42c600eb2c01e65576c..b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4 = W y WC. git diff --name-only eedb069ce8ae79cda684f2620694949fd402051d..b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4 = las cuatro rutas de AllowedWriteScope. Arbol del RED fc8d6ed4067e21666bbfda7f5f069960f1ec7726; arbol del GREEN 6d5d2dfcf18138767cfaf2caa35667db4bedbe78 (git write-tree).",
+    "INV-PBTC2-01: src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs ; src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs ; tests/RackCad.UI.Tests/PushBackDeclaredCorrection2MixedBoxTests.cs ; tests/RackCad.UI.Tests/PushBackDeclaredCorrection2RoundingTests.cs",
+    "INV-PBTC2-01 (diff vacio): 0 bytes de salida (0 = vacio)",
+    "INV-PBTC2-03 hunks de git diff -U0 eedb069ce8ae79cda684f2620694949fd402051d..b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4 -- W WC (rangos en BaseSha): @@ -198 +198 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -818,5 +818,5 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -1639 +1639 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -1641,2 +1641,2 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -1646 +1646 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -1905 +1905 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -3634,2 +3633,0 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -3641 +3639 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -3667 +3665 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -3683 +3681 @@ namespace RackCad.UI.Systems.PushBack\r || @@ -3687,0 +3686,12 @@ namespace RackCad.UI.Systems.PushBack\r . Corresponden uno a uno a WC:198; W:818-822; W:1639, :1641-1642 y :1646; W:1905; la retirada de Val (W:3634-3635); W:3641; W:3667; W:3683; y la insercion de KeepOptional, MixedBoth y KeepCell entre Keep e IntVal.",
+    "INV-PBTC2-02 (SetNumber( en lineas anadidas o quitadas de W y WC): 0 (esperado 0)",
+    "INV-PBTC2-04 sobre CurrentSha: git grep -nP '\\bVal\\(' -- W = [] (vacio); git grep -nF 'cref=\"Val\"' -- W = [] (vacio); Keep(GapBox, composite.Gap) en WC = 1; Keep(ModuleLengthBox, module.Length) en W = 1; KeepOptional( en W = 6 (6); KeepCell( = 6 (6); MixedBoth( = 3 (3); IsMixed( = 2 (2).",
+    "INV-PBTC2-05: forceRebuild:/forceRebuild) en W = 0 coincidencias; .RequestUpdate( en W = 1 (1).",
+    "Filtros de RequiredTests: sobre el RED (q1-*) y sobre el GREEN (q2-*) todos con seleccion >= MinSelected y 0 Failed; conteos en TestResults (por ejemplo PushBackFullEditorCharacterization de UI: 18 seleccionados, 16 Passed y 2 Skipped en ambos). Filtro con ExpectRed: RED r1 = 4 de 4 Failed; GREEN g1, g2 y g3 = 4 de 4 Passed (tres corridas consecutivas en verde). Suite completa de Core en local sobre el GREEN: 19070 Passed (cf).",
+    "CI del GREEN (run 44300874797, tests/gci/*): 4/4 jobs success; UI 2422 resultados, 0 Failed, 21 Skipped, 2401 Passed; Core 19070 Passed. Coincide con la prevision del paquete (seccion 6.9).",
+    "Builds Release por proyecto (Core, UI, Plugin con -o bajo tests/<RunRef>/plugin-out): 0 errores sobre la base (b0), el RED (b1) y el GREEN (b2); conteos de avisos por codigo identicos en los tres (Core 66 lineas, UI 14, Plugin 2).",
+    "Codigo de los invariantes de pruebas: las dos clases nuevas en EditorDiscardPromptCollection; ventanas creadas con Ventana() y cargadas dentro del try, cerradas en finally y nunca mostradas; cada metodo corre dentro de EditorDiscardPrompt.Substitute con un contador por metodo; la ultima linea de cada ventana termina en \" descartes=<n>\" leido despues de Cerrar(w); los unicos ayudantes nuevos son NumR, BoolR y StrR en RoundingTests (los tres se usan) y NumR en MixedBoxTests (los otros dos no se usan alli y no se declararon para no dejar miembros privados sin uso). Ningun fixture nuevo, ninguna prueba existente editada.",
+    "Rutas de artefactos comprobadas con Test-Path antes de escribirlas: todas las ResultsFile de TestsExecuted existen y son relativas a este worktree, bajo artifacts/orchestration/I-64/F4B-PBTC2-DECLARED-CORRECTIONS/1/R20261118T113927Z-037c/tests/. TreeSha: arbol real de git write-tree del arbol corrido (BaseSha, RED o GREEN) o null para la medicion temporal m8b.",
+    "No se ejecuto AutoCAD ni se toco el perfil del usuario (prueba de limpieza identica antes y despues). Al terminar se ejecuta dotnet build-server shutdown."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "Sin AutoCAD (INV-PBTC2-14): la comprobacion fisica de RACKEDITAR es de Smoke-PB; las pruebas usan la ventana real en UI.Tests sin mostrarla.",
+    "La regla de Ambos lados con el lado B presente se aplica tambien en el alcance (ApplyScope, W:1346) y en los datos del frente (ApplyFrontData, W:1510) porque ambos leen ReadCellValues; esos dos caminos NO tienen CT (M-03 de PB-TC2, paquete seccion 10) y van a la red de PB-T1.",
+    "El modo Workspace queda para PB-T2 (D-PB-06 paso 4 en el Workspace); c-02, pb-21-cola, el defecto anterior M-07 (Largo manual vacio con indicador mixto obsoleto y sin lado B) y D-PB-11 quedan fuera, como fija el paquete.",
+    "Efecto ratificado por el Owner (D1, F4B-E11): con ManualHeaderHeightOverride = 150.00044 el BOM de T2-3 pasa de 14 a 15 lineas (postes 150 x32 y 150.0004 x4 frente a 150 x36), porque el valor exacto se conserva y el BOM agrupa por valor exacto; no se introdujo ninguna tolerancia. En T2-2, T2-5 y T2-6 el BOM difiere solo en una longitud con |delta| < 0.001 (0.0001, 0.0004, 0.0004); T2-1 y T2-4 no cambian el BOM. MaxDelta maximo = 0.00044 (< 0.0005, no se declara).",
+    "Un modulo cuya longitud se ve igual a la de la caja ya no queda pendiente al escribirla (R-03 (i), efecto declarado en D-PBTC2-02).",
+    "Los conteos de Skipped de la base no se midieron aparte en local: la CI del RED y la del GREEN dan los mismos 21 Skipped (la base del paquete, 21) y los filtros de RequiredTests dan los mismos Skipped en RED y GREEN.",
+    "No se puede observar el uso del equipo durante las corridas; no se hizo nada interactivo mientras corrian las pruebas."
+  ],
+  "Deviations": [
+    "La medicion del paso 1 reutilizo el parche del metodo temporal de la invocacion anterior de la misma delegacion (mismo codigo, mismo RunRef de familia m8; esta vez m8b); el listado de la carpeta de biblioteca de la prueba de limpieza usa un formato propio, documentado en la evidencia."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "La sesion: verificacion del Controller, revisiones directa e independiente, controles nc1 a nc3 segun README seccion 10 y PBTC2-C11, y registro en el archivo de disposiciones de F4B; informar al Owner del efecto de T2-3 ya ratificado.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

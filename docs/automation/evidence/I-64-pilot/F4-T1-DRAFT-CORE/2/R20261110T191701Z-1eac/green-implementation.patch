@@ -1,0 +1,546 @@
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs b/src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs
+index 1075d269..90739f6d 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs
+@@ -1,6 +1,7 @@
+ #nullable enable
+ using System;
+ using System.Collections.Generic;
++using System.Linq;
+ 
+ namespace RackCad.Application.Workspace.Drafts
+ {
+@@ -68,7 +69,8 @@ namespace RackCad.Application.Workspace.Drafts
+         public static DraftApplyOutcome<TState> NotAppliedConflict(IReadOnlyList<DraftDifference> differences)
+         {
+             if (differences == null) throw new ArgumentNullException(nameof(differences));
+-            return new(DraftApplyOutcomeKind.NotAppliedConflict, null, differences, Array.Empty<string>(), null);
++            // A copy taken on receipt: changing the caller's list afterwards changes nothing here.
++            return new(DraftApplyOutcomeKind.NotAppliedConflict, null, differences.ToArray(), Array.Empty<string>(), null);
+         }
+ 
+         public static DraftApplyOutcome<TState> NotAppliedAdmission(string cause) => WithCause(DraftApplyOutcomeKind.NotAppliedAdmission, cause);
+@@ -92,7 +94,8 @@ namespace RackCad.Application.Workspace.Drafts
+         {
+             if (postRead == null) throw new ArgumentNullException(nameof(postRead));
+             if (warnings == null) throw new ArgumentNullException(nameof(warnings));
+-            return new(DraftApplyOutcomeKind.AppliedWithWarnings, null, Array.Empty<DraftDifference>(), warnings, postRead);
++            // A copy taken on receipt: changing the caller's list afterwards changes nothing here.
++            return new(DraftApplyOutcomeKind.AppliedWithWarnings, null, Array.Empty<DraftDifference>(), warnings.ToArray(), postRead);
+         }
+ 
+         private static DraftApplyOutcome<TState> WithCause(DraftApplyOutcomeKind kind, string cause)
+@@ -127,11 +130,18 @@ namespace RackCad.Application.Workspace.Drafts
+         internal static DraftApplyStart Refused(DraftStatus previous, DraftApplyRefusal refusal) => new(false, previous, refusal);
+     }
+ 
+-    /// <summary>What CompleteApply did: the effective kind, the status afterwards and whether the draft was rebased.</summary>
+-    public readonly record struct DraftApplyResult(bool Accepted, DraftApplyOutcomeKind Kind, DraftStatus Status, bool Rebased)
++    /// <summary>
++    /// What CompleteApply did: whether the outcome was accepted, the effective kind, the status afterwards, whether the
++    /// draft was rebased and whether the draft was still registered. An outcome is accepted (and frees the Applying slot)
++    /// even for a draft that was discarded or whose session was retired meanwhile: then <see cref="DraftWasRegistered"/>
++    /// is false and nothing else changed.
++    /// </summary>
++    public readonly record struct DraftApplyResult(bool Accepted, DraftApplyOutcomeKind Kind, DraftStatus Status, bool Rebased, bool DraftWasRegistered)
+     {
+-        internal static DraftApplyResult Closed(DraftApplyOutcomeKind kind, DraftStatus status, bool rebased) => new(true, kind, status, rebased);
++        internal static DraftApplyResult Closed(DraftApplyOutcomeKind kind, DraftStatus status, bool rebased) => new(true, kind, status, rebased, true);
++
++        internal static DraftApplyResult ClosedDetached(DraftApplyOutcomeKind kind, DraftStatus status) => new(true, kind, status, false, false);
+ 
+-        internal static DraftApplyResult NotApplying(DraftStatus status, DraftApplyOutcomeKind kind) => new(false, kind, status, false);
++        internal static DraftApplyResult NotApplying(DraftStatus status, DraftApplyOutcomeKind kind) => new(false, kind, status, false, true);
+     }
+ }
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs b/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
+index a6557175..20fd1472 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
+@@ -85,11 +85,16 @@ namespace RackCad.Application.Workspace.Drafts
+         /// The only way a draft is born (INV-F4T1-03): from the result of ONE read of the edit intention that brings the
+         /// stale base, the admission and the initial state together. A read that is not admitted creates nothing.
+         /// </summary>
+-        public DraftBeginResult<TState> Begin<TState>(SessionId session, string rackId, DraftIntentRead<TState> read, IEqualityComparer<TState> comparer)
++        /// <remarks>
++        /// <paramref name="copy"/> is injected next to the comparer: the current state of the draft is always a copy of the
++        /// initial one, so an in-place edit of the current state can never change the initial state (INV-F4T1-19).
++        /// </remarks>
++        public DraftBeginResult<TState> Begin<TState>(SessionId session, string rackId, DraftIntentRead<TState> read, IEqualityComparer<TState> comparer, Func<TState, TState> copy)
+         {
+             if (string.IsNullOrEmpty(rackId)) throw new ArgumentException("A rack id is required.", nameof(rackId));
+             if (read == null) throw new ArgumentNullException(nameof(read));
+             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
++            if (copy == null) throw new ArgumentNullException(nameof(copy));
+ 
+             if (_retired.Contains(session))
+                 return new DraftBeginResult<TState>(DraftBeginStatus.SessionRetired, null, read.Admission);
+@@ -105,7 +110,7 @@ namespace RackCad.Application.Workspace.Drafts
+                 _bySession[session] = racks;
+             }
+ 
+-            var draft = new DraftSession<TState>(this, session, rackId, read.StaleBase!, read.InitialState!, comparer);
++            var draft = new DraftSession<TState>(this, session, rackId, read.StaleBase!, read.InitialState!, comparer, copy);
+             racks[rackId] = draft;
+             return new DraftBeginResult<TState>(DraftBeginStatus.Created, draft, read.Admission);
+         }
+@@ -177,11 +182,16 @@ namespace RackCad.Application.Workspace.Drafts
+         /// </summary>
+         public DraftLossNotice RetireSession(SessionId session)
+         {
+-            _retired.Add(session);
+             if (!_bySession.TryGetValue(session, out var racks))
++            {
++                _retired.Add(session);
+                 return new DraftLossNotice(session, Array.Empty<string>());
++            }
+ 
++            // The loss list is computed first: if the injected comparer throws, nothing was changed and the session is not
++            // left half retired.
+             var lost = racks.Values.Where(e => e.IsDirty || e.HasPendingText).Select(e => e.RackId).OrderBy(k => k, StringComparer.Ordinal).ToArray();
++            _retired.Add(session);
+             _bySession.Remove(session);
+             foreach (var entry in racks.Values) entry.Detach();
+             return new DraftLossNotice(session, lost);
+@@ -196,6 +206,7 @@ namespace RackCad.Application.Workspace.Drafts
+             return true;
+         }
+ 
++        // The slot belongs to the operation, not to the registration of the draft: discarding or retiring never frees it.
+         internal void ReleaseApplySlot(IDraftEntry entry)
+         {
+             if (ReferenceEquals(_applying, entry)) _applying = null;
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftSession.cs b/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+index 9a7b1fd8..56dd28de 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+@@ -1,6 +1,7 @@
+ #nullable enable
+ using System;
+ using System.Collections.Generic;
++using System.Collections.ObjectModel;
+ 
+ namespace RackCad.Application.Workspace.Drafts
+ {
+@@ -222,21 +223,34 @@ namespace RackCad.Application.Workspace.Drafts
+     /// </summary>
+     public sealed class DraftSession<TState> : IDraftEntry
+     {
++        private readonly DraftRegistry _registry;
+         private readonly IEqualityComparer<TState> _comparer;
++        private readonly Func<TState, TState> _copy;
+         private readonly SortedDictionary<string, string> _pending = new(StringComparer.Ordinal);
+-        private DraftRegistry? _owner;
++        private bool _registered;
++        private bool _holdsApplySlot;
++        private string? _deferredErrorReason;
+         private DraftStatus? _explicitStatus;
+         private DraftStatus _statusBeforeAttempt;
+ 
+-        internal DraftSession(DraftRegistry owner, SessionId session, string rackId, DraftStaleBase staleBase, TState initialState, IEqualityComparer<TState> comparer)
++        internal DraftSession(
++            DraftRegistry registry,
++            SessionId session,
++            string rackId,
++            DraftStaleBase staleBase,
++            TState initialState,
++            IEqualityComparer<TState> comparer,
++            Func<TState, TState> copy)
+         {
+-            _owner = owner;
++            _registry = registry;
++            _registered = true;
+             Session = session;
+             RackId = rackId;
+             StaleBase = staleBase;
+-            InitialDraftState = initialState;
+-            CurrentDraftState = initialState;
+             _comparer = comparer;
++            _copy = copy;
++            InitialDraftState = initialState;
++            CurrentDraftState = _copy(initialState);
+         }
+ 
+         public SessionId Session { get; }
+@@ -249,8 +263,11 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         public TState CurrentDraftState { get; private set; }
+ 
+-        /// <summary>The pending text by field key, kept exactly as given. A snapshot ordered by key (ordinal).</summary>
+-        public IReadOnlyDictionary<string, string> PendingText => new Dictionary<string, string>(_pending, StringComparer.Ordinal);
++        /// <summary>
++        /// The pending text by field key, kept exactly as given. A snapshot whose enumeration is ordered by key (ordinal):
++        /// the order is guaranteed by the sorted dictionary behind the read-only view that is exposed.
++        /// </summary>
++        public IReadOnlyDictionary<string, string> PendingText => PendingSnapshot();
+ 
+         public bool HasPendingText => _pending.Count > 0;
+ 
+@@ -263,11 +280,12 @@ namespace RackCad.Application.Workspace.Drafts
+         public bool IsPossiblyStale { get; private set; }
+ 
+         /// <summary>True only for a Clean, marked draft: it reloads lazily when it is activated (O-01).</summary>
+-        public bool NeedsLazyReload => IsPossiblyStale && Status == DraftStatus.Clean;
++        public bool NeedsLazyReload => _registered && IsPossiblyStale && Status == DraftStatus.Clean;
+ 
+         /// <summary>False once the draft was discarded or its session retired.</summary>
+-        public bool IsRegistered => _owner != null;
++        public bool IsRegistered => _registered;
+ 
++        /// <summary>Not null if and only if the draft is Unknown.</summary>
+         public DraftUnknownOrigin? UnknownOrigin { get; private set; }
+ 
+         /// <summary>What changed, when the draft is in Conflict.</summary>
+@@ -281,15 +299,29 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         public string? ErrorReason { get; private set; }
+ 
+-        private bool CanEdit => _owner != null
++        /// <summary>
++        /// The reason recorded by EnterError while an Update was in progress. It is applied when CompleteApply closes that
++        /// Update (after the D-13 classification); null otherwise.
++        /// </summary>
++        public string? DeferredErrorReason => _deferredErrorReason;
++
++        private bool CanEdit => _registered
+             && (_explicitStatus == null || _explicitStatus == DraftStatus.Conflict);
+ 
++        // ---------------------------------------------------------------- the two states never share an object
++
++        private TState SeparatedFromInitial(TState state) =>
++            ReferenceEquals(state, InitialDraftState) ? _copy(state) : state;
++
++        private IReadOnlyDictionary<string, string> PendingSnapshot() =>
++            new ReadOnlyDictionary<string, string>(new SortedDictionary<string, string>(_pending, StringComparer.Ordinal));
++
+         // ---------------------------------------------------------------- edits
+ 
+         public DraftEditResult SetCurrentDraftState(TState state)
+         {
+             if (!CanEdit) return new DraftEditResult(DraftEditStatus.NotEditable, IsDirty);
+-            CurrentDraftState = state;
++            CurrentDraftState = SeparatedFromInitial(state);
+             return new DraftEditResult(DraftEditStatus.Updated, IsDirty);
+         }
+ 
+@@ -329,7 +361,7 @@ namespace RackCad.Application.Workspace.Drafts
+             if (!CanEdit)
+                 return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Kept, false, none);
+ 
+-            var snapshot = new Dictionary<string, string>(_pending, StringComparer.Ordinal);
++            var snapshot = PendingSnapshot();
+             var invalid = new List<DraftInvalidField>();
+             foreach (var pair in _pending)
+             {
+@@ -341,7 +373,7 @@ namespace RackCad.Application.Workspace.Drafts
+                 return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Aborted, false, invalid.ToArray());
+ 
+             var next = adapter.Apply(CurrentDraftState, snapshot);
+-            CurrentDraftState = next;
++            CurrentDraftState = SeparatedFromInitial(next);
+             _pending.Clear();
+             return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Proceeded, true, none);
+         }
+@@ -350,7 +382,7 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         public DraftMarkResult MarkPossiblyStale()
+         {
+-            if (_owner == null) return DraftMarkResult.NotRegistered;
++            if (!_registered) return DraftMarkResult.NotRegistered;
+             if (IsPossiblyStale) return DraftMarkResult.AlreadyMarked;
+             IsPossiblyStale = true;
+             return DraftMarkResult.Marked;
+@@ -365,13 +397,13 @@ namespace RackCad.Application.Workspace.Drafts
+         public DraftReloadResult DiscardAndReload(DraftIntentRead<TState> read)
+         {
+             if (read == null) throw new ArgumentNullException(nameof(read));
+-            if (_owner == null || _explicitStatus == DraftStatus.Applying)
++            if (!_registered || _explicitStatus == DraftStatus.Applying)
+                 return new DraftReloadResult(DraftReloadStatus.NotAllowed, read.Admission);
+             if (!read.IsAdmitted)
+                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+ 
+             Rebase(read);
+-            CurrentDraftState = InitialDraftState;
++            CurrentDraftState = _copy(InitialDraftState);
+             _pending.Clear();
+             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
+         }
+@@ -384,7 +416,7 @@ namespace RackCad.Application.Workspace.Drafts
+         {
+             if (read == null) throw new ArgumentNullException(nameof(read));
+             var status = Status;
+-            if (_owner == null || (status != DraftStatus.Dirty && status != DraftStatus.Conflict))
++            if (!_registered || (status != DraftStatus.Dirty && status != DraftStatus.Conflict))
+                 return new DraftReloadResult(DraftReloadStatus.NotAllowed, read.Admission);
+             if (!confirmed)
+                 return new DraftReloadResult(DraftReloadStatus.NotConfirmed, read.Admission);
+@@ -392,6 +424,7 @@ namespace RackCad.Application.Workspace.Drafts
+                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+ 
+             Rebase(read);
++            CurrentDraftState = SeparatedFromInitial(CurrentDraftState);
+             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
+         }
+ 
+@@ -408,39 +441,64 @@ namespace RackCad.Application.Workspace.Drafts
+             ErrorReason = null;
+         }
+ 
++
+         // ---------------------------------------------------------------- Update as a state machine
+ 
+         /// <summary>
+         /// Starts an Update. Only from Clean, or from Dirty without pending text, and only when no other Update is in
+-        /// progress in the whole registry. It reports the previous status.
++        /// progress in the whole registry. It reports the previous status. The single Applying slot of the registry is
++        /// taken here and belongs to this operation: only <see cref="CompleteApply"/> frees it.
+         /// </summary>
+         public DraftApplyStart TryBeginApply()
+         {
+             var previous = Status;
+-            if (_owner == null) return DraftApplyStart.Refused(previous, DraftApplyRefusal.NotRegistered);
++            if (!_registered) return DraftApplyStart.Refused(previous, DraftApplyRefusal.NotRegistered);
+             if (previous != DraftStatus.Clean && previous != DraftStatus.Dirty)
+                 return DraftApplyStart.Refused(previous, DraftApplyRefusal.InvalidStatus);
+             if (_pending.Count > 0) return DraftApplyStart.Refused(previous, DraftApplyRefusal.PendingText);
+-            if (!_owner.TryAcquireApplySlot(this)) return DraftApplyStart.Refused(previous, DraftApplyRefusal.AnotherUpdateInProgress);
++            if (!_registry.TryAcquireApplySlot(this)) return DraftApplyStart.Refused(previous, DraftApplyRefusal.AnotherUpdateInProgress);
+ 
++            _holdsApplySlot = true;
++            _deferredErrorReason = null;
+             _statusBeforeAttempt = previous;
+             _explicitStatus = DraftStatus.Applying;
+             LastApplyCause = null;
++            Warnings = Array.Empty<string>();
+             return DraftApplyStart.Started(previous);
+         }
+ 
+         /// <summary>
+         /// Closes the Update that is in progress with its outcome (D-13 table). Nothing is ever assumed applied: only the
+-        /// re-read of POST rebases the draft and leaves it Clean.
++        /// re-read of POST rebases the draft and leaves it Clean. The outcome is accepted even if the draft was discarded or
++        /// its session retired in the meantime: the slot is freed, nothing else changes and the result says so.
+         /// </summary>
+         public DraftApplyResult CompleteApply(DraftApplyOutcome<TState> outcome)
+         {
+             if (outcome == null) throw new ArgumentNullException(nameof(outcome));
+-            if (_owner == null || _explicitStatus != DraftStatus.Applying)
++            if (!_holdsApplySlot)
+                 return DraftApplyResult.NotApplying(Status, outcome.Kind);
+ 
+-            _owner.ReleaseApplySlot(this);
++            _holdsApplySlot = false;
++            _registry.ReleaseApplySlot(this);
++            if (!_registered)
++                return DraftApplyResult.ClosedDetached(outcome.Kind, Status);
++
+             _explicitStatus = null;
++            var result = Classify(outcome);
++            var deferred = _deferredErrorReason;
++            if (deferred == null) return result;
++
++            // EnterError arrived while the Update was in flight: the D-13 classification came first, now the draft goes to Error
++            // keeping whatever resulted (current state, pending text and stale base).
++            _deferredErrorReason = null;
++            _explicitStatus = DraftStatus.Error;
++            ErrorReason = deferred;
++            UnknownOrigin = null;
++            return DraftApplyResult.Closed(result.Kind, Status, result.Rebased);
++        }
++
++        private DraftApplyResult Classify(DraftApplyOutcome<TState> outcome)
++        {
+             switch (outcome.Kind)
+             {
+                 case DraftApplyOutcomeKind.NotAppliedConflict:
+@@ -475,7 +533,7 @@ namespace RackCad.Application.Workspace.Drafts
+                     }
+ 
+                     Rebase(read);
+-                    CurrentDraftState = InitialDraftState;
++                    CurrentDraftState = _copy(InitialDraftState);
+                     _pending.Clear();
+                     if (outcome.Kind == DraftApplyOutcomeKind.AppliedWithWarnings) Warnings = outcome.Warnings;
+                     return DraftApplyResult.Closed(outcome.Kind, Status, true);
+@@ -496,7 +554,7 @@ namespace RackCad.Application.Workspace.Drafts
+         public DraftCheckResult CheckNow(DraftStaleBase reread)
+         {
+             if (reread == null) throw new ArgumentNullException(nameof(reread));
+-            if (_owner == null || _explicitStatus != DraftStatus.Unknown || UnknownOrigin != DraftUnknownOrigin.CommitThrew)
++            if (!_registered || _explicitStatus != DraftStatus.Unknown || UnknownOrigin != DraftUnknownOrigin.CommitThrew)
+                 return new DraftCheckResult(DraftCheckStatus.NotApplicable, Status, Array.Empty<DraftDifference>());
+ 
+             var comparison = StaleBase.CompareWith(reread);
+@@ -520,30 +578,35 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         /// <summary>
+         /// Puts the draft in Error keeping the current state, the pending text and the stale base. It leaves Error only
+-        /// through DiscardAndReload or Discard.
++        /// through DiscardAndReload or Discard. While an Update is in progress it changes neither the status nor the slot: the
++        /// reason is recorded and applied when CompleteApply closes that Update.
+         /// </summary>
+         public DraftTransition EnterError(string reason)
+         {
+             if (string.IsNullOrEmpty(reason)) throw new ArgumentException("A reason is required.", nameof(reason));
+             var from = Status;
+-            if (_owner == null) return new DraftTransition(from, from);
+-            if (_explicitStatus == DraftStatus.Applying) _owner.ReleaseApplySlot(this);
++            if (!_registered) return new DraftTransition(from, from);
++            if (_explicitStatus == DraftStatus.Applying)
++            {
++                _deferredErrorReason = reason;
++                return new DraftTransition(from, from);
++            }
++
+             _explicitStatus = DraftStatus.Error;
+             ErrorReason = reason;
++            UnknownOrigin = null;
+             return new DraftTransition(from, DraftStatus.Error);
+         }
+ 
+         // ---------------------------------------------------------------- registry plumbing
+ 
++        /// <summary>
++        /// Unregisters the draft. It never frees the Applying slot: that belongs to the operation in flight and only
++        /// CompleteApply releases it.
++        /// </summary>
+         void IDraftEntry.Detach()
+         {
+-            if (_owner != null && _explicitStatus == DraftStatus.Applying)
+-            {
+-                _owner.ReleaseApplySlot(this);
+-                _explicitStatus = null;
+-            }
+-
+-            _owner = null;
++            _registered = false;
+         }
+     }
+ }
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs b/src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs
+index 91eb4a80..358875d2 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs
+@@ -2,6 +2,7 @@
+ using System;
+ using System.Collections.Generic;
+ using System.Collections.ObjectModel;
++using System.Linq;
+ 
+ namespace RackCad.Application.Workspace.Drafts
+ {
+@@ -58,50 +59,84 @@ namespace RackCad.Application.Workspace.Drafts
+         private static readonly DraftStaleBaseEntry NoEntry = new(string.Empty, DraftMembership.NotMember, null, null, null);
+ 
+         private readonly Dictionary<string, DraftStaleBaseEntry> _entries;
++        private readonly HashSet<string> _ambiguous;
+         private readonly ReadOnlyDictionary<string, DraftStaleBaseEntry> _view;
+ 
+-        private DraftStaleBase(Dictionary<string, DraftStaleBaseEntry> entries, string? variableRegistryText)
++        private DraftStaleBase(Dictionary<string, DraftStaleBaseEntry> entries, HashSet<string> ambiguous, string? variableRegistryText)
+         {
+             _entries = entries;
++            _ambiguous = ambiguous;
+             _view = new ReadOnlyDictionary<string, DraftStaleBaseEntry>(entries);
+             VariableRegistryText = variableRegistryText;
+         }
+ 
+         /// <summary>
+-        /// Builds a base. A NotMember entry is dropped (absent equals NotMember and its text is never kept); the envelope
+-        /// text is kept exactly as given for the other memberships; a repeated key keeps the last entry.
++        /// Builds a base; the result never depends on the order of the entries. A NotMember entry is dropped (absent equals
++        /// NotMember) and its text is never kept; the envelope text is kept exactly as given only for Mutable and ReadOnly
++        /// (a Blocking envelope is not interpretable, so its text is not kept either). A key repeated with the same facts is
++        /// one entry; a key repeated with different facts (attribution, View, Section or envelope text) is AMBIGUOUS: it
++        /// never matches, in either direction of the comparison, and nothing throws.
+         /// </summary>
+         public static DraftStaleBase Create(IEnumerable<DraftStaleBaseEntry> entries, string? variableRegistryText = null)
+         {
+             if (entries == null) throw new ArgumentNullException(nameof(entries));
+             var kept = new Dictionary<string, DraftStaleBaseEntry>(StringComparer.Ordinal);
+-            foreach (var entry in entries)
++            var ambiguous = new HashSet<string>(StringComparer.Ordinal);
++            foreach (var raw in entries)
+             {
+-                if (string.IsNullOrEmpty(entry.Key)) throw new ArgumentException("A definition key is required.", nameof(entries));
+-                if (entry.Membership == DraftMembership.NotMember) kept.Remove(entry.Key);
+-                else kept[entry.Key] = entry;
++                if (string.IsNullOrEmpty(raw.Key)) throw new ArgumentException("A definition key is required.", nameof(entries));
++                if (ambiguous.Contains(raw.Key)) continue;
++                var entry = Interpretable(raw);
++                if (!kept.TryGetValue(entry.Key, out var existing)) kept[entry.Key] = entry;
++                else if (existing != entry)
++                {
++                    kept.Remove(entry.Key);
++                    ambiguous.Add(entry.Key);
++                }
+             }
+ 
+-            return new DraftStaleBase(kept, variableRegistryText);
++            foreach (var key in kept.Where(p => p.Value.Membership == DraftMembership.NotMember).Select(p => p.Key).ToArray())
++                kept.Remove(key);
++
++            return new DraftStaleBase(kept, ambiguous, variableRegistryText);
+         }
+ 
+-        /// <summary>The recorded entries by definition key (ordinal). Keys of NotMember definitions are not present.</summary>
++        // The facts that count for an entry: nothing but the attribution for a NotMember, no text for a Blocking one.
++        private static DraftStaleBaseEntry Interpretable(DraftStaleBaseEntry entry) => entry.Membership switch
++        {
++            DraftMembership.NotMember => new DraftStaleBaseEntry(entry.Key, DraftMembership.NotMember, null, null, null),
++            DraftMembership.Blocking => entry with { EnvelopeText = null },
++            _ => entry,
++        };
++
++        /// <summary>The recorded entries by definition key (ordinal). Keys of NotMember or ambiguous definitions are not present.</summary>
+         public IReadOnlyDictionary<string, DraftStaleBaseEntry> Entries => _view;
+ 
+         /// <summary>The exact raw text of the variable registry when the adapter supplied it; otherwise null.</summary>
+         public string? VariableRegistryText { get; }
+ 
+-        /// <summary>The membership recorded for a key; a key that is not recorded is NotMember.</summary>
++        /// <summary>
++        /// The membership recorded for a key; a key that is not recorded is NotMember. An ambiguous key (see
++        /// <see cref="IsAmbiguous"/>) reads as NotMember here and never matches in a comparison.
++        /// </summary>
+         public DraftMembership MembershipOf(string key)
+         {
+             if (string.IsNullOrEmpty(key)) throw new ArgumentException("A definition key is required.", nameof(key));
+             return _entries.TryGetValue(key, out var entry) ? entry.Membership : DraftMembership.NotMember;
+         }
+ 
++        /// <summary>True when the key was given with different facts: it can never match.</summary>
++        public bool IsAmbiguous(string key)
++        {
++            if (string.IsNullOrEmpty(key)) throw new ArgumentException("A definition key is required.", nameof(key));
++            return _ambiguous.Contains(key);
++        }
++
+         /// <summary>
+         /// Compares this base with a re-read over the UNION of their keys; an absent key is NotMember. Every comparison is
+-        /// ordinal and exact, with no normalization. Differences come ordered by key (ordinal), then by kind; the registry
+-        /// difference, which has no key, comes last.
++        /// ordinal and exact, with no normalization. An ambiguous key on either side is reported as a Membership difference
++        /// and never matches. Differences come ordered by key (ordinal), then by kind; the registry difference, which has no
++        /// key, comes last.
+         /// </summary>
+         public DraftStaleComparison CompareWith(DraftStaleBase reread)
+         {
+@@ -109,8 +144,16 @@ namespace RackCad.Application.Workspace.Drafts
+             var differences = new List<DraftDifference>();
+             var keys = new SortedSet<string>(_entries.Keys, StringComparer.Ordinal);
+             keys.UnionWith(reread._entries.Keys);
++            keys.UnionWith(_ambiguous);
++            keys.UnionWith(reread._ambiguous);
+             foreach (var key in keys)
+             {
++                if (_ambiguous.Contains(key) || reread._ambiguous.Contains(key))
++                {
++                    differences.Add(new DraftDifference(key, DraftDifferenceKind.Membership));
++                    continue;
++                }
++
+                 var before = _entries.TryGetValue(key, out var b) ? b : NoEntry;
+                 var after = reread._entries.TryGetValue(key, out var a) ? a : NoEntry;
+                 if (before.Membership != after.Membership) differences.Add(new DraftDifference(key, DraftDifferenceKind.Membership));

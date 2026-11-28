@@ -1,0 +1,58 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261120T092052Z-0d2f",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD = c758278548bcdd66e7c55ca15ca1faeb1a431e53; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad = c758278548bcdd66e7c55ca15ca1faeb1a431e53; handoff CurrentSha = deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Branch and worktree match delegation; BaseSha c7441653 is an ancestor of HEAD; RedSha 9fda277e is between BaseSha and HEAD."
+  },
+  "OutputSha256": "78981DDD39BB5C816E3273FD4C5048552436731F73F7A4012AE53B16ED590D19",
+  "ManualFreeText1610": []
+}

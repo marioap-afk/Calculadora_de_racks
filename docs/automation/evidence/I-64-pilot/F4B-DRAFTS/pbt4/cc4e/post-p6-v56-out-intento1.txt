@@ -1,0 +1,55 @@
+v5.5 guardada: ef33dca0f718bdc09a7e52369ea2534612a0ac8039ae75dc784f811262f26d21 pbt4e-precondition6-v55.json; 1fd30380e7e0fa43c3e9df3a5e1af081690fb131404ed126edf6159dcafb505e compile-check-v55.md
+r80 control-core rc=1 :: == Failed RackCad.Tests.PushBackEditAllReloadTests CT-01;== Failed RackCad.Tests.PushBackEditAllReloadTests CT-02;== Failed RackCad.Tests.PushBackEditAllReloadTests CT-04; control-ui rc=0 :: == Passed RackCad.UI.Tests.PushBackEditAllReloadFieldTests CT-03; 
+r81 control-core rc=0 :: == Passed RackCad.Tests.PushBackEditAllReloadTests CT-01;== Passed RackCad.Tests.PushBackEditAllReloadTests CT-02;== Passed RackCad.Tests.PushBackEditAllReloadTests CT-04; control-ui rc=1 :: == Failed RackCad.UI.Tests.PushBackEditAllReloadFieldTests CT-03; 
+RequiredTests de PB-T4d: 88; claves ['ExpectRed', 'Filter', 'MinSelected', 'Project']; TaskId F4B-PBT4-RETIRE-PILOT
+cobertura: base UI 22 corridas, GREEN UI 4 corridas
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4ecc\compile\cov_p6_pbt4e_v56.py", line 126, in <module>
+    green_ui_runs = [(run_label(p), coverage(p)) for p in ARGS['GREEN_UI']]
+                                    ~~~~~~~~^^^
+  File "<scratchpad>\hs65\pbt4ecc\compile\cov_p6_pbt4e_v56.py", line 72, in coverage
+    data = json.load(open(path, encoding='utf-8'))
+                     ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument: 'r78-p6/green-ui*.coverage.json'
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4ecc\compile\cov_p6_pbt4e_v56.py", line 126, in <module>
+    green_ui_runs = [(run_label(p), coverage(p)) for p in ARGS['GREEN_UI']]
+                                    ~~~~~~~~^^^
+  File "<scratchpad>\hs65\pbt4ecc\compile\cov_p6_pbt4e_v56.py", line 72, in coverage
+    data = json.load(open(path, encoding='utf-8'))
+                     ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument: 'r78-p6/green-ui*.coverage.json'
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4ecc\compile\required_pbt4e_v56.py", line 89, in <module>
+    f = ui_filter_of(p)
+  File "<scratchpad>\hs65\pbt4ecc\compile\required_pbt4e_v56.py", line 57, in ui_filter_of
+    return UIF[int(m.group(1)) - 1]
+                   ^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group'
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4ecc\compile\p6_json_pbt4e_v56.py", line 312, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4ecc\compile\p6_json_pbt4e_v56.py", line 113, in main
+    red_ui = [dict(trx(os.path.join(P, 'red-ui%02d.trx' % (i + 1))), Filter=f) for i, f in enumerate(UIF)]
+                   ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4ecc\compile\p6_json_pbt4e_v56.py", line 41, in trx
+    root = ET.parse(path).getroot()
+           ~~~~~~~~^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<scratchpad>\\hs65\\pbt4ecc\\compile\\r78-p6\\red-ui01.trx'
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4\v56\make_v56.py", line 304, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4\v56\make_v56.py", line 178, in main
+    values = json.load(open(os.path.join(val, 'values-v56.json'), encoding='utf-8'))
+                       ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<scratchpad>\\hs65\\pbt4ecc\\compile\\values-v56.json'
+sha256sum: ../../pbt4/I-64-f4b-pbt4-gate-contract-package-v56.md: No such file or directory
+la version que se emite:  I-64-f4b-pbt4-gate-contract-package-v56.md
+MAINCO []

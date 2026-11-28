@@ -1,0 +1,23 @@
+autoprueba guarda de procesos UTC 2026-11-05T05:09:06.8298164Z; guard sha256 736463BD3EF607A5C61530ACCBE385E9C799BD9A1FDF72107CEF1B76CB76E3A4
+PASS T01 Register con 0 procesos: codigo 1 (esperado 1; motivo /REGISTER STOP: i64probe count = 0/) :: 2026-11-05T05:09:07.4810905Z REGISTER STOP: i64probe count = 0 (debe ser 1) []
+PASS T02 Check sin registro: codigo 3 (esperado 3; motivo /INVALID: no hay AUTHORIZED_AUTOCAD_PID/) :: INVALID: no hay AUTHORIZED_AUTOCAD_PID registrado
+PASS T03 Register con SHA esperado distinto: codigo 1 (esperado 1; motivo /REGISTER STOP: SHA-256 del ejecutable/) :: 2026-11-05T05:09:09.5585275Z REGISTER STOP: SHA-256 del ejecutable E4224D18C3C96826E6F4240893FAC02C8A1FF335CE92614FC8744369594DD468 distinto del esperado
+PASS T04 Register con 1 proceso: codigo 0 (esperado 0; motivo /REGISTER PASS: AUTHORIZED_AUTOCAD_PID = 24624/) :: 2026-11-05T05:09:10.3410718Z REGISTER PASS: AUTHORIZED_AUTOCAD_PID = 24624; inicio 2026-11-05T05:09:07.7888677Z; exe sha256 E4224D18C3C96826E6F4240893FAC02C8A1FF335CE92614FC8744369594DD468
+PASS T05 Register repetido: codigo 1 (esperado 1; motivo /REGISTER STOP: ya existe/) :: 2026-11-05T05:09:11.0090227Z REGISTER STOP: ya existe un AUTHORIZED_AUTOCAD_PID (no se vuelve a registrar)
+PASS T06 Check CP-1: codigo 0 (esperado 0; motivo /CHECK CP-1 PASS: .*24624/) :: 2026-11-05T05:09:11.8158464Z CHECK CP-1 PASS: unica i64probe = AUTHORIZED_AUTOCAD_PID 24624
+PASS T07 Watch detecta otra PID: watch codigo 1 (esperado 1; motivo /WATCH STOP: otra instancia 76852@/) :: 2026-11-05T05:09:13.7884448Z WATCH STOP: otra instancia 76852@2026-11-05T05:09:13.5788122Z
+PASS T08 Check con 2 procesos: codigo 1 (esperado 1; motivo /CHECK CP-2 STOP: i64probe count = 2.*otra PID: 76852/) :: 2026-11-05T05:09:14.5511420Z CHECK CP-2 STOP: i64probe count = 2 (debe ser 1); otra PID: 76852 [24624@2026-11-05T05:09:07.7888677Z,76852@2026-11-05T05:09:13.5788122Z]
+PASS T09 Closed con procesos vivos: codigo 1 (esperado 1; motivo /CLOSED STOP: i64probe count = 2/) :: 2026-11-05T05:09:15.2732821Z CLOSED STOP: i64probe count = 2 (debe ser 0) [24624@2026-11-05T05:09:07.7888677Z,76852@2026-11-05T05:09:13.5788122Z]
+PASS T10 Register S2: codigo 0 (esperado 0; motivo /REGISTER PASS: AUTHORIZED_AUTOCAD_PID = 61656/) :: 2026-11-05T05:09:17.2415282Z REGISTER PASS: AUTHORIZED_AUTOCAD_PID = 61656; inicio 2026-11-05T05:09:16.2753787Z; exe sha256 E4224D18C3C96826E6F4240893FAC02C8A1FF335CE92614FC8744369594DD468
+PASS T11 Watch: salida sin PRE-CLOSE: watch codigo 2 (esperado 2; motivo /WATCH STOP: la PID autorizada salio sin PRE-CLOSE/) :: 2026-11-05T05:09:19.0807852Z WATCH STOP: la PID autorizada salio sin PRE-CLOSE
+PASS T12 Check con la PID autorizada desaparecida: codigo 1 (esperado 1; motivo /CHECK CP-3 STOP: i64probe count = 0.*la PID autorizada 61656 ya no existe/) :: 2026-11-05T05:09:19.8166425Z CHECK CP-3 STOP: i64probe count = 0 (debe ser 1); la PID autorizada 61656 ya no existe []
+PASS T13 Register S3: codigo 0 (esperado 0; motivo /REGISTER PASS: AUTHORIZED_AUTOCAD_PID = 39208/) :: 2026-11-05T05:09:20.9299101Z REGISTER PASS: AUTHORIZED_AUTOCAD_PID = 39208; inicio 2026-11-05T05:09:19.9514887Z; exe sha256 E4224D18C3C96826E6F4240893FAC02C8A1FF335CE92614FC8744369594DD468
+PASS T14 Check PRE-CLOSE: codigo 0 (esperado 0; motivo /CHECK PRE-CLOSE PASS/) :: 2026-11-05T05:09:23.3230807Z CHECK PRE-CLOSE PASS: unica i64probe = AUTHORIZED_AUTOCAD_PID 39208
+PASS T14b pre-close.ok escrito
+PASS T15 Closed tras el cierre normal: codigo 0 (esperado 0; motivo /CLOSED PASS: i64probe count = 0; la PID autorizada 39208/) :: 2026-11-05T05:09:24.4977792Z CLOSED PASS: i64probe count = 0; la PID autorizada 39208 ya no existe
+PASS T15b closed.ok escrito
+PASS T16 Watch sigue vivo tras el cierre normal y lo anota
+PASS T17 Watch: proceso nuevo despues del cierre: watch codigo 1 (esperado 1; motivo /WATCH STOP: otra instancia 71828@/) :: 2026-11-05T05:09:25.5378641Z WATCH STOP: otra instancia 71828@2026-11-05T05:09:25.4524513Z
+PASS T18 Watch termina con watch-stop.flag: watch codigo 0 (esperado 0; motivo /WATCH fin por watch-stop.flag/) :: 2026-11-05T05:09:27.3978188Z WATCH fin por watch-stop.flag
+procesos i64probe restantes = 0
+RESULTADO 20 PASS / 0 FAIL

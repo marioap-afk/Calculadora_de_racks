@@ -1,0 +1,104 @@
+PASS INV-PBT3A-01 git diff --name-status BaseSha..Rev -- src [A src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs; A src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs; A src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs; A src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs; A src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs; A src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs; A src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs; A src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs]
+--- declaraciones (archivo | accesibilidad | nombre)
+PushBackConflictClassifier.cs | public enum | PushBackChangeGroup
+PushBackConflictClassifier.cs | public enum | PushBackChangeClass
+PushBackConflictClassifier.cs | public class | PushBackChangeEntry
+PushBackConflictClassifier.cs | internal ctor | PushBackChangeEntry
+PushBackConflictClassifier.cs | public | Level
+PushBackConflictClassifier.cs | public | Path
+PushBackConflictClassifier.cs | public | Group
+PushBackConflictClassifier.cs | public | Class
+PushBackConflictClassifier.cs | public | IsStructural
+PushBackConflictClassifier.cs | public | BaseValue
+PushBackConflictClassifier.cs | public | ExternalValue
+PushBackConflictClassifier.cs | public | DraftValue
+PushBackConflictClassifier.cs | public class | PushBackConflictClassification
+PushBackConflictClassifier.cs | internal ctor | PushBackConflictClassification
+PushBackConflictClassifier.cs | public | Entries
+PushBackConflictClassifier.cs | public | ChangedExternally
+PushBackConflictClassifier.cs | public | ChangedByUser
+PushBackConflictClassifier.cs | public | Overlapping
+PushBackConflictClassifier.cs | public | Structural
+PushBackConflictClassifier.cs | public | ViewsToErase
+PushBackConflictClassifier.cs | public | ViewsRejected
+PushBackConflictClassifier.cs | public | AllViewsObsolete
+PushBackConflictClassifier.cs | public class | PushBackConflictClassifier
+PushBackConflictClassifier.cs | public | Classify
+PushBackEditableStateSeat.cs | public class | PushBackEditableStateSeat
+PushBackEditableStateSeat.cs | public | Pass
+PushBackEditableStateSeat.cs | public | LoadExisting
+PushBackFullComposition.cs | public class | PushBackFullWriteComposition
+PushBackFullComposition.cs | public | IsComposed
+PushBackFullComposition.cs | public | Editor
+PushBackFullComposition.cs | public | Inputs
+PushBackFullComposition.cs | public | Name
+PushBackFullComposition.cs | public | Reason
+PushBackFullComposition.cs | public | Composed
+PushBackFullComposition.cs | public | Rejected
+PushBackFullComposition.cs | public class | PushBackFullComposition
+PushBackFullComposition.cs | public | ForFullWrite
+PushBackFullComposition.cs | public | KeepOn
+PushBackFullDraftMaterializer.cs | public class | PushBackFullDraftMaterialization
+PushBackFullDraftMaterializer.cs | public | Kind
+PushBackFullDraftMaterializer.cs | public | IsAdmitted
+PushBackFullDraftMaterializer.cs | public | State
+PushBackFullDraftMaterializer.cs | public | Reason
+PushBackFullDraftMaterializer.cs | public | Admitted
+PushBackFullDraftMaterializer.cs | public | OutOfPilot
+PushBackFullDraftMaterializer.cs | public | Failed
+PushBackFullDraftMaterializer.cs | public class | PushBackFullDraftMaterializer
+PushBackFullDraftMaterializer.cs | public | Materialize
+PushBackFullDraftReader.cs | public class | PushBackFullIntentResult
+PushBackFullDraftReader.cs | internal ctor | PushBackFullIntentResult
+PushBackFullDraftReader.cs | public | StaleBase
+PushBackFullDraftReader.cs | public | Read
+PushBackFullDraftReader.cs | public | OriginKey
+PushBackFullDraftReader.cs | public | Detail
+PushBackFullDraftReader.cs | public | ClassicEditorHint
+PushBackFullDraftReader.cs | public class | PushBackFullDraftReader
+PushBackFullDraftReader.cs | public | Read
+PushBackFullDraftState.cs | public class | PushBackFullDraftState
+PushBackFullDraftState.cs | public ctor | PushBackFullDraftState
+PushBackFullDraftState.cs | public | Editable
+PushBackFullDraftState.cs | public | Origin
+PushBackFullDraftStateComparer.cs | public class | PushBackFullDraftStateComparer
+PushBackFullDraftStateComparer.cs | public | Instance
+PushBackFullDraftStateComparer.cs | public | Equals
+PushBackFullDraftStateComparer.cs | public | GetHashCode
+PushBackFullDraftStateComparer.cs | public | Copy
+PushBackViewDisposition.cs | public enum | PushBackViewDispositionKind
+PushBackViewDisposition.cs | public class | PushBackViewDispositionPlan
+PushBackViewDisposition.cs | internal ctor | PushBackViewDispositionPlan
+PushBackViewDisposition.cs | public | Members
+PushBackViewDisposition.cs | public | Redraw
+PushBackViewDisposition.cs | public | ObsoleteLaterals
+PushBackViewDisposition.cs | public | FrontalBOfOneWay
+PushBackViewDisposition.cs | public | NoAddress
+PushBackViewDisposition.cs | public | AllObsolete
+PushBackViewDisposition.cs | public class | PushBackViewDispositions
+PushBackViewDisposition.cs | public | Of
+PASS INV-PBT3A-03 / PBT3A-C13 publicas e internas dentro de la lista cerrada
+--- privadas (INV-PBT3A-13: metodos, tipos anidados sin estado, campos private static readonly de string o Regex)
+PushBackConflictClassifier.cs | private | metodo privado | private IReadOnlyList<PushBackChangeEntry> OfClass(PushBackChangeClass changeClass)
+PushBackConflictClassifier.cs | private | campo private static readonly inmutable | private static readonly string Absent = "<ausente>";
+PushBackConflictClassifier.cs | private | metodo privado | private static JsonNode[] DocumentsOf(PushBackFullDraftState state, RackCatalog catalog, out PushBackDesign de
+PushBackConflictClassifier.cs | private | metodo privado | private static JsonObject ParseObject(string text)
+PushBackConflictClassifier.cs | private | metodo privado | private static void AddLeaves(Dictionary<string, string> leaves, string path, JsonNode node)
+PushBackConflictClassifier.cs | private | metodo privado | private static void DiffPaths(JsonNode left, JsonNode right, string path, HashSet<string> into)
+PushBackConflictClassifier.cs | private | metodo privado | private static void LeafPaths(JsonNode node, string path, HashSet<string> into)
+PushBackConflictClassifier.cs | private | metodo privado | private static bool SameValue(JsonNode left, JsonNode right)
+PushBackConflictClassifier.cs | private | metodo privado | private static PushBackChangeGroup GroupOf(PushBackDocumentLevel level, string path)
+PushBackConflictClassifier.cs | private | metodo privado | private static bool Covers(string prefix, string path)
+PushBackFullComposition.cs | private | ctor-privado (en la lista cerrada) | private PushBackFullWriteComposition(PushBackCompositeEditorState editor, PushBackEditorInputs inputs, string 
+PushBackFullDraftMaterializer.cs | private | ctor-privado (en la lista cerrada) | private PushBackFullDraftMaterialization(PushBackPilotMaterializationKind kind, PushBackFullDraftState state, 
+PushBackFullDraftStateComparer.cs | private | ctor-privado (en la lista cerrada) | private PushBackFullDraftStateComparer()
+PushBackViewDisposition.cs | private | metodo privado | private IReadOnlyList<string> KeysOf(PushBackViewDispositionKind kind)
+PASS INV-PBT3A-13 privadas admitidas
+PASS INV-PBT3A-04 un namespace de bloque RackCad.Application.Systems.PushBack.Draft por archivo
+PASS INV-PBT3A-04 / D-PBT3-08 ningun termino prohibido (ni en comentarios) []
+PASS INV-PBT3A-04 ningun archivo compone ni construye un RackEmbedDocument []
+PASS INV-PBT3A-05 PushBackPilotIntentReader.Read una vez en el lector; LoadExisting una vez en el materializador Read=1 LoadExisting=1
+PASS INV-PBT3A-06 ningun archivo de src/ fuera de Draft/, PP y UR nombra los tipos nuevos []
+PASS C-1 ningun ForWrite en Draft/ y ForFullWrite con la firma de D-PBT3-05 []
+PASS INV-PBT3A-14 ninguna linea anadida muta el rack resuelto ni el informe de modulos []
+RESULTADO PASS

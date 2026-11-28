@@ -1,0 +1,29 @@
+rows in the table: 88 (numbers 1..88, contiguous=True)
+non-copy filters: 46; copy filters: 42 (Red with true: 21, Green with false: 21)
+namespace guard by text on the probe copies:
+  tests/RackCad.Tests/PushBackFullReadGuardFull.cs                       ['RackCad.Tests'] ok
+  tests/RackCad.Tests/PushBackFullReadPathFull.cs                        ['RackCad.Tests'] ok
+  tests/RackCad.Tests/PushBackWritePathGuardFull.cs                      ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs   ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs           ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs          ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs           ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs       ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs           ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs            ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs           ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs            ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs             ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs  ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs         ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs          ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs ['RackCad.Tests'] ok
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs       ['RackCad.Tests'] ok
+  tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationFull.cs   ['RackCad.UI.Tests'] ok
+  tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewFull.cs ['RackCad.UI.Tests'] ok
+non-copy filters selecting a copy class: 0 []
+copy filters selecting another copy class: 0 []
+existing FullPanelCopy types at 78a7cef3: ''
+top-level types in the copies: 28
+same-named types in the same test project at the revision: 0

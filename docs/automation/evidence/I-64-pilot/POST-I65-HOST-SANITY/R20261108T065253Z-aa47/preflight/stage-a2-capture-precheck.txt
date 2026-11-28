@@ -1,0 +1,20 @@
+capture-precheck UTC 2026-11-08T07:05:40.4886891Z
+monitor principal x=0 y=0 w=1920 h=1080
+acad.exe = 0
+ventana claude x -1920..0 y 0..1020 corta el principal = False
+1 geometria: ventanas claude = 1; en el principal = 0 -> PASS
+3 region paleta-flotante-arriba-izquierda : pixeles distintos = 0
+3 region paleta-acoplada-izquierda : pixeles distintos = 0
+3 region paleta-acoplada-derecha : pixeles distintos = 0
+3 region paleta-flotante-centro : pixeles distintos = 0
+3 region linea-de-ordenes : pixeles distintos = 0
+3 region linea-de-ordenes-con-paleta-izq : pixeles distintos = 0
+3 regiones limpias -> PASS
+4 control paleta-flotante-arriba-izquierda : pixeles distintos = 0; esperado distinto = False
+4 control paleta-acoplada-izquierda : pixeles distintos = 0; esperado distinto = False
+4 control paleta-acoplada-derecha : pixeles distintos = 900; esperado distinto = True
+4 control paleta-flotante-centro : pixeles distintos = 0; esperado distinto = False
+4 control linea-de-ordenes : pixeles distintos = 0; esperado distinto = False
+4 control linea-de-ordenes-con-paleta-izq : pixeles distintos = 0; esperado distinto = False
+4 control negativo -> PASS
+RESULTADO PASS

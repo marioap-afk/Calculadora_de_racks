@@ -1,0 +1,10 @@
+Pregunta de la sesión al Owner (AskUserQuestion, 2026-11-12):
+
+Controles de F4-T2B2B sobre 8f249e3a (verificación 060d 14/14). nc2 y nc3 dan CONTROL PASS por el motivo correcto: nc2 nombra la ruta quitada (DraftRegistry.cs) y nc3 detecta el término en WorkCompleted. nc1 NO cumple su oráculo ordinario. El Controller detectó la mutación: su evidencia nombra el CurrentSha falso deadbeef…, que no resuelve en Git, frente al HEAD, el remoto y la CI reales (8f249e3a), y dio EXECUTION_BLOCKED/STOP con S-04, la clasificación que espera nc1. Pero la primera comprobación en fallo es Handoff, no Identity como fija README §10, y fallan en cascada Identity, Remote, Ci y Tests. AUTOMATION_PLAN 16.9 da pie a esa lectura: «Salida conforme pero vacía o falsa» se asigna a Handoff. En las tareas anteriores de F4, nc1 dio siempre Identity. Es un modo de fallo nuevo para nc1. README §10 no permite reejecutar un control con salida válida. ¿Cómo lo trato?
+
+Opciones ofrecidas:
+- Sustituto + cerrar (Recomendado): Conservo nc1 ordinario como «oráculo no cumplido / señal demostrada» y hago un sustituto determinista F4T2B2B-NC1-IDENTITY-SIGNAL-01, con autoprueba sintética dos veces. Comprueba que la mutación es exactamente el CurrentSha, cambiado por un SHA inexistente; que los hashes derivados son coherentes; que Identity tenía que fallar; que el Controller dio Identity=fail con evidencia que nombra los dos SHA y BLOCKED/STOP; y que solo difieren de la verificación real las comprobaciones que consumen el CurrentSha. Registro la deuda PD-F4-04 (ambigüedad Handoff/Identity entre README §10 y 16.9) y cierro T2B2B como PASS WITH LIMITATIONS.
+- Aceptar nc1 y cerrar: Clasifico nc1 como satisfecho por la clasificación (BLOCKED/STOP, S-04) y la evidencia, sin sustituto. Registro la desviación de FailureClass (Handoff en vez de Identity) y la deuda PD-F4-04, y cierro T2B2B como PASS WITH LIMITATIONS.
+- No cerrar todavía: Dejo T2B2B VERIFICADA con el cierre pendiente y nc1 como CONTROL NOT PASSED, hasta que decidas cómo tratar la ambigüedad Handoff/Identity del protocolo.
+
+Respuesta del Owner: Sustituto + cerrar (Recomendado)

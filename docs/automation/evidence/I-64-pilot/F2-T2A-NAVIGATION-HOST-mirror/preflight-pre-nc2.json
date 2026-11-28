@@ -1,0 +1,36 @@
+{
+  "Schema": "rackcad-i64-historical-control-preflight/v1",
+  "Label": "pre-nc2",
+  "Items": {
+    "1.HEAD": true,
+    "2.origin/main": true,
+    "3.origin/product-branch": true,
+    "4.Branch": true,
+    "5.ShowToplevel": true,
+    "6.StatusClean": true,
+    "7.BaseSha": true,
+    "8.RedSha": true,
+    "9.ProductTree": true,
+    "10.SnapshotE": true,
+    "11.RealRepositoryUnchanged": true,
+    "12.CodexBinary": true,
+    "13.CodexMediatedPropagation": true,
+    "14.NoProcessConflict": true,
+    "X.EarlierProofs": true,
+    "X.HistoricalTokens": true,
+    "X.PreinvocationAssertions": true
+  },
+  "Failing": [],
+  "Pass": true,
+  "LiveRemoteFacts": {
+    "origin/main": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "origin/product-branch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "Source": "ls-remote before the mirror was built; no Git network since"
+  },
+  "HistoricalControlRemoteFacts": {
+    "origin/main": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "origin/product-branch": "44a692a4ec386e559cc6d330b3d78b87dbad6581"
+  },
+  "Statement": "The historical environment exists only to evaluate a negative control relative to verification 89a6. It does not claim that a140eb3a is current main.",
+  "GateSha256": null
+}

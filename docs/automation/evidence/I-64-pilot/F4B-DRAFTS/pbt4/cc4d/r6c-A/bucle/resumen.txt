@@ -1,0 +1,4 @@
+vuelta 0: bajas 223, errores 4 (distintos 1), miembros nuevos 1, sin resolver 0
+vuelta 1: bajas 224, errores 10 (distintos 5), miembros nuevos 3, sin resolver 2
+SUS-01 (PB-TC)	tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs	TheWindowAndThePilotDifferOnlyInTheKnownClasses
+compilacion v0 CS0535: 'PilotEditThrowingComparer' no implementa el miembro de interfaz 'IEqualityComparer<PushBackPilotDraftState>.GetHashCode(PushBackPilotDraftState)'	tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs	tipo:PilotEditThrowingComparer

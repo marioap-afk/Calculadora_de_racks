@@ -1,0 +1,5 @@
+2026-11-05T17:25:43.8661335Z WATCH inicio: AUTHORIZED_AUTOCAD_PID 78512 (ticks de inicio 639294963168462970); intervalo 1000 ms
+2026-11-05T17:25:44.0311661Z procesos acad = [78512@2026-11-05T17:25:16.8462970Z]
+2026-11-05T19:47:20.1628527Z procesos acad = []
+2026-11-05T19:47:20.1754116Z WATCH: la PID autorizada salio tras PRE-CLOSE (cierre normal); sigue la vigilancia hasta la POST
+2026-11-05T19:49:30.2986268Z WATCH fin por watch-stop.flag

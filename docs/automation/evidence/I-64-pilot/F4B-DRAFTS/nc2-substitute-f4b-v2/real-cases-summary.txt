@@ -1,0 +1,26 @@
+== result-pbt2a.json
+ Id: PBT2A-NC2-EXACT-WHITELIST-F4B-01 | Task: PBT2A | Mode: F4B-E21
+ Scope: solo F4B-PBT2A-DRAFT-STATE-PORT, intento 2 (verificacion R20261119T074453Z-10a9); no reemplaza al Controller ni a nc2 en otras tareas
+ ScriptSha256: C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45
+ Autoprueba: 63 casos, todos Ok=True, determinista=True
+ SubstituteResult: PASS | Record: SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B
+ Propiedades: {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True, '8': True, '9': True, '10': True}
+ ExactEvidenceMatched: PB-T2 | ExactWhitelistBy: F4B_EXACT_EVIDENCES+BFC | bytes igual: True
+ TaskBinding: {'Task': 'PBT2A', 'RealDelegationTaskId': 'F4B-PBT2A-DRAFT-STATE-PORT', 'Ok': True}
+ Nc2ControllerChecks Contract/Scope: fail fail | EXECUTION_BLOCKED STOP Contract
+ ChangedPath: src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs
+ Casos nuevos: [('AY', 'PASS', True), ('AZ', 'FAIL', True), ('BA', 'FAIL', True), ('BB', 'FAIL', True), ('BC', 'FAIL', True), ('BD', 'FAIL', True), ('BE', 'FAIL', True), ('T1', 'PASS', True), ('T2', 'FAIL', True), ('T3', 'FAIL', True), ('T4', 'PASS', True), ('T5', 'FAIL', True), ('T6', 'FAIL', True)]
+ Casos con Ok falso: []
+== result-pbt3a.json
+ Id: PBT3A-NC2-EXACT-WHITELIST-F4B-01 | Task: PBT3A | Mode: F4B-E21
+ Scope: solo F4B-PBT3A-FULL-WRITE-MODEL, intento 2 (verificacion R20261120T034433Z-6d41); no reemplaza al Controller ni a nc2 en otras tareas
+ ScriptSha256: C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45
+ Autoprueba: 63 casos, todos Ok=True, determinista=True
+ SubstituteResult: PASS | Record: SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B
+ Propiedades: {'1': True, '2': True, '3': True, '4': True, '5': True, '6': True, '7': True, '8': True, '9': True, '10': True}
+ ExactEvidenceMatched: PB-T3 | ExactWhitelistBy: F4B_EXACT_EVIDENCES+BFC | bytes igual: True
+ TaskBinding: {'Task': 'PBT3A', 'RealDelegationTaskId': 'F4B-PBT3A-FULL-WRITE-MODEL', 'Ok': True}
+ Nc2ControllerChecks Contract/Scope: fail fail | EXECUTION_BLOCKED STOP Contract
+ ChangedPath: src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs
+ Casos nuevos: [('AY', 'PASS', True), ('AZ', 'FAIL', True), ('BA', 'FAIL', True), ('BB', 'FAIL', True), ('BC', 'FAIL', True), ('BD', 'FAIL', True), ('BE', 'FAIL', True), ('T1', 'PASS', True), ('T2', 'FAIL', True), ('T3', 'FAIL', True), ('T4', 'PASS', True), ('T5', 'FAIL', True), ('T6', 'FAIL', True)]
+ Casos con Ok falso: []

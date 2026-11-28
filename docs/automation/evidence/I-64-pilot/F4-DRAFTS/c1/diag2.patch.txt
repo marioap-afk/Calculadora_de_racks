@@ -1,0 +1,201 @@
+diff --git a/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs b/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+index 6966d2c9..f36eeea6 100644
+--- a/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
++++ b/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+@@ -116,6 +116,7 @@ namespace RackCad.Plugin.Views
+                     ?? throw new InvalidOperationException("El sobre de la vista " + member.Key + " no se puede leer.");
+                 var address = RackViewCodec.Decode(embed.Kind, embed.View, embed.Section).Address;
+                 var system = PushBackPilotSystemRebuild.Build(member.DesignText, _catalog);
++                system.Name = embed.Name;
+                 PreparedViewRedraw prepared;
+                 switch (address.Kind)
+                 {
+diff --git a/src/RackCad.Plugin/Views/RackSiblingScan.cs b/src/RackCad.Plugin/Views/RackSiblingScan.cs
+index c52b011f..73456b70 100644
+--- a/src/RackCad.Plugin/Views/RackSiblingScan.cs
++++ b/src/RackCad.Plugin/Views/RackSiblingScan.cs
+@@ -100,13 +100,18 @@ namespace RackCad.Plugin.Views
+             ObjectId selectedDefinition,
+             Func<RackEmbedDocument, bool> eraseByKind)
+         {
++            RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "read.Traverse.begin sel=" + (!selectedDefinition.IsNull));
++            try {
+             using (document.LockDocument())
+             using (var transaction = document.Database.TransactionManager.StartTransaction())
+             {
+                 var scan = TraverseCore(transaction, document.Database, selectedDefinition, eraseByKind);
++                RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "read.Traverse.before-commit");
+                 transaction.Commit();
++                RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "read.Traverse.after-commit");
+                 return scan;
+             }
++            } finally { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "read.Traverse.end (lock released)"); }
+         }
+ 
+         internal static RackSiblingDrawingScan TraverseCore(
+diff --git a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+index 5db728d6..34dcbe50 100644
+--- a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
++++ b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+@@ -27,6 +27,58 @@ namespace RackCad.Plugin.Workspace
+     /// </summary>
+     public sealed class AutoCadEventBridge : IHostEventSource, IDisposable
+     {
++        private static bool IsAssociativeBookkeeping(DBObject o)
++            => o is Autodesk.AutoCAD.DatabaseServices.AssocAction || o is Autodesk.AutoCAD.DatabaseServices.AssocDependency;
++
++        private static readonly System.Collections.Generic.HashSet<string> _undoCommands = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase) { "U", "UNDO", "REDO", "MREDO" };
++        private string _undoCommandRunning;
++        private bool _undoTouchedDefinition;
++
++        private void NoteUndoTouch(object a, DBObject o)
++        {
++            if (_undoCommandRunning != null && o is BlockTableRecord) _undoTouchedDefinition = true;
++        }
++
++        private void DiagUndoStart(string command)
++        {
++            _undoCommandRunning = _undoCommands.Contains(command ?? "") ? command : null;
++            _undoTouchedDefinition = false;
++        }
++
++        private void DiagUndoEnd(string command)
++        {
++            if (_undoCommandRunning == null) return;
++            var touched = _undoTouchedDefinition;
++            _undoCommandRunning = null;
++            _undoTouchedDefinition = false;
++            try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "undo.end cmd=" + command + " touchedDefinition=" + touched); } catch { }
++            if (!touched) return;
++            EventHandler once = null;
++            once = (s, e) =>
++            {
++                AcApplication.Idle -= once;
++                try
++                {
++                    var doc = AcApplication.DocumentManager.MdiActiveDocument;
++                    RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "undo.regen.begin");
++                    doc?.Editor.Regen();
++                    RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "undo.regen.end");
++                }
++                catch (System.Exception ex) { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "undo.regen.threw " + ex.Message); } catch { } }
++            };
++            AcApplication.Idle += once;
++        }
++
++        private static int _diagStacks;
++        private static string DiagStack()
++        {
++            if (System.Threading.Interlocked.Increment(ref _diagStacks) > 400) return " stack=<cap>";
++            var frames = new System.Diagnostics.StackTrace(2, false).GetFrames();
++            var sb = new System.Text.StringBuilder(" stack=");
++            foreach (var f in frames) { var m = f.GetMethod(); if (m == null || m.DeclaringType == null) continue; var n = m.DeclaringType.FullName ?? ""; if (!n.StartsWith("RackCad", System.StringComparison.Ordinal)) continue; sb.Append(m.DeclaringType.Name).Append(".").Append(m.Name).Append(" < "); }
++            return sb.ToString();
++        }
++
+         private readonly EventBridgeCore _core;
+         private readonly Dictionary<SourceAttachment, Action> _detachers = new();
+         private readonly Dispatcher _dispatcher;
+@@ -192,7 +244,7 @@ namespace RackCad.Plugin.Workspace
+                 case BridgeSource.ImpliedSelectionChanged:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    EventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    EventHandler handler = (s, e) => { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.ImpliedSelectionChanged += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.ImpliedSelectionChanged -= handler);
+                 }
+@@ -201,6 +253,8 @@ namespace RackCad.Plugin.Workspace
+                     var document = FindDocument(a.NativeInstanceId);
+                     CommandEventHandler handler = (s, e) => ContainSession(a, () =>
+                     {
++                        try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event.CommandWillStart s=" + a.Session + " cmd=" + e.GlobalCommandName); } catch { }
++                        DiagUndoStart(e.GlobalCommandName);
+                         if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged();
+ 
+                         // A command that is not the update itself: only its name is read, from the argument of the event, in memory.
+@@ -212,63 +266,63 @@ namespace RackCad.Plugin.Workspace
+                 case BridgeSource.CommandEnded:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    CommandEventHandler handler = (s, e) => { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session + " cmd=" + e.GlobalCommandName); } catch { } DiagUndoEnd(e.GlobalCommandName); ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.CommandEnded += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.CommandEnded -= handler);
+                 }
+                 case BridgeSource.CommandCancelled:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    CommandEventHandler handler = (s, e) => { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session + " cmd=" + e.GlobalCommandName); } catch { } DiagUndoEnd(e.GlobalCommandName); ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.CommandCancelled += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.CommandCancelled -= handler);
+                 }
+                 case BridgeSource.CommandFailed:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    CommandEventHandler handler = (s, e) => { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session + " cmd=" + e.GlobalCommandName); } catch { } DiagUndoEnd(e.GlobalCommandName); ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.CommandFailed += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.CommandFailed -= handler);
+                 }
+                 case BridgeSource.EnteringQuiescentState:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    EventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); });
++                    EventHandler handler = (s, e) => { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session); } catch { } ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); }); };
+                     document.Editor.EnteringQuiescentState += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Editor.EnteringQuiescentState -= handler);
+                 }
+                 case BridgeSource.ObjectAppended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectEventHandler handler = (s, e) => { if (IsAssociativeBookkeeping(e.DBObject)) { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "skip.assoc " + a.Source); } catch { } return; } NoteUndoTouch(a, e.DBObject); try { var o = e.DBObject; if (!(o is Entity)) RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session + " cls=" + (o == null ? "?" : o.GetType().Name) + " h=" + (o == null ? "?" : o.Handle.ToString()) + DiagStack()); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.Database.ObjectAppended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectAppended -= handler);
+                 }
+                 case BridgeSource.ObjectErased:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectErasedEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectErasedEventHandler handler = (s, e) => { if (IsAssociativeBookkeeping(e.DBObject)) { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "skip.assoc " + a.Source); } catch { } return; } NoteUndoTouch(a, e.DBObject); try { var o = e.DBObject; if (!(o is Entity)) RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session + " cls=" + (o == null ? "?" : o.GetType().Name) + " h=" + (o == null ? "?" : o.Handle.ToString()) + DiagStack()); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.Database.ObjectErased += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectErased -= handler);
+                 }
+                 case BridgeSource.ObjectModified:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectEventHandler handler = (s, e) => { if (IsAssociativeBookkeeping(e.DBObject)) { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "skip.assoc " + a.Source); } catch { } return; } NoteUndoTouch(a, e.DBObject); try { var o = e.DBObject; if (!(o is Entity)) RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session + " cls=" + (o == null ? "?" : o.GetType().Name) + " h=" + (o == null ? "?" : o.Handle.ToString()) + DiagStack()); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.Database.ObjectModified += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectModified -= handler);
+                 }
+                 case BridgeSource.ObjectUnappended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectEventHandler handler = (s, e) => { if (IsAssociativeBookkeeping(e.DBObject)) { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "skip.assoc " + a.Source); } catch { } return; } NoteUndoTouch(a, e.DBObject); try { var o = e.DBObject; if (!(o is Entity)) RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session + " cls=" + (o == null ? "?" : o.GetType().Name) + " h=" + (o == null ? "?" : o.Handle.ToString()) + DiagStack()); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.Database.ObjectUnappended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectUnappended -= handler);
+                 }
+                 case BridgeSource.ObjectReappended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectEventHandler handler = (s, e) => { if (IsAssociativeBookkeeping(e.DBObject)) { try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "skip.assoc " + a.Source); } catch { } return; } NoteUndoTouch(a, e.DBObject); try { var o = e.DBObject; if (!(o is Entity)) RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "event." + a.Source + " s=" + a.Session + " cls=" + (o == null ? "?" : o.GetType().Name) + " h=" + (o == null ? "?" : o.Handle.ToString()) + DiagStack()); } catch { } ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source)); };
+                     document.Database.ObjectReappended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectReappended -= handler);
+                 }
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceController.cs b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+index 2003c11c..6329021c 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceController.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@ -225,6 +225,7 @@ namespace RackCad.Plugin.Workspace
+ 
+         private void OnDrained(DrainOutcome outcome)
+         {
++            try { RackCad.Application.Diagnostics.RackLog.Warning("DIAG", "drain s=" + outcome.Session + " ops=[" + string.Join(",", outcome.Result.Operations) + "]"); } catch { }
+             try
+             {
+                 _host.OnDrained(outcome);

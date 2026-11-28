@@ -59,9 +59,7 @@ namespace RackCad.Application.Bom
                 var copies = Math.Max(1, rack.Copies);
                 foreach (var component in ComponentsOf(rack))
                 {
-                    var key = (component.Category ?? string.Empty) + ""
-                        + Math.Round(component.Length, 4).ToString("R", CultureInfo.InvariantCulture) + ""
-                        + Signature(component.Pieces);
+                    var key = KeyOf(component);
                     if (!byKey.TryGetValue(key, out var total))
                     {
                         total = new BomComponent
@@ -107,11 +105,64 @@ namespace RackCad.Application.Bom
             };
         }
 
+        /// <summary>
+        /// T4 bom (BM-08): where each component of the grand total comes from, aligned with <see cref="ConsolidatedBom.GrandTotal"/>: the
+        /// racks that add to it (each with its quantity in ONE copy and its copies) and the distinct descriptions that the merge joins (the
+        /// key is the category, the length and the recipe, without profile or description, and the total keeps the first description:
+        /// finding of I-68). It recomputes nothing of the sum; the page says what the total already does.
+        /// </summary>
+        public static IReadOnlyList<ConsolidatedComponentProvenance> Provenance(ConsolidatedBom consolidated)
+        {
+            var result = new List<ConsolidatedComponentProvenance>();
+            if (consolidated == null) return result;
+
+            var index = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (var rack in consolidated.Racks.Where(rack => rack != null && rack.Bom != null))
+            {
+                var copies = Math.Max(1, rack.Copies);
+                foreach (var component in ComponentsOf(rack))
+                {
+                    var key = KeyOf(component);
+                    if (!index.TryGetValue(key, out var at))
+                    {
+                        at = result.Count;
+                        index[key] = at;
+                        result.Add(new ConsolidatedComponentProvenance(new List<ConsolidatedComponentSource>(), new List<string>()));
+                    }
+
+                    var provenance = result[at];
+                    ((List<ConsolidatedComponentSource>)provenance.Sources).Add(new ConsolidatedComponentSource(rack.Name, component.Quantity, copies));
+                    var description = component.Description ?? string.Empty;
+                    if (!provenance.Descriptions.Contains(description, StringComparer.Ordinal)) ((List<string>)provenance.Descriptions).Add(description);
+                }
+            }
+
+            return result;
+        }
+
+        // The key of the merge of the grand total: category, length and recipe (the separator is the control character U+0001).
+        private static string KeyOf(BomComponent component)
+            => (component.Category ?? string.Empty) + KeySeparator
+               + Math.Round(component.Length, 4).ToString("R", CultureInfo.InvariantCulture) + KeySeparator
+               + Signature(component.Pieces);
+
+        private static readonly string KeySeparator = ((char)0x01).ToString();
+
         private static string Signature(IReadOnlyList<BomLine> pieces)
             => string.Join("|", (pieces ?? new List<BomLine>())
                 .OrderBy(p => p.Category, StringComparer.Ordinal)
                 .ThenBy(p => p.ProfileId, StringComparer.Ordinal)
                 .ThenBy(p => p.Length)
                 .Select(p => string.Format(CultureInfo.InvariantCulture, "{0}~{1}~{2:0.##}~{3}", p.Category, p.ProfileId, p.Length, p.Quantity)));
+    }
+
+    /// <summary>One rack that adds to a component of the grand total: its name, its quantity in ONE copy and its copies (T4 bom, BM-08).</summary>
+    public sealed record ConsolidatedComponentSource(string RackName, int QuantityPerCopy, int Copies);
+
+    /// <summary>Where one component of the grand total comes from, and the distinct descriptions it joins (T4 bom, BM-08).</summary>
+    public sealed record ConsolidatedComponentProvenance(IReadOnlyList<ConsolidatedComponentSource> Sources, IReadOnlyList<string> Descriptions)
+    {
+        /// <summary>The merge joined components with different descriptions (finding of I-68): the row says so; the sum does not change.</summary>
+        public bool JoinsDescriptions => Descriptions.Count > 1;
     }
 }

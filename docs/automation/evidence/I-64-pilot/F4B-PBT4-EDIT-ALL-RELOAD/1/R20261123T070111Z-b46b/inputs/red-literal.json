@@ -1,0 +1,18 @@
+{
+  "Regla": "El RED literal de PB-T4e (INV-PBT4E-02): pbt4e-red-v56.txt, que da red del generador docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/red_pbt4e_v56.py (sha256 8c38e532bf991a111e7f82193ad3a812993a64a1c2e43084a46278ad72dc54a5) sobre los blobs de BaseSha, igual a RedFiles de la precondicion 6 docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4e-precondition6.json. Para cada ruta de Archivos, git show RedSha:<ruta> (el blob del commit RED, no una copia de trabajo), con CRLF normalizado a LF, sin BOM y leido como UTF-8, tiene el sha256 Sha256LF. Estado es el de git diff --name-status BaseSha RedSha (A: las pruebas nuevas). src/ no cambia en el RED: no hay esqueleto. Lo calculo la sesion con pbt4e_lib.red_literal al generar este prompt.",
+  "Generador": "7da361ebe8919bf31e2874c42dc946b98c62635a:docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/red_pbt4e_v56.py",
+  "Sha256DelGenerador": "8c38e532bf991a111e7f82193ad3a812993a64a1c2e43084a46278ad72dc54a5",
+  "Pieza": "pbt4e-red-v56.txt",
+  "Archivos": {
+    "tests/RackCad.Tests/PushBackEditAllReloadTests.cs": {
+      "Estado": "A",
+      "Sha256LF": "9e849864709a964a864902c6f44e5d92014d962cc56c374cebfc7dfe42c6b017",
+      "Lineas": 400
+    },
+    "tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs": {
+      "Estado": "A",
+      "Sha256LF": "a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d",
+      "Lineas": 262
+    }
+  }
+}

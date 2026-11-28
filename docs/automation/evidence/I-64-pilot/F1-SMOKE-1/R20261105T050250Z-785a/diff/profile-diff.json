@@ -1,0 +1,46 @@
+{
+  "Schema": "rackcad-i64-profile-diff/v1",
+  "Baseline": {
+    "File": "profile-capture-BASELINE.json",
+    "Sha256": "17e810154476838435dea131fb9100f6d299d018819b792c696c8b71f2ae1e92",
+    "Phase": "BASELINE",
+    "CanonicalSha256": "980ce80f208e87ebc2da5fce50249ce88391d5fd2823d97c17fe105d202123dd",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "Post": {
+    "File": "profile-capture-POST.json",
+    "Sha256": "97737343d55b8d206e377f97db1487923aaae6c9e93ac4978c40d57e20b72e35",
+    "Phase": "POST",
+    "CanonicalSha256": "310f6ac94bd2e1c7599f9b4526e8896b1c51b301226a2a30f7d063786ab08916",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "PaletteKeyAcceptance": "ACCEPTED",
+  "Preconditions": [],
+  "ChangeCounts": {
+    "ADDED": 0,
+    "REMOVED": 0,
+    "CHANGED": 1
+  },
+  "ClassCounts": {
+    "INVALID": 0,
+    "FORBIDDEN": 0,
+    "REPORT": 0,
+    "ALLOWED": 1
+  },
+  "Disposition": "CLEAN",
+  "ExitCode": 0,
+  "Entries": [
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\OpenSaveAnavDialogs|InitialDirectory",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|3|25176a623236914040aa0caf4b44622e672b7b50d796b8f2812da9004a232f05",
+      "Post": "String|11|c2eaf58b87c4102b8ede0631648939e5717885bde3f0c80803645d0c92a967fe"
+    }
+  ]
+}

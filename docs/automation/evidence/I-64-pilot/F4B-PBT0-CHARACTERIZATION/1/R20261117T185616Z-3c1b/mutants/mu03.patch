@@ -1,0 +1,12 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..f3efb2d2 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -2460,7 +2460,6 @@ namespace RackCad.UI.Systems.PushBack
+             }
+ 
+             moduleOwner.CommitModuleEdits();
+-            RequestRecompute();
+         }
+ 
+         private void CancelModule_Click(object sender, RoutedEventArgs e)

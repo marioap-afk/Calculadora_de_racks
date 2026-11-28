@@ -1,0 +1,142 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "A-14-review/R20261123T212253Z-ab02",
+  "SourceRoot": "la carpeta de la corrida de la revision, en la carpeta de la sesion (fuera del repositorio: el encargo prohibe escribir en el worktree lateral antes del fin de la revision)",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 14,
+    "EXCLUDED": 6
+  },
+  "Files": [
+    {
+      "Path": "architect-review-eval.json",
+      "Bytes": 4452,
+      "Sha256": "78b8431d81e2a86fcb506b10ab8c6ff7392365542d0797e1853495c56d0f2c5c",
+      "Disposition": "EXCLUDED",
+      "Reason": "evaluacion mecanica que reproduce el texto integro de las ordenes del revisor: solo por SHA-256; sus resultados constan en review-record.json"
+    },
+    {
+      "Path": "architect-review.schema.json",
+      "Bytes": 19598,
+      "Sha256": "51368529804836db06ff17bc9e71e5d82cc299bc8c82ecb7f6f0dd648fe8f16c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-end.txt",
+      "Bytes": 21,
+      "Sha256": "2952860b358c91773ff226552064a88c316a9002378f1d0e48d8c21ffdc4146f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cession-start.txt",
+      "Bytes": 21,
+      "Sha256": "76739c363545235bfe399af7e1255cadd8ccdae01bb4bd2153e80fa5e6f2544f",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-entry.json",
+      "Bytes": 3471,
+      "Sha256": "757074ae68e6a1a4e73248827755b0a56c660ec973bfd2a409045e5487097b04",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "config-exit.json",
+      "Bytes": 3471,
+      "Sha256": "6bbbbd144a2371324f16cc4501071b12935be34eb6fabc423b76a344261ea24a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "coordinator-a14-review-order.md",
+      "Bytes": 11177,
+      "Sha256": "c37b9e780e689206a0585482f9b385a672239a539e8f87846467fe3de15008cb",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "events.jsonl",
+      "Bytes": 365397,
+      "Sha256": "51f0695daa0a43151df293695ded8267a5cbb8e6a856072bab289900532e9d91",
+      "Disposition": "EXCLUDED",
+      "Reason": "eventos JSONL del CLI de Codex: no se versionan (16.12); quedan su SHA-256 y los campos extraidos en el resultado y el registro"
+    },
+    {
+      "Path": "exit-code.txt",
+      "Bytes": 2,
+      "Sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "Disposition": "EXCLUDED",
+      "Reason": "codigo de salida: solo por SHA-256; consta en review-record.json"
+    },
+    {
+      "Path": "git-entry.json",
+      "Bytes": 573,
+      "Sha256": "cc262516537ff3ead8873a63fc8a3b2af2c2c720137e48d4cc905918ad08d69a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "git-exit.json",
+      "Bytes": 573,
+      "Sha256": "cc262516537ff3ead8873a63fc8a3b2af2c2c720137e48d4cc905918ad08d69a",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a A-14-review/R20261123T212253Z-ab02/git-entry.json, ya custodiado"
+    },
+    {
+      "Path": "launcher-pid.txt",
+      "Bytes": 4,
+      "Sha256": "02dc668144d5bceea63129dbf78d853aafbadddf8c4b1e7909965e62422f2ebf",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "launcher-winpid.txt",
+      "Bytes": 4,
+      "Sha256": "593ef0356a6834020dc6b724ff93a7dcf1d5b2b87c42e05270e3c92939d84392",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "output.json",
+      "Bytes": 7670,
+      "Sha256": "54006336c613876556c616d326568a307d4291441e4d8d8c91469fb96bd726d7",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "processes-entry.json",
+      "Bytes": 1279,
+      "Sha256": "9fe3fc179c59a1a4660113bdc71b7c0a5f3c6def701061be1a85d4e2908ead7f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "e2710ab0cf3cc740f4aeb26300f956b76b231880229b5e62f7d42809ee3dbe80",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "processes-exit.json",
+      "Bytes": 1283,
+      "Sha256": "1373e26f84b772348cbc8b473f85fa4356e899c508f58cf9eb6c82bae241e868",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "60339b3d4fc62cacb3973208be526adc1e99972ca47b3fbc099e6b90a3e39232",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "prompt.md",
+      "Bytes": 13514,
+      "Sha256": "f3ab203323326b2464ffc2e931786b6cd227886dd688887c350c5bc314c9d963",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "review-record.json",
+      "Bytes": 6790,
+      "Sha256": "1863dd9b74aac9a8f3badc342d715d3fb9cebd744c7c79ccc34145aa889dcd1a",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "stderr.txt",
+      "Bytes": 39,
+      "Sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "Disposition": "EXCLUDED",
+      "Reason": "salida de error del CLI de Codex: solo por SHA-256 (16.12)"
+    },
+    {
+      "Path": "(registro de sesion de Codex de la revision, fuera de esta carpeta) rollout-2026-11-23T15-23-22-01a20a4a-c1bb-70b1-860e-205854096fd4.jsonl",
+      "Bytes": 890919,
+      "Sha256": "48ef72d1c879fade698833475b978fe6f74489ab6fa6d135c46c9e21248bcf89",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de sesion (rollout) del CLI de Codex: no se versiona (16.12); de el se leen el modelo, el effort, el sandbox y la politica efectivos"
+    }
+  ]
+}

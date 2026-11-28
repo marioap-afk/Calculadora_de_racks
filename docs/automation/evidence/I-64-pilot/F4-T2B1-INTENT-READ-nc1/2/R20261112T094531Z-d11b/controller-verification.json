@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2B1-INTENT-READ",
+  "RunId": "R20261112T094531Z-d11b",
+  "DelegationRunId": "R20261112T090925Z-614a",
+  "WorkRunId": "R20261112T091237Z-96a8",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-12T09:12:42Z, EndUtc=2026-11-12T09:31:44Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json valida con worker-handoff.schema.json. TaskId, Attempt=2, DelegationRunId y RunId coinciden con contrato y relevo; OutputWrittenUtc equivale a 2026-11-12T09:31:28Z, posterior al inicio de la cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor e20a294c5e9f7160581e5674e08f8156accf876a b9707bc638e04f8351790485c2e6bfbd23276c55 devuelve 0. git diff --name-only AuthorityRevision BaseSha da solo docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T2B1-INTENT-READ/coordinator/gate-contract-attempt2.json y docs/automation/state/I-64.yml; las tres son UNIT_DOC declaradas. Se leyeron AUTOMATION_PLAN, AGENTS y agent-execution/README desde MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "relay-record-planning.json registra A1-A8=pass. byte-fidelity-check.json registra PASS y bytes iguales en las ocho colecciones del contrato, incluidas Invariants, RequiredTests, StopConditions, Authorities, AllowedWriteScope y ForbiddenWriteScope."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan fe7f136b09900880e1ebe2cb20491e2f84c85988; BaseSha y RedSha son ancestros (merge-base --is-ancestor devuelve 0 para ambos). Pero worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, distinto de HEAD y del remoto."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: CurrentRun y Entry registran refs/heads/architecture/workspace-persistente-rackcad, ls-remote y HEAD fe7f136b09900880e1ebe2cb20491e2f84c85988, OriginMainSha=MainSha=812baf879612320653094a8aaf46aca0bac81383. Sin movimiento de main."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha muestra cinco rutas: PushBackPilotIntentReader.cs, PushBackPilotIntentScan.cs y tres pruebas WorkspaceDraftPilotIntent. Las cinco estan cubiertas por AllowedWriteScope; ninguna intersecta ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no devuelve rutas. git check-ignore confirma que artifacts/orchestration/I-64/F4-T2B1-INTENT-READ-nc1/2/R20261112T094531Z-d11b/inputs/delegation.json esta ignorado."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 43190415649 es push de la rama exacta sobre fe7f136b09900880e1ebe2cb20491e2f84c85988; los cuatro jobs requeridos estan en success. RedRun 43190225114 corresponde al RedSha a044bb4b3346b239555c87f6ddf28e1d528b6791; Core fallo y el TRX registra tres fallos por asercion."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX 43190415649: filtro Core Workspace selecciona 1592 (minimo 1468), 1592 pasan; UI Workspace selecciona 248 (minimo 248), 248 pasan. TRX RED 43190225114: Core selecciona 1592, con 3 fallos por asercion M-3, M-5 y M-7; UI selecciona 248 y pasa. TestResults coincide. git diff --name-only BaseSha RedSha -- tests/ enumera las mismas tres pruebas; git diff --name-only RedSha CurrentSha no toca tests/. ChainRedFiles resultante conserva esas tres rutas."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show -s --format=%B para a044bb4b y fe7f136b muestra en ambos Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al trailer declarado y coherente con ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation.Model=claude-sonnet-5-5 y Effort.Provider=high. relay-record-work.json registra ModelRequested=sonnet (alias de lanzamiento subagent), ModelEffective=claude-sonnet-5-5, EffortRequested=high y EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneo sin distincion de mayusculas de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction contra los terminos de AUTOMATION_PLAN 16.10: sin coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones; un resultado de herramienta con error, ninguno pendiente; sin aviso de limite. No hay orden fallida pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "La entrega declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; el HEAD, la referencia remota local, Entry y RemoteFacts declaran fe7f136b09900880e1ebe2cb20491e2f84c85988. Esta contradiccion impide verificar la identidad de la entrega."
+  ],
+  "RecommendedNextAction": "Resolver la discrepancia de CurrentSha en el registro de entrega y repetir la verificacion con datos coherentes."
+}

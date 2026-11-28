@@ -1,0 +1,34 @@
+fase compile; copia /d/r5b; salida out-compile-v50-r5b; revision 6adff90d856026a7a51067c1e9d7248f3d81641c
+  pieza d459501c7657706be6133123ff82608f8035d135827b5b92b1839ace0cb56c6a green_pbt4c_v50.py
+  pieza 03f0ed6b0b21fb98edb2f6d23af66b12afe3a7239494144759fee114a190b859 pbt4c-green-v50.txt
+  pieza ea98f86401710df7748e87fbb06ddb0eea1d29f8098f6cd641054890c24abb6b pbt4c-skeleton-v50.txt
+  pieza 4bff645b34db6ea3bc1e391abbfb21bad8050f1fc162e0a35282dae558f16231 pbt4c_skips_v50.py
+  pieza 71e153e73c7c9c4e85d2a6d31bd934ff87f14de252f23128a95034789d94dc75 make_equivalents_pbt4c_v50.py
+  pieza 5694e0978b65a2bbeebc8eee2ef68cadbc53c781d72f982e2efae9b62f5a9288 apply_red_pbt4c_v50.py
+  pieza eb4b4d6d94f93767469c7bc6debcabf39e0f63cd7a3d67877a559b06a31fa3ff apply_green_pbt4c_v50.py
+  pieza 0ab2ff4401c8c449ca22817f0df2144bf651868fc8de0d9de366071daa115e24 p6_check_pbt4c_v50.py
+  pieza 2c7034679c1d8e438f545b63f8b259a39ffe9976340b4b944b7c06c7f402a4d2 ui_filters_pbt4c_v50.txt
+  pieza 8feddf4f40505fe740dd6cd410d6b00d38d66b10145e7c6126224c9f8e5db449 pbt4b-contract-dump-v50.txt
+  pieza 628cdd29acbd9773460b0c32dde30575781de4e1a1025cc4a7020d43f0097e45 p6_pbt4c_v50.sh
+copia exportada: 13895 archivos
+RED de PB-T4c escrito: 14 archivos (esqueleto 8, Skip 3, equivalentes 3), sin las CT
+red-core-tests rc=0 errores=0 avisos-CS=0
+red-ui-tests rc=0 errores=0 avisos-CS=0
+red-plugin rc=0 errores=0 avisos-CS=0
+red: errores 0, avisos CS 0 (en total, hasta aqui)
+  binario f25bd147040e572e6a9ba69a6c86d0185f7469c6039573192e9c742c55151bf4 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Application.dll
+  binario 092152fff9f80792c6b18cb1ebd4e7a40a3c1ad2476c21ee8fe0317f8fa16ceb tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Tests.dll
+  binario 4344bab3f44c83f446e9221e44431ad26784d258deee96cfb99e6396ebd10bca tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario 9eedb86cba07a2284639162783e4842e4abd15fc7bc8fe9cd88d5229293f606e _plugin-out-red/RackCad.Plugin.dll
+GREEN de PB-T4c escrito: 13 archivos de src/
+green-core-tests rc=0 errores=0 avisos-CS=0
+green-ui-tests rc=0 errores=0 avisos-CS=0
+green-plugin rc=0 errores=0 avisos-CS=0
+green: errores 0, avisos CS 0 (en total, hasta aqui)
+  binario f036923a4c92fad67a6bca6f527b1650dad11e59ffec8bd579fd22d50b31c16e tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Application.dll
+  binario 0c18c8010842859e9c1db9e8349ed56650b0205703901642029bf11cfda002e7 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Tests.dll
+  binario 1f2cadb3af772654c7172af236c1252b7e856230a7a0aae4c447a4a7bef8ad57 tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario 2ea2b68facba760e10210a59e6b96e039974c2a3e81179791b16a79f60cfb6d0 _plugin-out-green/RackCad.Plugin.dll
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

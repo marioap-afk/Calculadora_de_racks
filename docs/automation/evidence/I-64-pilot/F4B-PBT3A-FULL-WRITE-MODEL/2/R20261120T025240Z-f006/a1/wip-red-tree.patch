@@ -1,0 +1,2808 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs
+new file mode 100644
+index 00000000..1ba3c425
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs
+@@ -0,0 +1,103 @@
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>The group of a changed leaf (D-PBT3-07).</summary>
++    public enum PushBackChangeGroup { Name = 0, Rack = 1, Annotations = 2, Safety = 3, Fronts = 4, Modules = 5, SideB = 6, Composite = 7, OutsideEditor = 8 }
++
++    /// <summary>Who changed a leaf with respect to the base.</summary>
++    public enum PushBackChangeClass { ChangedExternally = 0, ChangedByUser = 1, Overlapping = 2 }
++
++    /// <summary>One leaf that differs from the base in the current rack, in the draft or in both.</summary>
++    public sealed class PushBackChangeEntry
++    {
++        internal PushBackChangeEntry(
++            PushBackDocumentLevel level, string path, PushBackChangeGroup group,
++            PushBackChangeClass changeClass, bool isStructural, string baseValue, string externalValue, string draftValue)
++        {
++            Level = level;
++            Path = path;
++            Group = group;
++            Class = changeClass;
++            IsStructural = isStructural;
++            BaseValue = baseValue;
++            ExternalValue = externalValue;
++            DraftValue = draftValue;
++        }
++
++        public PushBackDocumentLevel Level { get; }
++
++        /// <summary>The path <c>$.A.B[3].C</c>, with the real indexes.</summary>
++        public string Path { get; }
++
++        public PushBackChangeGroup Group { get; }
++
++        public PushBackChangeClass Class { get; }
++
++        public bool IsStructural { get; }
++
++        /// <summary>The JSON text of the leaf, or the marker of an absent one.</summary>
++        public string BaseValue { get; }
++
++        public string ExternalValue { get; }
++
++        public string DraftValue { get; }
++    }
++
++    /// <summary>The classification of the differences of a draft and of the current rack with respect to the base.</summary>
++    public sealed class PushBackConflictClassification
++    {
++        internal PushBackConflictClassification(
++            IEnumerable<PushBackChangeEntry> entries, IEnumerable<string> viewsToErase, IEnumerable<string> viewsRejected, bool allViewsObsolete)
++        {
++            if (entries == null) throw new ArgumentNullException(nameof(entries));
++            if (viewsToErase == null) throw new ArgumentNullException(nameof(viewsToErase));
++            if (viewsRejected == null) throw new ArgumentNullException(nameof(viewsRejected));
++            Entries = entries
++                .OrderBy(entry => entry.Level)
++                .ThenBy(entry => entry.Path, StringComparer.Ordinal)
++                .ToList()
++                .AsReadOnly();
++            ChangedExternally = OfClass(PushBackChangeClass.ChangedExternally);
++            ChangedByUser = OfClass(PushBackChangeClass.ChangedByUser);
++            Overlapping = OfClass(PushBackChangeClass.Overlapping);
++            Structural = Entries.Where(entry => entry.IsStructural).ToList().AsReadOnly();
++            ViewsToErase = viewsToErase.OrderBy(key => key, StringComparer.Ordinal).ToList().AsReadOnly();
++            ViewsRejected = viewsRejected.OrderBy(key => key, StringComparer.Ordinal).ToList().AsReadOnly();
++            AllViewsObsolete = allViewsObsolete;
++        }
++
++        public IReadOnlyList<PushBackChangeEntry> Entries { get; }
++
++        public IReadOnlyList<PushBackChangeEntry> ChangedExternally { get; }
++
++        public IReadOnlyList<PushBackChangeEntry> ChangedByUser { get; }
++
++        public IReadOnlyList<PushBackChangeEntry> Overlapping { get; }
++
++        public IReadOnlyList<PushBackChangeEntry> Structural { get; }
++
++        public IReadOnlyList<string> ViewsToErase { get; }
++
++        public IReadOnlyList<string> ViewsRejected { get; }
++
++        public bool AllViewsObsolete { get; }
++
++        private IReadOnlyList<PushBackChangeEntry> OfClass(PushBackChangeClass changeClass)
++            => Entries.Where(entry => entry.Class == changeClass).ToList().AsReadOnly();
++    }
++
++    /// <summary>I-64 F4B PB-T3a (D-PBT3-07) — the classifier of the conflicts of D-PB-05, not connected.</summary>
++    public static class PushBackConflictClassifier
++    {
++        public static PushBackConflictClassification Classify(
++            PushBackFullDraftState baseState, PushBackFullDraftState currentRack, PushBackFullDraftState draft,
++            IEnumerable<KeyValuePair<string, RackEmbedDocument>> currentMembers, RackCatalog catalog)
++            => new PushBackConflictClassification(
++                Array.Empty<PushBackChangeEntry>(), Array.Empty<string>(), Array.Empty<string>(), false);
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs
+new file mode 100644
+index 00000000..61f95679
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs
+@@ -0,0 +1,20 @@
++using RackCad.Application.Catalogs;
++using RackCad.Domain.Systems.PushBack;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a (D-PBT3-03) — the seat of the editable state: the recompute pass of the window and the sequence of
++    /// its LoadExisting, as product code.
++    /// </summary>
++    public static class PushBackEditableStateSeat
++    {
++        public static PushBackEditorComputation Pass(
++            PushBackEditableState state, PushBackEditorDesignAssembler assembler,
++            PushBackCompositeEditorAssembler compositeAssembler, PushBackSide frontalSide)
++            => null;
++
++        public static PushBackEditableState LoadExisting(PushBackDesign design, string rackName, RackCatalog catalog)
++            => new PushBackEditableState();
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs
+new file mode 100644
+index 00000000..0a7012d4
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs
+@@ -0,0 +1,52 @@
++using System;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Systems.PushBack.Pilot;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a (D-PBT3-05) — the pair <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes, with the
++    /// name of the draft, or the reason the draft cannot be composed. The objects of a composition belong to the caller.
++    /// </summary>
++    public sealed class PushBackFullWriteComposition
++    {
++        private PushBackFullWriteComposition(PushBackCompositeEditorState editor, PushBackEditorInputs inputs, string name, string reason)
++        {
++            Editor = editor;
++            Inputs = inputs;
++            Name = name;
++            Reason = reason;
++        }
++
++        public bool IsComposed => Editor != null && Inputs != null;
++
++        public PushBackCompositeEditorState Editor { get; }
++
++        public PushBackEditorInputs Inputs { get; }
++
++        /// <summary>The name of the draft, as it is (it can be null or blank).</summary>
++        public string Name { get; }
++
++        public string Reason { get; }
++
++        public static PushBackFullWriteComposition Composed(PushBackCompositeEditorState editor, PushBackEditorInputs inputs, string name)
++            => new PushBackFullWriteComposition(
++                editor ?? throw new ArgumentNullException(nameof(editor)),
++                inputs ?? throw new ArgumentNullException(nameof(inputs)),
++                name,
++                null);
++
++        public static PushBackFullWriteComposition Rejected(string reason)
++            => new PushBackFullWriteComposition(null, null, null, reason);
++    }
++
++    /// <summary>I-64 F4B PB-T3a (D-PBT3-05) — the composition to write and the composition of "keep my draft", not connected.</summary>
++    public static class PushBackFullComposition
++    {
++        public static PushBackFullWriteComposition ForFullWrite(PushBackFullDraftState initial, PushBackFullDraftState current, RackCatalog catalog)
++            => PushBackFullWriteComposition.Rejected(PushBackPilotMaterializer.NonPilotContentReason);
++
++        public static PushBackFullDraftState KeepOn(PushBackFullDraftState newInitial, PushBackFullDraftState current)
++            => current;
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs
+new file mode 100644
+index 00000000..8f0aa0f6
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs
+@@ -0,0 +1,46 @@
++using System;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Systems.PushBack.Pilot;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a (D-PBT3-03) — the typed result of <see cref="PushBackFullDraftMaterializer.Materialize"/>:
++    /// Admitted(state), OutOfPilot(reason) or Failed(reason). Nothing is ever thrown to the caller.
++    /// </summary>
++    public sealed class PushBackFullDraftMaterialization
++    {
++        private PushBackFullDraftMaterialization(PushBackPilotMaterializationKind kind, PushBackFullDraftState state, string reason)
++        {
++            Kind = kind;
++            State = state;
++            Reason = reason;
++        }
++
++        public PushBackPilotMaterializationKind Kind { get; }
++
++        public bool IsAdmitted => Kind == PushBackPilotMaterializationKind.Admitted;
++
++        /// <summary>The materialized state; null unless the result is Admitted.</summary>
++        public PushBackFullDraftState State { get; }
++
++        /// <summary>Why the result is not Admitted; null for Admitted.</summary>
++        public string Reason { get; }
++
++        public static PushBackFullDraftMaterialization Admitted(PushBackFullDraftState state)
++            => new PushBackFullDraftMaterialization(PushBackPilotMaterializationKind.Admitted, state ?? throw new ArgumentNullException(nameof(state)), null);
++
++        public static PushBackFullDraftMaterialization OutOfPilot(string reason)
++            => new PushBackFullDraftMaterialization(PushBackPilotMaterializationKind.OutOfPilot, null, reason);
++
++        public static PushBackFullDraftMaterialization Failed(string reason)
++            => new PushBackFullDraftMaterialization(PushBackPilotMaterializationKind.Failed, null, reason);
++    }
++
++    /// <summary>I-64 F4B PB-T3a (D-PBT3-03) — materializes the FULL draft state from the raw text of an authored envelope.</summary>
++    public static class PushBackFullDraftMaterializer
++    {
++        public static PushBackFullDraftMaterialization Materialize(string originText, RackCatalog catalog)
++            => PushBackFullDraftMaterialization.Failed(PushBackPilotMaterializer.UnreadableOrFutureDiagnostic);
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs
+new file mode 100644
+index 00000000..3e532f30
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs
+@@ -0,0 +1,55 @@
++using System;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Systems.PushBack.Pilot;
++using RackCad.Application.Workspace.Drafts;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a (D-PBT3-04) — the result of ONE read of the edit intention of the FULL model: the stale base, the
++    /// read, the key of the origin, the technical detail and the hint to the classic editor.
++    /// </summary>
++    public sealed class PushBackFullIntentResult
++    {
++        internal PushBackFullIntentResult(
++            DraftStaleBase staleBase,
++            DraftIntentRead<PushBackFullDraftState> read,
++            string originKey,
++            string detail,
++            string classicEditorHint)
++        {
++            StaleBase = staleBase ?? throw new ArgumentNullException(nameof(staleBase));
++            Read = read ?? throw new ArgumentNullException(nameof(read));
++            OriginKey = originKey ?? string.Empty;
++            Detail = detail;
++            ClassicEditorHint = classicEditorHint;
++        }
++
++        /// <summary>The base of the read. Never null.</summary>
++        public DraftStaleBase StaleBase { get; }
++
++        /// <summary>Admitted with the base and the initial state, or not admitted with the unified diagnostic.</summary>
++        public DraftIntentRead<PushBackFullDraftState> Read { get; }
++
++        /// <summary>The key of the definition of origin of the input.</summary>
++        public string OriginKey { get; }
++
++        /// <summary>The technical detail behind the diagnostic; null when there is none.</summary>
++        public string Detail { get; }
++
++        /// <summary>Present if and only if the read is not admitted.</summary>
++        public string ClassicEditorHint { get; }
++    }
++
++    /// <summary>I-64 F4B PB-T3a (D-PBT3-04) — the reader of the FULL model, on top of the reader of the pilot.</summary>
++    public static class PushBackFullDraftReader
++    {
++        public static PushBackFullIntentResult Read(PushBackPilotIntentScan scan, RackCatalog catalog)
++            => new PushBackFullIntentResult(
++                PushBackPilotIntentReader.BuildStaleBase(scan),
++                DraftIntentRead<PushBackFullDraftState>.NotAdmitted(PushBackPilotIntentReader.MaterializeDiagnostic),
++                scan.OriginKey,
++                null,
++                PushBackPilotIntentReader.ClassicEditorHint);
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs
+new file mode 100644
+index 00000000..1b4cb011
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs
+@@ -0,0 +1,23 @@
++using System;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a (D-PBT3-02) — the state of the FULL draft of a Push Back rack: the editable state of PB-T1b plus the
++    /// raw text of the envelope it was materialized from. It is a plain container: it neither copies nor compares anything
++    /// by itself (see <see cref="PushBackFullDraftStateComparer"/>).
++    /// </summary>
++    public sealed class PushBackFullDraftState
++    {
++        public PushBackFullDraftState(PushBackEditableState editable, string origin)
++        {
++            Editable = editable ?? throw new ArgumentNullException(nameof(editable));
++            Origin = origin ?? throw new ArgumentNullException(nameof(origin));
++        }
++
++        public PushBackEditableState Editable { get; }
++
++        /// <summary>The raw text of the envelope the state was materialized from; in the initial state, always the current base.</summary>
++        public string Origin { get; }
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs
+new file mode 100644
+index 00000000..f7a3c125
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs
+@@ -0,0 +1,23 @@
++using System.Collections.Generic;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a (D-PBT3-02) — the comparer and the copier of <see cref="PushBackFullDraftState"/>.
++    /// </summary>
++    public sealed class PushBackFullDraftStateComparer : IEqualityComparer<PushBackFullDraftState>
++    {
++        private PushBackFullDraftStateComparer()
++        {
++        }
++
++        public static PushBackFullDraftStateComparer Instance { get; } = new PushBackFullDraftStateComparer();
++
++        public bool Equals(PushBackFullDraftState x, PushBackFullDraftState y) => ReferenceEquals(x, y);
++
++        public int GetHashCode(PushBackFullDraftState obj) => 0;
++
++        public static PushBackFullDraftState Copy(PushBackFullDraftState state)
++            => new PushBackFullDraftState(new PushBackEditableState(), state.Origin);
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs
+new file mode 100644
+index 00000000..a710fa71
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs
+@@ -0,0 +1,52 @@
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Domain.Systems.PushBack;
++
++namespace RackCad.Application.Systems.PushBack.Draft
++{
++    /// <summary>What the edition does to ONE view of the rack (D-PBT3-06).</summary>
++    public enum PushBackViewDispositionKind { Redraw = 0, ObsoleteLateral = 1, FrontalBOfOneWay = 2, NoAddress = 3 }
++
++    /// <summary>The disposition of every view of the rack, by definition key (ordinal).</summary>
++    public sealed class PushBackViewDispositionPlan
++    {
++        internal PushBackViewDispositionPlan(IEnumerable<KeyValuePair<string, PushBackViewDispositionKind>> members)
++        {
++            if (members == null) throw new ArgumentNullException(nameof(members));
++            Members = members.OrderBy(pair => pair.Key, StringComparer.Ordinal).ToList().AsReadOnly();
++            Redraw = KeysOf(PushBackViewDispositionKind.Redraw);
++            ObsoleteLaterals = KeysOf(PushBackViewDispositionKind.ObsoleteLateral);
++            FrontalBOfOneWay = KeysOf(PushBackViewDispositionKind.FrontalBOfOneWay);
++            NoAddress = KeysOf(PushBackViewDispositionKind.NoAddress);
++            AllObsolete = Members.Count > 0 && Members.All(pair => pair.Value == PushBackViewDispositionKind.ObsoleteLateral);
++        }
++
++        public IReadOnlyList<KeyValuePair<string, PushBackViewDispositionKind>> Members { get; }
++
++        public IReadOnlyList<string> Redraw { get; }
++
++        public IReadOnlyList<string> ObsoleteLaterals { get; }
++
++        public IReadOnlyList<string> FrontalBOfOneWay { get; }
++
++        public IReadOnlyList<string> NoAddress { get; }
++
++        /// <summary>There are members and every one of them is an obsolete lateral.</summary>
++        public bool AllObsolete { get; }
++
++        private IReadOnlyList<string> KeysOf(PushBackViewDispositionKind kind)
++            => Members.Where(pair => pair.Value == kind).Select(pair => pair.Key).ToList().AsReadOnly();
++    }
++
++    /// <summary>I-64 F4B PB-T3a (D-PBT3-06) — the disposition of the views of a rack after an edition.</summary>
++    public static class PushBackViewDispositions
++    {
++        public static PushBackViewDispositionPlan Of(
++            IEnumerable<KeyValuePair<string, RackEmbedDocument>> members, PushBackSystem outgoing, RackCatalog catalog)
++            => new PushBackViewDispositionPlan(
++                members.Select(pair => new KeyValuePair<string, PushBackViewDispositionKind>(pair.Key, PushBackViewDispositionKind.Redraw)));
++    }
++}
+diff --git a/tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs b/tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+new file mode 100644
+index 00000000..25abbbbb
+--- /dev/null
++++ b/tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+@@ -0,0 +1,336 @@
++using System;
++using System.Collections.Generic;
++using System.IO;
++using System.Linq;
++using System.Text.RegularExpressions;
++using Xunit;
++
++namespace RackCad.Tests
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a — the TEXT GUARDS of the full draft model (CT-PBT3A-12 to 14). They are GUARDS: they pass on the
++    /// skeleton and on the implementation, and they discriminate through their negative self-tests, run over text injected in
++    /// memory (never written).
++    ///
++    /// <para>
++    /// CT-PBT3A-12: the full model is not connected (OB-05.2, OB-05.5): no source file names its types outside of its own folder
++    /// and of the two files that PB-T3b generalizes. CT-PBT3A-13: G-L1 of D2 (CT-PBT1B-14), extended to the new folder: nothing
++    /// mutates the resolved rack or the module report. CT-PBT3A-14: the purity of the folder.
++    /// </para>
++    /// </summary>
++    public sealed class PushBackDraftWriteGuardTests
++    {
++        private static string Root => PilotKit.RepoRoot().FullName;
++
++        private const string DraftFolder = "src/RackCad.Application/Systems/PushBack/Draft/";
++
++        private static readonly string[] DraftFiles =
++        {
++            DraftFolder + "PushBackConflictClassifier.cs", DraftFolder + "PushBackEditableStateSeat.cs", DraftFolder + "PushBackFullComposition.cs",
++            DraftFolder + "PushBackFullDraftMaterializer.cs", DraftFolder + "PushBackFullDraftReader.cs", DraftFolder + "PushBackFullDraftState.cs",
++            DraftFolder + "PushBackFullDraftStateComparer.cs", DraftFolder + "PushBackViewDisposition.cs",
++        };
++
++        private static string Read(string relative) => File.ReadAllText(Path.Combine(Root, relative));
++
++        private static bool InBuildFolder(string path)
++            => path.Contains(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar)
++               || path.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar);
++
++        // ------------------------------------------------------------------------------------------------- CT-12
++
++        private static readonly string[] ConnectedNames =
++        {
++            "PushBackFullDraftState", "PushBackFullDraftReader", "PushBackFullComposition", "PushBackConflictClassifier", "PushBackViewDispositions",
++        };
++
++        /// <summary>The folder of the model and the two files that PB-T3b generalizes (the plan and the run of the update).</summary>
++        private static bool MayNameTheModel(string relative)
++            => relative.StartsWith(DraftFolder, StringComparison.Ordinal)
++               || relative == "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs"
++               || relative == "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs";
++
++        private static List<string> Naming(IEnumerable<(string Path, string Text)> files)
++            => files.Where(file => !MayNameTheModel(file.Path))
++                .SelectMany(file => ConnectedNames
++                    .Where(name => Regex.IsMatch(file.Text, @"\b" + Regex.Escape(name) + @"\b"))
++                    .Select(name => file.Path + ": " + name))
++                .ToList();
++
++        [Fact]
++        public void CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes()
++        {
++            var log = new List<string>();
++            var files = Directory.GetFiles(Path.Combine(Root, "src"), "*.cs", SearchOption.AllDirectories)
++                .Where(path => !InBuildFolder(path))
++                .Select(path => Path.GetRelativePath(Root, path).Replace(Path.DirectorySeparatorChar, '/'))
++                .OrderBy(path => path, StringComparer.Ordinal)
++                .ToList();
++            var texts = files.Select(path => (Path: path, Text: Read(path))).ToList();
++            var found = Naming(texts);
++            log.Add("sin-conectar archivos-revisados>0=" + (texts.Count(file => !MayNameTheModel(file.Path)) > 0) + " coincidencias=[" + string.Join(", ", found) + "]");
++
++            // The self-tests: each name injected in the host and in the support of the pilot makes the guard fail.
++            foreach (var destination in new[] { "WorkspaceHostCore.cs", "WorkspacePilotSupport.cs" })
++            {
++                var path = "src/RackCad.Application/Workspace/" + destination;
++                var real = Read(path);
++                foreach (var name in ConnectedNames)
++                {
++                    var injected = new[] { (Path: path, Text: real + "\n// " + name + " inyectado\n") };
++                    log.Add("autoprueba-" + name + "-en-" + destination + "=" + (Naming(injected).Count > 0 ? "falla" : "pasa"));
++                }
++            }
++
++            var expected = new List<string> { "sin-conectar archivos-revisados>0=True coincidencias=[]" };
++            foreach (var destination in new[] { "WorkspaceHostCore.cs", "WorkspacePilotSupport.cs" })
++            {
++                foreach (var name in new[] { "PushBackFullDraftState", "PushBackFullDraftReader", "PushBackFullComposition", "PushBackConflictClassifier", "PushBackViewDispositions" })
++                {
++                    expected.Add("autoprueba-" + name + "-en-" + destination + "=falla");
++                }
++            }
++
++            Assert.Equal(expected, log);
++        }
++
++        // ------------------------------------------------------------------------------------------------- rules of G-L1
++
++        private static readonly string[] Tokens =
++        {
++            "WorkingBaseline", "workingBaseline", "LastModuleReconciliation", "computation.System", "lastComputation.System",
++            "session.System", "lastCompositeSystem", "SystemToInsert",
++        };
++
++        private static readonly HashSet<string> Rebind = new HashSet<string>(StringComparer.Ordinal)
++        {
++            "lastComputation", "lastCompositeSystem", "workingBaseline", "LastModuleReconciliation",
++        };
++
++        private const string Link = @"(?:\s*\??\.\s*\w+(?:\s*\([^()]*\))?|\s*\[[^\]]*\])";
++        private const string Assign = @"\s*(?:\??\.\s*\w+|\[[^\]]*\])\s*(?:=(?![=>])|\+=|-=|\*=|/=|\+\+|--)";
++        private const string Mutators = @"(?:Add|AddRange|Clear|Remove|RemoveAt|RemoveAll|RemoveRange|Insert|InsertRange|Sort|Reverse|RecalculatePositions)";
++        private const string Call = @"\s*\??\.\s*" + Mutators + @"\s*\(";
++        private const string Coll = @"(?:List|IList|ICollection|Collection|HashSet|Dictionary|IDictionary)";
++        private const string CastC = @"\(\s*\(\s*" + Coll + @"\s*<[^>]*>\s*\)[^;]*?";
++        private const string Named = @"\b(?:Refresh|RefreshPhysicalModel|\w+InPlace)\s*\([^;]*?";
++
++        private static string TokenRegex(string token) => @"(?<![\w])" + Regex.Escape(token).Replace(@"\.", @"\s*\.\s*");
++
++        private static IEnumerable<string> Hits(string text, IEnumerable<string> patterns)
++            => patterns.SelectMany(pattern => Regex.Matches(text, pattern).Cast<Match>().Select(match => match.Value));
++
++        private static List<string> Rule1(string text, IEnumerable<string> tokens)
++            => tokens.SelectMany(token => Hits(text, new[] { TokenRegex(token) + Link + "*" + Assign, TokenRegex(token) + Link + "*" + Call })).ToList();
++
++        private static List<string> Rule1b(string text, IEnumerable<string> tokens)
++            => tokens.SelectMany(token => Hits(text, new[]
++            {
++                CastC + TokenRegex(token),
++                TokenRegex(token) + @"[^;{}]*?\s+as\s+" + Coll + @"\s*<",
++                TokenRegex(token) + @"[^;{}]*?\s+is\s+" + Coll + @"\s*<[^>]*>\s+\w+",
++            })).ToList();
++
++        private static List<string> Rule1c(string text, IEnumerable<string> tokens)
++            => tokens.SelectMany(token => Hits(text, new[] { Named + TokenRegex(token) })).ToList();
++
++        /// <summary>The text without comments, with the string and character literals emptied (as the source guards do).</summary>
++        private static string Clean(string source)
++        {
++            source = Regex.Replace(source, "@\"(?:[^\"]|\"\")*\"", "\"\"");
++            source = Regex.Replace(source, "\\$?\"(?:\\\\.|[^\"\\\\\\n])*\"", "\"\"");
++            source = Regex.Replace(source, "'(?:\\\\.|[^'\\\\\\n])'", "''");
++            source = Regex.Replace(source, @"/\*.*?\*/", " ", RegexOptions.Singleline);
++            source = Regex.Replace(source, @"//[^\n]*", string.Empty);
++            return source;
++        }
++
++        private static string Collapse(string text)
++            => string.Join(" ", text.Split((char[])null, StringSplitOptions.RemoveEmptyEntries));
++
++        /// <summary>The members of a class: the text at depth two and deeper, one entry per member.</summary>
++        private static List<string> Members(string source)
++        {
++            var output = new List<string>();
++            var depth = 0;
++            var current = new List<string>();
++            foreach (var line in source.Split('\n'))
++            {
++                var before = depth;
++                depth += line.Count(c => c == '{') - line.Count(c => c == '}');
++                if (before >= 2 || depth > 2) current.Add(line);
++                if ((before > 2 && depth == 2) || (before == 2 && depth == 2 && line.Trim().EndsWith(";", StringComparison.Ordinal)))
++                {
++                    output.Add(Collapse(string.Join(" ", current)));
++                    current = new List<string>();
++                }
++            }
++
++            if (current.Count > 0) output.Add(Collapse(string.Join(" ", current)));
++            return output;
++        }
++
++        private static int Rfind(string text, char value, int end) => end <= 0 ? -1 : text.LastIndexOf(value, end - 1);
++
++        /// <summary>One level of alias: by assignment, <c>foreach</c>, <c>is</c> and lambda parameter.</summary>
++        private static Dictionary<string, string> Aliases(string text, IEnumerable<string> tokens)
++        {
++            var tokenList = tokens.ToList();
++            var alternatives = string.Join("|", tokenList.Select(TokenRegex));
++            var found = new Dictionary<string, string>(StringComparer.Ordinal);
++
++            foreach (Match match in Regex.Matches(text, @"(?:\bvar|[\w<>\[\]?,.]+)?\s+(\w+)\s*=(?![=>])\s*([^;{}]*)"))
++            {
++                var identifier = match.Groups[1].Value;
++                if (!tokenList.Contains(identifier) && !Rebind.Contains(identifier) && Regex.IsMatch(match.Groups[2].Value, alternatives))
++                {
++                    if (!found.ContainsKey(identifier)) found[identifier] = "asignacion";
++                }
++            }
++
++            foreach (Match match in Regex.Matches(text, @"foreach\s*\(\s*(?:var|[\w<>\[\]?,.]+)\s+(\w+)\s+in\s+([^)]*(?:\([^()]*\)[^)]*)*)\)"))
++            {
++                if (Regex.IsMatch(match.Groups[2].Value, alternatives) && !found.ContainsKey(match.Groups[1].Value)) found[match.Groups[1].Value] = "foreach";
++            }
++
++            foreach (Match match in Regex.Matches(text, "(?:" + alternatives + @")[^;{}]*?\s+is\s+[\w.]+(?:\s*<[^>]*>)?\s+(\w+)"))
++            {
++                if (!found.ContainsKey(match.Groups[1].Value)) found[match.Groups[1].Value] = "is";
++            }
++
++            foreach (Match match in Regex.Matches(text, @"(?:\(([^()]*)\)|\b(\w+))\s*=>"))
++            {
++                var start = Math.Max(Math.Max(Rfind(text, ';', match.Index), Rfind(text, '{', match.Index)), Rfind(text, '}', match.Index)) + 1;
++                if (!Regex.IsMatch(text.Substring(start, match.Index - start), alternatives)) continue;
++                var parameters = match.Groups[1].Success ? match.Groups[1].Value.Split(',') : new[] { match.Groups[2].Value };
++                foreach (var raw in parameters)
++                {
++                    var trimmed = raw.Trim();
++                    var name = trimmed.Length == 0 ? string.Empty : trimmed.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).Last();
++                    if (Regex.IsMatch(name, @"^\w+$") && !tokenList.Contains(name) && !found.ContainsKey(name)) found[name] = "lambda";
++                }
++            }
++
++            return found;
++        }
++
++        /// <summary>Every match of the four rules over the text of one file.</summary>
++        private static List<string> Violations(string source)
++        {
++            var cleaned = Clean(source);
++            var flat = Collapse(cleaned);
++            var result = new List<string>();
++            result.AddRange(Rule1(flat, Tokens).Select(hit => "R1 " + hit));
++            result.AddRange(Rule1b(flat, Tokens).Select(hit => "R1b " + hit));
++            result.AddRange(Rule1c(flat, Tokens).Select(hit => "R1c " + hit));
++            foreach (var member in Members(cleaned))
++            {
++                var aliases = Aliases(member, Tokens);
++                if (aliases.Count > 0)
++                {
++                    // Rule 2 of D-PBT1-15: an alias counts as a token for rules 1 AND 1b (a mold over an alias is a mutation too).
++                    result.AddRange(Rule1(member, aliases.Keys).Select(hit => "R2 " + hit));
++                    result.AddRange(Rule1b(member, aliases.Keys).Select(hit => "R2b " + hit));
++                }
++            }
++
++            return result;
++        }
++
++        /// <summary>An injected line, inside a member appended to the real text of a file (never written to disk).</summary>
++        private static string Inject(string source, string line)
++        {
++            var classEnd = source.LastIndexOf('}', source.LastIndexOf('}') - 1);
++            return source.Substring(0, classEnd) + "void Inyectado() { " + line + " }\n" + source.Substring(classEnd);
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-13
++
++        [Fact]
++        public void CT_PBT3A_13_NoLineOfTheFolderOfTheModelMutatesTheResolvedRackOrTheModuleReport()
++        {
++            var log = new List<string>();
++            var existing = DraftFiles.Where(path => File.Exists(Path.Combine(Root, path))).ToList();
++            var violations = existing.SelectMany(path => Violations(Read(path)).Select(v => path + ": " + v)).ToList();
++            log.Add("reglas-sin-coincidencias=" + (existing.Count == DraftFiles.Length && violations.Count == 0));
++
++            var real = Read(DraftFolder + "PushBackFullComposition.cs");
++            var selfTests = new (string Name, string Line)[]
++            {
++                ("a", "state.WorkingBaseline.Structure.Name = \"x\";"),
++                ("b", "var b = state.WorkingBaseline; b.Structure.Modules.Clear();"),
++                ("c", "((List<string>)side.LastModuleReconciliation.Preserved).Add(\"x\");"),
++                ("e", "foreach (var module in workingBaseline.Structure.Modules) { module.Length = 1.0; }"),
++                ("f1", "state.WorkingBaseline.Structure.Modules[0].Length = 1.0;"),
++                ("h1", "state.WorkingBaseline.Structure.Modules.ToList().ForEach(m => m.Length = 1);"),
++                ("i", "state.WorkingBaseline.Structure.RecalculatePositions();"),
++                ("j", "builder.Refresh(state.WorkingBaseline.Structure);"),
++            };
++
++            foreach (var test in selfTests)
++            {
++                log.Add("autoprueba-" + test.Name + "=" + (Violations(Inject(real, test.Line)).Count > 0 ? "falla" : "pasa"));
++            }
++
++            Assert.Equal(
++                new[]
++                {
++                    "reglas-sin-coincidencias=True",
++                    "autoprueba-a=falla", "autoprueba-b=falla", "autoprueba-c=falla", "autoprueba-e=falla",
++                    "autoprueba-f1=falla", "autoprueba-h1=falla", "autoprueba-i=falla", "autoprueba-j=falla",
++                },
++                log);
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-14
++
++        private static readonly string[] ForbiddenTerms =
++        {
++            "Autodesk", "RackCad.Plugin", "RackCad.UI", "System.Windows", "Transaction", "Database", "async", "await", "Task", "File.",
++            "System.IO", "RackEmbedComposer", "new RackEmbedDocument",
++        };
++
++        /// <summary>No nullable directive, exactly one namespace and in block form, and none of the forbidden terms.</summary>
++        private static List<string> Purity(string source)
++        {
++            var result = new List<string>();
++            if (Regex.IsMatch(source, @"^\s*#nullable", RegexOptions.Multiline)) result.Add("#nullable");
++            var namespaces = Regex.Matches(source, @"^\s*namespace\s", RegexOptions.Multiline).Count;
++            var block = Regex.Matches(source, @"^namespace RackCad\.Application\.Systems\.PushBack\.Draft\s*\r?\n\{", RegexOptions.Multiline).Count;
++            if (namespaces != 1 || block != 1) result.Add("namespace RackCad.Application.Systems.PushBack.Draft");
++            result.AddRange(ForbiddenTerms.Where(term => source.Contains(term, StringComparison.Ordinal)));
++            return result;
++        }
++
++        [Fact]
++        public void CT_PBT3A_14_TheFolderOfTheModelHasNoAutoCadNoWindowsNoTransactionAndNoNullableDirective()
++        {
++            var log = new List<string>();
++            var existing = DraftFiles.Where(path => File.Exists(Path.Combine(Root, path))).ToList();
++            var violations = existing.SelectMany(path => Purity(Read(path)).Select(v => path + ": " + v)).ToList();
++            log.Add("pureza archivos=" + existing.Count + " violaciones=[" + string.Join(", ", violations) + "]");
++
++            var real = Read(DraftFolder + "PushBackFullComposition.cs");
++            log.Add("autoprueba-#nullable=" + (Purity(real + "\n#nullable enable\n").Contains("#nullable") ? "falla" : "pasa"));
++            log.Add("autoprueba-namespace RackCad.Application.Systems.PushBack.Draft="
++                + (Purity(real + "\nnamespace Otro { }\n").Contains("namespace RackCad.Application.Systems.PushBack.Draft") ? "falla" : "pasa"));
++            foreach (var term in ForbiddenTerms)
++            {
++                log.Add("autoprueba-" + term + "=" + (Purity(real + "\n" + term + "\n").Contains(term) ? "falla" : "pasa"));
++            }
++
++            Assert.Equal(
++                new[]
++                {
++                    "pureza archivos=8 violaciones=[]",
++                    "autoprueba-#nullable=falla",
++                    "autoprueba-namespace RackCad.Application.Systems.PushBack.Draft=falla",
++                    "autoprueba-Autodesk=falla", "autoprueba-RackCad.Plugin=falla", "autoprueba-RackCad.UI=falla", "autoprueba-System.Windows=falla",
++                    "autoprueba-Transaction=falla", "autoprueba-Database=falla", "autoprueba-async=falla", "autoprueba-await=falla",
++                    "autoprueba-Task=falla", "autoprueba-File.=falla", "autoprueba-System.IO=falla", "autoprueba-RackEmbedComposer=falla",
++                    "autoprueba-new RackEmbedDocument=falla",
++                },
++                log);
++        }
++    }
++}
+diff --git a/tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs b/tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs
+new file mode 100644
+index 00000000..9ab8edfb
+--- /dev/null
++++ b/tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs
+@@ -0,0 +1,377 @@
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Reflection;
++using System.Text.Json;
++using System.Text.Json.Nodes;
++using System.Text.Json.Serialization;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Application.Systems.PushBack;
++using RackCad.Application.Systems.PushBack.Draft;
++using RackCad.Domain.Systems.Dynamic;
++using RackCad.Domain.Systems.PushBack;
++using RackCad.Domain.Systems.Shared;
++using Xunit;
++
++namespace RackCad.Tests
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a — the CLASSIFIER of the conflicts of D-PB-05 (CT-PBT3A-09 and 10). The product classifier is compared with a
++    /// mechanical oracle written again in this class (the leaf diff of the tests and the rules of the table of the package), by
++    /// the set of (level, path, group, class, structural). Then a few anchors that do not depend on the derived leaves, and the
++    /// coverage of the ownership map by reflection.
++    /// </summary>
++    public sealed class PushBackFullDraftClassifierTests
++    {
++        private static RackCatalog Catalog => PilotKit.Catalog;
++
++        private static readonly PushBackEditorDesignAssembler Assembler = new PushBackEditorDesignAssembler(PilotKit.Catalog);
++        private static readonly PushBackCompositeEditorAssembler CompositeAssembler = new PushBackCompositeEditorAssembler(PilotKit.Catalog);
++
++        // ---------------------------------------------------------------------------------------------- helpers
++
++        private static T Paso<T>(List<string> log, Func<T> step)
++        {
++            try
++            {
++                return step();
++            }
++            catch (Exception error)
++            {
++                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
++                return default(T);
++            }
++        }
++
++        private static string EditInner(string envelopeText, Action<JsonNode> edit)
++        {
++            var envelope = JsonNode.Parse(envelopeText);
++            var inner = JsonNode.Parse(envelope["Design"].GetValue<string>());
++            edit(inner);
++            envelope["Design"] = inner.ToJsonString();
++            return envelope.ToJsonString();
++        }
++
++        private static PushBackFullDraftState Full(List<string> log, string text)
++        {
++            var result = Paso(log, () => PushBackFullDraftMaterializer.Materialize(text, Catalog));
++            return result == null || !result.IsAdmitted ? null : result.State;
++        }
++
++        private static PushBackFullDraftState Copy(List<string> log, PushBackFullDraftState state)
++            => state == null ? null : Paso(log, () => PushBackFullDraftStateComparer.Copy(state));
++
++        // ---------------------------------------------------------------------------------------- the mechanical oracle
++
++        /// <summary>The three texts the classifier compares for a state: the envelope (the name and the rest of the envelope of its
++        /// origin, without <c>Design</c>), the project of its origin without <c>PushBack</c>, and the persisted <c>PushBack</c> object
++        /// of the design built over a copy of the state. In the order of <see cref="PushBackDocumentLevel"/>.</summary>
++        private static string[] Texts(PushBackFullDraftState state)
++        {
++            var copy = PushBackEditableStateComparer.Copy(state.Editable);
++            var design = CompositeAssembler.BuildDesign(copy.Editor, copy.BuildInputs(Assembler));
++            var payload = JsonNode.Parse(new RackProjectStore().Serialize(RackProject.ForPushBack(design)))["PushBack"].ToJsonString();
++
++            var origin = JsonNode.Parse(state.Origin).AsObject();
++            var envelope = new JsonObject { ["Name"] = state.Editable.Name == null ? null : JsonValue.Create(state.Editable.Name) };
++            foreach (var property in origin)
++            {
++                if (property.Key == "Name" || property.Key == "Design") continue;
++                envelope[property.Key] = property.Value?.DeepClone();
++            }
++
++            var inner = JsonNode.Parse(origin["Design"].GetValue<string>()).AsObject();
++            var project = new JsonObject();
++            foreach (var property in inner)
++            {
++                if (property.Key == "PushBack") continue;
++                project[property.Key] = property.Value?.DeepClone();
++            }
++
++            return new[] { envelope.ToJsonString(), project.ToJsonString(), payload };
++        }
++
++        /// <summary>The leaves of a diff of the tests, by path, with the text before and after.</summary>
++        private static Dictionary<string, (string Before, string After)> Leaves(string before, string after)
++        {
++            var result = new Dictionary<string, (string, string)>(StringComparer.Ordinal);
++            foreach (var line in PilotKit.JsonDiff(before, after))
++            {
++                var colon = line.IndexOf(": ", StringComparison.Ordinal);
++                var arrow = line.IndexOf(" -> ", colon, StringComparison.Ordinal);
++                result[line.Substring(0, colon)] = (line.Substring(colon + 2, arrow - colon - 2), line.Substring(arrow + 4));
++            }
++
++            return result;
++        }
++
++        // The table of the package, written once more as data: the prefixes of the payload and their group.
++        private static readonly (string Prefix, PushBackChangeGroup Group)[] PayloadPrefixes =
++        {
++            ("$.SchemaVersion", PushBackChangeGroup.OutsideEditor),
++            ("$.Structure.Fronts", PushBackChangeGroup.Fronts), ("$.Fronts", PushBackChangeGroup.Fronts),
++            ("$.Structure.Modules", PushBackChangeGroup.Modules), ("$.Structure.HeaderLineOverrides", PushBackChangeGroup.Modules),
++            ("$.Structure.DerivedPostLineOverrides", PushBackChangeGroup.Modules),
++            ("$.SideB", PushBackChangeGroup.SideB), ("$.Composite", PushBackChangeGroup.Composite),
++            ("$.Structure.SafetySelections", PushBackChangeGroup.Safety), ("$.RearTopeSaque", PushBackChangeGroup.Safety),
++            ("$.RearTopePieceId", PushBackChangeGroup.Safety), ("$.RearTopeOffCells", PushBackChangeGroup.Safety),
++            ("$.DefensePieceId", PushBackChangeGroup.Safety),
++            ("$.Structure.NumberFronts", PushBackChangeGroup.Annotations), ("$.Structure.NumberLevels", PushBackChangeGroup.Annotations),
++            ("$.Structure.DrawRackName", PushBackChangeGroup.Annotations), ("$.Structure.AnnotationScale", PushBackChangeGroup.Annotations),
++            ("$.Structure.Dimensions", PushBackChangeGroup.Annotations), ("$.Structure.DimensionViews", PushBackChangeGroup.Annotations),
++            ("$.Structure.DimensionStyle", PushBackChangeGroup.Annotations),
++            ("$.Structure", PushBackChangeGroup.Rack), ("$.LegacyHighEndBeamPeralte", PushBackChangeGroup.Rack),
++        };
++
++        private static bool Starts(string prefix, string path)
++            => path == prefix || path.StartsWith(prefix + ".", StringComparison.Ordinal) || path.StartsWith(prefix + "[", StringComparison.Ordinal);
++
++        private static PushBackChangeGroup OracleGroup(int level, string path)
++        {
++            if (level == (int)PushBackDocumentLevel.Envelope) return path == "$.Name" ? PushBackChangeGroup.Name : PushBackChangeGroup.OutsideEditor;
++            if (level == (int)PushBackDocumentLevel.Project) return PushBackChangeGroup.OutsideEditor;
++            var covering = PayloadPrefixes.Where(row => Starts(row.Prefix, path)).OrderByDescending(row => row.Prefix.Length).ToList();
++            if (covering.Count > 0) return covering[0].Group;
++            return PushBackEditableStateOwnership.Of(PushBackDocumentLevel.Payload, path) == PushBackFieldOwner.Editor
++                ? PushBackChangeGroup.Rack
++                : PushBackChangeGroup.OutsideEditor;
++        }
++
++        /// <summary>The set of (level, path, group, class, structural) the oracle gives for a base, the current rack and a draft.</summary>
++        private static List<string> OracleSet(PushBackFullDraftState b, PushBackFullDraftState c, PushBackFullDraftState d)
++        {
++            var textsB = Texts(b);
++            var textsC = Texts(c);
++            var textsD = Texts(d);
++            var result = new List<string>();
++            for (var level = 0; level < 3; level++)
++            {
++                var external = Leaves(textsB[level], textsC[level]);
++                var byUser = Leaves(textsB[level], textsD[level]);
++                foreach (var path in external.Keys.Union(byUser.Keys, StringComparer.Ordinal))
++                {
++                    var inExternal = external.ContainsKey(path);
++                    var inUser = byUser.ContainsKey(path);
++                    var changeClass = inExternal && inUser ? PushBackChangeClass.Overlapping
++                        : inExternal ? PushBackChangeClass.ChangedExternally : PushBackChangeClass.ChangedByUser;
++                    var group = OracleGroup(level, path);
++                    var absent = (inExternal && (external[path].Before == "<absent>" || external[path].After == "<absent>"))
++                                 || (inUser && (byUser[path].Before == "<absent>" || byUser[path].After == "<absent>"));
++                    var structural = group == PushBackChangeGroup.Modules || group == PushBackChangeGroup.SideB
++                                     || group == PushBackChangeGroup.Composite || (group == PushBackChangeGroup.Fronts && absent);
++                    result.Add(level + "|" + path + "|" + group + "|" + changeClass + "|" + structural);
++                }
++            }
++
++            result.Sort(StringComparer.Ordinal);
++            return result;
++        }
++
++        private static List<string> ProductSet(PushBackConflictClassification classification)
++        {
++            var result = classification.Entries
++                .Select(entry => (int)entry.Level + "|" + entry.Path + "|" + entry.Group + "|" + entry.Class + "|" + entry.IsStructural)
++                .ToList();
++            result.Sort(StringComparer.Ordinal);
++            return result;
++        }
++
++        private static bool Has(PushBackConflictClassification classification, PushBackDocumentLevel level, string path, PushBackChangeGroup group,
++            PushBackChangeClass changeClass, bool structural)
++            => classification.Entries.Any(entry => entry.Level == level && entry.Path == path && entry.Group == group
++                                                   && entry.Class == changeClass && entry.IsStructural == structural);
++
++        private static readonly IEnumerable<KeyValuePair<string, RackEmbedDocument>> NoMembers = new KeyValuePair<string, RackEmbedDocument>[0];
++
++        /// <summary>The two lines every case of CT-09 and CT-10 gives with the oracle: the comparison and the number of entries.</summary>
++        private static void Compare(
++            List<string> log, List<string> expected, string label,
++            PushBackFullDraftState b, PushBackFullDraftState c, PushBackFullDraftState d,
++            IEnumerable<KeyValuePair<string, RackEmbedDocument>> members, out PushBackConflictClassification classification)
++        {
++            classification = b == null || c == null || d == null ? null : Paso(log, () => PushBackConflictClassifier.Classify(b, c, d, members, Catalog));
++            var oracle = b == null || c == null || d == null ? null : Paso(log, () => OracleSet(b, c, d));
++            var product = classification == null ? null : ProductSet(classification);
++            log.Add(label + " igual-al-oraculo=" + (oracle != null && product != null && oracle.SequenceEqual(product, StringComparer.Ordinal))
++                + " entradas=" + (classification == null ? -1 : classification.Entries.Count));
++            expected.Add(label + " igual-al-oraculo=True entradas=" + (oracle == null ? -2 : oracle.Count));
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-09
++
++        private static string AnchorLine(
++            string label, PushBackConflictClassification classification, PushBackDocumentLevel level, string path, PushBackChangeGroup group,
++            PushBackChangeClass changeClass)
++            => label + " ancla " + level + " " + path + " grupo=" + group + " clase=" + changeClass + " estructural=False presente="
++               + (classification != null && Has(classification, level, path, group, changeClass, false));
++
++        [Fact]
++        public void CT_PBT3A_09_TheClassifierGivesTheLeavesTheGroupsAndTheClassesOfTheOracle()
++        {
++            var log = new List<string>();
++            var expected = new List<string>();
++            var baseText = PilotKit.Text("pb-01-base");
++            var b = Full(log, baseText);
++
++            // The external changes come from the text of the drawing; the changes of the user, from the draft.
++            string WithStructure(string name, double value) => EditInner(baseText, inner => inner["PushBack"]["Structure"][name] = value);
++
++            // (c) the tolerance changed outside to 4.5.
++            var c1 = Full(log, WithStructure("PalletTolerance", 4.5));
++            Compare(log, expected, "tolerancia-externa", b, c1, Copy(log, b), NoMembers, out var k1);
++            log.Add(AnchorLine("tolerancia-externa", k1, PushBackDocumentLevel.Payload, "$.Structure.PalletTolerance", PushBackChangeGroup.Rack, PushBackChangeClass.ChangedExternally));
++            expected.Add("tolerancia-externa ancla Payload $.Structure.PalletTolerance grupo=Rack clase=ChangedExternally estructural=False presente=True");
++
++            // (d) the depth of the pallet changed by the user to 48.5.
++            var d2 = Copy(log, b);
++            if (d2 != null) d2.Editable.Pallet = new PalletSpecification(d2.Editable.Pallet.Front, 48.5, d2.Editable.Pallet.Height, d2.Editable.Pallet.Weight, d2.Editable.Pallet.WeightUnit);
++            Compare(log, expected, "fondo-usuario", b, Copy(log, b), d2, NoMembers, out var k2);
++            log.Add(AnchorLine("fondo-usuario", k2, PushBackDocumentLevel.Payload, "$.Structure.PalletDepth", PushBackChangeGroup.Rack, PushBackChangeClass.ChangedByUser));
++            expected.Add("fondo-usuario ancla Payload $.Structure.PalletDepth grupo=Rack clase=ChangedByUser estructural=False presente=True");
++
++            // The same field changed by both, with the same value and with different values.
++            var d3 = Copy(log, b);
++            if (d3 != null) d3.Editable.PostPeralte = 3.25;
++            Compare(log, expected, "postperalte-mismo-valor", b, Full(log, WithStructure("PostPeralte", 3.25)), d3, NoMembers, out var k3);
++            log.Add(AnchorLine("postperalte-mismo-valor", k3, PushBackDocumentLevel.Payload, "$.Structure.PostPeralte", PushBackChangeGroup.Rack, PushBackChangeClass.Overlapping));
++            expected.Add("postperalte-mismo-valor ancla Payload $.Structure.PostPeralte grupo=Rack clase=Overlapping estructural=False presente=True");
++
++            var d4 = Copy(log, b);
++            if (d4 != null) d4.Editable.PostPeralte = 4.25;
++            Compare(log, expected, "postperalte-valores-distintos", b, Full(log, WithStructure("PostPeralte", 3.25)), d4, NoMembers, out var k4);
++            log.Add(AnchorLine("postperalte-valores-distintos", k4, PushBackDocumentLevel.Payload, "$.Structure.PostPeralte", PushBackChangeGroup.Rack, PushBackChangeClass.Overlapping));
++            expected.Add("postperalte-valores-distintos ancla Payload $.Structure.PostPeralte grupo=Rack clase=Overlapping estructural=False presente=True");
++
++            // The name changed outside.
++            Compare(log, expected, "nombre-externo", b, Full(log, IntentKit.Rewrite(baseText, e => e.Name = "PB-OTRO")), Copy(log, b), NoMembers, out var k5);
++            log.Add(AnchorLine("nombre-externo", k5, PushBackDocumentLevel.Envelope, "$.Name", PushBackChangeGroup.Name, PushBackChangeClass.ChangedExternally));
++            expected.Add("nombre-externo ancla Envelope $.Name grupo=Name clase=ChangedExternally estructural=False presente=True");
++
++            // A custom property added outside: the first leaf of CustomProperties, by ordinal path.
++            var withProperties = IntentKit.Rewrite(baseText, e => e.CustomProperties = JsonDocument.Parse("{\"Alfa\":1}").RootElement.Clone());
++            Compare(log, expected, "propiedad-personalizada-externa", b, Full(log, withProperties), Copy(log, b), NoMembers, out var k6);
++            var first = k6 == null ? null : k6.Entries.Where(entry => entry.Level == PushBackDocumentLevel.Envelope
++                                                                      && entry.Path.StartsWith("$.CustomProperties", StringComparison.Ordinal))
++                .OrderBy(entry => entry.Path, StringComparer.Ordinal).FirstOrDefault();
++            log.Add("propiedad-personalizada-externa ancla Envelope " + (first == null ? "<ninguna>" : first.Path) + " grupo=" + (first == null ? "-" : first.Group.ToString())
++                + " clase=" + (first == null ? "-" : first.Class.ToString()) + " estructural=" + (first != null && first.IsStructural) + " presente=" + (first != null));
++            expected.Add("propiedad-personalizada-externa ancla Envelope $.CustomProperties.Alfa grupo=OutsideEditor clase=ChangedExternally estructural=False presente=True");
++
++            // (3) The coverage of the ownership map (V42-03; A2-12 of PB-T2, M09): every declared property of the three documents has a row.
++            foreach (var (level, type) in new[]
++                     {
++                         (PushBackDocumentLevel.Envelope, typeof(RackEmbedDocument)),
++                         (PushBackDocumentLevel.Project, typeof(RackProjectDocument)),
++                         (PushBackDocumentLevel.Payload, typeof(PushBackDesignDocument)),
++                     })
++            {
++                var names = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
++                    .Where(property => property.GetGetMethod() != null && property.GetCustomAttribute<JsonExtensionDataAttribute>() == null)
++                    .Select(property => property.Name)
++                    .OrderBy(name => name, StringComparer.Ordinal);
++                foreach (var name in names)
++                {
++                    var path = "$." + name;
++                    var row = PushBackEditableStateOwnership.Table
++                        .Where(candidate => candidate.Level == level && Starts(candidate.Path, path))
++                        .OrderByDescending(candidate => candidate.Path.Length)
++                        .FirstOrDefault();
++                    log.Add(level + " " + path + " fila=" + (row == null ? "<ninguna>" : row.Path) + " dueno=" + PushBackEditableStateOwnership.Of(level, path));
++                }
++            }
++
++            expected.AddRange(new[]
++            {
++                "Envelope $.CustomProperties fila=$.CustomProperties dueno=Envelope",
++                "Envelope $.Design fila=$.Design dueno=Container",
++                "Envelope $.Id fila=$.Id dueno=Envelope",
++                "Envelope $.Kind fila=$.Kind dueno=Envelope",
++                "Envelope $.Name fila=$.Name dueno=Editor",
++                "Envelope $.SchemaVersion fila=$.SchemaVersion dueno=Envelope",
++                "Envelope $.Section fila=$.Section dueno=Envelope",
++                "Envelope $.View fila=$.View dueno=Envelope",
++                "Project $.Cantilever fila=$.Cantilever dueno=Envelope",
++                "Project $.DynamicSystem fila=$.DynamicSystem dueno=Envelope",
++                "Project $.FlowBed fila=$.FlowBed dueno=Envelope",
++                "Project $.Header fila=$.Header dueno=Envelope",
++                "Project $.Kind fila=$.Kind dueno=Envelope",
++                "Project $.Larguero fila=$.Larguero dueno=Envelope",
++                "Project $.PushBack fila=$.PushBack dueno=Container",
++                "Project $.SchemaVersion fila=$.SchemaVersion dueno=Envelope",
++                "Project $.SelectiveRack fila=$.SelectiveRack dueno=Envelope",
++                "Payload $.Composite fila=$.Composite dueno=Editor",
++                "Payload $.DefensePieceId fila=$.DefensePieceId dueno=Editor",
++                "Payload $.Fronts fila=$.Fronts dueno=Editor",
++                "Payload $.LegacyHighEndBeamPeralte fila=$.LegacyHighEndBeamPeralte dueno=Editor",
++                "Payload $.RearTopeOffCells fila=$.RearTopeOffCells dueno=Editor",
++                "Payload $.RearTopePieceId fila=$.RearTopePieceId dueno=Editor",
++                "Payload $.RearTopeSaque fila=$.RearTopeSaque dueno=Editor",
++                "Payload $.SchemaVersion fila=$.SchemaVersion dueno=Envelope",
++                "Payload $.SideB fila=$.SideB dueno=Editor",
++                "Payload $.Structure fila=$.Structure dueno=Editor",
++            });
++
++            Assert.Equal(expected, log);
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-10
++
++        private static KeyValuePair<string, RackEmbedDocument> Member(string key, string view, int section)
++            => new KeyValuePair<string, RackEmbedDocument>(key, new RackEmbedDocument { Kind = RackEmbedDocument.KindPushBack, View = view, Section = section });
++
++        [Fact]
++        public void CT_PBT3A_10_TheClassifierMarksTheStructuralChangesAndTheViewsToErase()
++        {
++            var log = new List<string>();
++            var expected = new List<string>();
++            var baseText = PilotKit.Text("pb-01-base");
++            var b = Full(log, baseText);
++            var count = b == null ? 0 : b.Editable.Editor.SlotCount;
++
++            // A front added by the user: a structural entry of the fronts, by the user, that was absent in the base.
++            var d1 = Copy(log, b);
++            if (d1 != null) d1.Editable.Editor.SetSlotCount(count + 1);
++            Compare(log, expected, "+frente", b, Copy(log, b), d1, NoMembers, out var k1);
++            log.Add("+frente frentes-estructural-usuario-ausente-en-base="
++                + (k1 != null && k1.Entries.Any(entry => entry.Group == PushBackChangeGroup.Fronts && entry.IsStructural
++                                                         && entry.Class == PushBackChangeClass.ChangedByUser && entry.BaseValue == "<ausente>")));
++            expected.Add("+frente frentes-estructural-usuario-ausente-en-base=True");
++
++            // The length of a module changed outside, over a design that keeps the lengths of its modules.
++            var modulesText = PilotKit.Text("pb-02-modulos");
++            var modulesBase = Full(log, modulesText);
++            var changed = Full(log, EditInner(modulesText, inner => inner["PushBack"]["Structure"]["Modules"][1]["Length"] = 32));
++            Compare(log, expected, "modulo-externo", modulesBase, changed, Copy(log, modulesBase), NoMembers, out var k2);
++            log.Add("modulo-externo modulos-estructural-externo="
++                + (k2 != null && k2.Entries.Any(entry => entry.Group == PushBackChangeGroup.Modules && entry.IsStructural && entry.Class == PushBackChangeClass.ChangedExternally)));
++            expected.Add("modulo-externo modulos-estructural-externo=True");
++
++            // Side B declared by the user with one front (the gestures of CT-PB0-10).
++            var d3 = Copy(log, b);
++            if (d3 != null)
++            {
++                d3.Editable.Editor.SetSlotPresent(PushBackSide.A, 1, false);
++                d3.Editable.Editor.SetSlotPresent(PushBackSide.A, 2, false);
++                d3.Editable.Editor.SetSideBPresent(true);
++                d3.Editable.Editor.SetSlotPresent(PushBackSide.B, 1, true);
++            }
++
++            Compare(log, expected, "lado-B-usuario", b, Copy(log, b), d3, NoMembers, out var k3);
++            log.Add("lado-B-usuario ladoB-estructural-usuario="
++                + (k3 != null && k3.Entries.Any(entry => entry.Group == PushBackChangeGroup.SideB && entry.IsStructural && entry.Class == PushBackChangeClass.ChangedByUser)));
++            expected.Add("lado-B-usuario ladoB-estructural-usuario=True");
++
++            // A front removed by the user, with the lateral of the last post among the current members.
++            var d4 = Copy(log, b);
++            if (d4 != null) d4.Editable.Editor.SetSlotCount(count - 1);
++            var members = new[] { Member("L3", RackEmbedDocument.ViewLateral, 3), Member("P", RackEmbedDocument.ViewPlanta, -1) };
++            Compare(log, expected, "-frente", b, Copy(log, b), d4, members, out var k4);
++            log.Add("-frente ViewsToErase=[" + (k4 == null ? "<sin resultado>" : string.Join(",", k4.ViewsToErase)) + "] ViewsRejected=["
++                + (k4 == null ? "<sin resultado>" : string.Join(",", k4.ViewsRejected)) + "] AllViewsObsolete=" + (k4 != null && k4.AllViewsObsolete));
++            expected.Add("-frente ViewsToErase=[L3] ViewsRejected=[] AllViewsObsolete=False");
++
++            Assert.Equal(expected, log);
++        }
++    }
++}
+diff --git a/tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs b/tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs
+new file mode 100644
+index 00000000..6ca880d6
+--- /dev/null
++++ b/tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs
+@@ -0,0 +1,637 @@
++using System;
++using System.Collections;
++using System.Collections.Generic;
++using System.Globalization;
++using System.Linq;
++using System.Reflection;
++using System.Security.Cryptography;
++using System.Text;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Application.Systems.Dynamic;
++using RackCad.Application.Systems.PushBack;
++using RackCad.Application.Systems.PushBack.Draft;
++using RackCad.Application.Systems.PushBack.Pilot;
++using RackCad.Application.Workspace.Drafts;
++using RackCad.Domain.Systems.Dynamic;
++using RackCad.Domain.Systems.PushBack;
++using RackCad.Domain.Systems.Selective;
++using RackCad.Domain.Systems.Shared;
++using Xunit;
++
++namespace RackCad.Tests
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a — the COMPOSITION of the full model (CT-PBT3A-06, 07 and 11): what is composed to write, the composition
++    /// of «Conservar mi borrador» and the proof that none of the new operations mutates the two references D2 declares as
++    /// shared (the resolved rack and the module report). Nothing is connected to the panel.
++    /// </summary>
++    public sealed class PushBackFullDraftCompositionTests
++    {
++        private static RackCatalog Catalog => PilotKit.Catalog;
++
++        private static readonly PushBackEditorDesignAssembler Assembler = new PushBackEditorDesignAssembler(PilotKit.Catalog);
++        private static readonly PushBackCompositeEditorAssembler CompositeAssembler = new PushBackCompositeEditorAssembler(PilotKit.Catalog);
++
++        // ---------------------------------------------------------------------------------------------- helpers
++
++        /// <summary>The «EXCEPCION» rule: a step that throws becomes a line, and the expected lines never contain one.</summary>
++        private static T Paso<T>(List<string> log, Func<T> step)
++        {
++            try
++            {
++                return step();
++            }
++            catch (Exception error)
++            {
++                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
++                return default(T);
++            }
++        }
++
++        private static void Paso(List<string> log, Action step) => Paso<int>(log, () => { step(); return 0; });
++
++        private static PushBackDesign DesignOfText(string envelope)
++            => new RackProjectStore().Deserialize(new RackEmbedStore().Deserialize(envelope).Design).PushBackDesign;
++
++        private static string NameOfText(string envelope) => new RackEmbedStore().Deserialize(envelope).Name;
++
++        private static string Persist(PushBackDesign design) => PilotKit.Persist(design);
++
++        private static PushBackEditorComputation Pasada(PushBackEditableState s)
++            => PushBackEditableStateSeat.Pass(s, Assembler, CompositeAssembler, PushBackSide.A);
++
++        private static string EnvelopeOf(string corpusText, PushBackDesign design)
++        {
++            var embed = new RackEmbedStore().Deserialize(corpusText);
++            embed.Design = new RackProjectStore().Serialize(RackProject.ForPushBack(design));
++            return new RackEmbedStore().Serialize(embed);
++        }
++
++        private static PushBackFullDraftState Full(List<string> log, string text)
++        {
++            var result = Paso(log, () => PushBackFullDraftMaterializer.Materialize(text, Catalog));
++            return result == null || !result.IsAdmitted ? null : result.State;
++        }
++
++        private static PushBackFullDraftState Copy(List<string> log, PushBackFullDraftState state)
++            => state == null ? null : Paso(log, () => PushBackFullDraftStateComparer.Copy(state));
++
++        private static bool Eq(List<string> log, PushBackFullDraftState a, PushBackFullDraftState b)
++            => Paso(log, () => PushBackFullDraftStateComparer.Instance.Equals(a, b));
++
++        private static PushBackEditableState LoadState(List<string> log, PushBackDesign design, string name)
++        {
++            var state = new PushBackEditableState();
++            Paso(log, () => state.LoadDesign(design, name, Assembler.Resolver));
++            Pasada(state);
++            return state;
++        }
++
++        /// <summary>F-01 (§5.0, Core recipe): pb-20-ab with the first separator of A and then the first one of B lengthened by 2.</summary>
++        private static PushBackDesign F01Design(List<string> log)
++        {
++            var text = PilotKit.Text("pb-20-ab");
++            var state = LoadState(log, DesignOfText(text), NameOfText(text));
++            PushBackEditorComputation computation = null;
++            foreach (var inB in new[] { false, true })
++            {
++                var separator = Paso(log, () => state.Editor.SideA.ModuleSession.Modules.First(
++                    m => m.Kind == DynamicRackModuleKind.Separator && m.ModuleId.StartsWith("B:", StringComparison.Ordinal) == inB));
++                if (separator == null) return null;
++                Paso(log, () => state.Editor.SideA.ModuleSession.SetLength(separator.ModuleId, separator.Length + 2.0));
++                Paso(log, () => state.Editor.SideA.CommitModuleEdits());
++                computation = Pasada(state);
++            }
++
++            return computation == null ? null : new RackProjectStore().Deserialize(Persist(computation.Design)).PushBackDesign;
++        }
++
++        /// <summary>F-01 with an edit staged on top of an accepted one: a session with changes and a commit.</summary>
++        private static PushBackEditableState F01(List<string> log)
++        {
++            var design = F01Design(log);
++            var state = new PushBackEditableState();
++            if (design == null) return state;
++            state = LoadState(log, design, "F-01");
++            var separator = Paso(log, () => state.Editor.SideA.ModuleSession.Modules.First(
++                m => m.Kind == DynamicRackModuleKind.Separator && !m.ModuleId.StartsWith("B:", StringComparison.Ordinal)));
++            if (separator == null) return state;
++            Paso(log, () => state.Editor.SideA.ModuleSession.SetLength(separator.ModuleId, separator.Length + 1.0));
++            Paso(log, () => state.Editor.SideA.CommitModuleEdits());
++            Paso(log, () => state.Editor.SideA.ModuleSession.SetLength(separator.ModuleId, separator.Length + 3.0));
++            return state;
++        }
++
++        /// <summary>X-01 (§5.0, Core recipe): the state of pb-21-cola with side B declared, selected and its slot 0 present.</summary>
++        private static PushBackDesign X01Design(List<string> log)
++        {
++            var text = PilotKit.Text("pb-21-cola");
++            var state = LoadState(log, DesignOfText(text), NameOfText(text));
++            Paso(log, () => state.Editor.SetSideBPresent(true));
++            Paso(log, () => state.Editor.SetActiveSelection(PushBackSideSelection.B));
++            Paso(log, () => state.Editor.SetSlotPresent(PushBackSide.B, 0, true));
++            var computation = Pasada(state);
++            return computation == null || !computation.IsValid ? null : new RackProjectStore().Deserialize(Persist(computation.Design)).PushBackDesign;
++        }
++
++        private static SelectiveSafetySelection Selection(string tag)
++        {
++            var selection = new SelectiveSafetySelection
++            {
++                ElementId = "SAFETY-" + tag,
++                Quantity = 2,
++                Side = SafetySide.Left,
++                LowEndOnly = true,
++                AuthoredSide = SafetySide.Right,
++                NearFace = SafetyFacePiece.Of("NEAR-" + tag),
++                FarFace = SafetyFacePiece.Of("FAR-" + tag),
++                BothEndsAreLoadFaces = true,
++                DesviadorCellsAreByPost = true,
++                BootSidesDeclared = true,
++                Tope = new SelectiveTopeConfig { Shared = false, Fondo = 1, Saque = 2.5, Frontal = true },
++                Desviador = new SelectiveDesviadorConfig { Longitud = 5.5, PrimerNivelAltura = 3.5 },
++                Parrilla = new SelectiveParrillaConfig { Frontal = false, Lateral = false, Frente = 4.5, Cantidad = 2 },
++            };
++            selection.SecondLoadFacePosts.Add(1);
++            selection.PostSides.Add(new SafetyPostSide { PostIndex = 1, Side = SafetySide.Both });
++            selection.DerivedAisles.Add(new DerivedAisleEntry { PostIndex = 2, Authored = SafetySide.Left });
++            selection.Tope.OffCells.Add(new SelectiveGridCell { Frente = 1, Level = 2 });
++            selection.Desviador.OffCells.Add(new SelectiveGridCell { Frente = 2, Level = 1 });
++            selection.Guia.OffCells.Add(new SelectiveGridCell { Frente = 0, Level = 1 });
++            selection.Parrilla.OffCells.Add(new SelectiveGridCell { Frente = 3, Level = 0 });
++            selection.Defensa.Posts.Add(new SafetyPostDefense { PostIndex = 1, ExitLength = 12.5, EntranceLength = 36.5, ExitAuto = true, EntranceAuto = true });
++            selection.Bota.PieceId = "BOTA-" + tag;
++            selection.Bota.Placement = BootPlacement.Rear;
++            selection.Bota.Automatic = BootPlacement.Both;
++            selection.Bota.Posts.Add(new BootPostPlacement { PostIndex = 1, Placement = BootPlacement.EntryExit });
++            selection.Bota.BlankPosts.Add(3);
++            selection.BotaB.PieceId = "BOTA-B-" + tag;
++            selection.BotaB.Placement = BootPlacement.EntryExit;
++            selection.BotaB.Automatic = BootPlacement.Rear;
++            selection.BotaB.Posts.Add(new BootPostPlacement { PostIndex = 2, Placement = BootPlacement.Rear });
++            selection.BotaB.BlankPosts.Add(4);
++            return selection;
++        }
++
++        /// <summary>The rich state of CT-PBT1B-06: F-01 with a staged edit and an accepted one, every carrier with a non-default
++        /// value, safety selections of every family and a parked tail whose consumption is pending.</summary>
++        private static PushBackEditableState Rich(List<string> log)
++        {
++            var state = F01(log);
++            Paso(log, () => state.Editor.SetDefaults(PushBackCellTopology.Encontradas, PushBackRunDirection.BToA));
++            Paso(log, () => state.Editor.SetCell(0, 0, PushBackCellTopology.Corrida, PushBackRunDirection.AToB));
++            Paso(log, () => state.Editor.SetCorridaDepth(0, 1, 3));
++            state.Pallet = new PalletSpecification(40.0, 46.0, 58.0, 900.5, "lb");
++            state.PalletsDeep = 5;
++            state.PostCatalogId = "POSTE-X";
++            state.PostPeralte = 3.25;
++            state.PalletTolerance = 3.5;
++            state.BeamDepth = 5.5;
++            state.AnnotationScale = 1.75;
++            state.FirstLevelDatum = 1;
++            state.NumberFronts = true;
++            state.NumberLevels = true;
++            state.DrawRackName = true;
++            state.Dimensions = DimensionDetail.Standard;
++            state.DimensionStyle = "STYLE-1";
++            state.LoadedDimensionViews = DimensionViewVisibility.Frontal | DimensionViewVisibility.Planta;
++            state.DimensionViewsTouched = true;
++            state.DimensionsFrontal = true;
++            state.DimensionsLateral = true;
++            state.DimensionsPlanta = true;
++            state.Advanced.ManualHeaderHeightOverride = 150.5;
++            state.Advanced.DerivedPostReinforced = false;
++            state.Advanced.DerivedPostReinforcementHeight = 60.5;
++            state.Advanced.DerivedPostHeight = 140.5;
++            state.Advanced.SeparatorCountOverride = 3;
++            state.Advanced.SeparatorSpacingOverride = 18.5;
++            state.SafetySelections.Add(Selection("A"));
++            state.SafetySelections.Add(Selection("B"));
++            state.Name = "Rack rico";
++            Paso(log, () => state.Editor.ParkDormantTail(
++                new[] { new DynamicRackModuleDesign { ModuleId = "B:M2", Length = 40.0, Notes = "cola" } },
++                new[] { new DynamicHeaderLineOverride { PostIndex = 1, ModuleId = "B:M6" } }));
++            Paso(log, () => state.Editor.MarkDormantTailConsumed());
++            return state;
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-06
++
++        private static string Line(string label, PushBackFullWriteComposition composition)
++            => label + " composed=" + composition.IsComposed + " reason=[" + composition.Reason + "]";
++
++        private static string Rejection(List<string> log, string label, PushBackFullDraftState initial, PushBackFullDraftState current, RackCatalog catalog)
++        {
++            var composition = Paso(log, () => PushBackFullComposition.ForFullWrite(initial, current, catalog));
++            return composition == null ? label + " <sin resultado>" : Line(label, composition);
++        }
++
++        /// <summary>A composed case: the design of the composition against the one of a recompute pass over a copy of the current
++        /// state, the name, that the gesture reached the design, and that the current state did not change (comparer and print).</summary>
++        private static string ComposedLine(
++            List<string> log, string label, PushBackFullDraftState initial, PushBackFullDraftState current, Func<PushBackFullWriteComposition, bool> reached)
++        {
++            var before = Copy(log, current);
++            var printBefore = Paso(log, () => Fingerprint(current.Editable));
++            var composition = Paso(log, () => PushBackFullComposition.ForFullWrite(initial, current, Catalog));
++            if (composition == null || !composition.IsComposed) return label + " composed=False reason=[" + composition?.Reason + "]";
++
++            var written = Paso(log, () => Persist(CompositeAssembler.BuildDesign(composition.Editor, composition.Inputs)));
++            var passed = Paso(log, () =>
++            {
++                var computation = Pasada(Copy(log, current).Editable);
++                return computation == null ? null : Persist(computation.Design);
++            });
++            var startDesign = Paso(log, () =>
++            {
++                var computation = Pasada(Copy(log, initial).Editable);
++                return computation == null ? null : Persist(computation.Design);
++            });
++            var printAfter = Paso(log, () => Fingerprint(current.Editable));
++            return label + " composed=True diseno-igual=" + (written != null && string.Equals(written, passed, StringComparison.Ordinal))
++                + " nombre-igual=" + string.Equals(composition.Name, current.Editable.Name, StringComparison.Ordinal)
++                + " cambio-llego=" + reached(composition) + " distinto-del-inicial=" + (written != null && !string.Equals(written, startDesign, StringComparison.Ordinal))
++                + " current-intacto=" + (before != null && Eq(log, before, current) && Eq(log, current, before))
++                + " huella-igual=" + (printBefore != null && string.Equals(printBefore, printAfter, StringComparison.Ordinal));
++        }
++
++        [Fact]
++        public void CT_PBT3A_06_ForFullWriteComposesTheDraftOverAFreshBaseAndRejectsWhatItCannotWrite()
++        {
++            var log = new List<string>();
++            var abText = PilotKit.Text("pb-20-ab");
++            var initial = Full(log, abText);
++            var baseline = Copy(log, initial);
++
++            // The rejections.
++            foreach (var (label, scale) in new[] { ("escala-NaN", double.NaN), ("escala-infinito", double.PositiveInfinity), ("escala-0", 0.0), ("escala--1", -1.0) })
++            {
++                var current = Copy(log, initial);
++                if (current != null) current.Editable.AnnotationScale = scale;
++                log.Add(Rejection(log, label, initial, current, Catalog));
++            }
++
++            var staleInitial = Copy(log, initial);
++            if (staleInitial != null) staleInitial.Editable.PalletTolerance += 1;
++            log.Add(Rejection(log, "base-cambiada", staleInitial, Copy(log, initial), Catalog));
++            var unreadable = initial == null ? null : new PushBackFullDraftState(initial.Editable, "{ not json");
++            log.Add(Rejection(log, "origen-ilegible", unreadable, Copy(log, initial), Catalog));
++            log.Add(Rejection(log, "inicial-nulo", null, Copy(log, initial), Catalog));
++            log.Add(Rejection(log, "catalogo-nulo", initial, Copy(log, initial), null));
++
++            // The compositions: a module length, the gap of the composite rack and the name.
++            var withModule = Copy(log, initial);
++            if (withModule != null)
++            {
++                var separator = Paso(log, () => withModule.Editable.Editor.SideA.ModuleSession.Modules.First(
++                    m => m.Kind == DynamicRackModuleKind.Separator && !m.ModuleId.StartsWith("B:", StringComparison.Ordinal)));
++                if (separator != null)
++                {
++                    Paso(log, () => withModule.Editable.Editor.SideA.ModuleSession.SetLength(separator.ModuleId, separator.Length + 2.0));
++                    Paso(log, () => withModule.Editable.Editor.SideA.CommitModuleEdits());
++                }
++            }
++
++            log.Add(withModule == null ? "modulo <sin resultado>" : ComposedLine(log, "modulo", initial, withModule, composition => composition.Editor.SideA.ModuleSession != null));
++
++            var withGap = Copy(log, initial);
++            if (withGap != null) Paso(log, () => withGap.Editable.Editor.SetGap(30));
++            log.Add(withGap == null ? "hueco <sin resultado>" : ComposedLine(log, "hueco", initial, withGap, composition => composition.Editor.Gap == 30));
++
++            var withName = Copy(log, initial);
++            if (withName != null) withName.Editable.Name = "PB-NUEVO";
++            log.Add(withName == null ? "nombre <sin resultado>" : ComposedLine(log, "nombre", initial, withName, composition => composition.Name == "PB-NUEVO"));
++
++            // The initial state was not touched by any of the cases.
++            log.Add("inicial-intacto=" + (baseline != null && initial != null && Eq(log, baseline, initial)));
++
++            var invalidScale = " composed=False reason=[" + PushBackPilotMaterializer.InvalidScaleReason + "]";
++            Assert.Equal(
++                new[]
++                {
++                    "escala-NaN" + invalidScale,
++                    "escala-infinito" + invalidScale,
++                    "escala-0" + invalidScale,
++                    "escala--1" + invalidScale,
++                    "base-cambiada composed=False reason=[" + PushBackPilotMaterializer.BaseChangedReason + "]",
++                    "origen-ilegible composed=False reason=[" + PushBackPilotMaterializer.UnreadableOrFutureDiagnostic + "]",
++                    "inicial-nulo composed=False reason=[Falta el estado inicial o el actual.]",
++                    "catalogo-nulo composed=False reason=[" + PushBackPilotMaterializer.CatalogRequiredDiagnostic + "]",
++                    "modulo composed=True diseno-igual=True nombre-igual=True cambio-llego=True distinto-del-inicial=True current-intacto=True huella-igual=True",
++                    "hueco composed=True diseno-igual=True nombre-igual=True cambio-llego=True distinto-del-inicial=True current-intacto=True huella-igual=True",
++                    "nombre composed=True diseno-igual=True nombre-igual=True cambio-llego=True distinto-del-inicial=False current-intacto=True huella-igual=True",
++                    "inicial-intacto=True",
++                },
++                log);
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-07
++
++        [Fact]
++        public void CT_PBT3A_07_KeepOnKeepsTheEditableStateOfTheDraftOverTheNewOrigin()
++        {
++            var log = new List<string>();
++            var baseText = PilotKit.Text("pb-01-base");
++            var newOrigin = IntentKit.Rewrite(baseText, e => e.Name = "PB-OTRO");
++
++            var newInitial = Full(log, newOrigin);
++            var current = Full(log, baseText);
++            if (current != null) current.Editable.PalletTolerance = 4.5;
++
++            // The composition: the editable state of the draft and the origin of the new base; no argument changes.
++            var newInitialBefore = Copy(log, newInitial);
++            var currentBefore = Copy(log, current);
++            var kept = newInitial == null || current == null ? null : Paso(log, () => PushBackFullComposition.KeepOn(newInitial, current));
++            log.Add("keepon editable-de-current=" + (kept != null && current != null && PushBackEditableStateComparer.Instance.Equals(kept.Editable, current.Editable))
++                + " origen-de-newInitial=" + (kept != null && newInitial != null && string.Equals(kept.Origin, newInitial.Origin, StringComparison.Ordinal)));
++            log.Add("keepon argumentos-sin-cambios=" + (kept != null && Eq(log, newInitialBefore, newInitial) && Eq(log, currentBefore, current)));
++            if (kept != null && current != null && newInitial != null)
++            {
++                var shared = Mutable(AllObjects(kept.Editable).Intersect(AllObjects(current.Editable), ReferenceEqualityComparer.Instance));
++                var wanted = Mutable(SharedRoots(current.Editable).SelectMany(root => AllObjects(root)));
++                var withNew = Mutable(AllObjects(kept.Editable).Intersect(AllObjects(newInitial.Editable), ReferenceEqualityComparer.Instance));
++                log.Add("keepon compartidos-con-current-solo-d2=" + shared.IsSubsetOf(wanted) + " compartidos-con-newInitial=" + withNew.Count);
++            }
++            else
++            {
++                log.Add("keepon compartidos-con-current-solo-d2=False compartidos-con-newInitial=-1");
++            }
++
++            // The draft: a read of the full reader, a born draft, an edit that leaves it Dirty and «Conservar mi borrador».
++            var scan = IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Member("A1", baseText));
++            var read = Paso(log, () => PushBackFullDraftReader.Read(scan, Catalog));
++            var registry = new DraftRegistry();
++            var begun = read == null || !read.Read.IsAdmitted
++                ? null
++                : Paso(log, () => registry.Begin(DraftKit.S1, IntentKit.Rack, read.Read, PushBackFullDraftStateComparer.Instance, PushBackFullDraftStateComparer.Copy));
++            var draft = begun == null ? null : begun.Draft;
++            if (draft != null)
++            {
++                var edited = PushBackFullDraftStateComparer.Copy(draft.CurrentDraftState);
++                edited.Editable.PalletTolerance = 4.5;
++                Paso(log, () => draft.SetCurrentDraftState(edited));
++            }
++
++            var dirtyBefore = draft != null && draft.IsDirty;
++            var reread = Paso(log, () => PushBackFullDraftReader.Read(scan, Catalog));
++            var reload = draft == null || reread == null
++                ? (DraftReloadResult?)null
++                : Paso(log, () => (DraftReloadResult?)draft.KeepMineOnCurrentVersion(reread.Read, PushBackFullComposition.KeepOn, confirmed: true));
++            log.Add("conservar dirty-antes=" + dirtyBefore + " estado=" + (reload.HasValue ? reload.Value.Status.ToString() : "<sin resultado>")
++                + " dirty-despues=" + (draft != null && draft.IsDirty)
++                + " base-nueva=" + (draft != null && reread != null && ReferenceEquals(draft.StaleBase, reread.Read.StaleBase))
++                + " tolerancia-conservada=" + (draft != null && draft.CurrentDraftState.Editable.PalletTolerance == 4.5));
++
++            Assert.Equal(
++                new[]
++                {
++                    "keepon editable-de-current=True origen-de-newInitial=True",
++                    "keepon argumentos-sin-cambios=True",
++                    "keepon compartidos-con-current-solo-d2=True compartidos-con-newInitial=0",
++                    "conservar dirty-antes=True estado=Reloaded dirty-despues=True base-nueva=True tolerancia-conservada=True",
++                },
++                log);
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-11
++
++        private static bool IsProductType(Type type)
++            => type.Namespace != null && type.Namespace.StartsWith("RackCad", StringComparison.Ordinal) && !type.IsEnum;
++
++        private static IEnumerable<FieldInfo> InstanceFields(Type type)
++        {
++            for (var current = type; current != null && current != typeof(object); current = current.BaseType)
++            {
++                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
++                {
++                    yield return field;
++                }
++            }
++        }
++
++        private static bool IsImmutable(Type type)
++        {
++            if (type == typeof(string) || type.IsPrimitive || type.IsEnum) return true;
++            if (!IsProductType(type)) return false;
++            return InstanceFields(type).All(field => field.IsInitOnly && (field.FieldType.IsValueType || IsImmutable(field.FieldType)));
++        }
++
++        private static HashSet<object> AllObjects(object root)
++        {
++            var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
++            var pending = new Queue<object>();
++            pending.Enqueue(root);
++            while (pending.Count > 0)
++            {
++                var current = pending.Dequeue();
++                if (current is string || !visited.Add(current)) continue;
++                if (current is IDictionary dictionary)
++                {
++                    foreach (DictionaryEntry entry in dictionary)
++                    {
++                        if (entry.Key != null && !entry.Key.GetType().IsValueType) pending.Enqueue(entry.Key);
++                        if (entry.Value != null && !entry.Value.GetType().IsValueType) pending.Enqueue(entry.Value);
++                    }
++                }
++                else if (current is IEnumerable items)
++                {
++                    foreach (var item in items)
++                    {
++                        if (item != null && !item.GetType().IsValueType) pending.Enqueue(item);
++                    }
++                }
++
++                if (!IsProductType(current.GetType())) continue;
++                foreach (var field in InstanceFields(current.GetType()))
++                {
++                    if (field.FieldType.IsValueType && !field.FieldType.IsGenericType) continue;
++                    var value = field.GetValue(current);
++                    if (value != null && !value.GetType().IsValueType) pending.Enqueue(value);
++                }
++            }
++
++            return visited;
++        }
++
++        private static HashSet<object> Mutable(IEnumerable<object> objects)
++        {
++            var set = new HashSet<object>(ReferenceEqualityComparer.Instance);
++            foreach (var item in objects)
++            {
++                if (!IsImmutable(item.GetType())) set.Add(item);
++            }
++
++            return set;
++        }
++
++        private static IEnumerable<object> SharedRoots(PushBackEditableState state)
++        {
++            foreach (var side in new[] { state.Editor.SideA, state.Editor.SideB })
++            {
++                if (side.WorkingBaseline != null) yield return side.WorkingBaseline;
++                if (side.LastModuleReconciliation != null) yield return side.LastModuleReconciliation;
++            }
++        }
++
++        /// <summary>The deep fingerprint of an object graph: every object with its type and each instance field (public,
++        /// private and backing) with its value; numbers with «R» and the invariant culture, strings as they are,
++        /// references by their index in the walk, lists and dictionaries in order.</summary>
++        private static string Fingerprint(object root)
++        {
++            var index = new Dictionary<object, int>(ReferenceEqualityComparer.Instance);
++            var order = new List<object>();
++            int Idx(object value)
++            {
++                if (!index.TryGetValue(value, out var position))
++                {
++                    position = order.Count;
++                    index[value] = position;
++                    order.Add(value);
++                }
++
++                return position;
++            }
++
++            string Value(object value)
++            {
++                if (value == null) return "null";
++                if (value is string text) return "\"" + text + "\"";
++                if (value is double number) return number.ToString("R", CultureInfo.InvariantCulture);
++                if (value is float single) return single.ToString("R", CultureInfo.InvariantCulture);
++                if (value is Enum || value.GetType().IsPrimitive) return Convert.ToString(value, CultureInfo.InvariantCulture);
++                if (value.GetType().IsValueType)
++                {
++                    return "{" + string.Join(",", value.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
++                        .Select(field => field.Name + "=" + Value(field.GetValue(value)))) + "}";
++                }
++
++                return "#" + Idx(value);
++            }
++
++            var builder = new StringBuilder();
++            Idx(root);
++            for (var position = 0; position < order.Count; position++)
++            {
++                var current = order[position];
++                var type = current.GetType();
++                builder.Append('#').Append(position).Append(' ').Append(type.FullName).Append('\n');
++                if (current is IDictionary dictionary)
++                {
++                    foreach (DictionaryEntry entry in dictionary) builder.Append("  [").Append(Value(entry.Key)).Append("]=").Append(Value(entry.Value)).Append('\n');
++                }
++                else if (current is IEnumerable items && !(current is string))
++                {
++                    foreach (var item in items) builder.Append("  ").Append(Value(item)).Append('\n');
++                }
++
++                if (!IsProductType(type)) continue;
++                foreach (var field in InstanceFields(type))
++                {
++                    builder.Append("  ").Append(field.Name).Append('=').Append(Value(field.GetValue(current))).Append('\n');
++                }
++            }
++
++            using (var sha = SHA256.Create())
++            {
++                var hash = string.Concat(sha.ComputeHash(Encoding.UTF8.GetBytes(builder.ToString())).Select(b => b.ToString("x2", CultureInfo.InvariantCulture)));
++                return hash + (root is PushBackSystem rack ? " Name=[" + rack.Name + "]" : string.Empty);
++            }
++        }
++
++        /// <summary>The two shared references of every state it watches, each measured from the moment it is captured.</summary>
++        private sealed class Watch
++        {
++            private readonly List<(object Object, string Before)> items = new List<(object, string)>();
++
++            public int Count => items.Count;
++
++            public void Capture(params PushBackFullDraftState[] states)
++            {
++                foreach (var state in states)
++                {
++                    if (state == null) continue;
++                    foreach (var reference in SharedRoots(state.Editable))
++                    {
++                        if (items.Any(item => ReferenceEquals(item.Object, reference))) continue;
++                        items.Add((reference, Fingerprint(reference)));
++                    }
++                }
++            }
++
++            public bool Intact() => items.All(item => Fingerprint(item.Object) == item.Before);
++        }
++
++        private static string Operation(List<string> log, string name, Watch watch, Action operation, params PushBackFullDraftState[] states)
++        {
++            watch.Capture(states);
++            Paso(log, operation);
++            return name + " huellas-iguales=" + (watch.Count > 0 && watch.Intact());
++        }
++
++        [Fact]
++        public void CT_PBT3A_11_NoNewOperationMutatesTheResolvedRackOrTheModuleReport()
++        {
++            var log = new List<string>();
++            var abText = PilotKit.Text("pb-20-ab");
++
++            // The rich state of CT-PBT1B-06, and X-01, as full states: each carries its own origin text.
++            var rich = new PushBackFullDraftState(Rich(log), abText);
++            var x01Design = X01Design(log);
++            var x01Text = x01Design == null ? null : EnvelopeOf(PilotKit.Text("pb-21-cola"), x01Design);
++            var x01 = x01Text == null ? null : Full(log, x01Text);
++            var initial = Full(log, abText);
++            var members = new[] { new KeyValuePair<string, RackEmbedDocument>("L0", new RackEmbedDocument { Kind = RackEmbedDocument.KindPushBack, View = RackEmbedDocument.ViewLateral, Section = 0 }) };
++
++            log.Add(Operation(log, "Copy", new Watch(), () =>
++            {
++                PushBackFullDraftStateComparer.Copy(rich);
++                PushBackFullDraftStateComparer.Copy(x01);
++            }, rich, x01));
++
++            log.Add(Operation(log, "ForFullWrite", new Watch(), () =>
++            {
++                PushBackFullComposition.ForFullWrite(initial, rich, Catalog);
++                PushBackFullComposition.ForFullWrite(initial, x01, Catalog);
++            }, initial, rich, x01));
++
++            log.Add(Operation(log, "KeepOn", new Watch(), () =>
++            {
++                PushBackFullComposition.KeepOn(initial, rich);
++                PushBackFullComposition.KeepOn(x01, rich);
++            }, initial, rich, x01));
++
++            log.Add(Operation(log, "Classify", new Watch(), () =>
++            {
++                PushBackConflictClassifier.Classify(initial, initial, rich, members, Catalog);
++                PushBackConflictClassifier.Classify(initial, rich, x01, members, Catalog);
++            }, initial, rich, x01));
++
++            log.Add(Operation(log, "Of", new Watch(), () =>
++            {
++                PushBackViewDispositions.Of(members, rich.Editable.Editor.SideA.WorkingBaseline, Catalog);
++                PushBackViewDispositions.Of(members, x01.Editable.Editor.SideA.WorkingBaseline, Catalog);
++            }, rich, x01));
++
++            log.Add(Operation(log, "Equals", new Watch(), () =>
++            {
++                PushBackFullDraftStateComparer.Instance.Equals(rich, x01);
++                PushBackFullDraftStateComparer.Instance.Equals(x01, rich);
++                PushBackFullDraftStateComparer.Instance.GetHashCode(rich);
++                PushBackFullDraftStateComparer.Instance.GetHashCode(x01);
++            }, rich, x01));
++
++            Assert.Equal(
++                new[]
++                {
++                    "Copy huellas-iguales=True",
++                    "ForFullWrite huellas-iguales=True",
++                    "KeepOn huellas-iguales=True",
++                    "Classify huellas-iguales=True",
++                    "Of huellas-iguales=True",
++                    "Equals huellas-iguales=True",
++                },
++                log);
++        }
++    }
++}
+diff --git a/tests/RackCad.Tests/PushBackFullDraftLoadTests.cs b/tests/RackCad.Tests/PushBackFullDraftLoadTests.cs
+new file mode 100644
+index 00000000..d2c4bbe9
+--- /dev/null
++++ b/tests/RackCad.Tests/PushBackFullDraftLoadTests.cs
+@@ -0,0 +1,754 @@
++using System;
++using System.Collections;
++using System.Collections.Generic;
++using System.Linq;
++using System.Reflection;
++using System.Runtime.CompilerServices;
++using System.Text.Json.Nodes;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Application.Systems.Dynamic;
++using RackCad.Application.Systems.PushBack;
++using RackCad.Application.Systems.PushBack.Draft;
++using RackCad.Application.Systems.PushBack.Pilot;
++using RackCad.Application.Workspace.Drafts;
++using RackCad.Domain.Systems.Dynamic;
++using RackCad.Domain.Systems.PushBack;
++using RackCad.Domain.Systems.Selective;
++using Xunit;
++
++namespace RackCad.Tests
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a — the LOADS of the full draft of Push Back (CT-PBT3A-02 to 05): the materializer against the one of the
++    /// pilot, the reader against the one of the pilot, AUTH-13 in both readers (F4B-E24) and the copier and the comparer of
++    /// the state. The model is not connected to anything: every case reads an envelope text and compares what comes out.
++    /// </summary>
++    public sealed class PushBackFullDraftLoadTests
++    {
++        private static RackCatalog Catalog => PilotKit.Catalog;
++
++        private static readonly PushBackEditorDesignAssembler Assembler = new PushBackEditorDesignAssembler(PilotKit.Catalog);
++        private static readonly PushBackCompositeEditorAssembler CompositeAssembler = new PushBackCompositeEditorAssembler(PilotKit.Catalog);
++
++        // ---------------------------------------------------------------------------------------------- helpers
++
++        /// <summary>The «EXCEPCION» rule: a step that throws becomes a line, and the expected lines never contain one.</summary>
++        private static T Paso<T>(List<string> log, Func<T> step)
++        {
++            try
++            {
++                return step();
++            }
++            catch (Exception error)
++            {
++                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
++                return default(T);
++            }
++        }
++
++        private static void Paso(List<string> log, Action step) => Paso<int>(log, () => { step(); return 0; });
++
++        private static string EditInner(string envelopeText, Action<JsonNode> edit)
++        {
++            var envelope = JsonNode.Parse(envelopeText);
++            var inner = JsonNode.Parse(envelope["Design"].GetValue<string>());
++            edit(inner);
++            envelope["Design"] = inner.ToJsonString();
++            return envelope.ToJsonString();
++        }
++
++        private static PushBackDesign DesignOfText(string envelope)
++            => new RackProjectStore().Deserialize(new RackEmbedStore().Deserialize(envelope).Design).PushBackDesign;
++
++        private static string NameOfText(string envelope) => new RackEmbedStore().Deserialize(envelope).Name;
++
++        private static PushBackEditorComputation Pasada(PushBackEditableState s)
++            => PushBackEditableStateSeat.Pass(s, Assembler, CompositeAssembler, PushBackSide.A);
++
++        /// <summary>The envelope of a corpus text whose design is replaced by the given one (the Plugin is not reachable from Core).</summary>
++        private static string EnvelopeOf(string corpusText, PushBackDesign design)
++        {
++            var embed = new RackEmbedStore().Deserialize(corpusText);
++            embed.Design = new RackProjectStore().Serialize(RackProject.ForPushBack(design));
++            return new RackEmbedStore().Serialize(embed);
++        }
++
++        /// <summary>X-01 (§5.0, Core recipe): pb-21-cola, side B declared, selected and its slot 0 present.</summary>
++        private static PushBackDesign BuildX01(List<string> log)
++        {
++            var text = PilotKit.Text("pb-21-cola");
++            var state = new PushBackEditableState();
++            Paso(log, () => state.LoadDesign(DesignOfText(text), NameOfText(text), Assembler.Resolver));
++            Paso(log, () => Pasada(state));
++            Paso(log, () => state.Editor.SetSideBPresent(true));
++            Paso(log, () => state.Editor.SetActiveSelection(PushBackSideSelection.B));
++            Paso(log, () => state.Editor.SetSlotPresent(PushBackSide.B, 0, true));
++            var computation = Paso(log, () => Pasada(state));
++            return computation == null ? null : new RackProjectStore().Deserialize(PilotKit.Persist(computation.Design)).PushBackDesign;
++        }
++
++        /// <summary>F-01 (§5.0, Core recipe): pb-20-ab with the first separator of A and then the first one of B lengthened by 2.</summary>
++        private static PushBackDesign BuildF01(List<string> log)
++        {
++            var text = PilotKit.Text("pb-20-ab");
++            var state = new PushBackEditableState();
++            Paso(log, () => state.LoadDesign(DesignOfText(text), NameOfText(text), Assembler.Resolver));
++            Paso(log, () => Pasada(state));
++            PushBackEditorComputation computation = null;
++            foreach (var inB in new[] { false, true })
++            {
++                var separator = Paso(log, () => state.Editor.SideA.ModuleSession.Modules.First(
++                    m => m.Kind == DynamicRackModuleKind.Separator && m.ModuleId.StartsWith("B:", StringComparison.Ordinal) == inB));
++                if (separator == null) return null;
++                Paso(log, () => state.Editor.SideA.ModuleSession.SetLength(separator.ModuleId, separator.Length + 2.0));
++                Paso(log, () => state.Editor.SideA.CommitModuleEdits());
++                computation = Paso(log, () => Pasada(state));
++            }
++
++            return computation == null ? null : new RackProjectStore().Deserialize(PilotKit.Persist(computation.Design)).PushBackDesign;
++        }
++
++        private static string Describe(PushBackPilotMaterializationKind kind, string reason)
++            => kind + (reason == null ? string.Empty : " motivo=" + reason);
++
++        // ------------------------------------------------------------------------------------------------- CT-02
++
++        private static string MaterializationLine(List<string> log, string label, string text, RackCatalog catalog)
++        {
++            var full = Paso(log, () => PushBackFullDraftMaterializer.Materialize(text, catalog));
++            var pilot = Paso(log, () => PushBackPilotMaterializer.Materialize(text, catalog));
++            return label + " completo=" + (full == null ? "<sin resultado>" : Describe(full.Kind, full.Reason))
++                + " piloto=" + (pilot == null ? "<sin resultado>" : Describe(pilot.Kind, pilot.Reason));
++        }
++
++        [Fact]
++        public void CT_PBT3A_02_TheMaterializerIsTheOneOfThePilotExceptForTheCompositeRack()
++        {
++            var log = new List<string>();
++            var baseText = PilotKit.Text("pb-01-base");
++
++            log.Add(MaterializationLine(log, "en-blanco", "   ", Catalog));
++            log.Add(MaterializationLine(log, "nulo", null, Catalog));
++            log.Add(MaterializationLine(log, "otro-tipo", IntentKit.Rewrite(baseText, e => e.Kind = RackEmbedDocument.KindSelective), Catalog));
++            log.Add(MaterializationLine(log, "sin-diseno", IntentKit.Rewrite(baseText, e => e.Design = I58F1Fixtures.Serialize("cabecera")), Catalog));
++            log.Add(MaterializationLine(log, "ilegible", IntentKit.Rewrite(baseText, e => e.Design = "{ this is not json"), Catalog));
++            log.Add(MaterializationLine(log, "catalogo-nulo", baseText, null));
++            log.Add(MaterializationLine(log, "pb-01-base", baseText, Catalog));
++            log.Add(MaterializationLine(log, "pb-21-cola", PilotKit.Text("pb-21-cola"), Catalog));
++            log.Add(MaterializationLine(log, "pb-20-ab", PilotKit.Text("pb-20-ab"), Catalog));
++            log.Add(MaterializationLine(log, "c-13", EditInner(baseText, inner => inner["PushBack"]["Structure"]["PalletTolerance"] = 0), Catalog));
++
++            var unreadable = " motivo=" + PushBackPilotMaterializer.UnreadableOrFutureDiagnostic;
++            var c13 = " motivo=" + PushBackPilotMaterializer.MaterializeFailurePrefix + "La holgura transversal debe ser mayor que cero. (Parameter 'design')";
++            Assert.Equal(
++                new[]
++                {
++                    "en-blanco completo=Failed" + unreadable + " piloto=Failed" + unreadable,
++                    "nulo completo=Failed" + unreadable + " piloto=Failed" + unreadable,
++                    "otro-tipo completo=Failed motivo=" + PushBackPilotMaterializer.KindDivergentDiagnostic
++                        + " piloto=Failed motivo=" + PushBackPilotMaterializer.KindDivergentDiagnostic,
++                    "sin-diseno completo=Failed motivo=" + PushBackPilotMaterializer.NoDesignDiagnostic
++                        + " piloto=Failed motivo=" + PushBackPilotMaterializer.NoDesignDiagnostic,
++                    "ilegible completo=Failed" + unreadable + " piloto=Failed" + unreadable,
++                    "catalogo-nulo completo=Failed motivo=" + PushBackPilotMaterializer.CatalogRequiredDiagnostic
++                        + " piloto=Failed motivo=" + PushBackPilotMaterializer.CatalogRequiredDiagnostic,
++                    "pb-01-base completo=Admitted piloto=Admitted",
++                    "pb-21-cola completo=OutOfPilot motivo=" + PushBackPilotMaterializer.DormantTailOutOfPilotReason
++                        + " piloto=OutOfPilot motivo=" + PushBackPilotMaterializer.DormantTailOutOfPilotReason,
++                    "pb-20-ab completo=Admitted piloto=OutOfPilot motivo=" + PushBackPilotMaterializer.CompositeOutOfPilotReason,
++                    "c-13 completo=Failed" + c13 + " piloto=Failed" + c13,
++                },
++                log);
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-03
++
++        private static bool SameBase(DraftStaleBase a, DraftStaleBase b)
++        {
++            if (a == null || b == null) return ReferenceEquals(a, b);
++            if (a.Entries.Count != b.Entries.Count) return false;
++            foreach (var pair in a.Entries)
++            {
++                if (!b.Entries.TryGetValue(pair.Key, out var other) || other != pair.Value) return false;
++            }
++
++            return string.Equals(a.VariableRegistryText, b.VariableRegistryText, StringComparison.Ordinal);
++        }
++
++        /// <summary>The diagnostic, the detail, the hint, the key of the origin and the base (entry by entry) of the two readers.</summary>
++        private static bool SameRead(PushBackPilotIntentResult pilot, PushBackFullIntentResult full)
++        {
++            if (pilot.Read.IsAdmitted != full.Read.IsAdmitted) return false;
++            if (!string.Equals(pilot.Read.Admission.Diagnostic, full.Read.Admission.Diagnostic, StringComparison.Ordinal)) return false;
++            if (!string.Equals(pilot.Detail, full.Detail, StringComparison.Ordinal)) return false;
++            if (!string.Equals(pilot.ClassicEditorHint, full.ClassicEditorHint, StringComparison.Ordinal)) return false;
++            if (!string.Equals(pilot.OriginKey, full.OriginKey, StringComparison.Ordinal)) return false;
++            if (!SameBase(pilot.StaleBase, full.StaleBase)) return false;
++            return !full.Read.IsAdmitted || (full.Read.InitialState != null && SameBase(pilot.Read.StaleBase, full.Read.StaleBase));
++        }
++
++        private static string ReadLine(List<string> log, string label, PushBackPilotIntentScan scan, RackCatalog catalog)
++        {
++            var pilot = Paso(log, () => PushBackPilotIntentReader.Read(scan, catalog));
++            var full = Paso(log, () => PushBackFullDraftReader.Read(scan, catalog));
++            return label + " iguales=" + (pilot != null && full != null && SameRead(pilot, full));
++        }
++
++        private static string ZeroEveryPalletHeight(string envelopeText) =>
++            IntentKit.Rewrite(envelopeText, e =>
++            {
++                var design = JsonNode.Parse(e.Design);
++                ZeroPalletHeights(design);
++                e.Design = design.ToJsonString();
++            });
++
++        private static void ZeroPalletHeights(JsonNode node)
++        {
++            if (node is JsonObject obj)
++            {
++                foreach (var key in obj.Select(p => p.Key).ToList())
++                {
++                    if (string.Equals(key, "PalletHeight", StringComparison.Ordinal)) obj[key] = 0;
++                    else ZeroPalletHeights(obj[key]);
++                }
++            }
++            else if (node is JsonArray array)
++            {
++                foreach (var item in array) ZeroPalletHeights(item);
++            }
++        }
++
++        [Fact]
++        public void CT_PBT3A_03_TheFullReaderIsTheOneOfThePilotExceptForTheCompositeRack()
++        {
++            var log = new List<string>();
++            var rack = IntentKit.Rack;
++            var other = "22222222-2222-4222-8222-000000000009";
++            var baseText = IntentKit.BaseText();
++            var lateral = IntentKit.Variant("pb-01-base", rack, view: "lateral", section: 3);
++            var withExtra = JsonNode.Parse(baseText).AsObject();
++            withExtra["Extra"] = 1;
++            var coldId = new RackEmbedStore().Deserialize(PilotKit.Text("pb-21-cola")).Id;
++
++            // The 14 rules of the admission of the pilot, one scan per rule, and an admitted read. The rule 12 is the A/B rack: it
++            // is the one the full reader reads differently, and it goes at the end.
++            log.Add(ReadLine(log, "regla-01", IntentKit.Scan(string.Empty, "A1", IntentKit.Member("A1", baseText)), Catalog));
++            log.Add(ReadLine(log, "regla-02", IntentKit.Scan(rack, "ZZ", IntentKit.Member("A1", baseText)), Catalog));
++            log.Add(ReadLine(log, "regla-03", IntentKit.Scan(rack, "A1", IntentKit.Unreadable("A1", rack)), Catalog));
++            log.Add(ReadLine(log, "regla-04", IntentKit.Scan(rack, "A1", IntentKit.Custom("A1", string.Empty, "frontal", baseText)), Catalog));
++            log.Add(ReadLine(log, "regla-05", IntentKit.Scan(rack, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-02-modulos", other))), Catalog));
++            log.Add(ReadLine(log, "regla-06", IntentKit.Scan(rack, "A1", IntentKit.Member("A1", baseText, xref: true)), Catalog));
++            log.Add(ReadLine(log, "regla-07", IntentKit.Scan(rack, "A1", IntentKit.Member("A1", baseText), IntentKit.Unreadable("B2", rack)), Catalog));
++            log.Add(ReadLine(log, "regla-08", IntentKit.Scan(rack, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", rack, kind: "selective")), IntentKit.Member("B2", lateral)), Catalog));
++            log.Add(ReadLine(log, "regla-09", IntentKit.Scan(rack, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", rack, kind: "selective"))), Catalog));
++            log.Add(ReadLine(log, "regla-10", IntentKit.Scan(rack, "A1", IntentKit.Member("A1", baseText), IntentKit.Member("B2", IntentKit.Variant("pb-02-modulos", rack, view: "lateral", section: 3))), Catalog));
++            log.Add(ReadLine(log, "regla-11", IntentKit.Scan(rack, "A1", IntentKit.Custom("A1", rack, "frontal", withExtra.ToJsonString())), Catalog));
++            log.Add(ReadLine(log, "regla-12-cola", IntentKit.Scan(coldId, "H1", IntentKit.Member("H1", PilotKit.Text("pb-21-cola"))), Catalog));
++            log.Add(ReadLine(log, "regla-13", IntentKit.Scan(rack, "A1", IntentKit.Custom("A1", rack, "frontal", ZeroEveryPalletHeight(baseText))), Catalog));
++            log.Add(ReadLine(log, "regla-14", IntentKit.Scan(rack, "A1", IntentKit.Member("A1", baseText)), null));
++            log.Add(ReadLine(log, "admitido", IntentKit.TwoViews(), Catalog));
++
++            // The compound rack: the pilot refuses it as outside of the pilot, and the full reader admits it with the same base.
++            var abText = PilotKit.Text("pb-20-ab");
++            var abScan = IntentKit.Scan(new RackEmbedStore().Deserialize(abText).Id, "H1", IntentKit.Member("H1", abText));
++            var abPilot = Paso(log, () => PushBackPilotIntentReader.Read(abScan, Catalog));
++            var abFull = Paso(log, () => PushBackFullDraftReader.Read(abScan, Catalog));
++            log.Add("pb-20-ab piloto=" + (abPilot != null && abPilot.Read.IsAdmitted ? "Admitted" : "NotAdmitted")
++                + " completo=" + (abFull != null && abFull.Read.IsAdmitted ? "Admitted" : "NotAdmitted")
++                + " base-igual=" + (abPilot != null && abFull != null && SameBase(abPilot.StaleBase, abFull.StaleBase)));
++
++            var expected = new List<string>();
++            foreach (var rule in new[] { "regla-01", "regla-02", "regla-03", "regla-04", "regla-05", "regla-06", "regla-07", "regla-08", "regla-09", "regla-10",
++                                         "regla-11", "regla-12-cola", "regla-13", "regla-14", "admitido" })
++            {
++                expected.Add(rule + " iguales=True");
++            }
++
++            expected.Add("pb-20-ab piloto=NotAdmitted completo=Admitted base-igual=True");
++            Assert.Equal(expected, log);
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-04
++
++        /// <summary>The 28 nested paths of AUTH-13 for Push Back: <c>I58F1Matrix.Nested("pushback")</c> (<c>I58F1Matrix.cs:97-102</c>),
++        /// copied as a literal list because <c>Nested</c> is private.</summary>
++        private static readonly string[] NestedPaths =
++        {
++            "PushBack.Structure.Fronts.0", "PushBack.Structure.Fronts.0.Levels.0", "PushBack.Structure.Modules.0",
++            "PushBack.Structure.Modules.0.Header", "PushBack.Structure.Modules.0.Header.LeftPost",
++            "PushBack.Structure.Modules.0.Header.RightBasePlate", "PushBack.Structure.Modules.0.Header.Horizontals.0",
++            "PushBack.Structure.Modules.0.Header.Panels.0", "PushBack.Structure.SafetySelections.0",
++            "PushBack.Structure.SafetySelections.0.PostSides.0", "PushBack.Structure.SafetySelections.0.DesviadorOffCells.0",
++            "PushBack.Structure.SafetySelections.0.DefensaPosts.0", "PushBack.Structure.SafetySelections.0.GuiaEntradaOffCells.0",
++            "PushBack.Structure.SafetySelections.0.ParrillaOffCells.0", "PushBack.Structure.SafetySelections.0.BotaPosts.0",
++            "PushBack.Structure.SafetySelections.0.TopeOffCells.0", "PushBack.Structure.SafetySelections.0.BotaBPosts.0",
++            "PushBack.Structure.HeaderLineOverrides.0", "PushBack.Structure.HeaderLineOverrides.0.Header",
++            "PushBack.Structure.DerivedPostLineOverrides.0",
++            "PushBack.Structure", "PushBack.Fronts.0", "PushBack.SideB", "PushBack.SideB.Fronts.0", "PushBack.SideB.FrontConfigs.0",
++            "PushBack.Composite", "PushBack.Composite.Topologies.0", "PushBack.RearTopeOffCells.0",
++        };
++
++        private static string Auth13Line(List<string> log, string label, string envelopeText)
++        {
++            var scan = IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Member("A1", envelopeText));
++            var pilot = Paso(log, () => PushBackPilotIntentReader.Read(scan, Catalog));
++            var full = Paso(log, () => PushBackFullDraftReader.Read(scan, Catalog));
++            return label
++                + " piloto=[" + (pilot == null ? "<sin resultado>" : pilot.Read.Admission.Diagnostic) + "]"
++                + " completo=[" + (full == null ? "<sin resultado>" : full.Read.Admission.Diagnostic) + "]"
++                + " pista=[" + (full == null ? "<sin resultado>" : full.ClassicEditorHint) + "]";
++        }
++
++        [Fact]
++        public void CT_PBT3A_04_Auth13RejectsEveryUnknownFieldAtEveryLevelInBothReaders()
++        {
++            var log = new List<string>();
++            var rich = I58F1Fixtures.Rich("pushback");
++            var baseText = PilotKit.Text("pb-01-base");
++
++            // The control: the same rack with no field added. It is admitted by the full reader; the pilot refuses it afterwards, as an A/B rack.
++            var controlScan = IntentKit.Scan(IntentKit.Rack, "A1", IntentKit.Member("A1", IntentKit.Rewrite(baseText, e => e.Design = rich)));
++            var controlPilot = Paso(log, () => PushBackPilotIntentReader.Read(controlScan, Catalog));
++            var controlFull = Paso(log, () => PushBackFullDraftReader.Read(controlScan, Catalog));
++            log.Add("control completo=" + (controlFull != null && controlFull.Read.IsAdmitted ? "Admitted" : "NotAdmitted")
++                + " piloto=[" + (controlPilot == null ? "<sin resultado>" : controlPilot.Read.IsAdmitted ? "Admitted" : controlPilot.Read.Admission.Diagnostic) + "]");
++
++            foreach (var path in NestedPaths)
++            {
++                var design = I58F1Fixtures.Set(rich, path + ".FutureNested", "1");
++                log.Add(Auth13Line(log, path, IntentKit.Rewrite(baseText, e => e.Design = design)));
++            }
++
++            // The three layers on top: the wrapper of the project, the Push Back block and the envelope itself.
++            log.Add(Auth13Line(log, "Future", IntentKit.Rewrite(baseText, e => e.Design = I58F1Fixtures.Set(rich, "Future", "1"))));
++            log.Add(Auth13Line(log, "PushBack.Future", IntentKit.Rewrite(baseText, e => e.Design = I58F1Fixtures.Set(rich, "PushBack.Future", "1"))));
++            var envelope = JsonNode.Parse(IntentKit.Rewrite(baseText, e => e.Design = rich)).AsObject();
++            envelope["Future"] = 1;
++            log.Add(Auth13Line(log, "Envelope.Future", envelope.ToJsonString()));
++
++            var unreadable = "No editable aquí: ilegible o de versión futura";
++            var expected = new List<string>
++            {
++                "control completo=Admitted piloto=[" + PushBackPilotIntentReader.OutOfPilotDiagnostic + "]",
++            };
++            foreach (var path in NestedPaths.Concat(new[] { "Future", "PushBack.Future", "Envelope.Future" }))
++            {
++                expected.Add(path + " piloto=[" + unreadable + "] completo=[" + unreadable + "] pista=[Usa RACKEDITAR para editarlo con el editor clásico.]");
++            }
++
++            Assert.Equal(expected, log);
++        }
++
++        // ------------------------------------------------------------------------------------------------- CT-05
++
++        private static bool IsProductType(Type type)
++            => type.Namespace != null && type.Namespace.StartsWith("RackCad", StringComparison.Ordinal) && !type.IsEnum;
++
++        private static IEnumerable<FieldInfo> InstanceFields(Type type)
++        {
++            for (var current = type; current != null && current != typeof(object); current = current.BaseType)
++            {
++                foreach (var field in current.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
++                {
++                    yield return field;
++                }
++            }
++        }
++
++        private static string KeyOf(FieldInfo field)
++        {
++            var name = field.Name;
++            if (name.StartsWith("<", StringComparison.Ordinal)) name = name.Substring(1, name.IndexOf('>') - 1);
++            return field.DeclaringType.Name + "." + name;
++        }
++
++        /// <summary>A type is immutable when it is a string or every instance field of it is init-only and immutable.</summary>
++        private static bool IsImmutable(Type type)
++        {
++            if (type == typeof(string) || type.IsPrimitive || type.IsEnum) return true;
++            if (!IsProductType(type)) return false;
++            return InstanceFields(type).All(field => field.IsInitOnly && (field.FieldType.IsValueType || IsImmutable(field.FieldType)));
++        }
++
++        /// <summary>Every reference-type object a graph holds (collections included), by walking ALL fields, and also the keys
++        /// and the values of every dictionary: its entries are value types and the dictionary is not a product type.</summary>
++        private static HashSet<object> AllObjects(object root)
++        {
++            var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
++            var pending = new Queue<object>();
++            pending.Enqueue(root);
++            while (pending.Count > 0)
++            {
++                var current = pending.Dequeue();
++                if (current is string || !visited.Add(current)) continue;
++                if (current is IDictionary dictionary)
++                {
++                    foreach (DictionaryEntry entry in dictionary)
++                    {
++                        if (entry.Key != null && !entry.Key.GetType().IsValueType) pending.Enqueue(entry.Key);
++                        if (entry.Value != null && !entry.Value.GetType().IsValueType) pending.Enqueue(entry.Value);
++                    }
++                }
++                else if (current is IEnumerable items)
++                {
++                    foreach (var item in items)
++                    {
++                        if (item != null && !item.GetType().IsValueType) pending.Enqueue(item);
++                    }
++                }
++
++                if (!IsProductType(current.GetType())) continue;
++                foreach (var field in InstanceFields(current.GetType()))
++                {
++                    if (field.FieldType.IsValueType && !field.FieldType.IsGenericType) continue;
++                    var value = field.GetValue(current);
++                    if (value != null && !value.GetType().IsValueType) pending.Enqueue(value);
++                }
++            }
++
++            return visited;
++        }
++
++        private static HashSet<object> Mutable(IEnumerable<object> objects)
++        {
++            var set = new HashSet<object>(ReferenceEqualityComparer.Instance);
++            foreach (var item in objects)
++            {
++                if (!IsImmutable(item.GetType())) set.Add(item);
++            }
++
++            return set;
++        }
++
++        /// <summary>The two references D2 declares as shared: the resolved baseline and the module report of each side.</summary>
++        private static IEnumerable<object> SharedRoots(PushBackEditableState state)
++        {
++            foreach (var side in new[] { state.Editor.SideA, state.Editor.SideB })
++            {
++                if (side.WorkingBaseline != null) yield return side.WorkingBaseline;
++                if (side.LastModuleReconciliation != null) yield return side.LastModuleReconciliation;
++            }
++        }
++
++        // The mutator of the pilot, copied (CT-PBT1B-06): the editable slots of the state, one by one.
++
++        private enum Class { E, S, A, D, T }
++
++        private static readonly Dictionary<string, Class> Table = BuildTable();
++
++        private static Dictionary<string, Class> BuildTable()
++        {
++            var table = new Dictionary<string, Class>(StringComparer.Ordinal);
++            void Add(Class kind, params string[] keys) { foreach (var key in keys) table[key] = kind; }
++
++            Add(Class.E, "PushBackEditableState.Editor", "PushBackEditableState.Pallet", "PushBackEditableState.PalletsDeep",
++                "PushBackEditableState.PostCatalogId", "PushBackEditableState.PostPeralte", "PushBackEditableState.PalletTolerance",
++                "PushBackEditableState.BeamDepth", "PushBackEditableState.AnnotationScale", "PushBackEditableState.FirstLevelDatum",
++                "PushBackEditableState.NumberFronts", "PushBackEditableState.NumberLevels", "PushBackEditableState.DrawRackName",
++                "PushBackEditableState.Dimensions", "PushBackEditableState.DimensionStyle", "PushBackEditableState.LoadedDimensionViews",
++                "PushBackEditableState.DimensionViewsTouched", "PushBackEditableState.DimensionsFrontal", "PushBackEditableState.DimensionsLateral",
++                "PushBackEditableState.DimensionsPlanta", "PushBackEditableState.Advanced", "PushBackEditableState.SafetySelections",
++                "PushBackEditableState.Name");
++
++            Add(Class.E, "PushBackCompositeEditorState.topologies", "PushBackCompositeEditorState.sideBEverDeclared",
++                "PushBackCompositeEditorState.SideA", "PushBackCompositeEditorState.SideB", "PushBackCompositeEditorState.SideBPresent",
++                "PushBackCompositeEditorState.Gap", "PushBackCompositeEditorState.CentralSeparator", "PushBackCompositeEditorState.StructureOverrideA",
++                "PushBackCompositeEditorState.StructureOverrideB", "PushBackCompositeEditorState.DefaultTopology", "PushBackCompositeEditorState.DefaultDirection");
++            Add(Class.A, "PushBackCompositeEditorState.DormantCompositeTail", "PushBackCompositeEditorState.DormantTailLineOverrides");
++            Add(Class.T, "PushBackCompositeEditorState.dormantTailConsumed");
++            Add(Class.S, "PushBackCompositeEditorState.ActiveSide", "PushBackCompositeEditorState.ActiveSelection");
++
++            Add(Class.E, "PushBackTopologyCell.Frente", "PushBackTopologyCell.Level", "PushBackTopologyCell.Topology",
++                "PushBackTopologyCell.Direction", "PushBackTopologyCell.CorridaDepth");
++
++            Add(Class.E, "PushBackEditorState.structure", "PushBackEditorState.pushFronts", "PushBackEditorState.RearTopeSaque",
++                "PushBackEditorState.RearTopePieceId", "PushBackEditorState.DefensePieceId");
++            Add(Class.D, "PushBackEditorState.workingBaseline", "PushBackEditorState.LastModuleReconciliation");
++            Add(Class.A, "PushBackEditorState.moduleSession", "PushBackEditorState.moduleCommit", "PushBackEditorState.moduleSignature");
++
++            Add(Class.E, "DynamicFrontMatrix.fronts");
++            Add(Class.S, "DynamicFrontMatrix.selectedCells", "DynamicFrontMatrix.selectedFrontIndex", "DynamicFrontMatrix.selectedLevelIndex");
++
++            Add(Class.E, "DynamicEditorFront.Index", "DynamicEditorFront.IsActive", "DynamicEditorFront.PalletCount", "DynamicEditorFront.LoadLevels",
++                "DynamicEditorFront.PalletsDeep", "DynamicEditorFront.DepthStartPosition", "DynamicEditorFront.FirstLevelHeight",
++                "DynamicEditorFront.Bfr", "DynamicEditorFront.BeamLength", "DynamicEditorFront.Cells");
++            Add(Class.E, "DynamicEditorCell.PalletFront", "DynamicEditorCell.PalletHeight", "DynamicEditorCell.PalletWeight", "DynamicEditorCell.ClearHeight",
++                "DynamicEditorCell.InOutBeamCatalogId", "DynamicEditorCell.InOutBeamDepth", "DynamicEditorCell.BeamLengthOverride",
++                "DynamicEditorCell.IntermediateBeamCatalogId", "DynamicEditorCell.IntermediateBeamDepth");
++            Add(Class.E, "PushBackEditorFront.Cells", "PushBackEditorCell.HighEndBeamPeralte", "PushBackEditorCell.RearTopeEnabled",
++                "PushBackEditorCell.PalletsDeepOverride", "PushBackEditorCell.DrawPallet");
++
++            Add(Class.E, "PushBackEditorInputs.Pallet", "PushBackEditorInputs.PalletsDeep", "PushBackEditorInputs.PostCatalogId",
++                "PushBackEditorInputs.PostPeralte", "PushBackEditorInputs.PalletTolerance", "PushBackEditorInputs.FirstLevelDatum",
++                "PushBackEditorInputs.BeamDepth", "PushBackEditorInputs.Annotations", "PushBackEditorInputs.ManualHeaderHeightOverride",
++                "PushBackEditorInputs.DerivedPostReinforced", "PushBackEditorInputs.DerivedPostReinforcementHeight",
++                "PushBackEditorInputs.DerivedPostHeight", "PushBackEditorInputs.SeparatorCountOverride",
++                "PushBackEditorInputs.SeparatorSpacingOverride", "PushBackEditorInputs.SafetySelections");
++            Add(Class.E, "PalletSpecification.Front", "PalletSpecification.Depth", "PalletSpecification.Height", "PalletSpecification.Weight",
++                "PalletSpecification.WeightUnit");
++            Add(Class.E, "DynamicAnnotationOptions.NumberFronts", "DynamicAnnotationOptions.NumberLevels", "DynamicAnnotationOptions.DrawRackName",
++                "DynamicAnnotationOptions.AnnotationScale", "DynamicAnnotationOptions.Dimensions", "DynamicAnnotationOptions.DimensionViews",
++                "DynamicAnnotationOptions.DimensionStyle");
++
++            Add(Class.E, "SelectiveSafetySelection.ElementId", "SelectiveSafetySelection.Quantity", "SelectiveSafetySelection.Side",
++                "SelectiveSafetySelection.LowEndOnly", "SelectiveSafetySelection.AuthoredSide", "SelectiveSafetySelection.BotaB",
++                "SelectiveSafetySelection.BootSidesDeclared", "SelectiveSafetySelection.DerivedAisles", "SelectiveSafetySelection.NearFace",
++                "SelectiveSafetySelection.FarFace", "SelectiveSafetySelection.BothEndsAreLoadFaces", "SelectiveSafetySelection.SecondLoadFacePosts",
++                "SelectiveSafetySelection.DesviadorCellsAreByPost", "SelectiveSafetySelection.PostSides", "SelectiveSafetySelection.tope",
++                "SelectiveSafetySelection.desviador", "SelectiveSafetySelection.defensa", "SelectiveSafetySelection.guia",
++                "SelectiveSafetySelection.parrilla", "SelectiveSafetySelection.bota");
++            Add(Class.E, "SelectiveBotaConfig.PieceId", "SelectiveBotaConfig.Placement", "SelectiveBotaConfig.Posts", "SelectiveBotaConfig.Automatic",
++                "SelectiveBotaConfig.BlankPosts", "BootPostPlacement.PostIndex", "BootPostPlacement.Placement", "DerivedAisleEntry.PostIndex",
++                "DerivedAisleEntry.Authored", "SafetyFacePiece.IsNone", "SafetyFacePiece.ElementId", "SafetyPostSide.PostIndex", "SafetyPostSide.Side",
++                "SelectiveTopeConfig.Shared", "SelectiveTopeConfig.Fondo", "SelectiveTopeConfig.Saque", "SelectiveTopeConfig.Frontal",
++                "SelectiveTopeConfig.OffCells", "SelectiveDesviadorConfig.Longitud", "SelectiveDesviadorConfig.PrimerNivelAltura",
++                "SelectiveDesviadorConfig.OffCells", "SelectiveDefensaConfig.Posts", "SafetyPostDefense.PostIndex", "SafetyPostDefense.ExitLength",
++                "SafetyPostDefense.EntranceLength", "SafetyPostDefense.ExitAuto", "SafetyPostDefense.EntranceAuto", "SelectiveGuiaConfig.OffCells",
++                "SelectiveParrillaConfig.Frontal", "SelectiveParrillaConfig.Lateral", "SelectiveParrillaConfig.Frente",
++                "SelectiveParrillaConfig.Cantidad", "SelectiveParrillaConfig.OffCells", "SelectiveGridCell.Frente", "SelectiveGridCell.Level");
++            return table;
++        }
++
++        private static readonly HashSet<string> ContainerKeys = new HashSet<string>(StringComparer.Ordinal)
++        {
++            "PushBackEditableState.Editor", "PushBackEditableState.Pallet", "PushBackEditableState.Advanced",
++            "PushBackCompositeEditorState.SideA", "PushBackCompositeEditorState.SideB", "PushBackEditorState.structure",
++            "PushBackEditorInputs.Pallet", "PushBackEditorInputs.Annotations",
++            "SelectiveSafetySelection.BotaB", "SelectiveSafetySelection.tope", "SelectiveSafetySelection.desviador",
++            "SelectiveSafetySelection.defensa", "SelectiveSafetySelection.guia", "SelectiveSafetySelection.parrilla", "SelectiveSafetySelection.bota",
++        };
++
++        private static readonly HashSet<string> NotMutated = new HashSet<string>(StringComparer.Ordinal)
++        {
++            "DynamicEditorFront.LoadLevels", "DynamicFrontMatrix.fronts", "PushBackEditorFront.Cells", "PushBackEditorState.pushFronts",
++            "SafetyFacePiece.ElementId", "SafetyFacePiece.IsNone",
++        };
++
++        private static readonly HashSet<string> AdvancedSix = new HashSet<string>(StringComparer.Ordinal)
++        {
++            "PushBackEditorInputs.ManualHeaderHeightOverride", "PushBackEditorInputs.DerivedPostReinforced",
++            "PushBackEditorInputs.DerivedPostReinforcementHeight", "PushBackEditorInputs.DerivedPostHeight",
++            "PushBackEditorInputs.SeparatorCountOverride", "PushBackEditorInputs.SeparatorSpacingOverride",
++        };
++
++        private static IEnumerable<(object Owner, FieldInfo Field)> EditableSlots(PushBackEditableState root)
++        {
++            var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
++            var pending = new Queue<object>();
++            pending.Enqueue(root);
++            while (pending.Count > 0)
++            {
++                var owner = pending.Dequeue();
++                if (!visited.Add(owner)) continue;
++                foreach (var field in InstanceFields(owner.GetType()))
++                {
++                    var key = KeyOf(field);
++                    if (!Table.TryGetValue(key, out var kind) || kind != Class.E) continue;
++                    if (ReferenceEquals(owner, root.Advanced) && !AdvancedSix.Contains(key)) continue;
++                    yield return (owner, field);
++                    var value = field.GetValue(owner);
++                    if (value == null) continue;
++                    if (value is IEnumerable items && !(value is string))
++                    {
++                        foreach (var item in items)
++                        {
++                            if (item != null && IsProductType(item.GetType())) pending.Enqueue(item);
++                        }
++                    }
++                    else if (IsProductType(value.GetType()))
++                    {
++                        pending.Enqueue(value);
++                    }
++                }
++            }
++        }
++
++        private sealed class NoReplacement { }
++
++        private static bool TryMutate(object owner, FieldInfo field, out Action undo)
++        {
++            undo = () => { };
++            if (ContainerKeys.Contains(KeyOf(field))) return false;
++
++            var type = field.FieldType;
++            var current = field.GetValue(owner);
++            if ((current is IEnumerable && !(current is string)) || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>)))
++            {
++                return MutateCollection(current, out undo);
++            }
++
++            var replacement = Replacement(type, current);
++            if (replacement is NoReplacement) return false;
++            field.SetValue(owner, replacement);
++            undo = () => field.SetValue(owner, current);
++            return true;
++        }
++
++        private static object Replacement(Type type, object current)
++        {
++            var underlying = Nullable.GetUnderlyingType(type);
++            if (underlying != null)
++            {
++                return current == null ? Replacement(underlying, null) : null;
++            }
++
++            if (type == typeof(bool)) return !(bool)(current ?? false);
++            if (type == typeof(int)) return (int)(current ?? 0) + 1;
++            if (type == typeof(double)) return double.IsNaN((double)(current ?? 0.0)) ? 2.0 : (double)(current ?? 0.0) + 1.5;
++            if (type == typeof(string)) return ((string)current ?? string.Empty) + "~";
++            if (type.IsEnum)
++            {
++                var values = Enum.GetValues(type).Cast<object>().ToList();
++                return values.First(value => !value.Equals(current));
++            }
++
++            if (type == typeof(SafetyFacePiece)) return SafetyFacePiece.Of(((SafetyFacePiece)current)?.ElementId + "~");
++            if (current == null && !type.IsValueType) return RuntimeHelpers.GetUninitializedObject(type);
++            if (!type.IsValueType) return null;
++            return new NoReplacement();
++        }
++
++        private static bool MutateCollection(object collection, out Action undo)
++        {
++            var type = collection.GetType();
++            var elementType = type.IsGenericType ? type.GetGenericArguments()[0] : typeof(object);
++            var element = NewElement(elementType);
++            var add = type.GetMethod("Add", new[] { elementType });
++            var remove = type.GetMethod("Remove", new[] { elementType });
++            add.Invoke(collection, new[] { element });
++            undo = () =>
++            {
++                if (collection is IList list && list.Count > 0)
++                {
++                    list.RemoveAt(list.Count - 1);
++                }
++                else
++                {
++                    remove.Invoke(collection, new[] { element });
++                }
++            };
++            return true;
++        }
++
++        private static object NewElement(Type type)
++        {
++            if (type == typeof(int)) return 77;
++            if (type == typeof(double)) return 77.5;
++            if (type == typeof(string)) return "x";
++            if (type == typeof(ValueTuple<int, int>)) return (88, 99);
++            return Activator.CreateInstance(type, nonPublic: true);
++        }
++
++        private static PushBackFullDraftState FullOf(List<string> log, string text)
++        {
++            var result = Paso(log, () => PushBackFullDraftMaterializer.Materialize(text, Catalog));
++            return result == null || !result.IsAdmitted ? null : result.State;
++        }
++
++        private static bool Eq(List<string> log, PushBackFullDraftState a, PushBackFullDraftState b)
++            => Paso(log, () => PushBackFullDraftStateComparer.Instance.Equals(a, b));
++
++        [Fact]
++        public void CT_PBT3A_05_TheCopierAndTheComparerOfTheFullStateKeepOnlyTheTwoDeclaredReferences()
++        {
++            var log = new List<string>();
++            var scenarios = new List<(string Name, string Text)>
++            {
++                ("pb-06-seguridad", PilotKit.Text("pb-06-seguridad")),
++                ("pb-07-combinado", PilotKit.Text("pb-07-combinado")),
++                ("pb-20-ab", PilotKit.Text("pb-20-ab")),
++            };
++            var f01 = BuildF01(log);
++            var x01 = BuildX01(log);
++            scenarios.Add(("F-01", f01 == null ? null : EnvelopeOf(PilotKit.Text("pb-20-ab"), f01)));
++            scenarios.Add(("X-01", x01 == null ? null : EnvelopeOf(PilotKit.Text("pb-21-cola"), x01)));
++
++            var expected = new List<string>();
++            foreach (var scenario in scenarios)
++            {
++                var original = FullOf(log, scenario.Text);
++                var copy = original == null ? null : Paso(log, () => PushBackFullDraftStateComparer.Copy(original));
++
++                var equal = original != null && copy != null && Eq(log, original, copy) && Eq(log, copy, original);
++                var distinct = original != null && copy != null && !ReferenceEquals(original, copy) && !ReferenceEquals(original.Editable, copy.Editable);
++                var otherOrigin = original != null && copy != null
++                    && !Eq(log, original, new PushBackFullDraftState(copy.Editable, copy.Origin + " "));
++                var again = FullOf(log, scenario.Text);
++                var twice = original != null && again != null && Eq(log, original, again)
++                    && Paso(log, () => PushBackFullDraftStateComparer.Instance.GetHashCode(original) == PushBackFullDraftStateComparer.Instance.GetHashCode(again));
++                log.Add(scenario.Name + " copia-igual=" + equal + " distinta-instancia=" + distinct + " origen-cambiado-distinto=" + otherOrigin
++                    + " dos-materializaciones-iguales=" + twice);
++                expected.Add(scenario.Name + " copia-igual=True distinta-instancia=True origen-cambiado-distinto=True dos-materializaciones-iguales=True");
++
++                // The objects the copy shares with its original: exactly the non-null references of D2 and what they reach.
++                if (original == null || copy == null)
++                {
++                    log.Add(scenario.Name + " compartidos-exactos=False raices>0=False");
++                }
++                else
++                {
++                    var shared = Mutable(AllObjects(original.Editable).Intersect(AllObjects(copy.Editable), ReferenceEqualityComparer.Instance));
++                    var wanted = Mutable(SharedRoots(original.Editable).SelectMany(root => AllObjects(root)));
++                    log.Add(scenario.Name + " compartidos-exactos=" + shared.SetEquals(wanted) + " raices>0=" + SharedRoots(original.Editable).Any());
++                }
++
++                expected.Add(scenario.Name + " compartidos-exactos=True raices>0=True");
++
++                // The tail, the commit and the session of each side of the copy share nothing mutable with the WHOLE graph of the original.
++                if (original == null || copy == null)
++                {
++                    log.Add(scenario.Name + " cola-comision-sesion revisados>0=False compartidos=-1");
++                }
++                else
++                {
++                    var ownedByCopy = new List<object>();
++                    ownedByCopy.AddRange(copy.Editable.Editor.DormantCompositeTail);
++                    ownedByCopy.AddRange(copy.Editable.Editor.DormantTailLineOverrides);
++                    foreach (var side in new[] { copy.Editable.Editor.SideA, copy.Editable.Editor.SideB })
++                    {
++                        if (side.ModuleCommit != null) ownedByCopy.Add(side.ModuleCommit);
++                        ownedByCopy.Add(side.ModuleSession);
++                    }
++
++                    var reached = Mutable(ownedByCopy.Where(item => item != null).SelectMany(root => AllObjects(root)));
++                    var common = reached.Intersect(AllObjects(original.Editable), ReferenceEqualityComparer.Instance).Count();
++                    log.Add(scenario.Name + " cola-comision-sesion revisados>0=" + (reached.Count > 0) + " compartidos=" + common);
++                }
++
++                expected.Add(scenario.Name + " cola-comision-sesion revisados>0=True compartidos=0");
++            }
++
++            // Every editable slot of the state, one by one (the mutator of the pilot): the copy carries the mutated value, and the
++            // copy taken before does not; undoing the mutation restores the equality.
++            foreach (var scenario in scenarios.Where(s => s.Name == "pb-07-combinado" || s.Name == "F-01"))
++            {
++                var state = FullOf(log, scenario.Text);
++                var start = state == null ? null : Paso(log, () => PushBackFullDraftStateComparer.Copy(state));
++                var exercised = 0;
++                var failures = new List<string>();
++                if (state != null && start != null)
++                {
++                    foreach (var (owner, field) in EditableSlots(state.Editable).ToList())
++                    {
++                        var key = KeyOf(field);
++                        if (NotMutated.Contains(key)) continue;
++                        if (!TryMutate(owner, field, out var undo)) continue;
++                        exercised++;
++                        var taken = Paso(log, () => PushBackFullDraftStateComparer.Copy(state));
++                        if (taken == null) { failures.Add(key + " sin copia"); undo(); continue; }
++                        if (!Eq(log, taken, state) || !Eq(log, state, taken)) failures.Add(key + " la copia no es igual");
++                        if (Eq(log, taken, start) || Eq(log, start, taken)) failures.Add(key + " la copia perdio la mutacion");
++                        undo();
++                        if (!Eq(log, start, state) || !Eq(log, state, start)) failures.Add(key + " undo no restauro la igualdad");
++                    }
++                }
++
++                log.Add(scenario.Name + " ranuras>0=" + (exercised > 0) + " fallos=[" + string.Join(" ;; ", failures.OrderBy(f => f, StringComparer.Ordinal)) + "]");
++                expected.Add(scenario.Name + " ranuras>0=True fallos=[]");
++            }
++
++            Assert.Equal(expected, log);
++        }
++    }
++}
+diff --git a/tests/RackCad.Tests/PushBackFullDraftViewTests.cs b/tests/RackCad.Tests/PushBackFullDraftViewTests.cs
+new file mode 100644
+index 00000000..6e2d7868
+--- /dev/null
++++ b/tests/RackCad.Tests/PushBackFullDraftViewTests.cs
+@@ -0,0 +1,144 @@
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Application.Systems.PushBack;
++using RackCad.Application.Systems.PushBack.Draft;
++using RackCad.Application.Systems.PushBack.Pilot;
++using RackCad.Domain.Systems.PushBack;
++using Xunit;
++
++namespace RackCad.Tests
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a — the DISPOSITION of the views of a rack after an edition (CT-PBT3A-08): the lateral views that become
++    /// obsolete after each edit of the fronts (the cases of CT-PB0-10), the frontal of side B of a one-way rack, a view with no
++    /// address and the rack whose only view is an obsolete lateral. The decision is the pure one of RACKEDITAR; nothing here
++    /// opens a window or a drawing.
++    /// </summary>
++    public sealed class PushBackFullDraftViewTests
++    {
++        private static RackCatalog Catalog => PilotKit.Catalog;
++
++        private static T Paso<T>(List<string> log, Func<T> step)
++        {
++            try
++            {
++                return step();
++            }
++            catch (Exception error)
++            {
++                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
++                return default(T);
++            }
++        }
++
++        /// <summary>The system of the editor at one instant, and the lateral cuts it has.</summary>
++        private sealed class Moment
++        {
++            public string Label;
++            public List<int> PostIndexes;
++            public PushBackSystem System;
++        }
++
++        private static Moment Measure(string label, PushBackPilotDraftState state)
++        {
++            var design = new PushBackCompositeEditorAssembler(Catalog).BuildDesign(state.Editor, state.Inputs);
++            var system = new PushBackResolver(Catalog).Resolve(design);
++            return new Moment
++            {
++                Label = label,
++                PostIndexes = new PushBackSystemLateralBuilder().Cortes(system, Catalog).Select(corte => corte.PostIndex).ToList(),
++                System = system,
++            };
++        }
++
++        private static RackEmbedDocument Envelope(string view, int section)
++            => new RackEmbedDocument { Kind = RackEmbedDocument.KindPushBack, View = view, Section = section };
++
++        private static KeyValuePair<string, RackEmbedDocument> Member(string key, string view, int section)
++            => new KeyValuePair<string, RackEmbedDocument>(key, Envelope(view, section));
++
++        private static string Describe(PushBackViewDispositionPlan plan)
++            => "Redraw=[" + string.Join(",", plan.Redraw) + "] ObsoleteLaterals=[" + string.Join(",", plan.ObsoleteLaterals)
++               + "] FrontalBOfOneWay=[" + string.Join(",", plan.FrontalBOfOneWay) + "] NoAddress=[" + string.Join(",", plan.NoAddress)
++               + "] AllObsolete=" + plan.AllObsolete;
++
++        private static PushBackViewDispositionPlan Dispose(List<string> log, IEnumerable<KeyValuePair<string, RackEmbedDocument>> members, PushBackSystem system)
++            => Paso(log, () => PushBackViewDispositions.Of(members, system, Catalog));
++
++        [Fact]
++        public void CT_PBT3A_08_TheDispositionOfTheViewsIsTheOneOfTheClassicEditor()
++        {
++            var log = new List<string>();
++            var expected = new List<string>();
++
++            // The moments of CT-PB0-10 on pb-01-base: one lateral envelope per cut of BEFORE, the system of AFTER.
++            var materialized = PushBackPilotMaterializer.Materialize(PilotKit.Text("pb-01-base"), Catalog);
++            var state = materialized.State;
++            var editor = state.Editor;
++            var count = editor.SlotCount;
++
++            var moments = new List<Moment> { Measure("base", state) };
++            editor.SetSlotCount(count + 1);
++            moments.Add(Measure("+frente", state));
++            editor.SetSlotCount(count);
++            moments.Add(Measure("-frente", state));
++            editor.SetSlotPresent(PushBackSide.A, 1, false);
++            editor.SetSlotPresent(PushBackSide.A, 2, false);
++            moments.Add(Measure("frentes 1 y 2 en blanco", state));
++            editor.SetSideBPresent(true);
++            moments.Add(Measure("declarar B", state));
++            editor.SetSlotPresent(PushBackSide.B, 1, true);
++            moments.Add(Measure("B ranura 1 activa", state));
++            editor.SetSlotPresent(PushBackSide.B, 1, false);
++            moments.Add(Measure("B ranura 1 en blanco", state));
++            editor.SetSideBPresent(false);
++            moments.Add(Measure("retirar B", state));
++
++            // The sets of obsolete laterals of each step are the ones CT-PB0-10 gives: [], [4], [2], [], [], [2], [].
++            var obsolete = new[] { string.Empty, "4", "2", string.Empty, string.Empty, "2", string.Empty };
++            for (var i = 0; i + 1 < moments.Count; i++)
++            {
++                var before = moments[i];
++                var after = moments[i + 1];
++                var members = before.PostIndexes.Select(post => Member(post.ToString(), RackEmbedDocument.ViewLateral, post)).ToList();
++                var plan = Dispose(log, members, after.System);
++                log.Add(before.Label + " -> " + after.Label + " obsoletas=[" + (plan == null ? "<sin resultado>" : string.Join(",", plan.ObsoleteLaterals)) + "]");
++                expected.Add(before.Label + " -> " + after.Label + " obsoletas=[" + obsolete[i] + "]");
++            }
++
++            // A one-way rack that keeps a frontal of side B: pb-20-ab with side B retired.
++            var abText = PilotKit.Text("pb-20-ab");
++            var abState = new PushBackEditableState();
++            abState.LoadDesign(
++                new RackProjectStore().Deserialize(new RackEmbedStore().Deserialize(abText).Design).PushBackDesign,
++                "pb-20-ab",
++                new PushBackEditorDesignAssembler(Catalog).Resolver);
++            abState.Editor.SetSideBPresent(false);
++            var oneWay = new PushBackResolver(Catalog).Resolve(
++                new PushBackCompositeEditorAssembler(Catalog).BuildDesign(abState.Editor, abState.BuildInputs(new PushBackEditorDesignAssembler(Catalog))));
++            var onlyB = Dispose(log, new[] { Member("FB", RackEmbedDocument.ViewFrontal, 2) }, oneWay);
++            log.Add("pb-20-ab-sin-B frontal-B " + (onlyB == null ? "<sin resultado>" : Describe(onlyB)));
++            expected.Add("pb-20-ab-sin-B frontal-B Redraw=[] ObsoleteLaterals=[] FrontalBOfOneWay=[FB] NoAddress=[] AllObsolete=False");
++
++            // The frontal of side A and the plan view are always redrawn.
++            var always = Dispose(log, new[] { Member("FA", RackEmbedDocument.ViewFrontal, 0), Member("P", RackEmbedDocument.ViewPlanta, -1) }, oneWay);
++            log.Add("frontal-A-y-planta " + (always == null ? "<sin resultado>" : Describe(always)));
++            expected.Add("frontal-A-y-planta Redraw=[FA,P] ObsoleteLaterals=[] FrontalBOfOneWay=[] NoAddress=[] AllObsolete=False");
++
++            // A lateral with a section of -1 has no address.
++            var none = Dispose(log, new[] { Member("N", RackEmbedDocument.ViewLateral, -1) }, moments[0].System);
++            log.Add("lateral-sin-direccion " + (none == null ? "<sin resultado>" : Describe(none)));
++            expected.Add("lateral-sin-direccion Redraw=[] ObsoleteLaterals=[] FrontalBOfOneWay=[] NoAddress=[N] AllObsolete=False");
++
++            // A rack whose only view is an obsolete lateral: the post 4 does not exist in the system of the base.
++            var alone = Dispose(log, new[] { Member("L4", RackEmbedDocument.ViewLateral, 4) }, moments[0].System);
++            log.Add("solo-un-lateral-obsoleto " + (alone == null ? "<sin resultado>" : Describe(alone)));
++            expected.Add("solo-un-lateral-obsoleto Redraw=[] ObsoleteLaterals=[L4] FrontalBOfOneWay=[] NoAddress=[] AllObsolete=True");
++
++            Assert.Equal(expected, log);
++        }
++    }
++}
+diff --git a/tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs b/tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs
+new file mode 100644
+index 00000000..7d3f706c
+--- /dev/null
++++ b/tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs
+@@ -0,0 +1,102 @@
++using System;
++using System.Collections.Generic;
++using RackCad.Application.Persistence;
++using RackCad.Application.Systems.PushBack;
++using RackCad.Application.Systems.PushBack.Draft;
++using RackCad.Application.Systems.PushBack.Pilot;
++using RackCad.Domain.Systems.PushBack;
++using RackCad.UI.Shell;
++using Xunit;
++using static RackCad.UI.Tests.PushBackFullEditorCharacterizationSupport;
++
++namespace RackCad.UI.Tests
++{
++    /// <summary>
++    /// I-64 F4B PB-T3a — CT-PBT3A-01: the SEAT of the editable state matches the classic window (D-PBT3-03). For every envelope of
++    /// the corpus but <c>pb-21-cola</c>, the full materializer admits it and its editable state is equal, with the comparer of
++    /// PB-T1b, to the state of a window after <c>LoadExisting</c> (the seam of PB-T1c), and the persisted design of a recompute
++    /// pass over a copy of that state is equal to the one the window computed. <c>pb-21-cola</c> parks a composite tail, which
++    /// stays outside of the model: its line is the reason of the pilot.
++    ///
++    /// <para>No gesture is made: the lines are read right after <c>LoadExisting</c>, which ends with a pass. Every window is created
++    /// with <see cref="PushBackFullEditorCharacterizationSupport.Ventana"/>, its load goes inside the <c>try</c> and it is closed in
++    /// the <c>finally</c>; none is shown, the keyboard and the real focus are not used, and the whole method runs inside
++    /// <see cref="EditorDiscardPrompt.Substitute(System.Func{string,bool})"/>. Every call of the new API goes through <c>Paso</c>,
++    /// which turns an exception into an «EXCEPCION» line; the expected lines contain none.</para>
++    /// </summary>
++    [Collection(EditorDiscardPromptCollection.Name)]
++    public sealed class PushBackFullDraftWindowParityTests
++    {
++        /// <summary>A step that throws becomes a line, and the expected lines never contain one.</summary>
++        private static T Paso<T>(List<string> log, Func<T> step)
++        {
++            try
++            {
++                return step();
++            }
++            catch (Exception error)
++            {
++                log.Add("EXCEPCION " + error.GetType().Name + ": " + error.Message);
++                return default(T);
++            }
++        }
++
++        [Fact]
++        public void CT_PBT3A_01_TheSeatMatchesTheWindowAfterLoadExisting()
++        {
++            var log = new List<string>();
++            var descartes = 0;
++            var names = new List<string>(CorpusNames());
++            using (EditorDiscardPrompt.Substitute(_ => { descartes++; return true; }))
++            {
++                Sta(() =>
++                {
++                    foreach (var name in names)
++                    {
++                        var text = Fixture(name);
++                        var w = Ventana();
++                        try
++                        {
++                            var catalog = w.Session.Catalog;
++                            var materialized = Paso(log, () => PushBackFullDraftMaterializer.Materialize(text, catalog));
++                            if (name == "pb-21-cola")
++                            {
++                                log.Add(name + " " + (materialized == null ? "<sin resultado>" : materialized.Kind + " motivo=" + materialized.Reason));
++                                continue;
++                            }
++
++                            var embed = new RackEmbedStore().Deserialize(text);
++                            var project = new RackProjectStore().Deserialize(embed.Design);
++                            w.LoadExisting(project.PushBackDesign, embed.Id, embed.Name, project);
++
++                            var state = materialized != null && materialized.IsAdmitted ? materialized.State : null;
++                            var stateEqual = state != null && Paso(log, () => PushBackEditableStateComparer.Instance.Equals(state.Editable, w.EditableStateForTest));
++                            var designEqual = state != null && Paso(log, () =>
++                            {
++                                var copy = PushBackEditableStateComparer.Copy(state.Editable);
++                                var computation = PushBackEditableStateSeat.Pass(
++                                    copy, new PushBackEditorDesignAssembler(catalog), new PushBackCompositeEditorAssembler(catalog), PushBackSide.A);
++                                return computation != null && string.Equals(Persist(computation.Design), Persist(w.LastComputation.Design), StringComparison.Ordinal);
++                            });
++                            log.Add(name + " estado-igual=" + stateEqual + " diseno-igual=" + designEqual);
++                        }
++                        finally { Cerrar(w); }
++                    }
++                });
++            }
++
++            log.Add("descartes=" + descartes);
++
++            var expected = new List<string>();
++            foreach (var name in names)
++            {
++                expected.Add(name == "pb-21-cola"
++                    ? "pb-21-cola OutOfPilot motivo=" + PushBackPilotMaterializer.DormantTailOutOfPilotReason
++                    : name + " estado-igual=True diseno-igual=True");
++            }
++
++            expected.Add("descartes=0");
++            Assert.Equal(expected, log);
++        }
++    }
++}

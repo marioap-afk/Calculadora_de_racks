@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261110T062702Z-07c1",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "P-03"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha returned src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs and tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs. The copied nc2 delegation AllowedWriteScope contains only the test path, excluding the changed product path; contract AllowedWriteScope contains both paths. This triggers P-03."
+  },
+  "OutputSha256": "50A9CFDAA89EB4D3ED9604C3ABDAFA7254EC2998D5EEA2DBD2377441BEB43B39",
+  "ManualFreeText1610": []
+}

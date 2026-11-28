@@ -65,9 +65,12 @@ namespace RackCad.Plugin.Views
                 Cached(RackResolvePorts.Dynamic<DynamicRackDesign, DynamicRackSystem>(_ => system)), port,
                 (resolved, address) => DynamicViewFrameAdapter.Resolve(resolved, catalog, address),
                 (resolved, address) => DynamicName(resolved, address, rackName, baseName));
+            var serialized = Project(RackProject.ForDynamic(design), innerSource);
+            // B-1: a new view of a rack of the drawing carries the identity, the name and the design that this edit writes in the views that
+            // exist (RACKEDITAR «Insertar», «Insertar vista…» of the window), not those of the picked view as the drawing held it.
             return new RackViewBatchProductSession<DynamicRackDesign, DynamicRackSystem, HeaderRunPlan>(
                 RackSystemKind.PalletFlow, facts, preparer, RackAuthoredComparatorPorts.Dynamic(), comparison,
-                source, design, rackId, rackName, Project(RackProject.ForDynamic(design), innerSource),
+                RackInsertedViewSource.Edited(source, rackId, rackName, serialized), design, rackId, rackName, serialized,
                 product => RackViewPlacement.PlaceDynamic(document, product, regen: false));
         }
 
@@ -88,9 +91,12 @@ namespace RackCad.Plugin.Views
                 Cached(RackResolvePorts.PushBack<PushBackDesign, PushBackSystem>(_ => system)), port,
                 (resolved, address) => PushBackViewFrameAdapter.Resolve(resolved, catalog, address),
                 (resolved, address) => PushBackName(resolved, address, rackName, baseName));
+            var serialized = Project(RackProject.ForPushBack(design), innerSource);
+            // T6 b1 (B-1 also in Push Back, the rule of Dinámico): a new view of a rack of the drawing carries the identity, the name and the
+            // design that this edit writes in the views that exist (RACKEDITAR «Insertar», «Insertar vista…» of the window).
             return new RackViewBatchProductSession<PushBackDesign, PushBackSystem, HeaderRunPlan>(
                 RackSystemKind.PushBack, facts, preparer, RackAuthoredComparatorPorts.PushBack(), comparison,
-                source, design, rackId, rackName, Project(RackProject.ForPushBack(design), innerSource),
+                RackInsertedViewSource.Edited(source, rackId, rackName, serialized), design, rackId, rackName, serialized,
                 product => RackViewPlacement.PlacePushBack(document, product, regen: false));
         }
 
@@ -109,9 +115,12 @@ namespace RackCad.Plugin.Views
                 Cached(RackResolvePorts.Cabecera<RackFrameConfiguration, RackFrameConfiguration>(_ => configuration)), port,
                 CabeceraViewFrameAdapter.Resolve,
                 (resolved, address) => HeaderName(catalog, resolved, address, rackName));
+            var serialized = Project(RackProject.ForSelective(configuration), innerSource);
+            // T6 b1 (B-1 also in Cabecera, the rule of Dinámico): a new view of a cabecera of the drawing carries the identity, the name and
+            // the design that this edit writes in the views that exist (RACKEDITAR «Insertar»).
             return new RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration, HeaderRunPlan>(
                 RackSystemKind.Selective, facts, preparer, RackAuthoredComparatorPorts.Cabecera(), comparison,
-                source, configuration, rackId, rackName, Project(RackProject.ForSelective(configuration), innerSource),
+                RackInsertedViewSource.Edited(source, rackId, rackName, serialized), configuration, rackId, rackName, serialized,
                 product => RackViewPlacement.PlaceHeader(document, product, regen: false));
         }
 
@@ -134,9 +143,12 @@ namespace RackCad.Plugin.Views
                     return CantileverViewFrameAdapter.Resolve(resolved, plan, address);
                 },
                 (resolved, address) => RackViewProductNames.Cantilever(address, rackName));
+            var serialized = Project(RackProject.ForCantilever(design), innerSource);
+            // T5 ct (CT-11: B-1 also in Cantilever, the rule of Dinámico): a new view of a line of the drawing carries the identity, the name and
+            // the design that this edit writes in the views that exist (RACKEDITAR «Insertar», «Insertar vista…» of the window).
             return new RackViewBatchProductSession<CantileverLineDesign, CantileverLineAssembly, CantileverViewPlan>(
                 RackSystemKind.Cantilever, facts, preparer, RackAuthoredComparatorPorts.Cantilever(), comparison,
-                source, design, rackId, rackName, Project(RackProject.ForCantilever(design), innerSource),
+                RackInsertedViewSource.Edited(source, rackId, rackName, serialized), design, rackId, rackName, serialized,
                 product => RackViewPlacement.PlaceCantilever(document, product, regen: false));
         }
 

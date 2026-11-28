@@ -1,0 +1,165 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Drawing;
+using RackCad.Application.Persistence;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.UI.Systems.PushBack;
+using static RackCad.UI.Tests.PushBackDeclaredCorrectionSupport;
+using static RackCad.UI.Tests.PushBackFullEditorCharacterizationSupport;
+
+namespace RackCad.UI.Tests
+{
+    // TEMPORAL (D-PBTC-10): K1..K4 de la formula de CT-PB0-21 (RoundingEffectTests.cs:107-245), ventana frente a piloto.
+    internal static class TempMeasureK
+    {
+        private const double Threshold = 0.001;
+        private const double Epsilon = 1e-9;
+
+        private sealed class Result
+        {
+            public PushBackEditorComputation Computation;
+            public Dictionary<string, List<HeaderBlockInstance>> Plans;
+        }
+
+        private static Result Compute(RackCatalog catalog, string persisted)
+        {
+            var design = new RackProjectStore().Deserialize(persisted).PushBackDesign;
+            var computation = new PushBackEditorDesignAssembler(catalog).BuildFrom(design, PushBackSide.A);
+            if (!computation.IsValid) throw new InvalidOperationException("no valida: " + computation.Error);
+            var plans = new Dictionary<string, List<HeaderBlockInstance>>(StringComparer.Ordinal)
+            {
+                ["planta"] = computation.PlantaPlan.Flatten().Instances.ToList(),
+                ["frontal-es"] = computation.FrontalEntradaSalida.Flatten().Instances.ToList(),
+                ["frontal-post"] = computation.FrontalPosterior.Flatten().Instances.ToList(),
+                ["lateral"] = computation.LateralPlan.Flatten().Instances.ToList(),
+            };
+            foreach (var corte in computation.LateralCortes) plans["corte-" + corte.PostIndex.ToString(CultureInfo.InvariantCulture)] = corte.Plan.Flatten().Instances.ToList();
+            return new Result { Computation = computation, Plans = plans };
+        }
+
+        private static string Signature(HeaderBlockInstance instance)
+            => string.Join(
+                "/",
+                instance.Role.ToString(),
+                instance.PieceId ?? "<null>",
+                instance.BlockName ?? "<null>",
+                instance.View ?? "<null>",
+                instance.MirroredX ? "mx" : "-",
+                instance.MirroredY ? "my" : "-",
+                string.Join(",", instance.DynamicParameters.Keys.OrderBy(key => key, StringComparer.Ordinal)));
+
+        private static double MaxDelta(HeaderBlockInstance a, HeaderBlockInstance b, out double geometry, out double other)
+        {
+            geometry = Math.Max(
+                Math.Max(Math.Abs(a.Insertion.X - b.Insertion.X), Math.Abs(a.Insertion.Y - b.Insertion.Y)),
+                Math.Max(Math.Abs(a.ConnectionAnchor.X - b.ConnectionAnchor.X), Math.Abs(a.ConnectionAnchor.Y - b.ConnectionAnchor.Y)));
+            foreach (var key in a.DynamicParameters.Keys)
+            {
+                geometry = Math.Max(geometry, Math.Abs(a.DynamicParameters[key] - b.DynamicParameters[key]));
+            }
+
+            other = Math.Max(
+                Math.Abs(a.TextHeight - b.TextHeight),
+                Math.Max(Math.Abs(a.DimensionOffset - b.DimensionOffset), Math.Abs(a.RotationRadians - b.RotationRadians)));
+            return Math.Max(geometry, other);
+        }
+
+        private static string FrontShape(Result result)
+            => string.Join(
+                ";",
+                result.Computation.System.Structure.Fronts.Select(front => front.LoadLevels.ToString(CultureInfo.InvariantCulture)
+                    + "/" + front.PalletCount.ToString(CultureInfo.InvariantCulture)
+                    + "/" + string.Join(",", result.Computation.LateralCortes.Select(corte => corte.PostIndex.ToString(CultureInfo.InvariantCulture)))));
+
+        private static string BomLines(Result result)
+        {
+            var lines = new List<string>();
+            foreach (var line in result.Computation.Bom.Lines)
+            {
+                var values = line.GetType().GetProperties()
+                    .Where(property => property.GetIndexParameters().Length == 0)
+                    .Select(property => property.Name + "=" + Convert.ToString(property.GetValue(line), CultureInfo.InvariantCulture));
+                lines.Add(string.Join(";", values));
+            }
+
+            return string.Join("\n", lines);
+        }
+
+        internal static string Labels(string nombre, string text)
+        {
+            var w = Ventana();
+            try
+            {
+                Cargar(w, text);
+                var window = Persist(w.LastComputation.Design);
+                var pilot = PilotoEscribe(text, w.Session.Catalog);
+                var e = Compute(w.Session.Catalog, window);
+                var r = Compute(w.Session.Catalog, pilot);
+
+                var k1 = new List<string>();
+                var k1o = new List<string>();
+                var k4 = new List<string>();
+                var k4p = new List<string>();
+                var k5 = new List<string>();
+                var detail = new List<string>();
+                var maxDelta = 0.0;
+                foreach (var key in e.Plans.Keys.Union(r.Plans.Keys).OrderBy(k => k, StringComparer.Ordinal))
+                {
+                    var left = e.Plans.TryGetValue(key, out var l) ? l : new List<HeaderBlockInstance>();
+                    var right = r.Plans.TryGetValue(key, out var rr) ? rr : new List<HeaderBlockInstance>();
+                    var ls = left.Select(Signature).ToList();
+                    var rs = right.Select(Signature).ToList();
+                    if (!ls.OrderBy(s => s, StringComparer.Ordinal).SequenceEqual(rs.OrderBy(s => s, StringComparer.Ordinal), StringComparer.Ordinal))
+                    {
+                        k1.Add(key);
+                        continue;
+                    }
+
+                    var sameOrder = ls.SequenceEqual(rs, StringComparer.Ordinal);
+                    if (!sameOrder) k1o.Add(key);
+                    var pairs = new List<(HeaderBlockInstance A, HeaderBlockInstance B)>();
+                    if (sameOrder)
+                    {
+                        for (var i = 0; i < left.Count; i++) pairs.Add((left[i], right[i]));
+                    }
+                    else
+                    {
+                        foreach (var group in ls.Distinct(StringComparer.Ordinal))
+                        {
+                            var lefts = left.Where((x, i) => ls[i] == group).ToList();
+                            var rights = right.Where((x, i) => rs[i] == group).ToList();
+                            for (var i = 0; i < lefts.Count; i++) pairs.Add((lefts[i], rights[i]));
+                        }
+                    }
+
+                    var geometry = 0.0;
+                    var other = 0.0;
+                    foreach (var pair in pairs)
+                    {
+                        MaxDelta(pair.A, pair.B, out var g, out var o);
+                        geometry = Math.Max(geometry, g);
+                        other = Math.Max(other, o);
+                    }
+
+                    if (geometry > Threshold) k4.Add(key);
+                    if (geometry > Epsilon) k4p.Add(key);
+                    if (other > Epsilon) k5.Add(key);
+                    maxDelta = Math.Max(maxDelta, Math.Max(geometry, other));
+                    detail.Add(key + ":geo=" + geometry.ToString("R", CultureInfo.InvariantCulture) + ",otro=" + other.ToString("R", CultureInfo.InvariantCulture));
+                }
+
+                var k2 = FrontShape(e) != FrontShape(r);
+                var k3 = BomLines(e) != BomLines(r);
+                var material = k1.Count > 0 || k2 || k3 || k4.Count > 0;
+                return nombre + " K1=[" + string.Join(",", k1) + "] K1o=[" + string.Join(",", k1o) + "] K2=" + k2 + " K3=" + k3
+                    + " K4=[" + string.Join(",", k4) + "] K4'=[" + string.Join(",", k4p) + "] K5=[" + string.Join(",", k5) + "] material=" + material
+                    + " maxDelta=" + maxDelta.ToString("R", CultureInfo.InvariantCulture) + " detalle=[" + string.Join("; ", detail) + "]";
+            }
+            finally { Cerrar(w); }
+        }
+    }
+}

@@ -1,0 +1,89 @@
+diagnostico; copia /d/r4o; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957; paquete b86ef9cbd29eea5fa1629af37db105dff8ef2feaa3a6999b2504ec49751d40c9; particion 2e67b4c4a6c4a531c8fd6848f882ba43179f26599c39b0933b16bd9f0e5dc2f0
+  guion e5010ab785f56b711af53a22c65d3073e9690e6f2fa1e097986bd9a5bb3df287 p6_diag_root_ns.sh
+  guion 2c70df62a82c6c8395b407b5ff24e03c1e6a485116394b72972be692b1a3bd4a diag_root_ns.py
+  guion ea5dead9d0e4b00a6857a3e4098907615aa2f482429df9d342dcf6fd4bcf1c32 p6_check_v47.py
+  guion fed6eb54bffc8a6b7ddeeb13b2bcf683fb97fbccbfd74c1f5a822fc296f38863 apply_red_pbt4b_v47.py
+  guion d2e4429dffda21640278f2c739e7a6dad8f7db0a08d0c58c6c23496fca88c000 pbt4b_hand_edits_v47.py
+  guion 2a96b2afb6ce84824047809101f0aed052d0f42717bc64382d917815667dd247 make_copies_pbt4b_v47.py
+ESCRITOS 47 archivos; conjunto edc904269f7896fd8060db2ffbbe60d994b0f64a7ff61daf8ad50be1f6afb1d5
+copias reescritas: 20
+red-core-tests rc=0 errores=0 avisos-CS=0
+red-ui-tests rc=0 errores=0 avisos-CS=0
+test core-red.trx rc=1 segundos=797 trx-sha256=ea688b1ad5307fc685b69296f41d2df90f5742e848fa79e236f94189b58e6174 :: filas 19586 {'Passed': 18837, 'Failed': 292, 'NotExecuted': 457}; inicio 2026-11-20T18:47:53.7200327-06:00; fin 2026-11-20T19:01:02.3891332-06:00
+resultados {'Passed': 18837, 'Failed': 292, 'NotExecuted': 457}
+Failed de las copias: 292; las Red de la particion: 292
+iguales a la particion (clase Red y numero de resultados): True; de mas []; de menos []
+Failed fuera de las copias: 0
+test red-ui-1.trx rc=0 segundos=10 trx-sha256=7947cf3186e9d65e17661a8359a2900b12d9d6d004375229381cbae4356265a0 :: filas 1 {'Passed': 1}; inicio 2026-11-20T19:01:09.4790955-06:00; fin 2026-11-20T19:01:16.5299554-06:00
+    filtro 1: FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests
+test red-ui-2.trx rc=0 segundos=10 trx-sha256=d1ea4f0b7cd20f24a9fd126d0596e7be6c2e29a94953936a35dc9705875280ab :: filas 708 {'Passed': 680, 'NotExecuted': 28}; inicio 2026-11-20T19:01:18.8034824-06:00; fin 2026-11-20T19:01:26.8223043-06:00
+    filtro 2: FullyQualifiedName~RackCad.UI.Tests.Workspace
+test red-ui-3.trx rc=0 segundos=25 trx-sha256=298a37b88333efa2c0ad2cdffa444453fc6c9d282dec81f277c624779a455f9a :: filas 2 {'Passed': 2}; inicio 2026-11-20T19:01:29.3104217-06:00; fin 2026-11-20T19:01:51.7076595-06:00
+    filtro 3: FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests
+test red-ui-4.trx rc=0 segundos=13 trx-sha256=c234d93e90524653d4cc2f8da9418906772c979eaf5bde9a3f6aff5627168516 :: filas 55 {'Passed': 55}; inicio 2026-11-20T19:01:53.8777814-06:00; fin 2026-11-20T19:02:05.1040622-06:00
+    filtro 4: FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization
+test red-ui-5.trx rc=0 segundos=16 trx-sha256=38daa12d217a464486709a9e5bc5f686dc800dd666485716e819afe71c2053d0 :: filas 18 {'Passed': 16, 'NotExecuted': 2}; inicio 2026-11-20T19:02:07.3234967-06:00; fin 2026-11-20T19:02:20.8896617-06:00
+    filtro 5: FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization
+test red-ui-6.trx rc=0 segundos=22 trx-sha256=686fc25dd1b99395653e3b204e60044f3a06e24a61863ed86ee3b2001c0b5b19 :: filas 14 {'Passed': 14}; inicio 2026-11-20T19:02:22.7113380-06:00; fin 2026-11-20T19:02:42.9234228-06:00
+    filtro 6: FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet
+test red-ui-7.trx rc=0 segundos=14 trx-sha256=3a744379dfb3cf704da846fa4e5f7ae4c387b59a98c96245be19291ecddf9b4b :: filas 14 {'Passed': 14}; inicio 2026-11-20T19:02:44.9757198-06:00; fin 2026-11-20T19:02:56.7781252-06:00
+    filtro 7: FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection
+test red-ui-8.trx rc=0 segundos=5 trx-sha256=1b142680748d77fcfbb7e7f10f64535c6e7dcdbd69424374c686c7c73ef0602d :: filas 67 {'Passed': 67}; inicio 2026-11-20T19:02:58.8055431-06:00; fin 2026-11-20T19:03:02.1405573-06:00
+    filtro 8: FullyQualifiedName~RackCad.UI.Tests.Cantilever
+test red-ui-9.trx rc=0 segundos=12 trx-sha256=bac387b71bb3cdd3c111d4854569ea946a6c6f3c145613661d2e5d2ff0365786 :: filas 3 {'Passed': 3}; inicio 2026-11-20T19:03:04.4457043-06:00; fin 2026-11-20T19:03:14.5080530-06:00
+    filtro 9: FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests
+test red-ui-10.trx rc=0 segundos=11 trx-sha256=7db22f89ce4be9bca63ba6e10ee06799bbe7044676243685b697e3e3c037c0b4 :: filas 4 {'Passed': 4}; inicio 2026-11-20T19:03:16.6542034-06:00; fin 2026-11-20T19:03:26.0617196-06:00
+    filtro 10: FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests
+test red-ui-11.trx rc=0 segundos=3 trx-sha256=2e89f687b3dbefe6f8b39e78fce4746a0b86ed405a8addeee873ee470192deb8 :: filas 1 {'Passed': 1}; inicio 2026-11-20T19:03:27.8327984-06:00; fin 2026-11-20T19:03:28.8204669-06:00
+    filtro 11: FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests
+test red-ui-12.trx rc=0 segundos=18 trx-sha256=4c23d5a33990b995b2b5aba44af1213e01e1e5b3ee49a26ae04f5b1771c67d70 :: filas 3 {'Passed': 3}; inicio 2026-11-20T19:03:30.6931982-06:00; fin 2026-11-20T19:03:47.1923710-06:00
+    filtro 12: FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests
+test red-ui-13.trx rc=0 segundos=3 trx-sha256=fe6ca1a771bc4b7a0198509bf72a172a43c0db6d6c6e83d9b3874b28f872339e :: filas 13 {'Passed': 13}; inicio 2026-11-20T19:03:49.1660631-06:00; fin 2026-11-20T19:03:50.0917306-06:00
+    filtro 13: FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests
+test red-ui-14.trx rc=0 segundos=3 trx-sha256=6e289ab30093d9d25daa7afc979ec7d5aa7cb4f4f8232b321160172c9b2d11d7 :: filas 10 {'Passed': 10}; inicio 2026-11-20T19:03:52.0412064-06:00; fin 2026-11-20T19:03:53.3780778-06:00
+    filtro 14: FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests
+test red-ui-15.trx rc=0 segundos=4 trx-sha256=c84ae216eeedae63cee3bf25ce3a06bc4dc82b24da2641540894840f5b4936e7 :: filas 36 {'Passed': 36}; inicio 2026-11-20T19:03:55.7325625-06:00; fin 2026-11-20T19:03:57.8316131-06:00
+    filtro 15: FullyQualifiedName~FullRedTests|FullyQualifiedName~FullGreenTests
+ESCRITOS 10 archivos; conjunto f93c726219cf566964003ca5638e79ce2731e3b3f7b830c83fd841203af34c45
+green-core-tests rc=0 errores=0 avisos-CS=0
+green-ui-tests rc=0 errores=0 avisos-CS=0
+test core-green.trx rc=1 segundos=699 trx-sha256=0ee8ca3eb149b6870e02720d2f8e8a794b93062e34cba8dea3522283217aeab9 :: filas 19586 {'Passed': 19126, 'NotExecuted': 457, 'Failed': 3}; inicio 2026-11-20T19:05:27.6873774-06:00; fin 2026-11-20T19:16:59.9521966-06:00
+resultados {'Passed': 19126, 'NotExecuted': 457, 'Failed': 3}
+Failed de las copias: 2; las Red de la particion: 292
+iguales a la particion (clase Red y numero de resultados): False; de mas []; de menos ['PushBackFullReadGuard.Red.CT_PBT4A_05_WithAReaderWithoutTheNewInterfaceTheFiveRereadsUseReadIntentAsToday x1', 'PushBackFullReadPath.Red.CT_PBT4A_03_TheFiveRereadsOfAnOpenDraftReadAtTheOriginOfTheDraftAndBeginReadsAsToday x1', 'PushBackWritePathGuard.Red.CT_PBT3B_13_NoFileOutsideThePlanTheRunAndTheModelNamesTheFullWriteAndTheHostFindsOnlyTheDraftOfThePilot x1', 'WorkspaceAssociativeBookkeeping.Red.AReadThatOnlyRaisesBookkeepingLeavesTheDraftUnmarked x1', 'WorkspaceCommandAdvisor.Red.OverTheRealBridgeADestroyedSessionIsNotAskedToTheBridgeNorToTheQueries x1', 'WorkspaceCommandAdvisor.Red.OverTheRealBridgeAndHostACleanDocumentIsAllowedAndNothingIsWritten x1', 'WorkspaceCommandAdvisor.Red.OverTheRealBridgeAndHostALostDocumentIsReadBeforeTheHostRetiresItAndTheMessageWaitsForTheNextActiveSession x1', 'WorkspaceCommandAdvisor.Red.OverTheRealBridgeAndHostTheDecisionIsTheOneOfTheHostForVetoAndForAllowAndTheDraftIsNeverTouched x1', 'WorkspaceCommandAdvisor.Red.OverTheRealBridgeTheVetoOfAnotherDocumentSaysToActivateItFirst x1', 'WorkspaceCommandAdvisor.Red.WithoutWiringTheWrapperTheRealBridgeStillDecidesAsTheHostAndWritesNothing x1']
+Failed fuera de las copias: 1
+  RackCad.Tests.WorkspaceHostHardeningGuardTests.NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept | at RackCad.Tests.WorkspaceHostHardeningGuardTests.NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersA
+test green-ui-1.trx rc=0 segundos=10 trx-sha256=9e25036c0ccc7c6e1c2fd132234dbc434eaf74cb8d1acae3233ebcd821e28976 :: filas 1 {'Passed': 1}; inicio 2026-11-20T19:17:08.4895667-06:00; fin 2026-11-20T19:17:15.9122236-06:00
+    filtro 1: FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests
+test green-ui-2.trx rc=0 segundos=11 trx-sha256=f39ea7d3c1e6c0f5853cb2f9a4a8236386ac709a94a2eab578d650e93fb08327 :: filas 708 {'Passed': 680, 'NotExecuted': 28}; inicio 2026-11-20T19:17:18.7167848-06:00; fin 2026-11-20T19:17:27.0284631-06:00
+    filtro 2: FullyQualifiedName~RackCad.UI.Tests.Workspace
+test green-ui-3.trx rc=0 segundos=27 trx-sha256=281c2c6613e0b085386b4ef9526c9afff6989712f8d859c288105d6f15d41d06 :: filas 2 {'Passed': 2}; inicio 2026-11-20T19:17:29.5928442-06:00; fin 2026-11-20T19:17:54.7772266-06:00
+    filtro 3: FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests
+test green-ui-4.trx rc=0 segundos=16 trx-sha256=20739f67d974746b6fdfaf9938f226aaa40988e188b4b76b2dc022206783434c :: filas 55 {'Passed': 55}; inicio 2026-11-20T19:17:57.3320090-06:00; fin 2026-11-20T19:18:10.5121074-06:00
+    filtro 4: FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization
+test green-ui-5.trx rc=0 segundos=17 trx-sha256=1a187e051eb18a1ce2572c0dd1c0c63ccaed68960f5eb6b0d044c78a6400b212 :: filas 18 {'Passed': 16, 'NotExecuted': 2}; inicio 2026-11-20T19:18:13.0266019-06:00; fin 2026-11-20T19:18:27.5246259-06:00
+    filtro 5: FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization
+test green-ui-6.trx rc=0 segundos=31 trx-sha256=dd10fd26d27000050c23316cf38deb048165bf45e7b7c0d105cc3e11779dcead :: filas 14 {'Passed': 14}; inicio 2026-11-20T19:18:30.0143773-06:00; fin 2026-11-20T19:18:58.4858451-06:00
+    filtro 6: FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet
+test green-ui-7.trx rc=0 segundos=17 trx-sha256=6b208ea9fec734d82db7259c9e7ea5b2bd9d628825eebe1c82a4ef26e84ef572 :: filas 14 {'Passed': 14}; inicio 2026-11-20T19:19:01.0748887-06:00; fin 2026-11-20T19:19:15.5149912-06:00
+    filtro 7: FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection
+test green-ui-8.trx rc=0 segundos=6 trx-sha256=5bb8d96d69f41c3357600d06714ef118fe5a40b259587ff216d57607be9dc131 :: filas 67 {'Passed': 67}; inicio 2026-11-20T19:19:17.9513966-06:00; fin 2026-11-20T19:19:21.9553675-06:00
+    filtro 8: FullyQualifiedName~RackCad.UI.Tests.Cantilever
+test green-ui-9.trx rc=0 segundos=13 trx-sha256=069685418285acbbc3a98368ba7caa1adf1ef39b0a8e049c8898ca6338ca829c :: filas 3 {'Passed': 3}; inicio 2026-11-20T19:19:24.1988742-06:00; fin 2026-11-20T19:19:34.8606908-06:00
+    filtro 9: FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests
+test green-ui-10.trx rc=0 segundos=12 trx-sha256=2c0253c420a55570a79aed49c1ebb5a3db31764c95e996e02ad2ada1817392ba :: filas 4 {'Passed': 4}; inicio 2026-11-20T19:19:37.1070883-06:00; fin 2026-11-20T19:19:47.0256417-06:00
+    filtro 10: FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests
+test green-ui-11.trx rc=0 segundos=4 trx-sha256=ce4e2f7bc3930d0fccb88b854d25f65b8011fe342916fe0ea5b1ca437e07e77f :: filas 1 {'Passed': 1}; inicio 2026-11-20T19:19:49.4515084-06:00; fin 2026-11-20T19:19:50.7556081-06:00
+    filtro 11: FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests
+test green-ui-12.trx rc=0 segundos=21 trx-sha256=94ffb858ecfa389b1a54327729c4b0f4d58ac2027499b0a307132f90413a705d :: filas 3 {'Passed': 3}; inicio 2026-11-20T19:19:52.9495703-06:00; fin 2026-11-20T19:20:11.8791616-06:00
+    filtro 12: FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests
+test green-ui-13.trx rc=0 segundos=4 trx-sha256=538437ff383ad26f993bfaf8a77792b46ff569da3c3fb60e9129fdb2d1a80c4a :: filas 13 {'Passed': 13}; inicio 2026-11-20T19:20:14.2791596-06:00; fin 2026-11-20T19:20:15.5169596-06:00
+    filtro 13: FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests
+test green-ui-14.trx rc=0 segundos=4 trx-sha256=0815dec65e015ffe7f118e84aacde6a1ac41f0db28b941581da3f2463235c269 :: filas 10 {'Passed': 10}; inicio 2026-11-20T19:20:18.1356002-06:00; fin 2026-11-20T19:20:19.6018572-06:00
+    filtro 14: FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests
+test green-ui-15.trx rc=0 segundos=4 trx-sha256=9e2c35e83f4ec6c98feb1324c8066f9c96d2b520cceae012fb0fb06e1c66c0d2 :: filas 36 {'Passed': 36}; inicio 2026-11-20T19:20:21.8450845-06:00; fin 2026-11-20T19:20:23.8494316-06:00
+    filtro 15: FullyQualifiedName~FullRedTests|FullyQualifiedName~FullGreenTests
+build-server shutdown rc=0
+procesos: 0
+MAINCO []
+rc=0

@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+index 1a3300b4..81b03d4f 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs
+@@ -92,7 +92,7 @@ namespace RackCad.UI.Systems.PushBack
+             var empty = composite.SideBPresent
+                 && !Enumerable.Range(0, composite.SideB.Structure.Count).Any(slot => composite.IsSlotPresent(PushBackSide.B, slot));
+             SideBEmptyNoticeText.Text = empty ? SideBEmptyNoticeMessage : string.Empty;
+-            SideBEmptyNoticeText.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
++            SideBEmptyNoticeText.Visibility = Visibility.Collapsed;
+         }
+ 
+         /// <summary>

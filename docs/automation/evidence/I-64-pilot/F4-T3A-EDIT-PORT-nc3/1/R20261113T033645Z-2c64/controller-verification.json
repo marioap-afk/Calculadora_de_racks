@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T3A-EDIT-PORT",
+  "RunId": "R20261113T033645Z-2c64",
+  "DelegationRunId": "R20261113T013120Z-cad1",
+  "WorkRunId": "R20261113T013630Z-f0c9",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true. Cession.StartUtc=2026-11-13T01:36:48Z; Outcome.OutputWrittenUtc=2026-11-13T02:58:24Z, after start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists at the supplied inputs path; Schema=rackcad-worker-handoff/v1, TaskId=F4-T3A-EDIT-PORT, RunId=R20261113T013630Z-f0c9, DelegationRunId=R20261113T013120Z-cad1, Attempt=1. Its output path in the work relay uses the same WorkRunId, and its written time follows cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "At AuthorityRevision 7aea8cec7532f0ec1495a6bcce84f8ee7f4e3143, git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only AuthorityRevision BaseSha returned only docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T3A-EDIT-PORT/coordinator/gate-contract.json, and docs/automation/state/I-64.yml; all three are UNIT_DOC authorities, with no EXTERNAL or UNIT_CHANGE path. Read AUTOMATION_PLAN sections 16.3 and 16.8-16.10 from the authority revisions and README section 8 from MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "The supplied byte-fidelity check reports PASS, with decoded and UTF-8 byte equality for all eight delegated collections, including Invariants, RequiredTests, StopConditions, Authorities, AllowedWriteScope, and ForbiddenWriteScope. The delivery identifies the delegated TaskId, Attempt, BaseSha, and branch; its test requirements match the contract."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse --abbrev-ref HEAD=architecture/workspace-persistente-rackcad; git rev-parse HEAD=18471988fc59dbfdeee1ffc409127c4f7226004b; branch remote tip is the same SHA; origin/main=812baf879612320653094a8aaf46aca0bac81383. BaseSha ea34bf7d41019539e3361675e98b821f3c77bc58 is an ancestor of RedSha 2522e8941ca108baa5ce7e287c13f6c5fdce6f24, which is an ancestor of CurrentSha; both ancestry commands returned 0. Delivery branch and worktree match delegation."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records CurrentRun event=push, ref=refs/heads/architecture/workspace-persistente-rackcad, HeadSha=18471988fc59dbfdeee1ffc409127c4f7226004b, completed/success; LsRemoteSha equals CurrentSha and OriginMainSha equals MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha returned 12 paths, exactly the 12 AllowedWriteScope entries: IWorkspacePilotEditPort.cs, WorkspaceEditIntent.cs, WorkspaceHostCore.cs, WorkspacePilotSupport.cs, WorkspaceController.cs, AutoCadEventBridge.cs, WorkspacePilotEditHostTests.cs, WorkspacePilotEditGuardTests.cs, WorkspaceLifecycleGuardTests.cs, WorkspaceLifecycleHostTests.cs, WorkspaceIdleSchedulingGuardTests.cs, and WorkspaceIdleSchedulerTests.cs in their delegated directories. No changed path is outside the exact allow-list or in ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v for the supplied worker-handoff.json path matched .gitignore:3 artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "CurrentRun 43355611879 is a completed push for the exact branch ref and CurrentSha; all four required jobs are success: Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application), and Build Plugin without AutoCAD. RedRun 43351822533 is a push for the same branch and RedSha, completed with Tests (Domain + Application)=failure. TRX files are supplied for both runs."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed supplied TRX results by UnitTest/TestMethod className + name, case-insensitive contains filter. Current Core: 2251 selected, 2251 passed, 0 failed; Current UI: 248 selected, 248 passed, 0 failed. Red Core: 2251 selected, 2141 passed, 110 failed; Red UI: 248 selected, 248 passed, 0 failed, consistent with ExpectRed=true for Core and false for UI. TestResults in the delivery agree with these filtered counts. RT/ChainRedFiles from git diff BaseSha..RedSha -- tests/: WorkspaceIdleSchedulerTests.cs, WorkspaceIdleSchedulingGuardTests.cs, WorkspaceLifecycleGuardTests.cs, WorkspaceLifecycleHostTests.cs, WorkspacePilotEditGuardTests.cs, WorkspacePilotEditHostTests.cs. git diff RedSha..CurrentSha -- tests/ returned empty, so GREEN did not modify RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both commits, RED 2522e894 and GREEN 18471988, with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer. Work relay records effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests model claude-sonnet-5-5 and provider effort high. Work relay records transport launch parameter ModelRequested=sonnet, ModelEffective=claude-sonnet-5-5, EffortRequested=high, EffortEffective=high; the alias is consistent with the requested model family."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction against AUTOMATION_PLAN 16.10. One prohibited phrase match occurs in worker-handoff.json WorkCompleted."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials and 1 tool error with none pending. No unresolved failed order is recorded."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The delivery WorkCompleted field contains one phrase prohibited by AUTOMATION_PLAN 16.10. No other check failed and no supplied stop condition was triggered."
+  ],
+  "RecommendedNextAction": "Correct the prohibited phrase in the delivery text and submit a new verification against the resulting exact SHA."
+}

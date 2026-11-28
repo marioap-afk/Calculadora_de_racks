@@ -117,6 +117,10 @@ namespace RackCad.Tests
             }
         }
 
+        /// <summary>T7 per: the door of the page «Perfil estructural» of the RackCad window (RACKSECCIONINSERTAR).</summary>
+        private static string DoorCommand =>
+            ReadSource("src", "RackCad.Plugin", "RackSeccionCommands.Ventana.cs");
+
         private static string Materializer =>
             ReadSource("src", "RackCad.Plugin", "Drawing", "StructuralSections", "StructuralSectionMaterializer.cs");
 
@@ -145,10 +149,14 @@ namespace RackCad.Tests
         [Fact]
         public void TheCommandIsRegisteredAsRackseccion()
         {
-            Assert.Contains("[CommandMethod(\"RACKSECCION\")]", CommandEntryPoint, StringComparison.Ordinal);
-
-            // Y sigue llegando al MISMO flujo, ahora compartido con el menu principal (I-36C).
-            Assert.Contains("StructuralSectionCommandFlow.Run(", CommandEntryPoint, StringComparison.Ordinal);
+            // T7 per (I-64, septima tanda; el Owner, 2026-11-27: «Abren la ventana»): RACKSECCION abre la pagina «Perfil estructural» de la
+            // ventana RackCad, con las marcas de sus atajos (no escribe, asi que no deja paso en Deshacer). La guarda se REAPUNTA, no se debilita:
+            // el registro sigue siendo uno, y los dos caminos que dibujan siguen llegando al MISMO flujo: «Generar perfil estructural» de RACKMENU
+            // lo corre entero (I-36C) y la pagina dibuja por RACKSECCIONINSERTAR con su materializacion (Place).
+            Assert.Contains("[CommandMethod(\"RACKSECCION\", RackCadWindowShortcuts.WindowFlags)]", CommandEntryPoint, StringComparison.Ordinal);
+            Assert.Contains("RackCadShortcutTarget.StructuralSection", CommandEntryPoint, StringComparison.Ordinal);
+            Assert.Contains("StructuralSectionCommandFlow.Run(document)", ReadSource("src", "RackCad.Plugin", "RackMenuCommands.cs"), StringComparison.Ordinal);
+            Assert.Contains("StructuralSectionCommandFlow.Place(", ReadSource("src", "RackCad.Plugin", "RackSeccionCommands.Ventana.cs"), StringComparison.Ordinal);
         }
 
         [Fact]
@@ -156,13 +164,22 @@ namespace RackCad.Tests
         {
             // Fail closed. The product catalogue degrades to empty on purpose; this one must not — drawing a
             // beam from dimensions that failed validation is worse than drawing nothing (I-36A F5).
-            var access = CatalogAccess;
-            var handler = access.IndexOf("catch (StructuralSectionCatalogException", StringComparison.Ordinal);
+            //
+            // T7 per (revision I-1): the capture and its words moved to the ONE source of Application (StructuralSectionCatalogSource), which
+            // the Plugin and the RackCad window share. Re-aimed, not weakened: the source catches the invalid catalogue with the same words,
+            // and the Plugin owner writes them and returns false.
+            var owner = ReadSource("src", "RackCad.Application", "StructuralSections", "StructuralSectionCatalogSource.cs");
+            var handler = owner.IndexOf("catch (StructuralSectionCatalogException", StringComparison.Ordinal);
 
-            Assert.True(handler > 0, "El duenno de la carga debe capturar StructuralSectionCatalogException.");
+            Assert.True(handler > 0, "El sitio unico de la carga debe capturar StructuralSectionCatalogException.");
+            Assert.Contains("StructuralSectionCatalogFailure.Invalid", owner.Substring(handler, Math.Min(400, owner.Length - handler)), StringComparison.Ordinal);
+            Assert.Contains("\"RackCad: el catalogo de secciones estructurales no es valido, asi que no se dibujara nada. \" + Detail", owner, StringComparison.Ordinal);
 
-            var body = access.Substring(handler, Math.Min(400, access.Length - handler));
-            Assert.Contains("no es valido", body, StringComparison.Ordinal);
+            var access = CodeOnly(CatalogAccess);
+            var load = access.IndexOf("StructuralSectionCatalogSource.TryLoad()", StringComparison.Ordinal);
+            Assert.True(load > 0, "El duenno del Plugin debe cargar por el sitio unico.");
+            var body = access.Substring(load);
+            Assert.Contains("editor?.WriteMessage(\"\\n\" + load.CommandLineText);", body, StringComparison.Ordinal);
             Assert.Contains("return false;", body, StringComparison.Ordinal);
 
             // Y el flujo respeta ese "false": corta y no dibuja nada.
@@ -183,7 +200,13 @@ namespace RackCad.Tests
 
             // Cancel leaves nothing behind, and the plan handed to AutoCAD is the very object the preview drew.
             Assert.Contains("if (window.Result == null)", source, StringComparison.Ordinal);
-            Assert.Contains("StructuralSectionInsertService.Insert(document, window.Result)", source, StringComparison.Ordinal);
+
+            // T7 per: the insert moved into Place, the one materialisation the page «Perfil estructural» of the RackCad window shares. Re-aimed,
+            // not weakened: the plan the user accepted is the one Place receives, and Place inserts the plan it received, untouched.
+            // The review M-1 made the report a step of its own: the accepted section and plan are the ones it describes.
+            Assert.Contains("Place(document, window.Result)", source, StringComparison.Ordinal);
+            Assert.Contains("StructuralSectionInsertService.Insert(document, plan)", source, StringComparison.Ordinal);
+            Assert.Contains("Describe(placement.Outcome, window.AcceptedSection, window.Result)", source, StringComparison.Ordinal);
         }
 
         [Fact]
@@ -413,6 +436,9 @@ namespace RackCad.Tests
             // an editable member is I-37, in its own initiative.
             Assert.DoesNotContain(forbidden, CodeOnly(Materializer), StringComparison.Ordinal);
             Assert.DoesNotContain(forbidden, CodeOnly(Command), StringComparison.Ordinal);
+
+            // T7 per (revision M-6): the door of the page «Perfil estructural» draws the same loose section.
+            Assert.DoesNotContain(forbidden, CodeOnly(DoorCommand), StringComparison.Ordinal);
         }
 
         [Theory]
@@ -424,6 +450,7 @@ namespace RackCad.Tests
         {
             Assert.DoesNotContain(forbidden, CodeOnly(Materializer), StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain(forbidden, CodeOnly(Command), StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(forbidden, CodeOnly(DoorCommand), StringComparison.OrdinalIgnoreCase); // T7 per (revision M-6)
         }
     }
 }

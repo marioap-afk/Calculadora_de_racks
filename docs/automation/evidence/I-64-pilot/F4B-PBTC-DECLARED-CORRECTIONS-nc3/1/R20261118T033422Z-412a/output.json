@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBTC-DECLARED-CORRECTIONS",
+  "RunId": "R20261118T033422Z-412a",
+  "DelegationRunId": "R20261118T020622Z-7171",
+  "WorkRunId": "R20261118T021306Z-069b",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Entry reports no persistent participants or unattributable processes."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json SHA256 matches relay Outcome.OutputSha256 C8DA30AF...; required identity fields match TaskId, Attempt=1, DelegationRunId, and RunId=WorkRunId. Outcome.OutputWrittenUtc=2026-11-18T02:52:14Z is later than Cession.StartUtc=2026-11-18T02:13:15Z. Fields match worker-handoff.schema.json."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only AuthorityRevision BaseSha returned four docs paths: I-64-evidence.md, the unit gate-contract.json, make_pbtc_contract.py, and state/I-64.yml; no EXTERNAL or UNIT_CHANGE paths. MainSha..AuthorityRevision merge-base is MainSha; git diff for each of the five EXTERNAL paths against that base returned no changes. Read AUTOMATION_PLAN 16.3, 16.8-16.10, agent-execution README 8, and AGENTS.md from MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json reports PASS and decoded/UTF-8 equality for all eight collections. Delegation and contract match exactly for AllowedWriteScope (13), ForbiddenWriteScope (131), Invariants (19), StopConditions (31), Authorities (25), and RequiredTests (12); A3-A5 scope and contents agree."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current returned architecture/workspace-persistente-rackcad; git rev-parse --show-toplevel returned the specified worktree. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 4440f67d4c76fb2ec019a566231353acdcca61f6. merge-base --is-ancestor BaseSha RedSha and RedSha CurrentSha both returned 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=4440f67d4c76fb2ec019a566231353acdcca61f6 equals CurrentSha; OriginMainSha=812baf879612320653094a8aaf46aca0bac81383 equals MainSha. No remote Git command was run."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha returned exactly 13 paths, all in the delegation AllowedWriteScope and none in ForbiddenWriteScope: RackPushBackSystemWindow.xaml.cs, RackPushBackSystemWindow.Composite.cs, RackPushBackSystemWindow.xaml; PushBackDeclaredCorrectionSupport.cs, PushBackDeclaredCorrectionRoundingTests.cs, PushBackDeclaredCorrectionDimensionStyleTests.cs, PushBackDeclaredCorrectionPilotParityTests.cs, PushBackDeclaredCorrectionSideBNoticeTests.cs, PushBackDeclaredCorrectionStandardRestoreTests.cs, Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs, PushBackDimensionViewsWindowTests.cs, PushBackFullEditorCharacterizationRoundingLossTests.cs, PushBackFullEditorCharacterizationModuleTests.cs."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the input gate-contract.json returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 44225456328 is completed push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all required jobs are success: UI Tests, Tests, Build UI, Build Plugin. RedRun 44223960356 is completed push on the same ref at RedSha; UI Tests failed as expected, Tests, Build UI, and Build Plugin succeeded; no blame-hang or timeout. Current run is green; expected RED CI signal is present."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Read all four supplied TRX files. Current UI: 2418 total, 2397 Passed, 0 Failed, 21 NotExecuted; Core: 19070 Passed, 0 Failed. Required Current filters: UI PushBackDeclaredCorrection 10/10 pass; Cantilever 67/67; Classic 55/55; FullEditor 16 pass and 2 SUS skips; Workspace 3 pass and 1 SUS skip; DimensionViews 12 pass and 1 SUS skip; Advanced 9/9; ModuleEditor 13/13. Core Classic 10/10, FullEditor 3/3, BlankFrontAuthority 9/9, ModuleEditorCharacterization 15/15. RED UI has 10 Failed, 2387 Passed, 21 NotExecuted; all 10 Expected-Red results failed by assertion, with unqualified assertion messages and first stack lines under tests; Failed=Selected=10 and none of those 10 were skipped. All Expected-Red-false required filters pass on RED; their selected skips are exactly SUS-01..SUS-04; no existing test failure is reported. git diff --name-only ChainBaseSha RedSha -- tests/ contains the 10 test paths listed under Scope; this is ChainRedFiles. git diff --name-only RedSha CurrentSha contains only the three product paths and no tests/ path, so the GREEN leaves RT unchanged."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha returned the RED and GREEN commit bodies; each ends with the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, consistent with the effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5, high. relay-record-work Participant.ModelEffective=claude-sonnet-5-5 and EffortEffective=high; ModelRequested=sonnet is the permitted launch family alias. Required routing matches."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json WorkCompleted contains a restricted status phrase under AUTOMATION_PLAN 16.10. This check fails on that text."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report 0 permission denials and no pending tool errors or limit warning. One tool result error is recorded, with none pending."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "FreeText fails because WorkCompleted contains wording prohibited by AUTOMATION_PLAN 16.10.",
+    "The handoff cites local artifacts with the prefix System.Xml.XmlElement/tests/. Per the supplied D-1 measurement, the referenced files exist under the actual work-run tests directory and their contents match; this citation defect did not change the evaluated test evidence."
+  ],
+  "RecommendedNextAction": "Remove the restricted wording from WorkCompleted, issue the corrected delivery, and rerun Controller checks on the resulting HEAD."
+}

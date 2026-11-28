@@ -1,0 +1,26 @@
+# el total de UI de la CI en la rama red: la linea base del cierre de PB-T4c con lo que cambia en los 18 filtros
+filtros: base 917 resultados en 18 TRX; rama 895 en 18 TRX
+quitados 22 {'Passed': 21, 'NotExecuted': 1}; anadidos 0 {}; cambian de resultado 0 {}
+UI red: 2464 = 2416 + 0 + 48 (Passed + Failed + Skipped)
+  quitado Passed RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_06_TheWindowAndThePilotWriteTheSameDesignForTheFourteenDesigns
+  quitado Passed RackCad.UI.Tests.PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_10_TheWindowAndThePilotWriteTheSameDesignForEveryExactFieldAndForCustomModules
+  quitado Passed RackCad.UI.Tests.PushBackFieldValidationConcordanceTests.CT_PBT2B_10_ThePanelScaleFieldAndTheWindowScaleBoxAcceptAndRejectTheSameTexts
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.EachOfTheEightCanonicalDesignsIsAFileOfTheFixturesFolderAndItsRoundTripIsByteForByte
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(fixture: "pb-01-base")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(fixture: "pb-02-modulos")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(fixture: "pb-03-fondos")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(fixture: "pb-04-blanco")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(fixture: "pb-05-topes")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(fixture: "pb-06-seguridad")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(fixture: "pb-07-combinado")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotCanonicalLineEndingTests.ThePersistedDocumentOfThePilotWithoutAnEditIsTheInnerDesignOfTheEnvelopeByteForByteWithoutNormalizingTheLineEndings(fixture: "pb-08-redondeo")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotValidationParityTests.AValidTextAppliesTheSameNumberTheClassicBoxParses(culture: "")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotValidationParityTests.AValidTextAppliesTheSameNumberTheClassicBoxParses(culture: "de-DE")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotValidationParityTests.AValidTextAppliesTheSameNumberTheClassicBoxParses(culture: "en-US")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotValidationParityTests.AValidTextAppliesTheSameNumberTheClassicBoxParses(culture: "es-MX")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotValidationParityTests.TheAdapterGivesTheSameVerdictAndMessageAsTheClassicBoxInEveryCulture(culture: "")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotValidationParityTests.TheAdapterGivesTheSameVerdictAndMessageAsTheClassicBoxInEveryCulture(culture: "de-DE")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotValidationParityTests.TheAdapterGivesTheSameVerdictAndMessageAsTheClassicBoxInEveryCulture(culture: "en-US")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotValidationParityTests.TheAdapterGivesTheSameVerdictAndMessageAsTheClassicBoxInEveryCulture(culture: "es-MX")
+  quitado Passed RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheDocumentThePilotWritesAfterKeepMineOpensInTheClassicWindowWithTheNewBaseAndTheScaleOfTheDraft
+  quitado NotExecuted RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheWindowAndThePilotDifferOnlyInTheKnownClasses

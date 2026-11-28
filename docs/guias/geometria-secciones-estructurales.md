@@ -252,12 +252,15 @@ figuras hay que ordenar los puntos.
 RACKSECCION
 ```
 
-…o, desde la interfaz, **`RACKCAD` → «Generar perfil estructural»**. Son **la misma cosa**: las dos
-puertas llaman al mismo caso de uso (`StructuralSectionCommandFlow`), no a dos implementaciones que
-coinciden. El botón del menú no es un generador aparte; sólo hace visible el que ya existe.
+`RACKSECCION` abre la página **«Nuevo» › «Perfil estructural»** de la ventana RackCad (`RACKCAD`), sin bloquear AutoCAD
+(I-64, séptima tanda); la tarjeta «Perfil estructural» de «Nuevo» abre la misma página. La ventana clásica, modal, sigue en
+`RACKMENU` → «Generar perfil estructural». Son **la misma cosa**: la página muestra los mismos controles del inspector
+(`StructuralSectionInspectorControls`) sobre el mismo estado (`StructuralSectionInspectorState`), y las dos dibujan con la
+misma materialización (`StructuralSectionCommandFlow.Place`); no hay dos implementaciones que coincidan.
 
-Abre el inspector, y al aceptar pide un punto e inserta la representación como **bloque interno del
-dibujo**.
+Al aceptar («Insertar» en la clásica, «Insertar en el dibujo…» en la página, que va por la orden `RACKSECCIONINSERTAR`)
+pide un punto e inserta la representación como **bloque interno del dibujo**; un «U» la deshace. La página repite lo que
+se dibujó, el aviso de unidades y la fidelidad.
 
 Lo que conviene saber:
 

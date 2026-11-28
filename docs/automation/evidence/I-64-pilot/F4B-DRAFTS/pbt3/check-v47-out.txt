@@ -1,0 +1,57 @@
+# check_v47.py: la v4.7 (sha256 976361c00388c9af, 325413 bytes) frente a la v4.6 (sha256 09210abe2ed5482c) y al cierre de PB-T3b (fe1c67f4), por objetos git; funciones de make_pbt3c_contract.py (sha256 ba83ba6ee826b2eb)
+
+1. los marcadores <tras el cierre de PB-T3b>: en la v4.6, 8 en 8 lineas (6 sitios por rellenar y 2 menciones); en la v4.7, 3, todas menciones (**Estado:** v4.7, | **V47-01** | *, | V46-05 | La se)
+   precondicion 1: la BaseSha y el estado: relleno (lineas de la v4.7: 2; frases comprobadas: 9); fuente: f4b-dispositions.md (F4B-E46, la ultima entrada) y count-rows-out.txt -> 7 de 7 hechos comprobados en fe1c67f4
+   precondicion 9: la custodia de la emision de PB-T3c: relleno (lineas de la v4.7: 1; frases comprobadas: 6); fuente: f4b-dispositions.md, I-64-evidence.md y el registro de mediciones en el cierre (las ultimas: F4B-E46, 273 y R-22); la v4.6 en 2bb3b759 -> 4 de 4 hechos comprobados en fe1c67f4
+   section 4.1: el barrido de las guardas sobre el cierre: relleno (lineas de la v4.7: 1; frases comprobadas: 5); fuente: sweep-pbt3c-close.txt (guard_sweep.py y sweep_t3b_diff.py, custodiados en el cierre) -> 5 de 5 hechos comprobados en fe1c67f4
+   section 6.3: los MinSelected de las guardas del escritor: relleno (lineas de la v4.7: 1; frases comprobadas: 1); fuente: count-rows-out.txt (la TRX del GREEN de PB-T3b) -> 4 de 4 hechos comprobados en fe1c67f4
+   section 6.3: la nota de lo heredado de 6.2: relleno (lineas de la v4.7: 1; frases comprobadas: 3); fuente: el contrato reemitido de PB-T3b en el cierre (Workspace de Core) y el seco del generador -> 2 de 2 hechos comprobados en fe1c67f4
+   section 6.3: la linea base de la CI y lo previsto: relleno (lineas de la v4.7: 1; frases comprobadas: 7); fuente: F4B-E46 y count-rows-out.txt -> 3 de 3 hechos comprobados en fe1c67f4
+
+2. secciones: 54 en la v4.6, 55 en la v4.7 (la nueva: el registro v4.6 -> v4.7); 46 iguales byte a byte; cambian solo las 8 previstas: ## Registro de cambios v1 ->; ### 4.1 El barrido de colisi; ### 5.0 Reglas y recetas com; ### 5.4 PB-T3c: el borrado e; ### 6.0 Comun a las tres sub; ### 6.3 Contrato de PB-T3c -; ### 8.1 Ya tomadas, que este; (cabecera)
+   intactas: el diseno (las 15 D-PBT3), 5.2 y 5.3 (PB-T3a y PB-T3b), 6.1 y 6.2 (sus contratos), section 2 y 8.2
+   las precondiciones: lo de antes, igual; 3 lineas quitadas y 8 anadidas (la 1, la 9, la 12 y la 13 nueva)
+   ### 4.1 El barrido de colisiones de la v: 1 lineas quitadas y 8 anadidas, las previstas
+   ### 5.0 Reglas y recetas comunes: 1 lineas quitadas y 2 anadidas, las previstas
+   ### 5.4 PB-T3c: el borrado en el dibujo : 0 lineas quitadas y 2 anadidas, las previstas
+   ### 6.0 Comun a las tres subtareas: 1 lineas quitadas y 2 anadidas, las previstas
+   ### 6.3 Contrato de PB-T3c - `F4B-PBT3C-: 4 lineas quitadas y 4 anadidas, las previstas
+   ### 8.1 Ya tomadas, que este paquete apl: 0 lineas quitadas y 1 anadidas, las previstas
+   la fila del doble de PB-T3b en la tabla de RR-3 (PilotEraseScopeDouble), igual; el generador de PB-T3c solo lee las filas "| PB-T3c |"
+
+3. lo que el generador copia al contrato (34 textos: el Objective, la linea de la CI, INV-PBT3C-01 a 04, sus 4 paradas, su evidencia, los comunes del 6.0 y PBT3x-C11): cambian 2, el Objective y la linea de la CI
+   el Objective: solo "PB-T3 v4.6" -> "PB-T3 v4.7"
+   vinetas de 6.0, nivel 0: 83 -> 84; nuevas o cambiadas 1, quitadas 0
+      + El total exacto de cada rama (F4B-E46; V47-03): un recuento previsto que dependa de como cuente la TRX lleva el total ex
+   vinetas de 6.3, nivel 0: 9 -> 9; nuevas o cambiadas 3, quitadas 3
+      + Objective (ASCII): "Dar al escritor de la actualizacion del Workspace de Push Back la capacidad de borrar una vista obso
+      + RequiredTests: | Proyecto | Filtro | MinSelected | ExpectRed | |---|---|---|---| | Core | PushBackViewEraseGuardTests | 
+      + Linea base de la CI: la del cierre de PB-T3b (F4B-E46): run 44707482956 sobre el GREEN c7582785, Core 19 124 resultados,
+   vinetas de 6.3, nivel 2: 14 -> 14; nuevas o cambiadas 0, quitadas 0
+   RequiredTests: solo la fila de las guardas del escritor (el marcador -> "86, 123", con su fuente)
+
+4. RR-3, filas de PB-T3c: PushBackViewEraseGuardTests igual (16 lineas, 0 valores); PushBackWritePathPluginGuardTests: en la v4.6 aplazada, en la v4.7 11 literales (las 8 fichas de D2, iguales a PushBackSharedReferenceGuardTests.cs:35-36 en fe1c67f4, y Rule1, Rule1b y Rule1c, en sus lineas 57, 60 y 68)
+5. la CI: base Core 19124 = 19118 Passed + 6 Skipped; RED 19129 = 19119 + 4 Failed + 6; GREEN 19129 = 19123 + 0 + 6; UI 2451 = 2430 + 21 en los dos; una sola rama, sin alternativa (F4B-E46)
+
+6. en el texto: 5.0, M-07; 5.0, el total por rama; 5.4, una prueba una fila; 5.4, las lecciones de las recetas; 8.1, F4B-E46; la precondicion 12 (19 107 de 19 107, comprobado en compile-check.md y out-run3.txt del cierre) y la 13; las fuentes de V47-03 y V47-06 en el cierre (owner-pbt3b-nc3-decision.md, PBT3B-IR-M01, M02 y M07 de ideas-futuras.md); la numeracion F4B-E47, 274, 275 y R-23
+
+7. diff v4.6 -> v4.7: 18 tramos, 16 lineas quitadas y 52 anadidas
+   @@ -3,3 +3,3 @@
+   @@ -15,0 +16 @@
+   @@ -19,3 +20,17 @@
+   @@ -237 +252,2 @@
+   @@ -263 +279 @@
+   @@ -281 +297 @@
+   @@ -286,0 +303,4 @@
+   @@ -1011 +1031 @@
+   @@ -1024,0 +1045,8 @@
+   @@ -1084 +1112,3 @@
+   @@ -1234,0 +1265,4 @@
+   @@ -1436 +1470 @@
+   @@ -1442,0 +1477 @@
+   @@ -1616 +1651 @@
+   @@ -1626 +1661 @@
+   @@ -1630 +1665 @@
+   @@ -1649 +1684 @@
+   @@ -1686,0 +1722 @@
+   sin rutas locales; la v4.7: 325413 bytes, 1872 lineas, sha256 976361c00388c9af317a109fe3e53184b9c141cb0cab126f2dc7b6d7d4b7f758

@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T4C1-HOST",
+  "RunId": "R20261115T180601Z-a952",
+  "DelegationRunId": "R20261115T164833Z-353a",
+  "WorkRunId": "R20261115T165352Z-3e8e",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; no launched process PID. Cession ended 2026-11-15T17:35:01Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4-T4C1-HOST, Attempt 2, DelegationRunId R20261115T164833Z-353a and WorkRunId R20261115T165352Z-3e8e. OutputWrittenUtc 2026-11-15T11:34:27.954089-06:00 is after Cession.StartUtc 2026-11-15T16:53:57Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor cd902cd9d46d92dcd959d6bcbb2901364167d262 12c248b039674b5e8589f10f51e6dd1150f99b12 returned 0. git diff --name-only between them lists three paths, all UNIT_DOC under docs/; none is EXTERNAL or UNIT_CHANGE. EXTERNAL authorities were read at MainSha 812baf879612320653094a8af46aca0bac81383."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json reports PASS and byte equality for all eight compared collections. relay-record-planning.json records A1-A8 8/8 and nc4."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json branch and worktree match delegation.json. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return b2631084bcadbda25d69936c47d6f09b64fb1ac7; BaseSha is an ancestor of RedSha and CurrentSha, and RedSha is between BaseSha and CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records LsRemoteSha b2631084bcadbda25d69936c47d6f09b64fb1ac7 and OriginMainSha 812baf879612320653094a8af46aca0bac81383, matching CurrentSha and MainSha."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 15 paths. Comparing each against delegation.json AllowedWriteScope (29 exact paths) finds src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs outside the whitelist. No changed path matches ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 returned no entries. git check-ignore -v on the input gate-contract.json reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is push 43741634851 on the exact branch and CurrentSha; all four required jobs succeeded. RedRun 43740130830 is a push on the same branch at RedSha; Core failed, UI and Build UI succeeded, and Plugin was skipped by its dependency. The supplied TRX files agree."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core TRX: 19002 passed, 0 failed; all RequiredTests met their minima and passed, including Workspace 3421/3421. The 23 other Core filters matched their specified minima and passed; UI filters passed at 601/601 and 55/55. Red Core TRX: Workspace selected 3421 with 60 assertion failures and 3361 passes; the other 23 Core filters had no failures. Red UI filters passed at 601/601 and 55/55. Green diff RedSha..CurrentSha has no tests/ paths. RT from ChainBaseSha to RedSha lists 17 test paths; ChainRedFiles is the prior 17 paths union RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> on both commits, matching worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json requests claude-sonnet-5-5 and high effort. relay-record-work.json records effective model claude-sonnet-5-5 and effective effort high; the subagent launch alias is sonnet."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json; no AUTOMATION_PLAN 16.10 term matched."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes record 0 permission denials and 1 tool error with none pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The product path src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs is in the BaseSha..CurrentSha diff but absent from the delegation's exact AllowedWriteScope."
+  ],
+  "RecommendedNextAction": "Registrar el hallazgo de alcance y devolver la entrega para resolver la ruta fuera de AllowedWriteScope."
+}

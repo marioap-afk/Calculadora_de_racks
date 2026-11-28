@@ -253,7 +253,8 @@ namespace RackCad.Tests
         /// </summary>
         private static string EditInsertStatement()
         {
-            var body = Body(Commands(), "internal static void EditSelective(");
+            // Selectivo E2 (parte A) extrae la rama «Insertar» de EditSelective, sin cambio, a InsertSelectiveViews (la usa tambien RACKSELECTIVOINSERTAR).
+            var body = Body(Commands(), "internal static int InsertSelectiveViews(");
             var at = body.IndexOf("new SelectiveInsertPort", StringComparison.Ordinal);
 
             Assert.True(at >= 0, "EditSelective tiene que insertar la cola pedida");

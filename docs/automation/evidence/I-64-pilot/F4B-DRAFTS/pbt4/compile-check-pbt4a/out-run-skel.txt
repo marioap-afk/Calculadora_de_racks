@@ -1,0 +1,25 @@
+fase skel; patch sha256 e99c87c61dec083c9b9efefd7a7cf44e0bae31fd0e477b1347618683e4d1de19; contrato sha256 7ea2e372f5e806fba92f5528c4552cf3bf9df133c60e0e77484330713d988d6f
+esqueleto aplicado: 4 archivos, 2 nuevos
+core-tests rc=0 errores=0 avisos-CS=0
+ui-tests rc=0 errores=0 avisos-CS=0
+plugin rc=0 errores=0 avisos-CS=0
+avisos CS en total: 0 (tienen que ser 0: build-plugin de la CI falla con cualquier warning CS)
+control positivo: IWorkspaceEditIntentOriginReader=1 en RackCad.Application.dll
+control positivo: PushBackOriginByText=1 en RackCad.Application.dll
+core-test rc=0
+filas 19129 {'Passed': 19122, 'NotExecuted': 7}
+ui 1 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests :: filas 1 {'Passed': 1}
+ui 2 rc=0 FullyQualifiedName~RackCad.UI.Tests.Workspace :: filas 681 {'Passed': 680, 'NotExecuted': 1}
+ui 3 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests :: filas 2 {'Passed': 2}
+ui 4 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization :: filas 55 {'Passed': 55}
+ui 5 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization :: filas 18 {'Passed': 16, 'NotExecuted': 2}
+ui 6 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet :: filas 14 {'Passed': 14}
+ui 7 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection :: filas 14 {'Passed': 14}
+ui 8 rc=0 FullyQualifiedName~RackCad.UI.Tests.Cantilever :: filas 67 {'Passed': 67}
+ui 9 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests :: filas 3 {'Passed': 3}
+ui 10 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests :: filas 4 {'Passed': 4}
+ui 11 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests :: filas 1 {'Passed': 1}
+ui 12 rc=0 FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests :: filas 3 {'Passed': 3}
+build-server shutdown rc=0
+MAINCO []
+rc=0

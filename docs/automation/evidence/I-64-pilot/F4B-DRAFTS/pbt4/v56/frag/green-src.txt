@@ -1,0 +1,128 @@
+@@@@ EDIT src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@@@ OLD
+        /// I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" for one rack. Without work for the rack it begins it through the edit intention, so its
+        /// one read is the one of the intention; then it opens the full editor over the work and keeps the mark of the reads until the editor
+        /// closes, so while it is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the
+        /// work: nothing here writes the drawing. A port that does not offer it answers NotAvailable.
+@@@@ NEW
+        /// I-64 F4B PB-T4c (D-PBT4-13): "Editar todo" for one rack. Without work for the rack it begins it through the edit intention, so its
+        /// one read is the one of the intention; over a clean work marked as possibly stale it first reloads it with the lazy reload of
+        /// "Editar", whose one read is the one of the reload, and a reload that does not reload the work does not open the editor (I-64 F4B
+        /// PB-T4e, D-PBT4-22); then it opens the full editor over the work and keeps the mark of the reads until the editor closes, so while it
+        /// is open every operation of the panel answers Busy or Waiting (K = 1). The editor only hands its edits to the work: nothing here
+        /// writes the drawing. A port that does not offer it answers NotAvailable.
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@@@ OLD
+        /// <summary>There was no work and the edit intention did not begin it: the outcome carries the one of the intention.</summary>
+        NotBegun,
+@@@@ NEW
+        /// <summary>
+        /// There was no work and the edit intention did not begin it, or (I-64 F4B PB-T4e, D-PBT4-22) the work was clean and marked as possibly
+        /// stale and the lazy reload did not reload it: the outcome carries the one of the intention or of the reload, and nothing was opened.
+        /// </summary>
+        NotBegun,
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@@@ OLD
+        /// <summary>The outcome of the edit intention that did not begin the work (NotBegun); the default value otherwise.</summary>
+        public EditIntentOutcome Begin { get; }
+@@@@ NEW
+        /// <summary>
+        /// The outcome of the edit intention that did not begin the work, or of the lazy reload that did not reload it (NotBegun); the default
+        /// value otherwise.
+        /// </summary>
+        public EditIntentOutcome Begin { get; }
+@@@@ END
+
+@@@@ EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@@@ OLD
+                // Without work for the rack the edit intention begins it, with its one read, its admission and its diagnostic.
+                var draft = FindPilotDraft(request.Session, request.RackId);
+                if (draft == null)
+                {
+                    var begun = TryBeginPilotEdit(request);
+                    if (begun.Status != EditIntentStatus.Admitted) return EditAllOutcome.NotBegun(begun);
+                    draft = FindPilotDraft(request.Session, request.RackId);
+                    if (draft == null) return EditAllOutcome.Failed(EditAllBusyDraftReason);
+                }
+
+                var view = ViewOfPilotDraft(draft);
+                if (view.State == PilotFieldState.Applying || !draft.IsRegistered) return EditAllOutcome.Waiting(EditAllBusyDraftReason);
+                if (!view.CanEdit) return EditAllOutcome.Refused(EditAllStateReason);
+                if (draft.HasPendingText) return EditAllOutcome.Refused(EditAllPendingTextReason);
+@@@@ NEW
+                // Without work for the rack the edit intention begins it, with its one read, its admission and its diagnostic.
+                var draft = FindPilotDraft(request.Session, request.RackId);
+                var begunHere = false;
+                if (draft == null)
+                {
+                    var begun = TryBeginPilotEdit(request);
+                    if (begun.Status != EditIntentStatus.Admitted) return EditAllOutcome.NotBegun(begun);
+                    draft = FindPilotDraft(request.Session, request.RackId);
+                    if (draft == null) return EditAllOutcome.Failed(EditAllBusyDraftReason);
+                    begunHere = true;
+                }
+
+                var view = ViewOfPilotDraft(draft);
+                if (view.State == PilotFieldState.Applying || !draft.IsRegistered) return EditAllOutcome.Waiting(EditAllBusyDraftReason);
+                if (!view.CanEdit) return EditAllOutcome.Refused(EditAllStateReason);
+                if (draft.HasPendingText) return EditAllOutcome.Refused(EditAllPendingTextReason);
+
+                // I-64 F4B PB-T4e (D-PBT4-22, D-S19): over a work that this gesture did not begin, clean and marked as possibly stale, the
+                // lazy reload of "Editar" runs here, the same method with its one read, after the checks of the view (so a work that is
+                // applying, undecidable, unknown, in error or with pending text answers as before, without evaluating the mark) and before
+                // the editor opens; a reload that does not reload the work does not open the editor and carries its outcome. Either way the
+                // gesture reads the drawing at most once, and never while the editor is open.
+                if (!begunHere && draft.NeedsLazyReload)
+                {
+                    var reload = TryReloadPilotEdit(request);
+                    if (reload.Status != EditIntentStatus.Reloaded) return EditAllOutcome.NotBegun(reload);
+                }
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        private const string ReloadedText = "Borrador recargado desde el dibujo.";
+@@@@ NEW
+        private const string ReloadedText = "Borrador recargado desde el dibujo.";
+        private const string NotReloadedText = "No se recargó: el borrador se conserva tal como estaba.";
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+                        if (stale) _noticeText = "No se recargó: el borrador se conserva tal como estaba.";
+@@@@ NEW
+                        if (stale) _noticeText = NotReloadedText;
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none and holds the panel while the editor is open. When it closes, the field and the strip are shown again from the port.
+@@@@ NEW
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none, reloads first a clean work that may be stale (I-64 F4B PB-T4e) and holds the panel while the editor is open. When it closes,
+        /// the field and the strip are shown again from the port; a reload that did not reload the work is shown as "Editar" shows it.
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+                }
+@@@@ NEW
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+
+                    // I-64 F4B PB-T4e (D-PBT4-22): over a work that already existed the port does not begin it, so this is the reload of a
+                    // clean work that may be stale, and the field shows what "Editar" shows for a reload that is not admitted.
+                    if (view.Exists) _noticeText = NotReloadedText;
+                }
+@@@@ END

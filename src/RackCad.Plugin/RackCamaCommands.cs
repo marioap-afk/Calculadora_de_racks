@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.FlowBed;
@@ -17,7 +18,7 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin
 {
     /// <summary>Cama de rodamiento (roller flow bed) commands + their draw/edit/payload helpers, plus alias.</summary>
-    public sealed class RackCamaCommands
+    public sealed partial class RackCamaCommands // T5 cm: partial (RackCamaCommands.Door.cs)
     {
         [CommandMethod("QCM")] public void AliasQuickCama() => QuickCama();                // QUICKCAMA
 
@@ -29,6 +30,7 @@ namespace RackCad.Plugin
         [CommandMethod("QUICKCAMA")]
         public void QuickCama()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.Cama); // T6 ui (O-3): the jig asks for the point of the cama
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
             if (document == null)

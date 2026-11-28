@@ -1,0 +1,1089 @@
+{
+  "ExpectedCounts": {
+    "green": [
+      19605,
+      19147,
+      0,
+      458
+    ],
+    "ui_green": [
+      2481,
+      2433,
+      0,
+      48
+    ],
+    "red": [
+      19605,
+      18841,
+      306,
+      458
+    ],
+    "ui_red": [
+      2481,
+      2430,
+      3,
+      48
+    ]
+  },
+  "SkeletonSource": {
+    "generator": [
+      "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/green_pbt4b_v45.py",
+      "47662f52b8008ce802a0dc52395c8995c462d21276236cf1cd34f39a288ae1c4"
+    ],
+    "modules": [
+      [
+        "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/green_pbt4b.py",
+        "6d2fde688f074f2e9f67a2699cb47fee7e9a1c6ff4428f60aa43e40097404ef9"
+      ]
+    ],
+    "record": [
+      "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/cc4b/out-redgreen-v49-r4v/apply-red.txt",
+      "1e9666b9d727c90085e154801c1f44a03da8c79c2b46f1ccda15b9e2e348310c"
+    ]
+  },
+  "SkeletonFiles": {
+    "src/RackCad.Application/Formatting/NumericTextRule.cs": "e78a6429013d0793c3f5ae213e6c39e51d7d2ab94bab1c154431a18831435b35",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs": "d7706f5298bd860f8a7ee0638e3cf9282dee2639419233b9e40a579abe805169",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs": "eff6f487ba78f517b9886253b97d66aa3c13e813b6d6b613aca399b5777fc569",
+    "src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs": "6a2d8d327ffd7aba0fc5a30cd24349fdad49a23cae8a8054d5dff76be1dfc49d",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs": "151b3437fd27d691b91563bc6fe8bbea4c71db5c90df0aaa69f19ec7f604a5d5",
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs": "3cd599f7c13c70b642e64ea1461fe09c882c656b4a4dabbd225c0c9817a1b9eb"
+  },
+  "WorkspaceMinSelected": 2718,
+  "Nc2ExactEvidenceEntries": [
+    0
+  ],
+  "Nc2SubstituteSha256": "C033E96CE147963FEB9C04733E9BFBEC7493FEA33D8FF79B1C2E8AB860798E45",
+  "Rr3": null,
+  "Rr3Reading": false,
+  "PackagePath": "docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md",
+  "PackageVersion": "4.9",
+  "NewTests": [
+    "tests/RackCad.Tests/PushBackFullPanelTests.cs",
+    "tests/RackCad.Tests/PushBackFullPanelGuardTests.cs",
+    "tests/RackCad.Tests/PushBackFullPanelCensusGuardTests.cs",
+    "tests/RackCad.Tests/PushBackPanelDraftGuardTests.cs",
+    "tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullPanelFieldTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceFullReadKit.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs",
+    "tests/RackCad.Tests/PushBackWritePathGuardFull.cs",
+    "tests/RackCad.Tests/PushBackFullReadPathFull.cs",
+    "tests/RackCad.Tests/PushBackFullReadGuardFull.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationFull.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewFull.cs"
+  ],
+  "CtClasses": [
+    "PushBackFullPanelTests",
+    "PushBackFullPanelGuardTests",
+    "PushBackFullPanelCensusGuardTests",
+    "PushBackPanelDraftGuardTests",
+    "WorkspaceFullCopyGuardTests",
+    "PushBackFullPanelFieldTests"
+  ],
+  "SkipFiles": [
+    "tests/RackCad.Tests/PushBackWritePathGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+    "tests/RackCad.Tests/PushBackFullReadPathTests.cs",
+    "tests/RackCad.Tests/PushBackFullReadGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs"
+  ],
+  "RedFilters": [
+    "FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests",
+    "FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests",
+    "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests"
+  ],
+  "UiFilters": [
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+    "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+    "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFieldValidationConcordanceTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+    "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+    "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+    "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+    "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+    "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests"
+  ],
+  "SubstList": {
+    "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-substitution-list-478.tsv",
+    "Sha256": "8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b",
+    "Rows": 478,
+    "Groups": {
+      "PB-T4b C-5": 23,
+      "PB-T4b UI": 27,
+      "PB-T4b C-0": 428
+    },
+    "Files": 21
+  },
+  "CopyMap": {
+    "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-copy-map-v5.tsv",
+    "Sha256": "bda79bb7",
+    "Tests": 428,
+    "Mechanical": 356,
+    "Hand": 72,
+    "PerClass": {
+      "WorkspaceLifecycleHostTests": {
+        "Pruebas": 69,
+        "Mecanicas": 68,
+        "AMano": 1
+      },
+      "WorkspacePilotPrepareTests": {
+        "Pruebas": 67,
+        "Mecanicas": 46,
+        "AMano": 21
+      },
+      "WorkspaceEditIntentHostTests": {
+        "Pruebas": 62,
+        "Mecanicas": 57,
+        "AMano": 5
+      },
+      "WorkspacePilotEditHostTests": {
+        "Pruebas": 59,
+        "Mecanicas": 53,
+        "AMano": 6
+      },
+      "WorkspaceCommandAdvisorTests": {
+        "Pruebas": 54,
+        "Mecanicas": 54,
+        "AMano": 0
+      },
+      "WorkspacePilotUpdateRequestTests": {
+        "Pruebas": 44,
+        "Mecanicas": 39,
+        "AMano": 5
+      },
+      "WorkspacePilotUpdateHostTests": {
+        "Pruebas": 35,
+        "Mecanicas": 12,
+        "AMano": 23
+      },
+      "WorkspacePilotReconciliationHostTests": {
+        "Pruebas": 28,
+        "Mecanicas": 17,
+        "AMano": 11
+      },
+      "WorkspaceAssociativeBookkeepingTests": {
+        "Pruebas": 10,
+        "Mecanicas": 10,
+        "AMano": 0
+      }
+    }
+  },
+  "CopyPartition": {
+    "PushBackFullReadGuardTests": {
+      "Red": [
+        "CT_PBT4A_05_WithAReaderWithoutTheNewInterfaceTheFiveRereadsUseReadIntentAsToday"
+      ],
+      "Green": []
+    },
+    "PushBackFullReadPathTests": {
+      "Red": [
+        "CT_PBT4A_03_TheFiveRereadsOfAnOpenDraftReadAtTheOriginOfTheDraftAndBeginReadsAsToday"
+      ],
+      "Green": []
+    },
+    "PushBackWritePathGuardTests": {
+      "Red": [
+        "CT_PBT3B_13_NoFileOutsideThePlanTheRunAndTheModelNamesTheFullWriteAndTheHostFindsOnlyTheDraftOfThePilot"
+      ],
+      "Green": []
+    },
+    "WorkspaceAssociativeBookkeepingTests": {
+      "Red": [
+        "AReadThatOnlyRaisesBookkeepingLeavesTheDraftUnmarked"
+      ],
+      "Green": [
+        "ADrawingObjectChangeAndTheEndOfACommandDrainTheListOfTheBridgeTestsOfTheDrain",
+        "ADrawingObjectEventHasExactlyTheEffectOfASourceEventAlsoInsideTheOwnScope",
+        "ASessionThatIsUnknownDegradedOrDestroyedGivesNoEffectToAnObjectEventOfEitherSubject",
+        "AfterTheUpdateClosedItsScopeTheBookkeepingOfTheReReadDoesNotMarkTheDrafts",
+        "AnAssociativeBookkeepingObjectEventQueuesNoHintAndHooksNoIdle",
+        "AnUndoRightAfterTheUpdateIsForeignAndMarksTheDraftsAlsoWithTheBookkeepingAroundIt",
+        "AnySourceThatIsNotAnObjectOneHasTheEffectOfASourceEventWhateverTheSubject",
+        "EveryObjectEventAlsoTheBookkeepingOneStillForgetsTheCloseSequence",
+        "TheBookkeepingNeitherOpensNorClosesTheOwnScopeNorChangesTheStateOfRestNorTheCountOfForeignCommands"
+      ]
+    },
+    "WorkspaceCommandAdvisorTests": {
+      "Red": [
+        "OverTheRealBridgeADestroyedSessionIsNotAskedToTheBridgeNorToTheQueries",
+        "OverTheRealBridgeAndHostACleanDocumentIsAllowedAndNothingIsWritten",
+        "OverTheRealBridgeAndHostALostDocumentIsReadBeforeTheHostRetiresItAndTheMessageWaitsForTheNextActiveSession",
+        "OverTheRealBridgeAndHostTheDecisionIsTheOneOfTheHostForVetoAndForAllowAndTheDraftIsNeverTouched",
+        "OverTheRealBridgeTheVetoOfAnotherDocumentSaysToActivateItFirst",
+        "WithoutWiringTheWrapperTheRealBridgeStillDecidesAsTheHostAndWritesNothing"
+      ],
+      "Green": [
+        "ADelegateThatThrowsIsNotContainedAndNothingWasDiscardedBeforeTheDiscardItself",
+        "AFirstReadThatThrowsCountsAsTheUnknownAndTheExceptionDoesNotEscape",
+        "ALossWithRacksAndUncertainOnesSaysBothAndALossWithOnlyUncertainOnesSaysThat",
+        "AMissingOrEmptyNameSaysTheDocument",
+        "ANullDelegateIsRefused",
+        "AQueryThatThrowsNeverChangesTheDecisionAndTheNoticeStillSaysTheDocument",
+        "AReportThatThrowsIsIgnoredAndTheWrapperWorksWithoutAReportToo",
+        "ARiskReadThatThrowsIsTheUnknownIsReportedAndStillDelegatesExactlyOnce",
+        "ARiskReadThatThrowsWithAReportThatAlsoThrowsStillDelegatesExactlyOnce",
+        "ASecondReadThatThrowsCountsAsTheUnknownAndDiscardsNothing",
+        "AVetoOfTheActiveDocumentWritesV01AndTheOneOfAnotherDocumentWritesV02",
+        "AWriterThatThrowsNeverChangesTheDecisionAndIsReportedAsTheVetoMessage",
+        "AnAmbiguousTargetSaysSoWithoutReadingTheRiskWithoutAskingAndWithoutDiscarding",
+        "AnInnerAdvisorThatThrowsIsAVetoWithTheNoticeAndTheReportOfThatContext",
+        "AnInnerAdvisorThatThrowsWhenTheSessionIsDestroyedIsNotContainedAndTheWorkBeforeItWasDone",
+        "AnUnknownFirstReadIsAnExplicitFailureAndNeverNothingAtRisk",
+        "AnUnknownRiskIsNeverNothingAtRiskAndIsNeverSilentAndAKnownEmptyRiskSaysNothing",
+        "AnUnknownSecondReadDiscardsNothing",
+        "AnythingButAYesDiscardsNothing",
+        "EveryAnswerThatIsNotDiscardedSaysWhyWithTheExactText",
+        "ExistingIsNullBeforeTheFirstCreationAndAskingForItNeverCreatesNorCallsTheFactory",
+        "ExistingIsTheCreatedInstanceAfterwardsAndDoesNotChangeTheCreateCount",
+        "ExistingStaysNullWhenTheFactoryFailed",
+        "IfEitherListChangedBetweenTheTwoReadsNothingIsDiscarded",
+        "NothingIsDiscardedBeforeTheYes",
+        "OverTheRealBridgeAnInnerThatThrowsIsAVetoWithoutDegradingTheSessionAndWithoutAFaultOfTheCore",
+        "OverTheRealBridgeTheCloseSequenceIntactFlagReachesTheInnerAdvisorAsTheCoreDecidedIt",
+        "TheDecisionOfTheWrapperIsAlwaysTheOneOfTheInnerAdvisorAndItIsAskedOncePerAttempt",
+        "TheDefaultOutcomeOfTheDiscardIsTreatedAsARejection",
+        "TheDelegatesOfTheSessionAndOfTheTargetAreNotContainedEither",
+        "TheDestructionDelegatesExactlyOnceWithTheIntactFlagAsItCame",
+        "TheDiscardOfTheDocumentWithTheSameListsAfterTheYesIsTheOnlyOperationWithAnEffect",
+        "TheMessagesWaitForAnActiveSessionAreTakenOnceAndKeepTheirOrder",
+        "TheNameOfTheDocumentIsItsLastSegmentBetweenGuillemets",
+        "TheRiskIsReadBeforeTheDelegationAndTheMessageWaitsWithoutBeingWritten",
+        "TheTargetIsOnlyAskedAboutTheSessionThatTheActiveDelegateJustGave",
+        "TheUncertainRacksAreListedApartAndAreDiscardedWithTheRestAfterTheConfirmation",
+        "TheWrapperNeverWritesWhenTheInnerAllowsEvenIfTheQueriesWouldFail",
+        "TheWrapperOnlyEverCallsTheReadOfTheRiskOfThePort",
+        "TheWrapperRefusesANullInnerPortNameActivityOrWriterAndAcceptsANullReport",
+        "WhenNothingIsAtRiskTheCommandSaysSoAndAsksNothing",
+        "WhenTheActiveSessionChangesDuringTheQuestionNothingIsDiscardedAndTheOtherSessionIsNeverAsked",
+        "WhenTheActiveSessionDisappearsDuringTheQuestionNothingIsDiscarded",
+        "WhenTheSessionStopsAuthorizingAfterTheYesTheTargetIsAmbiguousAndNothingIsReadAgainOrDiscarded",
+        "WithOnlyUncertainRacksTheCommandListsThemAndTheFinalTextSaysTheDocumentWasDiscarded",
+        "WithRacksAtRiskTheCommandListsThemByRackIdAsksAndOnYesDiscardsTheWholeDocumentOnce",
+        "WithoutAControllerTheCommandSaysSoAndAsksNothingAtAll",
+        "WithoutAnActiveSessionTheCommandSaysSoAndNeitherReadsNorAsksNorDiscards"
+      ]
+    },
+    "WorkspaceEditIntentGuardTests": {
+      "Red": [
+        "TheBaseGuardAllowsTheConsumersOfTheObligation",
+        "TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses",
+        "TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow",
+        "TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep",
+        "ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer",
+        "TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase",
+        "TheThreeBodiesOfTheReconciliationFollowTheStepsOfTheCheckAndTheReloadWithTheApplicabilityBeforeTheOneRead"
+      ],
+      "Green": []
+    },
+    "WorkspaceEditIntentHostTests": {
+      "Red": [
+        "AChangedWitnessIsReportedAsChangedAndNoKeystrokeIsAppliedToTheNewDraft",
+        "APresentWitnessWithoutAKeyIsAFailureOfCheckNowWithAReasonAndReadsNothingAndLeavesTheUnknownDraftAsItWas",
+        "ARackThatWasNotAdmittedCanBeAdmittedLaterWhenTheDrawingAllowsIt",
+        "AnExceptionOfTheReaderDuringCheckNowIsContainedAsFailedAndDoesNotDegradeTheSession",
+        "AnIntentionIsOneReadOfTheReaderAndAnAdmittedReadCreatesTheDraftFromThatSameRead",
+        "AnOpenDraftIsAlreadyOpenAndIsNeverReadAgain",
+        "AnUnknownDraftWhoseOriginIsThePostRereadIsNotApplicableAndReadsNothing",
+        "CheckNowHasTheSameGateAsTheIntentionAndReadsNothingBeforeIt",
+        "CheckNowOfAnotherSessionIsRejectedWithZeroReadsAndTheDraftIsUntouched",
+        "CheckNowRecoversAnUnknownDraftWhenTheRereadMatchesTheBaseFromBeforeTheAttempt",
+        "CheckNowTakesTheUnknownDraftToConflictWhenTheRereadDiffersAndNamesWhatDiffers",
+        "CheckNowUsesTheBaseOfARereadThatIsNotAdmittedToo",
+        "EveryAnswerOfTheReaderThatIsNotAReadLeavesTheUnknownDraftAsItWasForCheckNow",
+        "NoOperationIsCalledFromTheDrainAndTheDrainNeverCallsTheReaderOfTheIntention",
+        "TheDraftIsBornWithTheComparerAndTheCopierOfThePilot",
+        "TheHostOwnsTheClosePolicyOfItsOneRegistry",
+        "TheRegistryIsOneForEverySessionWithKeysOfSessionAndRack",
+        "WithoutAnUnknownDraftCheckNowIsNotApplicableAndReadsNothing"
+      ],
+      "Green": [
+        "ABlankRackIdIsNotAdmittedWithNoIdentityBeforeAnythingElseAndTheRegistryIsNeverTouched",
+        "ACarrierOfTheEditIntentionThatIsNotInTheCensusTripsTheGuardAndTheCensusHasThemAll",
+        "AChosenReferenceThatIsNoLongerAmongTheTargetsGivesZeroEvenIfTheNumberIsADefinitionOfTheSet",
+        "AChosenReferenceThatIsStillAmongTheTargetsGivesItsDefinition",
+        "AFailingLogDoesNotBecomeASecondFailure",
+        "ANullRequestIsContainedAsFailedAndNeverThrows",
+        "ANullSetOfTargetsIsAProgrammingErrorAndNotAnOrigin",
+        "APresentWitnessWithoutAKeyIsAFailureOfTheIntentionWithAReasonAndReadsNothingAndTouchesNoRegistry",
+        "AReadThatIsNotAdmittedCreatesNoDraftAndCarriesTheDiagnosticTheDetailAndTheClassicEditorHint",
+        "ARecycledNativeIdentityNeverRevivesTheOldSessionForTheIntention",
+        "AReferenceThatVanishedOrNowBelongsToAnotherRackGivesZeroAfterTheRevalidationOfTheSameOperation",
+        "ARequestOfTheSessionOfADocumentThatIsNotTheActiveOneIsRejectedWithZeroReadsAndNoDraft",
+        "ARetiredSessionNeverGetsADraftAndTheRequestIsRejected",
+        "ASessionThatNeverExistedIsRejectedWithoutAReadOrADraft",
+        "AWitnessThatMatchesTheReadIsUnchanged",
+        "AnEmptyAnswerOfTheReaderIsAFailureAndNeverAnAdmission",
+        "AnExceptionOfTheReaderIsContainedAsFailedLoggedAndDoesNotDegradeTheSession",
+        "AnUnknownStatusOfThePilotIsNeverTranslatedToUnchanged",
+        "CheckNowWithoutADraftIsNotFoundAndReadsNothing",
+        "EveryAnswerOfTheReaderThatIsNotARead_IsMappedToItsStateAndCreatesNoDraft",
+        "EveryOutcomeWithoutAReadCarriesNotEvaluatedForTheWitnessAndTheEnumHasTheFourValues",
+        "NoFieldOfTheHostCoreIsOfATypeOfThePilotExceptTheExecutorOrOfTheResultOfTheReadAndTheFieldOfTheReaderIsNotCalledReader",
+        "TheDiagnosticOfAnOriginThatIsGoneSaysItIsNoLongerThereAndNeverThatItBelongsToAnotherRack",
+        "TheDifferencesOfACheckOutcomeAreNeverNullAndAreEmptyUnlessTheStatusIsConflictAlsoForTheDefaultValue",
+        "TheHostCoreHasExactlyOneFieldOfSystemsTheExecutorOfTheUpdateAndRejectsASecondOneOrAPort",
+        "TheIntentionReadsNothingByItselfAndTheDrawingIsReadOnlyThroughTheReader",
+        "TheOutcomesAreValuesAndTheStatesHaveTheExactNamesAndOrderOfThePackage",
+        "ThePortHasExactlyTheTwoMethodsOfTheRequestWithUpdateInTheirNameAndRejectsAThirdOne",
+        "TheReadResultCarriesThePilotReadOnlyWhenItIsARead",
+        "TheReaderCanBeAssignedAgainAndOnlyANullReaderIsRefused",
+        "TheRequestReachesTheReaderUnchangedWithTheChosenReferenceAndTheWitness",
+        "TheSignaturesOfTheTwoOperationsAndTheirValuesNameNoTypeOfADraftNorOfThePilot",
+        "TheTechnicalDetailOfTheDiagnosticTravelsApartFromItsMainText",
+        "TheUpdateOfThePilotIsAPublicMethodOfTheCoreWhoseSecondParameterIsThePortOfTheUpdateAndItsOutcomeNamesNoTypeOfTheDraftsNorOfThePilot",
+        "TheWitnessIsAlsoReportedWhenTheReadIsNotAdmitted",
+        "TheWitnessStatusOfThePilotIsTranslatedToTheOneOfTheHost",
+        "WhileACommandRunsOrTheDocumentIsNotAtRestTheIntentionWaitsAndReadsNothing",
+        "WhileARackCadModalIsOpenTheIntentionWaitsAndReadsNothing",
+        "WithADraftOfSessionAAndBActiveTheIntentionOfARejectsBeforeAnythingAboutTheDraftAndReadsNothing",
+        "WithNoActiveDocumentTheIntentionWaitsAndReadsNothing",
+        "WithoutAChosenReferenceTheOriginIsThePrimaryTargetInTheDeterministicOrderNotTheLowestHandle",
+        "WithoutAReaderTheIntentionIsUnavailableAndReadsNothing",
+        "WithoutAWitnessTheStatusIsNotSuppliedAndNeverUnchanged",
+        "WithoutTargetsTheOriginIsZeroWhetherOrNotAReferenceWasChosen"
+      ]
+    },
+    "WorkspaceHostHardeningGuardTests": {
+      "Red": [
+        "NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept"
+      ],
+      "Green": []
+    },
+    "WorkspaceLifecycleGuardTests": {
+      "Red": [
+        "TheMarkingOnlyTouchesTheDraftsOfThePilotOfTheSessionAndIsOnlyAHint",
+        "TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightStepsOfTheTableAndOneReadThatOnlyReachesDiscardAndReload"
+      ],
+      "Green": []
+    },
+    "WorkspaceLifecycleHostTests": {
+      "Red": [
+        "ADestructionWithoutItsCloseWithADirtyDraftLosesItAndNoticesIt",
+        "ADirtyDraftIsMarkedAsPossiblyStaleButStaysDirtyAndNeverReloadsLazily",
+        "ADirtyDraftOfThePilotVetoesTheCloseAndACleanOneAllowsIt",
+        "ADraftOfAnotherStateTypeIsNotMarkedAndNothingFailsBecauseOfIt",
+        "ADraftThatIsKnownCleanLetsTheNormalCloseProceedAndTheCloseRemovesNothing",
+        "ADraftThatLeavesTheRegistryWhileTheReadRunsMakesTheReloadWaitInsteadOfFailing",
+        "ADraftThatWasNeverMarkedIsNotReloadedAndNothingIsRead",
+        "ADrainThatOnlyCarriesTheSelectionMarksNothing",
+        "ADrainWithAChangeOfTheDrawingMarksEveryDraftOfThePilotOfTheSessionAsPossiblyStaleWithoutAReadOrAConflict",
+        "AReloadThatIsNotAdmittedKeepsTheDraftMarkedAndCarriesTheDiagnosticTheDetailAndTheClassicEditorHint",
+        "AnEchoAndAChangeOfTheDrawingInTheSameDrainStillMarkTheDrafts",
+        "AnExceptionOfTheReaderDuringTheReloadIsContainedAsFailedLoggedAndDoesNotDegradeTheSession",
+        "AnInPlaceEditAfterTheAllowThatIsNotNotedIsTheExactResidualOfTheDesignAndANoteMakesTheRetirementConservative",
+        "DiscardPilotEditsRemovesEveryDraftOfTheSessionAndSaysWhichOnesHadPendingText",
+        "EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively",
+        "NoDrainEverReloadsADraftAndNoDrainReadsForTheLifecycle",
+        "TheEndOfACommandAlsoMarksTheDraftsBecauseItProducesTheSameHint",
+        "TheMarkIsAppliedBeforeTheEarlyReturnsOfTheDrainSoADrainOfAnInactiveSessionOrOfAHiddenPanelMarksToo",
+        "TheMarkOfADrainTouchesTheDraftsOfThatSessionAndNoneOfAnother",
+        "TheReloadGoesThroughTheSameGateAsTheIntention",
+        "TheReloadOfACleanDraftMarkedAsPossiblyStaleDoesOneReadAndReplacesTheDraftFromIt",
+        "TheReloadReadsOnlyWhenTheDraftNeedsIt"
+      ],
+      "Green": [
+        "ADestroyedActiveSessionRetiresItsDraftsAndNoticesTheLossInTheQueueAndInTheLog",
+        "ADestroyedInactiveSessionIsRetiredAndNoticedWhileTheDraftsOfTheActiveOneAreUntouched",
+        "ADestructionThatTheBridgeDidNotSeeAfterItsAllowRetiresConservativelyEvenWithTheMarkOfTheHost",
+        "ADestructionWithAnUnknownNativeIdTellsNobody",
+        "ADestructionWithoutItsOwnCloseNeverHasAnIntactSequence",
+        "ADestructionWithoutTheMarkOfTheHostRetiresConservativelyEvenWithAnIntactSequence",
+        "ADiscardThatTheAuthorizationRefusesHasNoEffectSoItDoesNotEndTheMark",
+        "ADraftThatIsDirtyForAKnownComparerVetoesTheClose",
+        "ADraftThatMayBeDirtyBecauseTheComparerFailedVetoesTheCloseIsLoggedAndDoesNotDegradeTheSession",
+        "ADraftWithPendingTextVetoesTheCloseWithoutAskingTheComparer",
+        "AFailingLogDoesNotStopTheRetirementNorTheQueueNorTheDestruction",
+        "ARecycledNativeIdAfterAnAdvisorThatThrewHasANewSessionWithoutDraftsAndTheOldOneIsRetired",
+        "ASecondCallToSetLifecycleAdvisorReplacesTheAdvisor",
+        "ASessionDegradedBeforeTheAllowIsNeverIntactEvenWithNoInputBetweenTheAllowAndTheDestruction",
+        "ASessionWithoutDraftsAllowsTheCloseAndTheCloseReadsAndWritesNothing",
+        "ASessionWithoutLossQueuesNothingAndLogsNothingSoTheQueueDoesNotGrowWithEveryClosedDocument",
+        "AVetoEndsTheMarkOfAnEarlierAllowAndTheAdvisorOfTheHostReadsAuthorizesDiscardsAndRetiresNothing",
+        "AnAdvisorThatThrowsAtTheSecondCloseBreaksTheSequenceOfTheFirstAllow",
+        "AnAdvisorThatThrowsGivesVetoIsLoggedWithoutFaultAndDoesNotDegradeTheSession",
+        "AnAdvisorThatThrowsWhenTheSessionIsDestroyedStopsNothingOfTheDestructionAndTheNextIdIsANewSession",
+        "AnAllowFollowedByTheDestructionWithAnIntactSequenceRetiresWithoutAskingTheComparer",
+        "AnAllowedCloseFollowedDirectlyByTheDestructionLeavesTheSequenceIntactForAnActiveAndAnInactiveSession",
+        "AnAllowedCloseOfAnotherSessionDoesNotMakeTheSequenceOfThisOneIntact",
+        "AnExceptionOfTheDiscardIsContainedAsFailedAndDoesNotDegradeTheSession",
+        "AnExplicitDiscardOfTheHostRemovesTheDraftsAndTheNextCloseProceedsEvenWithAComparerThatThrows",
+        "AnExplicitDiscardOfTheRegistryThatNeedsNoComparerAlsoLetsTheNextCloseProceed",
+        "AnyOtherInputThatChangesTheStateOfTheCoreBetweenTheAllowAndTheDestructionBreaksTheSequence",
+        "DiscardPilotEditsIsRejectedWithoutEffectsWhenAnotherSessionIsActiveWhenThereIsNoActiveDocumentOrTheSessionIsDestroyed",
+        "DiscardPilotEditsWithAComparerThatThrowsIsDiscardedAndTheNextCloseProceeds",
+        "DiscardPilotEditsWithoutDraftsIsDiscardedWithEmptyListsThatAreNeverNull",
+        "DiscardPilotEditsWorksWithTheProbeNotAtRestWithARackCadModalOpenAndWithoutAReader",
+        "EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively",
+        "EachSuccessiveAttemptToCloseIsVetoedAgainRepeatingIsNeverConsent",
+        "TheAdvisorIsAssignedByAssignmentAndANullAdvisorIsRefused",
+        "TheCloseOfADegradedSessionStillGoesThroughTheAdvisorSoItSurvivesTheDegradation",
+        "TheCloseOfADegradedSessionWithADirtyDraftIsVetoedAndTheNextOneProceedsAfterTheDiscard",
+        "TheDefaultValueOfTheDiscardOutcomeIsTheInertRejectedWithListsThatAreNeverNull",
+        "TheDestructionTellsTheAdvisorSynchronouslyAfterTheSessionLeftTheRegistryAndTheActiveSlotForAnActiveAndAnInactiveSession",
+        "TheDiscardOutcomeNamesNeitherADraftNorATypeOfThePilot",
+        "TheExtendedStatesOfTheIntentionAreAnOrderedPrefixAndTheNewOutcomesCarryTheirWitness",
+        "TheLogOfALossListsTheLostRacksAndApartTheUncertainOnesWithTheReasonOfTheComparer",
+        "TheMarkIsPerSessionAnAllowOfOneSessionNeverMarksAnother",
+        "TheQueriesAndTheAssignmentOfTheAdvisorDoNotEndTheSequence",
+        "TheReloadOfABlankRackAndANullRequestAreContainedWithoutReadingAndWithoutDegradingTheSession",
+        "TheReloadOfARackWithoutDraftIsNotFoundAndReadsNothing",
+        "TheVetoIsPerSessionADirtyDraftOfAnotherDocumentDoesNotVetoThisOne",
+        "WithAnAdvisorTheDecisionOfTheCloseIsTheOneOfTheAdvisor",
+        "WithoutAnAdvisorTheCloseIsAllowedAsBeforeAndTheDestructionNeedsNone"
+      ]
+    },
+    "WorkspacePilotEditGuardTests": {
+      "Red": [
+        "TheFlightGuardTripsWhenTheFlightIsCheckedBeforeTheGateThatAuthorizesInTheThreeReconciliations",
+        "TheHostGuardAllowsWhatTheNextTaskWouldAddAnUpdateOperationThatWrites",
+        "TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance",
+        "TheHostImplementsThePortExplicitlyAndNeverReadsOutsideTheThreeReadsAndChangesOnlyThroughNotePilotEdit"
+      ],
+      "Green": [
+        "TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance",
+        "TheTrapGuardTripsOnEachNameAndEachWordThatTheNeighbouringGuardsForbid"
+      ]
+    },
+    "WorkspacePilotEditHostTests": {
+      "Red": [
+        "ABeginInsideABeginAndACheckInsideACheckWaitWithoutReading",
+        "ABlockingBoundaryOnADraftThatCannotBeEditedKeepsItsPendingTextAndNeverValidatesOrApplies",
+        "AComparerThatThrowsMakesTheFieldUndecidableProtectedAndNotEditableAndGetFieldNeverThrows",
+        "AKnownRiskWithRacksInRiskStaysKnown",
+        "ANonBlockingBoundaryKeepsTheTextAlsoWhenItIsValidAndDoesNotApplyIt",
+        "ARejectedOrBusyTextKeepsTheMarkOfKnownClean",
+        "ATestOfTheCloseThatFailsLeavesAnUncertainNoticeWithoutAListOfRacks",
+        "AValidTextAndTheGestureOfTheFieldApplyItClearThePendingTextAndEndTheMark",
+        "AValidTextAtABlockingBoundaryProceedsAppliesItAndEndsTheMark",
+        "AdviseCloseStillReadsNothingAuthorizesNothingAndDoesNotDiscardOrRetireAndTheDecisionIsTheSame",
+        "AfterAnySequenceOfAcceptedAndRejectedEditsTheFieldHoldsTheLastAcceptedText",
+        "AnEditOfTheUserEndsTheMarkOfKnownClean",
+        "AnInvalidTextAbortsEachBlockingBoundaryWithTheFieldAndTheMessageAndNothingChanges",
+        "AnInvalidTextAndTheGestureOfTheFieldAnswerInvalidKeepTheTextAsTypedAndLeaveTheValue",
+        "AnInvalidTextProtectsTheRackPutsItAtRiskAndVetoesTheCloseWithItsNotice",
+        "DestroyingASessionDropsOnlyItsOwnNoticeOfVetoAndQueuesItsLoss",
+        "DiscardRackAndDiscardDocumentRemoveTheStateAndTheNextCloseIsAllowed",
+        "DiscardRackNeedsNoComparerAndRemovesAnUndecidableDraftToo",
+        "DiscardRackRemovesTheDraftAndItsPendingTextOfOneRackWithoutTouchingTheOthers",
+        "EachNonBlockingBoundaryKeepsAnInvalidTextCharacterByCharacterWithoutValidatingCommittingOrAuthorizing",
+        "GetFieldAndGetRacksAtRiskNeedNoAuthorizationAndNeverThrowEvenForABlankRackOrADocumentThatIsNotActive",
+        "GetFieldReportsEveryStateOfTheFieldAndWhatCanBeEdited",
+        "SetPendingTextIsRefusedWhenTheFieldCannotBeEditedWithoutAuthorizationAndWhenThereIsNoDraft",
+        "ShowingTheCommittedValueNeverCreatesPendingTextAndCommittingTheShownTextIsNotADirtyChange",
+        "TheCloseNoticesAreOnePerSessionTheLastOneAndAreTakenInOrderLeavingTheQueueEmpty",
+        "TheDepthOfNoticesNestsNeverGoesBelowZeroAndTheGateDelegatesEverythingElseAsItIs",
+        "TheDiscardOfARackEndsTheMarkOfKnownClean",
+        "TheFallbackByDraftIsKnownAndKeepsTheUncertainOnesApart",
+        "TheGestureOfTheFieldEndsTheMarkOfKnownCleanWhenItAppliesTheText",
+        "TheKeyOfThePendingTextIsAlwaysTheOneOfTheAdapterAndAnEmptyTextIsKeptToo",
+        "TheLossNoticesAreTakenInOrderAsValuesAndLeaveTheQueueEmpty",
+        "TheMarkOfReadInProgressIsClearedWhenTheReadEndsAlsoWhenTheReaderThrows",
+        "TheNoticeOfAVetoExpiresWhenTheSessionIsDiscardedWhenTheNextAdviceAllowsAndWhenTheSessionIsRetired",
+        "TheNoticeOfAVetoOfADocumentThatIsNotActiveIsQueuedToo",
+        "TheOperationsOfADocumentNeverTouchTheDraftsOfAnotherAndABlockingMutationOfAnotherDocumentIsRejected",
+        "TheOperationsThatChangeNothingKeepTheMarkOfKnownClean",
+        "TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull",
+        "ThePendingTextOfADocumentStaysInItAfterTheDocumentChangeAndComesBackWhenTheDocumentIsActiveAgain",
+        "TheRacksAtRiskAreOrderedOrdinallyAndAComparerThatThrowsMakesThemUncertainApart",
+        "TheRacksAtRiskOfASessionThatIsNotTheActiveOneAreAnsweredAndADefaultValueNeverHasANullList",
+        "TheReasonOfAFieldThatCannotBeReadIsInSpanish",
+        "TheReasonOfTheErrorOfADraftCrossesThePortOnlyInTheStateError",
+        "TheReasonsOfTheFieldAreInSpanishExactlyAsTheTableOfThePackageSays",
+        "TheReasonsOfTheGateAndOfTheIntentionReadsAreInSpanish",
+        "TheShownTextOfAFiniteValueGreaterThanZeroIsReadBackAsTheSameDoubleAndPassesTheValidationInEveryCulture",
+        "TheThreeReadsOfThePortAreTheOperationsOfTheHostAndNothingElseReadsTheDrawing",
+        "WhileTheReloadReadsEveryOperationThatChangesSomethingAnswersBusyAndASecondReadWaitsAllWithoutEffect",
+        "WithoutADiscardTheStateOfTheDraftPersistsThroughQueriesAndNonBlockingBoundaries",
+        "WithoutPendingTextTheGestureAndTheBlockingBoundariesChangeNothingAndWithoutADraftTheyProceed"
+      ],
+      "Green": [
+        "ASessionWithoutDraftsAnswersKnownAndEmptyAndNeverTheUnknown",
+        "AValueOutsideTheDomainHasNoTextAndABlankTextIsNeverCreated",
+        "AnExceptionOfAnOperationIsContainedAsAValueWithAReasonAndDoesNotDegradeTheSession",
+        "DiscardRackOfARackWithoutADraftIsDiscardedWithEmptyListsAndABlankRackToo",
+        "InsideANoticeOfThePanelTheThreeReadsWaitWithoutDelegatingAndWithoutReading",
+        "NoOperationOfThePortWritesAuthoredDataOfTheDrawing",
+        "TheDefaultRiskViewIsTheUnknownAndEveryValueBuiltWithTheConstructorIsKnown",
+        "TheModalScopeSwitchesOnBeforeItReturnsOffAtTheDisposeAlsoWithAnExceptionAndNestsAndDisposesTwiceHarmlessly",
+        "TheShownTextHasTheExpectedPlainDigitsAndTheDecimalSeparatorOfTheCurrentCulture",
+        "WithTheModalActiveTheIntentionWaitsAndCanDrainNowIsFalseUntilTheLastScopeEnds"
+      ]
+    },
+    "WorkspacePilotPrepareTests": {
+      "Red": [
+        "AKeepThatIsKeptEndsTheMarkAndOneThatIsNotNeededOrNotAdmittedDoesNot",
+        "AReadWithoutReasonOrWithoutResultUsesTheTextsOfTheOtherOperations",
+        "AWitnessWithoutAKeyIsAFailureOfTheRequestBeforeTheGateTheDraftAndTheReader",
+        "AnExceptionOfTheReaderIsFailedWithTheMessageReportedAndTheMarkAndTheSessionAreNotTouched",
+        "ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing",
+        "ConfirmWithADifferenceAnswersConflictWithTheDescribedDifferencesAndPutsTheDraftInConflict",
+        "ConfirmWithAMatchAnswersConfirmedWithoutDiagnosticAndKeepsTheStatusAndTheEdits",
+        "ConfirmWithAMatchInConflictAnswersConfirmedAndTheDraftStaysInConflict",
+        "ConfirmWithAMatchThatIsNotAdmittedCarriesTheDiagnosticOfTheAdmissionAndOnlyThen",
+        "DiscardAndReloadAppliesToEveryStatusButApplyingWhichWaitsAllWithTheOneRead",
+        "DiscardAndReloadReplacesTheDraftFromTheOneReadAndAReadThatIsNotAdmittedKeepsIt",
+        "DiscardAndReloadTakesAnUnknownAfterTheWriteOutOfItAndAnErrorToo",
+        "EachOperationReadsOnceAndSetsTheMarkOfReadInProgressAroundTheReadAndResetsItAfterwards",
+        "EveryAnswerOfTheReaderThatIsNotAReadIsMappedWithItsReasonAndChangesNothing",
+        "InsideANoticeTheGateAnswersWaitingForTheThreeOperationsWithoutDelegatingAndOutsideItDelegates",
+        "KeepAConflictLeavesItAndTheDraftIsDirtyOnTheNewVersion",
+        "KeepAfterAChangeOfTheDrawingStaysOnTheNewVersionWithTheScaleAndThePendingTextOfTheDraft",
+        "KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading",
+        "KeepThatFindsTheDraftBeingAppliedAfterTheReadAnswersWaitingAndChangesNothing",
+        "KeepWithAReadThatIsNotAdmittedKeepsTheDraftAsItWasAndCarriesTheDiagnostic",
+        "TheFieldViewCarriesTheOriginOfUnknownTheTextOfTheConflictAndTheLastCauseAsTheDraftHoldsThem",
+        "TheGateAnswersWaitingOrRejectedForTheThreeOperationsAndReadsNothing"
+      ],
+      "Green": [
+        "ABlankRackIdIsAnsweredBeforeAnythingElseWithTheTextsOfTheOtherOperationsAndReadsNothing",
+        "ACleanDraftHasNothingToApplyAndTheRereadIsNotLookedAt",
+        "AConfirmedCheckKeepsTheMarkAndAConflictFoundByTheCheckEndsIt",
+        "ADifferenceInACleanOrDirtyDraftPutsItInConflictWithTheOrderedDifferencesAndChangesNothingElse",
+        "ADifferenceInAConflictReplacesTheDifferencesAndTheDraftStaysInConflict",
+        "ADifferenceOfTheBaseIsAConflictBeforeTheAdmissionAndWithTheOrderedDifferences",
+        "ADiscardAndReloadThatReloadsEndsTheMarkAndOneThatIsNotAdmittedDoesNot",
+        "ADraftThatIsNotCleanOrDirtyIsNotApplicableWhateverTheReread",
+        "AKeepOnThatThrowsOrACopyThatThrowsLeavesTheDraftExactlyAsItWas",
+        "AMatchInACleanOrDirtyDraftOnlyClearsThePossiblyStaleMarkAndNeverCleansDirty",
+        "AMatchInAConflictAnswersConfirmedAndTheDraftStaysInConflictWithAllItsData",
+        "AMissingCatalogIsAnsweredAfterTheConflictAndTheAdmissionAndNotBeforeThem",
+        "AMissingDraftIsNotFoundWithoutReading",
+        "ARereadThatMatchesButIsNotAdmittedIsNotAdmittedWithItsDiagnostic",
+        "ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing",
+        "ConfirmBaseDoesNotApplyToADraftThatIsNotRegisteredApplyingUnknownOrInError",
+        "ConfirmBaseDoesNotChangeWhatCheckNowDoesForAnUnknownDraft",
+        "ConfirmBaseNeverTakesTheSlotOfTheUpdateAndNeverReadsAnything",
+        "ConfirmBaseWithoutAReReadThrowsAndChangesNothing",
+        "InvalidA_ACurrentStateThatDoesNotComposeIsInvalidWithTheReasonOfTheCompositionAndOverTheCarryOversOfTheMaterializer",
+        "InvalidA_AnOriginThatNoLongerMaterializesIsInvalidWithTheReasonOfTheMaterializerBeforeAnythingElse",
+        "InvalidB_NoMutableMemberWithTheTextOfTheOriginOrSeveralOfThemIsInvalid",
+        "InvalidC_AnInnerDesignOfAnotherKindOrOfANewerMajorAbortsThePreflightAndTheUpdateIsInvalid",
+        "InvalidD_ABuilderThatCannotBuildTheOutgoingSystemIsInvalidWithTheTypedErrorAndNothingIsWritten",
+        "InvalidE_AMutableMemberThatIsNotAvailableInTheOutgoingSystemOrWhoseEnvelopeDoesNotDecodeIsInvalidAndNeverErasesAView",
+        "InvalidE_AnEnvelopeThatDoesNotDecodeIsInvalidWithItsKey",
+        "KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading",
+        "KeepChecksNotAllowedThenNotConfirmedThenNotAdmittedInTheOrderOfTheOtherVersionAndNeverCallsKeepOnWithoutAdmission",
+        "KeepReplacesTheBaseTheInitialAndTheCurrentStateInOneStepAndKeepsThePendingTextAndTheEdits",
+        "KeepWithANullKeepOnThrowsBeforeAnythingElseAndChangesNothing",
+        "PendingTextComesBeforeEverythingButNotApplicableAndBeforeTheReread",
+        "PrepareDoesNotPutTheDraftInConflictNorCleanDirtyNorTakeTheSlotOfTheUpdate",
+        "PrepareIsTotalAMissingPieceIsInvalidAndNeverAnException",
+        "PrepareNeverChangesTheDraftWhateverItsOutcome",
+        "ReadOnlyAndNonMutableMembersOfTheRereadNeverEnterThePlan",
+        "TheDefaultFieldViewHasTheThreeNewValuesInert",
+        "TheNewOutcomesAreValuesWithTheStatesOfThePackageAndTheDefaultIsUnavailable",
+        "TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft",
+        "ThePilotNeverErasesAViewAPhantomThatWasAlreadyInTheDrawingMakesTheUpdateInvalidAndIsNeverInThePlan",
+        "ThePlanIsBuiltOnlyFromTheRereadSoAChangeOfTheCurrentScaleOnlyChangesTheScaleAndTheTextsThatCarryIt",
+        "ThePlanIsImmutableAndItsEqualityIsExplicitOrdinalElementByElementAndInOrder",
+        "ThePlanTypesLiveInThePilotNamespaceAndTheirSignaturesNameNoTypeOfTheHostOrOfTheDrawing",
+        "TheReadyPlanHoldsTheRackTheOriginTheExpectedBaseTheScaleAndTheMembersByKeyInOrdinalOrder",
+        "TheSevenOutcomesAreEvaluatedInTheDeclaredOrder",
+        "TheSnapshotIsBuiltOnlyByFromWithCopiesAndTheStatusBeforeAnAttemptWhileApplying",
+        "TheThreeOperationsAnswerUnavailableWithoutAReaderAndReadNothing",
+        "TheVersionOfTwoParametersStillKeepsTheCurrentStateAsItWas"
+      ]
+    },
+    "WorkspacePilotReconciliationGuardTests": {
+      "Red": [],
+      "Green": [
+        "TheGuardOfWhoReadsSeesAKeepInTheRequestACheckInThePresentationAnyOfTheFourInTheBrowserAndANameof"
+      ]
+    },
+    "WorkspacePilotReconciliationHostTests": {
+      "Red": [
+        "ADefaultReadResultAnswersFailedForTheThreeOperationsAndChangesNothing",
+        "ADiagnosticAndAHintOnlyComeWithAReadThatWasNotAdmitted",
+        "AFailureOfTheDiagnosticGivesNullAndNeverChangesTheClassificationNorTurnsAChangedDraftIntoFailed",
+        "ASessionThatNeverExistedIsRejectedForTheThreeOperationsWithoutReadingAndWithoutChange",
+        "AnExceptionInsideTheComparisonOfTheGeneralCheckIsFailedReportedAndChangesNothing",
+        "AnInvalidPendingTextDoesNotBlockTheThreeOperationsConfirmAndKeepLeaveItExactlyAsTypedAndDiscardEmptiesIt",
+        "AnotherActiveDocumentRejectsTheThreeOperationsWithoutReadingAndLeavesTheBaseTheInitialTheCurrentAndThePendingTextIntact",
+        "CheckNowWithARereadThatIsNotAdmittedAndDiffersFromTheBaseIsAConflictAndCarriesTheDiagnosticAndTheHint",
+        "CheckNowWithARereadThatIsNotAdmittedAndMatchesTheBaseIsRecoveredAndCarriesTheDiagnosticAndTheHint",
+        "CheckNowWithAnAdmittedRereadCarriesNoDiagnosticNorHintInARecoveryNorInAConflict",
+        "ConfirmOfAConflictWithAnInvalidPendingTextKeepsTheTextTheConflictAndTheDifferences",
+        "ConfirmOfADeletedRackIsAConflictWithTheDiagnosticAndTheHintOfTheClassicEditor",
+        "ConfirmOfARackThatIsNoLongerEditableWithAnotherBaseIsAConflictWithBothThings",
+        "ConfirmOfARackThatIsNoLongerEditableWithTheSameBaseIsConfirmedWithTheDiagnosticAndTheHint",
+        "ConfirmOfAnUnreadableEnvelopeCarriesTheDiagnosticOfAnUnreadableOrFutureEnvelopeAndTheHint",
+        "ConfirmWithAChangeOfTheScaleAndOfAnotherFieldIsAConflictAndKeepAfterwardsKeepsTheScaleOfTheDraftOnTheNewVersion",
+        "ConfirmWithAChangeOnlyOfAnotherFieldIsAConflictToo",
+        "ConfirmWithAChangeOnlyOfTheTextOfTheScaleIsAConflictOfTheOriginAndNothingElse",
+        "KeepAndDiscardOfADeletedRackAnswerNotAdmittedWithTheDiagnosticAndTheHintAndChangeNothing",
+        "KeepAndDiscardOfAnUnreadableEnvelopeAnswerNotAdmittedWithItsDiagnosticAndChangeNothing",
+        "TheDiagnosticNeverDecidesTheClassificationTheSameBaseGivesTheSameAnswerAndTheSameDraftWithOrWithoutAdmission",
+        "TheDiagnosticOfCheckNowReadsTheDrawingExactlyOnceAndWritesNothingAndANotAdmittedRereadStillReadsOnce",
+        "TheThreeOperationsStillReadTheDrawingExactlyOnceAndTheGeneralCheckStillComparesWithTheBaseOfTheDraft"
+      ],
+      "Green": [
+        "ARackDeletedFromTheDrawingReadsAnEmptyBaseAndThatAdmissionIsNotAdmittedWithTheMissingOrigin",
+        "TheAnswerOfCheckNowCarriesTheDiagnosticOnlyWhereItIsGivenAndEveryOtherAnswerHasNone",
+        "TheAnswerOfCheckNowOnlyCarriesAStateTextAndListsOfTextAndTheStatusesAreStillTheEightOfBefore",
+        "TheAnswerOfTheGeneralCheckOnlyCarriesAStateTextAndListsOfTextSoItCannotAuthorizeAWrite",
+        "TheFactoriesOfTheAnswerCarryTheDiagnosticAndTheHintOnlyWhereTheyAreGivenAndTheOtherAnswersCarryNone"
+      ]
+    },
+    "WorkspacePilotUpdateGuardTests": {
+      "Red": [
+        "TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose"
+      ],
+      "Green": []
+    },
+    "WorkspacePilotUpdateHostTests": {
+      "Red": [
+        "ABlankRackAndAnUnknownRackHaveNoDraftAndNothingIsRun",
+        "AConflictOfMutateIsNotAppliedConflictWithTheDifferencesAndTheDraftGoesToConflict",
+        "ADraftThatIsAlreadyApplyingIsRefusedWithTheNameOfTheRefusal",
+        "ADraftThatWasDiscardedDuringTheRunIsClosedDetachedAndTheSlotIsFree",
+        "AFailureBeforeTheSlotIsFailedAndLoggedAndTheSessionIsNotDegraded",
+        "ANotAdmittedReadWithTheBaseOfTheDraftIsNotAppliedAdmissionAndTheDraftKeepsItsStatus",
+        "APostThatFailedIsAppliedPostRereadFailedWithTheCauseAndTheWarningsAndTheDraftIsUnknown",
+        "APreflightAndAFailureKeepTheDraftAsItWasAndCarryTheirCause",
+        "ASealThatThrewIsCommitThrewAndTheDraftIsUnknownWithItsOrigin",
+        "AnAppliedUpdateRebasesTheDraftAndRunsThePortWithTheAuthorizedDocumentAndTheRack",
+        "AnAppliedUpdateWithWarningsKeepsThemAndTheDraftIsClean",
+        "AnErrorThatArrivesDuringACommitThatThrewKeepsTheUnknownVisibleAsTheClassificationWithItsCause",
+        "AnErrorThatArrivesDuringAConflictKeepsTheConflictAsTheClassificationAndWritesNothing",
+        "AnErrorThatArrivesDuringAnUpdateWithWarningsKeepsTheWarningsAndTheClassificationOfTheClosedInErrorAnswer",
+        "AnErrorThatArrivesDuringTheRunIsAppliedAfterTheClassificationAndTheAnswerIsClosedInError",
+        "AnotherUpdateInProgressInTheRegistryAnswersItAndRunsNothing",
+        "TheAnswerOfAnUpdateHasTheStatusOfTheClassOfOutcomeThatClosedTheDraftForEveryClass",
+        "TheCheckBeforeTheSlotAnswersNothingToApplyPendingTextAndNotApplicableWithoutTakingTheSlot",
+        "TheGateHasNoRestAndNoReaderSoACommandInProgressAndAMissingReaderDoNotStopTheUpdate",
+        "TheGateRejectsAModalAWrongSessionAndNoDocumentWithoutReadingAnythingAndWithoutTheSlot",
+        "TheSlotIsClosedExactlyOnceAndIsFreeAfterEveryAnswer",
+        "TheUpdateOfThePilotNeverUsesTheReaderOfTheIntention"
+      ],
+      "Green": [
+        "RowAllADraftThatLeftTheRegistryDuringTheUpdateIsClosedDetachedWithoutEvaluatingTheComparer",
+        "RowAllTheDeferredErrorIsStillAppliedAfterTheBranchWhetherOrNotTheCopierThrew",
+        "RowAppliedAndAppliedWithWarningsWhoseCopierThrowsIsUnknownPostRereadWithCauseAndNothingIsRebased",
+        "RowAppliedCopiesBeforeTheSlotIsFreedSoAnotherUpdateStillCannotTakeItWhileTheCopyRuns",
+        "RowAppliedWhoseComparatorThrowsIsUnknownPostRereadAndNothingIsRebased",
+        "RowCommitThrewIsKeptAsUnknownCommitThrewAndNoStateIsComputed",
+        "RowNotAppliedConflictKeepsItsClassificationEvenWhenTheComparerThrows",
+        "RowNotAppliedWhoseStateCannotBeComputedGoesToErrorWithItsReasonAndNeverToApplied",
+        "TheAnswerOfAnUpdateAlwaysComesFromTheCloseAndTheOutcomeNeverNamesADraft",
+        "TheClosedOutcomeCopiesTheListsOnReceiptAndMutatingTheOriginAfterwardsChangesNothing",
+        "TheFactoriesOfTheOutcomeCarryTheirStatusTheirReasonAndCopiesOfTheLists",
+        "TheStatesOfTheUpdateHaveTheExactNamesAndOrderOfThePackageAndNotApplyingIsNotOneOfThem",
+        "TheWarningsThatWereKnownSurviveWhenThePostRereadFailsOrIsNotAdmitted"
+      ]
+    },
+    "WorkspacePilotUpdateIntegrationGuardTests": {
+      "Red": [
+        "G4OnlyTheExecuteOfTheRunOfTheCoreCallsTheUpdateAndOnlyTheCoreCallsTheRunOfT4B",
+        "G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString"
+      ],
+      "Green": []
+    },
+    "WorkspacePilotUpdateRequestTests": {
+      "Red": [
+        "ACompletionWithoutAnyCallbackLeavesAFailedOutcomeOnceAndReleasesTheTicket",
+        "AConflictOfT4BIsKeptWithItsDifferencesAndTheHostWritesNothingMore",
+        "AContextThatFailsBeforeTheCallbackIsOnlyAFailedStartValueAndNoUpdateRunsAndTheDraftKeepsEverything",
+        "ADocumentThatChangedBeforeTheCallbackIsARejectedOutcomeAndTheDraftIsUntouched",
+        "AForeignCommandDuringTheUpdateDoesNotExpireTheTicketDuringTheRunAndAfterTheRunTheTicketIsFreedByTheNextCheckWithoutASecondOutcome",
+        "AHostFailureAfterTheAdmissionAlwaysRemovesTheTicketClosesTheOwnMutationIfItWasOpenedAndALaterRequestIsAccepted",
+        "ALateCallbackWithTheWitnessOfAnExpiredTicketDoesNothingAndLeavesNoSecondOutcome",
+        "ALockThatThrowsLeavesAFailedOutcomeWithItsPrefixAndNeverOpensTheOwnMutation",
+        "ANativeRefusalThatNeverRunsNorCompletesExpiresWithTheFirstForeignCommandAndLeavesAFailedOnceAndFreesEverything",
+        "ARecycledNativeIdentityFindsTheNewDocumentAndTheAdmissionOfTheOldSessionStopsItBeforeTheLock",
+        "ARequestInsideANoticeOfThePanelWaitsAndAnyOtherStartIsNotATerminalFailure",
+        "ARequestOfASessionThatIsNoLongerTheActiveOneIsRejectedByItsAuthorizationAndNeverWaitsForTheFlightOfThreeOperations",
+        "ARequestOnADirtyDraftIsAcceptedAndTheOutcomeOfTheUpdateIsTakenOnceByRack",
+        "ARequestWhileAReadOfThePilotIsInProgressIsBusyAndAsksNothing",
+        "ARetiredSessionTakesTheTicketAndTheStoreWithIt",
+        "ASecondRequestWhileTheFirstIsInFlightIsBusyAndTheExecutorIsAskedOnceAndAnotherIsAcceptedAfterTheEnd",
+        "ASecondTerminalCallOnATicketThatAlreadyEndedDoesNothingAndTheFirstOutcomeIsKept",
+        "ASessionDestroyedBetweenTheAcceptanceAndTheCallbackIsStoppedBeforeTheLockAndLeavesNoTicketNorOutcome",
+        "ASessionThatIsDegradedIsUnavailableAndOneDegradedBeforeTheCallbackExpiresTheTicket",
+        "ATicketThatEndedWhoseCompletionNeverArrivesExpiresWithTheNextForeignCommandAndFreesTheRequestAndTheDiscardsAndKeepsTheOutcomeOnce",
+        "ATicketThatNeverEndedAfterAnAdmissionExpiresWithTheNextForeignCommandAndAnUpdateInExecuteNeverExpires",
+        "AnAppliedOutcomeKeepsTheDraftCleanOnlyByTheClassificationOfT4BAndTheWarningsAreCopied",
+        "AnExecutorThatThrowsAfterTheCallbackBeganIsAnAcceptedStartValueAndTheOutcomeIsTheOnlyChannel",
+        "AnExecutorThatThrowsBeforeTheCallbackBeganIsStillAFailedStartValueEvenInTheDeferredMode",
+        "AnExecutorThatThrowsIsAFailedStartValueAndLeavesNoTicketNorOutcome",
+        "AnUnknownOutcomeOfT4BIsNeverTranslatedAndAnUnlockThatThrowsAfterwardsDoesNotChangeIt",
+        "AnUpdateOfTheCoreThatRunsOverASlotThatWasTakenAwayNeverAnswersAnApplied",
+        "AnotherRackOfTheSessionIsStillEditableDuringTheFlightOfTheFirst",
+        "DuringTheFlightTheFiveOperationsThatCouldChangeTheDraftAnswerBusyOrWaitingAndTheDraftDoesNotChange",
+        "TheCompletionReleasesTheTicketAfterTheUpdateAndUntilThenARequestIsBusyAndTheProgressIsNotInFlight",
+        "TheDiscardsAnswerBusyDuringTheFlightAndOnAnApplyingDraftAndTheRegistryIsUnchanged",
+        "TheDiscardsAreServedAgainWhenTheTicketExpiresWithAForeignCommand",
+        "TheEntriesIntoRestAndTheStartOfTheOwnCommandThatH0MeasuredBeforeTheCallbackDoNotExpireTheTicket",
+        "TheExpiryOfATicketOfAnotherRackInsideARequestKeepsItsFailedUnderItsRackAndTheRequestGoesOn",
+        "TheExpiryOfATicketOfTheSameRackInsideARequestIsTheStartValueFailedAndNothingIsAcceptedNorStored",
+        "TheGateAnswersWaitingForNoDocumentAModalAndNoRestAndRejectedForAnotherSessionAndRunsNothing",
+        "TheGeneralCheckDuringTheFlightWaitsBeforeItsRereadEvenWhenTheRereadWouldDifferAndTheDraftStaysDirty",
+        "TheOutcomeThatT4BGivesIsKeptWithTheSameStatusReasonDifferencesAndWarningsAsThePlainCallOfTheUpdate",
+        "TheRunOpensTheOwnMutationOnceBeforeTheUpdateAndAFailureBeforeTheUpdateClosesIt",
+        "TheStartValueWithoutAnExecutorOrAReaderIsUnavailableAndTheDefaultValuesAreInert",
+        "TheTextsOfTheGateOfTheUpdateAreTheConstantsOfTheRunWithTheirOldWording",
+        "TheUpdateBoundaryIsBlockingAndAppliesAValidPendingTextAndAbortsAnInvalidOneAndNeedsTheAuthorization",
+        "TheUpdateOfT4BRunsOncePerAcceptedRequestAlsoWithTwoClicksAndARepeatedCallback"
+      ],
+      "Green": [
+        "AComparerOrAnythingThatFailsWhileLookingForADraftBeingAppliedAnswersFalseAndIsLoggedSoTheDiscardIsNeverStuckInBusy"
+      ]
+    },
+    "WorkspacePilotReconciliationTests": {
+      "Red": [],
+      "Green": [
+        "AChoiceThatWaitsMakesTheBoxReadOnlyAndOffersOnlyYesAndNo",
+        "AChoiceWhoseMemoryCannotBeReadAgainAfterTheOperationIsNeverPresentedAsDone",
+        "ADiscardFromTheBrowserOfTheDraftThatTheChoiceWasAboutWithdrawsTheChoiceToo",
+        "AFieldWithoutThePortOffersNothingAndDoesNothing",
+        "APreviewTabOffersNeitherTheCheckNorTheOptionsAndCallsNothing",
+        "ARefusalOfTheChoiceForANotAdmittedReadIsAPersistentDiagnosticAndTheDraftIsKeptAsItWas",
+        "ASurfaceThatChangesDuringTheReadOfAnUnknownDraftAndDuringAChoiceShowsTheSameNotice",
+        "AnAnswerOfTheChoiceThatDidNothingHasItsPrefixItsReasonAndTheTextOfNothingDone",
+        "AnAnswerThatDoesNotMatchTheChoiceIsNeverPresentedAsDone",
+        "AnExceptionOfTheChosenOperationIsTheErrorOfTheFieldAndTheChoiceIsGone",
+        "AnOptionThatIsNotOfferedDoesNothingWhenItIsAsked",
+        "AskingForAnOptionCallsNoOperationOfThePortAndOnlyReadsItsMemory",
+        "IfTheViewChangedAfterAskingForKeepYesCallsNeitherOperation",
+        "KeepIsNotOfferedWithAPendingTextWhetherItIsValidOrNotAndTheLineSaysWhy",
+        "NoCallsNothingChangesNothingAndSaysSoForEachOfTheTwoChoices",
+        "TheChoiceIsWithdrawnByAnyNewGestureOfTheField",
+        "TheChoiceIsWithdrawnInSilenceByAChangeOfSurfaceByClearAndByAFailure",
+        "TheChoiceIsWithdrawnWithTheSituationNoticeWhenThePresentationFindsThatTheViewNoLongerOffersIt",
+        "TheOptionsAreNotOfferedOnAPreviewTabWithAFailureWithAPersistentDiagnosticOrWithAChoiceThatWaits",
+        "TheTextOfEachConfirmationIsTheOneOfTheTableForTheStateTheOwnWorkAndThePendingText",
+        "YesOnKeepCallsThatOperationOnceWithTheSessionAndTheRackAndNeverTheDiscard"
+      ]
+    },
+    "WorkspacePilotReconciliationViewTests": {
+      "Red": [],
+      "Green": [
+        "ARealClickOnAnOptionOnlyAsksForTheConfirmationAndShowsTheQuestionAndTheTwoButtons",
+        "ARealClickOnNoCallsNothingAndLeavesTheDraftAsItWasForEachOption",
+        "ARealClickOnYesCallsTheChosenOperationOnceAndNeverTheOtherForEachOption",
+        "TheButtonsAreVisibleOnlyWhereTheViewModelOffersThem",
+        "TheFiveButtonsHaveTheirContentTheirAutomationNameAndTheOrderOfTheTable",
+        "YesAndNoAreNotSwappedAClickOnEachDoesWhatItsLabelSays"
+      ]
+    }
+  },
+  "CopyPartitionPath": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/cc4b/out-probe-v48-r4q/pbt4b-copy-partition.tsv",
+  "CopyPartitionSha256": "e87e024c168dd81d05c1ba1ae9dfa0027da8724ee0d9fd219cce74fe1f613dec",
+  "CopyPaths": {
+    "WorkspaceLifecycleHostTests": "tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs",
+    "WorkspacePilotPrepareTests": "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs",
+    "WorkspaceEditIntentHostTests": "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs",
+    "WorkspacePilotEditHostTests": "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs",
+    "WorkspaceCommandAdvisorTests": "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs",
+    "WorkspacePilotUpdateRequestTests": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs",
+    "WorkspacePilotUpdateHostTests": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs",
+    "WorkspacePilotReconciliationHostTests": "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs",
+    "WorkspaceAssociativeBookkeepingTests": "tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs"
+  },
+  "KitPath": "tests/RackCad.Tests/Workspace/WorkspaceFullReadKit.cs",
+  "CopyClasses": {
+    "WorkspaceLifecycleHostTests": [
+      "FullPanelCopyWorkspaceLifecycleHostRedTests",
+      "FullPanelCopyWorkspaceLifecycleHostGreenTests"
+    ],
+    "WorkspacePilotPrepareTests": [
+      "FullPanelCopyWorkspacePilotPrepareRedTests",
+      "FullPanelCopyWorkspacePilotPrepareGreenTests"
+    ],
+    "WorkspaceEditIntentHostTests": [
+      "FullPanelCopyWorkspaceEditIntentHostRedTests",
+      "FullPanelCopyWorkspaceEditIntentHostGreenTests"
+    ],
+    "WorkspacePilotEditHostTests": [
+      "FullPanelCopyWorkspacePilotEditHostRedTests",
+      "FullPanelCopyWorkspacePilotEditHostGreenTests"
+    ],
+    "WorkspaceCommandAdvisorTests": [
+      "FullPanelCopyWorkspaceCommandAdvisorRedTests",
+      "FullPanelCopyWorkspaceCommandAdvisorGreenTests"
+    ],
+    "WorkspacePilotUpdateRequestTests": [
+      "FullPanelCopyWorkspacePilotUpdateRequestRedTests",
+      "FullPanelCopyWorkspacePilotUpdateRequestGreenTests"
+    ],
+    "WorkspacePilotUpdateHostTests": [
+      "FullPanelCopyWorkspacePilotUpdateHostRedTests",
+      "FullPanelCopyWorkspacePilotUpdateHostGreenTests"
+    ],
+    "WorkspacePilotReconciliationHostTests": [
+      "FullPanelCopyWorkspacePilotReconciliationHostRedTests",
+      "FullPanelCopyWorkspacePilotReconciliationHostGreenTests"
+    ],
+    "WorkspaceAssociativeBookkeepingTests": [
+      "FullPanelCopyWorkspaceAssociativeBookkeepingRedTests",
+      "FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests"
+    ]
+  },
+  "CopyTools": {
+    "pbt4b_lists_core.py": "3d172421b24d6bd64655e349c52906463f8de779b42a30a319da6ad1d8fb82a1",
+    "pbt4b_copy_map_defs.py": "520f1d329348e98d964687ab3255837d36026ea6b1b6a07f642e4c838c8659bf",
+    "gen/pbt4b_skips_v48.py": "a1bfbc199cccb2cc8788be04b9d624aa59f47eaeeae35da32795f1571afc0fd9",
+    "gen/pbt4b_skips_v45.py": "26e75ebd13330f1a0422974dfb0aa1988246acec5e9bd06f7441dd47e2ba2d98"
+  },
+  "CopyFiles": [
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs",
+    "tests/RackCad.Tests/PushBackWritePathGuardFull.cs",
+    "tests/RackCad.Tests/PushBackFullReadPathFull.cs",
+    "tests/RackCad.Tests/PushBackFullReadGuardFull.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationFull.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewFull.cs"
+  ],
+  "Precondition6": {
+    "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-precondition6.json",
+    "Keys": [
+      "CopySha",
+      "Cost",
+      "MinSelected",
+      "PartitionSha256",
+      "R_C",
+      "R_UI",
+      "Revision",
+      "Schema"
+    ]
+  },
+  "Kit": {
+    "Src": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-kit-WorkspaceFullReadKit-v45.cs",
+    "Sha256": "b4ed29f9"
+  },
+  "CtLast": 21,
+  "SkipModule": {
+    "Checker": "check_skips_pbt4b_v48.py",
+    "CheckerSha256": "44032bce3b8799e67a76cfcda23b5ecc67898f400b6d51ac47ab3be38200d890",
+    "Contract": "contract-emitted.json",
+    "ContractSha256": "f9f4478ba31290eac5bb45e041d994a3eadf861c5740ccae538641775f642607",
+    "Files": [
+      {
+        "Name": "pbt4b_skips_v48.py",
+        "Sha256": "a1bfbc199cccb2cc8788be04b9d624aa59f47eaeeae35da32795f1571afc0fd9",
+        "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b_skips_v48.py"
+      },
+      {
+        "Name": "pbt4b_skips_v45.py",
+        "Sha256": "26e75ebd13330f1a0422974dfb0aa1988246acec5e9bd06f7441dd47e2ba2d98",
+        "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b_skips_v45.py"
+      }
+    ],
+    "From": "git 8f783df58fb0e5688d58299951fcbdcde727f33e",
+    "Module": "pbt4b_skips_v48.py",
+    "Reads": [
+      "pbt4b-copy-map-v5.tsv",
+      "pbt4b-substitution-list-478.tsv"
+    ],
+    "Superseded": [
+      "pbt4b-copy-map-v2.tsv",
+      "pbt4b-substitution-list-477.tsv"
+    ]
+  },
+  "NewNames": [
+    "FullEditIntentFakeReader",
+    "FullEditIntentKit",
+    "FullPrepareKit",
+    "FullHandKit",
+    "FullReadRig",
+    "FullPanelCopyWorkspaceLifecycleHostRedTests",
+    "FullPanelCopyWorkspaceLifecycleHostGreenTests",
+    "FullPanelCopyWorkspacePilotPrepareRedTests",
+    "FullPanelCopyWorkspacePilotPrepareGreenTests",
+    "FullPanelCopyWorkspaceEditIntentHostRedTests",
+    "FullPanelCopyWorkspaceEditIntentHostGreenTests",
+    "FullPanelCopyWorkspacePilotEditHostRedTests",
+    "FullPanelCopyWorkspacePilotEditHostGreenTests",
+    "FullPanelCopyWorkspaceCommandAdvisorRedTests",
+    "FullPanelCopyWorkspaceCommandAdvisorGreenTests",
+    "FullPanelCopyWorkspacePilotUpdateRequestRedTests",
+    "FullPanelCopyWorkspacePilotUpdateRequestGreenTests",
+    "FullPanelCopyWorkspacePilotUpdateHostRedTests",
+    "FullPanelCopyWorkspacePilotUpdateHostGreenTests",
+    "FullPanelCopyWorkspacePilotReconciliationHostRedTests",
+    "FullPanelCopyWorkspacePilotReconciliationHostGreenTests",
+    "FullPanelCopyWorkspaceAssociativeBookkeepingRedTests",
+    "FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests",
+    "FullPanelCopyPushBackWritePathGuardRedTests",
+    "FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests",
+    "FullPanelCopyWorkspaceEditIntentGuardRedTests",
+    "FullPanelCopyWorkspacePilotEditGuardRedTests",
+    "FullPanelCopyWorkspacePilotEditGuardGreenTests",
+    "FullPanelCopyWorkspacePilotReconciliationGuardGreenTests",
+    "FullPanelCopyWorkspaceLifecycleGuardRedTests",
+    "FullPanelCopyWorkspacePilotUpdateGuardRedTests",
+    "FullPanelCopyWorkspacePilotReconciliationGreenTests",
+    "FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+    "FullPanelCopyPushBackFullReadPathRedTests",
+    "FullPanelCopyPushBackFullReadGuardRedTests",
+    "FullPanelCopyWorkspaceHostHardeningGuardRedTests",
+    "PushBackFullPanelTests",
+    "PushBackFullPanelGuardTests",
+    "PushBackFullPanelCensusGuardTests",
+    "PushBackPanelDraftGuardTests",
+    "WorkspaceFullCopyGuardTests",
+    "PushBackFullPanelFieldTests",
+    "WorkspaceFullReadKit",
+    "WorkspaceLifecycleHostFull",
+    "WorkspacePilotPrepareFull",
+    "WorkspaceEditIntentHostFull",
+    "WorkspacePilotEditHostFull",
+    "WorkspaceCommandAdvisorFull",
+    "WorkspacePilotUpdateRequestFull",
+    "WorkspacePilotUpdateHostFull",
+    "WorkspacePilotReconciliationHostFull",
+    "WorkspaceAssociativeBookkeepingFull",
+    "WorkspaceHostHardeningGuardFull",
+    "WorkspacePilotUpdateIntegrationGuardFull",
+    "WorkspaceEditIntentGuardFull",
+    "WorkspacePilotEditGuardFull",
+    "WorkspacePilotReconciliationGuardFull",
+    "WorkspaceLifecycleGuardFull",
+    "WorkspacePilotUpdateGuardFull",
+    "PushBackWritePathGuardFull",
+    "PushBackFullReadPathFull",
+    "PushBackFullReadGuardFull",
+    "WorkspacePilotReconciliationFull",
+    "WorkspacePilotReconciliationViewFull",
+    "NumericTextRule",
+    "PushBackAnnotationScaleRule",
+    "PushBackFullFieldAdapter",
+    "PushBackKeepMinePresentation"
+  ],
+  "LastF4BE": 52,
+  "EmissionF4BE": 52,
+  "CopyForms": {
+    "Red": [
+      "FullPanelCopy",
+      "RedTests"
+    ],
+    "Green": [
+      "FullPanelCopy",
+      "GreenTests"
+    ]
+  },
+  "CopyNamespaces": {
+    "WorkspaceLifecycleHostTests": "RackCad.Tests",
+    "WorkspacePilotPrepareTests": "RackCad.Tests",
+    "WorkspaceEditIntentHostTests": "RackCad.Tests",
+    "WorkspacePilotEditHostTests": "RackCad.Tests",
+    "WorkspaceCommandAdvisorTests": "RackCad.Tests",
+    "WorkspacePilotUpdateRequestTests": "RackCad.Tests",
+    "WorkspacePilotUpdateHostTests": "RackCad.Tests",
+    "WorkspacePilotReconciliationHostTests": "RackCad.Tests",
+    "WorkspaceAssociativeBookkeepingTests": "RackCad.Tests",
+    "PushBackWritePathGuardTests": "RackCad.Tests",
+    "WorkspacePilotUpdateIntegrationGuardTests": "RackCad.Tests",
+    "WorkspaceEditIntentGuardTests": "RackCad.Tests",
+    "WorkspacePilotEditGuardTests": "RackCad.Tests",
+    "WorkspacePilotReconciliationGuardTests": "RackCad.Tests",
+    "WorkspaceLifecycleGuardTests": "RackCad.Tests",
+    "WorkspacePilotUpdateGuardTests": "RackCad.Tests",
+    "WorkspacePilotReconciliationTests": "RackCad.UI.Tests",
+    "WorkspacePilotReconciliationViewTests": "RackCad.UI.Tests",
+    "PushBackFullReadPathTests": "RackCad.Tests",
+    "PushBackFullReadGuardTests": "RackCad.Tests",
+    "WorkspaceHostHardeningGuardTests": "RackCad.Tests"
+  },
+  "CopySplit": {
+    "WorkspaceLifecycleHostTests": {
+      "EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively": [
+        3,
+        7
+      ]
+    },
+    "WorkspacePilotEditGuardTests": {
+      "TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance": [
+        1,
+        3
+      ]
+    },
+    "WorkspacePilotPrepareTests": {
+      "ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing": [
+        7,
+        1
+      ],
+      "KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading": [
+        7,
+        1
+      ]
+    }
+  },
+  "Inputs": {
+    "red-filters.txt": "8d94e137776ba136eafded1422bcb07c1e3c45a0464d62f4e276e267ba8641e2",
+    "copies.txt": "797c662e282a7ab04b186c945fa85a78bcc7c43e5fc1813776fab284f33f18e9",
+    "new-tests.txt": "bbd7a2b2031d8de62184eed031434402523c5eeee15087e23a74409a15727e65",
+    "new-names.txt": "16265d48a8b70247a6128eb8caf2a6be260648c92218f5858adaee2bc38cca0e"
+  }
+}

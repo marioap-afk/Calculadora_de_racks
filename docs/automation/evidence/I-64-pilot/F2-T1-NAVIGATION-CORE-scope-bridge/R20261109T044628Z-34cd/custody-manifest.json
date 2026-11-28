@@ -1,0 +1,37 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F2-T1-NAVIGATION-CORE-scope-bridge/R20261109T044628Z-34cd",
+  "SourceRoot": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-scope-bridge/R20261109T044628Z-34cd",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 3,
+    "EXCLUDED": 1
+  },
+  "Files": [
+    {
+      "Path": "adversarial.json",
+      "Bytes": 3972,
+      "Sha256": "c5c7b266941c2e014fccc80492419e79080e5c4079cf887471534d3988220166",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "bridge-run.json",
+      "Bytes": 7478,
+      "Sha256": "a92fc8a181f1c4b588631c53c3e5bcc510c16bd5aacfedfeb3d9a62f1df3b650",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "real.json",
+      "Bytes": 3577,
+      "Sha256": "729f2098e17acea679deac9cc44efc6693cdd32b3511fd1ced6b1d5192ae6462",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "verifier/verify_scope_bridge.py",
+      "Bytes": 14636,
+      "Sha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia byte a byte del blob versionado cf381ab96a3d945a9569d56bb3aaf546e3f2fce1 (docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py)"
+    }
+  ]
+}

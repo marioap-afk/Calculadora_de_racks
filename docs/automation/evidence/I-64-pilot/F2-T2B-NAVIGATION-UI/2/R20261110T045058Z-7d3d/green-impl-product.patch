@@ -1,0 +1,620 @@
+diff --git a/src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs b/src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs
+index 607c11a6..8da36d77 100644
+--- a/src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs
++++ b/src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs
+@@ -24,12 +24,17 @@ namespace RackCad.Application.Workspace
+         Failed,
+     }
+ 
+-    /// <summary>Immutable outcome of one navigation request.</summary>
++    /// <summary>
++    /// Immutable outcome of one navigation request. <paramref name="TargetCount"/> is the number of targets of the set of the
++    /// requested action (the references the policy chose from), so the panel can present a copy "k of M" without counting
++    /// targets itself. It is null whenever the request ended before the targets were asked for.
++    /// </summary>
+     public readonly record struct WorkspaceNavigationResult(
+         WorkspaceNavigationStatus Status,
+         NavigationActionVerdict? Verdict,
+         bool RefreshRequired,
+-        string? Reason)
++        string? Reason,
++        int? TargetCount = null)
+     {
+         public bool IsExecuted => Status == WorkspaceNavigationStatus.Executed;
+ 
+@@ -186,18 +191,36 @@ namespace RackCad.Application.Workspace
+             if (!modelSpaceCurrent)
+                 return WorkspaceNavigationResult.Unavailable("Navigation needs the Model Space.");
+ 
++            int? targetCount = null;
+             try
+             {
+                 var plan = _policy.Plan(request.Origin, request.RackId, request.Action, request.CopyIndex, request.View, request.LocateWith);
++
++                // Counted from the same cached set the plan used, before the revalidation, so it never costs a second read.
++                targetCount = CountTargets(request);
+                 var decision = _policy.Execute(plan, session, new EchoRecordingEffects(effects, _echo));
+-                return WorkspaceNavigationResult.From(decision);
++                return WorkspaceNavigationResult.From(decision) with { TargetCount = targetCount };
+             }
+             catch (Exception ex)
+             {
+-                return WorkspaceNavigationResult.Failed(ex.Message);
++                return WorkspaceNavigationResult.Failed(ex.Message) with { TargetCount = targetCount };
+             }
+         }
+ 
++        // The number of targets of the set of the requested action: every target for Select, View and Center; for LocateView
++        // only those of the requested view (none when no view was requested). NavigationTargets stays the only authority.
++        private int CountTargets(WorkspaceNavigationRequest request)
++        {
++            var count = 0;
++            foreach (var target in _targets.Resolve(request.Origin.Origin, request.RackId).Targets)
++            {
++                if (request.Action == NavigationActionKind.LocateView && (request.View == null || target.ViewOrder != request.View.Value)) continue;
++                count++;
++            }
++
++            return count;
++        }
++
+         private void End(SessionId session)
+         {
+             _targets.EndSession(session);
+diff --git a/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs b/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
+index e3b9a0de..0e58bbc2 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
+@@ -43,7 +43,7 @@ namespace RackCad.Plugin.Workspace
+         private WorkspacePaletteHost()
+         {
+             _controller = WorkspaceController.GetOrCreate();
+-            _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled);
++            _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation);
+             _root = new WorkspacePanelView(_viewModel);
+ 
+             _palette = new PaletteSet("RackCad");
+diff --git a/src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs b/src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs
+new file mode 100644
+index 00000000..7e96a42a
+--- /dev/null
++++ b/src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs
+@@ -0,0 +1,396 @@
++using System;
++using System.Collections.Generic;
++using System.Globalization;
++using System.Threading.Tasks;
++using RackCad.Application.Workspace;
++
++namespace RackCad.UI.Workspace
++{
++    /// <summary>One entry of the explicit view choice of "Localizar vista".</summary>
++    public sealed class WorkspaceViewChoice
++    {
++        public WorkspaceViewChoice(NavigationViewOrder order, string label)
++        {
++            Order = order;
++            Label = label ?? string.Empty;
++        }
++
++        public NavigationViewOrder Order { get; }
++
++        public string Label { get; }
++    }
++
++    /// <summary>
++    /// Navigation of the workspace panel (I-64 F2-T2B, D-05, D-07): for the rack of the current context it offers Seleccionar,
++    /// Ver, Centrar and Localizar vista, with the copy "k of M" and the explicit view. It talks only to the
++    /// <see cref="IWorkspaceNavigationPort"/>; it never derives targets, never orders references, never decides the attribution
++    /// and keeps no inventory: the authority answers and this view-model presents the answer as a value.
++    ///
++    /// It asks the port only when the user clicks an action (<see cref="NavigateAsync"/>), never by time, never when it is
++    /// built and never because the context changed. The actions are enabled only with exactly one rack in the context, a
++    /// readable drawing, no action block and no action in progress; otherwise the command does not call the port and the reason
++    /// is shown. Each request carries the session and the rack of the same presented snapshot, captured together at the click.
++    ///
++    /// The copy index k belongs to this view-model and travels to the port; M is only what the port answers
++    /// (<see cref="WorkspaceNavigationResult.TargetCount"/>), unknown until then. Every failure is contained and presented.
++    /// </summary>
++    public sealed class WorkspaceNavigationViewModel : ObservableObject
++    {
++        private readonly IWorkspaceNavigationPort _port;
++        private readonly Action _refreshRequested;
++        private readonly List<WorkspaceViewChoice> _viewChoices = new List<WorkspaceViewChoice>
++        {
++            new WorkspaceViewChoice(NavigationViewOrder.Frontal, "Frontal"),
++            new WorkspaceViewChoice(NavigationViewOrder.Lateral, "Lateral"),
++            new WorkspaceViewChoice(NavigationViewOrder.Planta, "Planta"),
++            new WorkspaceViewChoice(NavigationViewOrder.Other, "Otras"),
++        };
++
++        // What the presented snapshot says (set only by Present).
++        private SessionId? _session;
++        private SelectionContextKind _kind = SelectionContextKind.None;
++        private string _rackId;
++        private bool _canRead;
++        private WorkspaceActionBlock _block = WorkspaceActionBlock.NotStarted;
++        private string _blockText = string.Empty;
++
++        private bool _busy;
++        private string _resultText = string.Empty;
++
++        // The copy: k is zero-based, M is only what the port answered. The scope is the requested view the count belongs to
++        // (null for the whole set of View and Center). The epoch tells an answer that the target changed in the meantime.
++        private int _copyIndex;
++        private int? _targetCount;
++        private NavigationViewOrder? _scopeView;
++        private int _epoch;
++        private int _targetEpoch;
++
++        private NavigationViewOrder _selectedView = NavigationViewOrder.Frontal;
++        private bool _locateCentered;
++
++        /// <param name="port">The navigation port; null leaves the actions unavailable with a reason.</param>
++        /// <param name="refreshRequested">Asks the panel for one new snapshot; called once per answer that requires a refresh.</param>
++        public WorkspaceNavigationViewModel(IWorkspaceNavigationPort port, Action refreshRequested = null)
++        {
++            _port = port;
++            _refreshRequested = refreshRequested;
++        }
++
++        // ------------------------------------------------------------------ what the panel shows
++
++        /// <summary>False when the panel was built without a navigation port.</summary>
++        public bool IsAvailable => _port != null;
++
++        public bool IsBusy => _busy;
++
++        /// <summary>Seleccionar, Ver, Centrar and Localizar vista are enabled only here.</summary>
++        public bool CanNavigate =>
++            _port != null
++            && !_busy
++            && _session.HasValue
++            && _kind == SelectionContextKind.One
++            && !string.IsNullOrWhiteSpace(_rackId)
++            && _canRead
++            && _block == WorkspaceActionBlock.None;
++
++        /// <summary>Why the actions are not enabled; empty while they are.</summary>
++        public string BlockedReason => CanNavigate ? string.Empty : ReasonOfBlock();
++
++        public bool HasBlockedReason => !CanNavigate;
++
++        /// <summary>The views the user can ask Localizar vista for.</summary>
++        public IReadOnlyList<WorkspaceViewChoice> ViewChoices => _viewChoices;
++
++        /// <summary>The explicit view of Localizar vista. Changing it restarts the copy.</summary>
++        public NavigationViewOrder SelectedView
++        {
++            get => _selectedView;
++            set
++            {
++                if (_selectedView == value) return;
++                _selectedView = value;
++                OnPropertyChanged(nameof(SelectedView));
++                ResetCopy();
++            }
++        }
++
++        /// <summary>Localizar vista centers instead of fitting the view; View is the default.</summary>
++        public bool LocateCentered
++        {
++            get => _locateCentered;
++            set
++            {
++                if (_locateCentered == value) return;
++                _locateCentered = value;
++                OnPropertyChanged(nameof(LocateCentered));
++                OnPropertyChanged(nameof(LocateWith));
++            }
++        }
++
++        public NavigationActionKind LocateWith => _locateCentered ? NavigationActionKind.Center : NavigationActionKind.View;
++
++        /// <summary>The copy index k (zero-based) that View, Center and Localizar vista send to the port.</summary>
++        public int CopyIndex => _copyIndex;
++
++        /// <summary>M: the number of targets the port answered for the last action; null while it is unknown.</summary>
++        public int? TargetCount => _targetCount;
++
++        public string CopyText => _targetCount.HasValue && _targetCount.Value == 0
++            ? "Sin objetivos"
++            : "Copia " + Ordinal(_copyIndex) + " de " + CountText(_targetCount);
++
++        /// <summary>The next copy is offered only once M is known and there is more than one.</summary>
++        public bool CanNextCopy => _targetCount.HasValue && _targetCount.Value > 1;
++
++        /// <summary>The outcome of the last action in Spanish; empty before the first one.</summary>
++        public string ResultText => _resultText;
++
++        public bool HasResult => _resultText.Length > 0;
++
++        // ------------------------------------------------------------------ what the panel tells it
++
++        /// <summary>
++        /// The panel presented a snapshot. It only stores what the snapshot says; it asks nothing of the port. A new rack or
++        /// session restarts the copy and clears the last answer. It never redirects an action already in progress.
++        /// </summary>
++        public void Present(
++            SessionId? session,
++            SelectionContextKind kind,
++            string rackId,
++            bool canReadDrawing,
++            WorkspaceActionBlock block,
++            string blockText)
++        {
++            var rack = kind == SelectionContextKind.One ? rackId : null;
++            var sameTarget = _session == session && string.Equals(_rackId, rack, StringComparison.Ordinal);
++
++            _session = session;
++            _kind = kind;
++            _rackId = rack;
++            _canRead = canReadDrawing;
++            _block = block;
++            _blockText = blockText ?? string.Empty;
++
++            if (!sameTarget)
++            {
++                _targetEpoch++;
++                ResetCopy();
++                SetResult(string.Empty);
++            }
++
++            RaiseAvailability();
++        }
++
++        // ------------------------------------------------------------------ the explicit user interactions
++
++        /// <summary>Moves to the next copy; after the last one it returns to the first. Only when M is known.</summary>
++        public void NextCopy()
++        {
++            if (!CanNextCopy) return;
++            _copyIndex = (_copyIndex + 1) % _targetCount.Value;
++            RaiseCopy();
++        }
++
++        public Task SelectAsync() => NavigateAsync(NavigationActionKind.Select);
++
++        public Task ViewAsync() => NavigateAsync(NavigationActionKind.View);
++
++        public Task CenterAsync() => NavigateAsync(NavigationActionKind.Center);
++
++        public Task LocateAsync() => NavigateAsync(NavigationActionKind.LocateView);
++
++        /// <summary>
++        /// The only entry that asks the port: one request per click, awaited on the UI thread. Disabled actions return without
++        /// calling the port. Every failure is contained and presented, so the returned task never faults.
++        /// </summary>
++        public async Task NavigateAsync(NavigationActionKind action)
++        {
++            try
++            {
++                if (!CanNavigate) return;
++
++                // One capture: the session and the rack of the same presented snapshot, and the copy and the view asked for.
++                var origin = new WorkspaceRequest(_session.Value);
++                var rackId = _rackId;
++                NavigationViewOrder? view = action == NavigationActionKind.LocateView ? _selectedView : (NavigationViewOrder?)null;
++                var locateWith = LocateWith;
++                var copyIndex = 0;
++                if (action != NavigationActionKind.Select)
++                {
++                    EnterScope(view);
++                    copyIndex = _copyIndex;
++                }
++
++                var epoch = _epoch;
++                var targetEpoch = _targetEpoch;
++                SetBusy(true);
++
++                WorkspaceNavigationResult result;
++                try
++                {
++                    result = await _port.ExecuteAsync(origin, rackId, action, copyIndex, view, locateWith);
++                }
++                catch (Exception ex)
++                {
++                    result = WorkspaceNavigationResult.Failed(ex.Message);
++                }
++
++                SetBusy(false);
++                Absorb(action, view, copyIndex, epoch, targetEpoch, result);
++                if (result.RefreshRequired && _refreshRequested != null) _refreshRequested();
++            }
++            catch (Exception ex)
++            {
++                ContainFailure(ex);
++            }
++        }
++
++        // ------------------------------------------------------------------ internals
++
++        // View, Center and Locate share one k; a different requested view is a different scope with its own count.
++        private void EnterScope(NavigationViewOrder? view)
++        {
++            if (_scopeView == view) return;
++            _scopeView = view;
++            ResetCopy();
++        }
++
++        private void ResetCopy()
++        {
++            _epoch++;
++            _copyIndex = 0;
++            _targetCount = null;
++            _scopeView = null;
++            RaiseCopy();
++        }
++
++        private void Absorb(NavigationActionKind action, NavigationViewOrder? view, int copyIndex, int epoch, int targetEpoch, WorkspaceNavigationResult result)
++        {
++            // An answer about a rack that is no longer the presented one is not shown and does not feed the copy.
++            if (targetEpoch != _targetEpoch) return;
++
++            SetResult(TextOf(action, view, copyIndex, result));
++            if (action == NavigationActionKind.Select || epoch != _epoch) return;
++
++            // M comes only from the answer of the port; a target that shrank sends k back to the first copy.
++            _targetCount = result.TargetCount;
++            if (_targetCount.HasValue && _copyIndex >= _targetCount.Value) _copyIndex = 0;
++            RaiseCopy();
++        }
++
++        private string TextOf(NavigationActionKind action, NavigationViewOrder? view, int copyIndex, WorkspaceNavigationResult result)
++        {
++            switch (result.Status)
++            {
++                case WorkspaceNavigationStatus.Executed:
++                    return ExecutedText(action, view, copyIndex, result.TargetCount);
++                case WorkspaceNavigationStatus.Unavailable:
++                    return result.Verdict.HasValue
++                        ? "El rack no tiene objetivos para esa acción; no se hizo nada."
++                        : "La navegación necesita el Espacio Modelo; el panel no cambia de espacio. Vuelve a Modelo y repite la acción.";
++                case WorkspaceNavigationStatus.Rejected:
++                    return "La petición pertenece a otro documento; no se hizo nada.";
++                case WorkspaceNavigationStatus.Stale:
++                    return result.RefreshRequired
++                        ? "El dibujo cambió desde que se mostró el panel; no se hizo nada. El panel se actualiza."
++                        : "El documento de la petición ya no existe; no se hizo nada.";
++                default:
++                    return "No se pudo completar la navegación: "
++                        + (string.IsNullOrWhiteSpace(result.Reason) ? "fallo sin detalle." : result.Reason);
++            }
++        }
++
++        private string ExecutedText(NavigationActionKind action, NavigationViewOrder? view, int copyIndex, int? count)
++        {
++            var copy = "copia " + Ordinal(copyIndex) + " de " + CountText(count);
++            switch (action)
++            {
++                case NavigationActionKind.Select:
++                    return "Rack seleccionado en el dibujo.";
++                case NavigationActionKind.Center:
++                    return "Dibujo centrado en la " + copy + ".";
++                case NavigationActionKind.LocateView:
++                    return "Vista " + LabelOf(view) + " localizada (" + copy + ").";
++                default:
++                    return "Vista ajustada a la " + copy + ".";
++            }
++        }
++
++        private string LabelOf(NavigationViewOrder? view)
++        {
++            foreach (var choice in _viewChoices)
++                if (view.HasValue && choice.Order == view.Value) return choice.Label;
++            return string.Empty;
++        }
++
++        private string ReasonOfBlock()
++        {
++            if (_port == null) return "La navegación no está disponible en este panel.";
++            if (_busy) return "Hay una navegación en curso.";
++            if (_block != WorkspaceActionBlock.None || !_canRead)
++                return string.IsNullOrWhiteSpace(_blockText) ? "El dibujo no se puede leer ahora." : _blockText;
++            if (!_session.HasValue) return "No hay un documento activo para navegar.";
++
++            switch (_kind)
++            {
++                case SelectionContextKind.Selection: return "Hay varios objetos seleccionados; selecciona un solo rack para navegar.";
++                case SelectionContextKind.NoIdentity: return "El objeto seleccionado no tiene identidad de rack.";
++                case SelectionContextKind.Diagnostic: return "No se pudo interpretar el objeto seleccionado.";
++                default: return "Selecciona un rack en el dibujo para navegar.";
++            }
++        }
++
++        // The last defence: whatever failed while presenting is shown, and the actions are released.
++        private void ContainFailure(Exception exception)
++        {
++            try
++            {
++                _busy = false;
++                OnPropertyChanged(nameof(IsBusy));
++                var detail = string.IsNullOrWhiteSpace(exception?.Message) ? exception?.GetType().Name : exception.Message;
++                SetResult("No se pudo completar la navegación: " + detail);
++                RaiseAvailability();
++            }
++            catch (Exception)
++            {
++                // Nothing else can be done here without risking the message loop of the host.
++            }
++        }
++
++        private void SetBusy(bool busy)
++        {
++            if (_busy == busy) return;
++            _busy = busy;
++            OnPropertyChanged(nameof(IsBusy));
++            RaiseAvailability();
++        }
++
++        private void SetResult(string text)
++        {
++            if (_resultText == text) return;
++            _resultText = text;
++            OnPropertyChanged(nameof(ResultText));
++            OnPropertyChanged(nameof(HasResult));
++        }
++
++        private void RaiseAvailability()
++        {
++            OnPropertyChanged(nameof(IsAvailable));
++            OnPropertyChanged(nameof(CanNavigate));
++            OnPropertyChanged(nameof(BlockedReason));
++            OnPropertyChanged(nameof(HasBlockedReason));
++        }
++
++        private void RaiseCopy()
++        {
++            OnPropertyChanged(nameof(CopyIndex));
++            OnPropertyChanged(nameof(TargetCount));
++            OnPropertyChanged(nameof(CopyText));
++            OnPropertyChanged(nameof(CanNextCopy));
++        }
++
++        private static string Ordinal(int zeroBased) => (zeroBased + 1).ToString(CultureInfo.InvariantCulture);
++
++        private static string CountText(int? count) => count.HasValue ? count.Value.ToString(CultureInfo.InvariantCulture) : "?";
++    }
++}
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+index 27f952f8..0a275cda 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+@@ -78,6 +78,47 @@
+             <TextBlock x:Name="ContextTextBlock" Text="{Binding ContextText}" Style="{StaticResource OptionalText}"
+                        Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+ 
++            <!-- Navigation of the rack of the context (I-64 F2-T2B). Explicit actions only. No control here has a fixed width:
++                 the WrapPanels reflow with the width of the surface, from a narrow bar to a wide window. -->
++            <TextBlock Text="Navegación" Style="{StaticResource SectionTitle}" />
++            <TextBlock x:Name="NavigationBlockedText" Text="{Binding Navigation.BlockedReason}" Style="{StaticResource OptionalText}"
++                       Foreground="{DynamicResource ShellStatusWarningBrush}" />
++            <WrapPanel x:Name="NavigationActionsPanel" Margin="0,6,0,0">
++                <Button x:Name="NavigationSelectButton" Content="Seleccionar" Margin="0,0,6,6" Padding="10,3"
++                        Style="{StaticResource SecondaryButtonStyle}"
++                        IsEnabled="{Binding Navigation.CanNavigate}" Click="OnNavigationSelectClick" />
++                <Button x:Name="NavigationViewButton" Content="Ver" Margin="0,0,6,6" Padding="10,3"
++                        Style="{StaticResource SecondaryButtonStyle}"
++                        IsEnabled="{Binding Navigation.CanNavigate}" Click="OnNavigationViewClick" />
++                <Button x:Name="NavigationCenterButton" Content="Centrar" Margin="0,0,6,6" Padding="10,3"
++                        Style="{StaticResource SecondaryButtonStyle}"
++                        IsEnabled="{Binding Navigation.CanNavigate}" Click="OnNavigationCenterClick" />
++            </WrapPanel>
++            <WrapPanel x:Name="NavigationCopyPanel">
++                <Button x:Name="NavigationNextCopyButton" Content="Siguiente copia" Margin="0,0,6,6" Padding="10,3"
++                        Style="{StaticResource SecondaryButtonStyle}"
++                        IsEnabled="{Binding Navigation.CanNextCopy}" Click="OnNavigationNextCopyClick" />
++                <TextBlock x:Name="NavigationCopyText" Text="{Binding Navigation.CopyText}" VerticalAlignment="Center"
++                           Margin="0,0,6,6" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++            </WrapPanel>
++            <WrapPanel x:Name="NavigationLocatePanel">
++                <TextBlock Text="Localizar vista" VerticalAlignment="Center" Margin="0,0,6,6"
++                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
++                <ComboBox x:Name="NavigationViewSelector" Margin="0,0,6,6" VerticalAlignment="Center"
++                          AutomationProperties.Name="Vista a localizar"
++                          ItemsSource="{Binding Navigation.ViewChoices}" DisplayMemberPath="Label" SelectedValuePath="Order"
++                          SelectedValue="{Binding Navigation.SelectedView, Mode=TwoWay}" />
++                <CheckBox x:Name="NavigationLocateCenteredCheck" VerticalAlignment="Center"
++                          Margin="0,0,6,6" IsChecked="{Binding Navigation.LocateCentered, Mode=TwoWay}">
++                    <TextBlock Text="Centrar en vez de ajustar" TextWrapping="Wrap" />
++                </CheckBox>
++                <Button x:Name="NavigationLocateButton" Content="Localizar" Margin="0,0,6,6" Padding="10,3"
++                        Style="{StaticResource SecondaryButtonStyle}"
++                        IsEnabled="{Binding Navigation.CanNavigate}" Click="OnNavigationLocateClick" />
++            </WrapPanel>
++            <TextBlock x:Name="NavigationResultText" Text="{Binding Navigation.ResultText}" Style="{StaticResource OptionalText}"
++                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++
+             <!-- In-memory instrumentation: read-only presentation of the report and its switch. -->
+             <TextBlock Text="Instrumentación" Style="{StaticResource SectionTitle}" />
+             <CheckBox x:Name="InstrumentationToggle" Content="Medir en memoria (no escribe en el registro)"
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+index 9a8039cf..db88c6e5 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+@@ -8,9 +8,10 @@ namespace RackCad.UI.Workspace
+     /// <summary>
+     /// Root control of the workspace panel (I-64 F1-T3B): the one visual the palette host adds, labelled "Workspace".
+     /// Its data context is the view-model. The control never asks the host for anything by itself: it has no timer and does
+-    /// not react to being shown or resized. Only two explicit user interactions reach the view-model (the retry and the
+-    /// instrumentation switch), and both are contained here as well: a failure becomes the Error state of the panel and
+-    /// never reaches the message loop of the host. It installs no global exception handler.
++    /// not react to being shown or resized. Only explicit user interactions reach the view-model (the retry, the
++    /// instrumentation switch and, since I-64 F2-T2B, the clicks of the navigation actions), and all are contained here as
++    /// well: a failure becomes the Error state of the panel and never reaches the message loop of the host. It installs no
++    /// global exception handler.
+     /// </summary>
+     public partial class WorkspacePanelView : UserControl
+     {
+@@ -49,6 +50,18 @@ namespace RackCad.UI.Workspace
+         private void OnInstrumentationClick(object sender, RoutedEventArgs e) =>
+             Contained(() => _viewModel.SetInstrumentation(((CheckBox)sender).IsChecked == true));
+ 
++        // The navigation clicks (I-64 F2-T2B): each one is one explicit interaction. The view-model's entry contains every
++        // failure and presents it, so the task it returns never faults and needs no observer here.
++        private void OnNavigationSelectClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.SelectAsync());
++
++        private void OnNavigationViewClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.ViewAsync());
++
++        private void OnNavigationCenterClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.CenterAsync());
++
++        private void OnNavigationLocateClick(object sender, RoutedEventArgs e) => Contained(() => _ = _viewModel.Navigation.LocateAsync());
++
++        private void OnNavigationNextCopyClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Navigation.NextCopy());
++
+         private void Contained(Action interaction)
+         {
+             try
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs b/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
+index 5c8e6ec1..7c5fe5a3 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
+@@ -45,10 +45,17 @@ namespace RackCad.UI.Workspace
+         private string _processMemoryText = string.Empty;
+         private IReadOnlyList<WorkspaceMeasurementRow> _measurements = Array.Empty<WorkspaceMeasurementRow>();
+ 
+-        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled)
++        /// <param name="port">The read-only host port.</param>
++        /// <param name="setInstrumentationEnabled">The neutral delegate of the instrumentation switch.</param>
++        /// <param name="navigation">
++        /// The navigation port (I-64 F2-T2B). Optional: without it the navigation section is present but unavailable. Building
++        /// the panel never asks it for anything; it is asked only when the user clicks a navigation action.
++        /// </param>
++        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null)
+         {
+             _port = port ?? throw new ArgumentNullException(nameof(port));
+             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
++            Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
+             Present(InitialSnapshot(), null);
+         }
+ 
+@@ -107,6 +114,9 @@ namespace RackCad.UI.Workspace
+         /// <summary>The measurement points of the report, read-only.</summary>
+         public IReadOnlyList<WorkspaceMeasurementRow> Measurements => _measurements;
+ 
++        /// <summary>The navigation of the rack of the current context (Seleccionar, Ver, Centrar, Localizar vista).</summary>
++        public WorkspaceNavigationViewModel Navigation { get; }
++
+         // ------------------------------------------------------------------ the only entries that ask the port
+ 
+         /// <summary>
+@@ -192,6 +202,9 @@ namespace RackCad.UI.Workspace
+             Set(ref _contextText, ContextTextOf(context), nameof(ContextText));
+             Set(ref _rackId, context.Kind == SelectionContextKind.One ? context.RackId : null, nameof(RackId));
+ 
++            // The navigation receives what this very snapshot says, in one piece; it asks nothing of its port for it.
++            Navigation.Present(snapshot.ActiveSession, context.Kind, _rackId, snapshot.Actions.CanReadDrawing, snapshot.Actions.Block, _actionBlockText);
++
+             PresentInstrumentation(snapshot.InstrumentationEnabled, report);
+         }
+ 
+@@ -232,6 +245,9 @@ namespace RackCad.UI.Workspace
+             OnPropertyChanged(nameof(IsEmptyState));
+             OnPropertyChanged(nameof(HasError));
+             OnPropertyChanged(nameof(InstrumentationEnabled));
++
++            // While the panel shows an error nothing is known about the drawing: the navigation is not offered.
++            Navigation.Present(null, SelectionContextKind.None, null, false, WorkspaceActionBlock.None, "El panel tuvo un fallo contenido; reintenta antes de navegar.");
+         }
+ 
+         private void Set<T>(ref T field, T value, string name) => SetProperty(ref field, value, name);

@@ -1,0 +1,117 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261010T031016Z-cca9",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "0a61ee3a50ea4bb01a5dce0d791a77fa4b0b3446",
+    "AmendmentId": "A-4",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "A1": {
+      "Path": "docs/initiatives/I-64-A-1.md",
+      "Blob": "fb6a49c2e8e96689f82a2ad01fda7994fc2397b0"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-4.md",
+      "Blob": "d587403e40243beda5db61779ef8e9687c480619"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+      "Blob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-result-a4.json",
+      "Blob": "5d02aabbed111a980e5390df8a90d0ee1f9f8200"
+    },
+    "OwnerMandate": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/owner-mandate-emergency.md",
+      "Blob": "4271dd7e128b001e5aaf8d1bbedcafbfc40faadd"
+    }
+  },
+  "PriorRequiredDisposition": [
+    {
+      "Id": "I64-A2-RUNID-FAIL-OPEN",
+      "Status": "CLOSED",
+      "Evidence": "The prior review 77a6 records CLOSED. A-4:104 preserves the correction; verifier:164,192 uses fullmatch for expected SHAs and delegation.RunId. The current selftest-result-a4.json retains T24 and T25 with FAIL, exit 1, and the expected DELEGATION_RUNID_INVALID and EXPECTEDBASE_INVALID_SHA reasons."
+    },
+    {
+      "Id": "I64-A3-JSON-CONSTANT-FAIL-OPEN",
+      "Status": "CLOSED",
+      "Evidence": "Verifier:92-94,117 supplies parse_constant=reject_constant, which raises ValueError for NaN, Infinity and -Infinity. Both input readers convert that exception to FAIL. The committed regression against A-3 records T26-T28 returning PASS/exit 0; selftest-result-a4.json records the same cases returning FAIL/exit 1 with DELEGATION_UNREADABLE or HANDOFF_UNREADABLE. Its VerifierSha256 matches the verifier authorized by A-4:64."
+    }
+  ],
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-4:124,134 correctly retains M-04 YES. A-2 changes satisfaction of the mandatory nc2 obligation, and A-4 tightens verifier failure behavior. INITIATIVE_LIFECYCLE Sec.3 M-04 covers failure semantics without limiting them to product behavior; Sec.6 requires Architect + Coordinator."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "The literal Owner mandate clauses 3-6 authorize an independently verifiable substitute applicable ONLY to I-64, require competent authorities before use, and prohibit changes to global I-61 text, I-62 and frozen product scope. NIGHT RUN expressly permits deterministic verifier corrections through append-only A-n followed by independent review, with two correction rounds after A-2. A-4 is the second round and remains within that authorization."
+    },
+    "Q03": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-4:106-111 preserves A-2:70-71 and A-1 Sec.3. Verifier:144-145 implements the exact-file or slash-terminated-prefix coverage definition of AUTOMATION_PLAN Sec.16.5. Verifier:236-263 obtains unfiltered changed paths from Git and rejects both uncovered paths and forbidden intersections, preserving both predicates of Sec.16.9 check 7. Additional checks strengthen rejection without permitting a Scope violation."
+    },
+    "Q04": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:256-263 mechanically evaluates every changed path against the delegation's allowed and forbidden scopes. A-4 also prevents submodule configuration from hiding gitlinks and grafts from falsifying ancestry. The committed T02, T08, T09, T30 and T31 results protect these boundaries. A-2:127 retains the nc2 substance: the adversarial result must identify exactly the excluded file and fail exclusively for OUTSIDE_ALLOWED_WRITE_SCOPE."
+    },
+    "Q05": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-2:77-91 and A-4:108 distinguish the permanently failed historical execution from subsequent substitute evidence. The historical nc2 oracle-result.json records OracleRelative=false and CONTROL NOT PASSED; its Coordinator stop review expressly permits alternative B, an authoritative replacement applicable to I-64. The inspected diff leaves the historical nc2 directory unchanged."
+    },
+    "Q06": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-4 declares Applies-to I-64 and adopts A-2's unit-only conditions and escalation rule. The verifier is pinned by blob, custody is under I-64 evidence, and other protocol obligations remain unchanged. A-2:95-104 grants no substitution authority to another initiative and requires escalation if a global change becomes necessary."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Freeze Sec.13 retains I-61 until I-62 integration. The Owner mandate explicitly authorizes independent I-64 progress without waiting for I-62 and prohibits consumption of unmerged I-62 implementation. A-2:97-98 preserves that boundary. The verifier requires only Python standard library and Git."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-4:121-128 correctly classifies this amendment's delta against INITIATIVE_LIFECYCLE Sec.3: no transfer of rule ownership, product persistence change, additional product behavior, cross-system contract change, reusable extension, transversal framework or modification of an accepted ADR. The output remains unit-local evidence with an unchanged schema. These NO values describe the amendment and do not negate the product materiality already recorded in the Freeze."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Within the ten retained conditions, A-2:126-129 specifies sufficient substitute-control oracles: accepted REAL inputs must yield PASS/exit 0; ADVERSARIAL uses the same handoff and SHAs and must yield nonzero FAIL exclusively for OUTSIDE_ALLOWED_WRITE_SCOPE, with exactly the excluded file identified. Exact verifier identity, normal Controller verification, preserved historical evidence, unchanged other controls and unchanged budgets remain mandatory. Other outcomes cannot satisfy the obligation."
+    },
+    "Q10": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "No fail-open path was identified in the reviewed object. Verifier:85-119 rejects duplicate JSON keys, non-JSON constants, invalid UTF-8 and lone surrogates throughout keys and values. Whole-string identity checks remain. Git calls remove inherited GIT_* redirection, disable replacement objects and fsmonitor, neutralize grafts, and override diff options that could conceal paths. Failed checks and unexpected exceptions prevent PASS; exit 0 is reserved for PASS. The committed 31-case result and A-3 regression support the corrected hazards without substituting for this static review."
+    },
+    "Q11": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "The Owner-authorized exception changes nc2 satisfaction only for I-64 and grants no global actor or method substitution. A-4 adopts the explicit limits and escalation rule of A-2. The diff from bb0d5522 to the reviewed commit is empty for INITIATIVE_LIFECYCLE, AUTOMATION_PLAN, agent-execution, WORKFLOW and AGENTS. The verifier corrections require no global I-61 semantic change."
+    },
+    "Q12": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "The requested 819955d6..bb0d5522 diff --stat is empty for every listed authority path. The requested log records I-63 integration rather than replacement of the execution protocol. Phase B explicitly corrects Phase A's authority classification; NIGHT RUN supplies the literal mandate and authorizes correcting A-n reviews. Historical nc2 and exhausted budgets remain preserved. Rebase mapping does not transfer exact-SHA test or build evidence, whose requirements remain governed by AGENTS and WORKFLOW."
+    }
+  },
+  "Findings": [],
+  "RequiredCount": 0,
+  "OptionalCount": 0,
+  "Verdict": "AGREED",
+  "Limitations": [
+    "Independent static review of pinned Git artifacts only. Neither verifier nor self-test was executed; committed results were inspected without independently reproducing them.",
+    "No concrete T1 path was evaluated for AllowedWriteScope membership. Historical outcomes were read from versioned records.",
+    "No live remote state, CI, runtime eligibility, build, test suite or Owner validation was independently measured. This verdict concerns the exact amendment object; activation predicates require separate verification.",
+    "Initial shell calls emitted a profile-loading error. Relevant Git reads and the log were repeated successfully with login=false; no conclusion depends on that error."
+  ]
+}

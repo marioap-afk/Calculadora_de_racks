@@ -1,0 +1,9 @@
+Diferencias campo a campo entre sobres (envdiff.py).
+
+## M4: PB F - planta, pre frente a ab3 (ida y vuelta A/B)
+1 diferencias
+~ .Design.PushBack.Composite.AbsentSlotsB: lista 1 -> 72
+
+## M2: la planta antes de la edicion (r2, PB F2 - planta) frente a la vista nueva (i2, PB F3 - planta_1): H-077
+0 diferencias
+

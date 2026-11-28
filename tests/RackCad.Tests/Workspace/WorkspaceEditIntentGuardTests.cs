@@ -1,0 +1,1391 @@
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Xunit;
+using Src = RackCad.Tests.WorkspaceHostSource;
+
+namespace RackCad.Tests;
+
+// I-64 F4-T2B2A-INTENT-WIRING (D-T2B2-01, 02, 03, 05, 06, 08): source guards of the wiring of the edit intention. The Core test project
+// cannot reference the Plugin (it needs AutoCAD), so the Plugin files are read as text, like the rest of the guards of the workspace.
+// These guards are ADDITIVE and live in a new file: no existing guard was changed or weakened for this task. Every guard fails by
+// ASSERTION when the text it expects is missing (a missing file or member is an assertion too). Only the guards that are followed by a
+// test named "...Detects..." (or by a theory that injects a line into the real text) have such a detection test; the others read the
+// real text and nothing more. They are limited to the names of this task and to the bodies of its two operations: what the package
+// assigns to F4-T2B2B (the lifecycle) is not prohibited here, and the exposure to the UI exists since F4-T3A and F4-T3B1 (the edit port
+// of the pilot and the panel that calls it).
+//
+// Evidence named by the package: R6 (no write to the drawing: the adapter, the scan, the host and the core), obligation 3 (the
+// preview never reaches the intention), obligation 10 (the base of a read only reaches Begin, CheckNow or DiscardAndReload) and
+// obligation 13 (the session of A never operates on B: the order of the nested reader, with the authorization before the revalidation).
+public class WorkspaceEditIntentGuardTests
+{
+    private const string AdapterPath = "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs";
+    private const string ScanPath = "src/RackCad.Plugin/Views/RackSiblingScan.cs";
+    private const string HostPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
+    private const string ControllerPath = "src/RackCad.Plugin/Workspace/WorkspaceController.cs";
+    private const string BridgePath = "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs";
+    private const string CorePath = "src/RackCad.Application/Workspace/WorkspaceHostCore.cs";
+    private const string InterfacePath = "src/RackCad.Application/Workspace/IWorkspaceEditIntentReader.cs";
+    private const string IntentPath = "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs";
+    private const string BridgeCorePath = "src/RackCad.Application/Workspace/EventBridgeCore.cs";
+
+    private static string Adapter() => Src.Code(AdapterPath);
+
+    private static string Host() => Src.Code(HostPath);
+
+    private static string Core() => Src.Code(CorePath);
+
+    private static string ReaderBody() => Src.BodyOf(Host(), @"private\s+EditIntentReadResult\s+ReadOnActiveDocument\s*\(");
+
+    private static string AdapterRead() => Src.BodyOf(Adapter(), @"internal\s+static\s+RackPilotIntentReadResult\s+Read\s*\(");
+
+    private static string AdapterPreview() => Src.BodyOf(Adapter(), @"internal\s+static\s+RackPilotWitnessResult\s+ReadPreviewWitness\s*\(");
+
+    private static string IntentBody() => Src.BodyOf(Core(), @"public\s+EditIntentOutcome\s+TryBeginPilotEdit\s*\(");
+
+    private static string CheckBody() => Src.BodyOf(Core(), @"public\s+EditCheckOutcome\s+TryCheckPilotEdit\s*\(");
+
+    // I-64 F4-T4A1 (D-T4A1-03): the three bodies of the explicit reconciliation of the host.
+    private static string ConfirmBody() => Src.BodyOf(Core(), @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\(");
+
+    private static string KeepBody() => Src.BodyOf(Core(), @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\(");
+
+    private static string DiscardAndReloadBody() => Src.BodyOf(Core(), @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\(");
+
+    private static int IndexOf(string text, string needle) => text.IndexOf(needle, StringComparison.Ordinal);
+
+    private static void AssertInOrder(string text, params string[] needles)
+    {
+        var previous = -1;
+        foreach (var needle in needles)
+        {
+            var at = IndexOf(text, needle);
+            Assert.True(at >= 0, "missing: " + needle);
+            Assert.True(at > previous, "out of order: " + needle);
+            previous = at;
+        }
+    }
+
+    // ------------------------------------------------------------------ INV-F4T2B2A-01: the additive projection of the scan
+
+    [Fact]
+    public void TheScanGainsTheRawEnvelopesAsAnInternalReadOnlyOrdinalViewFilledFromTheSameJsonThatTraverseReads()
+    {
+        var scan = Src.Code(ScanPath);
+
+        Assert.Matches(@"internal\s+IReadOnlyDictionary<string,\s*string>\s+RawEnvelopes\s*\{\s*get;\s*init;\s*\}", scan);
+        Assert.Matches(@"var\s+rawEnvelopes\s*=\s*new\s+Dictionary<string,\s*string>\s*\(\s*StringComparer\.Ordinal\s*\)\s*;", scan);
+        Assert.Equal(1, Src.Count(scan, @"\brawEnvelopes\.Add\s*\(\s*key\s*,\s*json\s*\)"));
+        Assert.Equal(1, Src.Count(scan, @"new\s+ReadOnlyDictionary<string,\s*string>\s*\(\s*rawEnvelopes\s*\)"));
+        Assert.Equal(1, Src.Count(scan, @"RackBlockData\.Read\s*\("));
+        // The text is added right after it was read and only for a definition that has text.
+        AssertInOrder(scan, "RackBlockData.Read(", "string.IsNullOrEmpty(json)", "rawEnvelopes.Add(key, json)");
+    }
+
+    [Fact]
+    public void TheScanKeepsTheSignaturesOfItsMethodsAndTheFiveParametersOfTheConstructorAndSetsRawEnvelopesAtItsOnePointOfConstruction()
+    {
+        var scan = Src.Code(ScanPath);
+
+        Assert.Matches(
+            @"internal\s+static\s+RackSiblingScanSnapshot\s+Capture\s*\(\s*Document\s+document\s*,\s*ObjectId\s+selectedDefinition\s*,\s*string\s+rackId\s*,\s*string\s+originalSourceId\s*,\s*bool\s+originalSourceIdIsAttributable\s*,\s*Func<RackEmbedDocument,\s*bool>\s+eraseByKind\s*\)",
+            scan);
+        Assert.Matches(@"internal\s+static\s+RackSiblingDrawingScan\s+CaptureDrawing\s*\(\s*Document\s+document\s*\)", scan);
+        Assert.Matches(
+            @"private\s+static\s+RackSiblingDrawingScan\s+Traverse\s*\(\s*Document\s+document\s*,\s*ObjectId\s+selectedDefinition\s*,\s*Func<RackEmbedDocument,\s*bool>\s+eraseByKind\s*\)",
+            scan);
+        // M-5: the constructor keeps its ORIGINAL signature of five parameters (no sixth one, optional or not)...
+        Assert.Matches(
+            @"internal\s+RackSiblingDrawingScan\s*\(\s*IReadOnlyList<RackSiblingScanFact>\s+facts\s*,\s*IReadOnlyDictionary<string,\s*ObjectId>\s+definitions\s*,\s*IReadOnlyDictionary<string,\s*RackEmbedDocument>\s+envelopes\s*,\s*IReadOnlyDictionary<string,\s*CustomPropertiesReadResult>\s+properties\s*,\s*IReadOnlyDictionary<string,\s*IReadOnlyList<RackSiblingLayerRequirement>>\s+layers\s*\)",
+            scan);
+        var constructor = Src.BodyOf(scan, @"internal\s+RackSiblingDrawingScan\s*\(");
+        // ...and it never invents a value for the raw text: no assignment of it and no default (an empty dictionary) in the constructor.
+        Assert.DoesNotMatch(new Regex(@"RawEnvelopes|rawEnvelopes|\?\?|new\s+ReadOnlyDictionary|new\s+Dictionary"), constructor);
+        Assert.DoesNotMatch(new Regex(@"rawEnvelopes\s*=\s*null"), scan);
+        // The property is assigned at the one point of construction of the scan, with the dictionary that Traverse filled.
+        Assert.Equal(1, Src.Count(scan, @"\bnew\s+RackSiblingDrawingScan\s*\("));
+        Assert.Matches(
+            @"new\s+RackSiblingDrawingScan\s*\([^;{]*\)\s*\{\s*RawEnvelopes\s*=\s*new\s+ReadOnlyDictionary<string,\s*string>\s*\(\s*rawEnvelopes\s*\)\s*\}\s*;",
+            scan);
+        Assert.Equal(1, Src.Count(scan, @"\bRawEnvelopes\s*="));
+        // A scan that arrives without the raw text is a typed failure of the read, never an empty dictionary received in silence.
+        var read = AdapterRead();
+        Assert.Matches(@"if\s*\(\s*scan\.RawEnvelopes\s*==\s*null\s*\)\s*return\s+new\s+RackPilotIntentReadResult\s*\(\s*null\s*,", read);
+        AssertInOrder(read, "CaptureDrawing(", "scan.RawEnvelopes == null", "new PushBackPilotIntentScan(");
+    }
+
+    [Fact]
+    public void TheScanStillWritesNothingAndKeepsItsOneCommitOfTheReadOnlyTransaction()
+    {
+        var scan = Src.Code(ScanPath);
+
+        Assert.DoesNotMatch(new Regex(@"OpenMode\.(?:ForWrite|ForNotify)|UpgradeOpen|AppendEntity|\.Erase\s*\(|RackBlockData\.Write|SetImpliedSelection|SetCurrentView|ProjectVariables"), scan);
+        // The one commit of the read-only scan was already there; the projection adds none.
+        Assert.Equal(1, Src.Count(scan, @"\.Commit\s*\("));
+    }
+
+    // ------------------------------------------------------------------ INV-F4T2B2A-02 and 11: the adapter
+
+    [Fact]
+    public void TheAdapterIsAnInternalStaticClassOfTheViewsFolderWithTheThreeOperationsOfThePackage()
+    {
+        var code = Adapter();
+
+        Assert.Matches(@"\bnamespace\s+RackCad\.Plugin\.Views\b", code);
+        Assert.Matches(@"internal\s+static\s+class\s+RackPilotIntentAdapter\b", code);
+        Assert.Matches(@"internal\s+static\s+RackPilotCatalogResult\s+LoadCatalog\s*\(\s*\)", code);
+        Assert.Matches(
+            @"internal\s+static\s+RackPilotIntentReadResult\s+Read\s*\(\s*Document\s+document\s*,\s*string\s+rackId\s*,\s*long\s+originDefinitionHandle\s*,\s*string\??\s+witnessKey\s*,\s*string\??\s+witnessText\s*,\s*RackCatalog\s+catalog\s*\)",
+            code);
+        Assert.Matches(@"internal\s+static\s+RackPilotWitnessResult\s+ReadPreviewWitness\s*\(\s*Document\s+document\s*,\s*long\s+definitionHandle\s*\)", code);
+        // The result types are internal and of this file; nothing of the adapter is public.
+        Assert.DoesNotMatch(new Regex(@"\bpublic\s+(?:sealed\s+|static\s+)*(?:class|struct|record|enum|interface)\b"), code);
+        Assert.Equal(3, Src.Count(code, @"internal\s+sealed\s+class\s+RackPilot\w+Result\b"));
+        Assert.StartsWith("#nullable enable", Src.Text(AdapterPath));
+    }
+
+    private static readonly Regex HostObjectField = new(
+        @"^\s*(?:private|public|internal|protected)\s+(?:static\s+)?(?:readonly\s+)?(?:[\w.]+\.)?(?:Transaction|DBObject|Document|Database|Entity|BlockReference|ObjectId|Editor)\b[^(]*[;=]",
+        RegexOptions.Multiline);
+
+    [Fact]
+    public void TheAdapterKeepsNoDocumentNoTransactionAndNoDatabaseObjectInAField()
+    {
+        Assert.DoesNotMatch(HostObjectField, Adapter());
+        // No static field either (a static auto-property would also keep an object alive); the adapter has constants and methods only.
+        Assert.DoesNotMatch(new Regex(@"\bstatic\s+(?:readonly\s+)?[\w<>,.?]+\s+\w+\s*(?:;|=(?!>)|\{\s*get)"), Adapter());
+    }
+
+    [Theory]
+    [InlineData("private Document _document;")]
+    [InlineData("internal static Transaction _transaction = null;")]
+    [InlineData("private readonly Database _database;")]
+    [InlineData("public DBObject Current { get; set; }")]
+    [InlineData("private ObjectId _definition;")]
+    public void TheFieldGuardOfTheAdapterDetectsEachObjectOfTheHostInItsRealText(string injected)
+    {
+        var real = Adapter();
+
+        Assert.DoesNotMatch(HostObjectField, real);
+        Assert.Matches(HostObjectField, real + "\n" + injected);
+    }
+
+    [Theory]
+    [InlineData("var l = document.LockDocument();")]
+    [InlineData("var t = document.Database.TransactionManager.StartTransaction();")]
+    public void TheUsingGuardOfTheAdapterDetectsALockOrATransactionOutsideUsingInItsRealText(string injected)
+    {
+        var offending = new Regex(@"\b(?:StartTransaction|StartOpenCloseTransaction|LockDocument)\s*\(");
+
+        Assert.All(Adapter().Split('\n').Where(l => offending.IsMatch(l)), l => Assert.Matches(@"\busing\b", l));
+        Assert.Contains(
+            (Adapter() + "\n" + injected).Split('\n').Where(l => offending.IsMatch(l)),
+            l => !Regex.IsMatch(l, @"\busing\b"));
+    }
+
+    [Fact]
+    public void TheLockAndTheTransactionsAreOnlyInsideUsingAndTheReadTakesNoLockOfItsOwn()
+    {
+        var code = Adapter();
+
+        foreach (var line in code.Split('\n').Where(l => Regex.IsMatch(l, @"\b(?:StartTransaction|StartOpenCloseTransaction|LockDocument)\s*\(")))
+            Assert.True(Regex.IsMatch(line, @"\busing\b"), "outside a using: " + line.Trim());
+        Assert.DoesNotMatch(new Regex(@"StartOpenCloseTransaction|OpenCloseTransaction"), code);
+
+        // Read runs inside the lock that the operation of the host already holds; the light read of the witness has its own.
+        Assert.DoesNotMatch(new Regex(@"LockDocument|StartTransaction"), AdapterRead());
+        var preview = AdapterPreview();
+        Assert.Equal(1, Src.Count(preview, @"using\s*\(\s*document\.LockDocument\s*\(\s*\)\s*\)"));
+        Assert.Equal(1, Src.Count(preview, @"using\s*\(\s*var\s+\w+\s*=\s*document\.Database\.TransactionManager\.StartTransaction\s*\(\s*\)\s*\)"));
+        AssertInOrder(preview, "LockDocument()", "StartTransaction()", "RackBlockData.Read(");
+    }
+
+    [Fact]
+    public void TheAdapterChecksInDebugThatNoTransactionIsOpenBeforeAndAfterTheOneRead()
+    {
+        var code = Adapter();
+        var read = AdapterRead();
+
+        Assert.Matches(@"\[Conditional\(""DEBUG""\)\]\s*private\s+static\s+void\s+AssertNoOpenTransaction\s*\(", code);
+        var helper = Src.BodyOf(code, @"private\s+static\s+void\s+AssertNoOpenTransaction\s*\(");
+        Assert.Contains("Debug.Assert(", helper);
+        Assert.Contains("TransactionManager.TopTransaction == null", helper);
+        AssertInOrder(read, "AssertNoOpenTransaction(document, \"before\")", "CaptureDrawing(", "AssertNoOpenTransaction(document, \"after\")");
+    }
+
+    private static void AssertInOrderOfPatterns(string text, params string[] patterns)
+    {
+        var previous = -1;
+        foreach (var pattern in patterns)
+        {
+            var match = Regex.Match(text, pattern);
+            Assert.True(match.Success, "missing: " + pattern);
+            Assert.True(match.Index > previous, "out of order: " + pattern);
+            previous = match.Index;
+        }
+    }
+
+    private const string CheckBeforePattern = @"AssertNoOpenTransaction\s*\(\s*document\s*,\s*""before""\s*\)";
+    private const string CheckAfterPattern = @"AssertNoOpenTransaction\s*\(\s*document\s*,\s*""after""\s*\)";
+
+    [Fact]
+    public void TheDebugCheckOfTheOpenTransactionRunsInEveryPathOfReadAndAroundTheLockAndTheTransactionOfThePreviewRead()
+    {
+        var read = AdapterRead();
+        var preview = AdapterPreview();
+
+        // M-4, Read: "before" is the first thing inside the try and "after" is in the finally that follows every catch, so it also
+        // runs for the early return of the witness and for each of the three catches (INV-14: at the end of every operation).
+        Assert.Equal(1, Src.Count(read, CheckBeforePattern));
+        Assert.Equal(1, Src.Count(read, CheckAfterPattern));
+        AssertInOrderOfPatterns(
+            read, @"\btry\s*\{", CheckBeforePattern, @"IsNullOrWhiteSpace\s*\(\s*witnessKey\s*\)", @"\bCaptureDrawing\s*\(", @"\bcatch\b", @"\bfinally\s*\{", CheckAfterPattern);
+        Assert.True(
+            Regex.Match(read, @"\bfinally\s*\{").Index > Regex.Matches(read, @"\bcatch\b").Cast<Match>().Last().Index,
+            "the finally must come after the last catch of Read");
+
+        // M-4, ReadPreviewWitness: "before" is made before its lock and its transaction are opened, and "after" after both closed
+        // (the finally is outside the two using), in every path.
+        Assert.Equal(1, Src.Count(preview, CheckBeforePattern));
+        Assert.Equal(1, Src.Count(preview, CheckAfterPattern));
+        AssertInOrderOfPatterns(
+            preview,
+            @"\btry\s*\{",
+            CheckBeforePattern,
+            @"\bLockDocument\s*\(",
+            @"\bStartTransaction\s*\(",
+            @"RackBlockData\.Read\s*\(",
+            @"\bcatch\b",
+            @"\bfinally\s*\{",
+            CheckAfterPattern);
+        Assert.True(
+            Regex.Match(preview, @"\bfinally\s*\{").Index > Regex.Matches(preview, @"\bcatch\b").Cast<Match>().Last().Index,
+            "the finally must come after the last catch of ReadPreviewWitness");
+    }
+
+    [Fact]
+    public void TheAdapterCapturesTheLockViolationAndEveryOtherExceptionAndAnswersATypedFailure()
+    {
+        var read = AdapterRead();
+        var preview = AdapterPreview();
+
+        foreach (var body in new[] { read, preview })
+        {
+            Assert.Matches(@"catch\s*\(\s*Autodesk\.AutoCAD\.Runtime\.Exception\s+\w+\s*\)\s*when\s*\(\s*\w+\.ErrorStatus\s*==\s*ErrorStatus\.LockViolation\s*\)", body);
+            Assert.Matches(@"catch\s*\(\s*Autodesk\.AutoCAD\.Runtime\.Exception\s+\w+\s*\)\s*\{", body);
+            Assert.Matches(@"catch\s*\(\s*System\.Exception\s+\w+\s*\)", body);
+            var filtered = Regex.Match(body, @"catch\s*\(\s*Autodesk\.AutoCAD\.Runtime\.Exception\s+\w+\s*\)\s*when").Index;
+            var general = Regex.Match(body, @"catch\s*\(\s*Autodesk\.AutoCAD\.Runtime\.Exception\s+\w+\s*\)\s*\{").Index;
+            var other = Regex.Match(body, @"catch\s*\(\s*System\.Exception").Index;
+            Assert.True(filtered < general && general < other, "the catches must go from the most specific to the most general");
+        }
+
+        Assert.DoesNotMatch(new Regex(@"\bthrow\b"), Adapter());
+    }
+
+    private static readonly Regex AdapterWrites = new(
+        @"OpenMode\.(?:ForWrite|ForNotify)|\bForWrite\b|UpgradeOpen|DowngradeOpen|AppendEntity|\.Erase\s*\(|\.Commit\s*\(|RackBlockData\.Write|SetImpliedSelection|SetCurrentView|GetCurrentView|ViewTableRecord|\bViewTable\b|SetSystemVariable|\bZoom\w*|\bRegen\b|UpdateScreen|CreateExtensionDictionary|\.Save\s*\(|SaveAs");
+
+    [Fact]
+    public void TheAdapterWritesNothingToTheDrawingNorTheSelectionNorTheViewNorTheVariableRegistry()
+    {
+        var code = Adapter();
+
+        Assert.True(!AdapterWrites.IsMatch(code), "the adapter uses " + AdapterWrites.Match(code).Value);
+        Assert.DoesNotMatch(new Regex(@"ProjectVariables"), code);
+        Assert.Equal(1, Src.Count(code, @"RackBlockData\.Read\s*\("));
+        Assert.Equal(0, Src.Count(code, @"GetObject\s*\("));
+    }
+
+    [Theory]
+    [InlineData("doc.Editor.SetImpliedSelection(ids);")]
+    [InlineData("var e = transaction.GetObject(id, OpenMode.ForWrite);")]
+    [InlineData("entity.UpgradeOpen();")]
+    [InlineData("space.AppendEntity(line);")]
+    [InlineData("entity.Erase();")]
+    [InlineData("transaction.Commit();")]
+    [InlineData("RackBlockData.Write(transaction, id, json);")]
+    [InlineData("doc.Editor.SetCurrentView(view);")]
+    [InlineData("var variables = ProjectVariablesData.Read(db);")]
+    public void TheWriteGuardOfTheAdapterDetectsEachFamilyInItsRealText(string injected)
+    {
+        var real = Adapter();
+        var pattern = new Regex(AdapterWrites.ToString() + "|ProjectVariables");
+
+        Assert.DoesNotMatch(pattern, real);
+        Assert.Matches(pattern, real + "\n" + injected);
+    }
+
+    [Fact]
+    public void TheAdapterHasOneCaptureOfTheDrawingAndOneNewHandleInsideTheOneHelper()
+    {
+        var code = Adapter();
+
+        Assert.Equal(1, Src.Count(code, @"\bCaptureDrawing\s*\("));
+        Assert.Equal(1, Src.Count(AdapterRead(), @"\bCaptureDrawing\s*\("));
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+Handle\s*\("));
+        Assert.Matches(@"private\s+static\s+Handle\s+ToHandle\s*\(\s*long\s+value\s*\)\s*=>\s*new\s+Handle\s*\(\s*value\s*\)\s*;", code);
+        // The origin key goes through the helper, and so does the light read of the witness; the handle 0 gives the empty key.
+        Assert.Matches(@"originDefinitionHandle\s*<=\s*0\s*\?\s*string\.Empty\s*:\s*ToHandle\s*\(\s*originDefinitionHandle\s*\)\.ToString\s*\(\s*\)", AdapterRead());
+        Assert.Contains("ToHandle(definitionHandle)", AdapterPreview());
+        // The definition of the light read is resolved from the handle of the helper with TryGetObjectId; no other conversion exists.
+        Assert.Equal(1, Src.Count(AdapterPreview(), @"\.TryGetObjectId\s*\(\s*handle\s*,"));
+        Assert.DoesNotMatch(new Regex(@"Handle\.Parse|Convert\.ToInt64|\bnew\s+ObjectId\b|(?<!Try)GetObjectId\s*\("), code);
+    }
+
+    [Theory]
+    [InlineData("var h = new Handle(other);", @"\bnew\s+Handle\s*\(")]
+    [InlineData("var again = RackSiblingScan.CaptureDrawing(document);", @"\bCaptureDrawing\s*\(")]
+    public void TheCountGuardsOfTheAdapterDetectASecondUseInItsRealText(string injected, string pattern)
+    {
+        var real = Adapter();
+
+        Assert.Equal(1, Src.Count(real, pattern));
+        Assert.Equal(2, Src.Count(real + "\n" + injected, pattern));
+    }
+
+    [Fact]
+    public void TheReadBuildsTheInputFromTheScanAndTheEvidenceOnceAndAWitnessWithoutKeyFailsBeforeAnyInputIsBuilt()
+    {
+        var read = AdapterRead();
+        var code = Adapter();
+
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+PushBackPilotIntentScan\s*\("));
+        Assert.Equal(1, Src.Count(code, @"PushBackPilotIntentReader\.Read\s*\("));
+        Assert.Matches(@"new\s+PushBackPilotIntentScan\s*\(\s*rackId\s*,\s*originKey\s*,\s*scan\.Facts\s*,\s*scan\.RawEnvelopes\s*,\s*CompletenessEvidence\s*,\s*witness\s*\)", read);
+        Assert.Matches(@"CompletenessEvidence\s*=\s*""RackSiblingScan/CaptureDrawing""", code);
+        // The constructor of the input throws for a blank key of the witness: the adapter answers a typed failure first.
+        Assert.Matches(@"if\s*\(\s*string\.IsNullOrWhiteSpace\s*\(\s*witnessKey\s*\)\s*\)\s*return\s+new\s+RackPilotIntentReadResult\s*\(\s*null\s*,", read);
+        AssertInOrder(read, "string.IsNullOrWhiteSpace(witnessKey)", "CaptureDrawing(", "new PushBackPilotIntentScan(", "PushBackPilotIntentReader.Read(");
+        Assert.DoesNotMatch(new Regex(@"new\s+RackEmbedDocument|RackEmbedDocument|RackEmbedStore|RackEmbedComposer"), code);
+    }
+
+    [Fact]
+    public void TheCatalogIsLoadedThroughTheOneWrapperWithATypedFailureAndWithoutAnyLock()
+    {
+        var code = Adapter();
+        var catalog = Src.BodyOf(code, @"internal\s+static\s+RackPilotCatalogResult\s+LoadCatalog\s*\(");
+
+        Assert.Equal(1, Src.Count(code, @"LateralHeaderDrawService\.LoadCatalog\s*\("));
+        Assert.Contains("LateralHeaderDrawService.LoadCatalog()", catalog);
+        Assert.Contains("catch (System.Exception", catalog);
+        Assert.DoesNotMatch(new Regex(@"LockDocument|StartTransaction|MdiActiveDocument|Document\b"), catalog);
+    }
+
+    [Fact]
+    public void TheAdapterKnowsNothingOfTheWorkspaceNorOfNavigation()
+    {
+        var code = Adapter();
+
+        Assert.DoesNotMatch(new Regex(@"RackCad\.Application\.Workspace"), code);
+        Assert.DoesNotMatch(
+            new Regex(@"\b(?:NavigationTargets|NavigationTargetSet|NavigationTarget|NavigationDefinitionFact|INavigationFactsPort|NavigationDiagnostic|NavigationViewOrder|NavigationRevalidation|NavigationActionPolicy|NavigationActionKind|INavigationEffects|NavigationEcho)\b|WorkspaceNavigation|IWorkspaceEditIntentReader|EditIntentReadResult|EditIntentWitness|WorkspaceHostCore|WorkspaceController"),
+            code);
+    }
+
+    [Theory]
+    [InlineData("using RackCad.Application.Workspace;")]
+    [InlineData("using RackCad.Application.Workspace.Drafts;")]
+    [InlineData("var set = (NavigationTargetSet)null;")]
+    [InlineData("var rack = new RackEmbedDocument();")]
+    public void TheIndependenceGuardOfTheAdapterDetectsEachFamilyInItsRealText(string injected)
+    {
+        var real = Adapter();
+        var pattern = new Regex(@"RackCad\.Application\.Workspace|\bNavigationTargetSet\b|RackEmbedDocument");
+
+        Assert.DoesNotMatch(pattern, real);
+        Assert.Matches(pattern, real + "\n" + injected);
+    }
+
+    // ------------------------------------------------------------------ INV-F4T2B2A-03: the nested reader of the navigation host
+
+    [Fact]
+    public void TheNestedReaderDoesTheSevenStepsInTheApprovedOrderAndTheAuthorizationComesBeforeTheRevalidation()
+    {
+        var body = ReaderBody();
+
+        AssertInOrder(
+            body,
+            "MdiActiveDocument",
+            "CommandInProgress",
+            "RackPilotIntentAdapter.LoadCatalog()",
+            "LockDocument()",
+            "_authorize(",
+            "_targets.Revalidate(",
+            "WorkspaceEditIntent.ChooseOriginDefinition(",
+            "RackPilotIntentAdapter.Read(");
+        Assert.Matches(@"using\s*\(\s*document\.LockDocument\s*\(\s*\)\s*\)", body);
+        Assert.Matches(@"string\.IsNullOrEmpty\(\s*document\.CommandInProgress\s*\)", body);
+        Assert.Matches(@"\.Editor\.IsQuiescent", body);
+        Assert.Contains("EditIntentReadResult.NoActiveDocument(", body);
+        Assert.Contains("EditIntentReadResult.Busy(", body);
+        Assert.Contains("EditIntentReadResult.Rejected(", body);
+        Assert.Contains("EditIntentReadResult.Failed(", body);
+        Assert.Contains("RequestDecision.Accepted", body);
+        // The catalog is the only call made outside the lock, and it is made once in the whole host.
+        Assert.Equal(1, Src.Count(Host(), @"RackPilotIntentAdapter\.LoadCatalog\s*\("));
+        Assert.Equal(1, Src.Count(Host(), @"RackPilotIntentAdapter\.Read\s*\("));
+        Assert.Equal(1, Src.Count(Host(), @"_targets\.Revalidate\s*\("));
+        // It writes no selection, no view, no focus and no data.
+        Assert.DoesNotMatch(new Regex(@"_effects|_runner|ReturnFocusToDrawing|SetImpliedSelection|SetCurrentView|\.Focus\s*\(|GetObject|\.Commit\s*\(|OpenMode|ForWrite"), body);
+    }
+
+    [Fact]
+    public void TheNestedReaderIsTheOnlyNestedTypeOfTheHostImplementsTheInterfaceAndReusesTheTargetsOfTheHost()
+    {
+        var host = Host();
+
+        Assert.Matches(@"private\s+sealed\s+class\s+PilotIntentReader\s*:\s*IWorkspaceEditIntentReader\b", host);
+        // The host and its nested reader are the only two classes of the file, and no name carries Draft, Editor, Subscription, Tab or Stable.
+        Assert.Equal(2, Src.Count(host, @"\bclass\s+\w+"));
+        Assert.DoesNotMatch(new Regex(@"\bclass\s+\w*(?:Draft|Editor|Subscription|Tab|Stable)\w*", RegexOptions.IgnoreCase), host);
+        Assert.Matches(@"internal\s+IWorkspaceEditIntentReader\s+EditIntentReader\s*=>\s*_editIntentReader\s*;", host);
+        Assert.Matches(@"private\s+readonly\s+NavigationTargets\s+_targets\s*;", host);
+        Assert.Matches(@"private\s+readonly\s+IWorkspaceEditIntentReader\s+_editIntentReader\s*;", host);
+        Assert.Equal(1, Src.Count(host, @"\bnew\s+NavigationTargets\s*\("));
+        Assert.Equal(1, Src.Count(host, @"\bnew\s+WorkspaceNavigationFacts\s*\("));
+        Assert.Matches(@"_targets\s*=\s*new\s+NavigationTargets\s*\(\s*\w+\s*\)", host);
+        Assert.Matches(@"new\s+WorkspaceNavigationRunner\s*\(\s*_targets\s*,", host);
+        Assert.Matches(@"new\s+PilotIntentReader\s*\(\s*_targets\s*,\s*_authorize\s*\)", host);
+        Assert.Equal(1, Src.Count(host, @"\bnew\s+PilotIntentReader\s*\("));
+        // The nested reader receives the targets of the host; it never builds its own.
+        var nested = host.Substring(IndexOf(host, "class PilotIntentReader"));
+        Assert.DoesNotMatch(new Regex(@"new\s+(?:NavigationTargets|WorkspaceNavigationFacts|NavigationActionPolicy)\s*\("), nested);
+    }
+
+    [Fact]
+    public void TheHostHandlesTheResultOfThePilotThatTheAdapterReturnsAsAValueAndKeepsNoFieldOfThePilotNorOfTheRead()
+    {
+        var host = Host();
+
+        // The coupling is declared: the host passes the result of the pilot through, once, and never names a type of the pilot.
+        Assert.Equal(1, Src.Count(host, @"\bread\.Pilot\b"));
+        Assert.Contains("result of the pilot", Src.Text(HostPath));
+        Assert.DoesNotMatch(new Regex(@"PushBackPilot|RackCad\.Application\.Systems"), host);
+        Assert.DoesNotMatch(
+            new Regex(@"^\s*(?:private|public|internal|protected)\s+(?:static\s+)?(?:readonly\s+)?(?:PushBackPilot\w*|EditIntentReadResult|EditIntentOutcome|EditCheckOutcome|DraftSession\S*|DraftIntentRead\S*|DraftRegistry|DraftStaleBase)\b[^(]*[;=]", RegexOptions.Multiline),
+            host);
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|WorkspaceHostCore"), host);
+    }
+
+    [Fact]
+    public void TheHostStaysWithinTheTrapsOfTheNeighbouringGuards()
+    {
+        var host = Host();
+
+        Assert.DoesNotMatch(new Regex(@"\.Result\b|GetResult|StartNew|ContinueWith|\+=|-="), host);
+        Assert.Equal(1, Src.Count(host, @"RackLog\.Exception\s*\("));
+        Assert.DoesNotMatch(new Regex(@"\b(?:async|await)\b|\bTask\.(?:Run|Delay|Factory)|Dispatcher"), host);
+        Assert.Matches(@"public\s+Task<WorkspaceNavigationResult>\s+ExecuteAsync\s*\(", host);
+        Assert.Matches(@"\bclass\s+WorkspaceNavigationHost\s*:\s*IWorkspaceNavigationPort\s*,\s*IWorkspaceBrowserSummaryPort\b", host);
+        foreach (var line in host.Split('\n').Where(l => Regex.IsMatch(l, @"\bLockDocument\s*\(")))
+            Assert.Matches(@"\busing\b", line);
+    }
+
+    // ------------------------------------------------------------------ the wiring in the controller
+
+    [Fact]
+    public void TheControllerAssignsTheReaderInTheNavigationGetterRightAfterCreatingTheHostAndNowhereElse()
+    {
+        var controller = Src.Code(ControllerPath);
+        var getter = Src.BodyOf(controller, @"public\s+IWorkspaceNavigationPort\s+Navigation\b");
+        var constructor = Src.BodyOf(controller, @"private\s+WorkspaceController\s*\(\s*\)");
+
+        AssertInOrder(getter, "new WorkspaceNavigationHost(", "_host.SetEditIntentReader(_navigation.EditIntentReader);", "return _navigation;");
+        Assert.Equal(1, Src.Count(controller, @"SetEditIntentReader\s*\("));
+        Assert.DoesNotMatch(new Regex(@"SetEditIntentReader|EditIntentReader"), constructor);
+        Assert.Equal(
+            new[] { CorePath, ControllerPath }.OrderBy(p => p, StringComparer.Ordinal).ToArray(),
+            Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"\bSetEditIntentReader\s*\(")).Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray());
+        // The constructor of the controller and the arguments of the navigation host are the same as before.
+        Assert.Matches(@"new\s+WorkspaceNavigationHost\s*\(\s*_echo\s*,\s*id\s*=>[^;]*\(request,\s*nativeId\)\s*=>\s*_bridge\.Authorize\s*\(\s*request\s*,\s*nativeId\s*\)\s*\)\s*;", getter);
+    }
+
+    // ------------------------------------------------------------------ INV-F4T2B2A-05 and 06: the host core
+
+    private static readonly Regex NamesThePilot = new(@"RackCad\.Application\.Systems\.PushBack\.Pilot|\bPushBackPilot\w*");
+
+    [Fact]
+    public void AtMostTheHostCoreTheInterfaceAndTheIntentFileNameThePilotInTheApplicationWorkspaceFolder()
+    {
+        var allowed = new HashSet<string>(StringComparer.Ordinal) { CorePath, InterfacePath, IntentPath };
+
+        var offenders = Src.ApplicationFiles().Where(f => NamesThePilot.IsMatch(f.Code) && !allowed.Contains(f.Path)).Select(f => f.Path).ToArray();
+
+        Assert.Empty(offenders);
+        // It is a maximum, not an exact set, and the three files exist; the host core and the intent file do name the pilot.
+        Assert.True(Src.Exists(CorePath) && Src.Exists(InterfacePath) && Src.Exists(IntentPath));
+        Assert.Matches(NamesThePilot, Core());
+        Assert.Matches(NamesThePilot, Src.Code(IntentPath));
+    }
+
+    [Theory]
+    [InlineData("WorkspaceSession.cs", "var state = new PushBackPilotDraftState(editor, inputs, origin);")]
+    [InlineData("NavigationTargets.cs", "using RackCad.Application.Systems.PushBack.Pilot;")]
+    [InlineData("BrowserSession.cs", "PushBackPilotIntentResult result = null;")]
+    public void TheCouplingGuardDetectsTheNameOfThePilotInAnyOtherFileOfTheFolder(string file, string injected)
+    {
+        var real = Src.Code(Src.ApplicationWorkspace + file);
+
+        Assert.DoesNotMatch(NamesThePilot, real);
+        Assert.Matches(NamesThePilot, real + "\n" + injected);
+    }
+
+    [Fact]
+    public void TheHostCoreOffersTheTwoOperationsAndTheAssignmentWithTheSignaturesOfThePackage()
+    {
+        var core = Core();
+
+        Assert.Matches(@"public\s+EditIntentOutcome\s+TryBeginPilotEdit\s*\(\s*EditIntentRequest\s+request\s*\)", core);
+        Assert.Matches(@"public\s+EditCheckOutcome\s+TryCheckPilotEdit\s*\(\s*EditIntentRequest\s+request\s*\)", core);
+        Assert.Matches(@"public\s+void\s+SetEditIntentReader\s*\(\s*IWorkspaceEditIntentReader\s+reader\s*\)", core);
+        Assert.Matches(@"private\s+readonly\s+DraftRegistry\s+_drafts\s*=\s*new\s*\(\s*\)\s*;", core);
+        Assert.Matches(@"private\s+IWorkspaceEditIntentReader\?\s+_editIntentReader\s*;", core);
+        // ONE registry and ONE close policy in the whole product, and they are the ones of the host core.
+        Assert.Equal(
+            new[] { CorePath },
+            Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"\bnew\s+DraftRegistry\s*\(|\bDraftRegistry\s+\w+\s*=\s*new\s*\(\s*\)")).Select(f => f.Path).ToArray());
+        Assert.Equal(
+            new[] { CorePath },
+            Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"\bnew\s+DraftClosePolicy\s*\(")).Select(f => f.Path).ToArray());
+        Assert.Matches(@"_closePolicy\s*=\s*new\s+DraftClosePolicy\s*\(\s*_drafts\s*\)", core);
+        // The constructor, the arguments of the host core and the port of the host do not change.
+        Assert.Matches(
+            @"public\s+WorkspaceHostCore\s*\(\s*IWorkspaceBridgeLink\s+bridge\s*,\s*IWorkspaceHostProbe\s+probe\s*,\s*IWorkspaceSelectionReader\s+reader\s*,\s*WorkspaceInstrumentation\s+instrumentation\s*,\s*Action<string,\s*Exception>\?\s+logFault\s*=\s*null\s*,\s*NavigationEcho\?\s+echo\s*=\s*null\s*\)",
+            core);
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|EditIntent"), Src.Code(Src.ApplicationWorkspace + "IWorkspaceHostPort.cs"));
+    }
+
+    [Fact]
+    public void BothOperationsFollowTheOrderOfTheTableOfThePackageWithOneReadAndNoReadBeforeStepSix()
+    {
+        var intent = IntentBody();
+        var check = CheckBody();
+
+        AssertInOrder(intent, "string.IsNullOrWhiteSpace(request.RackId)", "PassGate(", "_drafts.Contains(", "_editIntentReader!.ReadIntent(", "_drafts.Begin(");
+        AssertInOrder(check, "string.IsNullOrWhiteSpace(request.RackId)", "PassGate(", "_drafts.Find<", "_editIntentReader!.ReadIntent(", ".CheckNow(");
+        Assert.Equal(1, Src.Count(intent, @"\.ReadIntent\s*\("));
+        Assert.Equal(1, Src.Count(check, @"\.ReadIntent\s*\("));
+        // The count is per body: the whole file is not counted, because a further operation of the host (F4-T2B2B) reads too.
+        Assert.Equal(1, Src.Count(intent, @"_editIntentReader\s*[.!]"));
+        Assert.Equal(1, Src.Count(check, @"_editIntentReader\s*[.!]"));
+
+        // Steps 2 to 5 read nothing: the gate asks the probe and the authorization only.
+        var gate = Src.BodyOf(Core(), @"private\s+EditGate\s+PassGate\s*\(");
+        AssertInOrder(gate, "_editIntentReader == null", "_probe.ActiveDocumentNativeId", "_modalRackCadActive", "_probe.IsActiveDocumentQuiescent", "Authorize(");
+        Assert.DoesNotMatch(new Regex(@"ReadIntent|_reader\b|_drafts|_bridge\.TryGetSession"), gate);
+    }
+
+    [Fact]
+    public void EveryExceptionOfAnOperationIsContainedAsFailedWithoutDegradingTheSession()
+    {
+        foreach (var body in new[] { IntentBody(), CheckBody(), ConfirmBody(), KeepBody(), DiscardAndReloadBody() })
+        {
+            Assert.Matches(@"catch\s*\(\s*Exception\s+ex\s*\)", body);
+            Assert.Contains("Report(", body);
+            Assert.Matches(@"\.Failed\s*\(\s*ex\.Message\s*\)", body);
+            Assert.DoesNotMatch(new Regex(@"_faulted|\bContain\s*\(|\bthrow\s*;"), body);
+        }
+
+        var report = Src.BodyOf(Core(), @"private\s+void\s+Report\s*\(");
+        Assert.DoesNotMatch(new Regex(@"_faulted"), report);
+        Assert.Contains("_logFault", report);
+    }
+
+    [Fact]
+    public void NoOperationOfTheIntentionIsCalledFromTheDrainOrTheIdleOfAnyFile()
+    {
+        // Only the names of this task are prohibited in the drain and the idle (the operations, their reader, the gate and the
+        // read); what F4-T2B2B does with the drafts in the drain is not decided here.
+        var drain = Src.BodyOf(Core(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|TryUpdatePilot|_editIntentReader|ReadIntent|PassGate"), drain);
+        Assert.Contains("_reader.Read(", drain);
+
+        var idleOfTheCore = Src.BodyOf(Src.Code(BridgeCorePath), @"public\s+IReadOnlyList<DrainOutcome>\s+OnIdle\s*\(\s*\)");
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|TryUpdatePilot|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheCore);
+        var idleOfTheBridge = Src.BodyOf(Src.Code(BridgePath), @"private\s+void\s+OnIdle\s*\(\s*\)");
+        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|TryUpdatePilot|_editIntentReader|ReadIntent|PassGate|RackPilotIntentAdapter"), idleOfTheBridge);
+
+        var hostDrain = Src.BodyOf(Host(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
+        Assert.DoesNotMatch(new Regex(@"EditIntent|ReadIntent|RackPilotIntentAdapter|_targets"), hostDrain);
+
+        var controller = Src.Code(ControllerPath);
+        var controllerDrain = Src.BodyOf(controller, @"private\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
+        Assert.DoesNotMatch(new Regex(@"EditIntent|ReadIntent|SetEditIntentReader|TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit"), controllerDrain);
+
+        // The callers of the nested reader are in the host core. Who calls the two operations is not fixed here: the drain and the idle
+        // do not (above); since F4-T3A the edit port of the pilot exposes them to the UI, and since F4-T3B1 the panel calls that port.
+        Assert.Equal(
+            new[] { CorePath },
+            Src.AllProduct().Where(f => Regex.IsMatch(f.Code, @"\.ReadIntent\s*\(")).Select(f => f.Path).ToArray());
+    }
+
+    [Theory]
+    [InlineData("var again = TryBeginPilotEdit(request);")]
+    [InlineData("_editIntentReader.ReadIntent(session, rackId, null, null);")]
+    [InlineData("var gate = PassGate(session, out var reason);")]
+    [InlineData("var confirmed = TryConfirmPilotBase(request);")]
+    [InlineData("var kept = TryKeepPilotEdit(request);")]
+    [InlineData("var reloaded = TryDiscardAndReloadPilotEdit(request);")]
+    [InlineData("var updated = TryUpdatePilot(request, port);")]
+    public void TheDrainGuardDetectsACallOfTheIntentionInTheRealTextOfTheDrainOfTheHostCore(string injected)
+    {
+        var pattern = new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadPilotEdit|TryUpdatePilot|_editIntentReader|ReadIntent|PassGate");
+        var drain = Src.BodyOf(Core(), @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)");
+
+        Assert.DoesNotMatch(pattern, drain);
+        Assert.Matches(pattern, drain + "\n" + injected);
+    }
+
+    // ------------------------------------------------------------------ obligation 10: the base of a result only reaches Begin, CheckNow or DiscardAndReload
+
+    // The ways to use the base or the read of a result of the pilot: the base, the initial state, the read itself and its entries.
+    // M-2 (I-64 F4-T4A2): besides the form without spaces, the read through the name of the pilot is seen with a null-conditional or a null-forgiving
+    // operator and with spaces or line breaks (pilot?.Read, pilot!.Read, pilot . Read). The alternative of result is kept as it was.
+    private static readonly Regex BaseOrReadUse = new(@"\.StaleBase\b|\.InitialState\b|\b(?:pilot|result)\.Read\b|\bpilot\s*[?!]?\s*\.\s*Read\b|\.Entries\b");
+
+    // The consumers that the obligation allows: the registry (Begin), the draft (CheckNow), the reload of F4-T2B2B and, since F4-T4A1
+    // (D-T4A1-07), the general check (ConfirmBase) and the atomic keep (KeepMineOnCurrentVersion).
+    private static readonly Regex AllowedConsumers = new(@"\.(?:Begin|DiscardAndReload|ConfirmBase|KeepMineOnCurrentVersion)\s*\([^;]*\)\s*;|\.CheckNow\s*\([^;]*\)\s*;");
+
+    // The ONE other use of a read that the obligation allows, since F4-T4A1 (M-5): the diagnostic of the admission of a confirmed check, read
+    // as pilot.Read.IsAdmitted and pilot.Read.Admission.Diagnostic and nothing else of the read. It is explicit and it is counted per
+    // operation (only the bodies of the general check and, since F4-T4C2, of "check now" have it); no alias and no renamed variable stands for it.
+    private const string AdmissionDiagnosticPattern = @"\bpilot\.Read\.IsAdmitted\s*\?\s*null\s*:\s*pilot\.Read\.Admission\.Diagnostic\b";
+
+    private static readonly Regex AllowedAdmissionDiagnostic = new(AdmissionDiagnosticPattern);
+
+    private static string WithoutTheAllowedConsumers(string code) =>
+        AllowedAdmissionDiagnostic.Replace(AllowedConsumers.Replace(code, string.Empty), string.Empty);
+
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
+    public void TheBaseOfAResultOfThePilotOnlyReachesBeginCheckNowOrDiscardAndReloadInTheHostCoreAndTheTwoOperationsCountTheirOwnUses()
+    {
+        var core = Core();
+
+        // Whatever the number of operations of the host, every use of the base or of the read of a result is an argument of a consumer.
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(core));
+        foreach (var code in new[] { Src.Code(IntentPath), Src.Code(InterfacePath) })
+            Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(code));
+
+        // Per operation (these counts are about the two operations of this task, not about the whole file): the intention hands the
+        // read to Begin and never the base to CheckNow, and "check now" hands the base to CheckNow and never the read to Begin.
+        var intent = IntentBody();
+        Assert.Equal(1, Src.Count(intent, @"\bpilot\.Read\b"));
+        Assert.Matches(@"\.Begin\s*\(\s*[^;]*?\bpilot\.Read\b[^;]*?\)\s*;", intent);
+        Assert.Equal(0, Src.Count(intent, @"\.StaleBase\b|\.CheckNow\s*\("));
+
+        var check = CheckBody();
+        Assert.Equal(1, Src.Count(check, @"\.StaleBase\b"));
+        Assert.Matches(@"\.CheckNow\s*\(\s*\w+\.StaleBase\s*\)", check);
+        // I-64 F4-T4C2 (D-T4C-12, row 12 of D-T4C-20): "check now" carries the diagnostic of the admission of the SAME reread, so the expression is in its
+        // body exactly once and the read is named exactly twice, both inside that one expression. The reader is still called once.
+        Assert.Equal(1, Src.Count(check, AdmissionDiagnosticPattern));
+        Assert.Equal(2, Src.Count(check, @"\bpilot\.Read\b"));
+        Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(check), @"\bpilot\.Read\b"));
+        Assert.Equal(0, Src.Count(check, @"\.Begin\s*\("));
+    }
+
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
+    public void ThePerOperationCountsOfTheBaseAndOfTheReadInTheThreeBodiesOfTheReconciliationAreTheirOwnConsumer()
+    {
+        var confirm = ConfirmBody();
+        Assert.Equal(1, Src.Count(confirm, @"\.StaleBase\b"));
+        Assert.Matches(@"\.ConfirmBase\s*\(\s*\w+\.StaleBase\s*\)", confirm);
+        Assert.Equal(0, Src.Count(confirm, @"\.Begin\s*\(|\.CheckNow\s*\("));
+        // The one use of the read in the general check is the diagnostic of the admission of a confirmed check (M-5), and it is counted:
+        // the read is named exactly twice in the body (IsAdmitted and Admission.Diagnostic), both inside that one explicit expression.
+        Assert.Equal(1, Src.Count(confirm, AdmissionDiagnosticPattern));
+        Assert.Equal(2, Src.Count(confirm, @"\bpilot\.Read\b"));
+        Assert.Equal(0, Src.Count(WithoutTheAllowedConsumers(confirm), @"\bpilot\.Read\b"));
+        // I-64 F4-T4C2 (row 12, RR N-05): "check now" leaves the loop of zero and has exactly one; the other three bodies stay at zero.
+        Assert.Equal(1, Src.Count(CheckBody(), AdmissionDiagnosticPattern));
+        foreach (var other in new[] { IntentBody(), KeepBody(), DiscardAndReloadBody() })
+            Assert.Equal(0, Src.Count(other, AdmissionDiagnosticPattern));
+
+        var keep = KeepBody();
+        Assert.Equal(1, Src.Count(keep, @"\bpilot\.Read\b"));
+        Assert.Matches(@"\.KeepMineOnCurrentVersion\s*\(\s*pilot\.Read\s*,\s*PushBackPilotMaterializer\.KeepPilotEditsOn\s*,\s*confirmed\s*:\s*true\s*\)", keep);
+        Assert.Equal(0, Src.Count(keep, @"\.StaleBase\b|\.InitialState\b|\.Begin\s*\("));
+
+        var discard = DiscardAndReloadBody();
+        Assert.Equal(1, Src.Count(discard, @"\bpilot\.Read\b"));
+        Assert.Matches(@"\.DiscardAndReload\s*\(\s*pilot\.Read\s*\)", discard);
+        Assert.Equal(0, Src.Count(discard, @"\.StaleBase\b|\.InitialState\b|\.Begin\s*\("));
+
+        // The host never names the initial state of a draft: the keep gets it through the draft and the function of the pilot.
+        Assert.DoesNotMatch(new Regex(@"\.InitialState\b|\.InitialDraftState\b"), Core());
+    }
+
+    // The read of a result of the pilot has ONE name in the host core, "pilot", and it is only ever assigned by one statement. So no alias
+    // or renamed variable can stand for it and escape the guard of the use of the base (F4-T4A1, INV-F4T4A1-04).
+    private static readonly Regex PilotReadAssignment = new(@"var\s+pilot\s*=\s*read\.PilotRead\s*;");
+
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
+    public void TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase()
+    {
+        var core = Core();
+        var withoutTheAssignments = PilotReadAssignment.Replace(core, string.Empty);
+
+        Assert.DoesNotMatch(new Regex(@"\.PilotRead\b"), withoutTheAssignments);
+        // One assignment per operation that reads: the intention, the check, the reload, the general check, the keep and the discard.
+        Assert.Equal(6, PilotReadAssignment.Matches(core).Count);
+        Assert.Equal(6, Src.Count(core, @"\.ReadIntent\s*\("));
+    }
+
+    [Theory]
+    [InlineData("var reread = read.PilotRead;")]
+    [InlineData("return read.PilotRead is { } reread && !reread.Read.IsAdmitted ? reread.Read.Admission.Diagnostic : null;")]
+    [InlineData("var other = pilot; var s = other.StaleBase;")]
+    public void TheAliasGuardDetectsARenamedWayToReachTheReadOrTheBaseInTheRealTextOfTheCore(string injected)
+    {
+        var core = Core();
+        var real = PilotReadAssignment.Replace(core, string.Empty);
+
+        Assert.DoesNotMatch(new Regex(@"\.PilotRead\b"), real);
+        var injectedText = PilotReadAssignment.Replace(core + "\n" + injected, string.Empty);
+        var detected = Regex.IsMatch(injectedText, @"\.PilotRead\b") || Regex.IsMatch(WithoutTheAllowedConsumers(injectedText), BaseOrReadUse.ToString());
+        Assert.True(detected, injected);
+    }
+
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
+    public void TheThreeBodiesOfTheReconciliationFollowTheStepsOfTheCheckAndTheReloadWithTheApplicabilityBeforeTheOneRead()
+    {
+        var confirm = ConfirmBody();
+        var keep = KeepBody();
+        var discard = DiscardAndReloadBody();
+
+        AssertInOrder(confirm, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "NotCheckableReason", "_editIntentReader!.ReadIntent(", ".ConfirmBase(");
+        AssertInOrder(keep, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "DraftStatus.Applying", "NotKeepableReason", "_editIntentReader!.ReadIntent(", ".KeepMineOnCurrentVersion(");
+        AssertInOrder(discard, "string.IsNullOrWhiteSpace(request.RackId)", "HasWitnessWithoutKey(request)", "PassGate(", "_drafts.Find<", "DraftStatus.Applying", "_editIntentReader!.ReadIntent(", ".DiscardAndReload(");
+        foreach (var body in new[] { confirm, keep, discard })
+        {
+            Assert.Equal(1, Src.Count(body, @"\.ReadIntent\s*\("));
+            Assert.Equal(1, Src.Count(body, @"_editIntentReader\s*[.!]"));
+            // The mark of known clean is removed in the result that changed the draft, never before the read.
+            Assert.True(IndexOf(body, "_knownClean.Remove(") > IndexOf(body, "_editIntentReader!.ReadIntent("));
+        }
+
+        Assert.Equal(1, Src.Count(confirm, @"_knownClean\.Remove\s*\("));
+        Assert.Equal(1, Src.Count(keep, @"_knownClean\.Remove\s*\("));
+        Assert.Equal(1, Src.Count(discard, @"_knownClean\.Remove\s*\("));
+        // The keep is called with the function of the pilot and the confirmation that the gesture already is.
+        Assert.Contains("PushBackPilotMaterializer.KeepPilotEditsOn", keep);
+        Assert.Contains("confirmed: true", keep);
+    }
+
+    [Theory]
+    [InlineData("var copy = pilot.StaleBase;")]
+    [InlineData("var initial = pilot.Read.InitialState;")]
+    [InlineData("var state = result.Read;")]
+    [InlineData("var text = baseOfRead.Entries;")]
+    [InlineData("var kept = _kept = pilot.StaleBase;")]
+    [InlineData("var s = pilot.StaleBase; draft.ConfirmBase(s);")]
+    [InlineData("var r = pilot.Read; draft.KeepMineOnCurrentVersion(r, keepOn, true);")]
+    [InlineData("var d = pilot.Read.Admission.Diagnostic;")]
+    [InlineData("var d = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Message;")]
+    [InlineData("var a = !pilot.Read.IsAdmitted;")]
+    public void TheBaseGuardDetectsAnotherUseOfTheBaseOrOfTheReadInTheRealTextOfTheCore(string injected)
+    {
+        var real = Core();
+
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(real));
+        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(real + "\n" + injected));
+    }
+
+    [Theory(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-retire-list-decisions.md, pregunta 2).")]
+    [InlineData("draft.DiscardAndReload(pilot.Read);")]
+    [InlineData("draft.DiscardAndReload(reload.Read, pilot.StaleBase);")]
+    [InlineData("var check = draft.CheckNow(pilot.StaleBase);")]
+    [InlineData("var begun = _drafts.Begin(session, rack, pilot.Read, comparer, copy);")]
+    [InlineData("var confirmed = draft.ConfirmBase(pilot.StaleBase);")]
+    [InlineData("var kept = draft.KeepMineOnCurrentVersion(pilot.Read, PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);")]
+    [InlineData("return EditConfirmOutcome.Confirmed(pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic);")]
+    public void TheBaseGuardAllowsTheConsumersOfTheObligation(string injected)
+    {
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(Core() + "\n" + injected));
+    }
+
+    // M-2 (I-64 F4-T4A2): the read of a result of the pilot is also seen through the null-conditional and the null-forgiving operators and with spaces.
+    [Theory]
+    [InlineData("var a = pilot?.Read.IsAdmitted;")]
+    [InlineData("var a = pilot!.Read;")]
+    [InlineData("var a = pilot . Read;")]
+    [InlineData("var a = pilot ?. Read.Admission;")]
+    [InlineData("var a = pilot\n    .Read;")]
+    public void TheBaseGuardDetectsTheReadThroughTheNameOfThePilotWithAnOperatorOrWithSpaces(string injected)
+    {
+        var real = Core();
+
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(real));
+        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(real + "\n" + injected));
+        // The alternative of result is kept: the form that the guard saw before is still seen.
+        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(real + "\nvar state = result.Read;"));
+    }
+
+    // M-2, the new rule: in the host core the name of the pilot only appears in the forms that were measured. Once those forms are taken away,
+    // no word "pilot" is left, so no alias, no call that hands it over and no other member of it can escape the guards of the use of the base.
+    private static readonly Regex PilotForms = new(
+        @"var pilot = read\.PilotRead;|\bpilot == null\b|\bpilot\.(?:StaleBase|Read|PreviewWitness|Detail|ClassicEditorHint)\b");
+
+    private static IEnumerable<string> PilotNameViolations(string core)
+    {
+        var rest = PilotForms.Replace(core, string.Empty);
+        var left = Regex.Match(rest, @"\bpilot\b");
+        if (left.Success) yield return "the name of the pilot is used outside its forms: " + rest.Substring(Math.Max(0, left.Index - 20), Math.Min(60, rest.Length - Math.Max(0, left.Index - 20)));
+    }
+
+    [Fact]
+    public void TheNameOfThePilotInTheHostCoreOnlyAppearsInTheMeasuredFormsAndNothingIsLeftOnceTheyAreTakenAway()
+    {
+        var core = Core();
+
+        // The rule fixes no counts: the counts of each body are fixed by the guards that already exist.
+        Assert.Empty(PilotNameViolations(core));
+        Assert.NotEmpty(PilotForms.Matches(core));
+    }
+
+    [Theory]
+    [InlineData("var p = pilot; var d = p.Read.Admission.Diagnostic;")]
+    [InlineData("var a = pilot?.Read.IsAdmitted;")]
+    [InlineData("var a = pilot!.Read;")]
+    [InlineData("Use(pilot);")]
+    [InlineData("var a = (pilot).Read;")]
+    [InlineData("var a = pilot.Other;")]
+    [InlineData("var a = pilot.ReadX;")]
+    [InlineData("var a = pilot . Read;")]
+    public void TheGuardOfTheNameOfThePilotSeesAnAliasAHandOverAnOperatorAnotherMemberAndAMemberThatOnlyStartsLikeAnAllowedOne(string injected)
+    {
+        Assert.NotEmpty(PilotNameViolations(Core() + "\n" + injected));
+    }
+
+    // M-3 (I-64 F4-T4A2), changed by F4-T4C2 (D-T4C-12, row 12): the expression of the diagnostic of the admission is in the whole host core exactly
+    // twice, once in the body of the general check and once in the body of "check now", so no other operation and no helper can reach the
+    // diagnostic of a read.
+    private const string AnotherDiagnosticExpression = "\nvar again = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;";
+
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).")]
+    public void TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow()
+    {
+        var core = Core();
+
+        Assert.Equal(2, Src.Count(core, AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(ConfirmBody(), AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(CheckBody(), AdmissionDiagnosticPattern));
+        foreach (var body in new[] { IntentBody(), KeepBody(), DiscardAndReloadBody() })
+            Assert.Equal(0, Src.Count(body, AdmissionDiagnosticPattern));
+    }
+
+    [Fact(Skip = "I-64 F4B PB-T4b: sustituida por su equivalente en WorkspaceEditIntentGuardFull (registro declarado superseding-characterization.md; decision del Owner owner-pbt4b-breaks-decision.md).")]
+    public void TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep()
+    {
+        var core = Core();
+
+        // The third in the whole core.
+        Assert.Equal(3, Src.Count(core + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        // A second in the body of "check now" and one in the body of the keep: the per-body rules see them.
+        Assert.Equal(2, Src.Count(CheckBody() + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        Assert.Equal(1, Src.Count(KeepBody() + AnotherDiagnosticExpression, AdmissionDiagnosticPattern));
+        // The expression itself is the one of the package: the same text, once more, is not allowed by the consumers.
+        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(core + "\nvar d = pilot.Read.Admission.Diagnostic;"));
+    }
+
+    [Fact]
+    public void ThePluginSideHandlesTheResultOfThePilotOnlyAsAValueWithoutItsBaseItsReadOrItsInitialState()
+    {
+        // M-2: the adapter and the navigation host are the coupling that D-T2B2-05 declares; they build the result and pass it
+        // through, and never open it.
+        var pluginSide = new Regex(@"\.StaleBase\b|\.Read\.|\bInitialState\b");
+
+        Assert.DoesNotMatch(pluginSide, Adapter());
+        Assert.DoesNotMatch(pluginSide, Host());
+    }
+
+    [Theory]
+    [InlineData("var b = read.Pilot.StaleBase;")]
+    [InlineData("var d = result.Read.Admission;")]
+    [InlineData("var s = pilot.Read.InitialState;")]
+    [InlineData("var i = InitialState;")]
+    public void ThePluginSideGuardDetectsEachWayToOpenTheResultInTheRealTextOfTheAdapterAndTheHost(string injected)
+    {
+        var pluginSide = new Regex(@"\.StaleBase\b|\.Read\.|\bInitialState\b");
+
+        foreach (var real in new[] { Adapter(), Host() })
+        {
+            Assert.DoesNotMatch(pluginSide, real);
+            Assert.Matches(pluginSide, real + "\n" + injected);
+        }
+    }
+
+    // ------------------------------------------------------------------ obligation 3 (extended): a preview has no way to the intention
+
+    private static readonly Regex IntentNamedByAPreview = new(@"EditIntent|PilotIntent|RackPilotIntentAdapter|PushBackPilot|TryBeginPilotEdit|TryCheckPilotEdit|ReadIntent|WorkspaceEditIntent");
+
+    private static readonly string[] PreviewFiles =
+    {
+        "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+        "src/RackCad.Application/Workspace/BrowserSession.cs",
+        "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+        "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+    };
+
+    [Fact]
+    public void TheSummaryMethodsOfTheNavigationHostAndTheFourPreviewFilesNameNothingOfTheNewEntry()
+    {
+        var host = Host();
+        foreach (var signature in new[]
+                 {
+                     @"public\s+BrowserRackSummary\s+ReadSummary\s*\(",
+                     @"private\s+BrowserRackSummary\s+ReadSummaryOnActiveDocument\s*\(",
+                     @"public\s+bool\s+IsSessionAlive\s*\(",
+                     @"public\s+void\s+OpenDrainNotice\s*\(",
+                     @"public\s+void\s+CloseDrainNotice\s*\(",
+                 })
+        {
+            var body = Src.BodyOf(host, signature);
+            Assert.True(!IntentNamedByAPreview.IsMatch(body), signature + " names " + IntentNamedByAPreview.Match(body).Value);
+        }
+
+        Assert.Equal(4, PreviewFiles.Length);
+        foreach (var path in PreviewFiles)
+        {
+            var code = Src.Code(path);
+            Assert.NotEmpty(code);
+            Assert.True(!IntentNamedByAPreview.IsMatch(code), path + " names " + IntentNamedByAPreview.Match(code).Value);
+        }
+    }
+
+    [Theory]
+    [InlineData("var read = _editIntentReader.ReadIntent(session, rack, null, null);")]
+    [InlineData("var r = RackPilotIntentAdapter.Read(document, rack, 0, null, null, catalog);")]
+    [InlineData("var outcome = core.TryBeginPilotEdit(request);")]
+    [InlineData("var request = new EditIntentRequest(session, rack, null, null);")]
+    public void TheSummaryGuardDetectsEachNameOfTheNewEntryInTheRealTextOfEachPreviewFile(string injected)
+    {
+        foreach (var path in PreviewFiles)
+        {
+            var real = Src.Code(path);
+
+            Assert.DoesNotMatch(IntentNamedByAPreview, real);
+            Assert.Matches(IntentNamedByAPreview, real + "\n" + injected);
+        }
+
+        var summary = Src.BodyOf(Host(), @"private\s+BrowserRackSummary\s+ReadSummaryOnActiveDocument\s*\(");
+        Assert.DoesNotMatch(IntentNamedByAPreview, summary);
+        Assert.Matches(IntentNamedByAPreview, summary + "\n" + injected);
+    }
+
+    // ------------------------------------------------------------------ INV-F4T2B2A-09 and 10: no lifecycle, no forbidden surface
+
+    [Fact]
+    public void TheBodiesOfTheTwoOperationsCallNoOperationOfTheLifecycleOfTheDrafts()
+    {
+        // The lifecycle (advisor, close veto, retirement, discard, stale marking, reload) is of F4-T2B2B: the absence of all of it in
+        // this task is shown by the diff, the scope and the review, and no guard prohibits it for ever. What is fixed here is only
+        // that the two operations of THIS task do not call such an operation.
+        var lifecycle = new Regex(@"\.(?:RetireSession|Discard|DiscardAll|DiscardAndReload|MarkPossiblyStale|KeepMineOnCurrentVersion|EvaluateClose)\s*\(|\bEnterError\b");
+
+        foreach (var body in new[] { IntentBody(), CheckBody() })
+            Assert.True(!lifecycle.IsMatch(body), "lifecycle call: " + lifecycle.Match(body).Value);
+    }
+
+    [Theory]
+    [InlineData("_drafts.RetireSession(request.Session);")]
+    [InlineData("draft.DiscardAndReload(pilot.Read);")]
+    [InlineData("draft.MarkPossiblyStale();")]
+    [InlineData("var verdict = _closePolicy.EvaluateClose(request.Session);")]
+    public void TheLifecycleGuardOfTheTwoOperationsDetectsEachCallInTheRealTextOfTheirBodies(string injected)
+    {
+        var lifecycle = new Regex(@"\.(?:RetireSession|Discard|DiscardAll|DiscardAndReload|MarkPossiblyStale|KeepMineOnCurrentVersion|EvaluateClose)\s*\(|\bEnterError\b");
+
+        foreach (var body in new[] { IntentBody(), CheckBody() })
+        {
+            Assert.DoesNotMatch(lifecycle, body);
+            Assert.Matches(lifecycle, body + "\n" + injected);
+        }
+    }
+
+    [Fact]
+    public void TheFoldersKeepTheirFilesAndTheTwoNewFilesOfTheApplicationAreExactFiles()
+    {
+        var plugin = Src.PluginFiles().Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+        Assert.Equal(9, plugin.Length);
+        Assert.Empty(plugin.Where(p => p.Substring(Src.PluginWorkspace.Length).Contains('/')));
+        Assert.DoesNotContain(plugin, p => p.Contains("Intent", StringComparison.Ordinal));
+
+        var application = Src.ApplicationFiles().Select(f => f.Path).ToHashSet(StringComparer.Ordinal);
+        Assert.Contains(InterfacePath, application);
+        Assert.Contains(IntentPath, application);
+        Assert.True(Src.Exists(AdapterPath));
+        Assert.Equal(new[] { AdapterPath }, Src.Files("src/RackCad.Plugin/Views/").Where(f => f.Path.EndsWith("RackPilotIntentAdapter.cs", StringComparison.Ordinal)).Select(f => f.Path).ToArray());
+    }
+
+    // ------------------------------------------------------------------ the new files of Application: purity and the traps of the neighbouring guards
+
+    [Fact]
+    public void TheThreeFilesOfTheApplicationAreNullableEnabledNameNoHostTypeAndKeepTheWordsThatTheNeighbouringGuardsForbidEvenInComments()
+    {
+        foreach (var path in new[] { CorePath, InterfacePath, IntentPath })
+        {
+            var text = Src.Text(path);
+
+            Assert.StartsWith("#nullable enable", text.TrimStart((char)0xFEFF));
+            // The words that the guards of the folder forbid, also in comments (the package asks for it).
+            Assert.DoesNotMatch(new Regex(@"Transaction|\bDatabase\b|\bCommit\s*\("), text);
+            Assert.DoesNotMatch(new Regex(@"ComputedParameter|Metric|ProjectSummary|TotalRacks|Aggregat|Provider|\bBom", RegexOptions.IgnoreCase), text);
+            Assert.DoesNotMatch(new Regex(@"\bAutodesk\.|System\.Windows|RackCad\.Plugin|RackCad\.UI|System\.IO|\bFile\.|\bRegistry\b|RackLog"), Src.CodeOnly(text));
+            Assert.DoesNotMatch(new Regex(@"\basync\b|\bawait\b|\bTask\b|\bDispatcher\b|\bThread\b|\bTimer\b|\bGuid\.NewGuid"), Src.CodeOnly(text));
+        }
+
+        Assert.DoesNotMatch(new Regex(@"\bRegistry\b"), Core());
+        Assert.Equal(1, Src.Count(Src.Code(IntentPath), @"\bnamespace\s+RackCad\.Application\.Workspace\s*\{"));
+        Assert.Equal(1, Src.Count(Src.Code(InterfacePath), @"\bnamespace\s+RackCad\.Application\.Workspace\s*\{"));
+    }
+
+    [Fact]
+    public void TheInterfaceHasTheOneMethodOfThePackageAndNoTypeOfDraftsOrOfNavigation()
+    {
+        var code = Src.Code(InterfacePath);
+
+        Assert.Matches(@"\bpublic\s+interface\s+IWorkspaceEditIntentReader\b", code);
+        Assert.Equal(1, Src.Count(code, @"\bEditIntentReadResult\s+ReadIntent\s*\(\s*SessionId\s+session\s*,\s*string\s+rackId\s*,\s*long\?\s+chosenReference\s*,\s*EditIntentWitness\?\s+witness\s*\)\s*;"));
+        Assert.DoesNotMatch(new Regex(@"Draft|Navigation|PushBackPilot|Document|Autodesk"), code);
+    }
+
+    [Fact]
+    public void TheChoiceOfTheOriginLivesInTheIntentFileAsAStaticFunctionOfTheSetOfTargetsAndTheChosenReference()
+    {
+        var code = Src.Code(IntentPath);
+
+        Assert.Matches(@"public\s+static\s+long\s+ChooseOriginDefinition\s*\(\s*NavigationTargetSet\s+set\s*,\s*long\?\s+chosenReference\s*\)", code);
+        var body = Src.BodyOf(code, @"public\s+static\s+long\s+ChooseOriginDefinition\s*\(");
+        Assert.Contains("set.Primary", body);
+        Assert.Contains("DefinitionHandle", body);
+        Assert.DoesNotMatch(new Regex(@"OwnerId|ObjectId|\bHandle\b|Revalidate|Resolve\s*\("), body);
+        Assert.Equal(1, Src.Count(code, @"public\s+static\s+class\s+WorkspaceEditIntent\b"));
+    }
+
+    // ------------------------------------------------------------------ I-64 F4-T4B (D-T4B-07): the update of the pilot
+
+    private static string UpdateBody() => Src.BodyOf(Core(), @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\(");
+
+    // The contention as Failed only goes BEFORE the slot is taken: after TryBeginApply the answer always comes from the close of the draft.
+    private static IEnumerable<string> UpdateContainmentViolations(string body)
+    {
+        var begin = body.IndexOf(".TryBeginApply(", StringComparison.Ordinal);
+        var catchMatch = Regex.Match(body, @"catch\s*\(\s*Exception\s+ex\s*\)");
+        if (begin < 0) { yield return "no TryBeginApply"; yield break; }
+        if (!catchMatch.Success) { yield return "no catch of Exception"; yield break; }
+
+        var catchAt = catchMatch.Index;
+        var firstTry = body.IndexOf("try", StringComparison.Ordinal);
+        if (firstTry < 0 || firstTry > begin || catchAt < begin) yield return "the first try does not cover TryBeginApply";
+        // The text of the first try block: from its keyword to the catch.
+        var guarded = firstTry < 0 || catchAt < firstTry ? string.Empty : body.Substring(firstTry, catchAt - firstTry);
+        if (Regex.IsMatch(guarded, @"\.CompleteApply\s*\(|PushBackPilotUpdateRun\.Execute")) yield return "the run or the close is inside the contention of the failures before the slot";
+
+        var failed = Regex.Matches(body, @"EditUpdateOutcome\.Failed\s*\(").Count;
+        if (failed != 1) yield return "Failed must be answered exactly once, by the catch before the slot: " + failed;
+        var afterTheCatch = body.Substring(catchAt);
+        if (!Regex.IsMatch(afterTheCatch, @"Report\s*\(\s*""WorkspaceHostCore\.TryUpdatePilot""\s*,\s*ex\s*\)")) yield return "the catch does not report";
+        if (!Regex.IsMatch(afterTheCatch, @"EditUpdateOutcome\.Failed\s*\(\s*ex\.Message\s*\)")) yield return "the catch does not answer Failed(ex.Message)";
+        if (Regex.IsMatch(body, @"_faulted|\bContain\s*\(|\bthrow\s*;")) yield return "it degrades the session or rethrows";
+
+        // The close is ONE call, inside a finally, and it carries the outcome of the run.
+        if (Src.Count(body, @"\.CompleteApply\s*\(") != 1) yield return "CompleteApply is not called exactly once";
+        if (!Regex.IsMatch(body, @"finally\s*\{\s*closed\s*=\s*draft\.CompleteApply\s*\(\s*outcome\s*\)\s*;\s*\}")) yield return "the close is not in a finally with the outcome of the run";
+        if (Src.Count(body, @"\.TryBeginApply\s*\(") != 1) yield return "TryBeginApply is not called exactly once";
+    }
+
+    [Fact]
+    public void TheUpdateContainsTheFailuresBeforeTheSlotAsFailedAndAfterItTheAnswerComesFromTheClose()
+    {
+        Assert.Empty(UpdateContainmentViolations(UpdateBody()));
+    }
+
+    [Fact]
+    public void TheContainmentGuardOfTheUpdateSeesAFailedAfterTheSlotTheRunInsideTheTryASecondCloseAndAMissingFinally()
+    {
+        var body = UpdateBody();
+
+        Assert.Empty(UpdateContainmentViolations(body));
+        Assert.NotEmpty(UpdateContainmentViolations(body + "\nreturn EditUpdateOutcome.Failed(\"late\");"));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("var start = draft.TryBeginApply();", "var start = draft.TryBeginApply(); draft.CompleteApply(x);", StringComparison.Ordinal)));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("closed = draft.CompleteApply(outcome);", "closed = draft.CompleteApply(outcome); draft.CompleteApply(outcome);", StringComparison.Ordinal)));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("finally", "catch (InvalidOperationException)", StringComparison.Ordinal)));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("Report(\"WorkspaceHostCore.TryUpdatePilot\", ex);", string.Empty, StringComparison.Ordinal)));
+        Assert.NotEmpty(UpdateContainmentViolations(body.Replace("return EditUpdateOutcome.Failed(ex.Message);", "_faulted.Add(request.Session); return EditUpdateOutcome.Failed(ex.Message);", StringComparison.Ordinal)));
+    }
+
+    private static readonly Regex UpdateNeverReads = new(
+        @"ReadIntent|_editIntentReader|\bChosenReference\b|\bWitness\b|HasWitnessWithoutKey|\bPassGate\s*\(|\bpilot\b|PilotRead|_reader\b|\.StaleBase\b|\.InitialDraftState\b|\.InitialState\b|\.Entries\b");
+
+    [Fact]
+    public void TheUpdateNeverReadsTheDrawingNorTheIntentionAndNamesNeitherTheWitnessNorTheChosenReferenceNorThePilotRead()
+    {
+        var body = UpdateBody();
+
+        Assert.DoesNotMatch(UpdateNeverReads, body);
+        Assert.DoesNotMatch(BaseOrReadUse, WithoutTheAllowedConsumers(body));
+        // The early outputs only use the constants of the core that already exist, so the table of the 30 literals does not change.
+        Assert.Contains("NoDraftReason", body);
+        Assert.DoesNotMatch(new Regex(@"EditUpdateOutcome\.(?:Rejected|NoDraft|NothingToApply|PendingText|NotApplicable|Refused|Failed)\s*\(\s*"""), body);
+    }
+
+    [Theory]
+    [InlineData("var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);")]
+    [InlineData("var gate = PassGate(request.Session, out var reason);")]
+    [InlineData("var pilot = read.PilotRead;")]
+    [InlineData("var s = draft.StaleBase;")]
+    public void TheNoReadGuardOfTheUpdateDetectsEachWayToReadInTheRealBody(string injected)
+    {
+        var real = UpdateBody();
+
+        Assert.DoesNotMatch(UpdateNeverReads, real);
+        Assert.Matches(UpdateNeverReads, real + "\n" + injected);
+    }
+
+    // ------------------------------------------------------------------ I-64 F4-T4C1-HOST (D-T4C-20, rows 9, 10 and 11)
+
+    // Row 9: the census of the setter of the executor of the update, in the manner of the one of the reader: one call, in the getter of the
+    // navigation, after the reader, and only the host core and the controller name it.
+    private static IReadOnlyList<string> UpdateHostSetterViolations(string controller, IEnumerable<(string Path, string Code)> product)
+    {
+        var violations = new List<string>();
+        var getter = Src.BodyOf(controller, @"public\s+IWorkspaceNavigationPort\s+Navigation\b");
+        var constructor = Src.BodyOf(controller, @"private\s+WorkspaceController\s*\(\s*\)");
+        var reader = getter.IndexOf("_host.SetEditIntentReader(_navigation.EditIntentReader);", StringComparison.Ordinal);
+        var setter = getter.IndexOf("_host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());", StringComparison.Ordinal);
+        var returns = getter.IndexOf("return _navigation;", StringComparison.Ordinal);
+        if (reader < 0 || setter <= reader || returns <= setter) violations.Add("the getter does not assign the executor right after the reader");
+        if (Src.Count(controller, @"SetPilotUpdateHost\s*\(") != 1) violations.Add("the controller does not call the setter exactly once");
+        if (Regex.IsMatch(constructor, @"SetPilotUpdateHost|RackPilotUpdateCommandContext")) violations.Add("the constructor assigns the executor");
+        var owners = product.Where(f => Regex.IsMatch(f.Code, @"\bSetPilotUpdateHost\s*\(")).Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+        if (!owners.SequenceEqual(new[] { CorePath, ControllerPath }.OrderBy(p => p, StringComparer.Ordinal))) violations.Add("the setter is named by " + string.Join(", ", owners));
+        return violations;
+    }
+
+    [Fact]
+    public void TheControllerAssignsTheExecutorOfTheUpdateInTheNavigationGetterAfterTheReaderAndOnlyTheCoreAndTheControllerNameTheSetter()
+    {
+        Assert.Empty(UpdateHostSetterViolations(Src.Code(ControllerPath), Src.AllProduct()));
+    }
+
+    [Fact]
+    public void TheSetterCensusTripsOnACallInTheConstructorOnASecondCallBeforeTheReaderAndOnAnotherFileThatNamesIt()
+    {
+        var controller = Src.Code(ControllerPath);
+        var product = Src.AllProduct().ToList();
+
+        var constructor = Src.BodyOf(controller, @"private\s+WorkspaceController\s*\(\s*\)");
+        var inConstructor = controller.Replace(constructor, constructor.TrimEnd('}') + " _host.SetPilotUpdateHost(null); }", StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateHostSetterViolations(inConstructor, product));
+
+        var reader = "_host.SetEditIntentReader(_navigation.EditIntentReader);";
+        var setter = "_host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());";
+        var before = controller.Replace(setter, string.Empty, StringComparison.Ordinal).Replace(reader, setter + reader, StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateHostSetterViolations(before, product));
+
+        var twice = controller.Replace(setter, setter + setter, StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateHostSetterViolations(twice, product));
+
+        var other = product.Select(f => f.Path.EndsWith("WorkspaceNavigationHost.cs", StringComparison.Ordinal) ? (f.Path, f.Code + " host.SetPilotUpdateHost(x);") : f).ToList();
+        Assert.NotEmpty(UpdateHostSetterViolations(controller, other));
+    }
+
+    // Row 10: neither the request of the update nor the update itself is called from the drain, from the idle or from the handlers of the
+    // notices of the controller (ONE ACTUALIZAR: no idle, no drain, no handler and no hint of its own asks for another).
+    private static readonly Regex UpdateCallNames = new(@"\bRequestUpdate\b|\bTryUpdatePilot\b");
+
+    private static IReadOnlyList<string> UpdateNotFromTheDrainViolations(string core, string bridgeCore, string bridge, string controller, string navigation)
+    {
+        var bodies = new List<(string Name, string Body)>
+        {
+            ("OnDrained of the core", Src.BodyOf(core, @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)")),
+            ("OnIdle of the bridge core", Src.BodyOf(bridgeCore, @"public\s+IReadOnlyList<DrainOutcome>\s+OnIdle\s*\(\s*\)")),
+            ("OnIdle of the bridge", Src.BodyOf(bridge, @"private\s+void\s+OnIdle\s*\(\s*\)")),
+            ("OnDrained of the controller", Src.BodyOf(controller, @"private\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)")),
+            ("NotifyStateChanged of the controller", Src.BodyOf(controller, @"private\s+void\s+NotifyStateChanged\s*\(\s*\)")),
+            ("OnCommandStateChanged of the controller", Src.BodyOf(controller, @"private\s+void\s+OnCommandStateChanged\s*\(\s*\)")),
+            ("OnActiveSessionChanged of the controller", Src.BodyOf(controller, @"private\s+void\s+OnActiveSessionChanged\s*\(\s*\)")),
+            ("OnDrained of the navigation host", Src.BodyOf(navigation, @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)")),
+        };
+        return bodies.Where(b => UpdateCallNames.IsMatch(b.Body)).Select(b => b.Name + " names " + UpdateCallNames.Match(b.Body).Value).ToArray();
+    }
+
+    private const string NavigationHostPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
+
+    [Fact]
+    public void NeitherTheRequestOfTheUpdateNorTheUpdateItselfIsCalledFromTheDrainTheIdleOrTheHandlersOfTheNotices()
+    {
+        Assert.Empty(UpdateNotFromTheDrainViolations(Core(), Src.Code(BridgeCorePath), Src.Code(BridgePath), Src.Code(ControllerPath), Src.Code(NavigationHostPath)));
+    }
+
+    [Theory]
+    [InlineData("core", @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)", "var s = ((IWorkspacePilotEditPort)this).RequestUpdate(null!);")]
+    [InlineData("core", @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)", "var s = TryUpdatePilot(null!, null!);")]
+    [InlineData("bridgeCore", @"public\s+IReadOnlyList<DrainOutcome>\s+OnIdle\s*\(\s*\)", "var s = RequestUpdate(null);")]
+    [InlineData("bridge", @"private\s+void\s+OnIdle\s*\(\s*\)", "var s = RequestUpdate(null);")]
+    [InlineData("controller", @"private\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)", "var s = _pilotEdit.RequestUpdate(null);")]
+    [InlineData("controller", @"private\s+void\s+NotifyStateChanged\s*\(\s*\)", "var s = _pilotEdit.RequestUpdate(null);")]
+    [InlineData("controller", @"private\s+void\s+OnCommandStateChanged\s*\(\s*\)", "var s = _pilotEdit.RequestUpdate(null);")]
+    [InlineData("controller", @"private\s+void\s+OnActiveSessionChanged\s*\(\s*\)", "var s = _pilotEdit.RequestUpdate(null);")]
+    [InlineData("navigation", @"public\s+void\s+OnDrained\s*\(\s*DrainOutcome\s+\w+\s*\)", "var s = RequestUpdate(null);")]
+    public void TheNoUpdateFromTheDrainGuardDetectsTheCallInjectedIntoEachOfTheEightBodies(string file, string signature, string injected)
+    {
+        var texts = new Dictionary<string, string>
+        {
+            ["core"] = Core(),
+            ["bridgeCore"] = Src.Code(BridgeCorePath),
+            ["bridge"] = Src.Code(BridgePath),
+            ["controller"] = Src.Code(ControllerPath),
+            ["navigation"] = Src.Code(NavigationHostPath),
+        };
+        Assert.Empty(UpdateNotFromTheDrainViolations(texts["core"], texts["bridgeCore"], texts["bridge"], texts["controller"], texts["navigation"]));
+
+        var body = Src.BodyOf(texts[file], signature);
+        // A body that is an expression (=>) takes the call as a second expression; every other body takes it as one more statement.
+        var mutatedBody = body.Contains("=>", StringComparison.Ordinal) && !body.Contains('{', StringComparison.Ordinal)
+            ? body.TrimEnd(';') + ", " + injected.Substring(injected.IndexOf('=') + 1).Trim().TrimEnd(';') + ";"
+            : body.TrimEnd('}') + " " + injected + " }";
+        texts[file] = texts[file].Replace(body, mutatedBody, StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateNotFromTheDrainViolations(texts["core"], texts["bridgeCore"], texts["bridge"], texts["controller"], texts["navigation"]));
+    }
+
+    // Row 11: the texts of I-01 and the new bodies. No assignment of a literal to a reason, and no literal in a factory of an outcome of the
+    // update, of the start of the update or in a Busy or a Waiting of the new bodies: every text is a constant of the run or of the host texts.
+    private static readonly (string Name, string Signature)[] UpdateTextBodies =
+    {
+        ("UpdateGate", @"private\s+EditGate\s+UpdateGate\s*\("),
+        ("RequestUpdate", @"EditUpdateStart\s+IWorkspacePilotEditPort\.RequestUpdate\s*\("),
+        ("TakeUpdateProgress", @"EditUpdateProgress\s+IWorkspacePilotEditPort\.TakeUpdateProgress\s*\("),
+        ("ExpireStaleUpdate", @"private\s+UpdateTicket\?\s+ExpireStaleUpdate\s*\("),
+        ("PilotUpdateRun", @"private\s+sealed\s+class\s+PilotUpdateRun\b"),
+        ("TryUpdatePilot", @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\("),
+        ("AnswerOfAClosedThatWasNotAccepted", @"private\s+static\s+EditUpdateOutcome\s+AnswerOfAClosedThatWasNotAccepted\s*\("),
+    };
+
+    private static readonly Regex UpdateTextLiteral = new(
+        @"\breason\s*=\s*""|\b(?:EditUpdateOutcome|EditUpdateStart)\.\w+\s*\(\s*""|\bEditUpdateOutcome\.Closed(?:InError)?\s*\(\s*[\w.]+\s*,\s*""|\.(?:Busy|Waiting)\s*\(\s*""");
+
+    private static IReadOnlyList<string> UpdateTextViolations(string core) =>
+        UpdateTextBodies
+            .Select(b => (b.Name, Body: Src.BodyOf(core, b.Signature)))
+            .Where(b => UpdateTextLiteral.IsMatch(b.Body))
+            .Select(b => b.Name + " carries a literal text: " + UpdateTextLiteral.Match(b.Body).Value)
+            .ToArray();
+
+    [Fact]
+    public void TheTextsOfTheGateAndOfTheNewBodiesOfTheUpdateAreConstantsAndNeverLiterals()
+    {
+        var core = Core();
+        Assert.Empty(UpdateTextViolations(core));
+
+        // The three texts of I-01 are constants of the run, and the core no longer declares one of its own for them.
+        Assert.Contains("PushBackPilotUpdateRun.NoActiveDocumentReason", Src.BodyOf(core, @"private\s+EditGate\s+UpdateGate\s*\("));
+        Assert.Contains("PushBackPilotUpdateRun.ModalOpenReason", Src.BodyOf(core, @"private\s+EditGate\s+UpdateGate\s*\("));
+        Assert.DoesNotMatch(new Regex(@"const\s+string\s+UpdateNotRunReason"), core);
+        Assert.Contains("PushBackPilotUpdateRun.UpdateNotRunReason", Src.BodyOf(core, @"public\s+EditUpdateOutcome\s+TryUpdatePilot\s*\("));
+    }
+
+    [Theory]
+    [InlineData("UpdateGate", "reason = \"x\";")]
+    [InlineData("TryUpdatePilot", "var x = EditUpdateOutcome.Closed(EditUpdateStatus.NotAppliedFailure, \"x\", Array.Empty<string>(), Array.Empty<string>());")]
+    [InlineData("RequestUpdate", "var x = EditUpdateStart.Busy(\"x\");")]
+    [InlineData("RequestUpdate", "var x = EditUpdateStart.Failed(\"x\");")]
+    [InlineData("TakeUpdateProgress", "var x = EditUpdateOutcome.Failed(\"x\");")]
+    [InlineData("ExpireStaleUpdate", "var x = EditUpdateOutcome.Failed(\"x\");")]
+    [InlineData("PilotUpdateRun", "var x = EditUpdateOutcome.Rejected(\"x\");")]
+    [InlineData("AnswerOfAClosedThatWasNotAccepted", "var x = EditUpdateOutcome.ClosedInError(\"x\", EditUpdateStatus.Applied, null, null!, null!);")]
+    public void TheTextGuardOfTheUpdateDetectsALiteralInjectedIntoEachOfTheBodies(string name, string injected)
+    {
+        var core = Core();
+        var signature = UpdateTextBodies.Single(b => b.Name == name).Signature;
+        var body = Src.BodyOf(core, signature);
+
+        Assert.Empty(UpdateTextViolations(core));
+        var mutated = core.Replace(body, body.TrimEnd('}') + " " + injected + " }", StringComparison.Ordinal);
+        Assert.NotEmpty(UpdateTextViolations(mutated));
+    }
+
+    // M-03 (row 11): the seven Busy and Waiting of the flight, one in each of the five operations that could change a draft and in the two
+    // discards, are the constant of the host texts and never a literal. The three reconciliations are read in the body of the pilot that
+    // passes the gate, where the check of the flight is (M-01).
+    private static readonly (string Name, string Signature)[] FlightTextBodies =
+    {
+        ("SetPendingText", @"PilotFieldResult\s+IWorkspacePilotEditPort\.SetPendingText\s*\("),
+        ("CommitField", @"PilotFieldResult\s+IWorkspacePilotEditPort\.CommitField\s*\("),
+        ("TryConfirmPilotBase", @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\("),
+        ("TryKeepPilotEdit", @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\("),
+        ("TryDiscardAndReloadPilotEdit", @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\("),
+        ("DiscardRack", @"EditDiscardOutcome\s+IWorkspacePilotEditPort\.DiscardRack\s*\("),
+        ("DiscardDocument", @"EditDiscardOutcome\s+IWorkspacePilotEditPort\.DiscardDocument\s*\("),
+    };
+
+    private static readonly Regex FlightSymbol = new(@"\bUpdateInFlightFor(?:Request)?\s*\(|\b_tickets\b|\bIsAnyPilotDraftApplying\s*\(|\bIsPilotDraftApplying\s*\(");
+
+    private static readonly Regex BusyOrWaiting = new(@"\.(?:Busy|Waiting)\s*\(");
+
+    private static IReadOnlyList<string> FlightTextViolations(string core)
+    {
+        var violations = new List<string>();
+        foreach (var (name, signature) in FlightTextBodies)
+        {
+            var body = Src.BodyOf(core, signature);
+            var answers = body.Split(';').Where(statement => FlightSymbol.IsMatch(statement) && BusyOrWaiting.IsMatch(statement)).ToArray();
+            if (answers.Length != 1) violations.Add(name + " has " + answers.Length + " answers of the flight (expected 1)");
+            foreach (var answer in answers)
+            {
+                if (answer.Contains('"')) violations.Add(name + " answers the flight with a literal text");
+                if (!answer.Contains("PushBackPilotHostTexts.UpdateInFlightReason", StringComparison.Ordinal)) violations.Add(name + " does not answer the flight with the constant of the host texts");
+            }
+        }
+
+        return violations;
+    }
+
+    [Fact]
+    public void TheSevenAnswersOfTheFlightOfTheFiveOperationsAndTheTwoDiscardsAreTheConstantOfTheHostTextsAndNeverALiteral()
+    {
+        Assert.Equal(7, FlightTextBodies.Length);
+        Assert.Empty(FlightTextViolations(Core()));
+    }
+
+    [Theory]
+    [InlineData("SetPendingText", "if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(\"hay una actualizacion\");")]
+    [InlineData("CommitField", "if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(\"hay una actualizacion\");")]
+    [InlineData("TryConfirmPilotBase", "if (UpdateInFlightForRequest(request)) return EditConfirmOutcome.Waiting(\"hay una actualizacion\");")]
+    [InlineData("TryKeepPilotEdit", "if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(\"hay una actualizacion\");")]
+    [InlineData("TryDiscardAndReloadPilotEdit", "if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(\"hay una actualizacion\");")]
+    [InlineData("DiscardRack", "if (UpdateInFlightFor(session, rackId)) return EditDiscardOutcome.Busy(\"hay una actualizacion\");")]
+    [InlineData("DiscardDocument", "if (_tickets.ContainsKey(origin.Origin)) return EditDiscardOutcome.Busy(\"hay una actualizacion\");")]
+    public void TheFlightTextGuardTripsOnASecondAnswerOfTheFlightWithALiteralInEachOfTheSevenBodies(string name, string injected)
+    {
+        var core = Core();
+        var body = Src.BodyOf(core, FlightTextBodies.Single(b => b.Name == name).Signature);
+
+        Assert.Empty(FlightTextViolations(core));
+        Assert.NotEmpty(FlightTextViolations(core.Replace(body, body.TrimEnd('}') + " " + injected + " }", StringComparison.Ordinal)));
+    }
+
+    [Theory]
+    [InlineData("SetPendingText")]
+    [InlineData("CommitField")]
+    [InlineData("TryConfirmPilotBase")]
+    [InlineData("TryKeepPilotEdit")]
+    [InlineData("TryDiscardAndReloadPilotEdit")]
+    [InlineData("DiscardRack")]
+    [InlineData("DiscardDocument")]
+    public void TheFlightTextGuardTripsWhenTheConstantOfTheFlightIsReplacedByALiteral(string name)
+    {
+        var core = Core();
+        var body = Src.BodyOf(core, FlightTextBodies.Single(b => b.Name == name).Signature);
+        var mutated = body.Replace("PushBackPilotHostTexts.UpdateInFlightReason", "\"hay una actualizacion\"", StringComparison.Ordinal);
+
+        Assert.NotEqual(body, mutated);
+        Assert.NotEmpty(FlightTextViolations(core.Replace(body, mutated, StringComparison.Ordinal)));
+    }
+}

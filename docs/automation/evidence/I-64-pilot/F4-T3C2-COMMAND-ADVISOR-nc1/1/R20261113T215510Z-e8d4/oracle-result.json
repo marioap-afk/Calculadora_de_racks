@@ -1,0 +1,55 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261113T215510Z-e8d4",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Ci"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD=4e34bb56740ea7bd4a53f9a11a143d0af588f2b0; branch is architecture/workspace-persistente-rackcad; status --porcelain is empty. BaseSha is an ancestor of RedSha and RedSha is an ancestor of HEAD (both merge-base --is-ancestor returned 0). The handoff CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef does not equal HEAD."
+  },
+  "OutputSha256": "1016A26E5CF333E1F2B5E59E29EA288C5D9EE92B60C5927F8444BD9ABEFB612E",
+  "ManualFreeText1610": []
+}

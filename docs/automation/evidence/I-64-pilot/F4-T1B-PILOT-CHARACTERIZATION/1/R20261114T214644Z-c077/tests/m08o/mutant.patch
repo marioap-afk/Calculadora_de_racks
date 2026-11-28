@@ -1,0 +1,16 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..dbc0d3c4 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3322,6 +3322,11 @@ namespace RackCad.UI.Systems.PushBack
+ 
+         private void RequestDraw(string view, int section, bool updateOnly)
+         {
++            if (moduleOwner.ModuleSession.HasPendingChanges)
++            {
++                moduleOwner.CommitModuleEdits();
++            }
++
+             if (!canInsertInAutoCad)
+             {
+                 SetStatus("El dibujo en AutoCAD solo está disponible cuando la ventana se abre desde AutoCAD.", true);

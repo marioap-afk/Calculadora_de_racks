@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261109T042615Z-5b90",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "F2-C06"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha lists 10 paths. Nine are covered by the delegation AllowedWriteScope entries, but src/RackCad.Application/Workspace/NavigationActions.cs is not: the delegation names only NavigationFacts.cs, NavigationTargetSet.cs, NavigationTargets.cs, and tests/RackCad.Tests/Workspace/. It is inside the contract directory scope, but outside the narrower delegated scope. This triggers F2-C06. The other nine paths are under tests/RackCad.Tests/Workspace/ or the three explicitly named source files; no forbidden path appears."
+  },
+  "OutputSha256": "8D824478CD9546FE46AE4485E1B53CB59E534408AF525DC3062AA13E1F2FBEA4",
+  "ManualFreeText1610": []
+}

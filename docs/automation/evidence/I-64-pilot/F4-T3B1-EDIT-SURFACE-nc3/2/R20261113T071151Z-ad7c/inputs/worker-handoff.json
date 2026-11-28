@@ -1,0 +1,249 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T3B1-EDIT-SURFACE",
+  "RunId": "R20261113T062519Z-a807",
+  "DelegationRunId": "R20261113T062027Z-4b5e",
+  "Initiative": "I-64",
+  "Gate": "F4",
+  "Attempt": 2,
+  "BaseSha": "1c69fbc4ef7e63e68cd371445f5fd603104c62bf",
+  "RedSha": "40f5727c8d3800f123c71d60fa2fb33d39aafcca",
+  "CurrentSha": "1708e76428ba81012596b0c643074449a1db41f3",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs"
+  ],
+  "WorkCompleted": "Correccion del intento 2 sobre el producto del GREEN 5de2fab3. RED 40f5727c (solo 5 archivos de tests/) y GREEN 1708e764 (solo 4 archivos de src/RackCad.UI/Workspace), cada uno con su push. (1) Bloqueante de teclado: se quita el manejador de KeyDown de burbuja de la caja y su atributo KeyDown= del XAML (OnBrowserFieldBoxKeyDown); en la caja editable solo Enter (CommitPending) y Esc quedan Handled en el PreviewKeyDown; las teclas de caracter llegan sin Handled. Pruebas: ACharacterKeyOnAnEditableBoxIsNotHandled... (A, D5, OemComma, OemPeriod, tunel y burbuja), AnEditableBoxAnswersEveryKeyExactlyAsAPlainTextBox... (Space, Delete, Back, Left, Tab, Z, A, D5, OemComma, OemPeriod: la caja responde como un TextBox simple, porque el propio TextBox marca Handled el KeyDown de Space y Delete en su manejador de clase; la comparacion con un TextBox simple discrimina sin depender de eso) y TheBoxHasNoHandlerOfTheBubbleKeyDownAttachedToIt (reflexion sobre EventHandlersStore; la guarda del manejador es una prueba de UI y no de Core porque una guarda de Core fallaria en el RED, que exige Core verde). La prueba (f) del intento 1 que fijaba el defecto se sustituye. (2) Menor 2: ThisTaskAddsNoFile... nombra como cota inferior los 5 archivos de Drafts y los 9 de Plugin/Workspace (modelo de MissingDraftFiles), sin techo ni recuentos; autoprueba nueva TheBoundOfTheTwoFoldersNamesEachFile.... (3) Menor 3: en WorkspacePilotSurfaceGuardTests, TryCheckNow se prohibe solo en los cuerpos de los metodos de gesto y de presentacion de T3B1 (no en toda la UI), la caja se busca por nombre sin recuento exacto de TextBox, y la guarda de la paleta queda en negativo (un _controller.PilotEdit y ningun tipo de puerto), con autopruebas. (4) Menor 4: nuevo Field.CanOpenByGesture y Browser.BeginFieldEditFromBox; el clic y la tecla sobre la caja en solo lectura y el doble clic sobre la pestana activa leen solo con el boton Editar ofrecido, sin NotAdmitted vigente ni Error; la tecla con IsRepeat queda Handled y no lanza nada; el boton Editar (BeginFieldEdit) sigue releyendo siempre; el doble clic con la caja editable no borra el aviso. Pruebas VM y de vista (WithANotAdmittedDiagnostic..., WithAnErrorOfTheField..., TheDoubleClickOnTheActiveTabWithAnEditableBox..., AKeyThatIsARepetition...). (5) Menor 5: la prueba 9 comprueba la fijacion dentro de la lectura tambien con el clic y la pulsacion; el doble clic abortado parte de una preview no activa; el doble del puerto aplica y limpia el pendiente de un Proceeded y T06 recorre ese camino y el de Kept; Dematerialize parte de una pestana solo dirty sin pendiente; nueva prueba de reentrada con la misma sesion y otro rack; T16 edita. (6) Menor 7: T15 y ThePanelPassesThePilotPort... ya no afirman la ausencia de TakeLossNotices ni de TakeCloseNotices (solo ausencia de lecturas y mutaciones). (7) Menor 8: CrossObservedBoundaries contiene el fallo sin Field.Fail (pruebas para DocumentChange y para Dematerialize). (8) Observacion: IsProtected devuelve true si GetField lanza (prueba WhenThePortCannotSay...). Detalle de implementacion: CanOpenByGesture = ShowEditButton y no ShowReloadButton y sin fallo y sin diagnostico; se decidio no tocar EditableOf para un borrador en estado Error con CanEdit true (caso inalcanzable con el puerto real; se retiro la prueba que lo exigia). Verificacion sobre GREEN con arbol limpio: filtros Debug y Release en verde (352 UI, 2300 Core), suites completas Debug en verde (UI 1989 pasadas y 17 omitidas ya existentes; Core 17838), builds Release de los dos proyectos de prueba sin errores y con solo avisos del analizador xUnit (ningun MSB/CS/NU/NETSDK), Plugin Release y Debug sin errores y solo con avisos MSB3277. Nota de orden: los filtros Debug se ejecutaron tambien sobre el arbol de trabajo con el producto aplicado antes del commit GREEN (352 y 2300 en verde) y se repitieron sobre el commit. GATE PASS.",
+  "TestsExecuted": [
+    {
+      "RunRef": "r1-ui",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/r1",
+      "Phase": "RED",
+      "TreeSha": "40f5727c8d3800f123c71d60fa2fb33d39aafcca",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/r1/ui.trx"
+    },
+    {
+      "RunRef": "r1-core",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/r1",
+      "Phase": "RED",
+      "TreeSha": "40f5727c8d3800f123c71d60fa2fb33d39aafcca",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/r1/core.trx"
+    },
+    {
+      "RunRef": "g1-ui",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g1",
+      "Phase": "GREEN",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g1/ui.trx"
+    },
+    {
+      "RunRef": "g1-core",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g1",
+      "Phase": "GREEN",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g1/core.trx"
+    },
+    {
+      "RunRef": "g2-ui",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --no-build --logger trx --results-directory artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g2",
+      "Phase": "RELEVANT",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g2/ui.trx"
+    },
+    {
+      "RunRef": "g2-core",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --no-build --logger trx --results-directory artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g2",
+      "Phase": "RELEVANT",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g2/core.trx"
+    },
+    {
+      "RunRef": "g3-ui",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g3",
+      "Phase": "GREEN",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g3/ui.trx"
+    },
+    {
+      "RunRef": "g3-core",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger trx --results-directory artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g3",
+      "Phase": "GREEN",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g3/core.trx"
+    },
+    {
+      "RunRef": "g3-build-ui",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe build tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g3/build-UI.Tests.log"
+    },
+    {
+      "RunRef": "g3-build-core",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental -v:minimal",
+      "Phase": "RELEVANT",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/g3/build-Core.log"
+    },
+    {
+      "RunRef": "b1-plugin-release",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-incremental -v:minimal -o artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/b1/plugin-rel",
+      "Phase": "RELEVANT",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/b1/plugin-release.log"
+    },
+    {
+      "RunRef": "b1-plugin-debug",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug --no-incremental -v:minimal -o artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/b1/plugin-dbg",
+      "Phase": "RELEVANT",
+      "TreeSha": "1708e76428ba81012596b0c643074449a1db41f3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/tests/b1/plugin-debug.log"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "r1-ui",
+      "Selected": 352,
+      "Passed": 332,
+      "Failed": 20,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.AFailureCrossingDematerializeOfThePreviousTabIsContainedAndDoesNotPutTheNewFieldInError",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.AFailureCrossingTheDocumentChangeOfThePreviousSurfaceIsContainedAndDoesNotPutTheNewFieldInError",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.TheDoubleClickOnTheActiveTabWithAnEditableBoxDoesNothingAndKeepsTheNoticeOfTheSurface",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.WhenThePortCannotSayTheTabIsTreatedAsProtectedWithTheMarkAndAPreviewIsPinned",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.WithANotAdmittedDiagnosticOfTheSameSurfaceTheDoubleClickDoesNotReadAndOnlyTheEditButtonReadsAgain",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewModelTests.WithAnErrorOfTheFieldNoGestureReadsAndOnlyReloadActs",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.ACharacterKeyOnAnEditableBoxIsNotHandledInTheTunnelNorInTheBubbleSoItProducesItsTextInput(key: A)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.ACharacterKeyOnAnEditableBoxIsNotHandledInTheTunnelNorInTheBubbleSoItProducesItsTextInput(key: D5)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.ACharacterKeyOnAnEditableBoxIsNotHandledInTheTunnelNorInTheBubbleSoItProducesItsTextInput(key: OemComma)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.ACharacterKeyOnAnEditableBoxIsNotHandledInTheTunnelNorInTheBubbleSoItProducesItsTextInput(key: OemPeriod)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.AKeyThatIsARepetitionOfAHeldKeyIsConsumedAndLaunchesNothing",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.AnEditableBoxAnswersEveryKeyExactlyAsAPlainTextBoxDoesInTheTunnelAndInTheBubble(key: A)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.AnEditableBoxAnswersEveryKeyExactlyAsAPlainTextBoxDoesInTheTunnelAndInTheBubble(key: D5)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.AnEditableBoxAnswersEveryKeyExactlyAsAPlainTextBoxDoesInTheTunnelAndInTheBubble(key: OemComma)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.AnEditableBoxAnswersEveryKeyExactlyAsAPlainTextBoxDoesInTheTunnelAndInTheBubble(key: OemPeriod)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.AnEditableBoxAnswersEveryKeyExactlyAsAPlainTextBoxDoesInTheTunnelAndInTheBubble(key: Z)",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.TheBoxHasNoHandlerOfTheBubbleKeyDownAttachedToIt",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.TheDoubleClickOnTheActiveTabWithAnEditableBoxDoesNothingAndKeepsTheNoticeOfTheSurface",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.WithANotAdmittedDiagnosticOfTheSameSurfaceAClickAndAKeyAndTheDoubleClickDoNotReadAndOnlyTheEditButtonReadsAgain",
+        "RackCad.UI.Tests.WorkspacePilotFieldViewTests.WithAnErrorOfTheFieldNoClickNorKeyNorDoubleClickReadsAndOnlyReloadActs"
+      ]
+    },
+    {
+      "RunRef": "r1-core",
+      "Selected": 2300,
+      "Passed": 2300,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1-ui",
+      "Selected": 352,
+      "Passed": 352,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g1-core",
+      "Selected": 2300,
+      "Passed": 2300,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g2-ui",
+      "Selected": 2006,
+      "Passed": 1989,
+      "Failed": 0,
+      "Skipped": 17,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g2-core",
+      "Selected": 17838,
+      "Passed": 17838,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g3-ui",
+      "Selected": 352,
+      "Passed": 352,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "g3-core",
+      "Selected": 2300,
+      "Passed": 2300,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "RED 40f5727c: UI 20 de 352 fallan por asercion (mensajes Assert.*, ninguna excepcion); Core 2300 de 2300 pasan; TreeSha del RED = RedSha.",
+    "Parche del producto verificado antes del RED: artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T062519Z-a807/product-correction.patch (un solo archivo; producto devuelto a 5de2fab3 antes del commit RED).",
+    "GREEN 1708e764 = HEAD = remoto; git diff --name-only BaseSha..CurrentSha lista 9 archivos, todos dentro del alcance; ningun archivo de tests/ cambia entre RED y GREEN.",
+    "Trailer Co-Authored-By: Claude Sonnet 5.5 en los dos commits.",
+    "MAPA EVIDENCIA POR INVARIANTE (RED = falla en el RED por asercion y pasa en GREEN; YA PASABA = ya pasaba contra el producto del intento 1; CORE = guarda de Core):",
+    "INV-01 cableado: YA PASABA (ThePanelPassesThePilotPortToTheBrowser...; ThePaletteHostPassesTheEditPortOfTheControllerExactlyOnce... CORE; autoprueba de la guarda de la paleta en negativo CORE).",
+    "INV-02 VM del campo: YA PASABA (TheFieldIsNeverNull..., ACommittedTextThatIsNull..., CleanDirtyAndConflict..., TheFieldViewModelIsSynchronous... CORE); T16 ampliada con edicion: YA PASABA.",
+    "INV-03 primer gesto: RED en AKeyThatIsARepetition..., WithANotAdmittedDiagnostic... (VM y vista), WithAnErrorOfTheField... (VM y vista), TheDoubleClickOnTheActiveTabWithAnEditableBox... (VM y vista); YA PASABA en T09 con el clic y la pulsacion (fijacion dentro de la lectura), el doble clic abortado desde una preview, T10.",
+    "INV-04 editar y comprometer: RED en ACharacterKeyOnAnEditableBox... (A, D5, OemComma, OemPeriod), AnEditableBoxAnswersEveryKey... (A, D5, OemComma, OemPeriod, Z) y TheBoxHasNoHandlerOfTheBubbleKeyDownAttachedToIt; YA PASABA: T01, T02, A_, B_, C_, Enter/Esc, binding TwoWay (CORE), el setter.",
+    "INV-05 rematerializar: YA PASABA (T06 ampliada con el camino Proceeded y el Kept, T08, TheRenderingKeepsTheNotice...).",
+    "INV-06 transiciones: RED en AFailureCrossingTheDocumentChange... y AFailureCrossingDematerialize... (menor 8); YA PASABA: T04, T05, T07, AnAbortWithoutFields..., ABusyCrossing..., Dematerialize desde una pestana solo dirty, AReadThatOnlyChangesTheTab... (reentrada con la misma sesion).",
+    "INV-07 marca de protegido: RED en WhenThePortCannotSayTheTabIsTreatedAsProtected...; YA PASABA: T03, TheMarkFollowsTheProtection....",
+    "INV-08 estados y contencion: YA PASABA (Applying/Unknown/Undecidable, Error del borrador, fallos del setter, del compromiso y del primer gesto, el Reload).",
+    "INV-09 solo un gesto lee: YA PASABA (PresentAndRefreshNeverCallTheThreeReads, OnlyTheGestureMethodsOfTheFieldNameTheThreeReads... CORE re-acotada, TheGuardOfTheReadsDoesNotBindTheCheckOfTheDraft... CORE nueva).",
+    "INV-10 foco, modal y oraculo: YA PASABA (T15 sin la ausencia de los avisos, TheUiOfTheWorkspaceNamesNoApi... CORE).",
+    "INV-11 arrastres de T3A: YA PASABA (ThisTaskAddsNoFile... y TheBoundOfTheTwoFolders... CORE corregidas, menor 2).",
+    "INV-12 cambios declarados: YA PASABA (G-01 a G-04 sin cambio; solo se quita KeyDown de la lista de manejadores de la caja en la guarda del XAML).",
+    "INV-13 cobertura RED/GREEN: Core verde en el RED (2300) y UI roja por asercion (20 de 352); el GREEN no toca tests/.",
+    "INV-14 limites: YA PASABA (sin += ni evento ni Dispatcher ni Timer ni Task ni API de foco; sin cambios en Application ni en el Plugin).",
+    "INV-15 correccion: RED en las pruebas del teclado, de los gestos dependientes del estado, de la frontera anterior y de la marca conservadora; los menores 2, 3, 5 y 7 corrigen o re-acotan pruebas y guardas y pasan."
+  ],
+  "UnexpectedFindings": [
+    "El TextBox marca Handled en su propio manejador de clase el KeyDown de Space y de Delete (y de otras teclas de edicion); por eso la prueba del teclado compara la caja con un TextBox simple en vez de exigir Handled false para Space.",
+    "La suite completa de UI en Debug tarda unos 5 minutos y 22 segundos; la de Core unos 2 minutos."
+  ],
+  "KnownLimitations": [
+    "Fuera de esta entrega: cobertura 11-14 de T3B2 (cierre con descarte, avisos, retencion por seleccion).",
+    "El menor 6 (motivos del host en ingles y Error de un borrador sin motivo) pasa a F4-T3C.",
+    "La lista completa de teclas de D-01 en el host (KeepFocus, preproceso de la paleta) y el comportamiento real de WM_CHAR y TextInput, el foco, LostFocus frente al dibujo y el doble clic en el host real quedan para Smoke-2; ninguna prueba recorre WM_KEYDOWN a TextInput.",
+    "Un borrador en estado Error con CanEdit true seria editable (caso inalcanzable con el puerto real); no se cambio.",
+    "Los builds Release del Plugin dan solo avisos MSB3277 (104 lineas de aviso en el log, repetidas por proyecto); no se comparo el recuento exacto con la linea base documentada."
+  ],
+  "Deviations": [
+    "La guarda de que la caja no tiene manejador de KeyDown de burbuja es una prueba del proyecto de UI (reflexion) y no de Core, porque una guarda de Core fallaria en el RED y el RED exige Core verde.",
+    "Los filtros Debug se ejecutaron ademas sobre el arbol con el producto aplicado antes de crear el commit GREEN; los resultados vinculantes son los de las corridas g1 a g3 sobre el commit.",
+    "dotnet test no admite --no-incremental: los builds Release de los proyectos de prueba se hicieron con dotnet build --no-incremental y los tests con --no-build."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "CI de push sobre el SHA exacto del commit GREEN, verificacion del Controller, revisiones directa e independiente y nc1..nc3.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

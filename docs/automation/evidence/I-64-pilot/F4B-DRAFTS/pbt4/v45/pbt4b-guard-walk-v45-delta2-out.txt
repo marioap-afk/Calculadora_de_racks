@@ -1,0 +1,10 @@
+clases=56 pruebas=1096 A=11 B=12 sin-diferencia=310 no-leen=763 | A-o-B fuera de la lista=23 | archivos locales=21
+cambian: WHC: ; WEI: ; FVM: ; PV: ; NFV: ; RIA: Read
+PushBackFullReadGuardTests.cs                                          pruebas=  3 A-o-B=  1 fuera-de-la-lista=  1
+PushBackFullReadPathTests.cs                                           pruebas=  5 A-o-B=  1 fuera-de-la-lista=  1
+WorkspaceBridgeSourceGuardTests.cs                                     pruebas= 21 A-o-B=  5 fuera-de-la-lista=  5
+WorkspaceCommandAdvisorGuardTests.cs                                   pruebas= 32 A-o-B=  2 fuera-de-la-lista=  2
+WorkspaceEditIntentGuardTests.cs                                       pruebas= 66 A-o-B= 10 fuera-de-la-lista= 10
+WorkspaceHostSourceGuardTests.cs                                       pruebas= 45 A-o-B=  1 fuera-de-la-lista=  1
+WorkspaceNavigationHostTests.cs                                        pruebas= 56 A-o-B=  1 fuera-de-la-lista=  1
+WorkspacePilotUpdateIntegrationGuardTests.cs                           pruebas= 41 A-o-B=  2 fuera-de-la-lista=  2

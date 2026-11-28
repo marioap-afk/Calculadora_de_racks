@@ -1,0 +1,16 @@
+Lectura posterior UTC 2026-11-07T19:06:51.5500048Z; acad = 0; RAM = 0
+DIFF: Disposition=CLEAN PaletteKeyAcceptance=NOT_RECORDED
+  Entries: {"Id":"V|HKCU:PRODUCT\\FixedProfile\\Application Window|Position","Change":"CHANGED","Class":"ALLOWED","Rule":"R-A-03","Baseline":"String|15|163582778adecdb44b090eafd93f587c0a5d732aeef1817ee592644bca761b24","Post":"String|15|42ba3796355b9cb6df7d9b4a12b8b5bbcb134cc87033070378ea6acfa364cf42"}
+  Entries: {"Id":"V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\OpenSaveAnavDialogs|InitialDirectory","Change":"CHANGED","Class":"ALLOWED","Rule":"R-A-03","Baseline":"String|91|f125aac46e37cad7afae642eefd6d93935b715aabb85e4a38b8f87efc2fcf42e","Post":"String|11|c2eaf58b87c4102b8ede0631648939e5717885bde3f0c80803645d0c92a967fe"}
+  Entries: {"Id":"V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Variables|VIEWBACKSTATUS","Change":"ADDED","Class":"ALLOWED","Rule":"R-A-03","Baseline":null,"Post":"String|1|6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"}
+--- vigilancia (ultimas lineas)
+2026-11-07T18:06:12.5170672Z procesos acad = [67260@2026-11-07T18:05:46.9023864Z]
+2026-11-07T19:05:02.0651489Z procesos acad = []
+2026-11-07T19:05:02.0710876Z WATCH: la PID autorizada salio tras PRE-CLOSE (cierre normal); sigue la vigilancia hasta la POST
+2026-11-07T19:06:25.2397304Z WATCH fin por watch-stop.flag
+lineas STOP en la vigilancia = 1
+--- LastWrite de las claves de carga
+  Applications LW 2026-11-07T19:04:59.935Z; RackCad = 0
+  Loaded LW 2026-10-30T21:44:52.708Z; RackCad = 0
+  InstalledApplications LW 2025-10-27T15:44:06.180Z; RackCad = 0
+  AssemblyMap LW 2026-11-02T19:54:39.812Z; RackCad = 0

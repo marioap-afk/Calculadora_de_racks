@@ -1,0 +1,47 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261011T062511Z-162f",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "ba52b3b983fb7d2a02393df643e8323b125b3d03",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha lists 30 paths: 16 test paths and 14 product paths. All are within delegated allowed scope and outside exact forbidden paths. The 8 frozen T1/T2 product paths are unchanged. git diff for EventBridgeCore.cs and AutoCadEventBridge.cs shows only the authorized additive facade members. RED contains the 2 exact census exceptions; GREEN adds no test changes."
+  },
+  "OutputSha256": "A1EC69621D49D9D3685552290163C0A5DCCEA1DAC2DB8D546C66EDFBE44BA68D",
+  "ManualFreeText1610": []
+}

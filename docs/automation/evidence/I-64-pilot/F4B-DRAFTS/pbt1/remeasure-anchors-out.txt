@@ -1,0 +1,52 @@
+MU-T1A-01	W:874	IGUAL	[874]
+MU-T1A-02	W:852	IGUAL	[852]
+MU-T1A-03	W:817	IGUAL	[817]
+MU-T1A-04	W:827	IGUAL	[827]
+MU-T1A-05	WC:209	IGUAL	[209]
+MU-T1A-06	W:2133	IGUAL	[2133]
+MU-T1A-07a	W:3686	MOVIDA	[3684]
+MU-T1A-07b	W:696	IGUAL	[696]
+MU-T1A-08	W:1510	IGUAL	[1510]
+MU-T1A-09	W:1171	IGUAL	[1171]
+MU-T1A-10	W:3668	MOVIDA	[3666]
+MU-T1A-11	W:2682	IGUAL	[2682]
+MU-T1A-12	W:3568	IGUAL	[3568]
+MU-T1A-13	W:313	REPETIDA	[296, 313]
+MU-T1A-14	W:419	IGUAL	[419]
+TC2-Gap	WC:198	IGUAL	[198]
+TC2-ModuleLength	W:1905	IGUAL	[1905]
+TC2-Header	W:1639	IGUAL	[1639]
+TC2-Reinf	W:1641	IGUAL	[1641]
+TC2-PostH	W:1642	IGUAL	[1642]
+TC2-SepSp	W:1646	IGUAL	[1646]
+TC2-Cell-818	W:818	IGUAL	[818]
+TC2-Cell-822	W:822	IGUAL	[822]
+TC2-OptionalVal-mid	W:3665	IGUAL	[3665]
+Pasada-659	W:659	computation = assembler.BuildFrom(
+Pasada-675	W:675	assembler.AcceptComputation(moduleOwner, computation); // advance the opaque baseline (never mutated by the window)
+Pasada-679	W:679	composite.CommitDormantTailConsumption();
+Pasada-697	W:697	moduleOwner.ClearModuleCommit();
+Pasada-704	W:704	RefreshModuleSelector();
+ReadInputs-868	W:868	PostCatalogId = PostBox.SelectedId,
+ReadInputs-823	W:823	InOutBeamCatalogId = CellInOutBeamBox.SelectedValue as string ?? cell.InOutBeamCatalogId,
+ReadInputs-826	W:826	IntermediateBeamCatalogId = CellIntermediateBeamBox.SelectedValue as string ?? cell.IntermediateBeamCatalogId,
+LoadFromModel-391	W:391	firstLevelDatum = inputs.FirstLevelDatum;
+LoadFromModel-427	W:427	}
+Post-399	W:399	PostBox.SelectedId = string.IsNullOrWhiteSpace(inputs.PostCatalogId) ? catalog?.Defaults?.Post : inputs.PostCatalogId;
+Keep-838	W:838	generalPallet = new PalletSpecification(
+Keep-844	W:844	rackAnnotationScale = Keep(AnnotationScaleBox, rackAnnotationScale);
+New-280	W:280	LoadFromModel(inputs, string.Empty);
+New-288	W:288	Recompute();
+Design-439	W:439	Recompute();
+Update-3391	W:3391	RequestRecompute(); // synchronous validate + build
+Reentrant-3277	W:3277	private void FrontalSide_Changed(object sender, SelectionChangedEventArgs e)
+Reentrant-3289	W:3289	}
+Module-1688	W:1688	var descriptors = moduleOwner.ModuleSession.Modules;
+WC-117	WC:117	if (!composed)
+WC-121	WC:121	}
+WC-933	WC:933	UpdateCompositeEnabled();
+WC-783	WC:783	private IReadOnlyList<PushBackCompositeDiagnostic> CompositeDiagnostics()
+WC-789	WC:789	private string CompositeStatusOr(string fallback)
+WC-803	WC:803	private bool CompositeHasBlocking(PushBackSystem system)
+WC-807	WC:807	}
+W lineas=3701 WC lineas=937

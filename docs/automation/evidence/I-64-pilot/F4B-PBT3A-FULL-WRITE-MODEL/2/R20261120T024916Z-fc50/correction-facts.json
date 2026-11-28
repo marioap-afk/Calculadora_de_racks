@@ -1,0 +1,15 @@
+{
+  "Rule": "F4B-E42 (paquete v4.5, section 6.0, La reemision de PB-T3a en el intento 2): medido por la sesion en el HEAD y en la carpeta del intento 1",
+  "Attempt1": {
+    "RunId": "R20261120T001738Z-7d92",
+    "DelegationRunId": "R20261120T001442Z-903c",
+    "BaseSha": "18e4b78302d9010555e5c7b7a6c6f7384622c0e6"
+  },
+  "AnalysisPath": "docs/automation/evidence/I-64-pilot/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/analysis.md",
+  "AnalysisSha256": "7a615033c57403ab52e3b254f81a87fbfad1fc1aae7fd95ad15281b0210e105a",
+  "Patches": {
+    "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/wip-red-tree.patch": "9f5964d13ab768aa08fd1c58ec37c1dec01426955070aa7944301b2fec48ac71",
+    "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/rr/skeleton.patch": "70886a1683818eadb56aa098b7398900f49cee64a6a232522ed7f7ca30d153fd",
+    "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/rr/green-wip.patch": "92b4de2a7d8a2cc9d91f20fc24512668875550e7b99982a2d0469fbe222069d9"
+  }
+}

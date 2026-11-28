@@ -1,0 +1,132 @@
+1,2c1,5
+< """PBT2A-NC2-EXACT-WHITELIST-F4B-01: sustituto determinista de nc2 solo para F4B-PBT2A-DRAFT-STATE-PORT (intento 2, verificacion R20261119T074453Z-10a9), copia de PBT2A-NC2-EXACT-WHITELIST-01, que a su vez es copia de F4T1B-NC2-EXACT-WHITELIST-01, adaptada a F4B-E21 solo en las propiedades 5 y 8, por la firma exacta de PD-F4-01 (PBT2A-C11, F4B-E03), bajo la lista blanca exacta de F4-E21. No es A-4.
+< Dos modos, acoplados por los argumentos. Con la nota de inyeccion y la salida cruda de la planificacion (modo F4B-E21): propiedad 5 = el relevo registra el SHA de la salida CRUDA del Controller, que se lee y se ata a la nota, a las 8 colecciones opacas vacias (calculadas) y a delegation.json real (salida cruda con las 8 colecciones del contrato = delegacion real, igualdad JSON y byte a byte con la serializacion de inject_opaque.py; las 8 claves presentes en la salida cruda con '' exacto en Objective y [] exacto en las otras 7; JSON sin claves duplicadas); la nota se valida entera (RunId no vacio e igual en nota, bfc, relevo y delegacion; Fidelity empieza por PASS). Propiedad 8 = ExpectedEvidence contiene como entrada exacta F4B_EXACT_EVIDENCE y byte-fidelity-check.json atestigua la comparacion (Result PASS, AllowedWriteScopeElementwiseInOrder true, AllowedWriteScope en Fields). Sin ellos (modo F4): propiedades 5 y 8 exactamente como en el original (EXACT_CLAUSE).
+---
+> """PBTx-NC2-EXACT-WHITELIST-F4B-01 (v2): sustituto determinista de nc2 para una tarea F4B por --task (el id y el ambito entran por argumento; el texto revisado NO se edita por uso). Version 2 del sustituto custodiado PBT2A-NC2-EXACT-WHITELIST-F4B-01 (SHA 6ccaf12d...), que es copia de PBT2A-NC2-EXACT-WHITELIST-01, que a su vez es copia de F4T1B-NC2-EXACT-WHITELIST-01, adaptada a F4B-E21 en las propiedades 5 y 8, por la firma exacta de PD-F4-01 (PBT2A-C11, F4B-E03), bajo la lista blanca exacta de F4-E21. No es A-4.
+> Version 2 (decision del Owner «Aceptar y ampliar el sustituto»): la propiedad 8 admite una LISTA CERRADA de los literales exactos de cada paquete (F4B_EXACT_EVIDENCES: PB-T2 y PB-T3), sin variantes libres; la entrada de ExpectedEvidence tiene que ser igual a uno de ellos, entera y exacta. Lo demas es identico al v1, salvo --task y su ligadura con los datos.
+> Uso:  python -I nc2_exact_whitelist_substitute_f4b_v2.py --task PBT3A <dir-verificacion-real> <dir-nc2> <BaseSha> <CurrentSha> <salida.json> [<session-inject-note.json> <salida-cruda-planificacion/output.json>]
+> --task: PBT2A, PBT3A, PBT3B, PBT3C, PBT4, PBT5 (ligado a los datos: el TaskId de la delegacion real empieza por F4B-<TAREA>-) o VALIDATION (cualquier tarea F4B, sin registro).
+> Dos modos, acoplados por los argumentos. Con la nota de inyeccion y la salida cruda de la planificacion (modo F4B-E21): propiedad 5 = el relevo registra el SHA de la salida CRUDA del Controller, que se lee y se ata a la nota, a las 8 colecciones opacas vacias (calculadas) y a delegation.json real (salida cruda con las 8 colecciones del contrato = delegacion real, igualdad JSON y byte a byte con la serializacion de inject_opaque.py; las 8 claves presentes en la salida cruda con '' exacto en Objective y [] exacto en las otras 7; JSON sin claves duplicadas); la nota se valida entera (RunId no vacio e igual en nota, bfc, relevo y delegacion; Fidelity empieza por PASS). Propiedad 8 = ExpectedEvidence contiene como entrada exacta uno de los literales de la lista cerrada F4B_EXACT_EVIDENCES y byte-fidelity-check.json atestigua la comparacion (Result PASS, AllowedWriteScopeElementwiseInOrder true, AllowedWriteScope en Fields). Sin ellos (modo F4): propiedades 5 y 8 exactamente como en el original (EXACT_CLAUSE).
+10c13,14
+< ID = 'PBT2A-NC2-EXACT-WHITELIST-F4B-01'
+---
+> ID_GENERIC = 'PBTx-NC2-EXACT-WHITELIST-F4B-01'
+> TASKS = {'PBT2A': 'PB-T2a', 'PBT3A': 'PB-T3a', 'PBT3B': 'PB-T3b', 'PBT3C': 'PB-T3c', 'PBT4': 'PB-T4', 'PBT5': 'PB-T5'}
+12c16,22
+< F4B_EXACT_EVIDENCE = 'Antes del Worker: el contrato, la salida del Controller (output.json, con las colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json), la comparacion byte a byte, A1-A8 y nc4.'
+---
+> # Lista CERRADA de los literales exactos de ExpectedEvidence[0] de cada paquete (copiados byte a byte de sus gate-contract.json); no se anaden variantes libres.
+> F4B_EXACT_EVIDENCES = (
+>     # PB-T2 (F4B-PBT2A-DRAFT-STATE-PORT), el literal del v1
+>     'Antes del Worker: el contrato, la salida del Controller (output.json, con las colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json), la comparacion byte a byte, A1-A8 y nc4.',
+>     # PB-T3 (F4B-PBT3A-FULL-WRITE-MODEL), ExpectedEvidence[0] del contrato de 485b5651
+>     'antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte sobre la delegacion final, A1-A8 y nc4;',
+> )
+187c197,199
+<         by_bytes = (F4B_EXACT_EVIDENCE in ee and bfc.get('Result') == 'PASS' and bfc.get('AllowedWriteScopeElementwiseInOrder') is True
+---
+>         matched = [i for i, lit in enumerate(F4B_EXACT_EVIDENCES) if isinstance(ee, list) and lit in ee]  # igualdad entera y exacta con un literal de la lista cerrada
+>         N['ExactEvidenceMatched'] = ['PB-T2', 'PB-T3'][matched[0]] if matched else None
+>         by_bytes = (bool(matched) and bfc.get('Result') == 'PASS' and bfc.get('AllowedWriteScopeElementwiseInOrder') is True
+189c201
+<         N['ExactWhitelistBy'] = 'F4B_EXACT_EVIDENCE+BFC' if by_bytes else None
+---
+>         N['ExactWhitelistBy'] = 'F4B_EXACT_EVIDENCES+BFC' if by_bytes else None
+288c300,301
+<     # F4B: el contrato no lleva EXACT_CLAUSE; la exactitud la exige la entrada exacta F4B_EXACT_EVIDENCE de ExpectedEvidence y la atestigua el bfc
+---
+>     # F4B: el contrato no lleva EXACT_CLAUSE; la exactitud la exige la entrada exacta de la lista cerrada F4B_EXACT_EVIDENCES y la atestigua el bfc
+>     EV_T2, EV_T3 = F4B_EXACT_EVIDENCES
+292c305
+<     ct_f4b, real_f4b = pair(['e', F4B_EXACT_EVIDENCE])
+---
+>     ct_f4b, real_f4b = pair(['e', EV_T2])
+295,296c308,309
+<     neg = F4B_EXACT_EVIDENCE.replace('la comparacion byte a byte', 'sin la comparacion byte a byte')
+<     assert neg != F4B_EXACT_EVIDENCE
+---
+>     neg = EV_T2.replace('la comparacion byte a byte', 'sin la comparacion byte a byte')
+>     assert neg != EV_T2
+298a312,323
+>     # v2: PB-T3 (literal de la lista) y variantes que NO estan en la lista
+>     assert 'ocho ' in EV_T3 and EV_T3.endswith(';') and 'la comparacion' in EV_T3
+>     def f4b_with(ev):
+>         ct, rl = pair(['e', ev])
+>         return dict(real=rl, contract=ct, f4b=True)
+>     f4b_t3 = f4b_with(EV_T3)
+>     f4b_t3_no_ocho = f4b_with(EV_T3.replace('las ocho colecciones', 'las colecciones'))
+>     f4b_t3_space = f4b_with(EV_T3.replace('la comparacion', 'la  comparacion'))
+>     f4b_t3_trail = f4b_with(EV_T3 + ' ')
+>     f4b_t3_semicolon = f4b_with(EV_T3[:-1] + '.')
+>     f4b_t3_cap = f4b_with('A' + EV_T3[1:])
+>     f4b_t2_ocho = f4b_with(EV_T2.replace('con las colecciones opacas', 'con las ocho colecciones opacas'))
+366a392,398
+>         ('AY', 'v2: el literal de PB-T3 (segundo de la lista cerrada) pasa', bundle(**f4b_t3), True),
+>         ('AZ', 'v2: variante del literal de PB-T3 sin "ocho"', bundle(**f4b_t3_no_ocho), False),
+>         ('BA', 'v2: variante del literal de PB-T3 con un espacio de mas dentro', bundle(**f4b_t3_space), False),
+>         ('BB', 'v2: el literal de PB-T3 con un espacio final', bundle(**f4b_t3_trail), False),
+>         ('BC', 'v2: el literal de PB-T3 con el punto y coma final cambiado por un punto', bundle(**f4b_t3_semicolon), False),
+>         ('BD', 'v2: el literal de PB-T3 con la inicial en mayuscula', bundle(**f4b_t3_cap), False),
+>         ('BE', 'v2: el literal de PB-T2 con "ocho" (mezcla de los dos: no esta en la lista)', bundle(**f4b_t2_ocho), False),
+372c404
+< EXPECT_FAILED = dict({'O': set(), 'W': {P1, P8}},
+---
+> EXPECT_FAILED = dict({'O': set(), 'W': {P1, P8}, 'AY': set()},
+374c406,415
+<                      **{c: {P8} for c in ['T', 'U', 'V', 'Y', 'Z', 'AL']})
+---
+>                      **{c: {P8} for c in ['T', 'U', 'V', 'Y', 'Z', 'AL', 'AZ', 'BA', 'BB', 'BC', 'BD', 'BE']})
+> 
+> 
+> def check_task(task, tid):
+>     """v2: --task ligado a los datos: el TaskId de la delegacion real empieza por F4B-<TAREA>- (VALIDATION: por F4B-)."""
+>     if not isinstance(tid, str):
+>         return False
+>     if task == 'VALIDATION':
+>         return tid.startswith('F4B-') and len(tid) > 4
+>     return task in TASKS and tid.startswith('F4B-%s-' % task)
+382a424,430
+>     for c, d, got, exp in [('T1', '--task PBT3A con el TaskId de PB-T3a', check_task('PBT3A', 'F4B-PBT3A-FULL-WRITE-MODEL'), True),
+>                            ('T2', '--task PBT3B sobre datos de PB-T3a', check_task('PBT3B', 'F4B-PBT3A-FULL-WRITE-MODEL'), False),
+>                            ('T3', '--task PBT3 (prefijo parcial) sobre datos de PB-T3a', check_task('PBT3', 'F4B-PBT3A-FULL-WRITE-MODEL'), False),
+>                            ('T4', '--task VALIDATION con un TaskId de F4B', check_task('VALIDATION', 'F4B-PBT4-X'), True),
+>                            ('T5', '--task VALIDATION con un TaskId que no es de F4B', check_task('VALIDATION', 'OTRO-1'), False),
+>                            ('T6', 'TaskId ausente', check_task('PBT3A', None), False)]:
+>         out.append({'Case': c, 'Description': d, 'Result': 'PASS' if got else 'FAIL', 'Expected': 'PASS' if exp else 'FAIL', 'Ok': got == exp})
+404c452
+< def main(real_dir, nc_dir, base, cur, out_path, note_path=None, raw_path=None):
+---
+> def main(task, real_dir, nc_dir, base, cur, out_path, note_path=None, raw_path=None):
+409c457,460
+<     res = {'Id': ID, 'NotA4': True, 'Scope': 'solo F4B-PBT2A-DRAFT-STATE-PORT, intento 2 (verificacion R20261119T074453Z-10a9); no reemplaza al Controller ni a nc2 en otras tareas',
+---
+>     tag = task if task in TASKS else None
+>     res = {'Id': ID_GENERIC.replace('PBTx', tag) if tag else ID_GENERIC, 'GenericId': ID_GENERIC, 'Task': task, 'NotA4': True,
+>            'Scope': 'solo la tarea F4B de --task %s%s; no reemplaza al Controller ni a nc2 en otras tareas' % (task, ' (%s)' % TASKS[tag] if tag else ' (sin registro)'),
+>            'ScriptSha256': sha(open(os.path.abspath(__file__), 'rb').read()),
+412a464,465
+>     elif task not in TASKS and task != 'VALIDATION':
+>         res['SubstituteResult'] = 'FAIL (--task es obligatorio: %s o VALIDATION)' % ', '.join(sorted(TASKS))
+436a490,494
+>         bind = check_task(task, rd.get('TaskId')) and check_task(task, md.get('TaskId'))  # --task ligado a los datos (real y copia de nc2)
+>         ok = ok and bind
+>         real_out = ld(os.path.join(real_dir, 'output.json'))
+>         res['TaskBinding'] = {'Task': task, 'RealDelegationTaskId': rd.get('TaskId'), 'Ok': bind}
+>         res['Scope'] = 'solo %s, intento %s (verificacion %s); no reemplaza al Controller ni a nc2 en otras tareas' % (rd.get('TaskId'), rd.get('Attempt'), real_out.get('RunId'))
+450c508
+<                                'nc2': 'SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B' if ok else 'NOT SATISFIED'}})
+---
+>                                'nc2': ('SATISFIED_UNDER_%s_EXACT_WHITELIST_SUBSTITUTE_F4B' % tag if tag else 'VALIDATION_ONLY_NO_RECORD') if ok else 'NOT SATISFIED'}})
+461c519,528
+<     sys.exit(main(*sys.argv[1:8]))
+---
+>     task, rest, i = None, [], 1
+>     while i < len(sys.argv):
+>         if sys.argv[i] == '--task' and i + 1 < len(sys.argv):
+>             task, i = sys.argv[i + 1].upper(), i + 2
+>         else:
+>             rest.append(sys.argv[i]); i += 1
+>     if len(rest) < 5:
+>         print('uso: python -I nc2_exact_whitelist_substitute_f4b_v2.py --task PBT2A|PBT3A|PBT3B|PBT3C|PBT4|PBT5|VALIDATION <real> <nc2> <BaseSha> <CurrentSha> <salida.json> [<nota> <salida-cruda>]')
+>         sys.exit(2)
+>     sys.exit(main(task, *rest[:7]))

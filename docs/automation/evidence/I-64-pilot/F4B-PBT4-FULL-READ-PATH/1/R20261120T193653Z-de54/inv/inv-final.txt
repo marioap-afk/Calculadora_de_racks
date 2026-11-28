@@ -1,0 +1,238 @@
+== INV-PBT4A-01: git diff --name-status 5aaacce3 faef702055990d1350a73bf4d254eb9e898d5670 -- src tests
+  A	src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs
+  A	src/RackCad.Application/Workspace/IWorkspaceEditIntentOriginReader.cs
+  A	tests/RackCad.Tests/PushBackFullReadGuardTests.cs
+  A	tests/RackCad.Tests/PushBackFullReadPathTests.cs
+  A	tests/RackCad.Tests/PushBackFullReadSupport.cs
+  M	src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+  M	src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+  M	src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+  M	src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+  M	tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs
+== git diff --name-only 214f8c75 faef702055990d1350a73bf4d254eb9e898d5670 -- src tests (the GREEN)
+  src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs
+  src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+  src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+  src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+  src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+== git diff --name-only 5aaacce3 -- src/RackCad.UI src/RackCad.Domain src/RackCad.Plugin/RackPushBackCommands.cs src/RackCad.Plugin/RackCommandSupport.cs (must be empty)
+  EMPTY
+== INV-PBT4A-05: WHC is BaseSha with the five sentences changed, whitespace collapsed, comments kept
+  sentences of BaseSha: 6 (Begin + 5); sentences of the original left now: 1; of the new block now: 5
+  WHC == BaseSha with the five sentences replaced: EQUAL
+  Find<PushBackPilotDraftState>: base 9, now 9
+== INV-PBT4A-04: counts over the WHOLE text of each file, comments included (BaseSha -> now)
+  RackPilotIntentAdapter.cs LockDocument: 1 -> 1
+  RackPilotIntentAdapter.cs StartTransaction: 1 -> 1
+  RackPilotIntentAdapter.cs CaptureDrawing(: 1 -> 1
+  RackPilotIntentAdapter.cs PushBackPilotIntentReader.Read(: 1 -> 1
+  RackPilotIntentAdapter.cs new PushBackPilotIntentScan(: 1 -> 1
+  RackPilotIntentAdapter.cs PushBackFullDraftReader.Read(: 0 -> 1
+  RackPilotIntentAdapter.cs PushBackOriginByText.ReadAt(: 0 -> 1
+  WorkspaceNavigationHost.cs LockDocument: 2 -> 2
+  WorkspaceNavigationHost.cs RackPilotIntentAdapter.Read(: 1 -> 1
+  WorkspaceNavigationHost.cs RackPilotIntentAdapter.LoadCatalog(): 1 -> 1
+  WorkspaceNavigationHost.cs RackPilotIntentAdapter.AtOrigin(: 0 -> 1
+  WorkspaceHostCore.cs Find<PushBackPilotDraftState>: 9 -> 9
+  signature of RackPilotIntentAdapter.Read unchanged: True
+  ReadOnActiveDocument gains originText: True
+== the Skip of CT-PBT3A-12: lines of the file that differ from BaseSha
+  line counts: 337 -> 337
+  changed lines: 1
+  60: [[Fact]] -> [[Fact(Skip = "I-64 F4B PB-T4a: sustituida por CT-PBT4A-06 de PushBackFullReadGuardTests (registro declarado superseding-characterization.md; decision del Owner owner-pbt4-decisions.md, pregunta 4).")]]
+== INV-PBT4A-13: the census of declarations of the six code paths, BaseSha vs now (a name with a count; an overload is one more)
+-- WorkspaceEditIntent.cs: base 192 declarations, now 195
+   EditIntentReadResult.Catalog [field-or-property]: 0 -> 1
+   EditIntentReadResult.FromReads [method]: 0 -> 1
+   EditIntentReadResult.FullRead [field-or-property]: 0 -> 1
+   - signature gone: .EditIntentReadResult.EditIntentReadResult: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead)
+   + signature new:  .EditIntentReadResult.EditIntentReadResult: private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead, PushBackFullIntentResult? fullRead, RackCatalog?
+   + signature new:  .EditIntentReadResult.Catalog: public RackCatalog? Catalog
+   + signature new:  .EditIntentReadResult.FullRead: public PushBackFullIntentResult? FullRead
+   + signature new:  .EditIntentReadResult.FromReads: public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog)
+-- IWorkspaceEditIntentOriginReader.cs: base 0 declarations, now 2
+   IWorkspaceEditIntentOriginReader [type]: 0 -> 1
+   IWorkspaceEditIntentOriginReader.ReadIntentAtOrigin [method]: 0 -> 1
+-- PushBackOriginByText.cs: base 0 declarations, now 4
+   PushBackOriginByText [type]: 0 -> 1
+   PushBackOriginByText.AtKey [method]: 0 -> 1
+   PushBackOriginByText.Choose [method]: 0 -> 1
+   PushBackOriginByText.ReadAt [method]: 0 -> 1
+-- WorkspaceHostCore.cs: base 127 declarations, now 127
+-- RackPilotIntentAdapter.cs: base 22 declarations, now 26
+   RackPilotIntentAdapter.AtOrigin [method]: 0 -> 1
+   RackPilotIntentReadResult.Full [field-or-property]: 0 -> 1
+   RackPilotIntentReadResult.Input [field-or-property]: 0 -> 1
+   RackPilotIntentReadResult.RackPilotIntentReadResult [ctor]: 1 -> 2
+   + signature new:  .RackPilotIntentAdapter.AtOrigin: internal static RackPilotIntentReadResult AtOrigin(RackPilotIntentReadResult read, string originText, RackCatalog catalog)
+   + signature new:  .RackPilotIntentReadResult.RackPilotIntentReadResult: internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, PushBackFullIntentResult full, PushBackPilotIntentScan input)
+   + signature new:  .RackPilotIntentReadResult.Full: internal PushBackFullIntentResult? Full
+   + signature new:  .RackPilotIntentReadResult.Input: internal PushBackPilotIntentScan? Input
+-- WorkspaceNavigationHost.cs: base 27 declarations, now 28
+   WorkspaceNavigationHost.PilotIntentReader.ReadIntentAtOrigin [method]: 0 -> 1
+   - signature gone: .WorkspaceNavigationHost.PilotIntentReader: private sealed class PilotIntentReader : IWorkspaceEditIntentReader
+   - signature gone: .WorkspaceNavigationHost.PilotIntentReader.ReadOnActiveDocument: private EditIntentReadResult ReadOnActiveDocument(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness)
+   + signature new:  .WorkspaceNavigationHost.PilotIntentReader: private sealed class PilotIntentReader : IWorkspaceEditIntentReader, IWorkspaceEditIntentOriginReader
+   + signature new:  .WorkspaceNavigationHost.PilotIntentReader.ReadIntentAtOrigin: public EditIntentReadResult ReadIntentAtOrigin(SessionId session, string rackId, string originText, EditIntentWitness witness)
+   + signature new:  .WorkspaceNavigationHost.PilotIntentReader.ReadOnActiveDocument: private EditIntentReadResult ReadOnActiveDocument(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness, string originText)
+== names added (file, name, +count):
+   ('WorkspaceEditIntent.cs', 'EditIntentReadResult.Catalog [field-or-property]', 1)
+   ('WorkspaceEditIntent.cs', 'EditIntentReadResult.FromReads [method]', 1)
+   ('WorkspaceEditIntent.cs', 'EditIntentReadResult.FullRead [field-or-property]', 1)
+   ('IWorkspaceEditIntentOriginReader.cs', 'IWorkspaceEditIntentOriginReader [type]', 1)
+   ('IWorkspaceEditIntentOriginReader.cs', 'IWorkspaceEditIntentOriginReader.ReadIntentAtOrigin [method]', 1)
+   ('PushBackOriginByText.cs', 'PushBackOriginByText [type]', 1)
+   ('PushBackOriginByText.cs', 'PushBackOriginByText.AtKey [method]', 1)
+   ('PushBackOriginByText.cs', 'PushBackOriginByText.Choose [method]', 1)
+   ('PushBackOriginByText.cs', 'PushBackOriginByText.ReadAt [method]', 1)
+   ('RackPilotIntentAdapter.cs', 'RackPilotIntentAdapter.AtOrigin [method]', 1)
+   ('RackPilotIntentAdapter.cs', 'RackPilotIntentReadResult.Full [field-or-property]', 1)
+   ('RackPilotIntentAdapter.cs', 'RackPilotIntentReadResult.Input [field-or-property]', 1)
+   ('RackPilotIntentAdapter.cs', 'RackPilotIntentReadResult.RackPilotIntentReadResult [ctor]', 1)
+   ('WorkspaceNavigationHost.cs', 'WorkspaceNavigationHost.PilotIntentReader.ReadIntentAtOrigin [method]', 1)
+== names removed (file, name, -count) (must be empty):
+== INV-PBT4A-14: every line added to src/ by git diff -U0 5aaacce3 faef702055990d1350a73bf4d254eb9e898d5670, with the suspicious ones flagged
+   PushBackOriginByText.cs: using System;
+   PushBackOriginByText.cs: using System.Linq;
+   PushBackOriginByText.cs: using RackCad.Application.Catalogs;
+   PushBackOriginByText.cs: using RackCad.Application.Systems.PushBack.Pilot;
+   PushBackOriginByText.cs: using RackCad.Application.Workspace.Drafts;
+   PushBackOriginByText.cs: 
+   PushBackOriginByText.cs: namespace RackCad.Application.Systems.PushBack.Draft
+   PushBackOriginByText.cs: {
+   PushBackOriginByText.cs:     /// <summary>
+   PushBackOriginByText.cs:     /// I-64 F4B PB-T4a (D-PBT4-03, A-T3-8) — the origin of an open draft, found by its text: the key of the ONLY mutable member
+   PushBackOriginByText.cs:     /// whose raw text is, byte for byte, the origin of the draft (the rule of the run, UR:640-650), the same scan at that key, and
+   PushBackOriginByText.cs:     /// the two pure reads over it (the pilot and the full model), as PushBackFullDraftReader does.
+   PushBackOriginByText.cs:     /// </summary>
+   PushBackOriginByText.cs:     public static class PushBackOriginByText
+   PushBackOriginByText.cs:     {
+   PushBackOriginByText.cs:         public static string Choose(DraftStaleBase staleBase, string originText)
+   PushBackOriginByText.cs:         {
+   PushBackOriginByText.cs:             if (staleBase == null || originText == null) return null;
+   PushBackOriginByText.cs:             var matches = staleBase.Entries.Values
+   PushBackOriginByText.cs:                 .Where(entry => entry.Membership == DraftMembership.Mutable && string.Equals(entry.EnvelopeText, originText, StringComparison.Ordinal))
+   PushBackOriginByText.cs:                 .Select(entry => entry.Key)
+   PushBackOriginByText.cs:                 .ToList();
+   PushBackOriginByText.cs:             return matches.Count == 1 ? matches[0] : null;
+   PushBackOriginByText.cs:         }
+   PushBackOriginByText.cs: 
+   PushBackOriginByText.cs:         public static PushBackPilotIntentScan AtKey(PushBackPilotIntentScan scan, string originKey)
+   PushBackOriginByText.cs:         {
+   PushBackOriginByText.cs:             if (scan == null) throw new ArgumentNullException(nameof(scan));
+   PushBackOriginByText.cs:             return new PushBackPilotIntentScan(
+   PushBackOriginByText.cs:                 scan.RackId,
+   PushBackOriginByText.cs:                 originKey,
+   PushBackOriginByText.cs:                 scan.Facts,
+   PushBackOriginByText.cs:                 scan.RawEnvelopes.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal),
+   PushBackOriginByText.cs:                 scan.CompletenessEvidence,
+   PushBackOriginByText.cs:                 scan.PreviewWitness);
+   PushBackOriginByText.cs:         }
+   PushBackOriginByText.cs: 
+   PushBackOriginByText.cs:         public static (PushBackPilotIntentScan Scan, PushBackPilotIntentResult Pilot, PushBackFullIntentResult Full)? ReadAt(PushBackPilotIntentScan scan, string originText, RackCatalog catalog)
+   PushBackOriginByText.cs:         {
+   PushBackOriginByText.cs:             if (scan == null) throw new ArgumentNullException(nameof(scan));
+   PushBackOriginByText.cs:             var key = Choose(PushBackPilotIntentReader.BuildStaleBase(scan), originText);
+   PushBackOriginByText.cs:             if (key == null || key == scan.OriginKey) return null;
+   PushBackOriginByText.cs:             var input = AtKey(scan, key);
+   PushBackOriginByText.cs:             return (input, PushBackPilotIntentReader.Read(input, catalog), PushBackFullDraftReader.Read(input, catalog));
+   PushBackOriginByText.cs:         }
+   PushBackOriginByText.cs:     }
+   PushBackOriginByText.cs: }
+   IWorkspaceEditIntentOriginReader.cs: #nullable enable
+   IWorkspaceEditIntentOriginReader.cs: namespace RackCad.Application.Workspace
+   IWorkspaceEditIntentOriginReader.cs: {
+   IWorkspaceEditIntentOriginReader.cs:     /// <summary>
+   IWorkspaceEditIntentOriginReader.cs:     /// I-64 F4B PB-T4a (D-PBT4-03, A-T3-8) — the reader of the edit intention that can read again at the origin of an open draft,
+   IWorkspaceEditIntentOriginReader.cs:     /// found by its text. It is optional: a reader without it is read as today.
+   IWorkspaceEditIntentOriginReader.cs:     /// </summary>
+   IWorkspaceEditIntentOriginReader.cs:     public interface IWorkspaceEditIntentOriginReader
+   IWorkspaceEditIntentOriginReader.cs:     {
+   IWorkspaceEditIntentOriginReader.cs:         EditIntentReadResult ReadIntentAtOrigin(SessionId session, string rackId, string originText, EditIntentWitness? witness);
+   IWorkspaceEditIntentOriginReader.cs:     }
+   IWorkspaceEditIntentOriginReader.cs: }
+   WorkspaceEditIntent.cs: using RackCad.Application.Catalogs;
+   WorkspaceEditIntent.cs: using RackCad.Application.Systems.PushBack.Draft;
+   WorkspaceEditIntent.cs:         private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead, PushBackFullIntentResult? fullRead, RackCatalog? catalog)
+   WorkspaceEditIntent.cs:             FullRead = fullRead;
+   WorkspaceEditIntent.cs:             Catalog = catalog;
+   WorkspaceEditIntent.cs:         /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless the read came from <see cref="FromReads"/>.</summary>
+   WorkspaceEditIntent.cs:         public PushBackFullIntentResult? FullRead { get; }
+   WorkspaceEditIntent.cs: 
+   WorkspaceEditIntent.cs:         /// <summary>I-64 F4B PB-T4a: the catalog of the read; null unless the read came from <see cref="FromReads"/>.</summary>
+   WorkspaceEditIntent.cs:         public RackCatalog? Catalog { get; }
+   WorkspaceEditIntent.cs: 
+   WorkspaceEditIntent.cs:             return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, null, null);
+   WorkspaceEditIntent.cs:         }
+   WorkspaceEditIntent.cs: 
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog)
+   WorkspaceEditIntent.cs:         {
+   WorkspaceEditIntent.cs:             if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   WorkspaceEditIntent.cs:             if (fullRead == null) throw new ArgumentNullException(nameof(fullRead));
+   WorkspaceEditIntent.cs:             if (catalog == null) throw new ArgumentNullException(nameof(catalog));
+   WorkspaceEditIntent.cs:             return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead, fullRead, catalog);
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadStatus.NoActiveDocument, reason, null, null, null);
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult Busy(string reason) => new(EditIntentReadStatus.Busy, reason, null, null, null);
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult Rejected(string reason) => new(EditIntentReadStatus.Rejected, reason, null, null, null);
+   WorkspaceEditIntent.cs:         public static EditIntentReadResult Failed(string reason) => new(EditIntentReadStatus.Failed, reason, null, null, null);
+   WorkspaceHostCore.cs:                 var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   WorkspaceHostCore.cs:                     ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+   WorkspaceHostCore.cs:                     : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+   WorkspaceHostCore.cs:                 var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   WorkspaceHostCore.cs:                     ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+   WorkspaceHostCore.cs:                     : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+   WorkspaceHostCore.cs:                 var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   WorkspaceHostCore.cs:                     ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+   WorkspaceHostCore.cs:                     : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+   WorkspaceHostCore.cs:                 var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   WorkspaceHostCore.cs:                     ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+   WorkspaceHostCore.cs:                     : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+   WorkspaceHostCore.cs:                 var read = _editIntentReader is IWorkspaceEditIntentOriginReader originReader
+   WorkspaceHostCore.cs:                     ? originReader.ReadIntentAtOrigin(request.Session, request.RackId, draft.CurrentDraftState.Origin, request.Witness)
+   WorkspaceHostCore.cs:                     : _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+   RackPilotIntentAdapter.cs: using RackCad.Application.Systems.PushBack.Draft;
+   RackPilotIntentAdapter.cs:         internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, PushBackFullIntentResult full, PushBackPilotIntentScan input)
+   RackPilotIntentAdapter.cs:         {
+   RackPilotIntentAdapter.cs:             Pilot = pilot;
+   RackPilotIntentAdapter.cs:             Full = full;
+   RackPilotIntentAdapter.cs:             Input = input;
+   RackPilotIntentAdapter.cs:             FailureReason = string.Empty;
+   RackPilotIntentAdapter.cs:         }
+   RackPilotIntentAdapter.cs: 
+   RackPilotIntentAdapter.cs:         internal PushBackFullIntentResult? Full { get; }
+   RackPilotIntentAdapter.cs: 
+   RackPilotIntentAdapter.cs:         internal PushBackPilotIntentScan? Input { get; }
+   RackPilotIntentAdapter.cs: 
+   RackPilotIntentAdapter.cs:                 return new RackPilotIntentReadResult(read, PushBackFullDraftReader.Read(input, catalog), input);
+   RackPilotIntentAdapter.cs:         /// <summary>
+   RackPilotIntentAdapter.cs:         /// I-64 F4B PB-T4a (D-PBT4-03): the same read at the origin of an open draft, chosen by its text over the scan that
+   RackPilotIntentAdapter.cs:         /// <see cref="Read"/> already took, by the pure reread of the full model (PushBackOriginByText.ReadAt). It reads nothing
+   RackPilotIntentAdapter.cs:         /// more of the drawing. Without exactly one other mutable member with that text, the read stays as it was. An exception of
+   RackPilotIntentAdapter.cs:         /// the pure reread is not contained here, unlike <see cref="Read"/>: it reaches the reader of the host, which answers Failed.
+   RackPilotIntentAdapter.cs:         /// </summary>
+   RackPilotIntentAdapter.cs:         internal static RackPilotIntentReadResult AtOrigin(RackPilotIntentReadResult read, string originText, RackCatalog catalog)
+   RackPilotIntentAdapter.cs:         {
+   RackPilotIntentAdapter.cs:             if (!read.Succeeded || read.Input == null) return read;
+   RackPilotIntentAdapter.cs:             var at = PushBackOriginByText.ReadAt(read.Input, originText, catalog);
+   RackPilotIntentAdapter.cs:             return at == null ? read : new RackPilotIntentReadResult(at.Value.Pilot, at.Value.Full, at.Value.Scan);
+   RackPilotIntentAdapter.cs:         }
+   RackPilotIntentAdapter.cs: 
+   WorkspaceNavigationHost.cs:         private sealed class PilotIntentReader : IWorkspaceEditIntentReader, IWorkspaceEditIntentOriginReader
+   WorkspaceNavigationHost.cs:                     return ReadOnActiveDocument(session, rackId, chosenReference, witness, null);
+   WorkspaceNavigationHost.cs:             public EditIntentReadResult ReadIntentAtOrigin(SessionId session, string rackId, string originText, EditIntentWitness witness)
+   WorkspaceNavigationHost.cs:             {
+   WorkspaceNavigationHost.cs:                 try
+   WorkspaceNavigationHost.cs:                 {
+   WorkspaceNavigationHost.cs:                     return ReadOnActiveDocument(session, rackId, null, witness, originText);
+   WorkspaceNavigationHost.cs:                 }
+   WorkspaceNavigationHost.cs:                 catch (System.Exception ex)
+   WorkspaceNavigationHost.cs:                 {
+   WorkspaceNavigationHost.cs:                     LogFault("WorkspaceNavigationHost.ReadEditIntent", ex);
+   WorkspaceNavigationHost.cs:                     return EditIntentReadResult.Failed(ex.Message);
+   WorkspaceNavigationHost.cs:                 }
+   WorkspaceNavigationHost.cs:             }
+   WorkspaceNavigationHost.cs: 
+   WorkspaceNavigationHost.cs:             private EditIntentReadResult ReadOnActiveDocument(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness, string originText)
+   WorkspaceNavigationHost.cs:                     if (originText != null)
+   WorkspaceNavigationHost.cs:                         read = RackPilotIntentAdapter.AtOrigin(read, originText, catalog.Catalog);
+   WorkspaceNavigationHost.cs:                         ? EditIntentReadResult.FromReads(read.Pilot, read.Full, catalog.Catalog)

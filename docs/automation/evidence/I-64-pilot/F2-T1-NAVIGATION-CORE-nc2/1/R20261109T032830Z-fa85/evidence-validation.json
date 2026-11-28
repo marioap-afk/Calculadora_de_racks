@@ -1,0 +1,110 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261109T032830Z-fa85",
+  "OutputUnresolvedHex": [
+    {
+      "Token": "c726410f3ac764f4a80a08b5fdda276ecc",
+      "Len": 34,
+      "Kind": "git-object-not-found"
+    }
+  ],
+  "OutputUnresolvedHexByCheck": {
+    "Identity": [
+      {
+        "Token": "c726410f3ac764f4a80a08b5fdda276ecc",
+        "Len": 34,
+        "Kind": "git-object-not-found"
+      }
+    ],
+    "Remote": [
+      {
+        "Token": "c726410f3ac764f4a80a08b5fdda276ecc",
+        "Len": 34,
+        "Kind": "git-object-not-found"
+      }
+    ]
+  },
+  "CommandUnresolvedHex": [
+    {
+      "Command": 1,
+      "Tokens": [
+        {
+          "Token": "c726410f3ac764f4a80a08b5fdda276ecc",
+          "Len": 34,
+          "Kind": "git-object-not-found"
+        }
+      ]
+    },
+    {
+      "Command": 3,
+      "Tokens": [
+        {
+          "Token": "c726410f3ac764f4a80a08b5fdda276ecc",
+          "Len": 34,
+          "Kind": "git-object-not-found"
+        }
+      ]
+    },
+    {
+      "Command": 5,
+      "Tokens": [
+        {
+          "Token": "c726410f3ac764f4a80a08b5fdda276ecc",
+          "Len": 34,
+          "Kind": "git-object-not-found"
+        }
+      ]
+    }
+  ],
+  "GitFatalLines": [
+    {
+      "Command": 1,
+      "Line": "fatal: ambiguous argument '9082bcbc..c726410f3ac764f4a80a08b5fdda276ecc': unknown revision or path not in the working tree."
+    },
+    {
+      "Command": 3,
+      "Line": "fatal: ambiguous argument '9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb..c726410f3ac764f4a80a08b5fdda276ecc': unknown revision or path not in the working tree."
+    },
+    {
+      "Command": 5,
+      "Line": "fatal: Not a valid object name c726410f3ac764f4a80a08b5fdda276ecc"
+    },
+    {
+      "Command": 5,
+      "Line": "fatal: bad revision 'c726410f3ac764f4a80a08b5fdda276ecc'"
+    },
+    {
+      "Command": 6,
+      "Line": "fatal: unable to access 'https://github.com/marioap-afk/Calculadora_de_racks.git/': Failed to connect to github.com port 443 via 127.0.0.1 after 2070 ms: Could not connect to server"
+    }
+  ],
+  "NonZeroExit": [
+    {
+      "Command": 3,
+      "Exit": 1
+    },
+    {
+      "Command": 5,
+      "Exit": 1
+    },
+    {
+      "Command": 6,
+      "Exit": 1
+    }
+  ],
+  "ConstrainedLanguageErrors": 4,
+  "DisplayNameSelectionCommands": [
+    5,
+    6
+  ],
+  "TestsEvidenceNumbers": [
+    "14997",
+    "15048",
+    "51",
+    "673",
+    "724",
+    "727"
+  ],
+  "TestsEvidenceDisplayCount": true,
+  "MaterialHexDefect": true
+}

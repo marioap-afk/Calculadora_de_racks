@@ -1,0 +1,48 @@
+== WHC base
+var pilot = read.PilotRead; : 6
+Find<PushBackPilotDraftState> : 9
+Begin( : 1  TryUpdatePilot: 1  TryKeepPilotEdit: 1
+== WEI
+5:using RackCad.Application.Catalogs;
+39:        private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead, PushBackFullIntentResult? fullRead, RackCatalog? catalog)
+44:            FullRead = fullRead;
+45:            Catalog = catalog;
+55:        /// <summary>I-64 F4B PB-T4a: the read of the full model over the same scan; null unless the read came from <see cref="FromReads"/>.</summary>
+56:        public PushBackFullIntentResult? FullRead { get; }
+58:        /// <summary>I-64 F4B PB-T4a: the catalog of the read; null unless the read came from <see cref="FromReads"/>.</summary>
+59:        public RackCatalog? Catalog { get; }
+67:        public static EditIntentReadResult FromReads(PushBackPilotIntentResult pilotRead, PushBackFullIntentResult fullRead, RackCatalog catalog)
+96:    public enum EditIntentStatus
+== NumericFieldValidation
+57:    /// comma, no grouping" parsing (via <see cref="LocalizedNumberParser"/>), the optional→auto convention and the
+76:        public static NumericFieldValidationResult Validate(
+95:                if (!LocalizedNumberParser.TryInteger(text, out var integer))
+== Draft
+14:    public enum PushBackChangeGroup { Name = 0, Rack = 1, Annotations = 2, Safety = 3, Fronts = 4, Modules = 5, SideB = 6, Composite = 7, OutsideEditor = 8 }
+109:        public static PushBackConflictClassification Classify(
+src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs src/RackCad.Application/Systems/PushBack/Draft/PushBackEditableStateSeat.cs src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStateComparer.cs src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs src/RackCad.Application/Systems/PushBack/Draft/PushBackViewDisposition.cs 
+17:        public static PushBackFullDraftStateComparer Instance { get; } = new PushBackFullDraftStateComparer();
+24:                   && PushBackEditableStateComparer.Instance.Equals(x.Editable, y.Editable);
+32:                PushBackEditableStateComparer.Instance.GetHashCode(obj.Editable));
+35:        public static PushBackFullDraftState Copy(PushBackFullDraftState state)
+90:        public static PushBackFullDraftState KeepOn(PushBackFullDraftState newInitial, PushBackFullDraftState current)
+16:    public sealed class PushBackPilotPrecheck
+18:        private PushBackPilotPrecheck(bool proceeds, PushBackPilotPrepareKind kind, string? reason)
+34:        internal static PushBackPilotPrecheck Go() => new(true, PushBackPilotPrepareKind.Invalid, null);
+36:        internal static PushBackPilotPrecheck Stop(PushBackPilotPrepareKind kind, string reason) => new(false, kind, reason);
+130:        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackPilotDraftState> draft)
+137:                case PushBackPilotPrepareKind.NotApplicable: return PushBackPilotPrecheck.Stop(result.Kind, NotApplicableReason);
+138:                case PushBackPilotPrepareKind.PendingText: return PushBackPilotPrecheck.Stop(result.Kind, PendingTextReason);
+139:                case PushBackPilotPrepareKind.NothingToApply: return PushBackPilotPrecheck.Stop(result.Kind, NothingToApplyReason);
+140:                default: return PushBackPilotPrecheck.Go();
+145:        public static PushBackPilotPrecheck Precheck(DraftSession<PushBackFullDraftState> draft)
+== WorkspaceController
+docs/automation/evidence/I-64-pilot/F3-T2-BROWSER-UI/1/R20261110T145802Z-4c2a/impl/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+docs/automation/evidence/I-64-pilot/F3-T2-BROWSER-UI/2/R20261110T160921Z-4b73/product-full/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+src/RackCad.Plugin/Workspace/WorkspaceController.cs
+0
+== new files absent
+no existe src/RackCad.Application/Formatting/NumericTextRule.cs
+no existe src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs
+no existe src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs
+no existe src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs

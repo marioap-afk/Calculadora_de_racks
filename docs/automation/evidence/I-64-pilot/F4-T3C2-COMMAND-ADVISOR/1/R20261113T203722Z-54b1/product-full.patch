@@ -1,0 +1,788 @@
+diff --git a/src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs b/src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs
+index 32fa1c14..6eca23d7 100644
+--- a/src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs
++++ b/src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs
+@@ -4,7 +4,8 @@ namespace RackCad.Application.Workspace
+     /// <summary>
+     /// I-64 F4-T2B2B (D-T2B2-09): the one seam through which the pure bridge core asks the host what to do with the close and the
+     /// destruction of a document. The core owns no state of drafts: it asks, and it keeps only what it can observe itself. Both calls
+-    /// are synchronous and in memory: they read nothing of the drawing, write nothing and open no dialog.
++    /// are synchronous and in memory: they neither read nor write the drawing and open no dialog. A decorator may write a notice on the
++    /// command line (I-64 F4-T3C2).
+     /// </summary>
+     public interface IWorkspaceLifecycleAdvisor
+     {
+diff --git a/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs b/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+index e83e9d7b..15b889ac 100644
+--- a/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
++++ b/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@ -69,10 +69,16 @@ namespace RackCad.Application.Workspace
+         /// </summary>
+         PilotRiskView GetRacksAtRisk(WorkspaceRequest origin);
+ 
+-        /// <summary>Takes, oldest first, every notice of lost work that nobody consumed, and leaves the queue empty.</summary>
++        /// <summary>
++        /// Takes, oldest first, every notice of lost work that nobody consumed, and leaves the queue empty. A notice whose conversion
++        /// fails is lost: it is taken out of the queue and stays only in the log, and the next ones are still taken.
++        /// </summary>
+         IReadOnlyList<PilotLossView> TakeLossNotices();
+ 
+-        /// <summary>Takes, oldest first, every notice of a vetoed close that nobody consumed, and leaves the queue empty.</summary>
++        /// <summary>
++        /// Takes, oldest first, every notice of a vetoed close that nobody consumed, and leaves the queue empty. If taking them fails it
++        /// answers an empty list and the queue is NOT emptied: the notices are taken again at the next presentation.
++        /// </summary>
+         IReadOnlyList<PilotCloseView> TakeCloseNotices();
+     }
+ 
+diff --git a/src/RackCad.Application/Workspace/WorkspaceCloseAdvisorRelay.cs b/src/RackCad.Application/Workspace/WorkspaceCloseAdvisorRelay.cs
+new file mode 100644
+index 00000000..aade9094
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/WorkspaceCloseAdvisorRelay.cs
+@@ -0,0 +1,204 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++
++namespace RackCad.Application.Workspace
++{
++    /// <summary>
++    /// I-64 F4-T3C2 (D-T3C2-04): the wrapper of the lifecycle advisor. Every decision is the one of the inner advisor (the host core): the
++    /// wrapper never decides alone, holds no state of drafts and consumes no queue of the panel. It only adds the words that the user
++    /// needs on the command line: a notice when a close was vetoed and, later, a notice of the work that a destroyed document lost.
++    ///
++    /// <see cref="AdviseClose"/> starts from Veto (the default value of <see cref="CloseDecision"/> is Allow, so it is never the start) and
++    /// gives Allow only when the inner advisor does; an exception of the inner advisor is a Veto. The write of the notice and the queries
++    /// for it never change the decision.
++    ///
++    /// <see cref="SessionDestroyed"/> reads the risk of the session BEFORE it delegates, because after the retirement the host answers
++    /// "nothing at risk"; all of that work is contained, and the delegation happens always and once, uncontained: its exception goes to
++    /// the core, which logs it as before. The session is no longer in the bridge then, so this method neither asks the bridge nor
++    /// writes: it keeps the message until <see cref="TakeMessages"/> is called with an active session.
++    ///
++    /// Declared (I-64 F4-T3C2, D-T3-08): two bounded extensions of the advisor of F4-T2B2B. In <see cref="AdviseClose"/>, the in-memory
++    /// reading of the name and of the activity of the document and the write of the notice of the veto on the command line; in
++    /// <see cref="SessionDestroyed"/>, the in-memory reading of the risk and the deferred message. None of them reads or writes the drawing
++    /// or opens a dialog. The wrapper does not empty live text: the veto sees the pending text of a draft without touching it.
++    /// </summary>
++    public sealed class WorkspaceCloseAdvisorRelay : IWorkspaceLifecycleAdvisor
++    {
++        private const string ContextAdviseClose = "WorkspaceCloseAdvisorRelay.AdviseClose";
++        private const string ContextVetoMessage = "WorkspaceCloseAdvisorRelay.VetoMessage";
++        private const string ContextSessionDestroyed = "WorkspaceCloseAdvisorRelay.SessionDestroyed";
++
++        private readonly IWorkspaceLifecycleAdvisor _inner;
++        private readonly IWorkspacePilotEditPort _risks;
++        private readonly Func<SessionId, string?> _documentNameOf;
++        private readonly Func<SessionId, bool> _isActive;
++        private readonly Action<string> _writeNow;
++        private readonly Action<string, Exception>? _report;
++        private readonly object _gate = new();
++        private readonly List<string> _messages = new();
++
++        public WorkspaceCloseAdvisorRelay(
++            IWorkspaceLifecycleAdvisor inner,
++            IWorkspacePilotEditPort risks,
++            Func<SessionId, string?> documentNameOf,
++            Func<SessionId, bool> isActive,
++            Action<string> writeNow,
++            Action<string, Exception>? report)
++        {
++            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
++            _risks = risks ?? throw new ArgumentNullException(nameof(risks));
++            _documentNameOf = documentNameOf ?? throw new ArgumentNullException(nameof(documentNameOf));
++            _isActive = isActive ?? throw new ArgumentNullException(nameof(isActive));
++            _writeNow = writeNow ?? throw new ArgumentNullException(nameof(writeNow));
++            _report = report;
++        }
++
++        public CloseDecision AdviseClose(SessionId session)
++        {
++            var decision = CloseDecision.Veto;
++            try
++            {
++                decision = _inner.AdviseClose(session) == CloseDecision.Allow ? CloseDecision.Allow : CloseDecision.Veto;
++            }
++            catch (Exception ex)
++            {
++                Report(ContextAdviseClose, ex);
++            }
++
++            if (decision == CloseDecision.Veto) WriteVetoMessage(session);
++            return decision;
++        }
++
++        public void SessionDestroyed(SessionId session, bool closeSequenceIntact)
++        {
++            RememberLoss(session);
++            _inner.SessionDestroyed(session, closeSequenceIntact);
++        }
++
++        /// <summary>
++        /// The messages that were kept for the user, in order. Without an active session it answers nothing and keeps them; with one it
++        /// answers all of them and empties the list.
++        /// </summary>
++        public IReadOnlyList<string> TakeMessages(SessionId? activeSession)
++        {
++            if (!activeSession.HasValue) return Array.Empty<string>();
++
++            lock (_gate)
++            {
++                var taken = _messages.ToArray();
++                _messages.Clear();
++                return taken;
++            }
++        }
++
++        private void WriteVetoMessage(SessionId session)
++        {
++            try
++            {
++                string? name = null;
++                try
++                {
++                    name = ShortName(_documentNameOf(session));
++                }
++                catch (Exception ex)
++                {
++                    Report(ContextVetoMessage, ex);
++                }
++
++                var active = true;
++                try
++                {
++                    active = _isActive(session);
++                }
++                catch (Exception ex)
++                {
++                    Report(ContextVetoMessage, ex);
++                }
++
++                var document = string.IsNullOrWhiteSpace(name) ? "el documento" : "«" + name + "»";
++                var way = active
++                    ? "Descártalos en el panel con \"Descartar borradores de este documento\" o con el comando RACKPANELDESCARTAR, y vuelve a cerrarlo."
++                    : "Actívalo primero; después descártalos en el panel con \"Descartar borradores de este documento\" o con el comando RACKPANELDESCARTAR, y vuelve a cerrarlo.";
++                _writeNow(
++                    "RackCad: No se cerró " + document + ": puede tener borradores del panel Workspace con trabajo sin aplicar. " + way);
++            }
++            catch (Exception ex)
++            {
++                Report(ContextVetoMessage, ex);
++            }
++        }
++
++        // The risk is read before the delegation, because afterwards the host answers "nothing at risk". Whatever fails here is reported
++        // and never prevents the delegation.
++        private void RememberLoss(SessionId session)
++        {
++            try
++            {
++                var risk = default(PilotRiskView);
++                try
++                {
++                    risk = _risks.GetRacksAtRisk(new WorkspaceRequest(session));
++                }
++                catch (Exception ex)
++                {
++                    Report(ContextSessionDestroyed, ex);
++                }
++
++                var message = LossMessage(risk);
++                if (message == null) return;
++
++                lock (_gate)
++                {
++                    _messages.Add(message);
++                }
++            }
++            catch (Exception ex)
++            {
++                Report(ContextSessionDestroyed, ex);
++            }
++        }
++
++        private static string? LossMessage(PilotRiskView risk)
++        {
++            if (!risk.IsKnown)
++                return "RackCad: Al cerrarse un documento no se pudo decidir si se perdió trabajo de los borradores del panel Workspace.";
++
++            if (risk.RackIds.Count > 0)
++            {
++                var text = "RackCad: Al cerrarse un documento se perdió el trabajo sin aplicar de los borradores del panel Workspace: "
++                    + string.Join(", ", risk.RackIds) + ".";
++                if (risk.UncertainRackIds.Count > 0) text = text + " Sin decidir: " + string.Join(", ", risk.UncertainRackIds) + ".";
++                return text;
++            }
++
++            if (risk.UncertainRackIds.Count > 0)
++            {
++                return "RackCad: Al cerrarse un documento no se pudo decidir si se perdió trabajo de los borradores del panel Workspace: "
++                    + string.Join(", ", risk.UncertainRackIds) + ".";
++            }
++
++            return null;
++        }
++
++        // The last segment after a backslash or a slash, with string operations only.
++        private static string? ShortName(string? name)
++        {
++            if (name == null) return null;
++            var cut = name.LastIndexOfAny(new[] { '\\', '/' });
++            return cut < 0 ? name : name.Substring(cut + 1);
++        }
++
++        // A report that throws is ignored, like the report of the host.
++        private void Report(string context, Exception exception)
++        {
++            try
++            {
++                _report?.Invoke(context, exception);
++            }
++            catch (Exception)
++            {
++            }
++        }
++    }
++}
+diff --git a/src/RackCad.Application/Workspace/WorkspaceDocumentDiscardCommand.cs b/src/RackCad.Application/Workspace/WorkspaceDocumentDiscardCommand.cs
+new file mode 100644
+index 00000000..7bf55842
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/WorkspaceDocumentDiscardCommand.cs
+@@ -0,0 +1,228 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++using System.Globalization;
++
++namespace RackCad.Application.Workspace
++{
++    /// <summary>
++    /// I-64 F4-T3C2 (D-T3C2-02): the pure core of the command that discards, on explicit confirmation, the drafts of the workspace panel
++    /// of the active document, without ever creating the controller. The command of the Plugin only supplies the five delegates:
++    /// this class holds every decision and every text.
++    ///
++    /// The target (C-F4-03) is the active session that the bridge follows, provided it authorizes against the document that runs the
++    /// command (<c>isTarget</c>). Without it, or when it is ambiguous, nothing is read, nothing is asked and nothing is discarded.
++    /// The scope is the whole document, like the button of the panel: every rack at risk and every uncertain one is listed by its
++    /// RackId and none is chosen alone.
++    ///
++    /// The core calls only two operations of the port: <see cref="IWorkspacePilotEditPort.GetRacksAtRisk"/> (twice, before and after the
++    /// question) and, after a yes and an equal second look, <see cref="IWorkspacePilotEditPort.DiscardDocument"/>. It writes nothing of
++    /// the drawing, reads no intention and opens no dialog. The unknown is never "nothing at risk": it is an explicit failure.
++    /// An exception of a delegate is not contained here: the command reports it. Before the discard it changed nothing; if the write of
++    /// the final text throws, the discard already happened.
++    /// </summary>
++    public static class WorkspaceDocumentDiscardCommand
++    {
++        /// <summary>The question of the confirmation (the text of the keywords is up to the command).</summary>
++        public const string Question = "¿Descartar los borradores de este documento?";
++
++        private const string NoController =
++            "RackCad: No hay borradores del panel Workspace en esta sesión de AutoCAD; no se descartó nada.";
++
++        private const string NoActiveSession =
++            "RackCad: El panel Workspace no sigue ningún documento activo en este momento; no se descartó nada.";
++
++        private const string UnknownRisk =
++            "RackCad: No se pudo decidir qué borradores están en riesgo; no se descartó nada.";
++
++        private const string NothingAtRisk = "RackCad: No hay borradores en riesgo en este documento; no se descartó nada.";
++
++        private const string NotConfirmed = "RackCad: No se descartó nada.";
++
++        private const string ActiveChanged = "RackCad: El documento activo cambió; no se descartó nada.";
++
++        private const string UnknownSecondRisk =
++            "RackCad: No se pudieron volver a comprobar los borradores en riesgo; no se descartó nada.";
++
++        private const string RisksChanged =
++            "RackCad: Los borradores en riesgo cambiaron; no se descartó nada. Vuelve a ejecutar RACKPANELDESCARTAR para revisarlos.";
++
++        private const string AmbiguousTarget =
++            "RackCad: El panel Workspace no sigue el documento activo en este momento; no se descartó nada.";
++
++        private const string NotDiscarded = "RackCad: No se descartaron los borradores del documento: ";
++
++        /// <summary>Runs the command. See the class remarks for the flow; every text is the one of the closed table of the package.</summary>
++        /// <param name="port">The edit port of the panel, or null when there is no controller.</param>
++        /// <param name="activeSession">The active session that the bridge follows, or null.</param>
++        /// <param name="isTarget">Whether the session authorizes against the document that runs the command.</param>
++        /// <param name="confirm">The question; true only for an explicit yes.</param>
++        /// <param name="write">Writes one line for the user.</param>
++        public static void Run(
++            IWorkspacePilotEditPort? port,
++            Func<SessionId?> activeSession,
++            Func<SessionId, bool> isTarget,
++            Func<string, bool> confirm,
++            Action<string> write)
++        {
++            if (activeSession == null) throw new ArgumentNullException(nameof(activeSession));
++            if (isTarget == null) throw new ArgumentNullException(nameof(isTarget));
++            if (confirm == null) throw new ArgumentNullException(nameof(confirm));
++            if (write == null) throw new ArgumentNullException(nameof(write));
++
++            if (port == null)
++            {
++                write(NoController);
++                return;
++            }
++
++            var found = activeSession();
++            if (!found.HasValue)
++            {
++                write(NoActiveSession);
++                return;
++            }
++
++            var session = found.Value;
++            if (!isTarget(session))
++            {
++                write(AmbiguousTarget);
++                return;
++            }
++
++            var first = ReadRisks(port, session);
++            if (!first.IsKnown)
++            {
++                write(UnknownRisk);
++                return;
++            }
++
++            if (first.RackIds.Count == 0 && first.UncertainRackIds.Count == 0)
++            {
++                write(NothingAtRisk);
++                return;
++            }
++
++            if (first.RackIds.Count > 0)
++                write("RackCad: Borradores con trabajo sin aplicar: " + string.Join(", ", first.RackIds) + ".");
++            if (first.UncertainRackIds.Count > 0)
++                write("RackCad: No se pudo decidir si tienen trabajo sin aplicar: " + string.Join(", ", first.UncertainRackIds) + ".");
++
++            if (!confirm(Question))
++            {
++                write(NotConfirmed);
++                return;
++            }
++
++            var again = activeSession();
++            if (!again.HasValue || again.Value != session)
++            {
++                write(ActiveChanged);
++                return;
++            }
++
++            if (!isTarget(session))
++            {
++                write(AmbiguousTarget);
++                return;
++            }
++
++            var second = ReadRisks(port, session);
++            if (!second.IsKnown)
++            {
++                write(UnknownSecondRisk);
++                return;
++            }
++
++            if (!SameList(first.RackIds, second.RackIds) || !SameList(first.UncertainRackIds, second.UncertainRackIds))
++            {
++                write(RisksChanged);
++                return;
++            }
++
++            EditDiscardOutcome outcome;
++            try
++            {
++                outcome = port.DiscardDocument(new WorkspaceRequest(session));
++            }
++            catch (Exception ex)
++            {
++                write(NotDiscarded + "falló. " + ReasonOrDefault(ex.Message, "sin detalle."));
++                return;
++            }
++
++            write(OutcomeText(outcome, first));
++        }
++
++        // A read that throws counts as the unknown, which the default value of the view stands for.
++        private static PilotRiskView ReadRisks(IWorkspacePilotEditPort port, SessionId session)
++        {
++            try
++            {
++                return port.GetRacksAtRisk(new WorkspaceRequest(session));
++            }
++            catch (Exception)
++            {
++                return default;
++            }
++        }
++
++        private static string OutcomeText(EditDiscardOutcome outcome, PilotRiskView risks)
++        {
++            switch (outcome.Status)
++            {
++                case EditDiscardStatus.Discarded:
++                    return DiscardedText(outcome, risks);
++                case EditDiscardStatus.Busy:
++                    return NotDiscarded + ReasonOrDefault(outcome.Reason, "hay una lectura en curso.");
++                case EditDiscardStatus.Failed:
++                    return NotDiscarded + "falló. " + ReasonOrDefault(outcome.Reason, "sin detalle.");
++                default:
++                    return NotDiscarded + "se rechazó. " + ReasonOrDefault(outcome.Reason, "sin detalle.");
++            }
++        }
++
++        private static string DiscardedText(EditDiscardOutcome outcome, PilotRiskView risks)
++        {
++            var text = "RackCad: ";
++            text = text + (risks.RackIds.Count > 0
++                ? "Se descartaron los borradores en riesgo: " + string.Join(", ", risks.RackIds) + "."
++                : "Se descartaron los borradores del documento.");
++            if (risks.UncertainRackIds.Count > 0)
++                text = text + " Sin decidir, también descartados: " + string.Join(", ", risks.UncertainRackIds) + ".";
++
++            var clean = 0;
++            foreach (var removed in outcome.RemovedRackIds)
++            {
++                if (!Contains(risks.RackIds, removed) && !Contains(risks.UncertainRackIds, removed)) clean++;
++            }
++
++            return text + " Borradores limpios retirados además: " + clean.ToString(CultureInfo.InvariantCulture) + ".";
++        }
++
++        private static string ReasonOrDefault(string? reason, string fallback) =>
++            string.IsNullOrWhiteSpace(reason) ? fallback : reason!;
++
++        private static bool Contains(IReadOnlyList<string> list, string rackId)
++        {
++            foreach (var item in list)
++            {
++                if (string.Equals(item, rackId, StringComparison.Ordinal)) return true;
++            }
++
++            return false;
++        }
++
++        // The same racks in the same order, compared by ordinal text.
++        private static bool SameList(IReadOnlyList<string> first, IReadOnlyList<string> second)
++        {
++            if (first.Count != second.Count) return false;
++            for (var i = 0; i < first.Count; i++)
++            {
++                if (!string.Equals(first[i], second[i], StringComparison.Ordinal)) return false;
++            }
++
++            return true;
++        }
++    }
++}
+diff --git a/src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs b/src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs
+index 4fe5a49b..cd33456f 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs
+@@ -36,6 +36,18 @@ namespace RackCad.Application.Workspace
+             }
+         }
+ 
++        /// <summary>
++        /// The instance if it was already created, or null (I-64 F4-T3C2, D-T3C2-01). It never calls the factory and never changes
++        /// <see cref="CreateCount"/>: asking whether there is an instance must not create one.
++        /// </summary>
++        public T? Existing
++        {
++            get
++            {
++                lock (_gate) return _instance;
++            }
++        }
++
+         public T GetOrCreate()
+         {
+             lock (_gate)
+diff --git a/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs b/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+index 8db5d002..47922b6c 100644
+--- a/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
++++ b/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+@@ -77,12 +77,12 @@ namespace RackCad.Plugin.Views
+             {
+                 var catalog = LateralHeaderDrawService.LoadCatalog();
+                 return catalog == null
+-                    ? new RackPilotCatalogResult(null, "The catalog is not available.")
++                    ? new RackPilotCatalogResult(null, "El catálogo no está disponible.")
+                     : new RackPilotCatalogResult(catalog, null);
+             }
+             catch (System.Exception ex)
+             {
+-                return new RackPilotCatalogResult(null, "The catalog could not be loaded: " + ex.Message);
++                return new RackPilotCatalogResult(null, "No se pudo cargar el catálogo: " + ex.Message);
+             }
+         }
+ 
+@@ -109,13 +109,13 @@ namespace RackCad.Plugin.Views
+                 if (witnessKey != null)
+                 {
+                     if (string.IsNullOrWhiteSpace(witnessKey))
+-                        return new RackPilotIntentReadResult(null, "The preview witness has no key.");
++                        return new RackPilotIntentReadResult(null, "El testigo de la vista previa no tiene clave.");
+                     witness = new PushBackPilotPreviewWitness(witnessKey, witnessText);
+                 }
+ 
+                 var scan = RackSiblingScan.CaptureDrawing(document);
+                 if (scan.RawEnvelopes == null)
+-                    return new RackPilotIntentReadResult(null, "The scan of the drawing carries no raw envelopes.");
++                    return new RackPilotIntentReadResult(null, "La exploración del dibujo no trajo las envolventes en bruto.");
+ 
+                 var input = new PushBackPilotIntentScan(rackId, originKey, scan.Facts, scan.RawEnvelopes, CompletenessEvidence, witness);
+                 var read = PushBackPilotIntentReader.Read(input, catalog);
+@@ -124,15 +124,15 @@ namespace RackCad.Plugin.Views
+             }
+             catch (Autodesk.AutoCAD.Runtime.Exception ex) when (ex.ErrorStatus == ErrorStatus.LockViolation)
+             {
+-                return new RackPilotIntentReadResult(null, "The document is locked by another operation.");
++                return new RackPilotIntentReadResult(null, "El documento está bloqueado por otra operación.");
+             }
+             catch (Autodesk.AutoCAD.Runtime.Exception ex)
+             {
+-                return new RackPilotIntentReadResult(null, "The drawing could not be read: " + ex.Message);
++                return new RackPilotIntentReadResult(null, "No se pudo leer el dibujo: " + ex.Message);
+             }
+             catch (System.Exception ex)
+             {
+-                return new RackPilotIntentReadResult(null, "The edit intention could not be read: " + ex.Message);
++                return new RackPilotIntentReadResult(null, "No se pudo leer la intención de edición: " + ex.Message);
+             }
+             finally
+             {
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceController.cs b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+index 1005ca2e..20c268c3 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceController.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@ -1,5 +1,6 @@
+ using System;
+ using System.Diagnostics;
++using Autodesk.AutoCAD.ApplicationServices;
+ using RackCad.Application.Diagnostics;
+ using RackCad.Application.Workspace;
+ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+@@ -29,6 +30,7 @@ namespace RackCad.Plugin.Workspace
+         private readonly NavigationEcho _echo;
+         private readonly WorkspaceNoticeDepth _noticeDepth = new WorkspaceNoticeDepth();
+         private readonly IWorkspacePilotEditPort _pilotEdit;
++        private readonly WorkspaceCloseAdvisorRelay _closeAdvisor;
+         private WorkspaceNavigationHost _navigation;
+         private WorkspacePanelModalScope _modalScope;
+ 
+@@ -48,9 +50,17 @@ namespace RackCad.Plugin.Workspace
+             // The edit port of the pilot (I-64 F4-T3A): the panel never receives the host core, only an adapter over the gate of notices.
+             _pilotEdit = new PilotEditAdapter(new WorkspacePilotEditGate(_host, _noticeDepth));
+ 
+-            // The lifecycle of the drafts (I-64 F4-T2B2B): the bridge asks the host, as its advisor, about the close and the destruction of a
+-            // document. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
+-            _bridge.SetLifecycleAdvisor(_host);
++            // The lifecycle of the drafts (I-64 F4-T2B2B, F4-T3C2): the bridge asks one advisor about the close and the destruction of a
++            // document. That advisor is the wrapper over the host: every decision is the host's, and the wrapper only adds the notices of
++            // the command line. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
++            _closeAdvisor = new WorkspaceCloseAdvisorRelay(
++                _host,
++                _pilotEdit,
++                DocumentNameOf,
++                id => _bridge.ActiveSession == id,
++                WorkspacePanelCommand.WriteToCommandLine,
++                LogFault);
++            _bridge.SetLifecycleAdvisor(_closeAdvisor);
+             _bridge.Drained += OnDrained;
+             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
+             _bridge.CommandStateChanged += OnCommandStateChanged;
+@@ -69,6 +79,9 @@ namespace RackCad.Plugin.Workspace
+         /// <summary>Whether the first RACKPANEL already created the controller.</summary>
+         public static bool IsCreated => Holder.IsCreated;
+ 
++        /// <summary>The controller that was already created, or null. It never creates one (I-64 F4-T3C2).</summary>
++        public static WorkspaceController Existing => Holder.Existing;
++
+         /// <summary>The read-only port the panel talks to.</summary>
+         public IWorkspaceHostPort Port => _port;
+ 
+@@ -167,9 +180,40 @@ namespace RackCad.Plugin.Workspace
+                 LogFault("WorkspaceController.OnActiveSessionChanged", ex);
+             }
+ 
++            WriteCloseMessages();
+             NotifyStateChanged();
+         }
+ 
++        // The notices of the lifecycle advisor that waited for an active document (a veto is written at once; a loss waits here). The
++        // advisor keeps them until it is asked with an active session; a failure is logged and never reaches the bridge.
++        private void WriteCloseMessages()
++        {
++            try
++            {
++                foreach (var text in _closeAdvisor.TakeMessages(_bridge.ActiveSession))
++                    WorkspacePanelCommand.WriteToCommandLine(text);
++            }
++            catch (System.Exception ex)
++            {
++                LogFault("WorkspaceController.WriteCloseMessages", ex);
++            }
++        }
++
++        // The file name of the document of a session, from memory only (the session record and the document manager); null when the
++        // session or the document is gone. No document is kept.
++        private string DocumentNameOf(SessionId id)
++        {
++            if (!_bridge.TryGetSession(id, out var session) || session.IsDestroyed) return null;
++
++            var nativeId = session.NativeInstanceId;
++            foreach (Document candidate in AcApplication.DocumentManager)
++            {
++                if (candidate.UnmanagedObject.ToInt64() == nativeId) return candidate.Name;
++            }
++
++            return null;
++        }
++
+         // A command started or the document came back to rest (I-64 F1-T3-HOST-C2): the visual host only pulls a fresh
+         // snapshot. Nothing is asked of the host core: no reconciliation, no hint, no idle source, no drain and no read.
+         private void OnCommandStateChanged() => NotifyStateChanged();
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs b/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+index bbb593ad..cfdbfaa7 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+@@ -221,9 +221,9 @@ namespace RackCad.Plugin.Workspace
+             {
+                 var document = AcApplication.DocumentManager.MdiActiveDocument;
+                 if (document == null)
+-                    return EditIntentReadResult.NoActiveDocument("There is no active document.");
++                    return EditIntentReadResult.NoActiveDocument("No hay documento activo.");
+                 if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
+-                    return EditIntentReadResult.Busy("A command is in progress.");
++                    return EditIntentReadResult.Busy("Hay un comando en curso.");
+ 
+                 var catalog = RackPilotIntentAdapter.LoadCatalog();
+                 if (!catalog.Succeeded)
+@@ -233,7 +233,7 @@ namespace RackCad.Plugin.Workspace
+                 {
+                     var decision = _authorize(new WorkspaceRequest(session), document.UnmanagedObject.ToInt64());
+                     if (decision != RequestDecision.Accepted)
+-                        return EditIntentReadResult.Rejected("The request does not belong to the active document.");
++                        return EditIntentReadResult.Rejected("La petición no es del documento activo.");
+ 
+                     var expected = chosenReference.HasValue ? new[] { chosenReference.Value } : Array.Empty<long>();
+                     var revalidation = _targets.Revalidate(session, rackId, expected);
+diff --git a/src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs b/src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs
+index fa585dd4..541a8d54 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs
+@@ -1,13 +1,21 @@
++using Autodesk.AutoCAD.EditorInput;
+ using Autodesk.AutoCAD.Runtime;
++using RackCad.Application.Workspace;
+ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+ 
+ namespace RackCad.Plugin.Workspace
+ {
+     /// <summary>
+-    /// RACKPANEL (I-64 F1-T3A, T3B): the one command of the workspace panel, with no alias. It obtains the single workspace
+-    /// controller and opens the panel state through it (which starts the event bridge lazily and asks for the first
+-    /// reconciliation), then asks the single palette host to show the palette. It carries no rule of its own and no palette
+-    /// logic, and reads and writes nothing of the drawing.
++    /// The two commands of the workspace panel, with no flags and no alias.
++    ///
++    /// RACKPANEL (I-64 F1-T3A, T3B): it obtains the single workspace controller and opens the panel state through it (which starts the
++    /// event bridge lazily and asks for the first reconciliation), then asks the single palette host to show the palette. It carries no
++    /// rule of its own and no palette logic, and reads and writes nothing of the drawing.
++    ///
++    /// RACKPANELDESCARTAR (I-64 F4-T3C2): the explicit discard of the drafts of the panel of the active document. It never creates the
++    /// controller: without one it only says so. Every decision and every text lives in Application
++    /// (<see cref="WorkspaceDocumentDiscardCommand"/>); this adapter only supplies the delegates, the question on the command line and
++    /// the one writer of the command line of the panel. It opens no dialog and no window and writes nothing of the drawing.
+     /// </summary>
+     public sealed class WorkspacePanelCommand
+     {
+@@ -26,5 +34,48 @@ namespace RackCad.Plugin.Workspace
+                 RackCommandSupport.Report(ex);
+             }
+         }
++
++        [CommandMethod("RACKPANELDESCARTAR")]
++        public void RackPanelDiscard()
++        {
++            try
++            {
++                var controller = WorkspaceController.Existing;
++                WorkspaceDocumentDiscardCommand.Run(
++                    controller?.PilotEdit,
++                    () => controller?.Port.GetSnapshot().ActiveSession,
++                    session => controller.Port.Authorize(new WorkspaceRequest(session)) == RequestDecision.Accepted,
++                    ConfirmOnCommandLine,
++                    WriteToCommandLine);
++            }
++            catch (System.Exception ex)
++            {
++                RackCommandSupport.Report(ex);
++            }
++        }
++
++        // The question of the command: yes or no on the command line, with No as the default. Enter, Escape and cancel all mean no.
++        private static bool ConfirmOnCommandLine(string question)
++        {
++            var document = AcApplication.DocumentManager.MdiActiveDocument;
++            if (document == null) return false;
++
++            var options = new PromptKeywordOptions("\n" + question);
++            options.Keywords.Add("Si");
++            options.Keywords.Add("No");
++            options.Keywords.Default = "No";
++            options.AllowNone = true;
++            var answer = document.Editor.GetKeywords(options);
++            return answer.Status == PromptStatus.OK && string.Equals(answer.StringResult, "Si", System.StringComparison.Ordinal);
++        }
++
++        /// <summary>
++        /// The one writer of the command line of the panel: the command and the controller use it, so no other file of the Plugin names the
++        /// writing API. Without an active document it writes nothing.
++        /// </summary>
++        internal static void WriteToCommandLine(string text)
++        {
++            AcApplication.DocumentManager.MdiActiveDocument?.Editor.WriteMessage("\n" + text);
++        }
+     }
+ }
+diff --git a/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs b/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+index d6ffa338..23d307b2 100644
+--- a/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+@@ -353,6 +353,7 @@ namespace RackCad.UI.Workspace
+         /// The Discard button of the drafts of the document (I-64 F4-T3B2, R-B2-2): reads the racks at risk of the presented session.
+         /// With none the notice says nothing was discarded and nothing happens; otherwise it asks, inline, listing the racks by their title
+         /// and, apart, the ones that could not be decided, and it keeps both lists for the second look of <see cref="ConfirmDiscard"/>.
++        /// When the risk is unknown (or its read throws) it asks nothing and discards nothing: the notice says that it could not be decided.
+         /// </summary>
+         public void RequestDocumentDiscard()
+         {
+@@ -404,6 +405,7 @@ namespace RackCad.UI.Workspace
+         /// closes the tab; with another answer the tab stays and a notice says why. For the field it discards and the tab stays. For the
+         /// document it reads the racks at risk again and compares both lists in order and by ordinal text: if they changed nothing is
+         /// discarded and the new list is shown to be reviewed; if not, it discards the drafts of the whole session, closing no tab.
++        /// An unknown second reading (or one that throws) discards nothing either.
+         /// </summary>
+         public void ConfirmDiscard()
+         {
+@@ -1132,12 +1134,12 @@ namespace RackCad.UI.Workspace
+ 
+             var close = stored.Close;
+             if (!_session.HasValue || close.Session != _session.Value)
+-                return new WorkspaceBrowserNoticeItem(stored.Key, "No se cerró otro documento con borradores sin aplicar; actívalo para descartarlos.", false);
++                return new WorkspaceBrowserNoticeItem(stored.Key, "No se cerró otro documento con borradores sin aplicar; actívalo para descartarlos con el panel o con el comando RACKPANELDESCARTAR.", false);
+ 
+             var head = close.IsUncertain || close.RackIds.Count == 0
+                 ? "No se cerró el documento: no se pudo decidir qué borradores están en riesgo."
+                 : "No se cerró el documento: hay borradores sin aplicar en " + TitlesOf(close.RackIds) + ".";
+-            var text = head + " Descártalos con \"Descartar borradores de este documento\"; cada pestaña también se descarta con su \"Cerrar\".";
++            var text = head + " Descártalos con \"Descartar borradores de este documento\" o con el comando RACKPANELDESCARTAR; cada pestaña también se descarta con su \"Cerrar\".";
+             return new WorkspaceBrowserNoticeItem(stored.Key, text, true);
+         }
+ 

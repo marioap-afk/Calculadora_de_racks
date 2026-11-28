@@ -1,0 +1,821 @@
+{
+  "Schema": "rackcad-i64-identity-bridge-regression/v1",
+  "VerifierSha256": "da546c458ccae32935b4b9a712c86025dc66f28da6894d23c5fc3151a90ca289",
+  "SelftestSha256": "15baf18496489670e49f943a8012b280552022e9520d60eb01bd121efff13083",
+  "PrecheckSha256": "8541c72763864723e31957b492815e4931e693516ad15eb3910ba120138be96b",
+  "Verifier": {
+    "Result": "PASS",
+    "Passed": 73,
+    "Total": 73,
+    "ExitCode": 0,
+    "FailedCases": []
+  },
+  "HistoricalA12": {
+    "Result": "FAIL",
+    "Passed": 41,
+    "Total": 73,
+    "ExitCode": 1,
+    "FailedCases": [
+      "T33",
+      "T34",
+      "T35",
+      "T36",
+      "T37",
+      "T38",
+      "T39",
+      "T40",
+      "T41",
+      "T42",
+      "T43",
+      "T44",
+      "T45",
+      "T46",
+      "T47",
+      "T48",
+      "T53",
+      "T55",
+      "T56",
+      "T57",
+      "T58",
+      "T59",
+      "T60",
+      "T61",
+      "T62",
+      "T63",
+      "T64",
+      "T65",
+      "T66",
+      "T67",
+      "T68",
+      "T69"
+    ],
+    "BlobSha256": "de215a5873b76778f1c7935f0f5ea87d758d67c25db5cc1cb10cb216e35e584c",
+    "MustFail": [
+      "T33",
+      "T34",
+      "T35",
+      "T36",
+      "T37",
+      "T38",
+      "T39",
+      "T40",
+      "T41",
+      "T42",
+      "T43",
+      "T44",
+      "T45",
+      "T46",
+      "T47",
+      "T48",
+      "T53",
+      "T55",
+      "T56",
+      "T57",
+      "T58",
+      "T59",
+      "T60",
+      "T61",
+      "T62",
+      "T63",
+      "T64",
+      "T65",
+      "T66",
+      "T67",
+      "T68",
+      "T69"
+    ],
+    "FailedOnlyAsExpected": true
+  },
+  "Mutants": {
+    "ControllerDefect": {
+      "Result": "FAIL",
+      "Passed": 47,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T02",
+        "T10",
+        "T11",
+        "T12",
+        "T15",
+        "T16",
+        "T17",
+        "T30",
+        "T31",
+        "T32",
+        "T54",
+        "T55",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T61",
+        "T62",
+        "T63",
+        "T64",
+        "T65",
+        "T66",
+        "T67",
+        "T68",
+        "T69"
+      ],
+      "Replaces": "integrity('Real.CurrentSha', real['CurrentSha'] == a.current_sha, 'REAL_CURRENT_SHA_MISMATCH')",
+      "With": "integrity('Real.CurrentSha', real['CurrentSha'] == a.current_sha, 'REAL_CURRENT_SHA_MISMATCH')\n    integrity('Mutated.CurrentShaMatchesRepository', mut['CurrentSha'] == a.current_sha, 'HANDOFF_CONTRADICTS_REPOSITORY')",
+      "MustFail": [
+        "T02",
+        "T15"
+      ],
+      "MustFailOk": true,
+      "Signature": {
+        "Case": "T15",
+        "Got": {
+          "HandoffIntegrity": "FAIL",
+          "Identity": "NOT_EVALUATED",
+          "ControlResult": "FAIL",
+          "FailClosed": true,
+          "ExitCode": 1
+        },
+        "ReasonCodes": [
+          "HANDOFF_CONTRADICTS_REPOSITORY"
+        ]
+      }
+    },
+    "RealBindingUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T25"
+      ],
+      "Replaces": "real['CurrentSha'] == a.current_sha, 'REAL_CURRENT_SHA_MISMATCH'",
+      "With": "True, 'REAL_CURRENT_SHA_MISMATCH'",
+      "MustFail": [
+        "T25"
+      ],
+      "MustFailOk": true
+    },
+    "WorktreeUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T21"
+      ],
+      "Replaces": "same_path(obj['Worktree'], a.repo), 'HANDOFF_WORKTREE_MISMATCH'",
+      "With": "True, 'HANDOFF_WORKTREE_MISMATCH'",
+      "MustFail": [
+        "T21"
+      ],
+      "MustFailOk": true
+    },
+    "TopLevelDiffOnly": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T14"
+      ],
+      "Replaces": "changed = [k for k in HANDOFF_KEYS if not exact_equal(real[k], mut[k])]",
+      "With": "changed = [k for k in HANDOFF_KEYS if type(real[k]) not in (list, dict) and not exact_equal(real[k], mut[k])]",
+      "MustFail": [
+        "T14"
+      ],
+      "MustFailOk": true
+    },
+    "KeyOrderUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T19"
+      ],
+      "Replaces": "list(real.keys()) == list(mut.keys()), 'MUTATION_KEY_ORDER_CHANGED'",
+      "With": "True, 'MUTATION_KEY_ORDER_CHANGED'",
+      "MustFail": [
+        "T19"
+      ],
+      "MustFailOk": true
+    },
+    "BytesUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T18"
+      ],
+      "Replaces": "integrity('Mutation.BytesExact', exact_bytes,",
+      "With": "integrity('Mutation.BytesExact', True,",
+      "MustFail": [
+        "T18"
+      ],
+      "MustFailOk": true
+    },
+    "DuplicateKeysAllowed": {
+      "Result": "FAIL",
+      "Passed": 71,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T22",
+        "T51"
+      ],
+      "Replaces": "object_pairs_hook=reject_duplicates,",
+      "With": "",
+      "MustFail": [
+        "T22",
+        "T51"
+      ],
+      "MustFailOk": true
+    },
+    "RelayHashUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T08"
+      ],
+      "Replaces": "type(declared) is str and HEX64_RE.fullmatch(declared) and declared.lower() == sha256(raws['Mutated'])",
+      "With": "True",
+      "MustFail": [
+        "T08"
+      ],
+      "MustFailOk": true
+    },
+    "RelayKindUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T27"
+      ],
+      "Replaces": "outcome.get('Kind') == 'COMPLETED', 'RELAY_NOT_COMPLETED'",
+      "With": "True, 'RELAY_NOT_COMPLETED'",
+      "MustFail": [
+        "T27"
+      ],
+      "MustFailOk": true
+    },
+    "OutputTimeUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T28"
+      ],
+      "Replaces": "start <= written <= end, 'RELAY_OUTPUT_TIME_INVALID'",
+      "With": "True, 'RELAY_OUTPUT_TIME_INVALID'",
+      "MustFail": [
+        "T28"
+      ],
+      "MustFailOk": true
+    },
+    "BranchUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T17"
+      ],
+      "Replaces": "rc == 0 and gout.decode('utf-8', errors='strict').strip() == a.branch, 'BRANCH_MISMATCH'",
+      "With": "True, 'BRANCH_MISMATCH'",
+      "MustFail": [
+        "T17"
+      ],
+      "MustFailOk": true
+    },
+    "HeadRemoteUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T10"
+      ],
+      "Replaces": "head == remote and head == tracking, 'HEAD_REMOTE_DISAGREE'",
+      "With": "True, 'HEAD_REMOTE_DISAGREE'",
+      "MustFail": [
+        "T10"
+      ],
+      "MustFailOk": true
+    },
+    "BaseAncestryUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T11"
+      ],
+      "Replaces": "a.base_sha != a.red_sha and is_ancestor(a.repo, a.base_sha, a.red_sha), 'BASE_NOT_ANCESTOR'",
+      "With": "True, 'BASE_NOT_ANCESTOR'",
+      "MustFail": [
+        "T11"
+      ],
+      "MustFailOk": true
+    },
+    "RedChainUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T12"
+      ],
+      "Replaces": "a.red_sha != a.current_sha and is_ancestor(a.repo, a.red_sha, a.current_sha), 'RED_NOT_ON_CHAIN'",
+      "With": "True, 'RED_NOT_ON_CHAIN'",
+      "MustFail": [
+        "T12"
+      ],
+      "MustFailOk": true
+    },
+    "DescendantHeadAccepted": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T16"
+      ],
+      "Replaces": "head == a.current_sha, 'HEAD_NOT_VERIFIED_SHA'",
+      "With": "True, 'HEAD_NOT_VERIFIED_SHA'",
+      "MustFail": [
+        "T16"
+      ],
+      "MustFailOk": true
+    },
+    "IdentityAlwaysFails": {
+      "Result": "FAIL",
+      "Passed": 71,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T09"
+      ],
+      "Replaces": "out['Identity'] = 'PASS' if candidate == head else 'FAIL'",
+      "With": "out['Identity'] = 'FAIL'",
+      "MustFail": [
+        "T01",
+        "T09"
+      ],
+      "MustFailOk": true
+    },
+    "SyntheticNotRequired": {
+      "Result": "FAIL",
+      "Passed": 71,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T02",
+        "T30"
+      ],
+      "Replaces": "candidate == a.synthetic_sha, 'MUTATED_SHA_NOT_AUTHORIZED'",
+      "With": "True, 'MUTATED_SHA_NOT_AUTHORIZED'",
+      "MustFail": [
+        "T02",
+        "T30"
+      ],
+      "MustFailOk": true
+    },
+    "ExistingShaAllowed": {
+      "Result": "FAIL",
+      "Passed": 71,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T31",
+        "T55"
+      ],
+      "Replaces": "check('Control.CandidateNonexistent', state == 'MISSING',",
+      "With": "check('Control.CandidateNonexistent', True,",
+      "MustFail": [
+        "T31",
+        "T55"
+      ],
+      "MustFailOk": true
+    },
+    "RelaySchemaNotValidated": {
+      "Result": "FAIL",
+      "Passed": 56,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T33",
+        "T34",
+        "T35",
+        "T36",
+        "T37",
+        "T38",
+        "T39",
+        "T40",
+        "T41",
+        "T42",
+        "T43",
+        "T44",
+        "T45",
+        "T46",
+        "T47",
+        "T48",
+        "T53"
+      ],
+      "Replaces": "relay_problems = relay_schema_problems(relay)",
+      "With": "relay_problems = []",
+      "MustFail": [
+        "T33",
+        "T35",
+        "T37",
+        "T40",
+        "T42"
+      ],
+      "MustFailOk": true
+    },
+    "SchemaPinUnchecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T53"
+      ],
+      "Replaces": "if git_blob_id(raw) != RELAY_RECORD_SCHEMA_BLOB:",
+      "With": "if False:",
+      "MustFail": [
+        "T53"
+      ],
+      "MustFailOk": true
+    },
+    "RequiredNotEnforced": {
+      "Result": "FAIL",
+      "Passed": 71,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T33",
+        "T34"
+      ],
+      "Replaces": "if key not in value:",
+      "With": "if False:",
+      "MustFail": [
+        "T33",
+        "T34"
+      ],
+      "MustFailOk": true
+    },
+    "AdditionalPropertiesIgnored": {
+      "Result": "FAIL",
+      "Passed": 70,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T35",
+        "T36",
+        "T47"
+      ],
+      "Replaces": "if node.get('additionalProperties') is False:",
+      "With": "if False:",
+      "MustFail": [
+        "T35",
+        "T36",
+        "T47"
+      ],
+      "MustFailOk": true
+    },
+    "TypeNotEnforced": {
+      "Result": "FAIL",
+      "Passed": 67,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T37",
+        "T38",
+        "T39",
+        "T45",
+        "T46",
+        "T48"
+      ],
+      "Replaces": "if not any(type_ok(value, n) for n in names):",
+      "With": "if False:",
+      "MustFail": [
+        "T37",
+        "T38",
+        "T39",
+        "T45",
+        "T46"
+      ],
+      "MustFailOk": true
+    },
+    "EnumNotEnforced": {
+      "Result": "FAIL",
+      "Passed": 70,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T40",
+        "T41",
+        "T44"
+      ],
+      "Replaces": "if 'enum' in node and not any(type(value) is type(e) and value == e for e in node['enum']):",
+      "With": "if False:",
+      "MustFail": [
+        "T40",
+        "T41",
+        "T44"
+      ],
+      "MustFailOk": true
+    },
+    "PatternNotEnforced": {
+      "Result": "FAIL",
+      "Passed": 70,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T24",
+        "T42",
+        "T43"
+      ],
+      "Replaces": "if not re.search(pattern, value):",
+      "With": "if False:",
+      "MustFail": [
+        "T42",
+        "T43"
+      ],
+      "MustFailOk": true
+    },
+    "NestedNotValidated": {
+      "Result": "FAIL",
+      "Passed": 58,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T24",
+        "T34",
+        "T36",
+        "T37",
+        "T38",
+        "T39",
+        "T40",
+        "T41",
+        "T42",
+        "T43",
+        "T44",
+        "T45",
+        "T46",
+        "T47",
+        "T48"
+      ],
+      "Replaces": "validate(value[key], sub, '%s.%s' % (path, key), problems)",
+      "With": "pass",
+      "MustFail": [
+        "T34",
+        "T36",
+        "T38",
+        "T41",
+        "T43"
+      ],
+      "MustFailOk": true
+    },
+    "ArrayItemsNotValidated": {
+      "Result": "FAIL",
+      "Passed": 69,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T44",
+        "T45",
+        "T46",
+        "T47"
+      ],
+      "Replaces": "validate(item, node['items'], '%s[%d]' % (path, i), problems)",
+      "With": "pass",
+      "MustFail": [
+        "T44",
+        "T45",
+        "T46",
+        "T47"
+      ],
+      "MustFailOk": true
+    },
+    "NonJsonConstantAllowed": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T50"
+      ],
+      "Replaces": "parse_constant=reject_constant,",
+      "With": "",
+      "MustFail": [
+        "T50"
+      ],
+      "MustFailOk": true
+    },
+    "RcNonZeroMeansMissing": {
+      "Result": "FAIL",
+      "Passed": 70,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T56",
+        "T57",
+        "T58"
+      ],
+      "Replaces": "return 'ERROR', 'git cat-file --batch-check exited with %d' % rc",
+      "With": "return 'MISSING', ''",
+      "MustFail": [
+        "T56",
+        "T57",
+        "T58"
+      ],
+      "MustFailOk": true
+    },
+    "RcIgnored": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T58"
+      ],
+      "Replaces": "if rc != 0:\n        return 'ERROR', 'git cat-file --batch-check",
+      "With": "if False:\n        return 'ERROR', 'git cat-file --batch-check",
+      "MustFail": [
+        "T58"
+      ],
+      "MustFailOk": true
+    },
+    "StderrIgnored": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T64"
+      ],
+      "Replaces": "if stderr:",
+      "With": "if False:",
+      "MustFail": [
+        "T64"
+      ],
+      "MustFailOk": true
+    },
+    "MalformedOutputAccepted": {
+      "Result": "FAIL",
+      "Passed": 66,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T62",
+        "T63",
+        "T65",
+        "T66",
+        "T67",
+        "T68",
+        "T69"
+      ],
+      "Replaces": "return 'ERROR', 'malformed, incomplete or unexpected object query response'",
+      "With": "return 'MISSING', ''",
+      "MustFail": [
+        "T62",
+        "T63",
+        "T69"
+      ],
+      "MustFailOk": true
+    },
+    "IncompleteResponseAccepted": {
+      "Result": "FAIL",
+      "Passed": 71,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T65",
+        "T66"
+      ],
+      "Replaces": "if stdout == ('%s missing\\n' % sha).encode('ascii'):",
+      "With": "if stdout and ('%s missing\\n' % sha).encode('ascii').startswith(stdout):",
+      "MustFail": [
+        "T65",
+        "T66"
+      ],
+      "MustFailOk": true
+    },
+    "ExtraOutputAccepted": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T67"
+      ],
+      "Replaces": "if stdout == ('%s missing\\n' % sha).encode('ascii'):",
+      "With": "if stdout.startswith(('%s missing\\n' % sha).encode('ascii')):",
+      "MustFail": [
+        "T67"
+      ],
+      "MustFailOk": true
+    },
+    "AnswerObjectNotChecked": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T68"
+      ],
+      "Replaces": "if stdout == ('%s missing\\n' % sha).encode('ascii'):",
+      "With": "if stdout[40:] == b' missing\\n':",
+      "MustFail": [
+        "T68"
+      ],
+      "MustFailOk": true
+    },
+    "ExecFailureMeansMissing": {
+      "Result": "FAIL",
+      "Passed": 70,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T59",
+        "T60",
+        "T61"
+      ],
+      "Replaces": "return 'ERROR', 'the object query could not be executed: %s' % type(e).__name__",
+      "With": "return 'MISSING', ''",
+      "MustFail": [
+        "T59",
+        "T60",
+        "T61"
+      ],
+      "MustFailOk": true
+    },
+    "QueryErrorIgnored": {
+      "Result": "FAIL",
+      "Passed": 59,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T61",
+        "T62",
+        "T63",
+        "T64",
+        "T65",
+        "T66",
+        "T67",
+        "T68",
+        "T69"
+      ],
+      "Replaces": "state != 'ERROR', 'GIT_OBJECT_QUERY_FAILED'",
+      "With": "True, 'GIT_OBJECT_QUERY_FAILED'",
+      "MustFail": [
+        "T56",
+        "T62"
+      ],
+      "MustFailOk": true
+    },
+    "QueryErrorNotFailClosed": {
+      "Result": "FAIL",
+      "Passed": 59,
+      "Total": 73,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T61",
+        "T62",
+        "T63",
+        "T64",
+        "T65",
+        "T66",
+        "T67",
+        "T68",
+        "T69"
+      ],
+      "Replaces": "or any(r['Code'] == 'GIT_OBJECT_QUERY_FAILED' for r in reasons)",
+      "With": "",
+      "MustFail": [
+        "T56",
+        "T62"
+      ],
+      "MustFailOk": true
+    }
+  },
+  "Result": "PASS"
+}

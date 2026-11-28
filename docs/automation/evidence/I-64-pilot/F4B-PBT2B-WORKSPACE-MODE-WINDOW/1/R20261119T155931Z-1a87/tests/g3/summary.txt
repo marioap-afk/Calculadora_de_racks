@@ -1,0 +1,3 @@
+h1 | Correctas! - Con error:     0, Superado:    14, Omitido:     0, Total:    14, Duración: 36 s - RackCad.UI.Tes
+h2 | Correctas! - Con error:     0, Superado:    14, Omitido:     0, Total:    14, Duración: 35 s - RackCad.UI.Tes
+h3 | Correctas! - Con error:     0, Superado:    14, Omitido:     0, Total:    14, Duración: 35 s - RackCad.UI.Tes

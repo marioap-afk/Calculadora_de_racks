@@ -1,0 +1,30 @@
+ensayo v5.3; copia /d/r6v; salida r6v-tr; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 41f559fd82c38e62e69e3c9130bdd9581b47dcc643bf7ae52ef0b68b20b61e36 red-d1.txt
+  pieza 51a402092c14c5766e8f3f2ae27419f49f5d1e6e6830c1d26b3ef7e9835d1436 pbt4d-green-v53.txt
+  pieza c62742336e474c5ec6f769a24aa670043e57e8861123b3b0e93ea89c7282e97a red_pbt4d_v53.py
+  pieza 2da93a9a3aef015366500d846718f8befa1b704f8a07dadb4b6b27439fe9a0f8 apply_red_pbt4d_v53.py
+  pieza ea7b2086630ae827309164e7a33610b4cae694c9d3c406a2d457aa0a5858cc73 green_pbt4d_v53.py
+  pieza 70e7dd04a52b6975c1e228d26a07f9bb2749d206b36e32ca9172ae9d606062a0 apply_green_pbt4d_v53.py
+  pieza b8f3e4381d7eb42bde8bbc06a8cbe28ecad668d37f8dcd31d827284ba3534e9f t53_trial_v53.sh
+b-core rc=0 errores=0 avisos-CS=0 IDE0051/52=2
+b-ui rc=0 errores=0 avisos-CS=0 IDE0051/52=4
+RED de PB-T4d escrito: 26 archivos existentes de tests/ y 5 nuevos; src/ sin tocar
+r-core rc=0 errores=0 avisos-CS=0 IDE0051/52=2
+r-ui rc=0 errores=0 avisos-CS=0 IDE0051/52=4
+core core-red rc=1 :: filas 44 {'Failed': 1, 'Passed': 43}; omitidas por origen {}
+  Failed RackCad.Tests.PushBackRetirePilotGuardTests.RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays | at RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredA
+no pasan: 1
+GREEN de PB-T4d escrito: 4 archivos de src/ cambiados y 2 borrados
+g-core rc=0 errores=0 avisos-CS=0 IDE0051/52=2
+g-ui rc=0 errores=0 avisos-CS=0 IDE0051/52=4
+core core-green rc=0 :: filas 44 {'Passed': 44}; omitidas por origen {}
+no pasan: 0
+IDE nuevos en el RED (core):
+IDE nuevos en el GREEN frente al RED (core):
+IDE nuevos en el RED (ui):
+    src/RackCad.UI/RackCad.UI_5fvqljh3_wpftmp.csproj]
+IDE nuevos en el GREEN frente al RED (ui):
+    src/RackCad.UI/RackCad.UI_3gjh50uo_wpftmp.csproj]
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

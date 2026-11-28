@@ -1,0 +1,204 @@
+{
+  "Schema": "rackcad-i64-scope-bridge/v1",
+  "Result": "FAIL",
+  "Reasons": [
+    {
+      "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+      "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Application/Workspace/BrowserSession.cs\"]"
+    }
+  ],
+  "BaseSha": "b1911aa01719cb9d0121ca5f14c1166d97d7ee1b",
+  "CurrentSha": "a92039bbbdc85c38c380a8a319e577d625d3910c",
+  "DelegationSha256": "bb960d8f0b637842bd1d1bb026bedb560059647e95f755b5eb32f4f67b750727",
+  "HandoffSha256": "9724d48a8f6296c59b3d315b5c8722496f5fff5ba90f3e660fa283a6041bc8de",
+  "DelegationRunId": "R20261110T140050Z-8317",
+  "ChangedPaths": [
+    "src/RackCad.Application/Workspace/BrowserSession.cs",
+    "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+    "src/RackCad.Application/Workspace/BridgeSource.cs",
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/Hints.cs",
+    "src/RackCad.Application/Workspace/IHostEventSource.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+    "src/RackCad.Application/Workspace/NavigationActions.cs",
+    "src/RackCad.Application/Workspace/NavigationEcho.cs",
+    "src/RackCad.Application/Workspace/NavigationFacts.cs",
+    "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+    "src/RackCad.Application/Workspace/NavigationTargets.cs",
+    "src/RackCad.Application/Workspace/SelectionContext.cs",
+    "src/RackCad.Application/Workspace/SessionId.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostPolicy.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostSnapshot.cs",
+    "src/RackCad.Application/Workspace/WorkspaceInstrumentation.cs",
+    "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSelectionRead.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md"
+  ],
+  "OutsideAllowed": [
+    "src/RackCad.Application/Workspace/BrowserSession.cs"
+  ],
+  "ForbiddenHits": [],
+  "Checks": [
+    {
+      "Id": "ExpectedBase.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "ExpectedCurrent.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.RunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffCurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Repository",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.BaseSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.CurrentSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Ancestry",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff.Decode",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.NonEmpty",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.PathSyntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Scope.Allowed",
+      "Result": "fail"
+    },
+    {
+      "Id": "Scope.Forbidden",
+      "Result": "pass"
+    }
+  ]
+}

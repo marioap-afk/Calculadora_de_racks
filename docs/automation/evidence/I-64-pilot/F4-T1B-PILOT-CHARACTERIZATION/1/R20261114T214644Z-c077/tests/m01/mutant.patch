@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+index 7d7e2aec..b2afbbb7 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+@@ -746,7 +746,7 @@
+              motivos de indisponibilidad) los fija el code-behind por x:Name; ToolTipService.ShowOnDisabled los muestra
+              cuando la acción está deshabilitada. -->
+         <shell:RackEditorVisualShell.LeadingActions>
+-            <Button x:Name="RestoreButton" Content="Restaurar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionLast}"
++            <Button x:Name="RestoreButton" Content="Restaurar" IsDefault="True" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="{StaticResource ActionLast}"
+                     ToolTipService.ShowOnDisabled="True" Click="Restore_Click" ToolTip="Vuelve a los valores calculados del sistema." />
+         </shell:RackEditorVisualShell.LeadingActions>
+         <shell:RackEditorVisualShell.SecondaryActions>

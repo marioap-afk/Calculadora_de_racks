@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261109T032830Z-fa85",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "F2-C06"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..HEAD devuelve 10 rutas. Nueve estan dentro de AllowedWriteScope de la delegacion; src/RackCad.Application/Workspace/NavigationActions.cs no esta en la lista delegada, que permite NavigationFacts.cs, NavigationTargetSet.cs, NavigationTargets.cs y tests/RackCad.Tests/Workspace/. Esta ruta activa F2-C06. Ninguna ruta del diff coincide con ForbiddenWriteScope."
+  },
+  "OutputSha256": "B2F36D8DA860C675DA19F8EB109F2E9F466F6ACC833DA48DD43D4681A791353E",
+  "ManualFreeText1610": []
+}

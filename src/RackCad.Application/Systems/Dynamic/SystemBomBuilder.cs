@@ -63,7 +63,7 @@ namespace RackCad.Application.Systems.Dynamic
             AddSeparatorComponents(components, system, catalog, postLineCount);
             AddInOutBeamComponents(components, system, catalog);
             AddIntermediateBeamComponents(components, system, catalog);
-            AddBedComponents(components, system);
+            AddBedComponents(components, system, catalog);
 
             AddSafetyComponents(components, system, catalog);
 
@@ -362,16 +362,39 @@ namespace RackCad.Application.Systems.Dynamic
             }
         }
 
+        // What the bed of a front adds to its line of the BOM (step 3 of Dinámico): empty for a bed as before, so its line does not change.
+        private static string BedText(DynamicRackFront front, RackCatalog catalog)
+        {
+            var text = string.Empty;
+            if (!string.IsNullOrWhiteSpace(front.RollerId) && !string.Equals(front.RollerId, RackCad.Domain.Systems.FlowBed.FlowBedDefaults.RollerId, StringComparison.OrdinalIgnoreCase))
+                text += " · rodillo " + RollerName(front.RollerId, catalog);
+            if (front.RollerPitch.HasValue && front.RollerPitch.Value > 0.0)
+                text += string.Format(CultureInfo.InvariantCulture, " · paso {0:0.##}\"", front.RollerPitch.Value);
+            if (front.BrakeEveryRollers.HasValue && front.BrakeEveryRollers.Value > 0)
+                text += " · freno cada " + front.BrakeEveryRollers.Value.ToString(CultureInfo.InvariantCulture) + " rodillos";
+            return text;
+        }
+
+        // The roller by its diameter, as the editor writes it («rodillo 2.5"»); its catalog id when the catalog does not have it.
+        private static string RollerName(string rollerId, RackCatalog catalog)
+        {
+            var roller = catalog?.FlowBedProfiles?.FirstOrDefault(p => p != null && string.Equals(p.Id, rollerId, StringComparison.OrdinalIgnoreCase));
+            return roller != null && roller.Diameter > 0.0
+                ? string.Format(CultureInfo.InvariantCulture, "{0:0.##}\"", roller.Diameter)
+                : rollerId;
+        }
+
         private static void AddBedComponents(
             ICollection<BomComponent> components,
-            DynamicRackSystem system)
+            DynamicRackSystem system,
+            RackCatalog catalog)
         {
             if (system.LoadBeamLevels.Count == 0)
             {
                 return;
             }
 
-            var beds = new Dictionary<(double Bfr, double Length), int>();
+            var beds = new Dictionary<(double Bfr, double Length, string Bed), int>();
             if (system.Fronts.Count > 0)
             {
                 foreach (var front in system.Fronts.Where(front => front != null))
@@ -380,7 +403,7 @@ namespace RackCad.Application.Systems.Dynamic
                     for (var level = 1; level <= DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                     {
                         var configuration = DynamicRackLevelGeometry.At(system, front, level);
-                        var key = (Round(configuration.Bfr), length);
+                        var key = (Round(configuration.Bfr), length, BedText(front, catalog));
                         beds[key] = beds.TryGetValue(key, out var current)
                             ? current + Math.Max(1, front.PalletCount)
                             : Math.Max(1, front.PalletCount);
@@ -389,17 +412,17 @@ namespace RackCad.Application.Systems.Dynamic
             }
             else
             {
-                beds[(Round(DynamicFrontGeometry.Bfr(system.Pallet?.Front ?? 0.0)), Round(DynamicFlowBedGeometry.ResolveBedLength(system)))] =
+                beds[(Round(DynamicFrontGeometry.Bfr(system.Pallet?.Front ?? 0.0)), Round(DynamicFlowBedGeometry.ResolveBedLength(system)), string.Empty)] =
                     system.LoadBeamLevels.Count * DynamicRackDefaults.DefaultPalletsWide;
             }
 
-            foreach (var group in beds.OrderBy(item => item.Key.Bfr).ThenBy(item => item.Key.Length))
+            foreach (var group in beds.OrderBy(item => item.Key.Bfr).ThenBy(item => item.Key.Length).ThenBy(item => item.Key.Bed, StringComparer.Ordinal))
             {
                 components.Add(new BomComponent
                 {
                     Category = Cama,
                     ProfileId = string.Empty,
-                    Description = string.Format(CultureInfo.InvariantCulture, "{0} · BFR {1:0.##}\"", Cama, group.Key.Bfr),
+                    Description = string.Format(CultureInfo.InvariantCulture, "{0} · BFR {1:0.##}\"", Cama, group.Key.Bfr) + group.Key.Bed,
                     Length = group.Key.Length,
                     Quantity = group.Value,
                     Pieces = new List<BomLine>()

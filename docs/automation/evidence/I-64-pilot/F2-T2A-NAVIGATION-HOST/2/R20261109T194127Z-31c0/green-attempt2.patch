@@ -1,0 +1,789 @@
+diff --git a/src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs b/src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs
+index 2bde937c..607c11a6 100644
+--- a/src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs
++++ b/src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs
+@@ -95,34 +95,137 @@ namespace RackCad.Application.Workspace
+             NavigationActionKind locateWith = NavigationActionKind.View);
+     }
+ 
+-    /// <summary>Skeleton of the pure core of the navigation host (RED): signatures only, no behavior yet.</summary>
++    /// <summary>
++    /// The pure core of the navigation host: lazy purge of the state of the sessions that no longer live, the cache
++    /// invalidation of a drain and the single execution path that turns a request into a value. It touches the host only
++    /// through <see cref="INavigationEffects"/> and the liveness delegate, so it is simulated in tests.
++    /// </summary>
+     public sealed class WorkspaceNavigationRunner
+     {
++        private readonly NavigationTargets _targets;
++        private readonly NavigationActionPolicy _policy;
++        private readonly NavigationEcho _echo;
++        private readonly Func<SessionId, bool> _isSessionAlive;
++        private readonly HashSet<SessionId> _known = new();
++
+         public WorkspaceNavigationRunner(
+             NavigationTargets targets,
+             NavigationActionPolicy policy,
+             NavigationEcho echo,
+             Func<SessionId, bool> isSessionAlive)
+         {
+-            if (targets == null) throw new ArgumentNullException(nameof(targets));
+-            if (policy == null) throw new ArgumentNullException(nameof(policy));
+-            if (echo == null) throw new ArgumentNullException(nameof(echo));
+-            if (isSessionAlive == null) throw new ArgumentNullException(nameof(isSessionAlive));
++            _targets = targets ?? throw new ArgumentNullException(nameof(targets));
++            _policy = policy ?? throw new ArgumentNullException(nameof(policy));
++            _echo = echo ?? throw new ArgumentNullException(nameof(echo));
++            _isSessionAlive = isSessionAlive ?? throw new ArgumentNullException(nameof(isSessionAlive));
+         }
+ 
+-        public int KnownSessionCount => 0;
++        /// <summary>Sessions the navigation keeps state for.</summary>
++        public int KnownSessionCount => _known.Count;
+ 
+-        public IReadOnlyList<SessionId> PurgeDeadSessions() => Array.Empty<SessionId>();
++        /// <summary>
++        /// Ends the navigation state (targets, echo, pending state) of every session the authority no longer finds alive. A
++        /// purged session is never revived. Returns the sessions it purged.
++        /// </summary>
++        public IReadOnlyList<SessionId> PurgeDeadSessions()
++        {
++            var dead = new HashSet<SessionId>();
++            foreach (var session in _known)
++                if (!_isSessionAlive(session)) dead.Add(session);
++            foreach (var session in _echo.TrackedSessions)
++                if (!_isSessionAlive(session)) dead.Add(session);
++
++            var purged = new List<SessionId>(dead);
++            foreach (var session in purged) End(session);
++            return purged;
++        }
+ 
++        /// <summary>A drain of the session: purges first, then applies the cache invalidation the drain ran.</summary>
+         public void OnDrained(DrainOutcome outcome)
+         {
++            PurgeDeadSessions();
++            if (_targets.IsSessionEnded(outcome.Session)) return;
++            _targets.ApplyDrain(outcome.Session, outcome.Result);
+         }
+ 
++        /// <summary>
++        /// Runs one request. The session decision and the Model Space condition are taken by the host inside the command
++        /// context; everything else (targets, existence, attribution, verdict) is the policy. A verdict other than Act has no
++        /// effect. A failing effect is a Failed value.
++        /// </summary>
+         public WorkspaceNavigationResult Run(
+             RequestDecision sessionDecision,
+             bool modelSpaceCurrent,
+             WorkspaceNavigationRequest request,
+-            INavigationEffects effects) =>
+-            WorkspaceNavigationResult.Failed("The navigation is not implemented yet.");
++            INavigationEffects effects)
++        {
++            if (request == null) throw new ArgumentNullException(nameof(request));
++            if (effects == null) throw new ArgumentNullException(nameof(effects));
++
++            PurgeDeadSessions();
++
++            var session = request.Origin.Origin;
++            if (_targets.IsSessionEnded(session))
++                return WorkspaceNavigationResult.Stale("The document of the request is gone.", false, NavigationActionVerdict.RejectedSessionDestroyed);
++            if (sessionDecision == RequestDecision.RejectedSessionDestroyed)
++            {
++                End(session);
++                return WorkspaceNavigationResult.Stale("The document of the request is gone.", false, NavigationActionVerdict.RejectedSessionDestroyed);
++            }
++
++            if (sessionDecision != RequestDecision.Accepted)
++                return WorkspaceNavigationResult.Rejected("The request belongs to another document.", NavigationActionVerdict.RejectedSessionMismatch);
++
++            if (!_isSessionAlive(session))
++            {
++                End(session);
++                return WorkspaceNavigationResult.Stale("The document of the request is gone.", false, NavigationActionVerdict.RejectedSessionDestroyed);
++            }
++
++            _known.Add(session);
++            if (!modelSpaceCurrent)
++                return WorkspaceNavigationResult.Unavailable("Navigation needs the Model Space.");
++
++            try
++            {
++                var plan = _policy.Plan(request.Origin, request.RackId, request.Action, request.CopyIndex, request.View, request.LocateWith);
++                var decision = _policy.Execute(plan, session, new EchoRecordingEffects(effects, _echo));
++                return WorkspaceNavigationResult.From(decision);
++            }
++            catch (Exception ex)
++            {
++                return WorkspaceNavigationResult.Failed(ex.Message);
++            }
++        }
++
++        private void End(SessionId session)
++        {
++            _targets.EndSession(session);
++            _echo.End(session);
++            _known.Remove(session);
++        }
++
++        // Runs the effect and, only when a selection was really written, remembers its handles as the expected echo.
++        private sealed class EchoRecordingEffects : INavigationEffects
++        {
++            private readonly INavigationEffects _inner;
++            private readonly NavigationEcho _echo;
++
++            public EchoRecordingEffects(INavigationEffects inner, NavigationEcho echo)
++            {
++                _inner = inner;
++                _echo = echo;
++            }
++
++            public void SelectReferences(SessionId session, IReadOnlyList<long> handles)
++            {
++                _inner.SelectReferences(session, handles);
++                _echo.Expect(session, handles);
++            }
++
++            public void ViewReference(SessionId session, long handle) => _inner.ViewReference(session, handle);
++
++            public void CenterOnReference(SessionId session, long handle) => _inner.CenterOnReference(session, handle);
++        }
+     }
+ }
+diff --git a/src/RackCad.Application/Workspace/NavigationEcho.cs b/src/RackCad.Application/Workspace/NavigationEcho.cs
+index 9036ceab..1c3eefbd 100644
+--- a/src/RackCad.Application/Workspace/NavigationEcho.cs
++++ b/src/RackCad.Application/Workspace/NavigationEcho.cs
+@@ -4,29 +4,94 @@ using System.Collections.Generic;
+ 
+ namespace RackCad.Application.Workspace
+ {
+-    /// <summary>Skeleton of the navigation echo memory (I-64 F2-T2A-NAVIGATION-HOST, RED): signatures only, no behavior yet.</summary>
++    /// <summary>
++    /// In-memory echo memory of the navigation (I-64 D-07, INV-03), by content and by session. When RackCad itself writes the
++    /// implicit selection (the SELECT action), the set of handles it wrote is remembered here. The fine selection reader feeds
++    /// the set of handles it read on the normal drain, and the host core asks whether that read is the echo of the write: the
++    /// two sets are compared as SETS, so neither the order nor a duplicate matters. An equal set is the echo of the
++    /// navigation and changes no context; the first different selection forgets the expectation and the normal
++    /// synchronization resumes. There is no token of the next event, no flag, no time window and no timer.
++    /// The state belongs to a session and goes away when the session no longer lives.
++    /// </summary>
+     public sealed class NavigationEcho
+     {
+-        public IReadOnlyList<SessionId> TrackedSessions => Array.Empty<SessionId>();
++        private readonly Dictionary<SessionId, HashSet<long>> _expected = new();
++        private readonly Dictionary<SessionId, HashSet<long>> _observed = new();
++        private readonly HashSet<SessionId> _ended = new();
+ 
+-        public bool HasExpectation(SessionId session) => false;
++        /// <summary>The sessions that hold any expectation or observation.</summary>
++        public IReadOnlyList<SessionId> TrackedSessions
++        {
++            get
++            {
++                var sessions = new HashSet<SessionId>(_expected.Keys);
++                sessions.UnionWith(_observed.Keys);
++                return new List<SessionId>(sessions);
++            }
++        }
+ 
+-        public bool IsEnded(SessionId session) => false;
++        public bool HasExpectation(SessionId session) => _expected.ContainsKey(session);
+ 
++        public bool IsEnded(SessionId session) => _ended.Contains(session);
++
++        /// <summary>RackCad wrote this implicit selection. An empty set expects nothing. An ended session is never revived.</summary>
+         public void Expect(SessionId session, IEnumerable<long> handles)
+         {
++            if (handles == null) throw new ArgumentNullException(nameof(handles));
++            if (_ended.Contains(session)) return;
++
++            var set = new HashSet<long>(handles);
++            if (set.Count == 0) _expected.Remove(session);
++            else _expected[session] = set;
+         }
+ 
++        /// <summary>The reader read this complete implicit selection on the drain. An ended session is never revived.</summary>
+         public void Observe(SessionId session, IEnumerable<long> impliedHandles)
+         {
++            if (impliedHandles == null) throw new ArgumentNullException(nameof(impliedHandles));
++            if (_ended.Contains(session)) return;
++
++            _observed[session] = new HashSet<long>(impliedHandles);
+         }
+ 
+-        public bool IsEcho(SessionId session) => false;
++        /// <summary>
++        /// Consumes the last observation: true when it equals, as a set, what RackCad wrote (the echo of the navigation). A
++        /// different observation forgets the expectation, so the first different selection resumes the normal flow.
++        /// </summary>
++        public bool IsEcho(SessionId session)
++        {
++            if (!_observed.TryGetValue(session, out var observed)) return false;
++            _observed.Remove(session);
++
++            if (!_expected.TryGetValue(session, out var expected)) return false;
++            if (expected.SetEquals(observed)) return true;
+ 
++            _expected.Remove(session);
++            return false;
++        }
++
++        /// <summary>The session no longer lives: its state goes away and it is never revived.</summary>
+         public void End(SessionId session)
+         {
++            _expected.Remove(session);
++            _observed.Remove(session);
++            _ended.Add(session);
+         }
+ 
+-        public IReadOnlyList<SessionId> PurgeDead(Func<SessionId, bool> isAlive) => Array.Empty<SessionId>();
++        /// <summary>Ends every tracked session that the authority no longer finds alive. Returns the sessions it ended.</summary>
++        public IReadOnlyList<SessionId> PurgeDead(Func<SessionId, bool> isAlive)
++        {
++            if (isAlive == null) throw new ArgumentNullException(nameof(isAlive));
++
++            var purged = new List<SessionId>();
++            foreach (var session in TrackedSessions)
++            {
++                if (isAlive(session)) continue;
++                End(session);
++                purged.Add(session);
++            }
++
++            return purged;
++        }
+     }
+ }
+diff --git a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+index 4a817cff..839be4d7 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@ -33,6 +33,7 @@ namespace RackCad.Application.Workspace
+         private readonly IWorkspaceSelectionReader _reader;
+         private readonly WorkspaceInstrumentation _instrumentation;
+         private readonly Action<string, Exception>? _logFault;
++        private readonly NavigationEcho? _echo;
+         private readonly HashSet<SessionId> _faulted = new();
+         private readonly HashSet<SessionId> _pickFirstOff = new();
+         private bool _started;
+@@ -52,6 +53,7 @@ namespace RackCad.Application.Workspace
+             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
+             _instrumentation = instrumentation ?? throw new ArgumentNullException(nameof(instrumentation));
+             _logFault = logFault;
++            _echo = echo;
+         }
+ 
+         public bool IsStarted => _started;
+@@ -132,6 +134,9 @@ namespace RackCad.Application.Workspace
+             {
+                 using (_instrumentation.Begin(WorkspaceMeasurementPoints.Drain, outcome.Result.Operations.Count))
+                 {
++                    // The echo memory of a session that no longer lives goes away before anything is read (lazy purge).
++                    _echo?.PurgeDead(id => _bridge.TryGetSession(id, out _));
++
+                     if (!_bridge.TryGetSession(outcome.Session, out var session) || session == null) return;
+ 
+                     var conditions = ConditionsFor(outcome.Session);
+@@ -158,6 +163,10 @@ namespace RackCad.Application.Workspace
+                             if (read.PickFirstEnabled) _pickFirstOff.Remove(outcome.Session);
+                             else _pickFirstOff.Add(outcome.Session);
+ 
++                            // The selection RackCad itself just wrote (same handles as a set) is an echo of the navigation: the
++                            // context, the rack and the tab do not advance. The first different selection resumes the sync.
++                            if (_echo != null && _echo.IsEcho(outcome.Session)) return;
++
+                             session.ApplyContext(WorkspaceSelectionMapper.ToContext(read));
+                         }
+                     }
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceController.cs b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+index ec1e9498..4171543d 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceController.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@ -26,16 +26,20 @@ namespace RackCad.Plugin.Workspace
+         private readonly AutoCadEventBridge _bridge;
+         private readonly WorkspaceHostCore _host;
+         private readonly IWorkspaceHostPort _port;
++        private readonly NavigationEcho _echo;
++        private WorkspaceNavigationHost _navigation;
+ 
+         private WorkspaceController()
+         {
+             _bridge = new AutoCadEventBridge();
++            _echo = new NavigationEcho();
+             _host = new WorkspaceHostCore(
+                 new BridgeLink(_bridge),
+                 new HostProbe(_bridge),
+-                new WorkspaceSelectionReader(),
++                new WorkspaceSelectionReader(_echo),
+                 new WorkspaceInstrumentation(),
+-                LogFault);
++                LogFault,
++                _echo);
+             _port = new WorkspaceHostPort(_host);
+             _bridge.Drained += OnDrained;
+             _bridge.ActiveSessionChanged += OnActiveSessionChanged;
+@@ -58,6 +62,26 @@ namespace RackCad.Plugin.Workspace
+         /// <summary>The read-only port the panel talks to.</summary>
+         public IWorkspaceHostPort Port => _port;
+ 
++        /// <summary>
++        /// The navigation port of the panel (I-64 D-07, F2-T2A). It is created on the first access, never when the controller
++        /// is created, and it shares the echo memory of the selection reader. It subscribes to nothing in AutoCAD.
++        /// </summary>
++        public IWorkspaceNavigationPort Navigation
++        {
++            get
++            {
++                if (_navigation == null)
++                {
++                    _navigation = new WorkspaceNavigationHost(
++                        _echo,
++                        id => _bridge.TryGetSession(id, out var session) && !session.IsDestroyed ? session.NativeInstanceId : (long?)null,
++                        (request, nativeId) => _bridge.Authorize(request, nativeId));
++                }
++
++                return _navigation;
++            }
++        }
++
+         public bool PanelVisible => _host.PanelVisible;
+ 
+         /// <summary>First call: starts the bridge once. Always: shows the panel state and asks for a reconciliation at the next rest.</summary>
+@@ -111,6 +135,7 @@ namespace RackCad.Plugin.Workspace
+             try
+             {
+                 _host.OnDrained(outcome);
++                if (_navigation != null) _navigation.OnDrained(outcome);
+                 AssertNoOpenTransaction();
+             }
+             catch (System.Exception ex)
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs b/src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs
+index a3873c55..eb7cded7 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs
+@@ -1,26 +1,157 @@
+ using System;
+ using System.Collections.Generic;
++using Autodesk.AutoCAD.DatabaseServices;
++using Autodesk.AutoCAD.Geometry;
+ using RackCad.Application.Workspace;
++using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+ 
+ namespace RackCad.Plugin.Workspace
+ {
+-    /// <summary>Skeleton of the navigation effects adapter (I-64 F2-T2A-NAVIGATION-HOST, RED): no behavior yet.</summary>
++    /// <summary>
++    /// The only effects a navigation action may have (I-64 D-07, F2-T2A), executed by the navigation host inside the command
++    /// context and after the policy decided Act. It is the ONLY file of the workspace allowed to write: the implicit selection
++    /// (SELECT) and the state of the current view (VIEW, CENTER and, through the policy, LOCATE VIEW). It writes nothing
++    /// authored: no entity, no Xrecord, no XData, no dictionary, no system variable, no file, no layout and no TILEMODE.
++    ///
++    /// Its read of the drawing is the minimum of an already-selected target: for VIEW and CENTER it opens, read-only, the one
++    /// reference the plan named, only to confirm that it exists, that it is a Model Space block reference and to take its
++    /// extents. It discovers nothing: it enumerates no Model Space and no block table, looks for no sibling or alternative
++    /// reference and derives no target; the identity of the target comes from the navigation authority and was revalidated by
++    /// the policy right before this call.
++    /// </summary>
+     public sealed class WorkspaceNavigationEffects : INavigationEffects
+     {
++        // The margin of the plan view, the same 10 percent frame of the classic rack list.
++        private const double ViewMargin = 1.10;
++
++        private readonly Func<SessionId, long?> _nativeInstanceOf;
++
+         public WorkspaceNavigationEffects(Func<SessionId, long?> nativeInstanceOf)
+         {
++            _nativeInstanceOf = nativeInstanceOf ?? throw new ArgumentNullException(nameof(nativeInstanceOf));
+         }
+ 
++        /// <summary>SELECT: the implicit selection becomes exactly the requested references (copies included).</summary>
+         public void SelectReferences(SessionId session, IReadOnlyList<long> handles)
+         {
++            var document = ActiveDocumentOf(session);
++            var ids = new List<ObjectId>();
++            foreach (var handle in handles)
++            {
++                if (!document.Database.TryGetObjectId(new Handle(handle), out var id) || id.IsNull || id.IsErased)
++                    throw new InvalidOperationException("A target of the selection is gone.");
++                ids.Add(id);
++            }
++
++            if (ids.Count == 0) return;
++            document.Editor.SetImpliedSelection(ids.ToArray());
+         }
+ 
++        /// <summary>VIEW: frames the extents of the reference with a 10 percent margin.</summary>
+         public void ViewReference(SessionId session, long handle)
+         {
++            var document = ActiveDocumentOf(session);
++            using (document.LockDocument())
++            using (var transaction = document.Database.TransactionManager.StartTransaction())
++            {
++                var extents = ExtentsOfTarget(document, transaction, handle);
++                var editor = document.Editor;
++                using (var view = editor.GetCurrentView())
++                {
++                    var toView = ToViewPlane(view);
++                    var low = new Point2d(double.MaxValue, double.MaxValue);
++                    var high = new Point2d(double.MinValue, double.MinValue);
++                    foreach (var corner in CornersOf(extents))
++                    {
++                        var local = corner.TransformBy(toView);
++                        low = new Point2d(Math.Min(low.X, local.X), Math.Min(low.Y, local.Y));
++                        high = new Point2d(Math.Max(high.X, local.X), Math.Max(high.Y, local.Y));
++                    }
++
++                    var width = Math.Max((high.X - low.X) * ViewMargin, 1.0);
++                    var height = Math.Max((high.Y - low.Y) * ViewMargin, 1.0);
++
++                    // Keep the aspect of the current view so that the whole reference stays inside it.
++                    var aspect = view.Height > 0.0 ? view.Width / view.Height : 1.0;
++                    if (width / height > aspect) height = width / aspect;
++                    else width = height * aspect;
++
++                    view.CenterPoint = new Point2d((low.X + high.X) / 2.0, (low.Y + high.Y) / 2.0);
++                    view.Width = width;
++                    view.Height = height;
++                    editor.SetCurrentView(view);
++                }
++            }
+         }
+ 
++        /// <summary>CENTER: moves the center of the view to the reference without changing the scale of the view.</summary>
+         public void CenterOnReference(SessionId session, long handle)
+         {
++            var document = ActiveDocumentOf(session);
++            using (document.LockDocument())
++            using (var transaction = document.Database.TransactionManager.StartTransaction())
++            {
++                var extents = ExtentsOfTarget(document, transaction, handle);
++                var editor = document.Editor;
++                using (var view = editor.GetCurrentView())
++                {
++                    var middle = new Point3d(
++                        (extents.MinPoint.X + extents.MaxPoint.X) / 2.0,
++                        (extents.MinPoint.Y + extents.MaxPoint.Y) / 2.0,
++                        (extents.MinPoint.Z + extents.MaxPoint.Z) / 2.0);
++                    var local = middle.TransformBy(ToViewPlane(view));
++                    view.CenterPoint = new Point2d(local.X, local.Y);
++                    editor.SetCurrentView(view);
++                }
++            }
++        }
++
++        // The document of the session, only while it is the active one: an effect never acts on another document.
++        private Autodesk.AutoCAD.ApplicationServices.Document ActiveDocumentOf(SessionId session)
++        {
++            var document = AcApplication.DocumentManager.MdiActiveDocument;
++            var native = _nativeInstanceOf(session);
++            if (document == null || !native.HasValue || document.UnmanagedObject.ToInt64() != native.Value)
++                throw new InvalidOperationException("The document of the session is not the active document.");
++            return document;
++        }
++
++        // Read-only access to the ONE target the plan named: existence, type and extents. Nothing else is read.
++        private static Extents3d ExtentsOfTarget(Autodesk.AutoCAD.ApplicationServices.Document document, Transaction transaction, long handle)
++        {
++            if (!document.Database.TryGetObjectId(new Handle(handle), out var id) || id.IsNull || id.IsErased)
++                throw new InvalidOperationException("The target is gone.");
++
++            var reference = transaction.GetObject(id, OpenMode.ForRead) as BlockReference;
++            if (reference == null || reference.OwnerId != SymbolUtilityServices.GetBlockModelSpaceId(document.Database))
++                throw new InvalidOperationException("The target is not a Model Space block reference.");
++
++            var bounds = reference.Bounds;
++            if (!bounds.HasValue) throw new InvalidOperationException("The target has no extents.");
++            return bounds.Value;
++        }
++
++        // World coordinates to the plane of the current view (its DCS), the standard transform of a view record.
++        private static Matrix3d ToViewPlane(ViewTableRecord view)
++        {
++            var world = Matrix3d.PlaneToWorld(view.ViewDirection);
++            world = Matrix3d.Displacement(view.Target - Point3d.Origin) * world;
++            world = Matrix3d.Rotation(-view.ViewTwist, view.ViewDirection, view.Target) * world;
++            return world.Inverse();
++        }
++
++        private static IEnumerable<Point3d> CornersOf(Extents3d extents)
++        {
++            var a = extents.MinPoint;
++            var b = extents.MaxPoint;
++            yield return new Point3d(a.X, a.Y, a.Z);
++            yield return new Point3d(b.X, a.Y, a.Z);
++            yield return new Point3d(a.X, b.Y, a.Z);
++            yield return new Point3d(b.X, b.Y, a.Z);
++            yield return new Point3d(a.X, a.Y, b.Z);
++            yield return new Point3d(b.X, a.Y, b.Z);
++            yield return new Point3d(a.X, b.Y, b.Z);
++            yield return new Point3d(b.X, b.Y, b.Z);
+         }
+     }
+ }
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs b/src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs
+index a69f6a82..f38f0dd4 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs
+@@ -1,17 +1,73 @@
+ using System;
+ using System.Collections.Generic;
++using Autodesk.AutoCAD.DatabaseServices;
+ using RackCad.Application.Workspace;
++using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+ 
+ namespace RackCad.Plugin.Workspace
+ {
+-    /// <summary>Skeleton of the navigation facts adapter (I-64 F2-T2A-NAVIGATION-HOST, RED): no behavior yet.</summary>
++    /// <summary>
++    /// The read-only source of the neutral facts the navigation authority classifies (I-64 D-05, F2-T2A). It is the ONLY place
++    /// of the workspace that collects those facts and the handles of the references: it consumes the integrated envelope scan
++    /// (<c>RackBlockFinder.ScanEnvelopes</c>, unchanged) and, per scanned definition, lists only its DIRECT references whose
++    /// owner is Model Space. It does not classify (<c>NavigationTargets</c> does), builds no inventory, persists no handle and
++    /// keeps no AutoCAD object: the transaction and the document lock live in a <c>using</c> and nothing leaves them.
++    /// It runs only inside the command context of the navigation host, on the document of the session.
++    /// </summary>
+     public sealed class WorkspaceNavigationFacts : INavigationFactsPort
+     {
++        private readonly Func<SessionId, long?> _nativeInstanceOf;
++
+         public WorkspaceNavigationFacts(Func<SessionId, long?> nativeInstanceOf)
+         {
++            _nativeInstanceOf = nativeInstanceOf ?? throw new ArgumentNullException(nameof(nativeInstanceOf));
+         }
+ 
+-        public IReadOnlyList<NavigationDefinitionFact> ReadDefinitionFacts(SessionId session) =>
+-            Array.Empty<NavigationDefinitionFact>();
++        public IReadOnlyList<NavigationDefinitionFact> ReadDefinitionFacts(SessionId session)
++        {
++            var facts = new List<NavigationDefinitionFact>();
++
++            var document = AcApplication.DocumentManager.MdiActiveDocument;
++            var native = _nativeInstanceOf(session);
++            if (document == null || !native.HasValue || document.UnmanagedObject.ToInt64() != native.Value) return facts;
++
++            using (document.LockDocument())
++            using (var transaction = document.Database.TransactionManager.StartTransaction())
++            {
++                var modelSpace = SymbolUtilityServices.GetBlockModelSpaceId(document.Database);
++
++                foreach (var scan in RackBlockFinder.ScanEnvelopes(transaction, document.Database, includeReferenceCount: false))
++                {
++                    var handles = new List<long>();
++                    var record = transaction.GetObject(scan.DefinitionId, OpenMode.ForRead) as BlockTableRecord;
++                    if (record != null)
++                    {
++                        foreach (ObjectId referenceId in record.GetBlockReferenceIds(directOnly: true, forceValidity: false))
++                        {
++                            if (referenceId.IsErased) continue;
++                            var reference = transaction.GetObject(referenceId, OpenMode.ForRead) as BlockReference;
++                            if (reference != null && reference.OwnerId == modelSpace) handles.Add(referenceId.Handle.Value);
++                        }
++                    }
++
++                    // F2T2A-KL-01: the integrated scan does not expose the raw probe identity, so ProbedId stays null. An envelope that
++                    // cannot be interpreted is therefore never navigable and attribution never depends on the probe.
++                    var embed = scan.Embed;
++                    facts.Add(new NavigationDefinitionFact(
++                        scan.DefinitionId.Handle.Value,
++                        false,
++                        embed != null,
++                        embed?.Id,
++                        ProbedId: null,
++                        embed?.Kind,
++                        embed?.View,
++                        embed == null ? -1 : embed.Section,
++                        embed?.Name ?? scan.BlockName,
++                        ModelSpaceReferenceHandles: handles));
++                }
++            }
++
++            return facts;
++        }
+     }
+ }
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs b/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+index 15b798e7..569b17c5 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs
+@@ -1,30 +1,128 @@
+ using System;
+ using System.Threading.Tasks;
++using RackCad.Application.Diagnostics;
+ using RackCad.Application.Workspace;
++using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+ 
+ namespace RackCad.Plugin.Workspace
+ {
+-    /// <summary>Skeleton of the navigation host (I-64 F2-T2A-NAVIGATION-HOST, RED): the port and nothing else yet.</summary>
++    /// <summary>
++    /// The navigation host of the workspace panel (I-64 D-03, D-05, D-07, INV-22, INV-40, F2-T2A). It is the port through which
++    /// the panel asks to SELECT, VIEW, CENTER or LOCATE VIEW a rack, and the only place that connects the pure navigation core
++    /// (<c>NavigationTargets</c>, <c>NavigationActionPolicy</c>) with AutoCAD. It instantiates exactly one of each and nothing
++    /// derives a target anywhere else.
++    ///
++    /// Every action runs in command context, through the public <c>DocumentCollection.ExecuteInCommandContextAsync</c> and
++    /// nothing else: the asynchronous part is only a way of getting the right execution context, never background work, and
++    /// every task is awaited. Inside the callback, in this order: the active document, the session of the request, the
++    /// existence and the attribution of the targets, the decision of the policy, the effects, the capture of the result and
++    /// the return of the focus to the drawing. Any read of the drawing and any effect of the action happens inside that
++    /// callback, so a session that went stale, another active document or a target that vanished means zero effects.
++    /// </summary>
+     public sealed class WorkspaceNavigationHost : IWorkspaceNavigationPort
+     {
++        private readonly WorkspaceNavigationRunner _runner;
++        private readonly WorkspaceNavigationEffects _effects;
++        private readonly Func<WorkspaceRequest, long, RequestDecision> _authorize;
++
+         public WorkspaceNavigationHost(
+             NavigationEcho echo,
+             Func<SessionId, long?> nativeInstanceOf,
+             Func<WorkspaceRequest, long, RequestDecision> authorize)
+         {
++            if (echo == null) throw new ArgumentNullException(nameof(echo));
++            if (nativeInstanceOf == null) throw new ArgumentNullException(nameof(nativeInstanceOf));
++            _authorize = authorize ?? throw new ArgumentNullException(nameof(authorize));
++
++            var targets = new NavigationTargets(new WorkspaceNavigationFacts(nativeInstanceOf));
++            var policy = new NavigationActionPolicy(targets);
++            _runner = new WorkspaceNavigationRunner(targets, policy, echo, id => nativeInstanceOf(id).HasValue);
++            _effects = new WorkspaceNavigationEffects(nativeInstanceOf);
+         }
+ 
++        /// <summary>A drain of the session: purges the state of the sessions that no longer live and applies the cache invalidation.</summary>
+         public void OnDrained(DrainOutcome outcome)
+         {
++            try
++            {
++                _runner.OnDrained(outcome);
++            }
++            catch (System.Exception ex)
++            {
++                LogFault("WorkspaceNavigationHost.OnDrained", ex);
++            }
+         }
+ 
+-        public Task<WorkspaceNavigationResult> ExecuteAsync(
++        public async Task<WorkspaceNavigationResult> ExecuteAsync(
+             WorkspaceRequest origin,
+             string rackId,
+             NavigationActionKind action,
+             int copyIndex = 0,
+             NavigationViewOrder? view = null,
+-            NavigationActionKind locateWith = NavigationActionKind.View) =>
+-            Task.FromResult(WorkspaceNavigationResult.Failed("The navigation is not implemented yet."));
++            NavigationActionKind locateWith = NavigationActionKind.View)
++        {
++            var request = new WorkspaceNavigationRequest(origin, rackId, action, copyIndex, view, locateWith);
++            var result = WorkspaceNavigationResult.Failed("The navigation did not run.");
++
++            try
++            {
++                await AcApplication.DocumentManager.ExecuteInCommandContextAsync(
++                    state =>
++                    {
++                        result = RunInCommandContext(request);
++                        return Task.CompletedTask;
++                    },
++                    null);
++            }
++            catch (System.Exception ex)
++            {
++                LogFault("WorkspaceNavigationHost.ExecuteAsync", ex);
++                result = WorkspaceNavigationResult.Failed(ex.Message);
++            }
++
++            return result;
++        }
++
++        // Runs inside the command context. A failure is contained and becomes a Failed value; the result is captured before
++        // the focus goes back to the drawing.
++        private WorkspaceNavigationResult RunInCommandContext(WorkspaceNavigationRequest request)
++        {
++            var result = WorkspaceNavigationResult.Failed("The navigation did not run.");
++            Autodesk.AutoCAD.ApplicationServices.Document document = null;
++
++            try
++            {
++                document = AcApplication.DocumentManager.MdiActiveDocument;
++                if (document == null)
++                    return WorkspaceNavigationResult.Rejected("There is no active document.", NavigationActionVerdict.RejectedSessionMismatch);
++
++                var decision = _authorize(request.Origin, document.UnmanagedObject.ToInt64());
++                result = _runner.Run(decision, document.Database.TileMode, request, _effects);
++            }
++            catch (System.Exception ex)
++            {
++                LogFault("WorkspaceNavigationHost.RunInCommandContext", ex);
++                result = WorkspaceNavigationResult.Failed(ex.Message);
++            }
++
++            if (result.IsExecuted) ReturnFocusToDrawing(document);
++            return result;
++        }
++
++        // The one place that gives the focus back to the drawing, with the public window API of the document. A failure is
++        // contained: it changes nothing in the drawing and never starts a second navigation action.
++        private static void ReturnFocusToDrawing(Autodesk.AutoCAD.ApplicationServices.Document document)
++        {
++            try
++            {
++                if (document != null) document.Window.Focus();
++            }
++            catch (System.Exception ex)
++            {
++                LogFault("WorkspaceNavigationHost.ReturnFocusToDrawing", ex);
++            }
++        }
++
++        private static void LogFault(string context, System.Exception exception) => RackLog.Exception(context, exception);
+     }
+ }
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs b/src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs
+index e6f57266..09594049 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs
+@@ -28,6 +28,12 @@ namespace RackCad.Plugin.Workspace
+     public sealed class WorkspaceSelectionReader : IWorkspaceSelectionReader
+     {
+         private readonly WorkspaceDefinitionCache _cache = new WorkspaceDefinitionCache();
++        private readonly NavigationEcho _echo;
++
++        public WorkspaceSelectionReader(NavigationEcho echo = null)
++        {
++            _echo = echo;
++        }
+ 
+         public WorkspaceSelectionRead Read(SessionId session, long nativeInstanceId)
+         {
+@@ -35,13 +41,30 @@ namespace RackCad.Plugin.Workspace
+             if (document == null || document.UnmanagedObject.ToInt64() != nativeInstanceId) return WorkspaceSelectionRead.Failed;
+ 
+             // PICKFIRST = 0: there is no implied selection. It is reflected as state; the variable is never changed.
+-            if (!IsPickFirstOn()) return new WorkspaceSelectionRead(Array.Empty<DefinitionFact>(), 0, false);
++            if (!IsPickFirstOn())
++            {
++                _echo?.Observe(session, Array.Empty<long>());
++                return new WorkspaceSelectionRead(Array.Empty<DefinitionFact>(), 0, false);
++            }
+ 
+             var selected = document.Editor.SelectImplied();
+             if (selected.Status != PromptStatus.OK || selected.Value == null)
++            {
++                _echo?.Observe(session, Array.Empty<long>());
+                 return new WorkspaceSelectionRead(Array.Empty<DefinitionFact>(), 0);
++            }
+ 
+             var ids = selected.Value.GetObjectIds();
++
++            // The complete set of handles of the implicit selection goes to the shared echo memory: the host core asks it,
++            // after this read, whether the selection is the one RackCad itself wrote. Nothing is retained here.
++            if (_echo != null)
++            {
++                var handles = new List<long>(ids.Length);
++                foreach (var selectedId in ids) handles.Add(selectedId.Handle.Value);
++                _echo.Observe(session, handles);
++            }
++
+             var facts = new List<DefinitionFact>();
+             var notRack = 0;
+ 

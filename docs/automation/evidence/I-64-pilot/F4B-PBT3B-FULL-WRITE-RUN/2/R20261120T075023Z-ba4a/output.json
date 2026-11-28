@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "F4B-PBT3B-FULL-WRITE-RUN",
+  "RunId": "R20261120T075023Z-ba4a",
+  "Initiative": "I-64",
+  "Unit": "I-64",
+  "Gate": "F4B",
+  "Attempt": 2,
+  "AuthorityRevision": "2bb3b759a998fe8959c4a3d593c1961195c2b32f",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "BaseSha": "c7441653f3c1c8a27448ebec8f65f72a2f295f59",
+  "ExpectedBranch": "architecture/workspace-persistente-rackcad",
+  "ExpectedWorktree": "<worktree-de-I-64>",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261120T075023Z-ba4a"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "Fecha de enrutamiento: 2026-11-20. La tarea es transversal corta y acotada: generaliza en su sitio dos archivos existentes de Application (plan y corrida) para el piloto conectado y el modelo completo sin conectar, agrega una interfaz, implementa un RED inerte con quince CT nuevas en cuatro clases Core (incluidas guardas de texto con autopruebas y seis equivalentes D-1) y aplica seis Skip literales a pruebas F4. Ambiguity Medium: el contrato v4.6, C-1 a C-4 y la variante (A) fijan nombres, secuencia y oraculos; queda trabajo de implementacion detallado. ArchitecturalSensitivity High: se generaliza el limite existente de plan y corrida sin alterar el piloto ni ampliar las declaraciones permitidas. Breadth High: dos archivos de Application, una interfaz, pruebas Core nuevas y tres archivos existentes de guardas. ToolUse High: requiere inspeccionar codigo, pruebas, guardas, Git y ejecutar las validaciones del contrato. FailureCost High: un error puede romper compilacion, el piloto existente, las guardas o el ciclo RED/GREEN. MechanicalRepetition Medium: hay recetas y tablas repetibles, junto con decisiones conductuales y verificaciones de limites. Horizon Medium: tarea extensa pero acotada a una unidad y un intento, no una iniciativa de largo horizonte. La celda anthropic/subagent/claude-sonnet-5-5 con effort high fue medida para escritura, commit y push en U-04, verificada el 2026-09-30, y usada como Worker real; el catalogo registra la medicion de la invocacion el 2026-10-01. Es elegible para write-commit-push y effort high; nivel Equilibrado, nivel mas bajo adecuado para Deep. No se activa S-03: el paquete v4.6 y las decisiones vinculantes C-1 a C-4 resuelven las ambiguedades de la correccion. Rama y SHA medidos: architecture/workspace-persistente-rackcad, c7441653f3c1c8a27448ebec8f65f72a2f295f59; origin/main coincide con MainSha 812baf879612320653094a8aaf46aca0bac81383. Conteos medidos: 78 archivos PushBack, 723 archivos Core y 79 archivos Workspace. La base de codigo coincide con eab27a9e; el intento 1 no dejo RED ni commits, por lo que ChainRedSha es null y ChainRedFiles queda vacio.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [],
+  "Objective": "",
+  "AllowedWriteScope": [],
+  "ForbiddenWriteScope": [],
+  "Invariants": [],
+  "AcceptanceCriteria": [
+    "Aplicar la correccion del intento 2 sobre BaseSha. La AuthorityRevision rige para UNIT_DOC y UNIT_CHANGE; MainSha rige para las demas autoridades. No exceder el contrato de gate.",
+    "Respetar C-1 de F4B-E45: en PushBackPilotUpdatePlan.cs agregar PrepareFull(PushBackFullPrepareInput input, PushBackFullIntentResult reread, RackCatalog catalog); en PushBackPilotUpdateRun.cs agregar ExecuteFull(DraftSession<PushBackFullDraftState> draft, PushBackPilotUpdateRequest request, IPushBackPilotUpdatePort port) y ComparePostFull(PushBackPilotUpdatePlan plan, PushBackFullIntentResult? postRead). Mantener sus firmas exactamente y no cambiar ninguna firma, guarda ni prueba existente.",
+    "Antes de escribir pruebas nuevas, aplicar el esqueleto del section 6.2 y compilar Core y sus pruebas, UI y sus pruebas, y Plugin; repetir las compilaciones antes del commit RED. Si el esqueleto no compila, parar segun PBT3B-C02 y PBT3B-C07. No iniciar el RED con errores de compilacion.",
+    "El parche artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/1/R20261120T055235Z-a45b/blocked-skeleton.patch, SHA-256 4abfa01adeb1d56a55a7577c8de85c2d0cae5c33539a6c0936eddcb8e6f927e1, es punto de partida opcional y no autoridad. Si se usa, cambiar solo los nombres de las tres declaraciones nuevas: Prepare a PrepareFull, Execute a ExecuteFull y ComparePost a ComparePostFull. Resolver cualquier diferencia restante segun la v4.6.",
+    "Construir el RED con sus tres partes: esqueleto exacto del section 6.2 en PP y UR, manteniendo sin cambio el camino del piloto; nueva interfaz IPushBackPilotViewEraser.cs; y las cuatro clases de pruebas nuevas junto con PushBackFullWriteSupport.cs, con CT-PBT3B-01 a CT-PBT3B-15, un metodo Fact por CT y seis metodos en CT-14.",
+    "En S-1 a S-6 poner exactamente el motivo Skip prescrito en section 5.3, con E-1 a E-6 respectivamente. En los filtros ExpectRed de PushBackFullWrite y PushBackPilotUpdateEquivalenceGuardTests, verificar Failed == Selected, seleccion minima de 13 y 6, y que todos fallen por asercion. CT-13 debe pasar en el RED, incluidas sus autopruebas. Presentar la tabla CT a asercion que falla en RED conforme al section 5.3.",
+    "Antes de agregar declaraciones GREEN, verificar PBT3B-C13 por nombre en PP, UR e IPushBackPilotViewEraser.cs; parar si se requeriria cualquier declaracion fuera de las listas D-PBT3-09 y D-PBT3-10. Presentar el censo individual de declaraciones en BaseSha y CurrentSha. El GREEN solo modifica PP y UR. Mantener en GREEN cada miembro publico e interno preexistente de PP y UR con la misma firma.",
+    "Cumplir INV-PBT3B-01 y -02: el diff de los tres archivos de guardas F4 solo contiene las seis lineas Skip prescritas; el RED contiene el esqueleto, interfaz y pruebas del contrato; el GREEN solo cambia PP y UR. Si se requiere reparacion RED, aplicar un unico commit conforme a F4B-E35/RR-1 a RR-7, entre RED y GREEN, tocar solo clases de prueba nuevas del RED, no tocar src ni los tres archivos de guardas, conservar byte por byte literales y valores de RR-3, y repetir el criterio RED completo en RedRepairSha. Parar ante PBT3B-C07 o PBT3B-C18 si no se cumplen esas condiciones.",
+    "Verificar INV-PBT3B-03 a -06: conservar API y firmas existentes; mantener el Prepare, llamadas al puerto, ComparePost y origen POST del piloto salvo la barrera prescrita; mantener las guardas que siguen en verde; y demostrar un Begin, BeginMutation, Seal y Post por corrida.",
+    "Leer los estados y referencias en el momento prescrito por section 5.0; aplicar exactamente los valores de edicion y gestos del section 5.3, sin editar BeamDepth. No ajustar lineas esperadas, oraculos o recetas. Si una linea no coincide o una receta autocheck no ejerce su camino, parar con PBT3B-C07.",
+    "Antes del commit GREEN, medir INV-PBT3B-15 quitando local y temporalmente los Skip S-1 a S-6, ejecutar sobre el texto GREEN, transcribir resultados por metodo y reponer los Skip sin commit. Para la variante (A), S-1, S-3, S-4 y S-5 deben fallar; S-2 debe registrar filas 1 y 3 con from-presente=False y Failed, y filas 2, 4 y 5 con from-presente=True y Passed en vacio; S-6 debe registrar vacia=True y Passed en vacio. Si difiere, parar con PBT3B-C16.",
+    "Mantener en verde en RED y GREEN las guardas F4 fuera de D-1 y las pruebas de comportamiento del piloto; una guarda fuera de D-1 que falle implica PBT3B-C16 y una prueba conductual del piloto que falle implica PBT3B-C14/C03. Mantener las redes en verde y sin cambios segun INV-PBT3B-07.",
+    "Respetar D2 e INV-PBT3B-14: ninguna copia comparte objeto mutable con su original salvo las dos referencias permitidas; ninguna linea anadida muta PushBackSystem ni RackModuleReconciliationResult adoptados. Si se requiere otra politica o se mide mutacion, parar con PBT3B-C17 y reabrir L-1.",
+    "Cumplir INV-PBT3B-09 y -10: ejecuciones deterministas; en UI ejecutar solo filtros del contrato, nunca la suite UI completa local; guardar TRX y log de corridas temporales fuera de cualquier commit.",
+    "Ejecutar las corridas locales exigidas por el contrato y registrar seleccion no vacia y conteo. En RED, verificar CI exacta: tests en failure, ui-tests y build-ui en success, build-plugin omitido por su needs, sin cuelgue. En GREEN, verificar CI exacta 4/4 y los conteos previstos en ExpectedEvidence: Core 19128 resultados, 0 Failed, y seis metodos D-1 en Skipped (se admite el conteo TRX alternativo prescrito para filas de la Theory S-2); UI 2451 resultados, 21 Skipped y 2430 Passed, o diferencia explicada por diff. Registrar tambien Passed y Skipped del filtro Workspace en RED y GREEN.",
+    "Tras GREEN, ejecutar tres veces en verde los filtros con ExpectRed del contrato; cada seleccion debe alcanzar el minimo indicado y no tener fallos. No heredar evidencia entre SHA.",
+    "Entregar el trailer de la entrega identico al trailer real de los commits RED, RED repair si lo hay y GREEN, junto con la evidencia y censos que pide el contrato. No declarar aprobacion del Owner ni estados de gate."
+  ],
+  "RequiredTests": [],
+  "ExpectedEvidence": [],
+  "StopConditions": [],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 1,
+  "ChainBaseSha": "c7441653f3c1c8a27448ebec8f65f72a2f295f59",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": {
+    "RunId": "R20261120T055235Z-a45b",
+    "FailureClass": "StopCondition",
+    "AnalysisSha256": "27d3ff05baad1cb59578a38d8e7d47f524d35321749efa4d827c62c63d7434c1"
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4B-PBT3B-FULL-WRITE-RUN/2/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion F4B-PBT3B-FULL-WRITE-RUN, correccion del intento 2, CONTROLLER_PLANNING)"
+}

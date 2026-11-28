@@ -1,0 +1,11 @@
+# los RequiredTests de PB-T4e: los 88 heredados de PB-T4d con su MinSelected comprobado en la base, el RED y el GREEN, y los 2 nuevos por clase exacta
+  el heredado n.o 84 (RackCad.Tests.PushBackRetirePilotGuardTests) pasa a ExpectRed false (era true en PB-T4d)
+heredados 88 + nuevos 2 = 90; solapamientos: 0 []
+core base: 19418 = 19015 + 0 + 403 (Passed + Failed + Skipped)
+core red: 19421 = 19015 + 3 + 403 (Passed + Failed + Skipped)
+core green: 19421 = 19018 + 0 + 403 (Passed + Failed + Skipped)
+ui-filtros base (la union de los 19, cada uno en su proceso): 899 = 869 + 0 + 30
+ui-filtros red (la union de los 19, cada uno en su proceso): 900 = 869 + 1 + 30
+ui-filtros green (la union de los 19, cada uno en su proceso): 900 = 870 + 0 + 30
+ui-ci red: 2465 = 2416 + 1 + 48 (la linea base de la CI 2464 = 2416 + 0 + 48 mas la diferencia de los filtros)
+ui-ci green: 2465 = 2417 + 0 + 48 (la linea base de la CI 2464 = 2416 + 0 + 48 mas la diferencia de los filtros)

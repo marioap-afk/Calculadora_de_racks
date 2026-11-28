@@ -1,0 +1,157 @@
+{
+  "Schema": "rackcad-i64-architect-review-record/v1",
+  "RunId": "R20261109T141352Z-75ac",
+  "Amendment": "I-64-A-10",
+  "Phase": "ARCHITECT_REVIEW",
+  "Authority": "orden del Coordinator I-64 - COORDINATOR ORDER A-10 - CORRECTION OF A-9 / I64-TESTFILTER-BRIDGE-01 (literal en artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a10-correction-order.md, SHA-256 52D1CD93E5E007F7F881A791F75886B14E9124E97DDBDB58D6EEF54A0F2E0065): una revision formal autorizada tras la CI exacta 4/4, sin nueva sonda (binario, config y relevo sin cambio)",
+  "ReviewedCommit": "3175bcb9cf382b78aa751c762dcfaf7be4a2787c",
+  "PriorReview": "R20261109T112612Z-04e8 (A-9, 1a2fd4e9, CHANGES REQUIRED, 2 REQUIRED; los 3 de e1d0 CLOSED)",
+  "PromptSha256": "7F820B05A094944D0C93D194C921886811A28BB782A033E06E10E6D10E4F2D0E",
+  "Participant": {
+    "Kind": "codex-cli",
+    "Profile": "ARCHITECTURE_REVIEW",
+    "ModelRequested": "gpt-6.1-sol",
+    "EffortRequested": "high",
+    "Sandbox": "read-only",
+    "ModelEffective": "gpt-6.1-sol",
+    "EffortEffective": "high",
+    "CliVersion": "0.167.0-alpha.3.2",
+    "CliBinary": "Codex/bin/f71a721e0e6193a9/codex.exe (SHA-256 4B3286E35D7FE866C6B0EB3F07D7A4CDB5E96489576170DFD6B3A15AA1C67382)",
+    "Launcher": "-s read-only -m gpt-6.1-sol -c model_reasoning_effort=\"high\" -c allow_login_shell=false",
+    "EffectiveSource": "rollout-2026-11-09T08-14-07-01a1c0a8-beb2-77e3-bd13-e1c0fdf7503e.jsonl",
+    "EffectiveSourceSha256": "928C7962CD5C569C0E5566320D6099B2E6C9EEE70D461D1115016F66BA59613B"
+  },
+  "Eligibility": "celda gpt-6.1-sol/high/read-only acreditada en este CLI por la sonda R20261109T062522Z-e8be; mismo binario (SHA-256 medido antes y despues); unico codex.exe en Codex/bin; config.toml = SNAPSHOT D",
+  "Cession": {
+    "StartUtc": "2026-11-09T14:14:06Z",
+    "EndUtc": "2026-11-09T14:20:30Z",
+    "SessionOperated": false
+  },
+  "Exit": {
+    "HeadSha": "3175bcb9cf382b78aa751c762dcfaf7be4a2787c",
+    "LsRemoteSha": "3175bcb9cf382b78aa751c762dcfaf7be4a2787c",
+    "OriginMainSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "CleanTree": true,
+    "GitOperationInProgress": false,
+    "ConfigSnapshot": "D",
+    "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+    "Participants": 0,
+    "Unattributable": 0
+  },
+  "Entry": {
+    "HeadSha": "3175bcb9cf382b78aa751c762dcfaf7be4a2787c",
+    "CleanTree": true,
+    "ConfigSnapshot": "D",
+    "ConfigChanged": false,
+    "Participants": 0,
+    "Unattributable": 0,
+    "LauncherDead": true,
+    "AcadProcesses": 0
+  },
+  "Outcome": {
+    "ExitCode": 0,
+    "TerminalEvent": "turn.completed",
+    "OutputSha256": "43EE30D2463D138F9B6A28742CE55C3DAD52D918949C2DE08CAFBA94E0F84659",
+    "SchemaValid": true,
+    "Coherent": true,
+    "SubjectMatches": true,
+    "NonAsciiBytes": 0,
+    "CommandCount": 57,
+    "NoProfileCommands": 57,
+    "NonZeroCommands": 1,
+    "RealF2T1BridgeExecution": [],
+    "GateTerms1610": [],
+    "LimitPatterns": {
+      " | frontera |\\r    675: | S-11 | repeated rework limit reached | STOP |\\": 1,
+      "on | frontera |\\r  675: | S-11 | repeated rework limit reached | STOP |\\": 1,
+      "tion | frontera |\\\\\\\\r   | S-11 | repeated rework limit reached | STOP |\\": 1,
+      " |\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1
+    }
+  },
+  "Result": {
+    "Verdict": "CHANGES REQUIRED",
+    "RequiredCount": 2,
+    "OptionalCount": 0,
+    "PriorFindings": {
+      "I64-A9-TESTID-GUID-ALIAS": "CLOSED",
+      "I64-A9-FAILURE-MESSAGE-AMBIGUITY": "CLOSED"
+    },
+    "ClosedA8Findings": {
+      "I64-A8-ORDINAL-FILTER-MISMATCH": "REMAINS CLOSED",
+      "I64-A8-COUNTER-COHERENCE": "REMAINS CLOSED",
+      "I64-A8-DUPLICATE-RESULT-FAIL-OPEN": "REMAINS CLOSED"
+    },
+    "Answers": {
+      "Q01": [
+        "YES",
+        true
+      ],
+      "Q02": [
+        "YES",
+        true
+      ],
+      "Q03": [
+        "YES",
+        true
+      ],
+      "Q04": [
+        "YES",
+        true
+      ],
+      "Q05": [
+        "YES",
+        true
+      ],
+      "Q06": [
+        "NO",
+        false
+      ],
+      "Q07": [
+        "YES",
+        true
+      ],
+      "Q08": [
+        "YES",
+        true
+      ],
+      "Q09": [
+        "YES",
+        true
+      ],
+      "Q10": [
+        "YES",
+        true
+      ],
+      "Q11": [
+        "YES",
+        true
+      ],
+      "Q12": [
+        "YES",
+        true
+      ],
+      "Q13": [
+        "YES",
+        false
+      ],
+      "Q14": [
+        "NO",
+        true
+      ]
+    },
+    "RequiredFindings": [
+      "I64-A10-TESTRUN-ROOT-ANCHOR",
+      "I64-A10-SHADOW-RUN-PASS"
+    ],
+    "OptionalFindings": []
+  },
+  "Budget": "una revision formal autorizada (esta); sin reintento",
+  "Notes": [
+    "STOP segun la orden A-10: Architect = CHANGES REQUIRED; no se crea A-11; los hallazgos vuelven al Coordinator; la decision del Owner no se solicita",
+    "los dos REQUIRED comparten una causa raiz segun el propio revisor (TestRun anidado no anclado a la raiz: Q06) y su consecuencia PASS demostrada (Q13); ninguno exige cambio global de I-61 ni decision del Owner",
+    "I64-A9-TESTID-GUID-ALIAS e I64-A9-FAILURE-MESSAGE-AMBIGUITY = CLOSED; los 3 hallazgos de e1d0 = REMAINS CLOSED",
+    "una orden con codigo 1: SyntaxError del propio script de inspeccion del revisor, repetida despues con exito",
+    "patrones de limite: solo la fila S-11 del AUTOMATION_PLAN (repeated rework limit reached), leida 4 veces; ningun aviso de uso o credito",
+    "sondas adversariales en memoria con TRX, entregas y Git sinteticos (read_bytes sustituido); ninguna ejecucion del puente sobre evidencia real de F2-T1; ninguna orden de escritura"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T3C1-HOST-HARDENING",
+  "RunId": "R20261113T182403Z-95b0",
+  "DelegationRunId": "R20261113T164804Z-8f54",
+  "WorkRunId": "R20261113T165143Z-f35e",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true; OutputWrittenUtc=2026-11-13T11:55:20.107301-06:00, posterior a Cession.StartUtc=2026-11-13T16:51:52Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presenta TaskId, Attempt=1, DelegationRunId, RunId, CurrentSha y rama esperados; Outcome.OutputWrittenUtc es posterior al inicio de la cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha salio 0. git diff --name-only AuthorityRevision BaseSha lista solo tres rutas docs/ de la unidad. Los hashes de AUTOMATION_PLAN.md, agent-execution/README.md, routing.md, model-catalog.md y WORKFLOW.md son iguales entre AuthorityRevision y MainSha."
+    },
+    "Contract": {
+      "Result": "fail",
+      "Evidence": "relay-record-planning.json declara A1-A8 pass y byte-fidelity-check.json marca PASS en ocho campos. La comparacion directa de AllowedWriteScope no coincide: delegation.json tiene 11 entradas y gate-contract.json tiene 12; falta src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs en la delegacion. Esto contradice A3 registrado y el requisito de igualdad exacta."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan 7bd275e42b579ef62944ff5f9dec1c5d9c58eb39; origin/main da 812baf879612320653094a8aaf46aca0bac81383. Rama y worktree coinciden con la entrega. merge-base --is-ancestor BaseSha RedSha, RedSha CurrentSha y BaseSha CurrentSha salieron 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Exit confirma origin/main=812baf879612320653094a8aaf46aca0bac81383; Entry registra LsRemoteSha=CurrentSha=7bd275e42b579ef62944ff5f9dec1c5d9c58eb39. RemoteFacts.CurrentRun registra esos mismos ref y head_sha."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha enumera 12 rutas. Once estan en delegation.json AllowedWriteScope; src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs no esta. Ninguna de las 12 coincide con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produjo salida. git check-ignore -v --no-index sobre el paquete de entradas lo ignora por .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts registra push de refs/heads/architecture/workspace-persistente-rackcad en CurrentSha con los cuatro jobs requeridos en success. En RedSha registra los jobs Core y UI en failure. Los TRX 43477341374 y 43472387303 concuerdan."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX Current: Core filtrado RackCad.Tests.Workspace=2517 pasaron, UI filtrado RackCad.UI.Tests.Workspace=454 pasaron; superan minimos 2331 y 431. TRX RED: Core 2517, 15 fallaron por asercion; UI 454, 14 fallaron por asercion. Todos los fallos RED estan en los filtros esperados. git diff --name-only ChainBaseSha RedSha -- tests/ da 6 archivos (ChainRedFiles); git diff --name-only RedSha CurrentSha no muestra archivos tests/."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "Worker.Trailer declara Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. git log --format=%B BaseSha..CurrentSha muestra ese trailer en ambos commits."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5/high. relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; ModelRequested=sonnet es el alias literal permitido para lanzamiento subagent."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revision de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction de worker-handoff.json: no coincide ningun termino de AUTOMATION_PLAN 16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones y dos resultados de herramienta con error, ninguno pendiente. No se registra denegacion en el relevo."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03",
+    "F4T3C1-C01"
+  ],
+  "Findings": [
+    "A3 figura como pass en relay-record-planning.json, pero la comparacion directa muestra que AllowedWriteScope difiere del contrato.",
+    "El diff BaseSha..CurrentSha cambia src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs, ausente del AllowedWriteScope de delegation.json."
+  ],
+  "RecommendedNextAction": "Elevar al Coordinator la discrepancia del alcance y esperar una decision antes de continuar."
+}

@@ -1,0 +1,110 @@
+{
+  "Schema": "rackcad-i64-scope-bridge-run/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261011T012011Z-647e",
+  "Amendment": "docs/initiatives/I-64-A-4.md",
+  "HeadSha": "e2f642b86197441eea0838c8055c1db666606f11",
+  "StartedUtc": "2026-10-11T01:20:11.960942+00:00",
+  "Nc2RunId": "R20261011T011513Z-e415",
+  "Verifier": {
+    "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+    "HeadBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBytesSha256": "14e3dc3e47e176bb88e6f3c30db11ab15e98ccb8a821615d7c957573adca0557",
+    "ExecutedPath": "artifacts/orchestration/I-64/F1-T2-BRIDGE-scope-bridge/R20261011T012011Z-647e/verifier/verify_scope_bridge.py",
+    "ExecutedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "Sha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "AuthorizedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "AuthorizedSha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "Note": "se ejecutan los bytes exactos del blob autorizado extraidos de HEAD (git cat-file blob); la copia del arbol de trabajo tiene CRLF por core.autocrlf tras el checkout del rebase (mismo blob)",
+    "IdentityOk": true
+  },
+  "Inputs": {
+    "RealDelegation": {
+      "Path": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T225551Z-41fd/inputs/delegation.json",
+      "Sha256": "c5f3d482597c54c28065ea01ad8a228cf2ea15fb301f8a31ed2c292c2fae5737"
+    },
+    "AdversarialDelegation": {
+      "Path": "artifacts/orchestration/I-64/F1-T2-BRIDGE-nc2/3/R20261011T011513Z-e415/inputs/delegation.json",
+      "Sha256": "fdafaba7d452ea30575ec50533f211000b145e4930e8c40e7c1c3b8c8387c50f"
+    },
+    "Handoff": {
+      "Path": "artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T225551Z-41fd/inputs/worker-handoff.json",
+      "Sha256": "b47f905a81a4e2c4c249f3b9aa987c9971f219c174c126af2a9950742809c0f4"
+    },
+    "RealDelegationEqualsAccepted": true,
+    "AdversarialEqualsNc2InputAsCustodiedInMutation": true,
+    "Excluded": "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+      "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "src/RackCad.Application/Workspace/IHostEventSource.cs",
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs"
+    ]
+  },
+  "Real": {
+    "Command": "python <bytes del blob cf381ab9 extraidos de HEAD:docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py> --repo <worktree> --delegation artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T225551Z-41fd/inputs/delegation.json --handoff artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T225551Z-41fd/inputs/worker-handoff.json --expected-base d5bdcb7aff31ba54901a3a0acdbfd81be92ab516 --expected-current e2f642b86197441eea0838c8055c1db666606f11",
+    "ExitCode": 0,
+    "OutputSha256": "b456581237ea327659f83e75f64dab2c141926127499b9aee6101797ed3997fb",
+    "Stderr": "",
+    "Result": "PASS",
+    "Reasons": [],
+    "ChangedPaths": [
+      "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+      "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "src/RackCad.Application/Workspace/IHostEventSource.cs",
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs"
+    ],
+    "OutsideAllowed": [],
+    "ForbiddenHits": []
+  },
+  "Adversarial": {
+    "Command": "python <bytes del blob cf381ab9 extraidos de HEAD:docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py> --repo <worktree> --delegation artifacts/orchestration/I-64/F1-T2-BRIDGE-nc2/3/R20261011T011513Z-e415/inputs/delegation.json --handoff artifacts/orchestration/I-64/F1-T2-BRIDGE/3/R20261010T225551Z-41fd/inputs/worker-handoff.json --expected-base d5bdcb7aff31ba54901a3a0acdbfd81be92ab516 --expected-current e2f642b86197441eea0838c8055c1db666606f11",
+    "ExitCode": 1,
+    "OutputSha256": "98be7f7ffbf39a53783195ca6266b194a637278844b875c1db93a7f74c71ebb9",
+    "Stderr": "",
+    "Result": "FAIL",
+    "Reasons": [
+      {
+        "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+        "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Application/Workspace/BridgeOutcomes.cs\"]"
+      }
+    ],
+    "ChangedPaths": [
+      "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+      "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "src/RackCad.Application/Workspace/IHostEventSource.cs",
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs"
+    ],
+    "OutsideAllowed": [
+      "src/RackCad.Application/Workspace/BridgeOutcomes.cs"
+    ],
+    "ForbiddenHits": []
+  },
+  "Oracle": {
+    "RealPass": true,
+    "AdversarialExpectedFail": true,
+    "SameChangedPaths": true,
+    "SameIdentityHashes": true,
+    "Ok": true
+  },
+  "FinishedUtc": "2026-10-11T01:20:13.443406+00:00"
+}

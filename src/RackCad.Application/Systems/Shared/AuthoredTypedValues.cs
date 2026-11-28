@@ -148,6 +148,7 @@ namespace RackCad.Application.Systems.Shared
                 && a.DesviadorLongitud == b.DesviadorLongitud
                 && a.DesviadorPrimerNivelAltura == b.DesviadorPrimerNivelAltura
                 && Sequence(a.DesviadorOffCells, b.DesviadorOffCells, Same)
+                && a.DesviadorCellsByPost == b.DesviadorCellsByPost
                 && Sequence(a.DefensaPosts, b.DefensaPosts, Same)
                 && Sequence(a.GuiaEntradaOffCells, b.GuiaEntradaOffCells, Same)
                 && a.ParrillaFrontal == b.ParrillaFrontal
@@ -203,6 +204,10 @@ namespace RackCad.Application.Systems.Shared
                 && a.BeamLengthOverride == b.BeamLengthOverride
                 && a.FirstLevelHeight == b.FirstLevelHeight
                 && a.Bfr == b.Bfr
+                && a.RollerId == b.RollerId
+                && a.RollerPitch == b.RollerPitch
+                && a.BrakeEveryRollers == b.BrakeEveryRollers
+                && a.SlopePerFoot == b.SlopePerFoot
                 && Sequence(a.IntermediateBeamDepths, b.IntermediateBeamDepths, (x, y) => x == y)
                 && Sequence(a.Levels, b.Levels, Same)
                 ;

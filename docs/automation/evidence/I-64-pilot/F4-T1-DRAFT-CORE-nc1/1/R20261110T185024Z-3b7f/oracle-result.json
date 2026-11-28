@@ -1,0 +1,55 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261110T185024Z-3b7f",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Ci"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD returned aefc34a53ff5c00ff1e3663044df067c41ee53cb; worker-handoff.json CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. The handoff BaseSha 13775d8fb89f3ac983fbeeb6bdcf749e7fd746fc is an ancestor, and RedSha a362744ceaf4c6a86315cd1fcac688f63cd1de93 is between it and HEAD, but the required CurrentSha identity is false. This contradictory evidence triggers S-04."
+  },
+  "OutputSha256": "0D4DE15225E8163C5A3EE69E40604A9EBD7984B98500ED9D9C0E245A161ECB9D",
+  "ManualFreeText1610": []
+}

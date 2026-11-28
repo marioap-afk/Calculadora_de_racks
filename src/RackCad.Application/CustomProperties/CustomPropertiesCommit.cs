@@ -126,7 +126,7 @@ namespace RackCad.Application.CustomProperties
     /// reaches the edge (D-22.10). The residual itself is not recovered.
     /// </para>
     /// </summary>
-    public static class CustomPropertiesCommit
+    public static partial class CustomPropertiesCommit
     {
         /// <summary>Create, rename, change value or delete, by id, on a rack that is still Single with the same members.</summary>
         public static CustomPropertiesCommitResult ForRack(

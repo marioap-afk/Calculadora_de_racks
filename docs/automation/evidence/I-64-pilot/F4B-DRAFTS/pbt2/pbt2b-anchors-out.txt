@@ -1,0 +1,401 @@
+# measure_pbt2b_t1c.py: la salida de las dos mediciones de las anclas [T1c] de PB-T2b (v2.4, V24-07; CA-T2b M-04)
+# Parte 1 (v2.3, V23-03): la remedicion de las citas de la v2.2 custodiada sobre 0dc623ca, tal cual.
+# Parte 2 (v2.5): el paquete final con --final sobre 17872be8.
+
+## Parte 1
+== base de las mediciones 95373af6 -> revision 0dc623ca7a4bf1640654440276aa3d27147f48d4 | lineas: W 3701 -> 3587, WC 937 -> 800, WX igual: True
+== citas en el paquete: 80 | distintas: 64 | cambiada 1, igual 5, movida 58
+igual    W:63           -> W:63            lineas del paquete 270
+igual    W:82           -> W:82            lineas del paquete 270
+movida   W:616-723      -> W:543-650       lineas del paquete 174
+         viejo: private void Recompute() | }
+         nuevo: private void Recompute() | }
+movida   W:623-633      -> W:550-560       lineas del paquete 797
+         viejo: // A control in error blocks the model rebuild: do NOT touch state/session/computation/baseline, keep the last | }
+         nuevo: // A control in error blocks the model rebuild: do NOT touch state/session/computation/baseline, keep the last | }
+movida   W:625          -> W:552           lineas del paquete 212
+         viejo: if (!AllFieldsValid(out var fieldError)) | 
+         nuevo: if (!AllFieldsValid(out var fieldError)) | 
+movida   W:662-670      -> W:589-597       lineas del paquete 213
+         viejo: catch (Exception error) | }
+         nuevo: catch (Exception error) | }
+movida   W:711          -> W:638           lineas del paquete 214
+         viejo: outputIsBlocked = CompositeHasBlocking(computation.System); | 
+         nuevo: outputIsBlocked = CompositeHasBlocking(computation.System); | 
+movida   W:727-755      -> W:654-682       lineas del paquete 212
+         viejo: private bool AllFieldsValid(out string error) | };
+         nuevo: private bool AllFieldsValid(out string error) | };
+movida   W:833-890      -> W:760-782       lineas del paquete 174
+         viejo: private PushBackEditorInputs ReadInputs() | }
+         nuevo: private PushBackEditorInputs ReadInputs() | }
+movida   W:1234-1238    -> W:1126-1131     lineas del paquete 197
+         viejo: private void Name_Changed(object sender, RoutedEventArgs e) | }
+         nuevo: private void Name_Changed(object sender, RoutedEventArgs e) | }
+movida   W:1533         -> W:1418          lineas del paquete 224
+         viejo: internal Func<IReadOnlyList<SelectiveSafetySelection>, IReadOnlyList<SelectiveSafetySelection>> SafetyDialog; | 
+         nuevo: internal Func<IReadOnlyList<SelectiveSafetySelection>, IReadOnlyList<SelectiveSafetySelection>> SafetyDialog; | 
+movida   W:1539         -> W:1424          lineas del paquete 224
+         viejo: internal Func<PushBackRearTopeConfig, IReadOnlyList<int>, SafetyTopeGridWindow.TopeResult> RearTopeDialog; | 
+         nuevo: internal Func<PushBackRearTopeConfig, IReadOnlyList<int>, SafetyTopeGridWindow.TopeResult> RearTopeDialog; | 
+movida   W:1545         -> W:1430          lineas del paquete 224
+         viejo: internal Func<PushBackDefenseSection, IReadOnlyList<SafetyPostDefense>> DefenseDialog; | 
+         nuevo: internal Func<PushBackDefenseSection, IReadOnlyList<SafetyPostDefense>> DefenseDialog; | 
+movida   W:1565         -> W:1450          lineas del paquete 224
+         viejo: internal Func<RackFrameConfiguration, RackFrameConfiguration> HeaderConfiguratorDialog { get; set; } | 
+         nuevo: internal Func<RackFrameConfiguration, RackFrameConfiguration> HeaderConfiguratorDialog { get; set; } | 
+movida   W:2466         -> W:2351          lineas del paquete 219
+         viejo: var window = new RackFrameConfiguratorWindow(copy) { Owner = this }; | 
+         nuevo: var window = new RackFrameConfiguratorWindow(copy) { Owner = this }; | 
+movida   W:2575-2651    -> W:2460-2536     lineas del paquete 270
+         viejo: { | RearTopeSectionBForTest = topeSectionB;
+         nuevo: { | RearTopeSectionBForTest = topeSectionB;
+movida   W:2740         -> W:2625          lineas del paquete 224
+         viejo: internal Func<SafetyPerPostWindow, bool?> BootPerPostWindowDialog; | 
+         nuevo: internal Func<SafetyPerPostWindow, bool?> BootPerPostWindowDialog; | 
+movida   W:2761         -> W:2646          lineas del paquete 219
+         viejo: PushBackBootSection.ModeLabels) { Owner = this }; | 
+         nuevo: PushBackBootSection.ModeLabels) { Owner = this }; | 
+movida   W:2905         -> W:2790          lineas del paquete 219
+         viejo: Owner = this | 
+         nuevo: Owner = this | 
+movida   W:3056         -> W:2941          lineas del paquete 219
+         viejo: Owner = this | 
+         nuevo: Owner = this | 
+movida   W:3087         -> W:2972          lineas del paquete 219
+         viejo: Owner = this | 
+         nuevo: Owner = this | 
+movida   W:3144         -> W:3029          lineas del paquete 400
+         viejo: if (!hasValidModel || lastComputation == null) | 
+         nuevo: if (!hasValidModel || lastComputation == null) | 
+movida   W:3208         -> W:3093          lineas del paquete 400
+         viejo: if (lastComputation == null) return null; | 
+         nuevo: if (lastComputation == null) return null; | 
+movida   W:3307-3330    -> W:3192-3213     lineas del paquete 189
+         viejo: private void Restore_Click(object sender, RoutedEventArgs e) | }
+         nuevo: private void Restore_Click(object sender, RoutedEventArgs e) | }
+movida   W:3309-3313    -> W:3194-3198     lineas del paquete 189,271
+         viejo: if (lastComputation?.Design == null) | }
+         nuevo: if (lastComputation?.Design == null) | }
+movida   W:3334-3361    -> W:3217-3245     lineas del paquete 186
+         viejo: private void InsertBatch_Click(object sender, RoutedEventArgs e) | }
+         nuevo: private void InsertBatch_Click(object sender, RoutedEventArgs e) | }
+movida   W:3351         -> W:3234          lineas del paquete 186,219
+         viejo: if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PushBack, options, out var views)) return | 
+         nuevo: if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PushBack, options, out var views)) return | 
+movida   W:3363-3419    -> W:3247-3304     lineas del paquete 175
+         viejo: private void RequestDraw(string view, int section, bool updateOnly) | }
+         nuevo: private void RequestDraw(string view, int section, bool updateOnly) | }
+movida   W:3365         -> W:3249          lineas del paquete 176
+         viejo: if (!canInsertInAutoCad) | 
+         nuevo: if (!canInsertInAutoCad) | 
+movida   W:3365-3375    -> W:3249-3259     lineas del paquete 435
+         viejo: if (!canInsertInAutoCad) | }
+         nuevo: if (!canInsertInAutoCad) | }
+movida   W:3371         -> W:3255          lineas del paquete 176
+         viejo: if (updateOnly && !isEditingExisting) | 
+         nuevo: if (updateOnly && !isEditingExisting) | 
+movida   W:3386-3389    -> W:3270-3273     lineas del paquete 174,177
+         viejo: if (moduleOwner.ModuleSession.HasPendingChanges) | }
+         nuevo: if (moduleOwner.ModuleSession.HasPendingChanges) | }
+movida   W:3386-3403    -> W:3270-3287     lineas del paquete 412
+         viejo: if (moduleOwner.ModuleSession.HasPendingChanges) | }
+         nuevo: if (moduleOwner.ModuleSession.HasPendingChanges) | }
+movida   W:3391         -> W:3275          lineas del paquete 178
+         viejo: RequestRecompute(); // synchronous validate + build | 
+         nuevo: RequestRecompute(); // synchronous validate + build | 
+movida   W:3392-3396    -> W:3276-3280     lineas del paquete 179
+         viejo: if (!currentInputsAreValid || session.System == null) | }
+         nuevo: if (!currentInputsAreValid || session.System == null) | }
+movida   W:3400-3403    -> W:3284-3287     lineas del paquete 180
+         viejo: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado.")) | }
+         nuevo: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado.")) | }
+movida   W:3405         -> W:3289          lineas del paquete 437
+         viejo: session.Identity.SetName(NameBox.Text?.Trim()); | 
+         nuevo: session.Identity.SetName(NameBox.Text?.Trim()); | 
+movida   W:3405-3406    -> W:3289-3291     lineas del paquete 181
+         viejo: session.Identity.SetName(NameBox.Text?.Trim()); | session.SetModel(lastComputation.Design, lastComputation.System);
+         nuevo: session.Identity.SetName(NameBox.Text?.Trim()); | session.SetModel(lastComputation.Design, lastComputation.System);
+movida   W:3409         -> W:3294          lineas del paquete 182
+         viejo: session.RequestUpdate(ctx => new PushBackInsertionRequest( | 
+         nuevo: session.RequestUpdate(ctx => new PushBackInsertionRequest( | 
+movida   W:3414         -> W:3299          lineas del paquete 182
+         viejo: session.RequestInsert(view, section, ctx => new PushBackInsertionRequest( | 
+         nuevo: session.RequestInsert(view, section, ctx => new PushBackInsertionRequest( | 
+movida   W:3418         -> W:3303          lineas del paquete 183,437
+         viejo: Close(); | 
+         nuevo: Close(); | 
+movida   W:3421         -> W:3306          lineas del paquete 188
+         viejo: private void Close_Click(object sender, RoutedEventArgs e) => Close(); | 
+         nuevo: private void Close_Click(object sender, RoutedEventArgs e) => Close(); | 
+movida   W:3423-3434    -> W:3308-3319     lineas del paquete 188
+         viejo: /// <summary> | /// </summary>
+         nuevo: /// <summary> | /// </summary>
+movida   W:3435-3444    -> W:3320-3329     lineas del paquete 188,482
+         viejo: protected override void OnClosing(CancelEventArgs e) | }
+         nuevo: protected override void OnClosing(CancelEventArgs e) | }
+movida   W:3437         -> W:3322          lineas del paquete 188
+         viejo: if (!InsertRequested && !EditorClosePolicy.MayClose(PendingWork())) | 
+         nuevo: if (!InsertRequested && !EditorClosePolicy.MayClose(PendingWork())) | 
+movida   W:3451-3456    -> W:3336-3341     lineas del paquete 188,1230
+         viejo: /// <para>Lo demas que el usuario haya tocado —matriz, seguridad, topes— no es un ambito declarado: se aplica | /// </summary>
+         nuevo: /// <para>Lo demas que el usuario haya tocado —matriz, seguridad, topes— no es un ambito declarado: se aplica | /// </summary>
+movida   W:3457-3459    -> W:3342-3344     lineas del paquete 174,188
+         viejo: internal EditorPendingWork PendingWork() => EditorPendingWork.When( | "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+         nuevo: internal EditorPendingWork PendingWork() => EditorPendingWork.When( | "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+movida   W:3463-3479    -> W:3348-3364     lineas del paquete 190
+         viejo: private void Bom_Click(object sender, RoutedEventArgs e) | }
+         nuevo: private void Bom_Click(object sender, RoutedEventArgs e) | }
+movida   W:3473         -> W:3358          lineas del paquete 190
+         viejo: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede listar un modelo bloqueado.")) | 
+         nuevo: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede listar un modelo bloqueado.")) | 
+movida   W:3478         -> W:3363          lineas del paquete 219
+         viejo: new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog(); | 
+         nuevo: new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog(); | 
+movida   W:3481-3515    -> W:3366-3401     lineas del paquete 190
+         viejo: private void SaveLibrary_Click(object sender, RoutedEventArgs e) | }
+         nuevo: private void SaveLibrary_Click(object sender, RoutedEventArgs e) | }
+movida   W:3493         -> W:3378          lineas del paquete 190
+         viejo: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede guardar un modelo bloqueado.")) | 
+         nuevo: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede guardar un modelo bloqueado.")) | 
+movida   W:3498         -> W:3383          lineas del paquete 219,587
+         viejo: var path = UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema"); | 
+         nuevo: var path = UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema"); | 
+movida   W:3499         -> W:3384          lineas del paquete 75,407,794,796,1286
+         viejo: if (path == null) return; | 
+         nuevo: if (path == null) return; | 
+movida   W:3503         -> W:3388          lineas del paquete 598
+         viejo: session.Identity.EnsureId(); | 
+         nuevo: session.Identity.EnsureId(); | 
+movida   W:3504         -> W:3389          lineas del paquete 75,407,1286
+         viejo: session.Identity.SetName(NameBox.Text?.Trim()); | 
+         nuevo: session.Identity.SetName(NameBox.Text?.Trim()); | 
+movida   W:3505-3506    -> W:3391-3392     lineas del paquete 190
+         viejo: // Save ONLY the active Push Back payload; WithSourceMetadataFrom preserves the opened project's unknown JSON | // fields + non-downgraded schema version (I-11). Saving never flags an insert.
+         nuevo: // Save ONLY the active Push Back payload; WithSourceMetadataFrom preserves the opened project's unknown JSON | // fields + non-downgraded schema version (I-11). Saving never flags an insert.
+movida   W:3563-3610    -> W:3449-3496     lineas del paquete 191
+         viejo: private void UpdateButtons() | }
+         nuevo: private void UpdateButtons() | }
+movida   W:3606-3609    -> W:3492-3495     lineas del paquete 189,400
+         viejo: RestoreButton.IsEnabled = lastComputation != null; | : "Aún no hay un sistema válido que restaurar.";
+         nuevo: RestoreButton.IsEnabled = lastComputation != null; | : "Aún no hay un sistema válido que restaurar.";
+igual    WC:738-777     -> WC:738-777     (solo registros) lineas del paquete 106
+movida   WC:803-807     -> WC:790-794      lineas del paquete 214
+         viejo: private bool CompositeHasBlocking(PushBackSystem system) | }
+         nuevo: private bool CompositeHasBlocking(PushBackSystem system) | }
+cambiada WC:933         -> sin mapa        lineas del paquete 385
+         viejo: UpdateCompositeEnabled(); | 
+         nuevo: - | 
+igual    WX:47          -> WX:47           lineas del paquete 95,197
+igual    WX:68-69       -> WX:68-69        lineas del paquete 215
+== INV-PBT2B-03: los rangos de los miembros que cambian en W (0dc623ca), documentacion incluida
+  LoadNew            W:269-287 (declaracion en W:271)
+  LoadDesignForNew   W:289-304 (declaracion en W:292)
+  LoadExisting       W:306-320 (declaracion en W:308)
+  Update_Click       W:3215-3215 (declaracion en W:3215)
+  InsertBatch_Click  W:3217-3245 (declaracion en W:3217)
+  RequestDraw        W:3247-3304 (declaracion en W:3247)
+  PendingWork        W:3331-3344 (declaracion en W:3342)
+  Bom_Click          W:3348-3364 (declaracion en W:3348)
+  SaveLibrary_Click  W:3366-3401 (declaracion en W:3366)
+  UpdateButtons      W:3449-3496 (declaracion en W:3449)
+
+## Parte 2
+== base de las mediciones 95373af6 -> revision 17872be8179475a3c080a9df158488a4a7b4f870 | lineas: W 3701 -> 3587, WC 937 -> 800, WX igual: True
+== paquete final, sha256 cc0fa5046632bc093305b6113a422e5b97c18f90b007393673c83cabdcda44f4; revision 17872be8179475a3c080a9df158488a4a7b4f870
+   blob de W  en la revision f8756a88, en 161a0dad f8756a88: igual
+   blob de WC en la revision 1a3300b4, en 161a0dad 1a3300b4: igual
+   blob de WX en la revision fb094bef, en 161a0dad fb094bef: igual
+== citas del cuerpo (fuera de los registros de cambios): 98 apariciones, 74 distintas (W 70, WC 2, WX 2)
+W:63           lineas del paquete 323
+         63: private PushBackEditorState state => composite.Active;
+W:82           lineas del paquete 323
+         82: private PushBackEditorState moduleOwner => composite.SideA;
+W:269-287      lineas del paquete 1167
+         269: /// <summary>A brand-new Push Back system: one dynamic-default front, rear peralte 3.5, topes active, selection (0,0),
+         287: }
+W:289-304      lineas del paquete 1167
+         289: /// <summary>A design opened from the library, edited as a NEW insert: keeps the suggested name, carries the source
+         304: }
+W:306-320      lineas del paquete 1167
+         306: /// <summary>A system opened from the DWG (RACKEDITAR): keeps its GUID + name, carries the source project, enables
+         320: }
+W:314          lineas del paquete 438
+         314: UpdateCompositeEnabled();
+W:543-650      lineas del paquete 227
+         543: private void Recompute()
+         650: }
+W:550-560      lineas del paquete 865
+         550: // A control in error blocks the model rebuild: do NOT touch state/session/computation/baseline, keep the last
+         560: }
+W:552          lineas del paquete 265
+         552: if (!AllFieldsValid(out var fieldError))
+W:589-597      lineas del paquete 266
+         589: catch (Exception error)
+         597: }
+W:607          lineas del paquete 784,862
+         607: lastComputation = computation;
+W:638          lineas del paquete 267
+         638: outputIsBlocked = CompositeHasBlocking(computation.System);
+W:654-682      lineas del paquete 265
+         654: private bool AllFieldsValid(out string error)
+         682: };
+W:760-782      lineas del paquete 227,935
+         760: private PushBackEditorInputs ReadInputs()
+         782: }
+W:1126-1131    lineas del paquete 250
+         1126: private void Name_Changed(object sender, RoutedEventArgs e)
+         1131: }
+W:1135         lineas del paquete 555,788
+         1135: private void Input_Changed(object sender, RoutedEventArgs e) => RequestRecompute();
+W:1418         lineas del paquete 277
+         1418: internal Func<IReadOnlyList<SelectiveSafetySelection>, IReadOnlyList<SelectiveSafetySelection>> SafetyDialog;
+W:1424         lineas del paquete 277
+         1424: internal Func<PushBackRearTopeConfig, IReadOnlyList<int>, SafetyTopeGridWindow.TopeResult> RearTopeDialog;
+W:1430         lineas del paquete 277
+         1430: internal Func<PushBackDefenseSection, IReadOnlyList<SafetyPostDefense>> DefenseDialog;
+W:1450         lineas del paquete 277
+         1450: internal Func<RackFrameConfiguration, RackFrameConfiguration> HeaderConfiguratorDialog { get; set; }
+W:2351         lineas del paquete 272
+         2351: var window = new RackFrameConfiguratorWindow(copy) { Owner = this };
+W:2460-2536    lineas del paquete 323
+         2460: {
+         2536: RearTopeSectionBForTest = topeSectionB;
+W:2625         lineas del paquete 277
+         2625: internal Func<SafetyPerPostWindow, bool?> BootPerPostWindowDialog;
+W:2646         lineas del paquete 272
+         2646: PushBackBootSection.ModeLabels) { Owner = this };
+W:2790         lineas del paquete 272
+         2790: Owner = this
+W:2941         lineas del paquete 272
+         2941: Owner = this
+W:2972         lineas del paquete 272
+         2972: Owner = this
+W:3029         lineas del paquete 453
+         3029: if (!hasValidModel || lastComputation == null)
+W:3093         lineas del paquete 453
+         3093: if (lastComputation == null) return null;
+W:3192-3213    lineas del paquete 242,1356
+         3192: private void Restore_Click(object sender, RoutedEventArgs e)
+         3213: }
+W:3194-3198    lineas del paquete 242,324
+         3194: if (lastComputation?.Design == null)
+         3198: }
+W:3215         lineas del paquete 1167
+         3215: private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
+W:3217-3245    lineas del paquete 239,1167
+         3217: private void InsertBatch_Click(object sender, RoutedEventArgs e)
+         3245: }
+W:3234         lineas del paquete 239,272
+         3234: if (!Views.RackViewBatchDialogPresenter.TryShow(this, RackSystemKind.PushBack, options, out var views)) return;
+W:3247-3304    lineas del paquete 228,1167
+         3247: private void RequestDraw(string view, int section, bool updateOnly)
+         3304: }
+W:3249         lineas del paquete 229
+         3249: if (!canInsertInAutoCad)
+W:3249-3259    lineas del paquete 488
+         3249: if (!canInsertInAutoCad)
+         3259: }
+W:3255         lineas del paquete 229
+         3255: if (updateOnly && !isEditingExisting)
+W:3270-3273    lineas del paquete 227,230
+         3270: if (moduleOwner.ModuleSession.HasPendingChanges)
+         3273: }
+W:3270-3287    lineas del paquete 465
+         3270: if (moduleOwner.ModuleSession.HasPendingChanges)
+         3287: }
+W:3275         lineas del paquete 231
+         3275: RequestRecompute(); // synchronous validate + build
+W:3276-3280    lineas del paquete 232
+         3276: if (!currentInputsAreValid || session.System == null)
+         3280: }
+W:3284-3287    lineas del paquete 233
+         3284: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado."))
+         3287: }
+W:3289         lineas del paquete 490
+         3289: session.Identity.SetName(NameBox.Text?.Trim());
+W:3289-3291    lineas del paquete 234
+         3289: session.Identity.SetName(NameBox.Text?.Trim());
+         3291: session.SetModel(lastComputation.Design, lastComputation.System);
+W:3294         lineas del paquete 235
+         3294: session.RequestUpdate(ctx => new PushBackInsertionRequest(
+W:3299         lineas del paquete 235
+         3299: session.RequestInsert(view, section, ctx => new PushBackInsertionRequest(
+W:3303         lineas del paquete 236,490
+         3303: Close();
+W:3306         lineas del paquete 241
+         3306: private void Close_Click(object sender, RoutedEventArgs e) => Close();
+W:3308-3319    lineas del paquete 241
+         3308: /// <summary>
+         3319: /// </summary>
+W:3320-3329    lineas del paquete 241,535
+         3320: protected override void OnClosing(CancelEventArgs e)
+         3329: }
+W:3322         lineas del paquete 241
+         3322: if (!InsertRequested && !EditorClosePolicy.MayClose(PendingWork()))
+W:3331-3344    lineas del paquete 1167
+         3331: /// <summary>
+         3344: "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+W:3336-3341    lineas del paquete 241,1299
+         3336: /// <para>Lo demas que el usuario haya tocado —matriz, seguridad, topes— no es un ambito declarado: se aplica
+         3341: /// </summary>
+W:3342-3344    lineas del paquete 227,241
+         3342: internal EditorPendingWork PendingWork() => EditorPendingWork.When(
+         3344: "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
+W:3348-3364    lineas del paquete 243,1167
+         3348: private void Bom_Click(object sender, RoutedEventArgs e)
+         3364: }
+W:3350         lineas del paquete 784,862
+         3350: RequestRecompute();
+W:3358         lineas del paquete 243
+         3358: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede listar un modelo bloqueado."))
+W:3363         lineas del paquete 272
+         3363: new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
+W:3366-3401    lineas del paquete 243,1167
+         3366: private void SaveLibrary_Click(object sender, RoutedEventArgs e)
+         3401: }
+W:3368         lineas del paquete 784,862
+         3368: RequestRecompute();
+W:3378         lineas del paquete 243
+         3378: if (OutputBlockedAfterRecompute("Corrige los datos: no se puede guardar un modelo bloqueado."))
+W:3383         lineas del paquete 272,641
+         3383: var path = UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema");
+W:3384         lineas del paquete 460,862,864,1355
+         3384: if (path == null) return;
+W:3388         lineas del paquete 652
+         3388: session.Identity.EnsureId();
+W:3389         lineas del paquete 460,1355
+         3389: session.Identity.SetName(NameBox.Text?.Trim());
+W:3391-3392    lineas del paquete 243
+         3391: // Save ONLY the active Push Back payload; WithSourceMetadataFrom preserves the opened project's unknown JSON
+         3392: // fields + non-downgraded schema version (I-11). Saving never flags an insert.
+W:3449-3496    lineas del paquete 244,1167
+         3449: private void UpdateButtons()
+         3496: }
+W:3492-3495    lineas del paquete 242,453
+         3492: RestoreButton.IsEnabled = lastComputation != null;
+         3495: : "Aún no hay un sistema válido que restaurar.";
+W:3569-3570    lineas del paquete 789
+         3569: private static double Keep(NumericField field, double current)
+         3570: => !field.Value.HasValue || SameShown(field.Value.Value, current) ? current : field.Value.Value;
+WC:154-156     lineas del paquete 861
+         154: var selection = SideSelectorBox.SelectedIndex == 2
+         156: : SideSelectorBox.SelectedIndex == 1 ? PushBackSideSelection.B : PushBackSideSelection.A;
+WC:790-794     lineas del paquete 267
+         790: private bool CompositeHasBlocking(PushBackSystem system)
+         794: }
+WX:47          lineas del paquete 250
+         47: <TextBox x:Name="NameBox" Style="{StaticResource FieldBox}" TextChanged="Name_Changed"
+WX:68-69       lineas del paquete 268
+         68: <controls:NumericField x:Name="AnnotationScaleBox" LostFocus="Input_Changed"
+         69: Minimum="0" MinimumInclusive="False" />
+== INV-PBT2B-03: los rangos de los miembros que cambian en W (17872be8), documentacion incluida
+  LoadNew            W:269-287 (declaracion en W:271)
+  LoadDesignForNew   W:289-304 (declaracion en W:292)
+  LoadExisting       W:306-320 (declaracion en W:308)
+  Update_Click       W:3215-3215 (declaracion en W:3215)
+  InsertBatch_Click  W:3217-3245 (declaracion en W:3217)
+  RequestDraw        W:3247-3304 (declaracion en W:3247)
+  PendingWork        W:3331-3344 (declaracion en W:3342)
+  Bom_Click          W:3348-3364 (declaracion en W:3348)
+  SaveLibrary_Click  W:3366-3401 (declaracion en W:3366)
+  UpdateButtons      W:3449-3496 (declaracion en W:3449)

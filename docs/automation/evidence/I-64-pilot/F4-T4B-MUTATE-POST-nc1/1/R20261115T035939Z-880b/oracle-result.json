@@ -1,0 +1,58 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261115T035939Z-880b",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "fail",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests",
+    "Trailer"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned 4314c1803b7a047f0521c34d631950a475e7cd32, but worker-handoff.json declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse --verify deadbeef...^{commit} exited 128; the declared SHA is not a commit. BaseSha and RedSha are ancestors of the actual HEAD, but cannot establish the required identity for the declared CurrentSha."
+  },
+  "OutputSha256": "DCD74D2990A7824018A84AEB213C261E5876BF780B22D0E9D873B74591C16229",
+  "ManualFreeText1610": []
+}

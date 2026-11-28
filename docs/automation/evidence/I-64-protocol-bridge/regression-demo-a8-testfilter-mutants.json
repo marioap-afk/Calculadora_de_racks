@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-i64-testfilter-bridge-regression/v1",
+  "VerifierSha256": "4bccdc9f6739785c078f34a12c36c091184d9f4e018873b435d28c4a616ec946",
+  "SelftestSha256": "723590e235d635570cd629fa69d3b92478df7acf8816b0663908b6aa1964ac86",
+  "Verifier": {
+    "Result": "PASS",
+    "Passed": 35,
+    "Total": 35,
+    "ExitCode": 0,
+    "FailedCases": []
+  },
+  "Mutants": {
+    "DisplayName": {
+      "Result": "FAIL",
+      "Passed": 28,
+      "Total": 35,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T02",
+        "T03",
+        "T06",
+        "T07",
+        "T08",
+        "T34"
+      ],
+      "SelectionLine": "sel = [x for x in rows if fold(substring) in fold(x[2])]"
+    },
+    "ClassNameOnly": {
+      "Result": "FAIL",
+      "Passed": 30,
+      "Total": 35,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T06",
+        "T07",
+        "T34"
+      ],
+      "SelectionLine": "sel = [x for x in rows if fold(substring) in fold(definitions[x[0]][0])]"
+    },
+    "CaseSensitiveFqn": {
+      "Result": "FAIL",
+      "Passed": 29,
+      "Total": 35,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T04",
+        "T06",
+        "T07",
+        "T34"
+      ],
+      "SelectionLine": "sel = [x for x in rows if substring in definitions[x[0]][0] + '.' + definitions[x[0]][1]]"
+    },
+    "MethodNameOnly": {
+      "Result": "FAIL",
+      "Passed": 27,
+      "Total": 35,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T05",
+        "T06",
+        "T07",
+        "T09",
+        "T28",
+        "T34"
+      ],
+      "SelectionLine": "sel = [x for x in rows if fold(substring) in fold(definitions[x[0]][1])]"
+    }
+  },
+  "Result": "PASS"
+}

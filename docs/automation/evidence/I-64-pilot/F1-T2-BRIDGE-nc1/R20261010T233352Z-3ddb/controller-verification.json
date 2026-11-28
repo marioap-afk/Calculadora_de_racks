@@ -1,0 +1,83 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261010T233352Z-3ddb",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "WorkRunId": "R20261010T202008Z-3df4",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-10-10T20:23:57Z; OutputWrittenUtc=2026-10-10T20:52:30Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json hash matches relay Outcome.OutputSha256. TaskId, Attempt, DelegationRunId, RunId and Worktree match the assigned values, but CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef and FilesChanged lists 4 paths; Git shows CurrentSha=e2f642b86197441eea0838c8055c1db666606f11 and 10 paths. This conflicts with the Owner disposition and relay record."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN.md at MainSha bb0d5522 (Sections 16.3, 16.8-16.10), agent-execution/README.md Section 8 and AGENTS.md at MainSha; read the four delegation Authorities at AuthorityRevision d5bdcb7a. The 14 invariant IDs are present; representation differences in section headings match the specified normalization."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json and gate-contract.json: Unit, Gate, TaskId, Objective, AuthorityRevision, MainSha, Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, ExpectedEvidence and RoutingEnforcement match."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return e2f642b86197441eea0838c8055c1db666606f11. git merge-base --is-ancestor succeeds for BaseSha d5bdcb7a and RedSha 31e3c57a against that commit. The handoff CurrentSha is deadbeef..., not the Git identity; branch and worktree otherwise match."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry and RemoteFacts report ls-remote=e2f642b86197441eea0838c8055c1db666606f11 and origin/main=bb0d5522e8411f66a51fdfb3f1f0d0514b737453, matching CurrentSha and MainSha. Exit was BaseSha before cession, as expected."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..HEAD returns 10 paths, all new files under the three AllowedWriteScope Workspace paths. No ForbiddenWriteScope path or existing T1 file appears. git diff BaseSha RedSha -- tests/ returns 5 Workspace test files; git diff RedSha HEAD -- tests/ is empty."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch reports architecture/workspace-persistente-rackcad tracking origin with no changes. git check-ignore -v on the specified inputs package resolves to .gitignore:3 artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 38085381131 is a completed successful push to refs/heads/architecture/workspace-persistente-rackcad at e2f642b86197441eea0838c8055c1db666606f11; all four required jobs are success. Current Core TRX: 12754/12754 passed. RedRun 38084788650 is the push of RedSha; Core job failed, Plugin job skipped. Red Core TRX has 62 failed assertions and 0 errors."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Required filter FullyQualifiedName~RackCad.Tests.Workspace matches 159 tests in the Current Core TRX: 159 passed, 0 failed; full Core is 12754/12754 passed. Red Core TRX has the same 159 matching tests: 97 passed, 62 failed. Failures are xUnit assertion failures; examples include Assert.True(\"no live session for native id 100\"), Assert.Equal, Assert.NotEmpty, Assert.Single and Assert.Null. RT is 5 tests/RackCad.Tests/Workspace paths from BaseSha..RedSha; RedSha..HEAD touches no tests, so ChainRedFiles is those 5 paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD shows both RED 31e3c57a and GREEN e2f642b8 with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer and the effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5/high; relay-record-work records ModelEffective=claude-sonnet-5-5 and EffortEffective=high. These match the request and required routing."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against every Section 16.10 term; no match."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report no permission denials and no usage-limit notices; the single intermediate script error was recovered. The transient process was CLEARED_BY_REREAD. P-01 is resolved by the supplied Owner dispositions and closed two-hash allowlist."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The handoff SHA-256 matches the recorded output digest, but its CurrentSha and FilesChanged disagree with Git, the relay record and the Owner disposition.",
+    "Both Git HEAD and the remote branch resolve to e2f642b86197441eea0838c8055c1db666606f11; the handoff instead declares deadbeefdeadbeefdeadbeefdeadbeefdeadbeef.",
+    "The handoff lists 4 changed paths while git diff --name-only BaseSha..HEAD returns 10.",
+    "The RedSha TRX failures are assertions against the compilable skeleton, including missing live sessions and absent hookups or queued behavior; the Green Core TRX has no failures.",
+    "The UI TRX reports 1637 passed of 1654 total, with 17 NotExecuted results; its Counters notExecuted=0 follows the stated logger convention."
+  ],
+  "RecommendedNextAction": "Resolve the contradictory handoff SHA and file inventory with the Coordinator before any follow-up."
+}

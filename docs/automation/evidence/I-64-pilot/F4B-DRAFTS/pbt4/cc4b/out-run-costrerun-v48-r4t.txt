@@ -1,0 +1,36 @@
+tercera corrida del coste; copia /d/r4t; salida /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-costrerun-v48-r4t; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957; paquete 6ddc239d4db7509d50b2a2497a7adc91b6808ea4ee3511098a66446c9b25e0a2; particion e87e024c168dd81d05c1ba1ae9dfa0027da8724ee0d9fd219cce74fe1f613dec
+  guion 0704d90cc880d2f3d1213c9b5c12cbc2da63fa05c063aae30dee04860316f988 p6_cost_rerun_v48.sh
+  guion 91acfca3328029538348b9f2feb00a9c756f1f1cdaf8650876b843691df7ba0e pbt4b-read-cost-probe.cs
+  guion d44ab45cc3c0296a22ea94d584113652af1cc451874a7bdef0a0dc314423ded6 apply_red_pbt4b_v48.py
+  guion ae55163a7519cf35882aedaa96a4deb3bd3ac4185ad11d3d91bd2cd16ef80bd0 apply_green_pbt4b_v45.py
+  guion 643a3de9a827274a236ada9a7b6c80edbdc916c366366aec394e1383f2048af2 p6_check_v48.py
+  guion 85f32a422cd42b42bc8947567e5d8a48f5b25a1bb4bb9364fd42b8459a957262 session-cost-rerun-rule.md
+procesos (antes): 5 | codex-computer-use-swift. x1; codex-windows-sandbox-ser x1; codex.exe x2; node.exe x1; 
+    codex.exe                    30456 Console                    1   112,516 KB
+    codex-computer-use-swift.    25660 Console                    1    41,036 KB
+    node.exe                     26392 Console                    1    44,732 KB
+    codex.exe                    12516 Console                    1    71,096 KB
+    codex-windows-sandbox-ser    35492 Services                   0    25,120 KB
+ESCRITOS 49 archivos; conjunto abcfbfe9f7e3ba834378cf1a9e083f52e9fdd5701544585ce34e24669beac041
+ESCRITOS 10 archivos; conjunto f93c726219cf566964003ca5638e79ce2731e3b3f7b830c83fd841203af34c45
+sonda 91acfca3328029538348b9f2feb00a9c756f1f1cdaf8650876b843691df7ba0e TmpReadCostProbe.cs
+cost-core-tests-Debug rc=0 errores=0 avisos-CS=0
+cost-core-tests-Release rc=0 errores=0 avisos-CS=0
+procesos (antes de la sonda): 5 | codex-computer-use-swift. x1; codex-windows-sandbox-ser x1; codex.exe x2; node.exe x1; 
+    codex.exe                    30456 Console                    1   112,416 KB
+    codex-computer-use-swift.    25660 Console                    1    41,040 KB
+    node.exe                     26392 Console                    1    44,732 KB
+    codex.exe                    12516 Console                    1    71,096 KB
+    codex-windows-sandbox-ser    35492 Services                   0    24,612 KB
+test cost-run3.trx rc=1 segundos=731 trx-sha256=67a2bc8e0da4535a8887304bb4ca20de8507b0bbf0c599fad5fcac62714550f1
+check cost (tercera) rc=0 :: COSTE: CUMPLE
+procesos (despues): 5 | codex-computer-use-swift. x1; codex-windows-sandbox-ser x1; codex.exe x2; node.exe x1; 
+    codex.exe                    30456 Console                    1   112,344 KB
+    codex-computer-use-swift.    25660 Console                    1    41,040 KB
+    node.exe                     26392 Console                    1    44,732 KB
+    codex.exe                    12516 Console                    1    71,096 KB
+    codex-windows-sandbox-ser    35492 Services                   0    24,612 KB
+build-server shutdown rc=0
+procesos de dotnet/testhost tras el shutdown: 0
+MAINCO []
+rc=0

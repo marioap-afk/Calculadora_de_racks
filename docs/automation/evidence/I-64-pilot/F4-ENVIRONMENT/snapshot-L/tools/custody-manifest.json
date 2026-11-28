@@ -1,0 +1,136 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4-ENVIRONMENT/snapshot-L/tools",
+  "SourceRoot": "hs65/snapL/, la carpeta de las herramientas de la Snapshot L de la sesion (fuera del repositorio)",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 12,
+    "EXCLUDED": 3
+  },
+  "Files": [
+    {
+      "Path": "_apply_snapshot_l_cfg.py",
+      "Bytes": 1980,
+      "Sha256": "6580ee92078c5abee0e5c68dca4cdfe103a9828afbfe90a4fe034147224d86ee",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "_apply_snapshot_l_verify.py",
+      "Bytes": 2020,
+      "Sha256": "727669587b078c9e3a12112b99984d23cb435e72da8c02c76391672485689035",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "_gen_snapL.py",
+      "Bytes": 6024,
+      "Sha256": "c3bcedbebba6f5244dce3629ccfc632d47d1f659ec7cf56eeab7102e5b1ec043",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cfg_check_f4.before-L.py",
+      "Bytes": 2566,
+      "Sha256": "2ad805b339b14bae8434fdca01ae2d525f4ab9479b2c742946eb2d3a79d3e187",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "cfg_check_l.py",
+      "Bytes": 1955,
+      "Sha256": "ab3e71d6da91cccffbdc477da2df3351aa62f58b4097965f0048600dba5fd5a0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "diff_vs_k.py",
+      "Bytes": 2544,
+      "Sha256": "3a79c1b77d68978cfbb5bab69d42f8aa93b647ef25d0d008dab02ebbb08e6647",
+      "Disposition": "EXCLUDED",
+      "Reason": "archivo de la sesion que, tras la redaccion comun, aun lleva una ruta o un nombre local que no se tapa: solo por SHA-256"
+    },
+    {
+      "Path": "eval_probe_l.py",
+      "Bytes": 6023,
+      "Sha256": "2da589b706dc53c57f604d04bc21de740eb156d4d6a0ab29e86937cc515e7d88",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "6094bb55ce36ec5bbe5cb9013b912afac501d34566c4ce8048f70c4f237cde90",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "launch_probe_l.sh",
+      "Bytes": 1170,
+      "Sha256": "87244c032c2b9bfd067bc1820c5bb257a45210abec2f12148bb304f8f377ff26",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "95ee0a13eb14b115d4ee577bf0a087261b5c51776f825578570933b7a6f3c2ff",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>",
+        "ubicacion local sustituida por: <runtime-de-codex>",
+        "ubicacion local sustituida por: <datos-locales-del-usuario>"
+      ]
+    },
+    {
+      "Path": "make_pbt4d_verify.before-L.py",
+      "Bytes": 88194,
+      "Sha256": "9de8a1c295e3fbc9499e922fbf40cc3a3916bf69705316910d0270043c57132b",
+      "Disposition": "EXCLUDED",
+      "Reason": "archivo de la sesion que, tras la redaccion comun, aun lleva una ruta o un nombre local que no se tapa: solo por SHA-256"
+    },
+    {
+      "Path": "make_probe_l.py",
+      "Bytes": 2264,
+      "Sha256": "5a980aeea64f7a5fac384571bcf561c3ad80848aab472b48a5c8602f0ad088d5",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "c4041c21f30f8d183c15240d96a93ba0fd2b2804f94182fc818a874ec9e57064",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "probe-runid-l.txt",
+      "Bytes": 23,
+      "Sha256": "ec3d75358b3b3446bfe8b053b4a7a68ea874698a670e2d1a6ef7cd816041818d",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "probe_post_l.sh",
+      "Bytes": 786,
+      "Sha256": "3fa6370fff46e61c963925a1fe1a2248e20368f3066d21f5a56e48f5c60ff99d",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "dcb43a501996fb1d644b0d792402f09e2b9e312a1f7b4dc62c9bf6a615404f6e",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "probe_pre_l.sh",
+      "Bytes": 850,
+      "Sha256": "da68647a4ed9bcb6c9f15f9ab9b7735525ed9ee7e6362ff8557d155c94a3009e",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "0f9e1c6bc02e92e70127066aabc374a87e250834ad3abdd2d528cfc2f9731b2e",
+      "Redaction": [
+        "ubicacion local sustituida por: <perfil-de-usuario>",
+        "ubicacion local sustituida por: <worktree-de-I-64>"
+      ]
+    },
+    {
+      "Path": "probe_state_l.py",
+      "Bytes": 1477,
+      "Sha256": "a3856b4b5f6503e45caa605e36cc78a5432f0cf18334c529045b488d44ead999",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "5063ba381a22ded1bceaa86f5dc9393b4c931b37687be786baf5b894443cea03",
+      "Redaction": [
+        "ubicacion local sustituida por: <datos-locales-del-usuario>"
+      ]
+    },
+    {
+      "Path": "record_snapshot_l.py",
+      "Bytes": 5194,
+      "Sha256": "7473cd7db818c88b9d166d2ab4daeaebe380f4747369e9ff89774c43efd645ee",
+      "Disposition": "EXCLUDED",
+      "Reason": "archivo de la sesion que, tras la redaccion comun, aun lleva una ruta o un nombre local que no se tapa: solo por SHA-256"
+    }
+  ]
+}

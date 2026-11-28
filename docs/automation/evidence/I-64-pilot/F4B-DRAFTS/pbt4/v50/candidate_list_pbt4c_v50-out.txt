@@ -1,0 +1,4 @@
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:155-163 [Fact] ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot
+tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs:306-403 [Fact] CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses
+tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs:568-654 [Fact] CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList
+filas=3

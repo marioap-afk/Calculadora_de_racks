@@ -1,0 +1,3 @@
+pwsh -NoProfile -File <prep>\t3c\tools\Capture-ProfileState.ps1 -Phase BASELINE -OutDir <run>\profile -RunLabel R20261013T011654Z-184b -CandidateDll <worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll -ExpectTrustedPathsSha256 a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498 -ExpectSecureLoad 1 -ExpectProfile '<<Unnamed Profile>>' -ExpectAcadSha256 2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422
+BASELINE: CanonicalSha256=e2eeb59457f39278c16e96793008a6d9311333f144a3d4bb86bb080e4888df70 lines=2229 keys=399 values=1765 files=16 plugins=3 env=0 unreadable=0
+exit=0

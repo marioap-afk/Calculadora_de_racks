@@ -1,0 +1,2436 @@
+{
+  "Schema": "rackcad-pbt4e-precondition6/v1",
+  "Package": "v5.6",
+  "Task": "F4B-PBT4-EDIT-ALL-RELOAD (provisional; lo confirma la sesion al emitir)",
+  "Revision": {
+    "Base": "160e019d773ba9095e2d5858cd593a954b8eec67",
+    "Copies": {
+      "r77": "historia: el primer GREEN de la v5.6 (8e3e8077) daba warning CS8604",
+      "r82": "el ensayo y la sonda",
+      "r78": "historia: la primera principal; su conductor leia una lista de filtros de UI que no existe (ui_filters_pbt4e_v56.txt) y no corrio los 19 filtros de UI",
+      "r83": "la copia principal, sola",
+      "r79": "la base con cobertura, sola",
+      "r80": "el control: solo el campo",
+      "r81": "el control: solo el anfitrion"
+    }
+  },
+  "Pieces": {
+    "pbt4e-green-v56.txt": {
+      "File": "pbt4e-green-v56.txt",
+      "Sha256": "a745c2737a7e0fe908489a1bf17ed86569577ed3dbf54ecd3661c488faf88158"
+    },
+    "pbt4e-red-v56.txt": {
+      "File": "pbt4e-red-v56.txt",
+      "Sha256": "d052f73d726817f4240f3b5edfd89a0ec8aeb7b9cc17dbce684aa8e4f433c9e1"
+    },
+    "green_pbt4e_v56.py": {
+      "File": "green_pbt4e_v56.py",
+      "Sha256": "b3aba680d45ce6aebb3dbac549e228de9b832a76d870fd719ea0801302c10e73"
+    },
+    "red_pbt4e_v56.py": {
+      "File": "red_pbt4e_v56.py",
+      "Sha256": "8c38e532bf991a111e7f82193ad3a812993a64a1c2e43084a46278ad72dc54a5"
+    },
+    "apply_green_pbt4e_v56.py": {
+      "File": "apply_green_pbt4e_v56.py",
+      "Sha256": "492aaab155fe64cc96b317441c1bd18b2bfc47f92c44bd1dac24f131bc8378a7"
+    },
+    "apply_red_pbt4e_v56.py": {
+      "File": "apply_red_pbt4e_v56.py",
+      "Sha256": "59a0fcb3e316b1fbde880fca87629bc2144b233859eccdf9ddb86c244d2a0ae5"
+    },
+    "make_pieces_pbt4e_v56.py": {
+      "File": "v56/make_pieces_pbt4e_v56.py",
+      "Sha256": "8a00c0d286d1fee5e627e05bc1864e350ecaaa76930764949287d2ef7432678f"
+    }
+  },
+  "List": {
+    "Rows": 0,
+    "K": 0,
+    "D": 0,
+    "E": 0,
+    "Note": "la lista vacia: ninguna prueba existente se edita, se salta ni se sustituye"
+  },
+  "RedFiles": [
+    {
+      "Path": "tests/RackCad.Tests/PushBackEditAllReloadTests.cs",
+      "Sha256": "9e849864709a964a864902c6f44e5d92014d962cc56c374cebfc7dfe42c6b017"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs",
+      "Sha256": "a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d"
+    }
+  ],
+  "GreenFiles": [
+    {
+      "Path": "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "Sha256": "49b5245c112e3d4f0b3b95114f9ff0444469b316a3ef912947cf3b696e0c6ebd",
+      "BaseSha256": "b3a2622b490e2e787088680743662365bf9e4b0016cad7578703281b6b1c0863"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "Sha256": "bbc6882283833b02bab79c9bb70c082f3ac14b2a88650722bf8d72be0e13b5e2",
+      "BaseSha256": "b937f893360b39c5751b5b5da9fe3f976a76b256799fbf685a2dc4193f141e96"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "Sha256": "6eb9bf7ab81666b33c1280c832257624937c95a042e46f53dcc2c371baac4d7d",
+      "BaseSha256": "3fcabacbc9a568cc2b777d4e8bd356b76f55273f674d0ab604177f36ffeb5fee"
+    },
+    {
+      "Path": "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "Sha256": "c4b5c6990c5623e53be607fdbb461db95103b957c96627e1d63300dabe3d643b",
+      "BaseSha256": "417c36cd68267ecec960e89c4908a237d8c9d89093ab93aecebd3f80a862f845"
+    }
+  ],
+  "Builds": {
+    "r76": {
+      "r-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "r-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "g-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "g-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      }
+    },
+    "r82": {
+      "r-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "r-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "g-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "g-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      }
+    },
+    "r83": {
+      "r-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "r-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "g-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "g-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "g-plugin": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      }
+    },
+    "r79": {
+      "b-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "b-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      }
+    },
+    "r80": {
+      "r-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "c-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "c-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      }
+    },
+    "r81": {
+      "r-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "c-core": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      },
+      "c-ui": {
+        "Rc": 0,
+        "Errors": 0,
+        "WarningsCS": 0
+      }
+    }
+  },
+  "CsWarnings": 0,
+  "Alone": {
+    "Principal": [
+      [
+        "empezar",
+        "0",
+        "20:11:52"
+      ],
+      [
+        "acabar",
+        "0",
+        "21:09:18"
+      ]
+    ],
+    "Base": [
+      [
+        "empezar",
+        "0",
+        "19:29:12"
+      ],
+      [
+        "acabar",
+        "0",
+        "19:58:17"
+      ]
+    ]
+  },
+  "Red": {
+    "Core": {
+      "Trx": "core-red.trx",
+      "Sha256": "ad37b6c421811d4e01a2a351feccfeac5b65a29bdc04d0608bfefa7ac0925266",
+      "Total": 19421,
+      "Passed": 19015,
+      "Failed": 3,
+      "Skipped": 403,
+      "FailedTests": [
+        {
+          "Test": "RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday",
+          "FirstStackLine": "at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected)"
+        },
+        {
+          "Test": "RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers",
+          "FirstStackLine": "at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected)"
+        },
+        {
+          "Test": "RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict",
+          "FirstStackLine": "at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected)"
+        }
+      ]
+    },
+    "UI": [
+      {
+        "Trx": "red-ui01.trx",
+        "Sha256": "f68d8a28baa8519de5722b8b4ee86a6bc94d3bc6abbb54af43a83a58d33f5f0d",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests"
+      },
+      {
+        "Trx": "red-ui02.trx",
+        "Sha256": "61db7e226430c8ba7b17672be17cc094d19b1506f91db3956a458da073d8b178",
+        "Total": 653,
+        "Passed": 626,
+        "Failed": 0,
+        "Skipped": 27,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace"
+      },
+      {
+        "Trx": "red-ui03.trx",
+        "Sha256": "6d53fcb4c26c13bd082ab9d1364c343be96c9dceeae355cc4d566853b4468973",
+        "Total": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests"
+      },
+      {
+        "Trx": "red-ui04.trx",
+        "Sha256": "174eb9b021d502ae9a72f9664ba6e32be7a9215b6ca873a5eb91376546635485",
+        "Total": 55,
+        "Passed": 55,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization"
+      },
+      {
+        "Trx": "red-ui05.trx",
+        "Sha256": "0febd67f5b251dff5cfd430a4f85ab39828bfddc73e51f5abf4c50083fb2e0a0",
+        "Total": 18,
+        "Passed": 16,
+        "Failed": 0,
+        "Skipped": 2,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization"
+      },
+      {
+        "Trx": "red-ui06.trx",
+        "Sha256": "a0402fec334bf12a3bf1a01078ecbfdeb079a9357b7092a7a0c4826e6e1b2c86",
+        "Total": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet"
+      },
+      {
+        "Trx": "red-ui07.trx",
+        "Sha256": "a7f41f9a6099cd0ae7fdf6d7f602b34faaff18990246a472d0f7bb3920739b4b",
+        "Total": 12,
+        "Passed": 12,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection"
+      },
+      {
+        "Trx": "red-ui08.trx",
+        "Sha256": "0a589c54e36a045f7377c71463601e6e40fbda20ed98a4ca8a93a339d511064d",
+        "Total": 67,
+        "Passed": 67,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever"
+      },
+      {
+        "Trx": "red-ui09.trx",
+        "Sha256": "1725ef4f5c6b0636dd12012e2c64f18340e16f28241b513a6e57911fdb977ad9",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests"
+      },
+      {
+        "Trx": "red-ui10.trx",
+        "Sha256": "4fef91c617a1830e6c1e010d0c1235c1796d069159cbc7ab33e2b7cc14f33188",
+        "Total": 4,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 1,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests"
+      },
+      {
+        "Trx": "red-ui11.trx",
+        "Sha256": "16e116e466c682ec845d8a32f6c70274bdce60deb2a07340406eb36f03ba7d83",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests"
+      },
+      {
+        "Trx": "red-ui12.trx",
+        "Sha256": "b773cbf636ec7b3e77ad6687a04d8e9ae4904692ae4f2be43d4bb6a44b3e60a7",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests"
+      },
+      {
+        "Trx": "red-ui13.trx",
+        "Sha256": "09cf3c30a30d6d0b73f989aa0b83329bddc387774db0456050154c907152a2aa",
+        "Total": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests"
+      },
+      {
+        "Trx": "red-ui14.trx",
+        "Sha256": "b1d39b2eedfa9be1c49454398f3ff211a6085b9b300451b97bf29daf76a05602",
+        "Total": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests"
+      },
+      {
+        "Trx": "red-ui15.trx",
+        "Sha256": "77b0f3289337499cb66a281d0a49b862adf02e908b2fb73bedd119a8ae74131b",
+        "Total": 30,
+        "Passed": 30,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests"
+      },
+      {
+        "Trx": "red-ui16.trx",
+        "Sha256": "744465d9a4212bb73704e5fa6daaf6443e41ed161b44d7ca265c4f3f0bc9e391",
+        "Total": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests"
+      },
+      {
+        "Trx": "red-ui17.trx",
+        "Sha256": "0b8c49d4bf76223e0ac6bbf2dfcc127c1ca775dc32b60000519538fed701ff51",
+        "Total": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests"
+      },
+      {
+        "Trx": "red-ui18.trx",
+        "Sha256": "44fb5f2f6a56b1703fe850ac3d19e10f647ef969adfc228dfcb5343c4e445ac3",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests"
+      },
+      {
+        "Trx": "red-ui19.trx",
+        "Sha256": "782469900a5f19aaa833febc30e980fd41acab9a4528261582dec77ee22680e5",
+        "Total": 1,
+        "Passed": 0,
+        "Failed": 1,
+        "Skipped": 0,
+        "FailedTests": [
+          {
+            "Test": "RackCad.UI.Tests.PushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll",
+            "FirstStackLine": "at RackCad.UI.Tests.PushBackEditAllReloadFieldTests.Finish(List`1 log, IEnumerable`1 expected)"
+          }
+        ],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests"
+      }
+    ]
+  },
+  "Green": {
+    "Core": {
+      "Trx": "core-green.trx",
+      "Sha256": "927fd280fab01f19a231b7997692a1d9ae0cdfaad0f99ffec23c67cfe573afdb",
+      "Total": 19421,
+      "Passed": 19018,
+      "Failed": 0,
+      "Skipped": 403,
+      "FailedTests": []
+    },
+    "UI": [
+      {
+        "Trx": "green-ui01.trx",
+        "Sha256": "a33156fa91259274215d9e375229201a6bd4a370a46de306c6cceaa069802461",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+        "CoverageJsonSha256": "dc3e473f1e32c0592af47d4ec49e16185b00dc504c0fda3c53d8f5770e187c0f"
+      },
+      {
+        "Trx": "green-ui02.trx",
+        "Sha256": "7d88faba0a60b2089ee6ef17992b8db17f89d9c8ccd61e64b6ddc6d104e726c7",
+        "Total": 653,
+        "Passed": 626,
+        "Failed": 0,
+        "Skipped": 27,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+        "CoverageJsonSha256": "979d1c2b2e685a78e3914980e8e1000ad7feb13e2a982d39ba056e6aa90e103f"
+      },
+      {
+        "Trx": "green-ui03.trx",
+        "Sha256": "dc511c5535d0fd5ad7b697e411031f8e7bd2b16d37144679e6b76a929714240c",
+        "Total": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+        "CoverageJsonSha256": "76bbdd2d0110a21dd23a1d009feeb97abea525074ed966284f6a02888dcde7ef"
+      },
+      {
+        "Trx": "green-ui04.trx",
+        "Sha256": "635bf136f5773935b5f48732b1e3511a717fa04bc322254b420a8201f8be04ea",
+        "Total": 55,
+        "Passed": 55,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+        "CoverageJsonSha256": "94adc36d3f9121818eeca3a5417ac0ada6c3dd0e5eb9851c933fc733bca594fb"
+      },
+      {
+        "Trx": "green-ui05.trx",
+        "Sha256": "0dd926fd7e1172e31d428339199540fc2831e6ae205bd3ade17ab162e76cb51d",
+        "Total": 18,
+        "Passed": 16,
+        "Failed": 0,
+        "Skipped": 2,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+        "CoverageJsonSha256": "7b531e07ec85ad470f25cc434191c82a68ed6029a9bcee7d55a2f5fbcbe4d7e7"
+      },
+      {
+        "Trx": "green-ui06.trx",
+        "Sha256": "8438835d40d3cae42ba97e56386b7a12e99f5a3777dfe41e0f7b004484b40cd9",
+        "Total": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+        "CoverageJsonSha256": "1582622b94166c24457ebbc46a1569aa56386f3706020b873a255566e5d56b54"
+      },
+      {
+        "Trx": "green-ui07.trx",
+        "Sha256": "ed2d849e946ba14b79d5c1b01178dd874ce8486d89ef76e65444e1dacd56478f",
+        "Total": 12,
+        "Passed": 12,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+        "CoverageJsonSha256": "211e1e681fbb6e58ac8a6149cd0bc758e28f04946542abd5db4bca606ab9cad9"
+      },
+      {
+        "Trx": "green-ui08.trx",
+        "Sha256": "d40f9bb842fd251c78750e5f32d6b2a3f9fa0bc2c8f09218592de12478383d93",
+        "Total": 67,
+        "Passed": 67,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+        "CoverageJsonSha256": "bbc73e2844a71692307b40189ceae04a694ca4b7116a067022e33d4d8511c43a"
+      },
+      {
+        "Trx": "green-ui09.trx",
+        "Sha256": "169dc618f6f5e56032efa597a85d2056ad0282186b68beeabd592b1daedfceea",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+        "CoverageJsonSha256": "0f918f3284f085b11d5ef33fe6bab257137377a48b18ebde81109fa92adee844"
+      },
+      {
+        "Trx": "green-ui10.trx",
+        "Sha256": "869ff246047de4fe289cd7f23120d68ef0eba7eb35052ebd5a78d991cd00c3d7",
+        "Total": 4,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 1,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+        "CoverageJsonSha256": "42fc6af9fd80dbff3671e899913c1ea6a377536a378e012f87c69b4b65895b69"
+      },
+      {
+        "Trx": "green-ui11.trx",
+        "Sha256": "0adad8bdbd4205f9628fc81aef415a013ae34187a20db13a68827acbe5c89646",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+        "CoverageJsonSha256": "d0bf415ce8bbe14b986ef8b968ba1ef8c8bbf18b7565f44abc56b190f25846fa"
+      },
+      {
+        "Trx": "green-ui12.trx",
+        "Sha256": "9d9f4f48b830f566eb9a99339cfcf63c4b5daf97e108e4250df6c74f1f1feb02",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+        "CoverageJsonSha256": "ebc77a0f51a31241fcbac91e823cb8b292fc04372bcf5d4f8213bbdc5ae94501"
+      },
+      {
+        "Trx": "green-ui13.trx",
+        "Sha256": "a75294039a2e1f32ce7fe535853fdb23596cef40e88a8e5956dd340db91adb9e",
+        "Total": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+        "CoverageJsonSha256": "8d1b8096bf2190df9dc4cf41b84701d6f0c83ac5b25a38813e2e0a8e32b213e8"
+      },
+      {
+        "Trx": "green-ui14.trx",
+        "Sha256": "f714f7ee03bbe31eb3473d6b2ffeba7e0fc05c0df5e098d5a3f5d47b13bcf426",
+        "Total": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+        "CoverageJsonSha256": "9827f90d35cbf9aa6e526ad2770eec7a1b656c6455952bf604a414f46e87574d"
+      },
+      {
+        "Trx": "green-ui15.trx",
+        "Sha256": "efb6b2ed4fcca5b308c9682b78e5f21f10e493e49bb4c9e78ab9865e13d26d50",
+        "Total": 30,
+        "Passed": 30,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+        "CoverageJsonSha256": "bb2531be1f43c49d9d2fca163cf3fdefd2c2b01893b0369392cc146ed8e48314"
+      },
+      {
+        "Trx": "green-ui16.trx",
+        "Sha256": "2ee77bda1423b1087fd5151e524815a860614c92bb2355cd94c0cdd34cf2e273",
+        "Total": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+        "CoverageJsonSha256": "acfb97f619000b74b254b7a2e7bf30988fe858cf7e09f9cc59bc1e9aa2d22a3e"
+      },
+      {
+        "Trx": "green-ui17.trx",
+        "Sha256": "e2060aade73b960156aec9a8b0c351105452f3f214e2a179f4e3d5e247886f90",
+        "Total": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+        "CoverageJsonSha256": "c70a8dccd5e3b1fa6ca57ae5d4b064a82758948d7c421dae5bf3ef80235b9103"
+      },
+      {
+        "Trx": "green-ui18.trx",
+        "Sha256": "f3937af27cf3eb0d00bef4fbca7c21642c8ff8383b44d367056bf29cde4cbc5f",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+        "CoverageJsonSha256": "f08d2ab5623cac10807977c65ca243f2c39cdc30a9eca3ee05a62edebc262ab6"
+      },
+      {
+        "Trx": "green-ui19.trx",
+        "Sha256": "f589b77ecf6bf0208662e89a0a0c5ad2989f256abb00ae17b97519b11f414e40",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests",
+        "CoverageJsonSha256": "e37c402b98699aa085fa831cb9a85edcea32508190dcb0a05e3b8eb0eef1965f"
+      }
+    ]
+  },
+  "GreenWithCoverage": {
+    "Trx": "core-green-cov.trx",
+    "Sha256": "081a94d4e2df41594d6a056bcaa6da1fd1e4616917d9937f5d5a8dd64cfa639a",
+    "Total": 19421,
+    "Passed": 19018,
+    "Failed": 0,
+    "Skipped": 403,
+    "FailedTests": [],
+    "CoverageJsonSha256": "55f9ab889af74ee488159c63ebfd698aea9fc64fb5d257ab3fecd2d99dd95c33"
+  },
+  "GreenUiCoverage": {
+    "Unions": [
+      {
+        "Trx": "ui-green-cov.trx",
+        "Sha256": "9d1593b3b6d342bb9bf33687e5c641a0cf2129030ae518c8f6278f25d5736312",
+        "Total": 900,
+        "Passed": 870,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "12e6aa5ad81a49230c01fcfc022b4d9ec9b43241d5033c0ec0fa0f75254ae12a"
+      },
+      {
+        "Trx": "ui-green-cov-r-1.trx",
+        "Sha256": "bb20b50842c8150329789335d37da0ab9d9ab46e919ada13966f089de1f376d7",
+        "Total": 900,
+        "Passed": 870,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "12e6aa5ad81a49230c01fcfc022b4d9ec9b43241d5033c0ec0fa0f75254ae12a"
+      },
+      {
+        "Trx": "ui-green-cov-r-2.trx",
+        "Sha256": "c73edc63b485a4d95220242ef185d3887f085fe26175a446db306bb866d9601c",
+        "Total": 900,
+        "Passed": 870,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "fe75e4725f385c066865baeaa188590f6ba932b8b46769aa32cbe26d504f5430"
+      }
+    ],
+    "Filters": [
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+        "Trx": "green-ui01.trx",
+        "CoverageJsonSha256": "dc3e473f1e32c0592af47d4ec49e16185b00dc504c0fda3c53d8f5770e187c0f"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+        "Trx": "green-ui02.trx",
+        "CoverageJsonSha256": "979d1c2b2e685a78e3914980e8e1000ad7feb13e2a982d39ba056e6aa90e103f"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+        "Trx": "green-ui03.trx",
+        "CoverageJsonSha256": "76bbdd2d0110a21dd23a1d009feeb97abea525074ed966284f6a02888dcde7ef"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+        "Trx": "green-ui04.trx",
+        "CoverageJsonSha256": "94adc36d3f9121818eeca3a5417ac0ada6c3dd0e5eb9851c933fc733bca594fb"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+        "Trx": "green-ui05.trx",
+        "CoverageJsonSha256": "7b531e07ec85ad470f25cc434191c82a68ed6029a9bcee7d55a2f5fbcbe4d7e7"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+        "Trx": "green-ui06.trx",
+        "CoverageJsonSha256": "1582622b94166c24457ebbc46a1569aa56386f3706020b873a255566e5d56b54"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+        "Trx": "green-ui07.trx",
+        "CoverageJsonSha256": "211e1e681fbb6e58ac8a6149cd0bc758e28f04946542abd5db4bca606ab9cad9"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+        "Trx": "green-ui08.trx",
+        "CoverageJsonSha256": "bbc73e2844a71692307b40189ceae04a694ca4b7116a067022e33d4d8511c43a"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+        "Trx": "green-ui09.trx",
+        "CoverageJsonSha256": "0f918f3284f085b11d5ef33fe6bab257137377a48b18ebde81109fa92adee844"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+        "Trx": "green-ui10.trx",
+        "CoverageJsonSha256": "42fc6af9fd80dbff3671e899913c1ea6a377536a378e012f87c69b4b65895b69"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+        "Trx": "green-ui11.trx",
+        "CoverageJsonSha256": "d0bf415ce8bbe14b986ef8b968ba1ef8c8bbf18b7565f44abc56b190f25846fa"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+        "Trx": "green-ui12.trx",
+        "CoverageJsonSha256": "ebc77a0f51a31241fcbac91e823cb8b292fc04372bcf5d4f8213bbdc5ae94501"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+        "Trx": "green-ui13.trx",
+        "CoverageJsonSha256": "8d1b8096bf2190df9dc4cf41b84701d6f0c83ac5b25a38813e2e0a8e32b213e8"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+        "Trx": "green-ui14.trx",
+        "CoverageJsonSha256": "9827f90d35cbf9aa6e526ad2770eec7a1b656c6455952bf604a414f46e87574d"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+        "Trx": "green-ui15.trx",
+        "CoverageJsonSha256": "bb2531be1f43c49d9d2fca163cf3fdefd2c2b01893b0369392cc146ed8e48314"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+        "Trx": "green-ui16.trx",
+        "CoverageJsonSha256": "acfb97f619000b74b254b7a2e7bf30988fe858cf7e09f9cc59bc1e9aa2d22a3e"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+        "Trx": "green-ui17.trx",
+        "CoverageJsonSha256": "c70a8dccd5e3b1fa6ca57ae5d4b064a82758948d7c421dae5bf3ef80235b9103"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+        "Trx": "green-ui18.trx",
+        "CoverageJsonSha256": "f08d2ab5623cac10807977c65ca243f2c39cdc30a9eca3ee05a62edebc262ab6"
+      },
+      {
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests",
+        "Trx": "green-ui19.trx",
+        "CoverageJsonSha256": "e37c402b98699aa085fa831cb9a85edcea32508190dcb0a05e3b8eb0eef1965f"
+      }
+    ]
+  },
+  "SuiteDurationSeconds": {
+    "Red": 322,
+    "Green": 305,
+    "GreenWithCoverage": 387
+  },
+  "BaseCoverage": {
+    "Core": {
+      "Trx": "base-core-cov.trx",
+      "Sha256": "a6e7df412e75b2448d3acb1501e31737d88ea7eb7e0710652813fd27b47842d0",
+      "Total": 19418,
+      "Passed": 19015,
+      "Failed": 0,
+      "Skipped": 403,
+      "FailedTests": [],
+      "CoverageJsonSha256": "77ea460b8f4be10e272011786d6ebc2f517220c075645ecf77e3ccd6cd68c9d8"
+    },
+    "UIUnions": [
+      {
+        "Trx": "base-ui-cov.trx",
+        "Sha256": "893a7776cccc478df9804d04b5b8dca1d9d3169061cf5c58774fdbdfd074154c",
+        "Total": 899,
+        "Passed": 869,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "80abb6393a16ae12125852e85ea103841a6ef45ac8595231e791e84318868321"
+      },
+      {
+        "Trx": "base-ui-cov-r-1.trx",
+        "Sha256": "4406ef2aa440558fba8cc2da92031b4de607da4a7e5670d594d53d96d3280b68",
+        "Total": 899,
+        "Passed": 869,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "4734b3435934ec1a8b8a9e3c3eef3984e7a519aa6c3e83c568158923bea99232"
+      },
+      {
+        "Trx": "base-ui-cov-r-2.trx",
+        "Sha256": "45cc6b5a4ce13fc9b5359e8941668c97d4f3bbe2e0bd956aef316ce7d06e8157",
+        "Total": 899,
+        "Passed": 869,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "28498e1705ff11b636c590e57040945ac30f6e76c269d2d3cadf2a232ac7aeef"
+      }
+    ],
+    "UIByFilter": [
+      {
+        "Trx": "base-uif01.trx",
+        "Sha256": "35c7c92dfe07066921bc1d2a0c45c067db717bc0b5f1f7925271cc6bf97a8c8d",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+        "CoverageJsonSha256": "a2f4f2fe841e144bfe90a38419c0f6bc5d9852a3bd30deb43fbb0d89e5ee48e8"
+      },
+      {
+        "Trx": "base-uif02.trx",
+        "Sha256": "a8bec73cd148a6f3e5e4f9452e74e6a0f58c349c555eeb8edaab58128882fc2e",
+        "Total": 653,
+        "Passed": 626,
+        "Failed": 0,
+        "Skipped": 27,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+        "CoverageJsonSha256": "1062c2eb0ce118b00465aa9c4f17f42d2a402a725ccec3774ff04bf29c676c6f"
+      },
+      {
+        "Trx": "base-uif03.trx",
+        "Sha256": "280a7ee22f1a526fb7e88907bcd1608fcbb40b1d88c0ae4eb44037ba27459bb2",
+        "Total": 2,
+        "Passed": 2,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+        "CoverageJsonSha256": "9335585fa867da2ef1b551843312735cc8d519eea07d36f47b0a396a3aa9d898"
+      },
+      {
+        "Trx": "base-uif04.trx",
+        "Sha256": "610666a390337de56b8865aa261fbedce83402c5c0efc586fee940898a087ae1",
+        "Total": 55,
+        "Passed": 55,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+        "CoverageJsonSha256": "1e87b4e748e10c1a639285cc9da533a3322a43ccf649c95bd2f044b774fa9490"
+      },
+      {
+        "Trx": "base-uif05.trx",
+        "Sha256": "5975722b69ae57ba879317576081c311ab579e41f0967ad293c3d352e6c9c600",
+        "Total": 18,
+        "Passed": 16,
+        "Failed": 0,
+        "Skipped": 2,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+        "CoverageJsonSha256": "53074b167228cda5cf1cebd7c58766f9df6a5f966b4ce9b2ab9f9c806c1259a3"
+      },
+      {
+        "Trx": "base-uif06.trx",
+        "Sha256": "41ccaabb4ec37fd64b0badf78504afc8846369179f2b0907ffef156b96e51ccb",
+        "Total": 14,
+        "Passed": 14,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+        "CoverageJsonSha256": "1aff60ee2fefdbc554a6aeabd8c047c51105c64a66871433af9936f9b1d711e2"
+      },
+      {
+        "Trx": "base-uif07.trx",
+        "Sha256": "8fdf46ac3a6cffece20fa08ae175edb46ebbb02a19f5e5444d8a319e5f9b4589",
+        "Total": 12,
+        "Passed": 12,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+        "CoverageJsonSha256": "39bb1b5fa6c73dce43cefd6c746648a87d429bebca9adfffe3aac71f66ab6f39"
+      },
+      {
+        "Trx": "base-uif08.trx",
+        "Sha256": "c9aca99d59fb8d16ea8c71855050dfef4a3bc83d9147fc265a304b8fc218c938",
+        "Total": 67,
+        "Passed": 67,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+        "CoverageJsonSha256": "b990d5bc133dca55c2d399d9d74e4a630be9dbc6308e73225297c0f20730ec89"
+      },
+      {
+        "Trx": "base-uif09.trx",
+        "Sha256": "23f6e08b77b5ae687e52693b698fbd70f7321531d4b85c812a8671558ef551da",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+        "CoverageJsonSha256": "eaf392f513b5ae3c6eb99c19afff77884cfcf92e3e6ce6f56eab4db5b60a3335"
+      },
+      {
+        "Trx": "base-uif10.trx",
+        "Sha256": "4c08c67bb8c91c5de636f9b6489d4e76faada877d83784ee9e23c436ac71a297",
+        "Total": 4,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 1,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+        "CoverageJsonSha256": "2561606bce4863517abfa25357d3ceac0a2a5a86b7fb23f90164c65c11d560a5"
+      },
+      {
+        "Trx": "base-uif11.trx",
+        "Sha256": "ad18c067a62762014ad460f31dfcd49fd4b02b0a84eb0e80c2bf3a5b4a310f86",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+        "CoverageJsonSha256": "313c4c00f7b72cb02f8b5d109a6fff5a5432efe62c4fc957e633a902562aff08"
+      },
+      {
+        "Trx": "base-uif12.trx",
+        "Sha256": "2f2d9c314086d7ef5552ea09bdb8727ee458677d471bcf9a294bd22e5f4a1319",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+        "CoverageJsonSha256": "8f30085908a8c64e5ab6e56d6340f9dfc9cadde2f3f605e5c8dccccd25b4ca05"
+      },
+      {
+        "Trx": "base-uif13.trx",
+        "Sha256": "4d8cb59ff7a99588b8be6e89fe9196c4afe530e8d8e9a69f34b54873e9a46ea9",
+        "Total": 13,
+        "Passed": 13,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+        "CoverageJsonSha256": "69bed43087440ff4ac317bee1216e4665c00574d62e9328e15f97fd7adc05a9b"
+      },
+      {
+        "Trx": "base-uif14.trx",
+        "Sha256": "8face9fe29d45987aea286b6f18aff22f8a3712f29409d8c95df5419bb0ad986",
+        "Total": 10,
+        "Passed": 10,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+        "CoverageJsonSha256": "26fac375a3529d7cf987cdf388ab40064dd8bb64f0ef695c667ab881961f9db2"
+      },
+      {
+        "Trx": "base-uif15.trx",
+        "Sha256": "2460bf621694caa35b9879f29bfe0267d616f76206a8a65c69774aa4be99512f",
+        "Total": 30,
+        "Passed": 30,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+        "CoverageJsonSha256": "d2b1028b76dbc1c1327ae943e70b89efc337fd937833cff951989f1a4ad2be14"
+      },
+      {
+        "Trx": "base-uif16.trx",
+        "Sha256": "69536fe7e1cb8974048a7a0f24c80c67c104950d632f334aa3ae9a8750fed41f",
+        "Total": 6,
+        "Passed": 6,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+        "CoverageJsonSha256": "baaf03e57d2919a4f5ac326e4f1232de93c250aa5616f6ed019dc5b1884f441b"
+      },
+      {
+        "Trx": "base-uif17.trx",
+        "Sha256": "ec6b46f4109e33af9260f47448e630ef8799ecc1d42b9aeed656bad0fa18bcb8",
+        "Total": 4,
+        "Passed": 4,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+        "CoverageJsonSha256": "101f1109de575778ab511eac293ba4aff7549aa80663cc31ef87b2f6dcfcd2ad"
+      },
+      {
+        "Trx": "base-uif18.trx",
+        "Sha256": "f204d0815300185f21d37e21dfd71ccb9fbe26bfa43c457a3205c5c18f3310aa",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+        "CoverageJsonSha256": "6c4db5b10165f8b593533e21fffed3658bcb1d6c341e919c16a0698ec26e241c"
+      },
+      {
+        "Trx": "base-uif19.trx",
+        "Sha256": "a6091f8118bf3dfad8253baaddbb4b0091485067ea27e0ffb8987eb62d157183",
+        "Total": 0,
+        "Passed": 0,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": [],
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests",
+        "CoverageJsonSha256": "ddfb735bfa3701d0a971ae1f5c1a77432904323e4a70b3d774f889d64af82c26"
+      }
+    ]
+  },
+  "Coverage": {
+    "Script": "cov_p6_pbt4e_v56.py",
+    "ScriptSha256": "cbbffa8760730ad331bb5d7939288b2bdfe286b0476e1d31dfcb3cb610fa8de5",
+    "Output": "cov-p6-v56.txt",
+    "OutputSha256": "057591b797c948e0098f5ec7ea3679b5e87867a56553efa7530e7108f4f536b7",
+    "Summary": "archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 8; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0",
+    "Result": "PASA",
+    "Drops": "bajan (informativo) 2: PERDIDA 0, VARIA 2, ESTABLE 0"
+  },
+  "Probe": {
+    "Driver": "driver-r82-tr.txt",
+    "DriverSha256": "3acec44d2fc3edb734b9749a1d06455f33cca93464ed63a01d7197e280db85cd",
+    "Lines": {
+      "red-core-lineas.txt": "b36d4703ffb3d20304372af3f0bc63be81f7cb22b15120a0d94e3e81c4550020",
+      "red-ui-lineas.txt": "a06d3cdc864872bb7dff490357becc7bfd67d2c5fbfbd97acde53386b6ae043c",
+      "green-core-lineas.txt": "3c70bf3b083aa9e06774b6ad19f30b0f7d4c96c15bc5577183ff213685131b45",
+      "green-ui-lineas.txt": "d543e1bfa8f7b3aa54d6f20c932c3a3af6b701f704e10cc39a395275ed835443"
+    }
+  },
+  "NewLineDS19": {
+    "Expected": "marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True",
+    "RedBase": "marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True",
+    "GreenV55": "marcado-sin-decidir alta=Created estado=Failed motivo=[the comparer threw] abierto=False lecturas=0 fallos=[WorkspaceHostCore.TryEditAll] obsoleto=True",
+    "GreenV56": "marcado-sin-decidir alta=Created estado=Refused motivo=[El borrador no admite el editor completo en su estado actual.] abierto=False lecturas=0 fallos=[] obsoleto=True",
+    "CtWithGreenV55": "Failed",
+    "CtWithGreenV56": "Passed",
+    "DriverR76Sha256": "6f4a0d76ba4ff761a6b057aa929d1a4fe91c1c7efc1805bbd9f486d1e8a12b1a"
+  },
+  "CoverageExisting": {
+    "Output": "cov-p6-existentes-v56.txt",
+    "OutputSha256": "3887c2efe2dd6e5ee3f15f1e1fb77e91e34dc176b3e60d1f8dc88a89a86032f8",
+    "Summary": "archivos de src/ instrumentados 773; lineas ejecutadas en la base que se quedan 69844 (ramas cubiertas 28820); sin pareja en el GREEN 0; texto cambiado 1; lineas nuevas con codigo 8; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0",
+    "Result": "PASA",
+    "Drops": "bajan (informativo) 2: PERDIDA 0, VARIA 2, ESTABLE 0",
+    "Note": "el GREEN sin las dos clases nuevas (CA-T4e M-02)",
+    "Core": {
+      "Trx": "core-green-cov-sin.trx",
+      "Sha256": "c6503f2d9c59a6d7f605c461c20381ab351f0514ad23a4b579cc8e6c3790ea2f",
+      "Total": 19418,
+      "Passed": 19015,
+      "Failed": 0,
+      "Skipped": 403,
+      "FailedTests": [],
+      "CoverageJsonSha256": "dab658281e1b6631681bb7b493ec9dd078f2f2015a923474fb796435e92a9160"
+    },
+    "UIUnions18": [
+      {
+        "Trx": "ui-green-cov18.trx",
+        "Sha256": "cd8beead300580bf3512ab2672200ebc262194248dd79bb67f84bbb35d494c86",
+        "Total": 899,
+        "Passed": 869,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "39586ba76269faa82c2712edddaf5fcb0cb13b0a5ecc14c7be3c77a0136205c0"
+      },
+      {
+        "Trx": "ui-green-cov18-r-1.trx",
+        "Sha256": "c1c336918d178c41b81de64f801294c66718bee9bc51e90ef0c539b3ac8968ca",
+        "Total": 899,
+        "Passed": 869,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "33151aa2f341f1dc1cb6ccc817a1b7c1b8ca088fe0e2a9695d56028988c75c7a"
+      },
+      {
+        "Trx": "ui-green-cov18-r-2.trx",
+        "Sha256": "0be19644c5235840545b23c0831cf2551250e31d04889104fc2a2bf551338e90",
+        "Total": 899,
+        "Passed": 869,
+        "Failed": 0,
+        "Skipped": 30,
+        "FailedTests": [],
+        "CoverageJsonSha256": "20db8069b2a8083f558853ddb027320cf7640b7387cba0d6e908565fdd7e6096"
+      }
+    ]
+  },
+  "Control": {
+    "Campo": {
+      "Core": {
+        "Trx": "control-core.trx",
+        "Sha256": "bb2113cea229fabf307bf88d95979478988c2978e9834fe8312a7ab3d4642b9c",
+        "Total": 3,
+        "Passed": 0,
+        "Failed": 3,
+        "Skipped": 0,
+        "FailedTests": [
+          {
+            "Test": "RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday",
+            "FirstStackLine": "at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected)"
+          },
+          {
+            "Test": "RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers",
+            "FirstStackLine": "at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected)"
+          },
+          {
+            "Test": "RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict",
+            "FirstStackLine": "at RackCad.Tests.PushBackEditAllReloadTests.Finish(List`1 log, IEnumerable`1 expected)"
+          }
+        ]
+      },
+      "UI": {
+        "Trx": "control-ui.trx",
+        "Sha256": "b559aa5a4ab18b322e0d385b51712afe75c86890593d863339750bca1d7802e1",
+        "Total": 1,
+        "Passed": 1,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": []
+      },
+      "UpdateWithoutReload": "actualizar estado=NotAppliedPreflight clasificacion=NotAppliedPreflight causa=[] motivo=[Ningún sobre editable de la relectura coincide con el origen del borrador.] diferencias=[] borrador=Dirty obsoleto=True llamadas=[Begin,ReadForPrepare,Dispose:scope]",
+      "UpdateAfterControl": "actualizar estado=NotAppliedPreflight clasificacion=NotAppliedPreflight causa=[] motivo=[Ningún sobre editable de la relectura coincide con el origen del borrador.] diferencias=[] borrador=Dirty obsoleto=True llamadas=[Begin,ReadForPrepare,Dispose:scope]"
+    },
+    "Anfitrion": {
+      "Core": {
+        "Trx": "control-core.trx",
+        "Sha256": "6a010fd17e42abbc28b6d3737d7921afdde13714a8daded81ce76a72d85ca984",
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "FailedTests": []
+      },
+      "UI": {
+        "Trx": "control-ui.trx",
+        "Sha256": "4d090202869cf80bc858eaff1d3fb9ea67b16574e0d51a39bfb169427b8ef634",
+        "Total": 1,
+        "Passed": 0,
+        "Failed": 1,
+        "Skipped": 0,
+        "FailedTests": [
+          {
+            "Test": "RackCad.UI.Tests.PushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll",
+            "FirstStackLine": "at RackCad.UI.Tests.PushBackEditAllReloadFieldTests.Finish(List`1 log, IEnumerable`1 expected)"
+          }
+        ]
+      },
+      "UpdateWithoutReload": "actualizar estado=NotAppliedPreflight clasificacion=NotAppliedPreflight causa=[] motivo=[Ningún sobre editable de la relectura coincide con el origen del borrador.] diferencias=[] borrador=Dirty obsoleto=True llamadas=[Begin,ReadForPrepare,Dispose:scope]",
+      "UpdateAfterControl": "actualizar estado=Applied clasificacion=Applied causa=[] motivo=[] diferencias=[] borrador=Clean obsoleto=False llamadas=[Begin,ReadForPrepare,PrepareUnits,BeginMutation,Reread,WriteUnit:A1,WriteUnit:C3,EraseUnit:B2,Seal,Dispose:mutation,Post,Dispose:scope]"
+    },
+    "Drivers": {
+      "r80": "d67d71bdd284bfca7f0b43bef6317a5f93a62eaf3a1c5dfd9a57fa89194cb5fb",
+      "r81": "19ad5f4a1f0bd052bbbd0890814dd4802a853a8af228db2a4d9478f257705656"
+    }
+  },
+  "RequiredTests": {
+    "Tsv": "required-pbt4e-v56.tsv",
+    "Sha256": "a66fd8d40972f7447f79a9a702079b465649dd38c1797c231c361e5ee75b03e6",
+    "Count": 90,
+    "Rows": [
+      {
+        "n": "1",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullReadPathTests",
+        "MinSelected": "4",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 1",
+        "MinSelected-PBT4d": "4",
+        "base": "4",
+        "medido-RED": "4",
+        "medido-GREEN": "4"
+      },
+      {
+        "n": "2",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullReadGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 2",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "3",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackViewEraseGuardTests",
+        "MinSelected": "4",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 3",
+        "MinSelected-PBT4d": "4",
+        "base": "4",
+        "medido-RED": "4",
+        "medido-GREEN": "4"
+      },
+      {
+        "n": "4",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWritePathPluginGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 4",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "5",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateGuardTests",
+        "MinSelected": "83",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 5",
+        "MinSelected-PBT4d": "83",
+        "base": "83",
+        "medido-RED": "83",
+        "medido-GREEN": "83"
+      },
+      {
+        "n": "6",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests",
+        "MinSelected": "120",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 6",
+        "MinSelected-PBT4d": "120",
+        "base": "120",
+        "medido-RED": "120",
+        "medido-GREEN": "120"
+      },
+      {
+        "n": "7",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackSharedReferenceGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 7",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "8",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 8",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "9",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullWrite",
+        "MinSelected": "13",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 9",
+        "MinSelected-PBT4d": "13",
+        "base": "13",
+        "medido-RED": "13",
+        "medido-GREEN": "13"
+      },
+      {
+        "n": "10",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests",
+        "MinSelected": "6",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 10",
+        "MinSelected-PBT4d": "6",
+        "base": "6",
+        "medido-RED": "6",
+        "medido-GREEN": "6"
+      },
+      {
+        "n": "11",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWritePathGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 11",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "12",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+        "MinSelected": "2539",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 12",
+        "MinSelected-PBT4d": "2539",
+        "base": "2683",
+        "medido-RED": "2683",
+        "medido-GREEN": "2683"
+      },
+      {
+        "n": "13",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullDraft",
+        "MinSelected": "10",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 13",
+        "MinSelected-PBT4d": "10",
+        "base": "10",
+        "medido-RED": "10",
+        "medido-GREEN": "10"
+      },
+      {
+        "n": "14",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftWriteGuardTests",
+        "MinSelected": "2",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 14",
+        "MinSelected-PBT4d": "2",
+        "base": "2",
+        "medido-RED": "2",
+        "medido-GREEN": "2"
+      },
+      {
+        "n": "15",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+        "MinSelected": "503",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 15",
+        "MinSelected-PBT4d": "503",
+        "base": "626",
+        "medido-RED": "626",
+        "medido-GREEN": "626"
+      },
+      {
+        "n": "16",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditableState",
+        "MinSelected": "13",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 16",
+        "MinSelected-PBT4d": "13",
+        "base": "13",
+        "medido-RED": "13",
+        "medido-GREEN": "13"
+      },
+      {
+        "n": "17",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditorOutputGate",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 17",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "18",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowSharedReferenceGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 18",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "19",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWindowOnStateSourceGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 19",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "20",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWindowOnStateTests",
+        "MinSelected": "2",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 20",
+        "MinSelected-PBT4d": "2",
+        "base": "2",
+        "medido-RED": "2",
+        "medido-GREEN": "2"
+      },
+      {
+        "n": "21",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackClassicCharacterization",
+        "MinSelected": "55",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 21",
+        "MinSelected-PBT4d": "55",
+        "base": "55",
+        "medido-RED": "55",
+        "medido-GREEN": "55"
+      },
+      {
+        "n": "22",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackClassicCharacterization",
+        "MinSelected": "10",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 22",
+        "MinSelected-PBT4d": "10",
+        "base": "10",
+        "medido-RED": "10",
+        "medido-GREEN": "10"
+      },
+      {
+        "n": "23",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+        "MinSelected": "16",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 23",
+        "MinSelected-PBT4d": "16",
+        "base": "16",
+        "medido-RED": "16",
+        "medido-GREEN": "16"
+      },
+      {
+        "n": "24",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization",
+        "MinSelected": "3",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 24",
+        "MinSelected-PBT4d": "3",
+        "base": "3",
+        "medido-RED": "3",
+        "medido-GREEN": "3"
+      },
+      {
+        "n": "25",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackStateNet",
+        "MinSelected": "14",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 25",
+        "MinSelected-PBT4d": "14",
+        "base": "14",
+        "medido-RED": "14",
+        "medido-GREEN": "14"
+      },
+      {
+        "n": "26",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackDeclaredCorrection",
+        "MinSelected": "12",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 26",
+        "MinSelected-PBT4d": "12",
+        "base": "12",
+        "medido-RED": "12",
+        "medido-GREEN": "12"
+      },
+      {
+        "n": "27",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.Cantilever",
+        "MinSelected": "67",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 27",
+        "MinSelected-PBT4d": "67",
+        "base": "67",
+        "medido-RED": "67",
+        "medido-GREEN": "67"
+      },
+      {
+        "n": "28",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.I58F1",
+        "MinSelected": "10",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 28",
+        "MinSelected-PBT4d": "10",
+        "base": "1912",
+        "medido-RED": "1912",
+        "medido-GREEN": "1912"
+      },
+      {
+        "n": "29",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.CustomPropertiesEnvelopeGuardTests",
+        "MinSelected": "9",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 29",
+        "MinSelected-PBT4d": "9",
+        "base": "22",
+        "medido-RED": "22",
+        "medido-GREEN": "22"
+      },
+      {
+        "n": "30",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.NamespaceFolderGuardTests",
+        "MinSelected": "7",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 30",
+        "MinSelected-PBT4d": "7",
+        "base": "7",
+        "medido-RED": "7",
+        "medido-GREEN": "7"
+      },
+      {
+        "n": "31",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftStatePortTests",
+        "MinSelected": "3",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 31",
+        "MinSelected-PBT4d": "3",
+        "base": "3",
+        "medido-RED": "3",
+        "medido-GREEN": "3"
+      },
+      {
+        "n": "32",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 32",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "33",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceModeSourceGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 33",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "34",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 34",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "35",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceModeTests",
+        "MinSelected": "3",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 35",
+        "MinSelected-PBT4d": "3",
+        "base": "3",
+        "medido-RED": "3",
+        "medido-GREEN": "3"
+      },
+      {
+        "n": "36",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests",
+        "MinSelected": "3",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 36",
+        "MinSelected-PBT4d": "3",
+        "base": "3",
+        "medido-RED": "3",
+        "medido-GREEN": "3"
+      },
+      {
+        "n": "37",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackWorkspaceCarryoverTests",
+        "MinSelected": "3",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 37",
+        "MinSelected-PBT4d": "3",
+        "base": "3",
+        "medido-RED": "3",
+        "medido-GREEN": "3"
+      },
+      {
+        "n": "38",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelTests",
+        "MinSelected": "11",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 38",
+        "MinSelected-PBT4d": "11",
+        "base": "11",
+        "medido-RED": "11",
+        "medido-GREEN": "11"
+      },
+      {
+        "n": "39",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelGuardTests",
+        "MinSelected": "4",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 39",
+        "MinSelected-PBT4d": "4",
+        "base": "4",
+        "medido-RED": "4",
+        "medido-GREEN": "4"
+      },
+      {
+        "n": "40",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullPanelCensusGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 40",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "41",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackPanelDraftGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 41",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "42",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullPanelFieldTests",
+        "MinSelected": "3",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 42",
+        "MinSelected-PBT4d": "3",
+        "base": "3",
+        "medido-RED": "3",
+        "medido-GREEN": "3"
+      },
+      {
+        "n": "43",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldValidationTests",
+        "MinSelected": "13",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 43",
+        "MinSelected-PBT4d": "13",
+        "base": "13",
+        "medido-RED": "13",
+        "medido-GREEN": "13"
+      },
+      {
+        "n": "44",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.NumericFieldTests",
+        "MinSelected": "10",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 44",
+        "MinSelected-PBT4d": "10",
+        "base": "10",
+        "medido-RED": "10",
+        "medido-GREEN": "10"
+      },
+      {
+        "n": "45",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostRedTests",
+        "MinSelected": "24",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 45",
+        "MinSelected-PBT4d": "24",
+        "base": "24",
+        "medido-RED": "24",
+        "medido-GREEN": "24"
+      },
+      {
+        "n": "46",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleHostGreenTests",
+        "MinSelected": "69",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 46",
+        "MinSelected-PBT4d": "69",
+        "base": "69",
+        "medido-RED": "69",
+        "medido-GREEN": "69"
+      },
+      {
+        "n": "47",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareRedTests",
+        "MinSelected": "44",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 47",
+        "MinSelected-PBT4d": "44",
+        "base": "44",
+        "medido-RED": "44",
+        "medido-GREEN": "44"
+      },
+      {
+        "n": "48",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotPrepareGreenTests",
+        "MinSelected": "46",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 48",
+        "MinSelected-PBT4d": "46",
+        "base": "46",
+        "medido-RED": "46",
+        "medido-GREEN": "46"
+      },
+      {
+        "n": "49",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostRedTests",
+        "MinSelected": "24",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 49",
+        "MinSelected-PBT4d": "24",
+        "base": "24",
+        "medido-RED": "24",
+        "medido-GREEN": "24"
+      },
+      {
+        "n": "50",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentHostGreenTests",
+        "MinSelected": "57",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 50",
+        "MinSelected-PBT4d": "57",
+        "base": "57",
+        "medido-RED": "57",
+        "medido-GREEN": "57"
+      },
+      {
+        "n": "51",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostRedTests",
+        "MinSelected": "59",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 51",
+        "MinSelected-PBT4d": "59",
+        "base": "59",
+        "medido-RED": "59",
+        "medido-GREEN": "59"
+      },
+      {
+        "n": "52",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditHostGreenTests",
+        "MinSelected": "17",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 52",
+        "MinSelected-PBT4d": "17",
+        "base": "17",
+        "medido-RED": "17",
+        "medido-GREEN": "17"
+      },
+      {
+        "n": "53",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorRedTests",
+        "MinSelected": "6",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 53",
+        "MinSelected-PBT4d": "6",
+        "base": "6",
+        "medido-RED": "6",
+        "medido-GREEN": "6"
+      },
+      {
+        "n": "54",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceCommandAdvisorGreenTests",
+        "MinSelected": "70",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 54",
+        "MinSelected-PBT4d": "70",
+        "base": "70",
+        "medido-RED": "70",
+        "medido-GREEN": "70"
+      },
+      {
+        "n": "55",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestRedTests",
+        "MinSelected": "53",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 55",
+        "MinSelected-PBT4d": "53",
+        "base": "53",
+        "medido-RED": "53",
+        "medido-GREEN": "53"
+      },
+      {
+        "n": "56",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateRequestGreenTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 56",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "57",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostRedTests",
+        "MinSelected": "29",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 57",
+        "MinSelected-PBT4d": "29",
+        "base": "29",
+        "medido-RED": "29",
+        "medido-GREEN": "29"
+      },
+      {
+        "n": "58",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateHostGreenTests",
+        "MinSelected": "18",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 58",
+        "MinSelected-PBT4d": "18",
+        "base": "18",
+        "medido-RED": "18",
+        "medido-GREEN": "18"
+      },
+      {
+        "n": "59",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostRedTests",
+        "MinSelected": "23",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 59",
+        "MinSelected-PBT4d": "23",
+        "base": "23",
+        "medido-RED": "23",
+        "medido-GREEN": "23"
+      },
+      {
+        "n": "60",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationHostGreenTests",
+        "MinSelected": "5",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 60",
+        "MinSelected-PBT4d": "5",
+        "base": "5",
+        "medido-RED": "5",
+        "medido-GREEN": "5"
+      },
+      {
+        "n": "61",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingRedTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 61",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "62",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceAssociativeBookkeepingGreenTests",
+        "MinSelected": "21",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 62",
+        "MinSelected-PBT4d": "21",
+        "base": "21",
+        "medido-RED": "21",
+        "medido-GREEN": "21"
+      },
+      {
+        "n": "63",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackWritePathGuardRedTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 63",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "64",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateIntegrationGuardRedTests",
+        "MinSelected": "2",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 64",
+        "MinSelected-PBT4d": "2",
+        "base": "2",
+        "medido-RED": "2",
+        "medido-GREEN": "2"
+      },
+      {
+        "n": "65",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceEditIntentGuardRedTests",
+        "MinSelected": "13",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 65",
+        "MinSelected-PBT4d": "13",
+        "base": "13",
+        "medido-RED": "13",
+        "medido-GREEN": "13"
+      },
+      {
+        "n": "66",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardRedTests",
+        "MinSelected": "6",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 66",
+        "MinSelected-PBT4d": "6",
+        "base": "6",
+        "medido-RED": "6",
+        "medido-GREEN": "6"
+      },
+      {
+        "n": "67",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotEditGuardGreenTests",
+        "MinSelected": "17",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 67",
+        "MinSelected-PBT4d": "17",
+        "base": "17",
+        "medido-RED": "17",
+        "medido-GREEN": "17"
+      },
+      {
+        "n": "68",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotReconciliationGuardGreenTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 68",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "69",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceLifecycleGuardRedTests",
+        "MinSelected": "2",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 69",
+        "MinSelected-PBT4d": "2",
+        "base": "2",
+        "medido-RED": "2",
+        "medido-GREEN": "2"
+      },
+      {
+        "n": "70",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspacePilotUpdateGuardRedTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 70",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "71",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationGreenTests",
+        "MinSelected": "30",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 71",
+        "MinSelected-PBT4d": "30",
+        "base": "30",
+        "medido-RED": "30",
+        "medido-GREEN": "30"
+      },
+      {
+        "n": "72",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.FullPanelCopyWorkspacePilotReconciliationViewGreenTests",
+        "MinSelected": "6",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 72",
+        "MinSelected-PBT4d": "6",
+        "base": "6",
+        "medido-RED": "6",
+        "medido-GREEN": "6"
+      },
+      {
+        "n": "73",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadPathRedTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 73",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "74",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyPushBackFullReadGuardRedTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 74",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "75",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.FullPanelCopyWorkspaceHostHardeningGuardRedTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 75",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "76",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllTests",
+        "MinSelected": "6",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 76",
+        "MinSelected-PBT4d": "6",
+        "base": "6",
+        "medido-RED": "6",
+        "medido-GREEN": "6"
+      },
+      {
+        "n": "77",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllGuardTests",
+        "MinSelected": "3",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 77",
+        "MinSelected-PBT4d": "3",
+        "base": "3",
+        "medido-RED": "3",
+        "medido-GREEN": "3"
+      },
+      {
+        "n": "78",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackOpenerClassicPathGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 78",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "79",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackDraftLaunchGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 79",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "80",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllWindowTests",
+        "MinSelected": "4",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 80",
+        "MinSelected-PBT4d": "4",
+        "base": "4",
+        "medido-RED": "4",
+        "medido-GREEN": "4"
+      },
+      {
+        "n": "81",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 81",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "82",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 82",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "83",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 83",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "84",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackRetirePilotGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 84",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "85",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackRetirePilotCensusGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 85",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "86",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackRetirePilotFullCopyGuardTests",
+        "MinSelected": "1",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 86",
+        "MinSelected-PBT4d": "1",
+        "base": "1",
+        "medido-RED": "1",
+        "medido-GREEN": "1"
+      },
+      {
+        "n": "87",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackRetirePilotPlanGuardTests",
+        "MinSelected": "2",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 87",
+        "MinSelected-PBT4d": "2",
+        "base": "2",
+        "medido-RED": "2",
+        "medido-GREEN": "2"
+      },
+      {
+        "n": "88",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackRetirePilotRunTests",
+        "MinSelected": "31",
+        "ExpectRed": "false",
+        "origen": "PB-T4d n.o 88",
+        "MinSelected-PBT4d": "31",
+        "base": "31",
+        "medido-RED": "31",
+        "medido-GREEN": "31"
+      },
+      {
+        "n": "89",
+        "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.Tests.PushBackEditAllReloadTests",
+        "MinSelected": "3",
+        "ExpectRed": "true",
+        "origen": "nuevo: CT-PBT4E-01, 02 y 04",
+        "MinSelected-PBT4d": "-",
+        "base": "0",
+        "medido-RED": "3 (Failed 3)",
+        "medido-GREEN": "3"
+      },
+      {
+        "n": "90",
+        "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+        "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllReloadFieldTests",
+        "MinSelected": "1",
+        "ExpectRed": "true",
+        "origen": "nuevo: CT-PBT4E-03",
+        "MinSelected-PBT4d": "-",
+        "base": "0",
+        "medido-RED": "1 (Failed 1)",
+        "medido-GREEN": "1"
+      }
+    ],
+    "Log": [
+      "# los RequiredTests de PB-T4e: los 88 heredados de PB-T4d con su MinSelected comprobado en la base, el RED y el GREEN, y los 2 nuevos por clase exacta",
+      "  el heredado n.o 84 (RackCad.Tests.PushBackRetirePilotGuardTests) pasa a ExpectRed false (era true en PB-T4d)",
+      "heredados 88 + nuevos 2 = 90; solapamientos: 0 []",
+      "core base: 19418 = 19015 + 0 + 403 (Passed + Failed + Skipped)",
+      "core red: 19421 = 19015 + 3 + 403 (Passed + Failed + Skipped)",
+      "core green: 19421 = 19018 + 0 + 403 (Passed + Failed + Skipped)",
+      "ui-filtros base (la union de los 19, cada uno en su proceso): 899 = 869 + 0 + 30",
+      "ui-filtros red (la union de los 19, cada uno en su proceso): 900 = 869 + 1 + 30",
+      "ui-filtros green (la union de los 19, cada uno en su proceso): 900 = 870 + 0 + 30",
+      "ui-ci red: 2465 = 2416 + 1 + 48 (la linea base de la CI 2464 = 2416 + 0 + 48 mas la diferencia de los filtros)",
+      "ui-ci green: 2465 = 2417 + 0 + 48 (la linea base de la CI 2464 = 2416 + 0 + 48 mas la diferencia de los filtros)"
+    ]
+  },
+  "Totals": {
+    "Core": {
+      "Base": "19418 = 19015 + 0 + 403",
+      "Red": "19421 = 19015 + 3 + 403",
+      "Green": "19421 = 19018 + 0 + 403"
+    },
+    "UI": {
+      "BaseCI": "2464 = 2416 + 0 + 48",
+      "Red": "2465 = 2416 + 1 + 48",
+      "Green": "2465 = 2417 + 0 + 48",
+      "BaseFiltersUnion": "899 = 869 + 0 + 30"
+    }
+  },
+  "Outcome": {
+    "AllAsExpected": true,
+    "Checks": [
+      {
+        "Check": "el RED escribe 2 archivos nuevos de tests/ y nada mas",
+        "Ok": true
+      },
+      {
+        "Check": "el GREEN escribe 4 archivos de src/ y nada mas",
+        "Ok": true
+      },
+      {
+        "Check": "cero errores y cero warning CS en todas las compilaciones (21)",
+        "Ok": true
+      },
+      {
+        "Check": "la copia principal corre sola (0 procesos al empezar)",
+        "Ok": true
+      },
+      {
+        "Check": "la base corre sola (0 procesos al empezar)",
+        "Ok": true
+      },
+      {
+        "Check": "el checkout principal sin cambios tras cada copia",
+        "Ok": true
+      },
+      {
+        "Check": "RED Core: solo caen las 3 CT de Core de PB-T4e, por asercion en su Finish",
+        "Ok": true
+      },
+      {
+        "Check": "GREEN Core: 0 Failed",
+        "Ok": true
+      },
+      {
+        "Check": "RED UI (19 filtros, cada uno en su proceso): solo cae CT-PBT4E-03, por asercion en su Finish",
+        "Ok": true
+      },
+      {
+        "Check": "GREEN UI (19 filtros): 0 Failed",
+        "Ok": true
+      },
+      {
+        "Check": "Core: el mismo total en el RED y en el GREEN",
+        "Ok": true
+      },
+      {
+        "Check": "la base: Core 0 Failed y es la de la CI del GREEN de PB-T4d (19418 = 19015 + 0 + 403)",
+        "Ok": true
+      },
+      {
+        "Check": "la base: la union de los filtros de UI, 0 Failed",
+        "Ok": true
+      },
+      {
+        "Check": "la cobertura de todo src/ que se queda PASA",
+        "Ok": true
+      },
+      {
+        "Check": "la sonda: las 4 CT caen en el RED y pasan en el GREEN",
+        "Ok": true
+      },
+      {
+        "Check": "la cobertura opcional (el GREEN sin las dos clases nuevas, MODO=existentes) PASA",
+        "Ok": true
+      },
+      {
+        "Check": "la corrida opcional: Core sin las dos clases nuevas da el total de la base (19418 = 19015 + 0 + 403) y la union de los 18 filtros, 0 Failed las tres veces",
+        "Ok": true
+      },
+      {
+        "Check": "la linea nueva cae con el GREEN de la v5.5 y pasa con el de la v5.6",
+        "Ok": true
+      },
+      {
+        "Check": "el checkout principal sin cambios tras r76",
+        "Ok": true
+      },
+      {
+        "Check": "control campo: caen las 3 CT de Core y pasa CT-PBT4E-03",
+        "Ok": true
+      },
+      {
+        "Check": "control anfitrion: pasan las 3 CT de Core y cae CT-PBT4E-03",
+        "Ok": true
+      },
+      {
+        "Check": "RequiredTests: 90 (88 heredados y 2 nuevos), sin solapamientos",
+        "Ok": true
+      },
+      {
+        "Check": "los totales de UI: RED 2465 = 2416 + 1 + 48 y GREEN 2465 = 2417 + 0 + 48",
+        "Ok": true
+      },
+      {
+        "Check": "los totales de Core: RED 19421 = 19015 + 3 + 403 y GREEN 19421 = 19018 + 0 + 403",
+        "Ok": true
+      }
+    ]
+  }
+}

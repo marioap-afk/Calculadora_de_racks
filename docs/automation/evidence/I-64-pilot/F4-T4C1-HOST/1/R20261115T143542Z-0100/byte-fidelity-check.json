@@ -1,0 +1,813 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4-T4C1-HOST",
+  "PlanningRunId": "R20261115T143542Z-0100",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "2bbda3521317a05a156526560c8d9c7b81493fcfc344e04342bc29b84494eda5",
+  "ContractSha256": "d564cbdf5e5d7c6aee06cbf37f2f7995747b0579635ebe9e119552370a88e91b",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "3dc52370b91f741898c53bcc57a3edb3845a801f2dd72bacf3857dc3a874ca12",
+      "OutputSha256": "3dc52370b91f741898c53bcc57a3edb3845a801f2dd72bacf3857dc3a874ca12",
+      "Differences": []
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "005e812f4bd030507c2de589d1f23bd46350e114dd96753e283fa38d723d4be6",
+      "OutputSha256": "005e812f4bd030507c2de589d1f23bd46350e114dd96753e283fa38d723d4be6",
+      "Differences": []
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "b17b4e1704e4e9af6041a5d28b5f8797ee7aecc7f731d48cda3e80b1c7cd72a7",
+      "OutputSha256": "b17b4e1704e4e9af6041a5d28b5f8797ee7aecc7f731d48cda3e80b1c7cd72a7",
+      "Differences": []
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "f9f8892387f692090121775ab9591043ff7c5c440b59e63d5ec75201504dbd9f",
+      "OutputSha256": "f9f8892387f692090121775ab9591043ff7c5c440b59e63d5ec75201504dbd9f",
+      "Differences": []
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "029146754025317de6d8c96e9298a757f905eea0278b637ace4f4f7db7663444",
+      "OutputSha256": "029146754025317de6d8c96e9298a757f905eea0278b637ace4f4f7db7663444",
+      "Differences": []
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "c9c6a47cfb830f1a6786dbd5eb710496c3f6529a3f87502a0203603e0eeb62b1",
+      "OutputSha256": "c9c6a47cfb830f1a6786dbd5eb710496c3f6529a3f87502a0203603e0eeb62b1",
+      "Differences": []
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "add75b964e358c4dc93201f0e9cfaf74bfa1703ab0eeab6cf676d9b819f323f6",
+      "OutputSha256": "add75b964e358c4dc93201f0e9cfaf74bfa1703ab0eeab6cf676d9b819f323f6",
+      "Differences": []
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "9bcaeb26e1cec42dc08f457f2dbc7e0e913b0e5435feb7e3da2814e73b89c4b3",
+      "OutputSha256": "ffd0bb2b370e33e10b12b3cab252f9dfcda08eaf154f3d158f4572d6d2349420",
+      "Differences": [
+        {
+          "Index": 43,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/RackViewBatchDriverGuardTests.cs",
+          "Output": "tests/RackCad.Tests/G16FirstViewCorrectiveTests.cs"
+        },
+        {
+          "Index": 44,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/G16FirstViewCorrectiveTests.cs",
+          "Output": "tests/RackCad.Tests/RackProjectionCommandGuardTests.cs"
+        },
+        {
+          "Index": 45,
+          "Offset": 24,
+          "Source": "tests/RackCad.Tests/RackProjectionCommandGuardTests.cs",
+          "Output": "tests/RackCad.Tests/RackSiblingRedrawTests.cs"
+        },
+        {
+          "Index": 46,
+          "Offset": 31,
+          "Source": "tests/RackCad.Tests/RackSiblingRedrawTests.cs",
+          "Output": "tests/RackCad.Tests/RackSiblingCustomPropertiesGateTests.cs"
+        },
+        {
+          "Index": 47,
+          "Offset": 24,
+          "Source": "tests/RackCad.Tests/RackSiblingCustomPropertiesGateTests.cs",
+          "Output": "tests/RackCad.Tests/RackEnvelopeIdProbeTests.cs"
+        },
+        {
+          "Index": 48,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/RackEnvelopeIdProbeTests.cs",
+          "Output": "tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs"
+        },
+        {
+          "Index": 49,
+          "Offset": 28,
+          "Source": "tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs"
+        },
+        {
+          "Index": 50,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs"
+        },
+        {
+          "Index": 51,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs",
+          "Output": "tests/RackCad.Tests/RackUnitsGuardSourceTests.cs"
+        },
+        {
+          "Index": 52,
+          "Offset": 20,
+          "Source": "tests/RackCad.Tests/RackUnitsGuardSourceTests.cs",
+          "Output": "tests/RackCad.Tests/NamespaceFolderGuardTests.cs"
+        },
+        {
+          "Index": 53,
+          "Offset": 0,
+          "Source": "tests/RackCad.Tests/NamespaceFolderGuard",
+          "Output": "docs/"
+        },
+        {
+          "Index": 54,
+          "Offset": 0,
+          "Source": "docs/",
+          "Output": ".github/"
+        },
+        {
+          "Index": 55,
+          "Offset": 0,
+          "Source": ".github/",
+          "Output": "eng/"
+        },
+        {
+          "Index": 56,
+          "Offset": 0,
+          "Source": "eng/",
+          "Output": "tools/"
+        },
+        {
+          "Index": 57,
+          "Offset": 0,
+          "Source": "tools/",
+          "Output": "assets/"
+        },
+        {
+          "Index": 58,
+          "Offset": 0,
+          "Source": "assets/",
+          "Output": "deploy/"
+        },
+        {
+          "Index": 59,
+          "Offset": 0,
+          "Source": "deploy/",
+          "Output": "RackCad.sln"
+        },
+        {
+          "Index": 60,
+          "Offset": 0,
+          "Source": "RackCad.sln",
+          "Output": "Directory.Build.props"
+        },
+        {
+          "Index": 61,
+          "Offset": 16,
+          "Source": "Directory.Build.props",
+          "Output": "Directory.Build.targets"
+        },
+        {
+          "Index": 62,
+          "Offset": 0,
+          "Source": "Directory.Build.targets",
+          "Output": "global.json"
+        },
+        {
+          "Index": 63,
+          "Offset": 0,
+          "Source": "global.json",
+          "Output": "NuGet.Config"
+        },
+        {
+          "Index": 64,
+          "Offset": 0,
+          "Source": "NuGet.Config",
+          "Output": "README.md"
+        },
+        {
+          "Index": 65,
+          "Offset": 0,
+          "Source": "README.md",
+          "Output": "src/RackCad.Plugin/Workspace/WorkspaceHo"
+        },
+        {
+          "Index": 66,
+          "Offset": 38,
+          "Source": "src/RackCad.Plugin/Workspace/WorkspaceHostPort.cs",
+          "Output": "src/RackCad.Plugin/Workspace/WorkspaceNavigationEffects.cs"
+        },
+        {
+          "Index": 67,
+          "Offset": 48,
+          "Source": "Cad.Plugin/Workspace/WorkspaceNavigationEffects.cs",
+          "Output": "Cad.Plugin/Workspace/WorkspaceNavigationFacts.cs"
+        },
+        {
+          "Index": 68,
+          "Offset": 48,
+          "Source": "Cad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+          "Output": "Cad.Plugin/Workspace/WorkspaceNavigationHost.cs"
+        },
+        {
+          "Index": 69,
+          "Offset": 38,
+          "Source": "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+          "Output": "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs"
+        },
+        {
+          "Index": 70,
+          "Offset": 40,
+          "Source": "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+          "Output": "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs"
+        },
+        {
+          "Index": 71,
+          "Offset": 38,
+          "Source": "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+          "Output": "src/RackCad.Plugin/Workspace/WorkspaceSelectionReader.cs"
+        },
+        {
+          "Index": 72,
+          "Offset": 0,
+          "Source": "src/RackCad.Plugin/Workspace/WorkspaceSe",
+          "Output": "tests/RackCad.UI.Tests/PushBackClassicCh"
+        },
+        {
+          "Index": 73,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationCloseTests.cs"
+        },
+        {
+          "Index": 74,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationCloseTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationIntentTests.cs"
+        },
+        {
+          "Index": 75,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationIntentTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationOwnerTests.cs"
+        },
+        {
+          "Index": 76,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationOwnerTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationResourceTests.cs"
+        },
+        {
+          "Index": 77,
+          "Offset": 54,
+          "Source": "UI.Tests/PushBackClassicCharacterizationResourceTests.cs",
+          "Output": "UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs"
+        },
+        {
+          "Index": 78,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGua",
+          "Output": "tests/RackCad.UI.Tests/StaTestRunner.cs"
+        },
+        {
+          "Index": 79,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/StaTestRunner.cs",
+          "Output": "tests/RackCad.UI.Tests/EditorWindowTestSupport.cs"
+        },
+        {
+          "Index": 80,
+          "Offset": 29,
+          "Source": "tests/RackCad.UI.Tests/EditorWindowTestSupport.cs",
+          "Output": "tests/RackCad.UI.Tests/EditorDiscardPromptCollection.cs"
+        },
+        {
+          "Index": 81,
+          "Offset": 23,
+          "Source": "tests/RackCad.UI.Tests/EditorDiscardPromptCollection.cs",
+          "Output": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj"
+        },
+        {
+          "Index": 82,
+          "Offset": 0,
+          "Source": "tests/RackCad.UI.Tests/RackCad.UI.Tests.",
+          "Output": "src/RackCad.Plugin/Views/RackSiblingScan"
+        },
+        {
+          "Index": 83,
+          "Offset": 12,
+          "Source": "src/RackCad.Plugin/Views/RackSiblingScan.cs",
+          "Output": "src/RackCad.Application/Systems/PushBack/Pilot/IPush"
+        },
+        {
+          "Index": 84,
+          "Offset": 47,
+          "Source": "kCad.Application/Systems/PushBack/Pilot/IPushBackPilotUpdatePort.cs",
+          "Output": "kCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs"
+        },
+        {
+          "Index": 85,
+          "Offset": 60,
+          "Source": "ion/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs",
+          "Output": "ion/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs"
+        },
+        {
+          "Index": 86,
+          "Offset": 24,
+          "Source": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpda",
+          "Output": "src/RackCad.Application/Workspace/Drafts/DraftSession.cs"
+        },
+        {
+          "Index": 87,
+          "Offset": 46,
+          "Source": "ckCad.Application/Workspace/Drafts/DraftSession.cs",
+          "Output": "ckCad.Application/Workspace/Drafts/DraftApplyOutcome.cs"
+        },
+        {
+          "Index": 88,
+          "Offset": 46,
+          "Source": "ckCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+          "Output": "ckCad.Application/Workspace/Drafts/DraftRegistry.cs"
+        },
+        {
+          "Index": 89,
+          "Offset": 0,
+          "Source": "src/RackCad.Application/Workspace/Drafts",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceP"
+        },
+        {
+          "Index": 90,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryContainmentTests.cs"
+        },
+        {
+          "Index": 91,
+          "Offset": 0,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceD",
+          "Output": "src/RackCad.Plugin/Views/RackViewBatchEx"
+        },
+        {
+          "Index": 92,
+          "Offset": 38,
+          "Source": "src/RackCad.Plugin/Views/RackViewBatchExecution.cs",
+          "Output": "src/RackCad.Plugin/Views/RackViewBatchProductSession.cs"
+        },
+        {
+          "Index": 93,
+          "Offset": 0,
+          "Source": "src/RackCad.Plugin/Views/RackViewBatchPr",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceH"
+        },
+        {
+          "Index": 94,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+        },
+        {
+          "Index": 95,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs"
+        },
+        {
+          "Index": 96,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs"
+        },
+        {
+          "Index": 97,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs"
+        },
+        {
+          "Index": 98,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs"
+        },
+        {
+          "Index": 99,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs"
+        },
+        {
+          "Index": 100,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs"
+        },
+        {
+          "Index": 101,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs"
+        },
+        {
+          "Index": 102,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs"
+        },
+        {
+          "Index": 103,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs"
+        },
+        {
+          "Index": 104,
+          "Offset": 40,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs"
+        },
+        {
+          "Index": 105,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs"
+        },
+        {
+          "Index": 106,
+          "Offset": 0,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceH",
+          "Output": "src/RackCad.Application/Systems/PushBack"
+        },
+        {
+          "Index": 107,
+          "Offset": 60,
+          "Source": "ion/Systems/PushBack/Pilot/PushBackPilotDraftState.cs",
+          "Output": "ion/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs"
+        },
+        {
+          "Index": 108,
+          "Offset": 60,
+          "Source": "ion/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs",
+          "Output": "ion/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs"
+        },
+        {
+          "Index": 109,
+          "Offset": 60,
+          "Source": "ion/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs",
+          "Output": "ion/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs"
+        },
+        {
+          "Index": 110,
+          "Offset": 42,
+          "Source": "c/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs",
+          "Output": "c/RackCad.Application/Systems/PushBack/PushBackAdvancedRackParameters.cs"
+        },
+        {
+          "Index": 111,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackAdvancedRackParameters.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackBedRotation.cs"
+        },
+        {
+          "Index": 112,
+          "Offset": 52,
+          "Source": "Application/Systems/PushBack/PushBackBedRotation.cs",
+          "Output": "Application/Systems/PushBack/PushBackBedSlope.cs"
+        },
+        {
+          "Index": 113,
+          "Offset": 53,
+          "Source": "pplication/Systems/PushBack/PushBackBedSlope.cs",
+          "Output": "pplication/Systems/PushBack/PushBackBedSpan.cs"
+        },
+        {
+          "Index": 114,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackBedSpan.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackBomBuilder.cs"
+        },
+        {
+          "Index": 115,
+          "Offset": 51,
+          "Source": ".Application/Systems/PushBack/PushBackBomBuilder.cs",
+          "Output": ".Application/Systems/PushBack/PushBackBootPlan.cs"
+        },
+        {
+          "Index": 116,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackBootPlan.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackCellDepth.cs"
+        },
+        {
+          "Index": 117,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackCellDepth.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackCompositeContent.cs"
+        },
+        {
+          "Index": 118,
+          "Offset": 58,
+          "Source": "ation/Systems/PushBack/PushBackCompositeContent.cs",
+          "Output": "ation/Systems/PushBack/PushBackCompositeDiagnostics.cs"
+        },
+        {
+          "Index": 119,
+          "Offset": 58,
+          "Source": "ation/Systems/PushBack/PushBackCompositeDiagnostics.cs",
+          "Output": "ation/Systems/PushBack/PushBackCompositeEditorAssembler.cs"
+        },
+        {
+          "Index": 120,
+          "Offset": 64,
+          "Source": "Systems/PushBack/PushBackCompositeEditorAssembler.cs",
+          "Output": "Systems/PushBack/PushBackCompositeEditorState.cs"
+        },
+        {
+          "Index": 121,
+          "Offset": 58,
+          "Source": "ation/Systems/PushBack/PushBackCompositeEditorState.cs",
+          "Output": "ation/Systems/PushBack/PushBackCompositeFrontal.cs"
+        },
+        {
+          "Index": 122,
+          "Offset": 58,
+          "Source": "ation/Systems/PushBack/PushBackCompositeFrontal.cs",
+          "Output": "ation/Systems/PushBack/PushBackCompositePlanta.cs"
+        },
+        {
+          "Index": 123,
+          "Offset": 58,
+          "Source": "ation/Systems/PushBack/PushBackCompositePlanta.cs",
+          "Output": "ation/Systems/PushBack/PushBackCompositeResolver.cs"
+        },
+        {
+          "Index": 124,
+          "Offset": 58,
+          "Source": "ation/Systems/PushBack/PushBackCompositeResolver.cs",
+          "Output": "ation/Systems/PushBack/PushBackCompositeStructure.cs"
+        },
+        {
+          "Index": 125,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackCompositeStructure.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackDefensePlan.cs"
+        },
+        {
+          "Index": 126,
+          "Offset": 56,
+          "Source": "ication/Systems/PushBack/PushBackDefensePlan.cs",
+          "Output": "ication/Systems/PushBack/PushBackDefenseSides.cs"
+        },
+        {
+          "Index": 127,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackDefenseSides.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackDiverterPlan.cs"
+        },
+        {
+          "Index": 128,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackDiverterPlan.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackEditorCell.cs"
+        },
+        {
+          "Index": 129,
+          "Offset": 56,
+          "Source": "ication/Systems/PushBack/PushBackEditorCell.cs",
+          "Output": "ication/Systems/PushBack/PushBackEditorComputation.cs"
+        },
+        {
+          "Index": 130,
+          "Offset": 55,
+          "Source": "lication/Systems/PushBack/PushBackEditorComputation.cs",
+          "Output": "lication/Systems/PushBack/PushBackEditorDesignAssembler.cs"
+        },
+        {
+          "Index": 131,
+          "Offset": 55,
+          "Source": "lication/Systems/PushBack/PushBackEditorDesignAssembler.cs",
+          "Output": "lication/Systems/PushBack/PushBackEditorFront.cs"
+        },
+        {
+          "Index": 132,
+          "Offset": 55,
+          "Source": "lication/Systems/PushBack/PushBackEditorFront.cs",
+          "Output": "lication/Systems/PushBack/PushBackEditorInputs.cs"
+        },
+        {
+          "Index": 133,
+          "Offset": 55,
+          "Source": "lication/Systems/PushBack/PushBackEditorInputs.cs",
+          "Output": "lication/Systems/PushBack/PushBackEditorState.Load.cs"
+        },
+        {
+          "Index": 134,
+          "Offset": 61,
+          "Source": "on/Systems/PushBack/PushBackEditorState.Load.cs",
+          "Output": "on/Systems/PushBack/PushBackEditorState.cs"
+        },
+        {
+          "Index": 135,
+          "Offset": 55,
+          "Source": "lication/Systems/PushBack/PushBackEditorState.cs",
+          "Output": "lication/Systems/PushBack/PushBackEditorValues.cs"
+        },
+        {
+          "Index": 136,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackEditorValues.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackElevations.cs"
+        },
+        {
+          "Index": 137,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackElevations.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackFlowBedGeometry.cs"
+        },
+        {
+          "Index": 138,
+          "Offset": 56,
+          "Source": "ication/Systems/PushBack/PushBackFlowBedGeometry.cs",
+          "Output": "ication/Systems/PushBack/PushBackFlowBedLateralBuilder.cs"
+        },
+        {
+          "Index": 139,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackFlowBedLateralBuilder.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackFunctionalSides.cs"
+        },
+        {
+          "Index": 140,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackFunctionalSides.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackHeaderHeight.cs"
+        },
+        {
+          "Index": 141,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackHeaderHeight.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs"
+        },
+        {
+          "Index": 142,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs"
+        },
+        {
+          "Index": 143,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackLoadBeamGeometry.cs"
+        },
+        {
+          "Index": 144,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackLoadBeamGeometry.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackMirror.cs"
+        },
+        {
+          "Index": 145,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackMirror.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackPalletProjection.cs"
+        },
+        {
+          "Index": 146,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackPalletProjection.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackPlacements.cs"
+        },
+        {
+          "Index": 147,
+          "Offset": 52,
+          "Source": "Application/Systems/PushBack/PushBackPlacements.cs",
+          "Output": "Application/Systems/PushBack/PushBackPlanComposer.cs"
+        },
+        {
+          "Index": 148,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackPlanComposer.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs"
+        },
+        {
+          "Index": 149,
+          "Offset": 51,
+          "Source": ".Application/Systems/PushBack/PushBackRearTopeBuilder.cs",
+          "Output": ".Application/Systems/PushBack/PushBackResolver.cs"
+        },
+        {
+          "Index": 150,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackResolver.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackRunGeometry.cs"
+        },
+        {
+          "Index": 151,
+          "Offset": 52,
+          "Source": "Application/Systems/PushBack/PushBackRunGeometry.cs",
+          "Output": "Application/Systems/PushBack/PushBackRunSupports.cs"
+        },
+        {
+          "Index": 152,
+          "Offset": 52,
+          "Source": "Application/Systems/PushBack/PushBackRunSupports.cs",
+          "Output": "Application/Systems/PushBack/PushBackRuns.cs"
+        },
+        {
+          "Index": 153,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackRuns.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackSafetyAuthority.cs"
+        },
+        {
+          "Index": 154,
+          "Offset": 50,
+          "Source": "d.Application/Systems/PushBack/PushBackSafetyAuthority.cs",
+          "Output": "d.Application/Systems/PushBack/PushBackSideAnnotations.cs"
+        },
+        {
+          "Index": 155,
+          "Offset": 53,
+          "Source": "pplication/Systems/PushBack/PushBackSideAnnotations.cs",
+          "Output": "pplication/Systems/PushBack/PushBackSideConfiguration.cs"
+        },
+        {
+          "Index": 156,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackSideConfiguration.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackElevations.cs"
+        },
+        {
+          "Index": 157,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackFlowBedGeometry.cs"
+        },
+        {
+          "Index": 158,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackFlowBedLateralBuilder.cs"
+        },
+        {
+          "Index": 159,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackSystemPlantaBuilder.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackFunctionalSides.cs"
+        },
+        {
+          "Index": 160,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackTarimaPlacement.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackHeaderHeight.cs"
+        },
+        {
+          "Index": 161,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackTopeSurface.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs"
+        },
+        {
+          "Index": 162,
+          "Offset": 49,
+          "Source": "ad.Application/Systems/PushBack/PushBackTroquelGrid.cs",
+          "Output": "ad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs"
+        },
+        {
+          "CountSource": 163,
+          "CountOutput": 216
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": true,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 163,
+    "Output": 216
+  }
+}

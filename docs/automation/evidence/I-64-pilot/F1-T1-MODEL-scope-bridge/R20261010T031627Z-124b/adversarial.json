@@ -1,0 +1,155 @@
+{
+  "Schema": "rackcad-i64-scope-bridge/v1",
+  "Result": "FAIL",
+  "Reasons": [
+    {
+      "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+      "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs\"]"
+    }
+  ],
+  "BaseSha": "0b7db52f12ddbf7ed36c8c2d020645818335c0fa",
+  "CurrentSha": "39f7caa411a5ebb372614c233a32255de7398cca",
+  "DelegationSha256": "f0e08b8473555228baec48f6e9411bd0afa1547776e3c77b0a5e484e45ed5331",
+  "HandoffSha256": "d627ae6fdfc708759f1c093ccf5d2199740a06e5413785eac439b892f92bb8b5",
+  "DelegationRunId": "R20261002T171954Z-754a",
+  "ChangedPaths": [
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+  ],
+  "AllowedWriteScope": [
+    "docs/adr/0047-workspace-persistente-modeless-rackcad.md",
+    "src/RackCad.Application/Workspace/Hints.cs",
+    "src/RackCad.Application/Workspace/SelectionContext.cs",
+    "src/RackCad.Application/Workspace/SessionId.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "tests/RackCad.Tests/Workspace/"
+  ],
+  "ForbiddenWriteScope": [
+    "docs/initiatives/",
+    "docs/automation/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/",
+    "src/RackCad.Domain/",
+    "tests/RackCad.UI.Tests/",
+    ".github/",
+    "assets/",
+    "eng/",
+    "deploy/",
+    "global.json",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "RackCad.sln",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tools/RackCad.StructuralSections.Import/RackCad.StructuralSections.Import.csproj"
+  ],
+  "OutsideAllowed": [
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs"
+  ],
+  "ForbiddenHits": [],
+  "Checks": [
+    {
+      "Id": "ExpectedBase.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "ExpectedCurrent.Format",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Parse",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Handoff.Type",
+      "Result": "pass"
+    },
+    {
+      "Id": "Delegation.RunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.DelegationBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffBaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Identity.HandoffCurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "AllowedWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Present",
+      "Result": "pass"
+    },
+    {
+      "Id": "ForbiddenWriteScope.Syntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Repository",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.BaseSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.CurrentSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Ancestry",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Diff.Decode",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.NonEmpty",
+      "Result": "pass"
+    },
+    {
+      "Id": "Diff.PathSyntax",
+      "Result": "pass"
+    },
+    {
+      "Id": "Scope.Allowed",
+      "Result": "fail"
+    },
+    {
+      "Id": "Scope.Forbidden",
+      "Result": "pass"
+    }
+  ]
+}

@@ -22,14 +22,41 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin
 {
     /// <summary>Cabecera (lateral header) commands + their draw/edit/payload helpers, plus their short aliases.</summary>
-    public sealed class RackCabeceraCommands
+    public sealed partial class RackCabeceraCommands // T4 cb: partial (the drawing half of the door, RackCabeceraCommands.Door.cs)
     {
-        [CommandMethod("RCB")] public void AliasRackCabecera() => RackCabecera();          // RACKCABECERA
+        [CommandMethod("RCB", RackCadWindowShortcuts.WindowFlags)] public void AliasRackCabecera() => RackCabecera(); // RACKCABECERA
         [CommandMethod("QCB")] public void AliasQuickCabecera() => QuickCabecera();        // QUICKCABECERA
 
-        /// <summary>Shortcut straight to the header configurator module.</summary>
-        [CommandMethod("RACKCABECERA")]
+        /// <summary>
+        /// T7 cab (I-64, séptima tanda; the Owner on 2026-11-27: «Abren la ventana»): RACKCABECERA and RCB open the RackCad window in «Nuevo» ›
+        /// «Cabecera en esta ventana», a new draft with the defaults of the classic configurator, with the pattern of the shortcuts of rl
+        /// (<see cref="RackCadWindowShortcuts"/>): the command is the gesture, it reads nothing and writes nothing. The classic configurator
+        /// stays in the classic menu (RACKMENU, «Diseñar cabecera») and in the card «Cabecera» of «Nuevo» (RACKNUEVO Cabecera).
+        /// </summary>
+        [CommandMethod("RACKCABECERA", RackCadWindowShortcuts.WindowFlags)]
         public void RackCabecera()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null) return;
+                RackCadWindowShortcuts.Open(document, new RackCad.Application.VentanaRackCad.RackCadShortcutAsk(
+                    RackCad.Application.VentanaRackCad.RackCadShortcutTarget.NewCabecera, null, null));
+            }
+            catch (System.Exception ex)
+            {
+                RackCommandSupport.Report(ex);
+            }
+        }
+
+        /// <summary>
+        /// The body of RACKCABECERA until T7 cab: the classic configurator, modal, and the placement of its first view with
+        /// <see cref="DrawAndPlace"/>. It is kept, not registered, and today NOTHING calls it (T7cab-S8; review of 258c16b1, M-2): the classic
+        /// configurator stays reachable without it, because RACKMENU › «Diseñar cabecera» and the card «Cabecera» of «Nuevo» (RACKNUEVO
+        /// Cabecera) open it through the registry of modules (<c>HeaderEditorModule.OpenForNew</c>) and draw its request with
+        /// <c>RackMenuCommands.DispatchInsertion</c>. It is not deleted because the classic editor stays (order of the Owner, 2026-11-27).
+        /// </summary>
+        internal void RackCabeceraClassic()
         {
             try
             {
@@ -274,15 +301,18 @@ namespace RackCad.Plugin
             var id = !window.UpdateOnly && string.IsNullOrWhiteSpace(embed.Id)
                 ? window.RackId
                 : string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
-            RackAuthorizedSiblingBatch authorized = null;
 
+            // T7 cab (review of 258c16b1, I-1): "Insertar" is the drawing half ApplyCabeceraInsert (RackCabeceraCommands.Door.cs), which is
+            // this branch as it was, moved: the authored edge, the preflight, the units, the queue of ID18 from this envelope (B-1), the redraw
+            // of every view and the placement with the rule of the incomplete redraw. RACKCABECERAINSERTAR of the window runs the same half.
             if (!window.UpdateOnly)
             {
-                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return;
+                ApplyCabeceraInsert(document, blockId, embed, project, config, id, name, window.InsertViews);
+                return;
             }
 
-            // Keep each block's own Embed (not just its id) so its per-view unknown metadata is preserved on redraw (I-11).
-            var blocks = !window.UpdateOnly ? authorized.Blocks.ToList() : RackCommandSupport.FindRackBlocks(document, id);
+            // "Actualizar": keep each block's own Embed (not just its id) so its per-view unknown metadata is preserved on redraw (I-11).
+            var blocks = RackCommandSupport.FindRackBlocks(document, id);
             var lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).ToList();
             var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).ToList();
 
@@ -302,30 +332,7 @@ namespace RackCad.Plugin
                 return;
             }
 
-            // I-05: a NEW linked view will be inserted below (see the "!UpdateOnly" branch); warn once if the drawing is
-            // not in inches, BEFORE any block is (re)drawn. A pure update (UpdateOnly) must NOT warn.
-            if (!window.UpdateOnly)
-            {
-                RackUnitsGuard.WarnIfNotInches(document);
-            }
-
-            RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration,
-                RackCad.Application.Drawing.HeaderRunPlan> batchProducts = null;
-            RackCad.Application.Views.Batch.RackViewBatchRequest batchRequest = null;
-            if (!window.UpdateOnly)
-            {
-                batchProducts = RackViewBatchProducts.Header(
-                    document, config, id, name, embed, project, authorized.AuthoredInput);
-                batchRequest = RackViewBatchProductSession<RackFrameConfiguration, RackFrameConfiguration,
-                    RackCad.Application.Drawing.HeaderRunPlan>.Request(
-                        RackCad.Application.Views.Preparation.RackProductSourceKind.ExistingRack,
-                        RackSystemKind.Selective, id, window.InsertViews);
-                if (!batchProducts.PrepareAll(batchRequest, out var batchDiagnostic))
-                {
-                    editor.WriteMessage("\nRackCad: no se preparo la cola ID18; no se modifico ningun bloque. " + batchDiagnostic);
-                    return;
-                }
-            }
+            // A pure update (UpdateOnly) does NOT warn about the units (I-05): it inserts nothing.
 
             // Redraw with regen:false and regenerate ONCE below — a full drawing regen per view-block is pure waste.
             var updated = 0;
@@ -356,15 +363,7 @@ namespace RackCad.Plugin
                 document.Editor.Regen(); // ONE regeneration refreshes every redefined view-block
             }
 
-            // "Insertar": after refreshing the existing views above, place a NEW linked view-block (same GUID) of the
-            // requested view via the jig. "Actualizar" (UpdateOnly) inserts nothing.
-            if (!window.UpdateOnly)
-            {
-                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
-                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
-                return;
-            }
-
+            // "Actualizar" inserts nothing ("Insertar" returned above, from ApplyCabeceraInsert).
             editor.WriteMessage(updated > 0
                 ? "\nRackCad: cabecera actualizada; sus vistas (lateral/planta) se redibujaron."
                 : "\nRackCad: no se pudo actualizar la cabecera.");

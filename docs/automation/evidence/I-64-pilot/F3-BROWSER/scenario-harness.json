@@ -1,0 +1,38 @@
+{
+  "Source": "TRX de UI de la CI exacta 42860103890 sobre 206e0f7a",
+  "Results": [
+    {
+      "Test": "CostCharacterizationMeasuresThePreviewTheActivationTheSwitchOfTenTabsAndTheSurfaceWithoutAssertingAnyTime",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0010870"
+    },
+    {
+      "Test": "Scenario4AChangeOfRackOrOfContextOnlyMovesTheTabsThroughTheOneSynchronizationAndReadsTheSummaryOncePerMaterialization",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0014741"
+    },
+    {
+      "Test": "Scenario4ThePinnedRackSurvivesAChangeOfRackAndTheNavigationFollowsTheActiveTab",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0003101"
+    },
+    {
+      "Test": "Scenario5AChangeOfTabMaterializesTheSurfaceOnceAndNeverCallsTheNavigationOrAsksTheHostAgain",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0009951"
+    },
+    {
+      "Test": "Scenario6TenLightTabsAreTenRecordsWithExactlyOneLiveSurfaceNoSubscriptionPerTabAndNoNavigationCalls",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.0370193"
+    }
+  ],
+  "CostLines": [
+    "SCENARIO-COST create-preview ms=0.013 tabs=1",
+    "SCENARIO-COST replace-preview ms=0.021 tabs=1",
+    "SCENARIO-COST activate-existing-tab ms=0.002",
+    "SCENARIO-COST switch-10-tabs total-ms=0.023 switches=10",
+    "SCENARIO-COST materialize-surface-k1 ms=0.006 reads=1 surfaces=1"
+  ],
+  "Note": "Medidas de un solo agente de CI, sin umbrales; sirven de linea base para Smoke-PERF y F7."
+}

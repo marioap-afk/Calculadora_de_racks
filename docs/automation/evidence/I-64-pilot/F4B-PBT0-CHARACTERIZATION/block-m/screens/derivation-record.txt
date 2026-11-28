@@ -1,0 +1,17 @@
+Capturas del bloque M de PB-T0 (I-64 F4B), 2026-11-17, operado por la sesion por control de pantalla ([DP] pregunta 3).
+Origen: imagenes que la herramienta de escritorio de la sesion devolvio durante la medicion (zooms de la linea de ordenes y una pantalla completa de 874x491).
+Criterio: solo lineas de ordenes sin rutas, y la vista dibujada por RackCad recortada; la barra de titulo, las pestanas de presentacion, la de tareas y el resto del dibujo no se copian.
+Cada imagen se abrio y se reviso antes de custodiarla.
+
+M-1 (M1, PB E): mensaje del Actualizar tras + frente | M1-actualizar-anade-frente.jpg | copia exacta | sha256 D8A75BA04EB524F2BDD015FD90BA39961D36004BF871B716FB5CA6367AC0C2AA
+M-2a (M2, PB E): cortes obsoletos eliminados x1 | M2-M-2a-corte-obsoleto-eliminado.jpg | copia exacta | sha256 F12918E5AD4DB258FBF909FE075AF028703D1C02DF95D1C54EF57A69FBA96821
+M-6b (M2, PB F): aviso de unidades, jig e ID18 COMPLETED (1/1) | M2-M-6b-insertar-tras-renombrar.jpg | copia exacta | sha256 6ADF1EEFC1705548B7BEC9716ED7BF048666910EA32F98005472E16A48DF3974
+M-5a limpio (M1u): Actualizar y U con eco RACKEDITAR | M1u-M-5a-un-U-eco-RACKEDITAR.jpg | copia exacta | sha256 3B1D88D8761F86F8B7D32188D121A33BAF354678F5C746796227388B2C4A6F22
+Control (b) (M1v): Actualizar, REGEN y U con eco REGEN | M1v-control-b-REGEN-no-absorbe.jpg | copia exacta | sha256 9C38509A4799C43AA22D58D523C0D29D14C680F3E89DA0876882CDBF16B7B024
+M-5b limpio (M2u): Actualizar con cortes obsoletos eliminados x1 y U con eco RACKEDITAR | M2u-M-5b-un-U-tras-borrado.jpg | copia exacta | sha256 2E60D74ABEE81B04E80B254602FEF05C0FF88E36D5873EB5E71E8F18DCB8E916
+M-3 Deshacer (M3u): segundo renombrado y U con eco RACKEDITAR | M3u-M-3-deshacer-un-U.jpg | copia exacta | sha256 95125D5CE2CD7D6F267AF6900185E61EE85FF43856F39CBFC7EA5C7A1D038554
+M-4 (M4, PB F): Actualizar de la conversion a A/B, sin vistas nuevas | M4-M-4-ab1-conversion-AB.jpg | copia exacta | sha256 9AD0BFC27743710176926D3CF92093C4B4679595575282122482D6E556C2B0EC
+M-4/M-5c (M4, PB F): Actualizar al quitar B, frontal entrada/salida x1 | M4-M-4-quitar-B-frontal-x1.jpg | copia exacta | sha256 147A2C8BA73484258DEE253A0C8BD37A418AB614F9B625E1B7D4528E99724293
+M-5c (M4): el mismo Actualizar y U con eco RCDUMP | M4-M-5c-U-eco-RCDUMP.jpg | copia exacta | sha256 8E25993F44D04375278E667E428B77802DBE33E3276FED3A425757BBDAC36FC2
+M-2b (M4, PB G): todas las vistas obsoletas, no se elimino el ultimo vinculo; no se pudo actualizar | M4-M-2b-ultimo-vinculo.jpg | copia exacta | sha256 E357E4B04FF9984311445E3359F802E3233BE215FACE85AF73A091AA63DB6748
+H-PB-18 (M4, PB F): el frontal tras quitar B, redibujado como frontal de un sentido con el rotulo PB F | M4-H-PB-18-frontal-tras-quitar-B-crop.png | recorte x 395-800, y 95-395 del marco 874x491 | sha256 17D07B332848090DF18041F62D315E88BAB56D7C18D84920E87D3E0F2F651495 | origen (pantalla completa, no custodiada) sha256 0FDBA7AB282E2B06C3127D7F29025035E92782C37AD4EE393450E0EF896D9E34

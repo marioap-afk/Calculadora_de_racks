@@ -33,6 +33,15 @@ namespace RackCad.UI.Tests
         /// <summary>I-55 G15 (OD-1 A): el comando de proyeccion y su unico alias.</summary>
         private static readonly (string Command, string Alias) G15Help = ("RACKPROYECTAR", "RPY");
 
+        /// <summary>
+        /// I-64 A-14, cuarta tanda, parte «ut» (UT-11, aceptada por el Owner): las cuatro ordenes registradas que la ayuda no traia.
+        /// RACKMENU y RACKSECCION no tienen atajo (alias vacio): el censo las fija asi y la barrida del Plugin no busca un alias vacio.
+        /// </summary>
+        private static readonly (string Command, string Alias)[] T4UtHelp =
+        {
+            ("RACKMENU", ""), ("RACKPUSHBACK", "RPB"), ("RACKSECCION", ""), ("RACKVARIABLES", "RVA"),
+        };
+
         [Fact]
         public void TGrd08_ElCensoDeLaAyudaEsElDeAperturaMasRackPropiedadesYRackProyectar()
         {
@@ -96,8 +105,10 @@ namespace RackCad.UI.Tests
             Assert.Contains("RACKAYUDA", registered);
             Assert.True(registered.Count >= 37, "la barrida apenas ve registros del Plugin.");
 
+            // Parte «ut»: un alias vacio es una orden sin atajo, no un registro que buscar.
             var unregistered = RackCommandReference.Commands
                 .SelectMany(info => new[] { info.Command, info.Alias })
+                .Where(name => !string.IsNullOrEmpty(name))
                 .Where(name => !registered.Contains(name, StringComparer.Ordinal))
                 .ToList();
 
@@ -116,6 +127,8 @@ namespace RackCad.UI.Tests
             { "otro alias de G15", Baseline().Where(pair => pair != Pair(G15Help)).Append("RACKPROYECTAR/RPYX").ToArray() },
             { "una segunda familia de proyeccion", Baseline().Append("RACKPROYECTARVISTAS/RPV").ToArray() },
             { "entrada de G15 duplicada", Baseline().Append(Pair(G15Help)).ToArray() },
+            { "falta una entrada de la parte ut", Baseline().Where(pair => pair != Pair(T4UtHelp[0])).ToArray() },
+            { "un atajo inventado para RACKMENU", Baseline().Where(pair => pair != Pair(T4UtHelp[0])).Append("RACKMENU/RM").ToArray() },
         };
 
         [Theory]
@@ -129,7 +142,8 @@ namespace RackCad.UI.Tests
 
         private static string Pair((string Command, string Alias) entry) => entry.Command + "/" + entry.Alias;
 
-        private static IEnumerable<string> Baseline() => OpeningHelp.Append(G7Help).Append(G15Help).Select(Pair);
+        // Cuarta tanda: RACKVARIABLES/RVA lo añadieron ut (T4UtHelp) y va (VA-10); al integrar queda una sola vez, en T4UtHelp.
+        private static IEnumerable<string> Baseline() => OpeningHelp.Append(G7Help).Append(G15Help).Concat(T4UtHelp).Select(Pair);
 
         /// <summary>Vacia si la ayuda tiene exactamente los pares de apertura mas `RACKPROPIEDADES/RPR`, cada uno una vez.</summary>
         private static IReadOnlyList<string> HelpViolations(IEnumerable<(string Command, string Alias)> entries)

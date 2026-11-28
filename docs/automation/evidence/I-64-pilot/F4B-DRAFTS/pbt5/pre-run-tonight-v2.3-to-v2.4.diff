@@ -1,0 +1,48 @@
+--- pre-run-tonight-v2.3.md
++++ pre-run-tonight-v2.4.md
+@@ -1 +1 @@
+-# I-64 F4B PB-T5 — La corrida previa a la emisión de esta noche, bajo la orden directa del Owner (v2.3)
++# I-64 F4B PB-T5 — La corrida previa a la emisión de esta noche, bajo la orden directa del Owner (v2.4)
+@@ -3,0 +4,6 @@
++
++## Cambios respecto de la v2.3
++
++De la «Recomprobación 4» de [IR1]:
++- **M-34:** en los bloques 3, 8 y 10, cada condición de parada que se imprimía como texto pasa a un `throw "STOP …"`. Lo informativo se sigue imprimiendo, y el `throw` va al final, con todas las condiciones que fallen.
++- **M-35:** el bloque 5 para si la ruta de `acad.exe` es una ruta corta 8.3 (lleva `~`) o no es la ruta completa canónica.
+@@ -189,0 +196 @@
++if ($hits.Count) { throw ("STOP: hay entradas de RackCad en Applications, Loaded o AssemblyMap: " + ($hits -join '; ')) }
+@@ -433,0 +441,2 @@
++if ($acad -match '~') { throw "STOP: la ruta de acad.exe es una ruta corta 8.3" }
++if (-not [IO.Path]::IsPathFullyQualified($acad) -or [IO.Path]::GetFullPath($acad) -cne $acad) { throw "STOP: la ruta de acad.exe no es la ruta completa canonica" }
+@@ -598 +607 @@
+-   [pscustomobject]@{
++   $chk = [pscustomobject]@{
+@@ -603,0 +613,7 @@
++   $chk
++   $fail = @()
++   if ($chk.dwlAnteriorExiste) { $fail += "la copia anterior $prev sigue abierta (.dwl)" }
++   if (-not $chk.anteriorIgualD1) { $fail += "la copia anterior $prev ya no es igual a D1" }
++   if (-not $chk.dwlSiguienteExiste) { $fail += "la copia siguiente $next no esta abierta (.dwl)" }
++   if ($chk.titulo -notmatch [regex]::Escape("$next.dwg")) { $fail += "el titulo no nombra $next.dwg" }
++   if ($fail.Count) { throw ("STOP: " + ($fail -join '; ')) }
+@@ -672,2 +688,5 @@
+-"Original igual: " + ((Get-FileHash -LiteralPath $o -Algorithm SHA256).Hash -eq $h0)
+-"Respaldo igual: " + ((Get-FileHash -LiteralPath $bakFile -Algorithm SHA256).Hash -eq $h0)
++$fail = @()
++$origEq = (Get-FileHash -LiteralPath $o -Algorithm SHA256).Hash -eq $h0
++"Original igual: $origEq"; if (-not $origEq) { $fail += "el original cambio (PBT5-C02)" }
++$bakEq = (Get-FileHash -LiteralPath $bakFile -Algorithm SHA256).Hash -eq $h0
++"Respaldo igual: $bakEq"; if (-not $bakEq) { $fail += "el respaldo cambio" }
+@@ -675,0 +695 @@
++  if (-not (Test-Path -LiteralPath $f -PathType Leaf)) { $fail += "falta $($c.copia)"; continue }
+@@ -677,0 +698 @@
++  if ($eq -is [bool] -and -not $eq) { $fail += "$($c.copia) ya no es igual a D1" }
+@@ -682,2 +703,5 @@
+-"Worktree limpio: " + (-not $st)
+-"HEAD = Candidato: " + ((& git -C $wt rev-parse HEAD) -eq $cand)
++$clean = -not $st
++"Worktree limpio: $clean"; if (-not $clean) { $fail += "el worktree no esta limpio" }
++$headOk = (& git -C $wt rev-parse HEAD) -eq $cand
++"HEAD = Candidato: $headOk"; if (-not $headOk) { $fail += "HEAD no es el Candidato" }
++if ($fail.Count) { throw ("STOP: " + ($fail -join '; ')) }

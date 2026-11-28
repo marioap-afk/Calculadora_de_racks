@@ -1,0 +1,12 @@
+| Clase | RED (P / F / S) | GREEN (P / F / S) |
+|---|---|---|
+| `RackCad.Tests.TmpPbt4cEditAllProbe` | — | 0 / 1 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt01` | 0 / 1 / 0 | 1 / 0 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt07` | 1 / 0 / 0 | 1 / 0 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt08` | 0 / 1 / 0 | 1 / 0 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt13` | 0 / 1 / 0 | 1 / 0 / 0 |
+| `RackCad.Tests.TmpPbt4cTextCt15` | 1 / 0 / 0 | 1 / 0 / 0 |
+| `RackCad.UI.Tests.TmpPbt4cCloseProbe` | — | 0 / 1 / 0 |
+| **Total (7 clases)** | **2 / 3 / 0** | **5 / 2 / 0** |
+
+TRX leidas (4): RED en-red.trx de055654cadd; GREEN en-green.trx d8ba0a0db1f1; GREEN sonda-core.trx 236a6a8ae4d3; GREEN sonda-ui.trx 9be9f7ef93f7

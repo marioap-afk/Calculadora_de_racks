@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T1-DRAFT-CORE",
+  "RunId": "R20261111T181415Z-c4f7",
+  "DelegationRunId": "R20261110T224523Z-d088",
+  "WorkRunId": "R20261111T132115Z-6453",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, TerminalEvent=resultado final del subagente; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "La entrega contiene TaskId, RunId, DelegationRunId, Attempt y timestamps coherentes, pero no coincide con la reemision autorizada: SHA-256 real de worker-handoff.json=E8A87DDEC138A51496AEBE1E078B0AEFDCC2A591A683294D8AC191F2ED7CB9A7; reissue-record.json declara ReissuedSha256=29679148D5D55DF7DB911D73FA26A02DD168B62ADE03B6FCDAA4A77D459BEF86. El relay OutputSha256 coincide con el archivo recibido, no con el hash reemitido. La entrega recibida declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leidos AUTOMATION_PLAN.md, AGENTS.md y agent-execution/README.md desde MainSha 812baf87, y la excepcion del Owner desde AuthorityRevision c31854f8. merge-base --is-ancestor AuthorityRevision BaseSha devolvio 0. git diff --name-only AuthorityRevision BaseSha enumera solo docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt3.json y docs/automation/state/I-64.yml; las tres rutas corresponden a UNIT_DOC en Authorities, sin EXTERNAL ni UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json y gate-contract.json coinciden en TaskId, AuthorityRevision, MainSha, Authorities, AllowedWriteScope y RequiredTests; el contrato requiere tests/RackCad.Tests/RackCad.Tests.csproj, FullyQualifiedName~RackCad.Tests.Workspace, MinSelected=1273, ExpectRed=true. relay-record-planning.json registra A1-A8 en pass."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan 61d83788e7fa8decd861626b7e3ca89c8f23b9b4; session-remote-facts.json da esa misma punta remota. La entrega recibida declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; merge-base --is-ancestor de ese SHA a HEAD falla porque no existe como commit. git merge-base --is-ancestor BaseSha ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 y RedSha ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 devuelven 0; CurrentSha recibido no permite validar esa cadena. Branch y worktree coinciden con lo esperado. El diff ce73ceb7..61d83788 contiene solo rutas docs/; no permite sustituir el CurrentSha incorrecto de la entrega."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json registra Entry.HeadSha=Entry.LsRemoteSha=ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 y OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. El handoff recibido declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, por lo que el hecho remoto del relevo no coincide con el SHA declarado en la entrega. session-remote-facts.json confirma la punta de custodia 61d83788; MainSha no avanzo."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha no puede resolverse con el CurrentSha recibido (deadbeefdeadbeefdeadbeefdeadbeefdeadbeef). Para el SHA ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 referido por el registro de reemision, el diff real enumera unicamente tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs, que coincide con AllowedWriteScope; ese dato no valida el SHA distinto del handoff."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no devuelve rutas. git check-ignore -v sobre artifacts/orchestration/I-64/F4-T1-DRAFT-CORE-nc1/3/R20261111T181415Z-c4f7/inputs/worker-handoff.json devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts.CurrentRun indica run 43029959059, event=push, ref=refs/heads/architecture/workspace-persistente-rackcad, HeadSha=ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649, status=completed y los cuatro jobs requeridos en success; core.trx suma 16838 pasadas y 0 fallidas. No coincide con el CurrentSha deadbeef de la entrega recibida. RedRun 43029071176 es push del RedSha, completado en failure, con Tests (Domain + Application)=failure; core.trx suma 16825 pasadas y 13 fallidas."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "fail",
+      "Evidence": "Los TRX del CurrentSha disponible (ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649) registran 16838/16838 en verde y, con el filtro Workspace, 1300 seleccionadas; el TRX del RedSha registra 16838 seleccionadas, 13 fallidas y las 13 estan en el bloque N-1, sin fallos fuera del bloque. n1_hashes.py BaseSha RedSha CurrentSha devuelve Pass=true: H1Red=H1Current=96A696F1D4AFD2C652EC81864CFC3C64399EB1181C34B57ACC81859508942E62, H2Red=H2Current=9BA25558762E4650CB400AB43F8F7DD67045F73F962F66F9FEB4E9794CAADF67, H3RedWithoutBlock=H3Base=843DD9F13FD31450371F88F77FD195689A8813CDFC131E81B4D51FA74B4E88C5. git diff --name-only RedSha CurrentSha solo enumera WorkspaceDraftBoundaryTests.cs. El TRX verde no se puede atribuir al CurrentSha declarado por el handoff recibido, asi que no satisface el punto d del oraculo."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 muestra los commits RED 5a27ac8b y GREEN ce73ceb7; ambos contienen Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al trailer declarado y al modelo efectivo del registro."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 con effort high y Enforcement=required. relay-record-work.json registra ModelRequested=sonnet (alias de lanzamiento subagent), ModelEffective=claude-sonnet-5-5, EffortEffective=high; Worker.ModelRequested y EffortRequested concuerdan."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Revision de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction contra la lista de AUTOMATION_PLAN 16.10: no se encontro ningun termino prohibido."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones de permisos, 1 resultado de herramienta con error sin pendiente y ningun aviso de limite. Notes de procesos indica 0 participantes y 0 no atribuibles persistentes en salida y entrada."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "La entrega recibida no es el archivo de entrega reemitido segun reissue-record.json: su SHA-256 es E8A87DDEC138A51496AEBE1E078B0AEFDCC2A591A683294D8AC191F2ED7CB9A7, en vez del SHA-256 autorizado 29679148D5D55DF7DB911D73FA26A02DD168B62ADE03B6FCDAA4A77D459BEF86.",
+    "El handoff recibido declara un CurrentSha inexistente, mientras que el registro de reemision, los hechos del relevo y los TRX identifican ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649; la evidencia es contradictoria.",
+    "La cadena RED/GREEN del SHA ce73ceb7 satisface los hashes estrechos y los conteos TRX informados, pero no puede asociarse al CurrentSha que contiene el handoff recibido."
+  ],
+  "RecommendedNextAction": "Detener esta verificacion y devolver al Coordinator la discrepancia entre el SHA-256 del handoff recibido, el registro de reemision y el CurrentSha declarado."
+}

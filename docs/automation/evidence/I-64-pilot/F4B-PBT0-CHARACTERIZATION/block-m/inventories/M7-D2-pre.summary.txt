@@ -1,0 +1,9 @@
+CLAYER 0
+Din�mico bloque 1 - lateral 1 id=acd45cf9 Name=Dinámico bloque 1 view=lateral sec=0 fronts=8 pbf=8 mods=15 comp=False annot=1 dim=None ents=134 len=904845 sha=32a3f291ca16 refs=0 
+Din�mico bloque 1 - planta   id=acd45cf9 Name=Dinámico bloque 1 view=planta sec=-1 fronts=8 pbf=8 mods=15 comp=False annot=1 dim=None ents=611 len=904845 sha=3acdddd34547 refs=0 
+Push Back - lateral 1 - 1 frentes_1 id=f6fa1734 Name= view=lateral sec=0 fronts=8 pbf=8 mods=15 comp=True annot=1 dim=None ents=124 len=144671 sha=de411be3b206 refs=0 
+Push Back planta - 1 frentes id=f6fa1734 Name= view=planta sec=-1 fronts=8 pbf=8 mods=15 comp=True annot=1 dim=None ents=613 len=144671 sha=2d04e7868af6 refs=0 
+Push Back planta - 1 frentes_1 id=f6fa1734 Name= view=planta sec=-1 fronts=8 pbf=8 mods=15 comp=True annot=1 dim=None ents=613 len=144671 sha=2d04e7868af6 refs=0 
+Rack - copia - lateral 1     id=a1d6edf9 Name=Rack - copia view=lateral sec=0 fronts=8 pbf=8 mods=15 comp=False annot=1 dim=None ents=105 len=113488 sha=9972618b5e1e refs=0 
+Rack - copia - lateral 1_1   id=b27625f9 Name=Rack - copia view=lateral sec=0 fronts=1 pbf=1 mods=15 comp=False annot=1 dim=None ents=117 len=872258 sha=30d854a80c5e refs=0 
+Rack - copia - planta        id=b27625f9 Name=Rack - copia view=planta sec=-1 fronts=1 pbf=1 mods=15 comp=False annot=1 dim=None ents=121 len=872258 sha=703420d507eb refs=0 

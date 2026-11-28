@@ -1,0 +1,17 @@
+{
+  "ExactCopy.Authorities": false,
+  "ExactCopy.AllowedWriteScope": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": false,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": false,
+  "ExactCopy.StopConditions": false,
+  "ExactCopy.Objective": false,
+  "CorrectionOfOk": true,
+  "TaskClass": "Documentaci\tn",
+  "RoutingRow": null,
+  "TaskClassNotController": true,
+  "PromptProfileMatchesRow": false,
+  "NulEscapeCount": 59,
+  "NulCharCount": 0
+}

@@ -1,0 +1,51 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261112T203204Z-c514",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha listed 12 paths. Eleven are in delegation AllowedWriteScope; src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs is absent from that exact whitelist. It is not in the 77 ForbiddenWriteScope entries, but the exact whitelist is primary. Contract allows 12 paths; delegation allows 11."
+  },
+  "OutputSha256": "61DF07A229DDB98E22CD58D1F8956C167934F59F1C509F6C6A0FBDA4346A731E",
+  "ManualFreeText1610": []
+}

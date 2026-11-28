@@ -1,5 +1,4 @@
 using Autodesk.AutoCAD.EditorInput;
-using RackCad.Application.Catalogs;
 using RackCad.Application.StructuralSections;
 
 namespace RackCad.Plugin
@@ -16,6 +15,11 @@ namespace RackCad.Plugin
     /// It was EXTRACTED from the structural-section flow rather than copied into the second caller: two loaders
     /// would agree today and drift at the first correction, and the guard that pinned "exactly one place owns the
     /// load" would have had to be weakened instead of re-aimed.
+    ///
+    /// T7 per (I-64, séptima tanda; review I-1): a third surface, the page «Perfil estructural» of the RackCad window, needs the same load
+    /// and the same failure, and it does not live in the Plugin. So the read and the policy went one layer down, to
+    /// <see cref="StructuralSectionCatalogSource"/> in Application; this class stays the Plugin's door to it and the place that writes the
+    /// reason on the command line.
     /// </summary>
     internal static class StructuralSectionCatalogAccess
     {
@@ -27,25 +31,15 @@ namespace RackCad.Plugin
         /// </summary>
         internal static bool TryLoad(Editor editor, out StructuralSectionCatalog catalogue)
         {
-            catalogue = null;
+            // T7 per (review I-1): the read, the two failures of the catalogue and their words moved to the ONE source of Application,
+            // StructuralSectionCatalogSource, which the RackCad window uses too. The words written here are the same as before, and any other
+            // exception still propagates to the command that reports it.
+            var load = StructuralSectionCatalogSource.TryLoad();
+            catalogue = load.Catalog;
+            if (load.Loaded) return true;
 
-            try
-            {
-                catalogue = new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
-                return true;
-            }
-            catch (StructuralSectionCatalogException ex)
-            {
-                editor?.WriteMessage("\nRackCad: el catalogo de secciones estructurales no es valido, " +
-                                     "asi que no se dibujara nada. " + ex.Message);
-                return false;
-            }
-            catch (System.IO.IOException ex)
-            {
-                editor?.WriteMessage("\nRackCad: no se pudo leer el catalogo de secciones estructurales, " +
-                                     "asi que no se dibujara nada. " + ex.Message);
-                return false;
-            }
+            editor?.WriteMessage("\n" + load.CommandLineText);
+            return false;
         }
     }
 }

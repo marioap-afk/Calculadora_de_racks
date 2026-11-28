@@ -1,0 +1,73 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "I-64-pilot/F2-T1-NAVIGATION-CORE-testfilter-bridge",
+  "SourceRoot": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-testfilter-bridge",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 6,
+    "EXCLUDED": 3
+  },
+  "Files": [
+    {
+      "Path": "R20261109T162731Z-7588/EXECUTED",
+      "Bytes": 34,
+      "Sha256": "2eeeedbfc329b982fcbebbb7ef9636c3700a57529c27815cc43c25fcaf14d866",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "da0602727b757ecd053ef91a7945992e6cd5fac65d63f7a2b0ab99355d6dd948",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "R20261109T162731Z-7588/bridge-output.json",
+      "Bytes": 9054,
+      "Sha256": "1d003f8dd101fdac4ac9664e30e6ad6d2007bef848dcd87a9297aabe644447ce",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "R20261109T162731Z-7588/bridge-run.json",
+      "Bytes": 9901,
+      "Sha256": "2571185a90534d6760592d29af6cded4e42dabdd3baeffecff0930b4a2b3df77",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "R20261109T162731Z-7588/bridge-stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a I-64-pilot/F1-SMOKE-1/R20261107T171052Z-6862/process/watch-stop.flag, ya custodiado"
+    },
+    {
+      "Path": "R20261109T162731Z-7588/config-pre.json",
+      "Bytes": 3434,
+      "Sha256": "36098ea1b90e485d5c4f1eff7fb1037c30fd2f7e5454ea0460c1e0f3624757ed",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "R20261109T162731Z-7588/expected-chain-red-files.json",
+      "Bytes": 432,
+      "Sha256": "05d35abb1a11443300dc1473a0991bfa7e7db8d2ef95bfb736878f34bb3498ae",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "R20261109T162731Z-7588/processes-pre.json",
+      "Bytes": 1995,
+      "Sha256": "accda82f3c165f6d9df059ee0af5a325682fe13516eda74e6510db5b9dd9258f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "b01fc8d5bde8736bff8df3e78c17fe2e677c0c15247ec524502b4d2895568c9a",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "R20261109T162731Z-7588/term-set.md",
+      "Bytes": 56231,
+      "Sha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia byte a byte del blob 07b97bd3eef3a36bae3180bd7eb24b176b8049f0 (a140eb3a:docs/AUTOMATION_PLAN.md), el conjunto de terminos 16.10 vinculado por A-11 Sec.6"
+    },
+    {
+      "Path": "R20261109T162731Z-7588/verifier/verify_testfilter_bridge.py",
+      "Bytes": 53354,
+      "Sha256": "91a18eb05b15a52782283ca5f79fde8d2de7aa169170ff2e9017ac1143cfc787",
+      "Disposition": "EXCLUDED",
+      "Reason": "copia byte a byte del blob versionado f9780f2f30c067243c93b6ab7175cc4b3179ca39 (docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py), el verificador ejecutado"
+    }
+  ]
+}

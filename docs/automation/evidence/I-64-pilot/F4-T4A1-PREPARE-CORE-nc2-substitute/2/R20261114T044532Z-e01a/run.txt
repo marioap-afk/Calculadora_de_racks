@@ -1,0 +1,109 @@
+{
+ "SelfTestPass": true,
+ "Deterministic": true,
+ "SelfTest": [
+  [
+   "A",
+   "PASS",
+   true
+  ],
+  [
+   "B",
+   "FAIL",
+   true
+  ],
+  [
+   "C",
+   "FAIL",
+   true
+  ],
+  [
+   "D",
+   "FAIL",
+   true
+  ],
+  [
+   "E",
+   "FAIL",
+   true
+  ],
+  [
+   "F",
+   "FAIL",
+   true
+  ],
+  [
+   "G",
+   "FAIL",
+   true
+  ],
+  [
+   "H",
+   "FAIL",
+   true
+  ],
+  [
+   "I",
+   "FAIL",
+   true
+  ],
+  [
+   "J",
+   "FAIL",
+   true
+  ],
+  [
+   "K",
+   "FAIL",
+   true
+  ],
+  [
+   "L",
+   "FAIL",
+   true
+  ],
+  [
+   "M",
+   "FAIL",
+   true
+  ],
+  [
+   "N",
+   "PASS",
+   true
+  ]
+ ],
+ "SubstituteResult": "PASS",
+ "Properties": {
+  "1_AcceptedRealDelegationMatchesContract": true,
+  "2_RealChangedPathInsideAcceptedScope": true,
+  "3_Nc2RemovesExactlyThatPath": true,
+  "4_NoOtherDelegationFieldChanges": true,
+  "5_DerivedHashesConsistent": true,
+  "6_ChangedPathNotInMutatedScope": true,
+  "7_ScopeMustFail": true,
+  "8_ContractFailsOnlyByExactWhitelist": true,
+  "9_ControllerReportedScopeFail": true,
+  "10_NoAlternativeOneFieldMutation": true
+ },
+ "Measured": {
+  "ChangedPath": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+  "DelegationFieldsChanged": [
+   "AllowedWriteScope"
+  ],
+  "ChangedInputs": [
+   "delegation.json",
+   "relay-record-planning.json"
+  ],
+  "ScopeOnReal": "pass",
+  "ScopeOnMutated": "fail",
+  "PlainA3A5OnMutated": {
+   "A3": true,
+   "A4": true,
+   "A5": true
+  },
+  "ControllerScope": "fail",
+  "ControllerContract": "fail",
+  "AlternativeCandidatesExcludingPath": 3145728
+ }
+}

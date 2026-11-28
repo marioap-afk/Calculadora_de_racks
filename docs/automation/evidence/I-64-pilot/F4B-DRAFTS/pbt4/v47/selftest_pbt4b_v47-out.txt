@@ -1,0 +1,8 @@
+1. Skip: 477; con el motivo a mano: 70
+2. modo de medida: 20 copias, conjunto f72b1f2f7b9e7ce2fced8caef466ecec4d87016ec07333fb1ad91c1301e4fb58; revision: 102 entradas
+3. con la particion de prueba (partition-check-r4i.tsv, sha256 2e67b4c4a6c4a531c8fd6848f882ba43179f26599c39b0933b16bd9f0e5dc2f0): 20 copias
+   WorkspaceLifecycleHostFull.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively: red=3 green=7 filas-del-original=True
+   WorkspacePilotEditGuardFull.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance: red=1 green=3 filas-del-original=True
+   WorkspacePilotPrepareFull.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing: MemberData Red/Green=True cada-clase-solo-su-miembro=True; el original no los tiene=True
+   WorkspacePilotPrepareFull.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading: MemberData Red/Green=True cada-clase-solo-su-miembro=True; el original no los tiene=True
+4. los miembros nuevos enumeran StatusNames() como string (foreach (string name in ...)), sin row[0]: True

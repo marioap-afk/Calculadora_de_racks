@@ -1,0 +1,56 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261110T143703Z-1839",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "worker-handoff.json declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return a92039bbbdc85c38c380a8a319e577d625d3910c. BaseSha is an ancestor of HEAD and RedSha is an ancestor of HEAD, but declared CurrentSha is not the checked out commit."
+  },
+  "OutputSha256": "BB0A22D777AC9A0D7362051403E781DB0E69CE84789CACEE8B1634DE8C399F6A",
+  "ManualFreeText1610": []
+}

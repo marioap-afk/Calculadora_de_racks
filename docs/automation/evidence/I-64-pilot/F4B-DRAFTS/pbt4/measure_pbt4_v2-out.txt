@@ -1,0 +1,1248 @@
+# measure_pbt4_v2: salida (rev 7dfc7c21)
+
+### B01-a resultado de la lectura — src/RackCad.Application/Workspace/WorkspaceEditIntent.cs:1-120
+    1 #nullable enable
+    2 using System;
+    3 using System.Collections.Generic;
+    4 using System.Linq;
+    5 using RackCad.Application.Systems.PushBack.Pilot;
+    7 namespace RackCad.Application.Workspace
+    8 {
+    9     /// <summary>
+   10     /// I-64 F4-T2B2A (D-T2B2-03, D-T2B2-06) — what the preview of a navigation showed: the key of the definition and the raw
+   11     /// text of its envelope. The host hands it to the one read of the edit intention, which says whether it still holds (INV-27).
+   12     /// </summary>
+   13     public sealed record EditIntentWitness(string Key, string? Text);
+   15     /// <summary>
+   16     /// I-64 F4-T2B2A (D-T2B2-06) — one request of the user to open or to check a pilot edit: the session that asks, the rack, the
+   17     /// reference the user came from (or none) and the witness of the preview (or none). Every request carries its session (INV-22).
+   18     /// </summary>
+   19     public sealed record EditIntentRequest(SessionId Session, string RackId, long? ChosenReference, EditIntentWitness? Witness);
+   21     /// <summary>How the one read of the edit intention ended, as the host adapter reports it (D-T2B2-03).</summary>
+   22     public enum EditIntentReadStatus
+   23     {
+   24         Read,
+   25         NoActiveDocument,
+   26         Busy,
+   27         Rejected,
+   28         Failed,
+   29     }
+   31     /// <summary>
+   32     /// I-64 F4-T2B2A (D-T2B2-03) — the value the host adapter answers with. <see cref="PilotRead"/> is set if and only if the
+   33     /// status is <see cref="EditIntentReadStatus.Read"/>; every other status carries only its reason.
+   34     /// </summary>
+   35     public readonly struct EditIntentReadResult
+   36     {
+   37         private EditIntentReadResult(EditIntentReadStatus status, string? reason, PushBackPilotIntentResult? pilotRead)
+   38         {
+   39             Status = status;
+   40             Reason = reason;
+   41             PilotRead = pilotRead;
+   42         }
+   44         public EditIntentReadStatus Status { get; }
+   46         public string? Reason { get; }
+   48         /// <summary>The read of the pilot; null unless the status is Read.</summary>
+   49         public PushBackPilotIntentResult? PilotRead { get; }
+   51         public static EditIntentReadResult FromPilot(PushBackPilotIntentResult pilotRead)
+   52         {
+   53             if (pilotRead == null) throw new ArgumentNullException(nameof(pilotRead));
+   54             return new EditIntentReadResult(EditIntentReadStatus.Read, null, pilotRead);
+   55         }
+   57         public static EditIntentReadResult NoActiveDocument(string reason) => new(EditIntentReadStatus.NoActiveDocument, reason, null);
+   59         public static EditIntentReadResult Busy(string reason) => new(EditIntentReadStatus.Busy, reason, null);
+   61         public static EditIntentReadResult Rejected(string reason) => new(EditIntentReadStatus.Rejected, reason, null);
+   63         public static EditIntentReadResult Failed(string reason) => new(EditIntentReadStatus.Failed, reason, null);
+   64     }
+   66     /// <summary>
+   67     /// How the preview witness compares with the read of the intention (INV-27), as the host reports it. <see cref="NotEvaluated"/>
+   68     /// is for every outcome that has no read behind it: it is never "unchanged".
+   69     /// </summary>
+   70     public enum EditWitnessStatus
+   71     {
+   72         NotEvaluated,
+   73         NotSupplied,
+   74         Unchanged,
+   75         Changed,
+   76     }
+   78     public enum EditIntentStatus
+   79     {
+   80         /// <summary>No reader of the edit intention was assigned: nothing was read.</summary>
+   81         Unavailable,
+   83         /// <summary>
+   84         /// The intention waits: no active document, a RackCad modal, a command or no rest, or (through the edit port of the panel) a
+   85         /// read of the pilot already in progress or a notice of the panel being delivered. In all those cases nothing was read. In the
+   86         /// reload it can also arrive AFTER the read: the draft was being applied or was no longer registered when the read came back,
+   87         /// and then it was not replaced.
+   88         /// </summary>
+   89         Waiting,
+   91         /// <summary>
+   92         /// The request is refused and no draft is created. Three ways lead here. First, INV-22: the session of the request is not the
+   93         /// one of the active document, which is decided before anything about the drafts and before any read of the drawing. Second,
+   94         /// the reader answers Rejected, which happens after the gate and after the read was attempted. Third, the SessionRetired answer
+   95         /// of step 8 (a session that was retired when the draft was begun), also after the gate and the read. The last two are
+   96         /// reached AFTER the read, so a Rejected outcome does not by itself mean that nothing was read.
+   97         /// </summary>
+   98         Rejected,
+  100         /// <summary>There is already a draft for (session, rack): nothing was read.</summary>
+  101         AlreadyOpen,
+  103         /// <summary>
+  104         /// The read was not admitted and the outcome carries the diagnostic. In the intention no draft exists; in the reload the draft
+  105         /// that was there is kept as it was.
+  106         /// </summary>
+  107         NotAdmitted,
+  109         /// <summary>The draft was born from the one read.</summary>
+  110         Admitted,
+  112         /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
+  113         Failed,
+  115         // The three states below belong to the reload (I-64 F4-T2B2B, D-T2B2-12). They come AFTER the seven of the intention, which
+  116         // stay as an ordered prefix, and the default value of this enum is still Unavailable.
+  118         /// <summary>The reload found no draft for (session, rack): nothing was read.</summary>
+  119         NotFound,
+
+### B01-b eleccion del origen — src/RackCad.Application/Workspace/WorkspaceEditIntent.cs:670-700
+  670             new(EditDiscardStatus.Busy, reason, Array.Empty<string>(), Array.Empty<string>());
+  671     }
+  673     /// <summary>The pure decisions of the edit intention that do not depend on the host (I-64 F4-T2B2A).</summary>
+  674     public static class WorkspaceEditIntent
+  675     {
+  676         /// <summary>
+  677         /// The definition of origin of the read (D-11, D-T2B2-04), from the targets of the SAME operation:
+  678         /// the definition of the chosen reference when it is still among the targets; 0 when it is not (the read then says that
+  679         /// the origin is no longer there, and it does not say that it belongs to another rack); without a chosen reference, the
+  680         /// definition of the first target of the deterministic order, or 0 when there are no targets.
+  681         /// </summary>
+  682         public static long ChooseOriginDefinition(NavigationTargetSet set, long? chosenReference)
+  683         {
+  684             if (set == null) throw new ArgumentNullException(nameof(set));
+  686             if (!chosenReference.HasValue) return set.Primary?.DefinitionHandle ?? 0;
+  688             foreach (var target in set.Targets)
+  689                 if (target.ReferenceHandle == chosenReference.Value) return target.DefinitionHandle;
+  691             return 0;
+  692         }
+  694         /// <summary>Translates the status of the witness of the pilot into the one of the host: the same three, plus the one for no read.</summary>
+  695         public static EditWitnessStatus WitnessStatusOf(PushBackPilotPreviewWitnessStatus status)
+  696         {
+  697             switch (status)
+  698             {
+  699                 case PushBackPilotPreviewWitnessStatus.Unchanged: return EditWitnessStatus.Unchanged;
+  700                 case PushBackPilotPreviewWitnessStatus.Changed: return EditWitnessStatus.Changed;
+
+### B01-c el lector (interfaz) — src/RackCad.Application/Workspace/IWorkspaceEditIntentReader.cs:1-40
+    1 #nullable enable
+    2 namespace RackCad.Application.Workspace
+    3 {
+    4     /// <summary>
+    5     /// I-64 F4-T2B2A (D-T2B2-03) — what the host core needs from the host to read the edit intention: ONE logical read of the
+    6     /// drawing, started by the user, whose answer is a value. The Plugin implements it over the navigation host; tests implement
+    7     /// it with a double. It is assigned to the host core by <see cref="WorkspaceHostCore.SetEditIntentReader"/>, never through a
+    8     /// constructor, and the core never calls it from the drain or from the idle pass.
+    9     ///
+   10     /// The implementation, in this order: the active document, no command and the editor at rest, the catalog outside the lock,
+   11     /// the document lock, the authorization of the session (INV-22), the revalidation of the targets with the choice of the origin,
+   12     /// and the one read. It writes nothing.
+   13     /// </summary>
+   14     public interface IWorkspaceEditIntentReader
+   15     {
+   16         /// <param name="session">The session that asks; it is authorized against the active document.</param>
+   17         /// <param name="rackId">The rack to read.</param>
+   18         /// <param name="chosenReference">The handle of the reference the user came from, or null for the first target of the rack.</param>
+   19         /// <param name="witness">What the preview showed, or null when there was no preview.</param>
+   20         EditIntentReadResult ReadIntent(SessionId session, string rackId, long? chosenReference, EditIntentWitness? witness);
+   21     }
+   22 }
+
+### B01-d anfitrion de navegacion: la lectura — src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs:195-260
+  195         /// </summary>
+  196         private sealed class PilotIntentReader : IWorkspaceEditIntentReader
+  197         {
+  198             private readonly NavigationTargets _targets;
+  199             private readonly Func<WorkspaceRequest, long, RequestDecision> _authorize;
+  201             public PilotIntentReader(NavigationTargets targets, Func<WorkspaceRequest, long, RequestDecision> authorize)
+  202             {
+  203                 _targets = targets;
+  204                 _authorize = authorize;
+  205             }
+  207             public EditIntentReadResult ReadIntent(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness)
+  208             {
+  209                 try
+  210                 {
+  211                     return ReadOnActiveDocument(session, rackId, chosenReference, witness);
+  212                 }
+  213                 catch (System.Exception ex)
+  214                 {
+  215                     LogFault("WorkspaceNavigationHost.ReadEditIntent", ex);
+  216                     return EditIntentReadResult.Failed(ex.Message);
+  217                 }
+  218             }
+  220             private EditIntentReadResult ReadOnActiveDocument(SessionId session, string rackId, long? chosenReference, EditIntentWitness witness)
+  221             {
+  222                 var document = AcApplication.DocumentManager.MdiActiveDocument;
+  223                 if (document == null)
+  224                     return EditIntentReadResult.NoActiveDocument("No hay documento activo.");
+  225                 if (!string.IsNullOrEmpty(document.CommandInProgress) || !document.Editor.IsQuiescent)
+  226                     return EditIntentReadResult.Busy("Hay un comando en curso.");
+  228                 var catalog = RackPilotIntentAdapter.LoadCatalog();
+  229                 if (!catalog.Succeeded)
+  230                     return EditIntentReadResult.Failed(catalog.FailureReason);
+  232                 using (document.LockDocument())
+  233                 {
+  234                     var decision = _authorize(new WorkspaceRequest(session), document.UnmanagedObject.ToInt64());
+  235                     if (decision != RequestDecision.Accepted)
+  236                         return EditIntentReadResult.Rejected("La petición no es del documento activo.");
+  238                     var expected = chosenReference.HasValue ? new[] { chosenReference.Value } : Array.Empty<long>();
+  239                     var revalidation = _targets.Revalidate(session, rackId, expected);
+  240                     var origin = WorkspaceEditIntent.ChooseOriginDefinition(revalidation.Fresh, chosenReference);
+  242                     var read = RackPilotIntentAdapter.Read(
+  243                         document,
+  244                         rackId,
+  245                         origin,
+  246                         witness?.Key,
+  247                         witness?.Text,
+  248                         catalog.Catalog);
+  249                     return read.Succeeded
+  250                         ? EditIntentReadResult.FromPilot(read.Pilot)
+  251                         : EditIntentReadResult.Failed(read.FailureReason);
+  252                 }
+  253             }
+  254         }
+  255     }
+  256 }
+
+### B01-e adaptador de la intencion — src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs:1-160
+    1 #nullable enable
+    2 using System.Diagnostics;
+    3 using Autodesk.AutoCAD.ApplicationServices;
+    4 using Autodesk.AutoCAD.DatabaseServices;
+    5 using Autodesk.AutoCAD.Runtime;
+    6 using RackCad.Application.Catalogs;
+    7 using RackCad.Application.Systems.PushBack.Pilot;
+    8 using RackCad.Plugin.Drawing;
+    9 using RackCad.Plugin.Systems.Shared;
+   11 namespace RackCad.Plugin.Views
+   12 {
+   13     /// <summary>The catalog of the pilot, or why it could not be loaded. A typed failure, never an exception.</summary>
+   14     internal sealed class RackPilotCatalogResult
+   15     {
+   16         internal RackPilotCatalogResult(RackCatalog? catalog, string? failureReason)
+   17         {
+   18             Catalog = catalog;
+   19             FailureReason = failureReason ?? string.Empty;
+   20         }
+   22         internal bool Succeeded => Catalog != null;
+   24         internal RackCatalog? Catalog { get; }
+   26         internal string FailureReason { get; }
+   27     }
+   29     /// <summary>The read of the edit intention of the pilot, or why it could not be made. A typed failure, never an exception.</summary>
+   30     internal sealed class RackPilotIntentReadResult
+   31     {
+   32         internal RackPilotIntentReadResult(PushBackPilotIntentResult? pilot, string? failureReason)
+   33         {
+   34             Pilot = pilot;
+   35             FailureReason = failureReason ?? string.Empty;
+   36         }
+   38         internal bool Succeeded => Pilot != null;
+   40         internal PushBackPilotIntentResult? Pilot { get; }
+   42         internal string FailureReason { get; }
+   43     }
+   45     /// <summary>The light read of the preview witness (key and raw envelope text), or why it could not be made.</summary>
+   46     internal sealed class RackPilotWitnessResult
+   47     {
+   48         internal RackPilotWitnessResult(PushBackPilotPreviewWitness? witness, string? failureReason)
+   49         {
+   50             Witness = witness;
+   51             FailureReason = failureReason ?? string.Empty;
+   52         }
+   54         internal bool Succeeded => Witness != null;
+   56         internal PushBackPilotPreviewWitness? Witness { get; }
+   58         internal string FailureReason { get; }
+   59     }
+   61     /// <summary>
+   62     /// I-64 F4-T2B2A (D-T2B2-02, INV-14) — the adapter that reads the drawing for the edit intention of the bounded Push Back
+   63     /// pilot. It reads and writes nothing else: the one whole-drawing scan (with its raw envelope text) feeds the pure reader of the
+   64     /// pilot, and what comes back is a value. It keeps no document, no transaction and no database object in a field.
+   65     ///
+   66     /// <see cref="Read"/> runs INSIDE the lock that the operation of the host already holds; it takes no lock of its own.
+   67     /// <see cref="ReadPreviewWitness"/> is a light read with its own lock and its own short transaction, which is never committed.
+   68     /// </summary>
+   69     internal static class RackPilotIntentAdapter
+   70     {
+   71         private const string CompletenessEvidence = "RackSiblingScan/CaptureDrawing";
+   73         /// <summary>The catalog of the pilot. It is called OUTSIDE the lock of the operation; a failure is a typed value.</summary>
+   74         internal static RackPilotCatalogResult LoadCatalog()
+   75         {
+   76             try
+   77             {
+   78                 var catalog = LateralHeaderDrawService.LoadCatalog();
+   79                 return catalog == null
+   80                     ? new RackPilotCatalogResult(null, "El catálogo no está disponible.")
+   81                     : new RackPilotCatalogResult(catalog, null);
+   82             }
+   83             catch (System.Exception ex)
+   84             {
+   85                 return new RackPilotCatalogResult(null, "No se pudo cargar el catálogo: " + ex.Message);
+   86             }
+   87         }
+   89         /// <summary>
+   90         /// ONE read of the edit intention: one scan of the drawing and the pure read over it. The key of the origin is the handle
+   91         /// of its definition as the scan writes it, and the handle 0 gives the empty key (the reader then says that the origin is
+   92         /// missing). A witness with an empty key is a typed failure and no input is built.
+   93         /// </summary>
+   94         internal static RackPilotIntentReadResult Read(
+   95             Document document,
+   96             string rackId,
+   97             long originDefinitionHandle,
+   98             string? witnessKey,
+   99             string? witnessText,
+  100             RackCatalog catalog)
+  101         {
+  102             try
+  103             {
+  104                 AssertNoOpenTransaction(document, "before");
+  106                 var originKey = originDefinitionHandle <= 0 ? string.Empty : ToHandle(originDefinitionHandle).ToString();
+  108                 PushBackPilotPreviewWitness? witness = null;
+  109                 if (witnessKey != null)
+  110                 {
+  111                     if (string.IsNullOrWhiteSpace(witnessKey))
+  112                         return new RackPilotIntentReadResult(null, "El testigo de la vista previa no tiene clave.");
+  113                     witness = new PushBackPilotPreviewWitness(witnessKey, witnessText);
+  114                 }
+  116                 var scan = RackSiblingScan.CaptureDrawing(document);
+  117                 if (scan.RawEnvelopes == null)
+  118                     return new RackPilotIntentReadResult(null, "La exploración del dibujo no trajo las envolventes en bruto.");
+  120                 var input = new PushBackPilotIntentScan(rackId, originKey, scan.Facts, scan.RawEnvelopes, CompletenessEvidence, witness);
+  121                 var read = PushBackPilotIntentReader.Read(input, catalog);
+  123                 return new RackPilotIntentReadResult(read, null);
+  124             }
+  125             catch (Autodesk.AutoCAD.Runtime.Exception ex) when (ex.ErrorStatus == ErrorStatus.LockViolation)
+  126             {
+  127                 return new RackPilotIntentReadResult(null, "El documento está bloqueado por otra operación.");
+  128             }
+  129             catch (Autodesk.AutoCAD.Runtime.Exception ex)
+  130             {
+  131                 return new RackPilotIntentReadResult(null, "No se pudo leer el dibujo: " + ex.Message);
+  132             }
+  133             catch (System.Exception ex)
+  134             {
+  135                 return new RackPilotIntentReadResult(null, "No se pudo leer la intención de edición: " + ex.Message);
+  136             }
+  137             finally
+  138             {
+  139                 // INV-14: every path of the read (the success, the early return and the catches) leaves no transaction open.
+  140                 AssertNoOpenTransaction(document, "after");
+  141             }
+  142         }
+  144         /// <summary>
+  145         /// The light read of what a preview shows: the key and the raw envelope text of ONE definition. It has its own lock and its
+  146         /// own short transaction, which is only read and never committed, and it resolves the definition with the same handle
+  147         /// helper as <see cref="Read"/>. The text is null when the definition is not there or has none. It is for the panel (F4-T3).
+  148         /// </summary>
+  149         internal static RackPilotWitnessResult ReadPreviewWitness(Document document, long definitionHandle)
+  150         {
+  151             try
+  152             {
+  153                 // INV-14: no transaction is open before the lock and the transaction of this read, and none after both are closed.
+  154                 AssertNoOpenTransaction(document, "before");
+  156                 if (definitionHandle <= 0)
+  157                     return new RackPilotWitnessResult(null, "The definition has no handle.");
+  159                 var handle = ToHandle(definitionHandle);
+  160                 using (document.LockDocument())
+
+### B01-f el resultado del piloto — src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs:1-80
+    1 #nullable enable
+    2 using System;
+    3 using RackCad.Application.Workspace.Drafts;
+    5 namespace RackCad.Application.Systems.PushBack.Pilot
+    6 {
+    7     /// <summary>
+    8     /// I-64 F4-T2B1 (D-T2B-05, INV-27) — how the preview witness compares with the read: <see cref="NotSupplied"/> when the
+    9     /// caller gave none (it is NOT "unchanged"), <see cref="Unchanged"/> when it is the same key and the same raw text, and
+   10     /// <see cref="Changed"/> for anything else.
+   11     /// </summary>
+   12     public enum PushBackPilotPreviewWitnessStatus
+   13     {
+   14         NotSupplied,
+   15         Unchanged,
+   16         Changed,
+   17     }
+   19     /// <summary>
+   20     /// I-64 F4-T2B1 (D-T2B-04) — the result of ONE read of the edit intention of the pilot. It ALWAYS carries the stale base
+   21     /// (also when the read is not admitted, so "Check now" has something to compare), the read of the intention, the key of
+   22     /// the origin, the technical detail of the diagnostic, the hint to the classic editor (only without admission) and the
+   23     /// status of the preview witness. It is immutable and holds no raw text of its own.
+   24     /// </summary>
+   25     public sealed class PushBackPilotIntentResult
+   26     {
+   27         internal PushBackPilotIntentResult(
+   28             DraftStaleBase staleBase,
+   29             DraftIntentRead<PushBackPilotDraftState> read,
+   30             string originKey,
+   31             string? detail,
+   32             string? classicEditorHint,
+   33             PushBackPilotPreviewWitnessStatus previewWitness)
+   34         {
+   35             StaleBase = staleBase ?? throw new ArgumentNullException(nameof(staleBase));
+   36             Read = read ?? throw new ArgumentNullException(nameof(read));
+   37             OriginKey = originKey ?? string.Empty;
+   38             Detail = detail;
+   39             ClassicEditorHint = classicEditorHint;
+   40             PreviewWitness = previewWitness;
+   41         }
+   43         /// <summary>The base of the read. Never null, and the same instance the admitted read carries.</summary>
+   44         public DraftStaleBase StaleBase { get; }
+   46         /// <summary>Admitted with the base and the initial state, or not admitted with the unified diagnostic.</summary>
+   47         public DraftIntentRead<PushBackPilotDraftState> Read { get; }
+   49         /// <summary>The key of the definition of origin of the input.</summary>
+   50         public string OriginKey { get; }
+   52         /// <summary>The technical detail behind the diagnostic; null when there is none. Never part of the main text.</summary>
+   53         public string? Detail { get; }
+   55         /// <summary>Present if and only if the read is not admitted.</summary>
+   56         public string? ClassicEditorHint { get; }
+   58         /// <summary>The status of the preview witness (D-T2B-05); computed also when the read is not admitted.</summary>
+   59         public PushBackPilotPreviewWitnessStatus PreviewWitness { get; }
+   60     }
+   61 }
+
+### B01-g PreviewWitness y PilotRead en WHC — grep -E 'PreviewWitness|\\.PilotRead\\b|ReadIntent\\s*\\(' en src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+    16 coincidencias
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:328:                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:342:                var pilot = read.PilotRead;
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:344:                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:409:                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:423:                var pilot = read.PilotRead;
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:503:                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:517:                var pilot = read.PilotRead;
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:519:                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:590:                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:604:                var pilot = read.PilotRead;
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:675:                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:689:                var pilot = read.PilotRead;
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:691:                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:759:                var read = _editIntentReader!.ReadIntent(request.Session, request.RackId, request.ChosenReference, request.Witness);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:773:                var pilot = read.PilotRead;
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:775:                var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+
+### B01-h FromPilot en tests — grep -E 'FromPilot\\s*\\(' en tests
+    12 coincidencias
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:52:        EditIntentReadResult.FromPilot(PushBackPilotIntentReader.Read(scan, PilotKit.Catalog));
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:770:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(without);
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:1193:        Assert.Throws<ArgumentNullException>(() => EditIntentReadResult.FromPilot(null!));
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:244:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(PrepareKit.Reread(same, notAdmitted: PushBackPilotIntentReade
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:262:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(PrepareKit.Reread(other, notAdmitted: PushBackPilotIntentRead
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:369:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(PrepareKit.Reread(broken));
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:596:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(read);
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:615:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(read);
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:660:        notAdmitted.Reader.Answer = _ => EditIntentReadResult.FromPilot(NotAdmittedWithTheSameBase());
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:688:        recovered.Reader.Answer = _ => EditIntentReadResult.FromPilot(WithoutRead(sameBase));
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:702:        conflict.Reader.Answer = _ => EditIntentReadResult.FromPilot(WithoutRead(anotherBase));
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs:719:        rig.Reader.Answer = _ => EditIntentReadResult.FromPilot(NotAdmittedWithTheSameBase());
+
+### B01-i kit de lecturas de EIH — tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:40-60
+   40     /// <summary>Two views of the same single-sided design for the rack: admitted by the real reader.</summary>
+   41     public static PushBackPilotIntentScan TwoViews(string rackId, PushBackPilotPreviewWitness? witness = null) =>
+   42         IntentKit.Scan(
+   43             rackId,
+   44             "A1",
+   45             witness,
+   46             IntentKit.Member("A1", IntentKit.Variant("pb-01-base", rackId)),
+   47             IntentKit.Member("B2", IntentKit.Variant("pb-01-base", rackId, view: "lateral", section: 3)));
+   49     public static EditIntentReadResult Admitted(string rackId) => ReadOf(TwoViews(rackId));
+   51     public static EditIntentReadResult ReadOf(PushBackPilotIntentScan scan) =>
+   52         EditIntentReadResult.FromPilot(PushBackPilotIntentReader.Read(scan, PilotKit.Catalog));
+   54     /// <summary>A read that is not admitted (the origin is not in the scan) but carries its base.</summary>
+   55     public static EditIntentReadResult OriginMissing(string rackId) =>
+   56         ReadOf(IntentKit.Scan(rackId, "ZZ", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", rackId))));
+   58     /// <summary>The same rack, but a member became unreadable: the base differs from the one of <see cref="Admitted"/>.</summary>
+   59     public static EditIntentReadResult MemberBecameBlocking(string rackId) =>
+   60         ReadOf(IntentKit.Scan(rackId, "A1", IntentKit.Member("A1", IntentKit.Variant("pb-01-base", rackId)), IntentKit.Unreadable("B2", rackId)));
+
+### B01-j forma del resultado (EIH) — tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:1080-1100
+ 1080         if (systems.Count != 1) violations.Add("expected exactly one field of Systems, found " + systems.Count);
+ 1081         foreach (var field in systems)
+ 1082             if (field.Name != "_updateHost" || field.Type != typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdateHost))
+ 1083                 violations.Add(field.Name + " is not the executor of the update");
+ 1084         return violations;
+ 1085     }
+ 1087     [Fact]
+ 1088     public void TheHostCoreHasExactlyOneFieldOfSystemsTheExecutorOfTheUpdateAndRejectsASecondOneOrAPort()
+ 1089     {
+ 1090         var fields = typeof(WorkspaceHostCore)
+ 1091             .GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+ 1092             .Select(f => (f.Name, f.FieldType)).ToList();
+ 1093         Assert.Empty(SystemsFieldViolations(fields));
+ 1095         Assert.NotEmpty(SystemsFieldViolations(fields.Append(("_other", typeof(RackCad.Application.Systems.PushBack.Pilot.PushBackPilotUpdateRequest)))));
+ 1096         Assert.NotEmpty(SystemsFieldViolations(fields.Append(("_port", typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdatePort)))));
+ 1097         Assert.NotEmpty(SystemsFieldViolations(fields.Where(f => f.Name != "_updateHost")));
+ 1098         Assert.NotEmpty(SystemsFieldViolations(fields.Select(f => f.Name == "_updateHost" ? ("_updateHost", typeof(RackCad.Application.Systems.PushBack.Pilot.IPushBackPilotUpdatePort)) : f)));
+ 1099     }
+
+### B01-k forma del resultado (EIH) — tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs:1170-1197
+ 1171         var conflict = EditCheckOutcome.Conflict(new[] { "B2:Membership" });
+ 1172         Assert.Equal(new[] { "B2:Membership" }, conflict.Differences.ToArray());
+ 1173     }
+ 1175     [Fact]
+ 1176     public void TheReadResultCarriesThePilotReadOnlyWhenItIsARead()
+ 1177     {
+ 1178         var read = EditIntentKit.Admitted(RackA);
+ 1180         Assert.Equal(EditIntentReadStatus.Read, read.Status);
+ 1181         Assert.NotNull(read.PilotRead);
+ 1182         Assert.Null(read.Reason);
+ 1183         foreach (var other in new[]
+ 1184                  {
+ 1185                      EditIntentReadResult.NoActiveDocument("a"), EditIntentReadResult.Busy("b"), EditIntentReadResult.Rejected("c"), EditIntentReadResult.Failed("d"),
+ 1186                  })
+ 1187         {
+ 1188             Assert.NotEqual(EditIntentReadStatus.Read, other.Status);
+ 1189             Assert.Null(other.PilotRead);
+ 1190             Assert.False(string.IsNullOrEmpty(other.Reason));
+ 1191         }
+ 1193         Assert.Throws<ArgumentNullException>(() => EditIntentReadResult.FromPilot(null!));
+ 1194     }
+ 1196     // ------------------------------------------------------------------ D-T2B2-04: the choice of the origin (a pure function)
+
+### B01-l guarda de lecturas del anfitrion — tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:725-740
+  725     private static readonly Regex PilotReadAssignment = new(@"var\s+pilot\s*=\s*read\.PilotRead\s*;");
+  727     [Fact]
+  728     public void TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase()
+  729     {
+  730         var core = Core();
+  731         var withoutTheAssignments = PilotReadAssignment.Replace(core, string.Empty);
+  733         Assert.DoesNotMatch(new Regex(@"\.PilotRead\b"), withoutTheAssignments);
+  734         // One assignment per operation that reads: the intention, the check, the reload, the general check, the keep and the discard.
+  735         Assert.Equal(6, PilotReadAssignment.Matches(core).Count);
+  736         Assert.Equal(6, Src.Count(core, @"\.ReadIntent\s*\("));
+  737     }
+  739     [Theory]
+  740     [InlineData("var reread = read.PilotRead;")]
+
+### B01-m guarda del cableado — tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1150-1190
+ 1151     // ------------------------------------------------------------------ I-64 F4-T4C1-HOST (D-T4C-20, rows 9, 10 and 11)
+ 1153     // Row 9: the census of the setter of the executor of the update, in the manner of the one of the reader: one call, in the getter of the
+ 1154     // navigation, after the reader, and only the host core and the controller name it.
+ 1155     private static IReadOnlyList<string> UpdateHostSetterViolations(string controller, IEnumerable<(string Path, string Code)> product)
+ 1156     {
+ 1157         var violations = new List<string>();
+ 1158         var getter = Src.BodyOf(controller, @"public\s+IWorkspaceNavigationPort\s+Navigation\b");
+ 1159         var constructor = Src.BodyOf(controller, @"private\s+WorkspaceController\s*\(\s*\)");
+ 1160         var reader = getter.IndexOf("_host.SetEditIntentReader(_navigation.EditIntentReader);", StringComparison.Ordinal);
+ 1161         var setter = getter.IndexOf("_host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());", StringComparison.Ordinal);
+ 1162         var returns = getter.IndexOf("return _navigation;", StringComparison.Ordinal);
+ 1163         if (reader < 0 || setter <= reader || returns <= setter) violations.Add("the getter does not assign the executor right after the reader");
+ 1164         if (Src.Count(controller, @"SetPilotUpdateHost\s*\(") != 1) violations.Add("the controller does not call the setter exactly once");
+ 1165         if (Regex.IsMatch(constructor, @"SetPilotUpdateHost|RackPilotUpdateCommandContext")) violations.Add("the constructor assigns the executor");
+ 1166         var owners = product.Where(f => Regex.IsMatch(f.Code, @"\bSetPilotUpdateHost\s*\(")).Select(f => f.Path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+ 1167         if (!owners.SequenceEqual(new[] { CorePath, ControllerPath }.OrderBy(p => p, StringComparer.Ordinal))) violations.Add("the setter is named by " + string.Join(", ", owners));
+ 1168         return violations;
+ 1169     }
+ 1171     [Fact]
+ 1172     public void TheControllerAssignsTheExecutorOfTheUpdateInTheNavigationGetterAfterTheReaderAndOnlyTheCoreAndTheControllerNameTheSetter()
+ 1173     {
+ 1174         Assert.Empty(UpdateHostSetterViolations(Src.Code(ControllerPath), Src.AllProduct()));
+ 1175     }
+ 1177     [Fact]
+ 1178     public void TheSetterCensusTripsOnACallInTheConstructorOnASecondCallBeforeTheReaderAndOnAnotherFileThatNamesIt()
+ 1179     {
+ 1180         var controller = Src.Code(ControllerPath);
+ 1181         var product = Src.AllProduct().ToList();
+ 1183         var constructor = Src.BodyOf(controller, @"private\s+WorkspaceController\s*\(\s*\)");
+ 1184         var inConstructor = controller.Replace(constructor, constructor.TrimEnd('}') + " _host.SetPilotUpdateHost(null); }", StringComparison.Ordinal);
+ 1185         Assert.NotEmpty(UpdateHostSetterViolations(inConstructor, product));
+ 1187         var reader = "_host.SetEditIntentReader(_navigation.EditIntentReader);";
+ 1188         var setter = "_host.SetPilotUpdateHost(new RackPilotUpdateCommandContext());";
+ 1189         var before = controller.Replace(setter, string.Empty, StringComparison.Ordinal).Replace(reader, setter + reader, StringComparison.Ordinal);
+ 1190         Assert.NotEmpty(UpdateHostSetterViolations(before, product));
+
+### B01-n guardas que fijan el adaptador o el anfitrion de navegacion — grep -E 'RackPilotIntentAdapter|NavigationHostPath\\s*=|IntentAdapterPath\\s*=' en tests
+    19 coincidencias
+    tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs:21:    private const string NavigationHostPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
+    tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs:22:    private const string IntentAdapterPath = "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs";
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:25:    private const string AdapterPath = "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs";
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:138:        Assert.Matches(@"internal\s+static\s+class\s+RackPilotIntentAdapter\b", code);
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:414:            "RackPilotIntentAdapter.LoadCatalog()",
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:419:            "RackPilotIntentAdapter.Read(");
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:429:        Assert.Equal(1, Src.Count(Host(), @"RackPilotIntentAdapter\.LoadCatalog\s*\("));
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:430:        Assert.Equal(1, Src.Count(Host(), @"RackPilotIntentAdapter\.Read\s*\("));
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:608:        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadP
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:610:        Assert.DoesNotMatch(new Regex(@"TryBeginPilotEdit|TryCheckPilotEdit|TryConfirmPilotBase|TryKeepPilotEdit|TryDiscardAndReloadP
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:613:        Assert.DoesNotMatch(new Regex(@"EditIntent|ReadIntent|RackPilotIntentAdapter|_targets"), hostDrain);
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:925:    private static readonly Regex IntentNamedByAPreview = new(@"EditIntent|PilotIntent|RackPilotIntentAdapter|PushBackPilot|TryBeginP
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:963:    [InlineData("var r = RackPilotIntentAdapter.Read(document, rack, 0, null, null, catalog);")]
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1023:        Assert.Equal(new[] { AdapterPath }, Src.Files("src/RackCad.Plugin/Views/").Where(f => f.Path.EndsWith("RackPilotIntentAdapte
+    tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1219:    private const string NavigationHostPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
+    tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs:27:    private const string NavigationHostPath = WorkspaceBridgeSourceGuardTests.HostAdapterPath;
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs:25:    private const string NavigationHostPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:27:    private const string IntentAdapterPath = "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs";
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:28:    private const string NavigationHostPath = "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs";
+
+### B01-o PushBackFullDraftReader.Read y su firma — grep -E 'public static PushBackFullIntentResult Read|PushBackPilotIntentReader\\.Read' en src
+    6 coincidencias
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs:51:        public static PushBackFullIntentResult Read(PushBackPilotIntentScan scan, RackCatalog catalog)
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs:56:                var pilot = PushBackPilotIntentReader.Read(scan, catalog);
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentScan.cs:12:    /// of <see cref="PushBackPilotIntentReader.Read"/>; it never reaches a draft.
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:181:                (_, scan, catalog) => PushBackPilotUpdatePlanner.Prepare(input!, PushBackPilotIntentReader.Read(scan, catal
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:184:                    var read = PushBackPilotIntentReader.Read(scan, catalog);
+    src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs:121:                var read = PushBackPilotIntentReader.Read(input, catalog);
+
+### I01-a operaciones del campo — src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1118-1185
+ 1118             }
+ 1119         }
+ 1121         // Only an edit of the user calls it. It keeps the text exactly as typed, with the one key of the adapter of the pilot.
+ 1122         PilotFieldResult IWorkspacePilotEditPort.SetPendingText(WorkspaceRequest origin, string rackId, string text)
+ 1123         {
+ 1124             try
+ 1125             {
+ 1126                 if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
+ 1127                 if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
+ 1128                 if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
+ 1129                 if (text == null) return PilotFieldResult.Rejected("El texto es obligatorio.");
+ 1131                 var draft = FindPilotDraft(origin.Origin, rackId);
+ 1132                 if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
+ 1133                 var before = ViewOfPilotDraft(draft);
+ 1134                 if (!before.CanEdit) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
+ 1136                 var edit = draft.SetPendingText(PushBackPilotFieldAdapter.AnnotationScaleKey, text);
+ 1137                 if (edit.Status != DraftEditStatus.Updated) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
+ 1139                 NotePilotEdit(origin.Origin);
+ 1140                 return PilotFieldResult.Applied(ViewOfPilotDraft(draft));
+ 1141             }
+ 1142             catch (Exception ex)
+ 1143             {
+ 1144                 Report("WorkspaceHostCore.SetPendingText", ex);
+ 1145                 return PilotFieldResult.Rejected(ex.Message);
+ 1146             }
+ 1147         }
+ 1149         // The gesture of the field itself: the same two-phase step as a blocking boundary, run on the draft with the adapter of the pilot.
+ 1150         PilotFieldResult IWorkspacePilotEditPort.CommitField(WorkspaceRequest origin, string rackId)
+ 1151         {
+ 1152             try
+ 1153             {
+ 1154                 if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
+ 1155                 if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
+ 1156                 if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
+ 1158                 var draft = FindPilotDraft(origin.Origin, rackId);
+ 1159                 if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
+ 1160                 var before = ViewOfPilotDraft(draft);
+ 1161                 if (!before.CanEdit) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
+ 1163                 var crossed = draft.CrossBoundary(DraftBoundary.TabChange, PilotFieldAdapter);
+ 1164                 switch (crossed.Decision)
+ 1165                 {
+ 1166                     case DraftBoundaryDecision.Proceeded:
+ 1167                         if (crossed.CurrentStateChanged) NotePilotEdit(origin.Origin);
+ 1168                         return PilotFieldResult.Applied(ViewOfPilotDraft(draft));
+ 1169                     case DraftBoundaryDecision.Aborted:
+ 1170                         var view = ViewOfPilotDraft(draft);
+ 1171                         var message = crossed.InvalidFields.Count > 0 ? crossed.InvalidFields[0].Message : view.PendingMessage;
+ 1172                         return PilotFieldResult.Invalid(view, message);
+ 1173                     default:
+ 1174                         return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", ViewOfPilotDraft(draft));
+ 1175                 }
+ 1176             }
+ 1177             catch (Exception ex)
+ 1178             {
+ 1179                 Report("WorkspaceHostCore.CommitField", ex);
+ 1180                 return PilotFieldResult.Rejected(ex.Message);
+ 1181             }
+ 1182         }
+ 1184         PilotBoundaryResult IWorkspacePilotEditPort.CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind)
+ 1185         {
+
+### I01-b autorizacion y modal — src/RackCad.Application/Workspace/WorkspaceHostCore.cs:240-260
+  240                 : new WorkspaceHostConditions(_started, false, false, false, _panelVisible, _probe.IsActiveDocumentQuiescent, _modalRackCadActive);
+  242             return new WorkspaceHostSnapshot(
+  243                 WorkspaceHostPolicy.Status(conditions),
+  244                 hasDocument ? id : null,
+  245                 _panelVisible,
+  246                 WorkspaceHostPolicy.Actions(conditions),
+  247                 hasDocument ? session!.Selection : SelectionContext.None,
+  248                 hasDocument && _pickFirstOff.Contains(id),
+  249                 _instrumentation.Enabled);
+  250         }
+  252         /// <summary>The verdict for a request: it is checked against the document that would execute it. No side effects.</summary>
+  253         public RequestDecision Authorize(WorkspaceRequest request) =>
+  254             _bridge.Authorize(request, _probe.ActiveDocumentNativeId ?? NoDocumentNativeId);
+  256         /// <summary>The selection context of the request's session when the request is authorized; otherwise nothing and no effect.</summary>
+  257         public WorkspaceSelectionResponse GetSelectionContext(WorkspaceRequest request)
+  258         {
+  259             var decision = Authorize(request);
+  260             if (decision != RequestDecision.Accepted) return new WorkspaceSelectionResponse(decision, null);
+
+### I01-c marca de lectura — src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1012-1035
+ 1012         // ---------------------------------------------------------------- the edit port of the pilot (I-64 F4-T3A, D-T3-02)
+ 1013         //
+ 1014         // Every operation below is implemented explicitly, so the public surface of the host does not grow. None of them writes the
+ 1015         // drawing: the three that read go through the operations of F4-T2B2A and F4-T2B2B, the rest only touch memory. Every exception
+ 1016         // is contained as a value and the session is never degraded. NotePilotEdit is called by every operation that changes a draft.
+ 1018         // The three reads: the mark of "read in progress" is set with try/finally around each one, and a second read that arrives while
+ 1019         // it is set answers Waiting without reading.
+ 1020         EditIntentOutcome IWorkspacePilotEditPort.TryBeginEdit(EditIntentRequest request)
+ 1021         {
+ 1022             if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
+ 1023             _pilotReadInProgress = true;
+ 1024             try
+ 1025             {
+ 1026                 return TryBeginPilotEdit(request);
+ 1027             }
+ 1028             finally
+ 1029             {
+ 1030                 _pilotReadInProgress = false;
+ 1031             }
+ 1032         }
+ 1034         EditCheckOutcome IWorkspacePilotEditPort.TryCheckNow(EditIntentRequest request)
+ 1035         {
+
+### I01-d PassGate y UpdateGate — src/RackCad.Application/Workspace/WorkspaceHostCore.cs:990-1000
+  990             if (!active.HasValue)
+  991             {
+  992                 reason = PushBackPilotUpdateRun.NoActiveDocumentReason;
+  993                 return EditGate.Waiting;
+  994             }
+  996             if (_modalRackCadActive)
+  997             {
+  998                 reason = PushBackPilotUpdateRun.ModalOpenReason;
+  999                 return EditGate.Waiting;
+ 1000             }
+
+### I01-e PassGate — src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1936-1945
+ 1936                 reason = "No hay documento activo.";
+ 1937                 return EditGate.Waiting;
+ 1938             }
+ 1940             if (_modalRackCadActive)
+ 1941             {
+ 1942                 reason = "Hay una ventana de RackCad abierta.";
+ 1943                 return EditGate.Waiting;
+ 1944             }
+
+### I01-f estados del campo y fronteras — src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs:120-195
+  120     {
+  121         /// <summary>There is no work for the rack.</summary>
+  122         NotOpen,
+  124         Clean,
+  125         Dirty,
+  126         Conflict,
+  127         Applying,
+  129         /// <summary>The outcome of a write is not known.</summary>
+  130         Unknown,
+  132         Error,
+  134         /// <summary>
+  135         /// It cannot be decided whether the field is changed: the comparison failed. It counts as protected. It is reported only when the
+  136         /// ordinary state, Clean or Dirty, cannot be decided. When the draft has an explicit state (Conflict, Applying, Unknown or Error)
+  137         /// that state is kept, whatever the comparison says, and the field is protected all the same.
+  138         /// </summary>
+  139         Undecidable,
+  140     }
+  142     /// <summary>How an operation on the field ended. The order is fixed and the default value is Rejected: it means that nothing was done.</summary>
+  143     public enum PilotFieldStatus
+  144     {
+  145         /// <summary>Nothing was done: the request does not belong to the active document, or the operation failed and was contained.</summary>
+  146         Rejected,
+  148         Applied,
+  150         /// <summary>The field cannot be edited now (no work for the rack, or a state that does not allow it): nothing was done.</summary>
+  151         NotEditable,
+  153         /// <summary>A read of the pilot is in progress: nothing was done.</summary>
+  154         Busy,
+  156         /// <summary>The text is not valid: nothing was applied and the text stays exactly as typed.</summary>
+  157         Invalid,
+  158     }
+  160     /// <summary>What happened when a boundary was crossed. The order is fixed.</summary>
+  161     public enum PilotBoundaryDecision
+  162     {
+  163         /// <summary>The transition may go on: there was nothing pending, or the pending text was valid and was applied.</summary>
+  164         Proceeded,
+  166         /// <summary>The transition must not go on: the pending text is invalid, the request is not authorized or the operation failed. Nothing changed.</summary>
+  167         Aborted,
+  169         /// <summary>
+  170         /// The pending text was kept as it is. For a non-blocking boundary it is the only answer. For a blocking one it means that the
+  171         /// draft cannot be edited now (for example it is in error, unknown or being applied): nothing was validated or applied, the
+  172         /// pending text is intact and the transition goes on, exactly as for <see cref="Proceeded"/>.
+  173         /// </summary>
+  174         Kept,
+  176         /// <summary>A read of the pilot is in progress: nothing changed and the transition must not go on.</summary>
+  177         Busy,
+  178     }
+  180     /// <summary>The boundaries of the panel, as an ordered prefix: later tasks may add values at the end.</summary>
+  181     public enum PilotBoundaryKind
+  182     {
+  183         TabChange,
+  184         RackChange,
+  185         DocumentChange,
+  186         PanelHide,
+  187         Dematerialize,
+  188         DocumentClose,
+  190         /// <summary>The update of the rack: a blocking boundary, crossed before it is requested (I-64 F4-T4C1-HOST, D-T4C-11).</summary>
+  191         Update,
+  192     }
+  194     /// <summary>
+  195     /// Why the work of a rack is Unknown, as the port reports it (I-64 F4-T4A1, D-T4A1-03): the write may have failed at its end, or its
+
+### I02-a PEG operaciones del puerto — tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:40-95
+   40     private static string? TryBody(string code, string signature) => Regex.IsMatch(code, signature) ? Src.BodyOf(code, signature) : null;
+   42     // The twelve operations of the table of D-T3-02 and, since F4-T4A1 (D-T4A1-03), the three of the explicit reconciliation: the name and the
+   43     // signature in the interface. The twelve are a lower bound of the port and the fifteen are what this task adds to it.
+   44     private static readonly (string Name, string Interface)[] Operations =
+   45     {
+   46         ("TryBeginEdit", @"EditIntentOutcome\s+TryBeginEdit\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+   47         ("TryCheckNow", @"EditCheckOutcome\s+TryCheckNow\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+   48         ("TryReload", @"EditIntentOutcome\s+TryReload\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+   49         ("TryConfirmBase", @"EditConfirmOutcome\s+TryConfirmBase\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+   50         ("TryKeepMine", @"EditIntentOutcome\s+TryKeepMine\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+   51         ("TryDiscardAndReload", @"EditIntentOutcome\s+TryDiscardAndReload\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+   52         ("GetField", @"PilotFieldView\s+GetField\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+   53         ("SetPendingText", @"PilotFieldResult\s+SetPendingText\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+   54         ("CommitField", @"PilotFieldResult\s+CommitField\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+   55         ("CrossBoundary", @"PilotBoundaryResult\s+CrossBoundary\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*,\s*PilotBoundaryKind\s+\w+\s*\)\s*;"),
+   56         ("DiscardRack", @"EditDiscardOutcome\s+DiscardRack\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+   57         ("DiscardDocument", @"EditDiscardOutcome\s+DiscardDocument\s*\(\s*WorkspaceRequest\s+\w+\s*\)\s*;"),
+   58         ("GetRacksAtRisk", @"PilotRiskView\s+GetRacksAtRisk\s*\(\s*WorkspaceRequest\s+\w+\s*\)\s*;"),
+   59         ("TakeLossNotices", @"IReadOnlyList<PilotLossView>\s+TakeLossNotices\s*\(\s*\)\s*;"),
+   60         ("TakeCloseNotices", @"IReadOnlyList<PilotCloseView>\s+TakeCloseNotices\s*\(\s*\)\s*;"),
+   62         // I-64 F4-T4C1-HOST (D-T4C-20, row 5): the two operations of the update, at the end of the port.
+   63         ("RequestUpdate", @"EditUpdateStart\s+RequestUpdate\s*\(\s*EditIntentRequest\s+\w+\s*\)\s*;"),
+   64         ("TakeUpdateProgress", @"EditUpdateProgress\s+TakeUpdateProgress\s*\(\s*WorkspaceRequest\s+\w+\s*,\s*string\s+\w+\s*\)\s*;"),
+   65     };
+   67     // The six operations that read the drawing: the three of F4-T3A and the three of the explicit reconciliation of F4-T4A1.
+   68     private static readonly string[] ReadOperations = { "TryBeginEdit", "TryCheckNow", "TryReload", "TryConfirmBase", "TryKeepMine", "TryDiscardAndReload" };
+   70     private static readonly string[] MemoryOperations = { "GetField", "GetRacksAtRisk", "TakeLossNotices", "TakeCloseNotices", "TakeUpdateProgress" };
+   72     private static readonly string[] MutatingOperations = { "SetPendingText", "CommitField", "CrossBoundary", "DiscardRack", "DiscardDocument", "RequestUpdate" };
+   74     // The one operation of the request of the update: the only one, outside the six reads, that may look at the rest, the executor and the
+   75     // gate of the document, and the only one that asks the executor of the host. Its authorization is the one of the gate (PassGate).
+   76     private static readonly string[] UpdateOperations = { "RequestUpdate" };
+   78     // The operations that change a draft, or that discard one, while an update is in flight: after their authorization (Authorize or the
+   79     // gate, PassGate) and, where the body has it, the mark of the reads they answer Busy or Waiting, with no change (D-T4C-08 and D-T4C-10,
+   80     // row 5; M-01). The three reconciliations are looked at in the body that passes the gate, which is the one of the pilot (the wrapper of
+   81     // the port only marks the read), so the check of the flight can never come before the authorization.
+   82     private static readonly (string Name, string Signature, bool MarkInBody)[] FlightBodies =
+   83     {
+   84         ("SetPendingText", HostSignature("SetPendingText"), true),
+   85         ("CommitField", HostSignature("CommitField"), true),
+   86         ("TryKeepPilotEdit", @"public\s+EditIntentOutcome\s+TryKeepPilotEdit\s*\(", false),
+   87         ("TryDiscardAndReloadPilotEdit", @"public\s+EditIntentOutcome\s+TryDiscardAndReloadPilotEdit\s*\(", false),
+   88         ("TryConfirmPilotBase", @"public\s+EditConfirmOutcome\s+TryConfirmPilotBase\s*\(", false),
+   89         ("DiscardRack", HostSignature("DiscardRack"), true),
+   90         ("DiscardDocument", HostSignature("DiscardDocument"), true),
+   91     };
+   93     private static readonly Regex FlightCheck = new(@"\bUpdateInFlightFor(?:Request)?\s*\(|\bExpireStaleUpdate\s*\(");
+   95     // The first place where a body authorizes: its own Authorize or the gate, whose last step is the authorization of the session.
+
+### I02-b PEG reflexion — tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:150-166
+  150                 if (!status.Contains(name)) yield return "PilotFieldStatus lacks " + name;
+  151             if (status.Count == 0 || status[0] != "Rejected") yield return "the default of PilotFieldStatus is not the inert Rejected";
+  152         }
+  153     }
+  155     [Fact]
+  156     public void ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot()
+  157     {
+  158         Assert.Empty(PortViolations(Port()));
+  159         Assert.Equal(
+  160             Operations.Select(o => o.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray(),
+  161             typeof(IWorkspacePilotEditPort).GetMethods().Select(m => m.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray());
+  162         Assert.StartsWith("#nullable enable", Src.Text(PortPath).TrimStart((char)0xFEFF));
+  163     }
+  165     [Theory]
+  166     [InlineData("PilotFieldView GetField(WorkspaceRequest origin, string rackId);", "")]
+
+### I02-c PEG reglas del anfitrion — tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:262-290
+  263     // ------------------------------------------------------------------ INV-F4T3A-01 to 03: the host core
+  265     private static IEnumerable<string> HostViolations(string host)
+  266     {
+  267         // The interface of the advisor stays the first base (WorkspaceLifecycleGuardTests), and the port is the second.
+  268         if (!Regex.IsMatch(host, @"public\s+sealed\s+class\s+WorkspaceHostCore\s*:\s*IWorkspaceLifecycleAdvisor\s*,\s*IWorkspacePilotEditPort\b"))
+  269             yield return "the host is not : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort";
+  271         // Explicit implementations only: the public surface of the host does not grow.
+  272         foreach (var (name, _) in Operations)
+  273         {
+  274             if (Src.Count(host, HostSignature(name)) != 1) yield return "the host does not implement " + name + " explicitly exactly once";
+  275             if (Regex.IsMatch(host, @"\bpublic\s+[\w<>,\s?]+\s+" + name + @"\s*\(")) yield return "the host exposes " + name + " publicly";
+  276         }
+  278         // The adapter of the pilot is static, never a field of instance (H-10).
+  279         if (Regex.IsMatch(host, @"private\s+(?:readonly\s+)?PushBackPilotFieldAdapter\s+_\w+")) yield return "the adapter of the pilot is a field of instance";
+  280         if (Src.Count(host, @"private\s+static\s+readonly\s+PushBackPilotFieldAdapter\s+\w+") != 1) yield return "the adapter of the pilot is not the one static field";
+  282         // Only the three reads read the drawing (C03): the other nine operations never name the reader, the probe or the gate of reading.
+  283         // Row 5: the request of the update is the one exception, with its own rules below.
+  284         foreach (var (name, _) in Operations.Where(o => !ReadOperations.Contains(o.Name) && !UpdateOperations.Contains(o.Name)))
+  285         {
+  286             var body = TryBody(host, HostSignature(name));
+  287             if (body == null) continue;
+  288             if (Regex.IsMatch(body, @"_editIntentReader|ReadIntent|_reader\b|PassGate|_probe\b|_bridge\b")) yield return name + " reaches a reader, the probe or the bridge";
+  289         }
+
+### I02-d PEG interfaces — tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:375-390
+  375             if (Regex.IsMatch(body, @"_faulted|\bContain\s*\(|\bthrow\s*;")) yield return name + " degrades the session or rethrows";
+  376         }
+  377     }
+  379     [Fact]
+  380     public void TheHostImplementsThePortExplicitlyAndNeverReadsOutsideTheThreeReadsAndChangesOnlyThroughNotePilotEdit()
+  381     {
+  382         Assert.Empty(HostViolations(Host()));
+  383         Assert.True(typeof(IWorkspacePilotEditPort).IsAssignableFrom(typeof(WorkspaceHostCore)));
+  384         foreach (var (name, _) in Operations) Assert.Null(typeof(WorkspaceHostCore).GetMethod(name));
+  385         Assert.Equal(new[] { "IWorkspaceLifecycleAdvisor", "IWorkspacePilotEditPort" }, typeof(WorkspaceHostCore).GetInterfaces().Select(i => i.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray())
+  386     }
+  388     [Theory]
+  389     [InlineData("public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort", "public sealed class WorkspaceHostCore : IWorkspacePilotEditPort, IWorkspaceLifecycleAdvi
+  390     [InlineData("PilotFieldView IWorkspacePilotEditPort.GetField(", "public PilotFieldView GetField(")]
+
+### I02-e nombres del enumerado — tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs:1100-1112
+ 1100         Assert.Equal(PilotFieldStatus.Applied, rig.Port.SetPendingText(rig.Origin(), RackA, "no es un numero").Status);
+ 1101         var invalid = rig.Port.CrossBoundary(rig.Origin(), RackA, PilotBoundaryKind.Update);
+ 1102         Assert.Equal(PilotBoundaryDecision.Aborted, invalid.Decision);
+ 1103         Assert.NotEmpty(invalid.InvalidFields);
+ 1105         var wrong = rig.Port.CrossBoundary(rig.Origin(new SessionId(777)), RackA, PilotBoundaryKind.Update);
+ 1106         Assert.Equal(PilotBoundaryDecision.Aborted, wrong.Decision);
+ 1107         Assert.Equal(
+ 1108             new[] { "TabChange", "RackChange", "DocumentChange", "PanelHide", "Dematerialize", "DocumentClose", "Update" },
+ 1109             Enum.GetNames<PilotBoundaryKind>());
+ 1110     }
+ 1112     [Fact]
+
+### I02-f CommitField como frontera — src/RackCad.Application/Workspace/WorkspaceHostCore.cs:1140-1160
+ 1140                 return PilotFieldResult.Applied(ViewOfPilotDraft(draft));
+ 1141             }
+ 1142             catch (Exception ex)
+ 1143             {
+ 1144                 Report("WorkspaceHostCore.SetPendingText", ex);
+ 1145                 return PilotFieldResult.Rejected(ex.Message);
+ 1146             }
+ 1147         }
+ 1149         // The gesture of the field itself: the same two-phase step as a blocking boundary, run on the draft with the adapter of the pilot.
+ 1150         PilotFieldResult IWorkspacePilotEditPort.CommitField(WorkspaceRequest origin, string rackId)
+ 1151         {
+ 1152             try
+ 1153             {
+ 1154                 if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
+ 1155                 if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
+ 1156                 if (UpdateInFlightFor(origin.Origin, rackId)) return PilotFieldResult.Busy(PushBackPilotHostTexts.UpdateInFlightReason);
+ 1158                 var draft = FindPilotDraft(origin.Origin, rackId);
+ 1159                 if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
+ 1160                 var before = ViewOfPilotDraft(draft);
+
+### I02-g Mutate anclado — tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs:105-125
+  105     {
+  106         Assert.Empty(ReaderViolations(UiFiles()));
+  107     }
+  109     [Fact]
+  110     public void TheGuardOfWhoReadsSeesAKeepInTheRequestACheckInThePresentationAnyOfTheFourInTheBrowserAndANameof()
+  111     {
+  112         var files = UiFiles();
+  113         var field = CodeOf(files, FieldPath);
+  114         var browser = CodeOf(files, BrowserPath);
+  116         Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "public void RequestKeepMine() => AskChoice(ChoiceKind.KeepMine);", "public void RequestKeepMine() { _port.TryKeepMine(nul
+  117         Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "PilotFieldView view;", "PilotFieldView view; _port.TryConfirmBase(null);"))));
+  118         Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "PilotFieldView view;", "PilotFieldView view; _port.TryDiscardAndReload(null);"))));
+  119         Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "PilotFieldView view;", "PilotFieldView view; _port.TryCheckNow(null);"))));
+  120         Assert.NotEmpty(ReaderViolations(With(files, FieldPath, Mutate(field, "private const string SurfaceChangedText", "private static readonly string Aliased = nameof(IWorkspacePilotEditPort.TryKee
+  121         foreach (var token in TheFourReads.Select(r => r.Token))
+  122             Assert.NotEmpty(ReaderViolations(With(files, BrowserPath, Mutate(browser, "public void ReloadField() => Field.Rematerialize();", "public void ReloadField() { _pilotEdit." + token + "(null)
+  123     }
+  125     // M-4 (correction): the operation captured as a method group inside the right body, and invoked through the capture. The token is named once
+
+### I02-h UI: la eleccion solo lee memoria — tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:770-800
+  770             var keepWithoutValue = new Rig(Conflict(true, committed: null));
+  771             keepWithoutValue.Field.RequestKeepMine();
+  772             Assert.Equal(A222("sin valor"), keepWithoutValue.Field.ChoiceText);
+  774             var unknown = new Rig(Unknown(PilotUnknownOrigin.PostReread));
+  775             unknown.Field.RequestDiscardAndReload();
+  776             Assert.Equal(A223, unknown.Field.ChoiceText);
+  777         }
+  779         [Fact]
+  780         public void AskingForAnOptionCallsNoOperationOfThePortAndOnlyReadsItsMemory()
+  781         {
+  782             foreach (var keep in new[] { false, true })
+  783             {
+  784                 var rig = new Rig(Conflict(true));
+  786                 if (keep) rig.Field.RequestKeepMine();
+  787                 else rig.Field.RequestDiscardAndReload();
+  789                 Assert.True(rig.Field.HasChoice);
+  790                 Assert.Empty(rig.Operations());
+  791                 Assert.All(rig.Port.Calls, c => Assert.Equal(WorkspacePilotEditPortDouble.GetFieldOp, c.Operation));
+  792                 Assert.Empty(rig.Port.Reads());
+  793             }
+  794         }
+  796         [Fact]
+  797         public void AnOptionThatIsNotOfferedDoesNothingWhenItIsAsked()
+  798         {
+  799             var rig = new Rig(Dirty());
+
+### I02-i UI: RequestKeepMine y ConfirmChoice — grep -E 'RequestKeepMine\\s*\\(|ConfirmChoice\\s*\\(' en tests/RackCad.UI.Tests/Workspace/
+    40 coincidencias
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:496:            discard.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:503:            keep.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:505:            keep.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:640:            choice.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:643:            choice.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:677:                rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:700:            rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:746:            asked.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:767:            keep.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:771:            keepWithoutValue.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:786:                if (keep) rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:802:            rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:822:            rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:844:            rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:846:            rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:870:            rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:903:                if (keep) rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:926:            rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:939:            rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:991:            rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1002:            rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1006:            rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1017:            surface.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1044:            rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1052:            rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1062:            gone.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1078:            kept.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1094:            browser.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1116:            discard.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1121:            keep.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1122:            keep.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1149:                if (keep) rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1153:                rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1166:            rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1168:            rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1185:                if (keep) rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1189:                rig.Field.ConfirmChoice();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1422:            rig.Field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1435:            field.RequestKeepMine();
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs:1436:            field.ConfirmChoice();
+
+### I07-a SameAs — src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs:70-140
+   70                     })
+   71                     .ToList());
+   72         }
+   74         /// <summary>Whether another commit holds exactly the same accepted edit, comparing every cabecera through its
+   75         /// persisted shape.</summary>
+   76         public bool SameAs(RackModuleCommit other)
+   77         {
+   78             if (other == null)
+   79             {
+   80                 return false;
+   81             }
+   83             var store = new RackFrameProjectStore();
+   84             string Persisted(RackFrameConfiguration configuration)
+   85                 => configuration == null ? string.Empty : store.Serialize(configuration);
+   87             if (Modules.Count != other.Modules.Count
+   88                 || RestoredModuleIds.Count != other.RestoredModuleIds.Count
+   89                 || LineOverrides.Count != other.LineOverrides.Count
+   90                 || DerivedPostOverrides.Count != other.DerivedPostOverrides.Count
+   91                 || StandardRestoreRequested != other.StandardRestoreRequested)
+   92             {
+   93                 return false;
+   94             }
+   96             for (var index = 0; index < Modules.Count; index++)
+   97             {
+   98                 var a = Modules[index];
+   99                 var b = other.Modules[index];
+  100                 if (!string.Equals(a.ModuleId, b.ModuleId, StringComparison.Ordinal)
+  101                     || a.Kind != b.Kind
+  102                     || a.Length != b.Length
+  103                     || a.IsCalculated != b.IsCalculated
+  104                     || a.IsManualOverride != b.IsManualOverride
+  105                     || a.UseCalculatedHeaderConfiguration != b.UseCalculatedHeaderConfiguration
+  106                     || !string.Equals(a.Notes, b.Notes, StringComparison.Ordinal)
+  107                     || !string.Equals(Persisted(a.HeaderConfiguration), Persisted(b.HeaderConfiguration), StringComparison.Ordinal))
+  108                 {
+  109                     return false;
+  110                 }
+  111             }
+  113             for (var index = 0; index < RestoredModuleIds.Count; index++)
+  114             {
+  115                 if (!string.Equals(RestoredModuleIds[index], other.RestoredModuleIds[index], StringComparison.Ordinal))
+  116                 {
+  117                     return false;
+  118                 }
+  119             }
+  121             for (var index = 0; index < LineOverrides.Count; index++)
+  122             {
+  123                 var a = LineOverrides[index];
+  124                 var b = other.LineOverrides[index];
+  125                 if (a.PostIndex != b.PostIndex
+  126                     || !string.Equals(a.ModuleId, b.ModuleId, StringComparison.Ordinal)
+  127                     || !string.Equals(Persisted(a.Header), Persisted(b.Header), StringComparison.Ordinal))
+  128                 {
+  129                     return false;
+  130                 }
+  131             }
+  133             for (var index = 0; index < DerivedPostOverrides.Count; index++)
+  134             {
+  135                 if (DerivedPostOverrides[index].PostIndex != other.DerivedPostOverrides[index].PostIndex
+  136                     || DerivedPostOverrides[index].Height != other.DerivedPostOverrides[index].Height)
+  137                 {
+  138                     return false;
+  139                 }
+  140             }
+
+### I07-b comparador — src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs:400-412
+  401         // ---------------------------------------------------------------------------------------------------- carriers
+  403         private static bool CarriersEqual(PushBackEditableState x, PushBackEditableState y)
+  404         {
+  405             if (!PalletsEqual(x.Pallet, y.Pallet)
+  406                 || x.PalletsDeep != y.PalletsDeep
+  407                 || !string.Equals(x.PostCatalogId, y.PostCatalogId, StringComparison.Ordinal)
+  408                 || !x.PostPeralte.Equals(y.PostPeralte)
+  409                 || !x.PalletTolerance.Equals(y.PalletTolerance)
+  410                 || !x.BeamDepth.Equals(y.BeamDepth)
+  411                 || !x.AnnotationScale.Equals(y.AnnotationScale)
+  412                 || x.FirstLevelDatum != y.FirstLevelDatum
+
+### B02-a referencias de proyecto de las pruebas — grep -E 'ProjectReference' en tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj tests/RackCad.Tests/RackCad.Tests.csproj
+    7 coincidencias
+    tests/RackCad.Tests/RackCad.Tests.csproj:23:    <ProjectReference Include="..\..\src\RackCad.Domain\RackCad.Domain.csproj" />
+    tests/RackCad.Tests/RackCad.Tests.csproj:24:    <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
+    tests/RackCad.Tests/RackCad.Tests.csproj:28:    <ProjectReference Include="..\..\tools\RackCad.StructuralSections.Import\RackCad.StructuralSections.Import.csproj" />
+    tests/RackCad.Tests/RackCad.Tests.csproj:31:    <ProjectReference Include="..\..\tools\RackCad.StructuralAnalysis.RamTool\RackCad.StructuralAnalysis.RamTool.csproj" />
+    tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj:25:    <ProjectReference Include="..\..\src\RackCad.Domain\RackCad.Domain.csproj" />
+    tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj:26:    <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
+    tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj:27:    <ProjectReference Include="..\..\src\RackCad.UI\RackCad.UI.csproj" />
+
+### B02-b propiedades de NumericField — grep -E 'public\\s+[\\w?<>]+\\s+(Minimum|Maximum|MinimumInclusive|MaximumInclusive|IsOptional|IntegerOnly)\\b|Validate\\s*\\(' en src/RackCad.UI/Controls
+    2 coincidencias
+    src/RackCad.UI/Controls/NumericField.cs:149:            var result = NumericFieldValidation.Validate(
+    src/RackCad.UI/Controls/NumericFieldValidation.cs:76:        public static NumericFieldValidationResult Validate(
+
+### B02-c la caja de la escala — src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml:66-72
+   66                         <StackPanel Grid.Column="0">
+   67                             <TextBlock Text="Escala anot." Style="{StaticResource FieldLabel}" />
+   68                             <controls:NumericField x:Name="AnnotationScaleBox" LostFocus="Input_Changed"
+   69                                                    Minimum="0" MinimumInclusive="False" />
+   70                         </StackPanel>
+   71                         <StackPanel Grid.Column="2">
+   72                             <TextBlock Text="Cotas" Style="{StaticResource FieldLabel}" />
+
+### B02-d otras cajas con las mismas reglas — grep -E 'AnnotationScale' en src/RackCad.UI
+    14 coincidencias
+    src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml:45:                    <TextBox x:Name="AnnotationScaleBox" Style="{StaticResource FieldBox}" Text="1" LostFocus="Annotation_Changed" />
+    src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:305:                AnnotationScale = TryNum(AnnotationScaleBox?.Text, out var annotationScale) && annotationScale > 0.0
+    src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:388:            if (!TryNum(AnnotationScaleBox?.Text, out var scale) || scale <= 0.0)
+    src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:2916:            if (!TryNum(AnnotationScaleBox?.Text, out var annotationScale) || annotationScale <= 0.0)
+    src/RackCad.UI/Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:3299:                AnnotationScaleBox.Text = Num(loaded.AnnotationScale > 0.0 ? loaded.AnnotationScale : 1.0);
+    src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml:68:                            <controls:NumericField x:Name="AnnotationScaleBox" LostFocus="Input_Changed"
+    src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:114:        private double rackAnnotationScale { get => editable.AnnotationScale; set => editable.AnnotationScale = value; }
+    src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:390:                AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
+    src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:717:            BeamDepthBox, AnnotationScaleBox, FrontCountBox, PositionsBox, LevelsBox, FondosBox,
+    src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs:809:            rackAnnotationScale = Keep(AnnotationScaleBox, rackAnnotationScale);
+    src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml:50:                    <TextBox x:Name="AnnotationScaleBox" Style="{StaticResource FieldBox}" Text="1"
+    src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:2858:                AnnotationScale = UiSupport.TryNum(AnnotationScaleBox.Text, out var annScale) && annScale > 0.0 ? annScale : 1.0,
+    src/RackCad.UI/Systems/Selective/RackSelectiveWindow.xaml.cs:3234:            AnnotationScaleBox.Text = (design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0).ToString(CultureInfo.InvariantCult
+    src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs:8:    /// The field of the bounded pilot (AnnotationScale of a Push Back rack) on the ONE surface of the browser (I-64 F4-T3B1, D-T3B1-02).
+
+### M09 el abridor clasico — tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs:196-210
+  196         public void RackPushBackShowsTheWindowModallyWithoutAnOwnerAndReadsOnlyTheViewAndSectionOfTheRequest()
+  197         {
+  198             var body = Body(Source("RackPushBackCommands.cs"), "public void RackPushBack()");
+  200             Has(body, "new RackPushBackSystemWindow(canInsertInAutoCad: true);", "la ventana creada para AutoCAD");
+  201             Has(body, "AcApplication.ShowModalWindow(window);", "ShowModalWindow(window)");
+  202             Has(body, "window.InsertionRequest is PushBackInsertionRequest request", "la lectura tipada de la peticion");
+  203             Has(body, "request.View,", "request.View");
+  204             Has(body, "request.Section,", "request.Section");
+  205             // Ancla (anadir una asignacion no es un mutante textual de comportamiento identico): ni la ventana ni su
+  206             // llamador asignan Owner; ShowModalWindow la muestra sin dueno WPF.
+  207             Lacks(body, "Owner =", "una asignacion de Owner en RACKPUSHBACK");
+  208             // RACKPUSHBACK lee View/Section, no Views: «Insertar varias…» dibujaria solo Views[0] (OD-6).
+  209             Lacks(body, "Views", "la lectura de Views en RACKPUSHBACK");
+  210         }
+
+### M12 la CI de UI — .github/workflows/ci.yml:205-225
+  205         with:
+  206           ref: ${{ inputs.candidate_sha || github.sha }}
+  207       - uses: actions/setup-dotnet@v4
+  208         with:
+  209           dotnet-version: "8.0.x"
+  210       - name: dotnet build UI
+  211         run: dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal
+  213   ui-tests:
+  214     name: UI Tests (WPF controls, net8.0-windows)
+  215     # The reusable controls (I-14) are born with tests; WPF needs a Windows runner and STA, so this is
+  216     # a dedicated job (the Domain/Application suite stays on ubuntu). It does not gate the Plugin build.
+  217     runs-on: windows-latest
+  218     # Fusible (I-45 G2). Es el job mas largo: maximo observado ~4.5 min, asi que 25 deja ~5.5x de
+  219     # holgura sobre el peor caso medido. Importa especialmente aqui: la suite de UI marshala la mayor
+  220     # parte de sus pruebas sobre UN hilo STA compartido cuyo dialogo por defecto es un MessageBox
+  221     # modal REAL, de modo que un cuelgue seria indefinido y hasta hoy este job no tenia ninguna red.
+  222     timeout-minutes: 25
+  223     steps:
+  224       # Mismo SHA objetivo que el job `tests`: en un dispatch de Candidato TODOS los jobs corren sobre
+  225       # el commit pedido, no sobre la punta de la rama. En un push el input llega vacio —el contexto
+
+### I05-a PB-T1 R-T1-17 — docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md:1362-1370
+ 1362 | R-T1-19 | **La remedición sobre el GREEN de PB-TC2 cambia una premisa material** (§8.4) | **No ocurrió** (registro N; §8.4), y la comprobación acotada de la remedición lo confirmó (0/1/3, sin premis
+ 1363 | R-T1-13 | **La pasada reentrante de `UpdateCompositeEnabled()`** (HT1-10b) | Los portadores se adoptan donde hoy (D-PBT1-13 (4)); F-03 en CT-PBT1A-14 lo ejerce; INV-PBT1C-05; PBT1C-C13 |
+ 1364 | R-T1-14 | **PB-TC2 no ha cerrado** | **Cerrado:** PB-TC2 está CLOSED / PASS WITH LIMITATIONS sobre `b5c09f0b` (F4B-E12), y las zonas [TC2] están remedidas (§2.8) |
+ 1365 | R-T1-15 | **Cómo cuenta el Controller un `Skipped`** | `MinSelected` sobre los que pasan |
+ 1366 | R-T1-16 | **El RED de PB-T1a rompe pruebas existentes** | La tabla T-8; Core en `success` (§6.0) |
+ 1367 | R-T1-17 | **El modelo paralelo interino (M-12):** entre el cierre de PB-T1b y el de PB-T1c hay **tres** copias de la carga compuesta (WC, el estado y el piloto), contra ADR-0029 D12 | Se declara com
+ 1368 | R-T1-20 | **c-09: la rama de la regla con la caja en «lb»** no la mide la red de PB-T1a (v2.5) | El paso 1 de PB-T1b la mide (fila (f)) con dos ramas fijadas; PBT1B-C14 si no es ninguna; CT-PBT1B-17
+ 1369 | R-T1-18 | **PB-T1c no cierra** (M-12) | El tipo de PB-T1b queda sin uso de producto y sin cambio observable; ante un intento 3, el Owner decide (C12); nada se integra en `main` (A64-PV1-21) |
+
+### I05-b PB-T1 A-5 a A-10 — docs/initiatives/I-64-f4b-pbt1-gate-contract-package.md:1545-1556
+ 1545 | A-1 | El modo WORKSPACE, la prueba UI-STA de OB-01.3, el paso 4 de D-PB-06 y el aviso de D-PB-08 en WORKSPACE, y el dueño de los subdiálogos | PB-T2 (sin cambio) |
+ 1546 | A-2 | El borrador sobre `PushBackEditableState`: el copiador y el comparador de PB-T1 sustituyen a los del piloto; la composición y el clasificador de D-PB-05 con el mapa de D-PBT1-08; la barrera de
+ 1547 | A-3 | Quitar el rechazo A/B del piloto (OB-03.2) con PB-T1 cerrada; `DormantTailOutOfPilotReason` se queda en todo F4B | PB-T3 o PB-T4 |
+ 1548 | A-4 | La pregunta al Owner sobre la `ExtensionData` anidada (OB-05.2) | Antes del contrato de PB-T3: **respondida**, F4B-E24, «Basta así (Recomendado)» (v2.8, V28-25) |
+ 1549 | A-5 | La copia de la carga del piloto (PM:150-172) | PB-T4 la retira al consumir el API |
+ 1550 | A-6 | M-07 (reproducido), la caja de c-02 que se ve vacía y M-01 de PB-T0 (no corregido) | `docs/ideas-futuras.md`, por la sesión: **hecho** en el cierre de PB-T1a (F4B-E16), con c-09, OWNER-3 y OWN
+ 1551 | A-7 | **PBT1B-IR-M09** (producto; declarado): `PushBackEditableStateOwnership.Of` decide si la primera propiedad de una ruta está «declarada» mirando la tabla, no el tipo del documento (D-PBT1-08, «
+ 1552 | A-8 | **PBT1B-IR-M11** (producto): con un diseño nulo, `LoadDesignEditor` y `RestoreEditor` cambian el estado (`SetActiveSide(A)` y `SetSideBPresent(false)`) y después lanzan `ArgumentNullException`
+ 1553 | A-9 | **PBT1B-IR-M12** (producto; declarado): `RackModuleCommit.SameAs` compara los `double` con `!=`, así que `NaN` no es igual a sí mismo, y el comparador lo usa (`PushBackEditableStateComparer.cs
+ 1554 | A-10 | **PBT1B-IR-M15** (coste): cada `Equals` hace dos `CopyAuthorityFrom` por lado, que copian en profundidad la sesión y el commit (con ida y vuelta por JSON de cada cabecera); en la CI, CT-PBT1B
+ 1556 **De dónde salen A-7 a A-10, y el resto de la revisión** (v2.8, V28-03). De la revisión independiente del intento 1 de PB-T1b (`F4B-PBT1B-LOSSLESS-STATE-TYPE/1/R20261118T204715Z-a4e2/independent-revie
+
+### I05-c D-1 — docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt3-d1-decision.md:5-27
+    5 **La pregunta llegó revisada:**
+    6 - la revisión independiente de la v1: NECESITA v2, 1/11/16;
+    7 - la recomprobación de la v2: NECESITA v3, 0/3/4;
+    8 - la recomprobación de la v3: NECESITA v4, 0/1/1, con los números de PB-T4 corregidos en la v4.
+   10 **Texto, literal:** «PB-T3b: para que el «Actualizar» del panel renombre y borre vistas, hay que sustituir pruebas de F4 que fijan el texto del escritor del piloto, cada una con registro y una prueba 
+   12 **Opciones ofrecidas:**
+   13 - «Un solo código (Recomendado)»: un único algoritmo de escritura para el piloto y el borrador completo. PB-T3b sustituye seis pruebas de F4 (cinco fallan y una quedaría vacía), cada una con su equiva
+   14 - «Código duplicado hasta PB-T4»: el texto del piloto no cambia, salvo la barrera, y el borrador completo va en código propio, copiado, hasta PB-T4. PB-T3b sustituye tres; PB-T4 sustituirá seis (tres 
+   15 - «Sin renombrar ni borrar»: no se sustituye ninguna. El panel no renombra ni borra vistas en PB-T3; esas dos cosas, que pide la fila de PB-T3, quedan pendientes.
+   17 **Respuesta del Owner:** «Un solo código (Recomendado)».
+   19 **Lo que implica (la opción (A) del paquete v4):**
+   20 - **El código:** el plan y la corrida del piloto se generalizan en su sitio, con un solo escritor para el piloto y el borrador completo.
+   21 - **En PB-T3b:** se sustituyen, cada una con su registro declarado en `superseding-characterization.md` y una prueba equivalente que se ejecuta, las seis pruebas de F4 de D-1:
+   22   - S-1 a S-3, por su premisa;
+   23   - S-4 a S-6, por el tipo o el recuento;
+   24   - S-6 quedaría vacía.
+   25 - **En PB-T4:** al quitar el piloto, sustituirá tres de esos equivalentes.
+   26 - **Lo que no cambia:** la seguridad que protegían las guardas se conserva en los equivalentes. D-2 no es una decisión: es un registro declarado sin `Skip`.
+
+### Q1-a quien usa el codigo del piloto en src — grep -E 'PushBackPilotMaterializer\\.|PushBackPilotStateComparer|PushBackPilotFieldAdapter|PushBackPilotUpdatePlanner\\.Prepare\\b|PushBackPilotUpdateRun\\.(Execute|Precheck)\\b' en src
+    45 coincidencias
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs:65:                if (catalog == null) return PushBackFullWriteComposition.Rejected(PushBackPilotMaterializer.CatalogRequired
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs:69:                    return PushBackFullWriteComposition.Rejected(PushBackPilotMaterializer.InvalidScaleReason);
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs:73:                    return PushBackFullWriteComposition.Rejected(fresh.Reason ?? PushBackPilotMaterializer.UnreadableOrFutu
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs:75:                    return PushBackFullWriteComposition.Rejected(PushBackPilotMaterializer.BaseChangedReason);
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullComposition.cs:82:                return PushBackFullWriteComposition.Rejected(PushBackPilotMaterializer.ComposeFailurePrefix + ex.Message);
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs:52:                if (string.IsNullOrWhiteSpace(originText)) return PushBackFullDraftMaterialization.Failed(PushBackPil
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs:53:                if (catalog == null) return PushBackFullDraftMaterialization.Failed(PushBackPilotMaterializer.Catalog
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs:56:                if (embed == null) return PushBackFullDraftMaterialization.Failed(PushBackPilotMaterializer.Unreadabl
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs:58:                    return PushBackFullDraftMaterialization.Failed(PushBackPilotMaterializer.KindDivergentDiagnostic)
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs:61:                    return PushBackFullDraftMaterialization.Failed(PushBackPilotMaterializer.UnreadableOrFutureDiagno
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs:64:                if (design == null) return PushBackFullDraftMaterialization.Failed(PushBackPilotMaterializer.NoDesign
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs:67:                    return PushBackFullDraftMaterialization.OutOfPilot(PushBackPilotMaterializer.DormantTailOutOfPilo
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftMaterializer.cs:74:                return PushBackFullDraftMaterialization.Failed(PushBackPilotMaterializer.MaterializeFailurePrefix + e
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs:59:                                 && string.Equals(pilot.Detail, PushBackPilotMaterializer.CompositeOutOfPilotReason, String
+    src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs:91:                if (string.Equals(full.Reason, PushBackPilotMaterializer.UnreadableOrFutureDiagnostic, StringComparison.Ord
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs:11:    /// <see cref="PushBackPilotMaterializer.ComposeForWrite"/>, never directly over the state of a draft.
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs:21:    public sealed class PushBackPilotFieldAdapter : IDraftPendingTextAdapter<PushBackPilotDraftState>
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs:33:        /// the materializer, <see cref="PushBackPilotMaterializer.UnreadableOrFutureDiagnostic"/>, stays as its internal
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs:225:            var materialized = PushBackPilotMaterializer.Materialize(scan.RawEnvelopes[scan.OriginKey], catalog!);
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs:230:            if (string.Equals(materialized.Reason, PushBackPilotMaterializer.UnreadableOrFutureDiagnostic, StringCompari
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs:23:    /// The typed result of <see cref="PushBackPilotMaterializer.Materialize"/>: Admitted(state), OutOfPilot(reason) or
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs:212:                var neutralInitial = PushBackPilotStateComparer.Copy(initial);
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs:214:                if (!PushBackPilotStateComparer.Instance.Equals(neutralInitial, current))
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs:223:                if (!PushBackPilotStateComparer.Instance.Equals(initial, fresh.State))
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs:247:            var kept = PushBackPilotStateComparer.Copy(newInitial);
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs:26:    public sealed class PushBackPilotStateComparer : IEqualityComparer<PushBackPilotDraftState>
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs:28:        public static PushBackPilotStateComparer Instance { get; } = new PushBackPilotStateComparer();
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:16:    /// I-64 F4-T4A1 (D-T4A1-04, N-7) — the explicit snapshot of a draft that <see cref="PushBackPilotUpdatePlanner.Prepare
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:67:                PushBackPilotStateComparer.Copy(draft.CurrentDraftState),
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:133:    /// <summary>The seven outcomes of <see cref="PushBackPilotUpdatePlanner.Prepare"/>, in the order in which they are ev
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:158:    /// <summary>The result of <see cref="PushBackPilotUpdatePlanner.Prepare"/>. Immutable.</summary>
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:480:            var composition = PushBackPilotMaterializer.ComposeForWrite(input.InitialDraftState, input.CurrentDraftState, 
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:492:                composition.IsComposed ? null : composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:512:                composition.IsComposed ? null : composition.Reason ?? PushBackPilotMaterializer.NonPilotContentReason);
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:134:            var result = PushBackPilotUpdatePlanner.Prepare(PushBackPilotPrepareInput.From(draft), null!, null!);
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:181:                (_, scan, catalog) => PushBackPilotUpdatePlanner.Prepare(input!, PushBackPilotIntentReader.Read(scan, catal
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:42:        private static readonly PushBackPilotFieldAdapter PilotFieldAdapter = new();
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:351:                    PushBackPilotStateComparer.Instance,
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:352:                    PushBackPilotStateComparer.Copy);
+    src/RackCad.Application/Workspace/WorkspaceHostCore.cs:694:                var kept = draft.KeepMineOnCurrentVersion(pilot.Read, PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);

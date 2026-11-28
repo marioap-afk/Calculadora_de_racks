@@ -1,0 +1,16 @@
+diff --git a/src/RackCad.Plugin/RackPushBackCommands.cs b/src/RackCad.Plugin/RackPushBackCommands.cs
+index 75db0c6a..38a3c1a3 100644
+--- a/src/RackCad.Plugin/RackPushBackCommands.cs
++++ b/src/RackCad.Plugin/RackPushBackCommands.cs
+@@ -460,6 +460,11 @@ namespace RackCad.Plugin
+             return new RackEmbedStore().Serialize(embed);
+         }
+ 
++        private static void DeadCallerOwnedProbe(Database database, ObjectId blockId, PushBackSystem system)
++        {
++            new PushBackPlantaDrawService().PrepareRedraw(database, blockId, system, null);
++        }
++
+         private static bool IsPushBackFrontal(RackEmbedDocument embed)
+         {
+             var decoded = RackCommandSupport.DecodeView(embed);

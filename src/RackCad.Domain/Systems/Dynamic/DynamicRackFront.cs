@@ -75,6 +75,21 @@ namespace RackCad.Domain.Systems.Dynamic
         /// <summary>Optional first load-beam elevation for this front; null keeps the rack-wide legacy value.</summary>
         public double? FirstLevelHeight { get; set; }
 
+        /// <summary>
+        /// The roller of the bed of this front, by its catalog id (step 3 of Dinámico: the Owner, «Debe de ser todo modificable», by front);
+        /// null = the default roller (1.9 in), as before.
+        /// </summary>
+        public string RollerId { get; set; }
+
+        /// <summary>The pitch of the rollers (in); null = the minimum the diameter allows (2 in with 1.9, 3 in with 2.5), as before.</summary>
+        public double? RollerPitch { get; set; }
+
+        /// <summary>A brake every N rollers; null = by the depth of the pallet, as before.</summary>
+        public int? BrakeEveryRollers { get; set; }
+
+        /// <summary>The slope of the bed, in inches of rise per foot of depth; null = 7/16, as before.</summary>
+        public double? SlopePerFoot { get; set; }
+
         /// <summary>Editable intermediate-beam PERALTE by level for this front, level 1 first.</summary>
         public IList<double> IntermediateBeamDepths { get; } = new List<double>();
 
@@ -126,6 +141,21 @@ namespace RackCad.Domain.Systems.Dynamic
 
         /// <summary>Resolved first load-beam elevation owned by this front.</summary>
         public double FirstLevelHeight { get; set; } = DynamicRackDefaults.DefaultFirstLevelHeight;
+
+        /// <summary>
+        /// The roller of the bed of this front, by its catalog id (step 3 of Dinámico: the Owner, «Debe de ser todo modificable», by front);
+        /// null = the default roller (1.9 in), as before.
+        /// </summary>
+        public string RollerId { get; set; }
+
+        /// <summary>The pitch of the rollers (in); null = the minimum the diameter allows (2 in with 1.9, 3 in with 2.5), as before.</summary>
+        public double? RollerPitch { get; set; }
+
+        /// <summary>A brake every N rollers; null = by the depth of the pallet, as before.</summary>
+        public int? BrakeEveryRollers { get; set; }
+
+        /// <summary>The slope of the bed, in inches of rise per foot of depth; null = 7/16, as before.</summary>
+        public double? SlopePerFoot { get; set; }
 
         /// <summary>Resolved commercial post height required by this front's own load levels.</summary>
         public double Height { get; set; }

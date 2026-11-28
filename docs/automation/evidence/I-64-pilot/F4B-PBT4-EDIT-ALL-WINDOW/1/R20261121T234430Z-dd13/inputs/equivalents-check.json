@@ -1,0 +1,53 @@
+{
+  "Regla": "Los equivalentes de la lista (INV-PBT4C-02: byte a byte, su sha256 EquivalentSha de la precondicion 6 docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-precondition6.json), medidos por la sesion con pbt4c_lib.equiv_sha_check sobre git show RedSha:<ruta> (el blob, con CRLF normalizado a LF y sin BOM): Ok true y Mal vacio; Sha256 es el medido de cada uno y EquivalentSha el de la precondicion 6. Filtro: el del RequiredTests de su clase exacta (D-S8), con su ExpectRed. Un equivalente que falla donde el paquete no lo espera es PBT4C-C07, no PBT4C-C16. GreenLiteral: el GREEN literal del paquete (INV-PBT4C-02, pbt4c-green-v51.txt): para cada ruta, git show CurrentSha:<ruta>, con CRLF normalizado a LF, tiene ese sha256 (el del GreenFiles de la precondicion 6), y el GREEN no toca otra ruta de src/.",
+  "BaseSha": "d502601477c21972ca2109b0d5c25c6fddfe4989",
+  "RedSha": "280c79beac61d31b03f86488c03686eef4f694bc",
+  "RedRepairSha": null,
+  "Ok": true,
+  "Mal": {},
+  "Equivalentes": {
+    "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs": {
+      "Sha256": "4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce",
+      "EquivalentSha": "4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce",
+      "Filtro": "FullyQualifiedName~RackCad.Tests.PushBackEditAllFullCopyGuardTests",
+      "ExpectRed": false
+    },
+    "tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs": {
+      "Sha256": "3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b",
+      "EquivalentSha": "3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b",
+      "Filtro": "FullyQualifiedName~RackCad.Tests.PushBackEditAllNameWritersGuardTests",
+      "ExpectRed": false
+    },
+    "tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs": {
+      "Sha256": "1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250",
+      "EquivalentSha": "1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250",
+      "Filtro": "FullyQualifiedName~RackCad.Tests.PushBackEditAllPortEquivalenceGuardTests",
+      "ExpectRed": false
+    },
+    "tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs": {
+      "Sha256": "7c2458260ef301d7f05bfaff8e1e8c4a4a618f25fd7022705d55dee32dbe78d2",
+      "EquivalentSha": "7c2458260ef301d7f05bfaff8e1e8c4a4a618f25fd7022705d55dee32dbe78d2",
+      "Filtro": "FullyQualifiedName~RackCad.UI.Tests.PushBackEditAllApplyCloseTests",
+      "ExpectRed": true
+    }
+  },
+  "GreenLiteral": {
+    "Pieza": "pbt4c-green-v51.txt",
+    "Sha256LF": {
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs": "b3a2622b490e2e787088680743662365bf9e4b0016cad7578703281b6b1c0863",
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs": "b937f893360b39c5751b5b5da9fe3f976a76b256799fbf685a2dc4193f141e96",
+      "src/RackCad.Application/Workspace/WorkspaceHostCore.cs": "3fcabacbc9a568cc2b777d4e8bd356b76f55273f674d0ab604177f36ffeb5fee",
+      "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs": "a86d1f72c7884d5870d9107df65d4e1b5d577f801cfc080db5cb7202bcffcd4d",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs": "9448d170263905e37c24035699cf69e8419c381add53c45c389cd415d6669539",
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs": "417c36cd68267ecec960e89c4908a237d8c9d89093ab93aecebd3f80a862f845",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml": "3fffd2cdd707bbf37ac903ff1d65d8040ddde091a319dc6c439255440f63a70b",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs": "b21633ea1b82507da4d69b0d119d958cde30480d0f023798d1bad24d5b0f4342",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs": "597fa16486e836a5dad62251367029d4c8939ae3fb11834ee26b3598a70a31b0",
+      "src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs": "9d8aa1b5770c5705cc4daf38541bd01cc00df70652741547b9a83ef582d3dadf",
+      "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs": "e93aa1d793588c5eb4d842db97a6ac55716bedaab607059046fdbecc79feb28b",
+      "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs": "b08cf5c7437810427645efb5e2f4592c6c5032cea5abe27d01291f42a0e53b5a",
+      "src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs": "12e7786a1e39cf9f7c3b5be4137baf93df6b262fac2683eb0d04775a5e1a9401"
+    }
+  },
+  "TablaDeRR3": "leida con la lectura del generador"
+}

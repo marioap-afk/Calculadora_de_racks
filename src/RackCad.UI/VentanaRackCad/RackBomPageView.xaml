@@ -1,0 +1,804 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.RackBomPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             AutomationProperties.Name="BOM y lista de racks"
+             FontFamily="Segoe UI"
+             FontSize="12"
+             Background="{DynamicResource WindowBackgroundBrush}">
+    <!-- T4 bom (I-64 A-14, line D; prototype «bom»): the page «BOM y lista de racks» of the RackCad window. ONE page, no modal window, for
+         what RACKLISTA, RACKBOMTOTAL and the BOM of a rack did. The drawing is read by AutoCAD (RACKBOMLEER, with no undo marker); nothing
+         here writes the drawing. The only dialog is «Guardar como…», and only when asked. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="FlagToVisibility" />
+            <Style x:Key="OptionalText" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="PageText" TargetType="TextBlock" BasedOn="{StaticResource OptionalText}">
+                <Setter Property="Margin" Value="0,0,0,8" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+            </Style>
+            <Style x:Key="Banner" TargetType="Border">
+                <Setter Property="Padding" Value="10,8" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
+                <Setter Property="Background" Value="{DynamicResource ShellSurfaceBrush}" />
+            </Style>
+            <Style x:Key="BannerTitle" TargetType="TextBlock" BasedOn="{StaticResource OptionalText}">
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,0,0,4" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+            </Style>
+            <Style x:Key="BannerText" TargetType="TextBlock" BasedOn="{StaticResource OptionalText}">
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+            </Style>
+            <Style x:Key="SmallButton" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                <Setter Property="Padding" Value="10,3" />
+                <Setter Property="Margin" Value="0,6,8,0" />
+            </Style>
+            <Style x:Key="ColumnHead" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+            </Style>
+            <!-- A header of the table that orders it: a flat button. -->
+            <Style x:Key="SortButton" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0,2" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!-- A tag of a rack: blocked, out of the total, with changes. -->
+            <Style x:Key="TagBorder" TargetType="Border">
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Padding" Value="6,0" />
+                <Setter Property="Margin" Value="6,0,0,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding TagKind}" Value="Bloqueado">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding TagKind}" Value="Fuera">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusInfoBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding TagKind}" Value="Cambios">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Tag}" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <!-- The dot of the state of a rack, as the side column. -->
+            <Style x:Key="StateDot" TargetType="Ellipse">
+                <Setter Property="Width" Value="8" />
+                <Setter Property="Height" Value="8" />
+                <Setter Property="Margin" Value="0,0,6,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Fill" Value="{DynamicResource ShellTextSecondaryBrush}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding StatusKind}" Value="Limpio">
+                        <Setter Property="Fill" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding StatusKind}" Value="Modificado">
+                        <Setter Property="Fill" Value="{DynamicResource ShellStatusWarningBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding StatusKind}" Value="Obsoleto">
+                        <Setter Property="Fill" Value="{DynamicResource ShellStatusErrorBrush}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <!-- A tab or a segmented choice: the chosen one is marked. -->
+            <Style x:Key="TabButton" TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                <Setter Property="Padding" Value="12,4" />
+                <Setter Property="Margin" Value="0,0,6,0" />
+            </Style>
+            <!-- One piece of a component: «c/u» and its amount. -->
+            <DataTemplate x:Key="PieceRow">
+                <Grid Margin="0,1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="64" />
+                        <ColumnDefinition Width="44" />
+                        <ColumnDefinition Width="64" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Category}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    <StackPanel Grid.Column="1" Margin="4,0">
+                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBlock Text="{Binding Profile}" Style="{StaticResource OptionalText}" FontSize="10" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="2" Text="{Binding Length}" TextAlignment="Right" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <TextBlock Grid.Column="3" Text="{Binding Each}" TextAlignment="Right" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    <TextBlock Grid.Column="4" Text="{Binding Amount}" TextAlignment="Right" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer x:Name="BomScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="14,10">
+            <!-- The head: the title, the state of the reading and the actions of the whole drawing. -->
+            <DockPanel LastChildFill="True">
+                <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Top">
+                    <Button x:Name="RecalculateButton" Content="{Binding RecalculateLabel}" Margin="8,0,0,6" Padding="12,4"
+                            IsEnabled="{Binding CanRecalculate}" AutomationProperties.Name="{Binding RecalculateAutomationName}"
+                            ToolTip="AutoCAD lee el dibujo con RACKBOMLEER, una orden sin marca de Deshacer." Click="OnRecalculateClick">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RecalculateIsPrimary}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="ExportExcelButton" Content="Exportar Excel" Margin="8,0,0,6" Padding="12,4"
+                            Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanExportDrawing}" ToolTip="{Binding ExportDrawingTip}"
+                            AutomationProperties.Name="Exportar a Excel el BOM del dibujo" Click="OnExportDrawingExcelClick" />
+                    <Button x:Name="ExportCsvButton" Content="Exportar CSV" Margin="8,0,0,6" Padding="12,4"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanExportDrawing}" ToolTip="{Binding ExportDrawingTip}"
+                            AutomationProperties.Name="Exportar a CSV el BOM del dibujo" Click="OnExportDrawingCsvClick" />
+                </WrapPanel>
+                <WrapPanel VerticalAlignment="Center">
+                    <TextBlock Text="BOM y lista de racks" FontSize="18" FontWeight="SemiBold" Margin="0,0,10,4"
+                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    <Border x:Name="ChipBorder" BorderThickness="1" CornerRadius="10" Padding="8,1" Margin="0,0,10,4" VerticalAlignment="Center"
+                            AutomationProperties.Name="{Binding ChipText}">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ChipKind}" Value="Limpio">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ChipKind}" Value="Modificado">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ChipKind}" Value="Escribiendo">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ChipKind}" Value="Error">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock x:Name="ChipText" Text="{Binding ChipText}" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    </Border>
+                    <TextBlock x:Name="ReadText" Text="{Binding ReadText}" VerticalAlignment="Center" Margin="0,0,0,4"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </WrapPanel>
+            </DockPanel>
+            <TextBlock x:Name="SubText" Text="{Binding SubText}" Style="{StaticResource PageText}" />
+
+            <!-- AutoCAD reads the drawing: the number of the request and «Dejar de esperar». -->
+            <Border x:Name="ReadingBanner" Style="{StaticResource Banner}" BorderBrush="{DynamicResource ShellStatusInfoBrush}"
+                    Visibility="{Binding ShowReading, Converter={StaticResource FlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="AutoCAD está leyendo el dibujo" Style="{StaticResource BannerTitle}" />
+                    <TextBlock x:Name="ReadingText" Text="{Binding ReadingText}" Style="{StaticResource BannerText}" />
+                    <Button x:Name="BomStopWaitingButton" Content="Dejar de esperar" HorizontalAlignment="Left" Style="{StaticResource SmallButton}"
+                            AutomationProperties.Name="Dejar de esperar la lectura del BOM" Click="OnStopWaitingClick" />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="UnreadBanner" Style="{StaticResource Banner}"
+                    Visibility="{Binding ShowUnread, Converter={StaticResource FlagToVisibility}}">
+                <TextBlock x:Name="UnreadText" Text="{Binding UnreadText}" Style="{StaticResource BannerText}" />
+            </Border>
+
+            <Border x:Name="FailureBanner" Style="{StaticResource Banner}" BorderBrush="{DynamicResource ShellStatusErrorBrush}"
+                    Visibility="{Binding HasFailure, Converter={StaticResource FlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="No se pudo leer el BOM del dibujo" Style="{StaticResource BannerTitle}" />
+                    <TextBlock x:Name="FailureText" Text="{Binding FailureText}" Style="{StaticResource BannerText}" />
+                </StackPanel>
+            </Border>
+
+            <!-- BM-05: what prevents the total, rack by rack, with «Abrir». -->
+            <Border x:Name="RefusalBanner" Style="{StaticResource Banner}" BorderBrush="{DynamicResource ShellStatusErrorBrush}"
+                    Visibility="{Binding HasRefusals, Converter={StaticResource FlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="No se generó el BOM total" Style="{StaticResource BannerTitle}" />
+                    <TextBlock x:Name="RefusalHead" Text="{Binding RefusalHead}" Style="{StaticResource BannerText}" />
+                    <ItemsControl x:Name="RefusalList" ItemsSource="{Binding Refusals}" Margin="0,4,0,0" AutomationProperties.Name="Racks que impiden el total">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Margin="0,2">
+                                    <Button DockPanel.Dock="Right" Content="{Binding OpenLabel}" Style="{StaticResource SmallButton}" Margin="8,0,0,0"
+                                            AutomationProperties.Name="{Binding OpenAutomationName}"
+                                            Visibility="{Binding CanOpen, Converter={StaticResource FlagToVisibility}}" Click="OnOpenNoticeClick" />
+                                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                                        <Run Text="{Binding Name, Mode=OneWay}" FontWeight="SemiBold" /><Run Text=": " /><Run Text="{Binding Reason, Mode=OneWay}" />
+                                    </TextBlock>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Margin="0,4,0,0" Style="{StaticResource BannerText}"
+                               Text="Corrígelo y pulsa «Calcular de nuevo». La tabla de racks sigue mostrando el BOM de cada rack que sí se puede cotizar." />
+                </StackPanel>
+            </Border>
+
+            <!-- A rack that stays out of the total is named above it (dolor 3). -->
+            <Border x:Name="SkippedBanner" Style="{StaticResource Banner}" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                    Visibility="{Binding HasSkipped, Converter={StaticResource FlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock x:Name="SkippedHead" Text="{Binding SkippedHead}" Style="{StaticResource BannerTitle}" />
+                    <ItemsControl x:Name="SkippedList" ItemsSource="{Binding Skipped}" AutomationProperties.Name="Racks fuera del total">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Margin="0,2">
+                                    <Button DockPanel.Dock="Right" Content="{Binding OpenLabel}" Style="{StaticResource SmallButton}" Margin="8,0,0,0"
+                                            AutomationProperties.Name="{Binding OpenAutomationName}"
+                                            Visibility="{Binding CanOpen, Converter={StaticResource FlagToVisibility}}" Click="OnOpenNoticeClick" />
+                                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}">
+                                        <Run Text="{Binding Name, Mode=OneWay}" FontWeight="SemiBold" /><Run Text=": " /><Run Text="{Binding Reason, Mode=OneWay}" />
+                                    </TextBlock>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Margin="0,4,0,0" Style="{StaticResource BannerText}"
+                               Text="El total, las cifras de arriba y el Excel del dibujo no lo incluyen." />
+                </StackPanel>
+            </Border>
+
+            <!-- BM-01: after a command the BOM may be out of date; it is read again only when asked. -->
+            <Border x:Name="StaleBanner" Style="{StaticResource Banner}" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                    Visibility="{Binding ShowStale, Converter={StaticResource FlagToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="Puede no estar al día" Style="{StaticResource BannerTitle}" />
+                    <TextBlock x:Name="StaleText" Text="{Binding StaleText}" Style="{StaticResource BannerText}" />
+                    <Button x:Name="StaleRecalculateButton" Content="Calcular de nuevo" HorizontalAlignment="Left" Margin="0,6,0,0" Padding="10,3"
+                            Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanRecalculate}"
+                            AutomationProperties.Name="Calcular de nuevo el BOM (aviso)" Click="OnRecalculateClick" />
+                </StackPanel>
+            </Border>
+
+            <!-- Exporting a BOM that may be out of date asks in line. -->
+            <Border x:Name="AskBanner" Style="{StaticResource Banner}" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                    Visibility="{Binding HasAsk, Converter={StaticResource FlagToVisibility}}" AutomationProperties.Name="Exportar con el BOM desactualizado">
+                <StackPanel>
+                    <TextBlock x:Name="AskTitle" Text="{Binding AskTitle}" Style="{StaticResource BannerTitle}" />
+                    <TextBlock x:Name="AskText" Text="{Binding AskText}" Style="{StaticResource BannerText}" />
+                    <WrapPanel>
+                        <Button x:Name="AskRecalculateButton" Content="Calcular y exportar" Margin="0,6,8,0" Padding="10,3"
+                                Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="Calcular y exportar" Click="OnAskRecalculateClick" />
+                        <Button x:Name="AskExportButton" Content="{Binding AskExportLabel}" Style="{StaticResource SmallButton}"
+                                AutomationProperties.Name="Exportar lo que ya se leyó" Click="OnAskExportClick" />
+                        <Button x:Name="AskCancelButton" Content="Cancelar" Style="{StaticResource SmallButton}"
+                                AutomationProperties.Name="Cancelar la exportación" Click="OnAskCancelClick" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- BM-03: the file was saved next to the drawing; no MessageBox. -->
+            <Border x:Name="ExportedBanner" Visibility="{Binding HasExported, Converter={StaticResource FlagToVisibility}}">
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource Banner}">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ExportedFailed}" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel>
+                    <TextBlock x:Name="ExportedTitle" Text="{Binding ExportedTitle}" Style="{StaticResource BannerTitle}" />
+                    <TextBlock x:Name="ExportedDetail" Text="{Binding ExportedDetail}" Style="{StaticResource BannerText}" />
+                    <WrapPanel>
+                        <Button x:Name="OpenExportedButton" Content="Abrir" Style="{StaticResource SmallButton}" IsEnabled="{Binding CanOpenExported}"
+                                AutomationProperties.Name="Abrir el archivo exportado" Click="OnOpenExportedClick" />
+                        <Button x:Name="ShowExportedButton" Content="Mostrar en la carpeta" Style="{StaticResource SmallButton}" IsEnabled="{Binding CanOpenExported}"
+                                AutomationProperties.Name="Mostrar el archivo exportado en su carpeta" Click="OnShowExportedClick" />
+                        <Button x:Name="SaveExportedAsButton" Content="Guardar como…" Style="{StaticResource SmallButton}"
+                                AutomationProperties.Name="Guardar el archivo exportado como" Click="OnSaveExportedAsClick" />
+                        <Button x:Name="CloseExportedButton" Content="Cerrar aviso" Style="{StaticResource SmallButton}"
+                                AutomationProperties.Name="Cerrar el aviso del archivo exportado" Click="OnCloseExportedClick" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- BM-02: the racks with changes not written in the editors of the window. -->
+            <Border x:Name="DraftsBanner" Style="{StaticResource Banner}" BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                    Visibility="{Binding HasDrafts, Converter={StaticResource FlagToVisibility}}">
+                <DockPanel>
+                    <Button x:Name="ShowDraftButton" DockPanel.Dock="Right" Content="Ver su BOM" Style="{StaticResource SmallButton}" Margin="8,0,0,0"
+                            VerticalAlignment="Center" AutomationProperties.Name="Ver el BOM del rack con cambios sin escribir" Click="OnShowFirstDraftClick" />
+                    <TextBlock x:Name="DraftsText" Text="{Binding DraftsText}" Style="{StaticResource BannerText}" VerticalAlignment="Center" />
+                </DockPanel>
+            </Border>
+
+            <Border x:Name="PageMessagePanel" Style="{StaticResource Banner}"
+                    Visibility="{Binding HasMessage, Converter={StaticResource FlagToVisibility}}">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Entendido" Style="{StaticResource SmallButton}" Margin="8,0,0,0" VerticalAlignment="Top"
+                            AutomationProperties.Name="Quitar el mensaje del BOM" Click="OnDismissMessageClick" />
+                    <TextBlock x:Name="PageMessageText" Text="{Binding Message}" Style="{StaticResource BannerText}" />
+                </DockPanel>
+            </Border>
+
+            <!-- The figures of the drawing, and the two tabs. -->
+            <StackPanel Visibility="{Binding ShowContent, Converter={StaticResource FlagToVisibility}}">
+                <WrapPanel x:Name="StatsPanel" Margin="0,2,0,8" AutomationProperties.Name="Resumen del dibujo">
+                    <StackPanel Margin="0,0,28,4" MinWidth="110">
+                        <TextBlock Text="Racks en el total" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBlock x:Name="StatRacksText" Text="{Binding StatRacks}" FontSize="17" FontWeight="Bold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBlock Text="{Binding StatRacksHint}" FontSize="11" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,0,28,4" MinWidth="110">
+                        <TextBlock Text="Copias" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBlock x:Name="StatCopiesText" Text="{Binding StatCopies}" FontSize="17" FontWeight="Bold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBlock Text="referencias en el modelo" FontSize="11" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,0,28,4" MinWidth="110">
+                        <TextBlock Text="Componentes" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBlock x:Name="StatComponentsText" Text="{Binding StatComponents}" FontSize="17" FontWeight="Bold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBlock Text="× copias" FontSize="11" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,0,28,4" MinWidth="110">
+                        <TextBlock Text="Piezas" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBlock x:Name="StatPiecesText" Text="{Binding StatPieces}" FontSize="17" FontWeight="Bold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBlock Text="× copias" FontSize="11" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                </WrapPanel>
+
+                <WrapPanel Margin="0,0,0,8" AutomationProperties.Name="BOM y lista de racks: pestañas">
+                    <Button x:Name="RacksTabButton" Content="{Binding RacksTabLabel}" AutomationProperties.Name="Pestaña Racks del dibujo" Click="OnRacksTabClick">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource TabButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRacksTab}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                        <Setter Property="AutomationProperties.ItemStatus" Value="elegida" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="TotalTabButton" Content="BOM total" AutomationProperties.Name="Pestaña BOM total" Click="OnTotalTabClick">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource TabButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsTotalTab}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                        <Setter Property="AutomationProperties.ItemStatus" Value="elegida" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </WrapPanel>
+
+                <!-- «Racks del dibujo»: the table and the BOM of the rack chosen. -->
+                <Grid x:Name="RacksTab" Visibility="{Binding IsRacksTab, Converter={StaticResource FlagToVisibility}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="300" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <!-- Below NarrowWidth the inspector goes under the table (the code-behind moves it), as the inspector of the editors. -->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel x:Name="TablePanel" Grid.Column="0" Margin="0,0,12,0">
+                        <TextBlock x:Name="ShowText" Text="{Binding ShowText}" Style="{StaticResource PageText}" />
+                        <Grid Margin="4,0,4,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="86" />
+                                <ColumnDefinition Width="58" />
+                                <ColumnDefinition Width="86" />
+                                <ColumnDefinition Width="64" />
+                                <ColumnDefinition Width="76" />
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="SortNameButton" Grid.Column="0" Content="{Binding NameHeader}" Tag="name" Style="{StaticResource SortButton}"
+                                    AutomationProperties.Name="Ordenar por rack" Click="OnSortClick" />
+                            <Button x:Name="SortKindButton" Grid.Column="1" Content="{Binding KindHeader}" Tag="kind" Style="{StaticResource SortButton}"
+                                    AutomationProperties.Name="Ordenar por sistema" Click="OnSortClick" />
+                            <Button x:Name="SortCopiesButton" Grid.Column="2" Content="{Binding CopiesHeader}" Tag="copies" Style="{StaticResource SortButton}"
+                                    HorizontalAlignment="Right" AutomationProperties.Name="Ordenar por copias" Click="OnSortClick" />
+                            <TextBlock Grid.Column="3" Text="Componentes" Style="{StaticResource ColumnHead}" TextAlignment="Right" VerticalAlignment="Center" />
+                            <Button x:Name="SortPiecesButton" Grid.Column="4" Content="{Binding PiecesHeader}" Tag="pieces" Style="{StaticResource SortButton}"
+                                    HorizontalAlignment="Right" AutomationProperties.Name="Ordenar por piezas" Click="OnSortClick" />
+                            <TextBlock Grid.Column="5" Text="En el dibujo" Style="{StaticResource ColumnHead}" TextAlignment="Right" VerticalAlignment="Center" />
+                        </Grid>
+                        <!-- The selection is synchronized by the code-behind: a new list of rows (a filter, an order, a reading) keeps the rack chosen. -->
+                        <ListBox x:Name="RackTable" ItemsSource="{Binding Rows}" SelectedValuePath="RackId"
+                                 SelectionChanged="OnRackSelectionChanged" HorizontalContentAlignment="Stretch"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                 BorderBrush="{DynamicResource ShellBorderBrush}" AutomationProperties.Name="Racks del dibujo">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="AutomationProperties.Name" Value="{Binding AutomationName}" />
+                                    <Setter Property="Padding" Value="4,4" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="86" />
+                                            <ColumnDefinition Width="58" />
+                                            <ColumnDefinition Width="86" />
+                                            <ColumnDefinition Width="64" />
+                                            <ColumnDefinition Width="76" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Style="{StaticResource StateDot}" />
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                <Border Style="{StaticResource TagBorder}">
+                                                    <TextBlock Text="{Binding Tag}" FontSize="11" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Views}" Margin="14,0,0,0" FontSize="11" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding Kind}" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Copies}" TextAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        <TextBlock Grid.Column="3" Text="{Binding Components}" ToolTip="{Binding ComponentsTip}" TextAlignment="Right" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        <TextBlock Grid.Column="4" Text="{Binding Pieces}" TextAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                        <TextBlock Grid.Column="5" Text="{Binding InDrawing}" TextAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock x:Name="NoRowsText" Text="{Binding NoRowsText}" Style="{StaticResource PageText}" Margin="0,6,0,0" />
+                        <TextBlock Margin="0,6,0,0" Style="{StaticResource PageText}"
+                                   Text="Componentes y piezas de una copia; «En el dibujo» multiplica las piezas por las copias. Se listan los racks colocados en el modelo, los mismos que cuenta el BOM y que muestra la columna. Pulsa un encabezado para ordenar." />
+                    </StackPanel>
+
+                    <!-- The BOM of the rack chosen: several components unfold at once; each piece says «c/u» and what the copy takes. -->
+                    <Border x:Name="InspectorBorder" Grid.Column="1" Width="380" Padding="12,0,0,0" BorderThickness="1,0,0,0"
+                            BorderBrush="{DynamicResource ShellBorderBrush}" AutomationProperties.Name="BOM del rack elegido">
+                        <StackPanel x:Name="InspectorPanel">
+                            <TextBlock x:Name="NoSelectionText" Text="{Binding NoSelectionText}" Style="{StaticResource PageText}" />
+                            <StackPanel Visibility="{Binding HasSelection, Converter={StaticResource FlagToVisibility}}">
+                                <WrapPanel>
+                                    <TextBlock x:Name="InspectorTitle" Text="{Binding InspectorTitle}" FontSize="15" FontWeight="Bold" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <Border x:Name="InspectorTagBorder" Margin="6,0,0,0">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="1" />
+                                                <Setter Property="CornerRadius" Value="8" />
+                                                <Setter Property="Padding" Value="6,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource ShellBorderBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding InspectorTagKind}" Value="Bloqueado">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding InspectorTagKind}" Value="Fuera">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding InspectorTagKind}" Value="Cambios">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding InspectorTag}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding InspectorTag}" FontSize="11" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    </Border>
+                                </WrapPanel>
+                                <TextBlock x:Name="InspectorSub" Text="{Binding InspectorSub}" Style="{StaticResource PageText}" Margin="0,2,0,4" />
+                                <WrapPanel>
+                                    <Button x:Name="InspectorOpenButton" Content="Abrir" Style="{StaticResource SmallButton}" Margin="0,0,6,6"
+                                            AutomationProperties.Name="Abrir el rack elegido" Click="OnOpenSelectedClick" />
+                                    <Button x:Name="InspectorViewButton" Content="Ver en el dibujo" Style="{StaticResource SmallButton}" Margin="0,0,6,6"
+                                            AutomationProperties.Name="Ver el rack elegido en el dibujo" Click="OnViewSelectedClick" />
+                                    <Button x:Name="InspectorNextCopyButton" Content="Siguiente copia" Style="{StaticResource SmallButton}" Margin="0,0,6,6"
+                                            AutomationProperties.Name="Siguiente copia del rack elegido"
+                                            Visibility="{Binding HasNextCopy, Converter={StaticResource FlagToVisibility}}" Click="OnNextCopyClick" />
+                                </WrapPanel>
+
+                                <StackPanel Visibility="{Binding HasDraftChoice, Converter={StaticResource FlagToVisibility}}" Margin="0,0,0,6">
+                                    <WrapPanel AutomationProperties.Name="Qué BOM ver">
+                                        <Button x:Name="SourceDrawingButton" Content="Escrito en el dibujo" AutomationProperties.Name="Qué BOM ver: escrito en el dibujo"
+                                                Click="OnSourceDrawingClick">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource TabButton}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ShowsDrawing}" Value="True">
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                                            <Setter Property="BorderThickness" Value="2" />
+                                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                                            <Setter Property="AutomationProperties.ItemStatus" Value="elegido" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                        <Button x:Name="SourceDraftButton" Content="Borrador del editor" AutomationProperties.Name="Qué BOM ver: borrador del editor"
+                                                Click="OnSourceDraftClick">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource TabButton}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ShowsDraft}" Value="True">
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource ShellSelectionPrimaryBrush}" />
+                                                            <Setter Property="BorderThickness" Value="2" />
+                                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                                            <Setter Property="AutomationProperties.ItemStatus" Value="elegido" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </WrapPanel>
+                                    <TextBlock x:Name="SourceNote" Text="{Binding SourceNote}" Style="{StaticResource PageText}" Margin="0,4,0,0" FontStyle="Italic" />
+                                </StackPanel>
+
+                                <TextBlock x:Name="BlockedNote" Text="{Binding BlockedNote}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
+                                           Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                                <TextBlock x:Name="OutNote" Text="{Binding OutNote}" Style="{StaticResource OptionalText}" Margin="0,0,0,6"
+                                           Foreground="{DynamicResource ShellStatusWarningBrush}" />
+
+                                <StackPanel Visibility="{Binding HasRackBom, Converter={StaticResource FlagToVisibility}}">
+                                    <TextBlock x:Name="RackSummary" Text="{Binding RackSummary}" Style="{StaticResource OptionalText}" FontWeight="SemiBold" Margin="0,0,0,4"
+                                               Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <StackPanel Visibility="{Binding IsTree, Converter={StaticResource FlagToVisibility}}">
+                                        <WrapPanel>
+                                            <Button x:Name="ExpandAllButton" Content="Desplegar todo" Style="{StaticResource SmallButton}" Margin="0,0,6,4"
+                                                    AutomationProperties.Name="Desplegar todos los componentes del rack" Click="OnExpandAllClick" />
+                                            <Button x:Name="CollapseAllButton" Content="Plegar todo" Style="{StaticResource SmallButton}" Margin="0,0,6,4"
+                                                    AutomationProperties.Name="Plegar todos los componentes del rack" Click="OnCollapseAllClick" />
+                                        </WrapPanel>
+                                        <ItemsControl x:Name="ComponentList" ItemsSource="{Binding Components}" AutomationProperties.Name="Componentes del rack">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Margin="0,1">
+                                                        <ToggleButton IsChecked="{Binding IsExpanded, Mode=TwoWay}" HorizontalContentAlignment="Stretch" Padding="4,3"
+                                                                      Background="Transparent" BorderThickness="0" AutomationProperties.Name="{Binding ToggleName}">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="14" />
+                                                                    <ColumnDefinition Width="86" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="54" />
+                                                                    <ColumnDefinition Width="50" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Grid.Column="0" Foreground="{DynamicResource ShellTextSecondaryBrush}">
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="TextBlock">
+                                                                            <Setter Property="Text" Value="▸" />
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                                                                                    <Setter Property="Text" Value="▾" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+                                                                <TextBlock Grid.Column="1" Text="{Binding Category}" FontWeight="SemiBold" TextWrapping="Wrap"
+                                                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                                <TextBlock Grid.Column="2" Text="{Binding Description}" TextWrapping="Wrap" Margin="4,0"
+                                                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                                <TextBlock Grid.Column="3" Text="{Binding Length}" TextAlignment="Right" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                                                <TextBlock Grid.Column="4" Text="{Binding Quantity}" TextAlignment="Right" FontWeight="SemiBold"
+                                                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                            </Grid>
+                                                        </ToggleButton>
+                                                        <Border Margin="18,0,0,6" Padding="6,4" CornerRadius="6" Background="{DynamicResource ShellWindowBackgroundBrush}"
+                                                                Visibility="{Binding IsExpanded, Converter={StaticResource FlagToVisibility}}">
+                                                            <StackPanel>
+                                                                <Grid Visibility="{Binding HasPieces, Converter={StaticResource FlagToVisibility}}">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="110" />
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="64" />
+                                                                        <ColumnDefinition Width="44" />
+                                                                        <ColumnDefinition Width="64" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBlock Grid.Column="0" Text="Pieza" Style="{StaticResource ColumnHead}" />
+                                                                    <TextBlock Grid.Column="1" Text="Descripción" Style="{StaticResource ColumnHead}" Margin="4,0" />
+                                                                    <TextBlock Grid.Column="2" Text="Long. (in)" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                                                                    <TextBlock Grid.Column="3" Text="c/u" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                                                                    <TextBlock Grid.Column="4" Text="Por copia" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                                                                </Grid>
+                                                                <ItemsControl ItemsSource="{Binding Pieces}" ItemTemplate="{StaticResource PieceRow}" />
+                                                                <TextBlock Text="{Binding NoPiecesText}" Style="{StaticResource OptionalText}" FontSize="11"
+                                                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                    <StackPanel Visibility="{Binding IsFlat, Converter={StaticResource FlagToVisibility}}">
+                                        <TextBlock x:Name="FlatNote" Text="{Binding FlatNote}" Style="{StaticResource PageText}" FontSize="11" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="110" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="64" />
+                                                <ColumnDefinition Width="44" />
+                                                <ColumnDefinition Width="64" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Pieza" Style="{StaticResource ColumnHead}" />
+                                            <TextBlock Grid.Column="1" Text="Descripción" Style="{StaticResource ColumnHead}" Margin="4,0" />
+                                            <TextBlock Grid.Column="2" Text="Long. (in)" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                                            <TextBlock Grid.Column="4" Text="Por copia" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                                        </Grid>
+                                        <ItemsControl x:Name="FlatList" ItemsSource="{Binding FlatLines}" ItemTemplate="{StaticResource PieceRow}"
+                                                      AutomationProperties.Name="Piezas del rack" />
+                                    </StackPanel>
+                                    <WrapPanel Margin="0,6,0,0">
+                                        <Button x:Name="ExportRackExcelButton" Content="Exportar Excel" Style="{StaticResource SmallButton}" IsEnabled="{Binding CanExportRack}"
+                                                AutomationProperties.Name="Exportar a Excel el BOM del rack elegido" Click="OnExportRackExcelClick" />
+                                        <Button x:Name="ExportRackCsvButton" Content="Exportar CSV" Style="{StaticResource SmallButton}" IsEnabled="{Binding CanExportRack}"
+                                                AutomationProperties.Name="Exportar a CSV el BOM del rack elegido" Click="OnExportRackCsvClick" />
+                                    </WrapPanel>
+                                    <TextBlock x:Name="ExportRackHint" Text="{Binding ExportRackHint}" Style="{StaticResource PageText}" Margin="0,4,0,0" FontSize="11" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- «BOM total»: the components of the whole drawing, × copies, with where each comes from (BM-08). -->
+                <StackPanel x:Name="TotalTab" Visibility="{Binding IsTotalTab, Converter={StaticResource FlagToVisibility}}">
+                    <TextBlock x:Name="NoTotalText" Text="{Binding NoTotalText}" Style="{StaticResource PageText}" />
+                    <StackPanel Visibility="{Binding HasTotal, Converter={StaticResource FlagToVisibility}}">
+                        <WrapPanel Margin="0,0,0,6">
+                            <TextBlock Text="Componente" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <ComboBox x:Name="CategoryFilter" MinWidth="200" Margin="0,0,10,0" ItemsSource="{Binding CategoryOptions}" DisplayMemberPath="Label"
+                                      SelectedValuePath="Key" SelectedValue="{Binding SelectedCategory, Mode=TwoWay}"
+                                      AutomationProperties.Name="Filtrar el total por componente" />
+                            <Button x:Name="ExpandAllTotalButton" Content="Desplegar todo" Style="{StaticResource SmallButton}" Margin="0,0,6,0"
+                                    AutomationProperties.Name="Desplegar todas las partidas del total" Click="OnExpandAllTotalClick" />
+                            <Button x:Name="CollapseAllTotalButton" Content="Plegar todo" Style="{StaticResource SmallButton}" Margin="0,0,10,0"
+                                    AutomationProperties.Name="Plegar todas las partidas del total" Click="OnCollapseAllTotalClick" />
+                            <TextBlock x:Name="TotalShownText" Text="{Binding TotalShownText}" VerticalAlignment="Center" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        </WrapPanel>
+                        <Grid Margin="4,0,4,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="18" />
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="180" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Text="Componente" Style="{StaticResource ColumnHead}" />
+                            <TextBlock Grid.Column="2" Text="Descripción" Style="{StaticResource ColumnHead}" Margin="4,0" />
+                            <TextBlock Grid.Column="3" Text="Longitud (in)" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                            <TextBlock Grid.Column="4" Text="Cantidad" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                            <TextBlock Grid.Column="5" Text="Racks" Style="{StaticResource ColumnHead}" Margin="8,0,0,0" />
+                        </Grid>
+                        <ItemsControl x:Name="TotalList" ItemsSource="{Binding TotalItems}" AutomationProperties.Name="Total del dibujo por componente">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,1">
+                                        <ToggleButton IsChecked="{Binding IsExpanded, Mode=TwoWay}" HorizontalContentAlignment="Stretch" Padding="4,3"
+                                                      Background="Transparent" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ShellBorderBrush}"
+                                                      AutomationProperties.Name="{Binding ToggleName}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="18" />
+                                                    <ColumnDefinition Width="120" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="80" />
+                                                    <ColumnDefinition Width="70" />
+                                                    <ColumnDefinition Width="180" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Foreground="{DynamicResource ShellTextSecondaryBrush}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="▸" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                                                                    <Setter Property="Text" Value="▾" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                                <TextBlock Grid.Column="1" Text="{Binding Category}" FontWeight="SemiBold" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                <WrapPanel Grid.Column="2" Margin="4,0">
+                                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                    <Border Margin="6,0,0,0" BorderThickness="1" CornerRadius="8" Padding="6,0" BorderBrush="{DynamicResource ShellStatusInfoBrush}"
+                                                            Visibility="{Binding JoinsDescriptions, Converter={StaticResource FlagToVisibility}}">
+                                                        <TextBlock Text="varias descripciones" FontSize="11" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                    </Border>
+                                                </WrapPanel>
+                                                <TextBlock Grid.Column="3" Text="{Binding Length}" TextAlignment="Right" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                                <TextBlock Grid.Column="4" Text="{Binding Quantity}" TextAlignment="Right" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                <TextBlock Grid.Column="5" Text="{Binding Racks}" Margin="8,0,0,0" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            </Grid>
+                                        </ToggleButton>
+                                        <Border Margin="22,2,0,8" Padding="8,6" CornerRadius="6" Background="{DynamicResource ShellWindowBackgroundBrush}"
+                                                Visibility="{Binding IsExpanded, Converter={StaticResource FlagToVisibility}}">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding JoinNote}" Style="{StaticResource OptionalText}" Margin="0,0,0,4"
+                                                           Foreground="{DynamicResource ShellStatusWarningBrush}" />
+                                                <TextBlock Text="{Binding From}" TextWrapping="Wrap" Margin="0,0,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                                <Grid Visibility="{Binding HasPieces, Converter={StaticResource FlagToVisibility}}">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="110" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="64" />
+                                                        <ColumnDefinition Width="44" />
+                                                        <ColumnDefinition Width="64" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="Pieza" Style="{StaticResource ColumnHead}" />
+                                                    <TextBlock Grid.Column="1" Text="Descripción" Style="{StaticResource ColumnHead}" Margin="4,0" />
+                                                    <TextBlock Grid.Column="2" Text="Long. (in)" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                                                    <TextBlock Grid.Column="3" Text="c/u" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                                                    <TextBlock Grid.Column="4" Text="Total" Style="{StaticResource ColumnHead}" TextAlignment="Right" />
+                                                </Grid>
+                                                <ItemsControl ItemsSource="{Binding Pieces}" ItemTemplate="{StaticResource PieceRow}" />
+                                                <TextBlock Text="{Binding NoPiecesText}" Style="{StaticResource OptionalText}" FontSize="11"
+                                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Grid Margin="4,4,4,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="18" />
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="180" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Text="Total del dibujo" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <TextBlock x:Name="TotalFooterText" Grid.Column="2" Text="{Binding TotalFooterText}" Margin="4,0" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                            <TextBlock x:Name="TotalFooterQuantity" Grid.Column="4" Text="{Binding TotalFooterQuantity}" TextAlignment="Right" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        </Grid>
+                        <TextBlock Margin="0,6,0,0" Style="{StaticResource PageText}"
+                                   Text="Componentes iguales de todo el dibujo, × copias. En el Excel, esta tabla es la hoja «Total del dibujo»; la hoja «Por rack» es la tabla RackCadBOM, con «Cantidad» de una copia y «Cantidad total» × copias; y «Resumen» es la tabla dinámica ResumenBOM, con los filtros Rack y Nivel." />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

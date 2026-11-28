@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F2-T2A-NAVIGATION-HOST",
+  "RunId": "R20261110T040218Z-03d2",
+  "DelegationRunId": "R20261109T193332Z-bafe",
+  "WorkRunId": "R20261109T194127Z-31c0",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-09T19:41:51Z y OutputWrittenUtc=2026-11-09T20:12:06.132341+00:00."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide en TaskId, Attempt=2, DelegationRunId y WorkRunId; SHA-256 de la copia=80FB4CF60B20EA60282BD9A35493E550D4C073F59FCF240BE39219D37F87AEF0, igual a Outcome.OutputSha256 del relevo, y su fecha es posterior al inicio."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base(MainSha, AuthorityRevision)=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60; git diff --name-only entre ese merge-base y AuthorityRevision no muestra cambios en las rutas EXTERNAL. git diff --name-only AuthorityRevision BaseSha no toca rutas EXTERNAL ni UNIT_CHANGE. Las autoridades UNIT_DOC/UNIT_CHANGE se leyeron con git show en AuthorityRevision; las EXTERNAL, en MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "La delegacion y el contrato coinciden en RequiredTests (Core 656, UI 64; ExpectRed Core=true y UI=false), 16 invariantes, StopConditions y 12 autoridades. A3: las 14 rutas delegadas estan contenidas en las 17 rutas del contrato. A4: las 56 entradas prohibidas cubren las del contrato. A5: registros de planificacion y disposicion del Coordinator documentan A1-A8 aceptadas; la unica diferencia de equivalencia marcada false fue aceptada expresamente para este intento."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad = 44a692a4ec386e559cc6d330b3d78b87dbad6581; rama y worktree coinciden con la entrega. merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha devolvieron 0. Handoff declara los mismos SHA. git ls-remote se intento, pero el shell fallo con CreateFileMapping Win32 error 5."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry registra LsRemoteSha=44a692a4ec386e559cc6d330b3d78b87dbad6581; Exit registra OriginMainSha=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60. RemoteFacts.CurrentRun es push de la ref exacta y HeadSha CurrentSha; la corrida 42687835409 termino con los cuatro jobs requeridos en success."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha devuelve 10 rutas. Una, src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs, no esta en el AllowedWriteScope de la delegacion aceptada, que contiene 14 rutas; si esta en el alcance mas amplio del contrato. Esto activa P-03."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no devuelve cambios; relay Entry registra CleanTree=true. git check-ignore -v sobre la ruta de inputs identifica .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts y TRX corresponden a push 42687835409 sobre CurrentSha y la rama exacta; los cuatro jobs requeridos terminaron en success. Push RED 42687231210 corresponde a RedSha; el job Tests termino en failure, UI y Build UI en success, y Build Plugin fue skipped por dependencia. El TRX RED confirma 47 fallos de asercion."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Lectura XML de ci-core/core.trx y ci-ui/ui.trx: filtros Workspace seleccionan 756 Core pass y 64 UI pass; ambos superan sus minimos. ci-core-red/core.trx selecciona 756, con 709 pass y 47 fail; el handoff declara los mismos conteos. git diff ChainBaseSha RedSha -- tests/ devuelve las 7 rutas ChainRedFiles; git diff RedSha CurrentSha -- tests/ no devuelve rutas, por lo que GREEN no cambia RT ni ChainRedFiles. Los 47 RED son fallos por comportamiento aun no implementado en el esqueleto: host devuelve 'The navigation is not implemented yet.', faltan NavigationEcho/SetEquals y los adaptadores y excepciones exactas esperados por las guardas. El TRX UI registra 17 NotExecuted en la suite completa; el filtro requerido de 64 pasa."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show --format=%B para RED y GREEN muestra Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> en ambos commits; coincide con Worker.Trailer y el modelo efectivo del relevo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; coinciden con la celda, el modelo y el effort aceptados en la delegacion."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Escaneo de WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction del handoff: ninguno contiene los terminos prohibidos de AUTOMATION_PLAN 16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones y dice que los dos errores de herramientas no fueron de permisos ni quedaron pendientes; no hay aviso de limite. Denials no registra denegaciones."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "P-03"
+  ],
+  "Findings": [
+    "El diff verificado contiene IWorkspaceNavigationPort.cs fuera de las 14 rutas del AllowedWriteScope de la delegacion aceptada. Aunque el contrato contiene esa ruta, la comprobacion Scope de 16.9 usa el alcance delegado; el registro del relevo no cambia ese resultado.",
+    "Los 47 fallos del TRX RED se deben a aserciones sobre la implementacion ausente en el esqueleto: resultados de accion incorrectos, ausencia de NavigationEcho y SetEquals, ausencia de la ejecucion en contexto de comando y de los adaptadores, y conteos/excepciones exactas de las guardas. El TRX GREEN no tiene fallos en los filtros requeridos.",
+    "El handoff declara dos fallos en la suite UI completa Release, ambos PendingTextFieldTests por una excepcion esperada compilada solo con DEBUG; el CI y el TRX UI examinados usan Debug. Tambien declara KL-01 (ProbedId nulo) y que el comportamiento real de AutoCAD queda pendiente de Smoke-NAV."
+  ],
+  "RecommendedNextAction": "Devolver la discrepancia P-03 al Coordinator para su resolucion y obtener una entrega autorizada antes de repetir la verificacion."
+}

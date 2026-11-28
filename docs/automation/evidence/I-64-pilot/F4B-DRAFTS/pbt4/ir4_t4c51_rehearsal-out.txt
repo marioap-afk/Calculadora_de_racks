@@ -1,0 +1,15 @@
+== CT-01 (PushBackEditAllGuardTests, ExpectRed True): 4 literal items in the rehearsal, 0 computed; table 4 lines
+   literal items == the table, in order: True
+   every table line is in section 5.3 of the package between backticks: True
+== CT-07 (PushBackOpenerClassicPathGuardTests, ExpectRed False): 54 literal items in the rehearsal, 0 computed; table 54 lines
+   literal items == the table, in order: True
+   every table line is in section 5.3 of the package between backticks: True
+== CT-08 (PushBackEditAllGuardTests, ExpectRed True): 4 literal items in the rehearsal, 0 computed; table 4 lines
+   literal items == the table, in order: True
+   every table line is in section 5.3 of the package between backticks: True
+== CT-13 (PushBackEditAllGuardTests, ExpectRed True): 3 literal items in the rehearsal, 0 computed; table 3 lines
+   literal items == the table, in order: True
+   every table line is in section 5.3 of the package between backticks: True
+== CT-15 (PushBackDraftLaunchGuardTests, ExpectRed False): 33 literal items in the rehearsal, 0 computed; table 33 lines
+   literal items == the table, in order: True
+   every table line is in section 5.3 of the package between backticks: True

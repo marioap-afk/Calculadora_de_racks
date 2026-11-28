@@ -1,0 +1,47 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261002T151201Z-abb1",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only 1504c938dc8ac050a8e0d61c5db6c9977b638600 8d9a0c6e6ea148caf3e8f20d26a95a864a2943ce devuelve solo tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs, ruta cubierta por AllowedWriteScope y fuera de ForbiddenWriteScope."
+  },
+  "OutputSha256": "378DF4C2F9F96BB182E1AC3B707F32D105AF713DDE8E407F1F6EB253BC71510F",
+  "ManualFreeText1610": []
+}

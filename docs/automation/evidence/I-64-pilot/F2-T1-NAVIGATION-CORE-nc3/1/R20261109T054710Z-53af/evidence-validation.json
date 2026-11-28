@@ -1,0 +1,39 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261109T054710Z-53af",
+  "OutputUnresolvedHex": [],
+  "OutputUnresolvedHexByCheck": {},
+  "CommandUnresolvedHex": [],
+  "GitFatalLines": [
+    {
+      "Command": 4,
+      "Line": "fatal: unable to access 'https://github.com/marioap-afk/Calculadora_de_racks.git/': Failed to connect to github.com port 443 via 127.0.0.1 after 2091 ms: Could not connect to server"
+    },
+    {
+      "Command": 4,
+      "Line": "fatal: unable to access 'https://github.com/marioap-afk/Calculadora_de_racks.git/': Failed to connect to github.com port 443 via 127.0.0.1 after 2067 ms: Could not connect to server"
+    }
+  ],
+  "NonZeroExit": [
+    {
+      "Command": 0,
+      "Exit": 1
+    },
+    {
+      "Command": 5,
+      "Exit": 1
+    }
+  ],
+  "ConstrainedLanguageErrors": 4,
+  "DisplayNameSelectionCommands": [
+    9,
+    10
+  ],
+  "TestsEvidenceNumbers": [
+    "51",
+    "673",
+    "724"
+  ],
+  "TestsEvidenceDisplayCount": false,
+  "MaterialHexDefect": false
+}

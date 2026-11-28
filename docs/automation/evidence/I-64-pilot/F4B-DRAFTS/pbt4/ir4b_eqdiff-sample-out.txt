@@ -1,0 +1,147 @@
+### TheOutgoingDesignAndEnvelopeOfEachViewComeFromTheRereadEnvelopeAndNeverFromTheDraft (tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs)
+--- original
++++ equivalente
+@@ -6,14 +6,14 @@
+         // built by hand over the same texts, exactly as a later read of the drawing would hand them over.
+-        var post = PrepareKit.ExistingPost();
+-        var a1 = WithExtra(PrepareKit.Frontal(name: "Name of the rack"), "x1");
+-        var members = PrepareKit.BaseOf(
++        var post = FullPrepareKit.ExistingPost();
++        var a1 = WithExtra(FullPrepareKit.Frontal(name: "Name of the rack"), "x1");
++        var members = FullPrepareKit.BaseOf(
+             ("A1", a1),
+-            ("B2", WithExtra(PrepareKit.Lateral(post, name: "Name of the rack"), "x2")),
+-            ("C3", WithExtra(PrepareKit.Planta(name: "Name of the rack"), "x3")));
+-        var draft = PrepareKit.DraftOf(members, a1);
+-        PrepareKit.SetScale(draft, 2.25);
+-        var ready = PrepareKit.Prepare(draft, PrepareKit.Reread(members));
++            ("B2", WithExtra(FullPrepareKit.Lateral(post, name: "Name of the rack"), "x2")),
++            ("C3", WithExtra(FullPrepareKit.Planta(name: "Name of the rack"), "x3")));
++        var draft = FullPrepareKit.DraftOf(members, a1);
++        FullPrepareKit.SetScale(draft, 2.25);
++        var ready = FullPrepareKit.Prepare(draft, FullPrepareKit.Reread(members));
+         Assert.True(ready.Kind == PushBackPilotPrepareKind.Ready, ready.Reason);
+         var plan = ready.Plan!;
+-        var composition = PushBackPilotMaterializer.ComposeForWrite(draft.InitialDraftState, draft.CurrentDraftState, PilotKit.Catalog);
++        var composition = PushBackFullComposition.ForFullWrite(draft.InitialDraftState, draft.CurrentDraftState, PilotKit.Catalog);
+         var design = new PushBackCompositeEditorAssembler(PilotKit.Catalog).BuildDesign(composition.Editor!, composition.Inputs!);
+
+### InvalidA_ACurrentStateThatDoesNotComposeIsInvalidWithTheReasonOfTheCompositionAndOverTheCarryOversOfTheMaterializer (tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs)
+--- original
++++ equivalente
+@@ -1 +1,3 @@
++    // ================================================================== INV-F4T4A1-07, 08, 09: the Invalid cases (a) to (e) and the plan
++
+     [Fact]
+@@ -3,11 +5,11 @@
+     {
+-        var read = IntentKit.Read(PrepareKit.RealScan());
++        var read = IntentKit.Read(FullPrepareKit.RealScan());
+ 
+-        // Content that the pilot does not edit.
+-        var content = PrepareKit.DraftOf(read);
+-        PrepareKit.SetScale(content, 2.25);
+-        content.CurrentDraftState.Inputs.PalletTolerance += 1.0;
+-        var rejected = PrepareKit.Prepare(content, read);
+-        Assert.Equal(PushBackPilotPrepareKind.Invalid, rejected.Kind);
+-        Assert.Equal(PushBackPilotMaterializer.NonPilotContentReason, rejected.Reason);
++        // I-64 F4B PB-T4b (D-PBT4-04): content that the pilot did not edit is edited by the full model, and it composes.
++        var content = FullPrepareKit.DraftOf(read);
++        FullPrepareKit.SetScale(content, 2.25);
++        content.CurrentDraftState.Editable.PalletTolerance += 1.0;
++        var accepted = FullPrepareKit.Prepare(content, read);
++        Assert.True(accepted.Kind == PushBackPilotPrepareKind.Ready, accepted.Reason);
++        Assert.NotNull(accepted.Plan);
+ 
+@@ -16,6 +18,6 @@
+         {
+-            var invalid = PrepareKit.DraftOf(read);
+-            PrepareKit.SetScale(invalid, scale);
++            var invalid = FullPrepareKit.DraftOf(read);
++            FullPrepareKit.SetScale(invalid, scale);
+ 
+-            var result = PrepareKit.Prepare(invalid, read);
++            var result = FullPrepareKit.Prepare(invalid, read);
+ 
+
+### InvalidA_AnOriginThatNoLongerMaterializesIsInvalidWithTheReasonOfTheMaterializerBeforeAnythingElse (tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs)
+   original not found
+### AFailureOfTheDiagnosticGivesNullAndNeverChangesTheClassificationNorTurnsAChangedDraftIntoFailed (tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs)
+--- original
++++ equivalente
+@@ -5,4 +5,4 @@
+         var recoveredDraft = UnknownDraft(recovered);
+-        var sameBase = EditIntentKit.Admitted(RackA).PilotRead!.StaleBase;
+-        recovered.Reader.Answer = _ => EditIntentReadResult.FromPilot(WithoutRead(sameBase));
++        var sameBase = FullEditIntentKit.Admitted(RackA).PilotRead!.StaleBase;
++        recovered.Reader.Answer = _ => FullHandKit.ReadWithoutFullRead(sameBase);
+ 
+@@ -19,4 +19,4 @@
+         var conflictDraft = UnknownDraft(conflict);
+-        var anotherBase = EditIntentKit.MemberBecameBlocking(RackA).PilotRead!.StaleBase;
+-        conflict.Reader.Answer = _ => EditIntentReadResult.FromPilot(WithoutRead(anotherBase));
++        var anotherBase = FullEditIntentKit.MemberBecameBlocking(RackA).PilotRead!.StaleBase;
++        conflict.Reader.Answer = _ => FullHandKit.ReadWithoutFullRead(anotherBase);
+ 
+
+### CT_PBT3B_13_NoFileOutsideThePlanTheRunAndTheModelNamesTheFullWriteAndTheHostFindsOnlyTheDraftOfThePilot (tests/RackCad.Tests/PushBackWritePathGuardTests.cs)
+--- original
++++ equivalente
+@@ -14,3 +14,3 @@
+             var host = Read(HostPath);
+-            log.Add("host Find<PushBackPilotDraftState>-es-el-unico-Find<=" + OnlyThePilotDraftIsFound(host) + " busquedas>0=" + (FindArguments(host).Count > 0));
++            log.Add("host Find<PushBackFullDraftState>-es-el-unico-Find<=" + OnlyThePilotDraftIsFound(host) + " busquedas>0=" + (FindArguments(host).Count > 0));
+ 
+@@ -20,3 +20,3 @@
+                 "sin-conectar archivos-revisados>0=True coincidencias=[]",
+-                "host Find<PushBackPilotDraftState>-es-el-unico-Find<=True busquedas>0=True",
++                "host Find<PushBackFullDraftState>-es-el-unico-Find<=True busquedas>0=True",
+             };
+@@ -28,3 +28,4 @@
+             };
+-            foreach (var destination in new[] { "WorkspaceHostCore.cs", "WorkspacePilotSupport.cs" })
++            // I-64 F4B PB-T4b: the host core runs the full write, so the self-tests inject the names in the support of the panel only.
++            foreach (var destination in new[] { "WorkspacePilotSupport.cs" })
+             {
+@@ -40,8 +41,8 @@
+ 
+-            log.Add("autoprueba-Find<PushBackFullDraftState>-en-WorkspaceHostCore.cs="
++            log.Add("autoprueba-Find<PushBackPilotDraftState>-en-WorkspaceHostCore.cs="
++                + (OnlyThePilotDraftIsFound(host + "\n_drafts.Find<PushBackPilotDraftState>(session, rackId);\n") ? "pasa" : "falla"));
++            log.Add("control-Find<PushBackFullDraftState>-en-WorkspaceHostCore.cs="
+                 + (OnlyThePilotDraftIsFound(host + "\n_drafts.Find<PushBackFullDraftState>(session, rackId);\n") ? "pasa" : "falla"));
+-            log.Add("control-Find<PushBackPilotDraftState>-en-WorkspaceHostCore.cs="
+-                + (OnlyThePilotDraftIsFound(host + "\n_drafts.Find<PushBackPilotDraftState>(session, rackId);\n") ? "pasa" : "falla"));
+-            expected.Add("autoprueba-Find<PushBackFullDraftState>-en-WorkspaceHostCore.cs=falla");
+-            expected.Add("control-Find<PushBackPilotDraftState>-en-WorkspaceHostCore.cs=pasa");
++            expected.Add("autoprueba-Find<PushBackPilotDraftState>-en-WorkspaceHostCore.cs=falla");
++            expected.Add("control-Find<PushBackFullDraftState>-en-WorkspaceHostCore.cs=pasa");
+ 
+
+### TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance (tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs)
+--- original
++++ equivalente
+@@ -4,3 +4,3 @@
+     [InlineData("PilotFieldResult IWorkspacePilotEditPort.CommitField(", "public PilotFieldResult CommitField(")]
+-    [InlineData("private static readonly PushBackPilotFieldAdapter PilotFieldAdapter = new();", "private readonly PushBackPilotFieldAdapter _adapter = new();")]
++    [InlineData("private static readonly PushBackFullFieldAdapter PilotFieldAdapter = new();", "private readonly PushBackFullFieldAdapter _adapter = new();")]
+     public void TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance(string from, string to)
+
+### TheResultOfThePilotIsOnlyEverNamedPilotInTheHostCoreSoNoAliasEscapesTheGuardOfTheUseOfTheBase (tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs)
+--- original
++++ equivalente
+@@ -4,7 +4,10 @@
+         var core = Core();
+-        var withoutTheAssignments = PilotReadAssignment.Replace(core, string.Empty);
++        var withoutTheAssignments = FullReadAssignment.Replace(PilotReadAssignment.Replace(core, string.Empty), string.Empty);
+ 
++        // I-64 F4B PB-T4b: the full read is only ever named "full", once per operation that reads (the intention, the check, the reload,
++        // the general check, the keep and the discard), and the read of the pilot only for the witness of the preview (four).
+         Assert.DoesNotMatch(new Regex(@"\.PilotRead\b"), withoutTheAssignments);
+-        // One assignment per operation that reads: the intention, the check, the reload, the general check, the keep and the discard.
+-        Assert.Equal(6, PilotReadAssignment.Matches(core).Count);
++        Assert.DoesNotMatch(new Regex(@"\.FullRead\b"), withoutTheAssignments);
++        Assert.Equal(6, FullReadAssignment.Matches(core).Count);
++        Assert.Equal(4, PilotReadAssignment.Matches(core).Count);
+         Assert.Equal(6, Src.Count(core, @"\.ReadIntent\s*\("));
+

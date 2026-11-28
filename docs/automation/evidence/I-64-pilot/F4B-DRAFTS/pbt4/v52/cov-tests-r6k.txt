@@ -1,0 +1,92 @@
+# las pruebas de WPUR que ejercitan lo que el resto de la suite de Core no ejercita (lineas y ramas de la corrida generica que se queda)
+lineas o ramas propias de WPUR: 46 (lineas 35, ramas 11); pruebas que tienen alguna: 21 de 49
+
+## por prueba (las que tienen algo propio)
+08 ADifferenceOfTheBaseInPrepareIsAConflictWithItsDifferencesAndNothingIsImported: 1 (UpdateRun:431)
+10 AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflightAndNothingIsImported: 3 (UpdatePlan:600r, UpdatePlan:601, UpdateRun:441)
+11 ACleanDraftIsNothingToApplyAndAConflictDraftIsNotApplicableAndAPendingTextIsPendingTextEvenWithoutTheSlot: 4 (UpdateRun:425r, UpdateRun:435, UpdateRun:437, UpdateRun:439)
+12 WithoutSurvivorsNothingIsImportedAndTheRunStops: 1 (UpdateRun:663)
+15 AnImportThatFailsIsAPreflightWithItsCauseAndNoScopeOfMutationIsStarted: 1 (UpdateRun:449r)
+20 ABlockThatIsNotTheOneThatWasPreparedIsAPreflightAndNothingIsWritten: 1 (UpdateRun:529)
+21 TheSurvivorsAndTheLockedLayersAreCheckedAgainInMutateAndNothingIsWritten: 1 (UpdateRun:663)
+23 AbortThatFailsAfterAUnitStartedIsCommitThrewWithAbortFailedAndNoRollbackIsClaimed: 9 (UpdateRun:483, UpdateRun:484, UpdateRun:485, UpdateRun:486, UpdateRun:561, UpdateRun:562, UpdateRun:566, UpdateRun:567, UpdateRun:568)
+24 AReleaseThatFailsWithoutSealAndWithoutAUnitStartedIsNotAppliedFailureAndNotAnUncertainOutcome: 9 (UpdateRun:483, UpdateRun:484, UpdateRun:485, UpdateRun:486, UpdateRun:561, UpdateRun:562, UpdateRun:566, UpdateRun:567, UpdateRun:568)
+26 ASealThatReturnsAndAReleaseThatThrowsGoesToPostAndTheReleaseIsAWarning: 5 (UpdateRun:483, UpdateRun:484, UpdateRun:485, UpdateRun:486, UpdateRun:492r)
+28 APostWithoutValuesOrWithoutItsRereadIsAppliedPostRereadFailed: 1 (UpdateRun:588r)
+30 AComparisonThatThrowsAfterTheSealIsAppliedPostRereadFailed: 2 (UpdateRun:594r, UpdateRun:595)
+31 AnOuterReleaseThatThrowsAfterPostTurnsAppliedIntoAppliedWithWarningsAndKeepsTheOtherWarnings: 7 (UpdateRun:391, UpdateRun:392, UpdateRun:393, UpdateRun:394, UpdateRun:680, UpdateRun:681, UpdateRun:694)
+32 AnOuterReleaseThatThrowsOutsidePostAddsItsCauseToTheClassificationThatWasAlreadyDecided: 20 (UpdateRun:391, UpdateRun:392, UpdateRun:393, UpdateRun:394, UpdateRun:418r, UpdateRun:483, UpdateRun:484, UpdateRun:485, UpdateRun:486, UpdateRun:559r, UpdateRun:561, UpdateRun:562, UpdateRun:566, UpdateRun:567, UpdateRun:568, UpdateRun:680, UpdateRun:681, UpdateRun:686, UpdateRun:688, UpdateRun:690)
+33 AnOuterReleaseThatThrowsOnAConflictIsDroppedBecauseAConflictCarriesNoCause: 7 (UpdateRun:391, UpdateRun:392, UpdateRun:393, UpdateRun:394, UpdateRun:680, UpdateRun:681, UpdateRun:699)
+34 AConflictOrAPreflightOfMutateStaysWhatItIsEvenWhenTheReleaseOfTheScopeOfMutateThrows: 8 (UpdateRun:483, UpdateRun:484, UpdateRun:485, UpdateRun:486, UpdateRun:561, UpdateRun:562, UpdateRun:572, UpdateRun:575)
+35 ASealThatThrewKeepsBeingCommitThrewBecauseOfTheSealEvenIfTheAbortThrowsToo: 7 (UpdateRun:483, UpdateRun:484, UpdateRun:485, UpdateRun:486, UpdateRun:561, UpdateRun:562, UpdateRun:570)
+37 TheRunNeverThrowsForMissingArgumentsOrForAPortThatAnswersNothing: 4 (UpdateRun:368r, UpdateRun:369, UpdateRun:370, UpdateRun:371)
+40 ANameThatDiffersAfterTheRenameIsAWarningAndACaseOnlyDifferenceIsNot: 2 (UpdateRun:594r, UpdateRun:595)
+41 TheMissingPiecesAndAFailedRegenerationAreWarningsAndTheStateStaysClean: 1 (UpdateRun:598r)
+43 ThePostComparisonFailsForAnotherSetOfKeysAnotherEnvelopeAndAnotherScale: 1 (UpdateRun:261r)
+
+## el conjunto minimo (voraz) que las cubre todas: 17 pruebas
+  32 AnOuterReleaseThatThrowsOutsidePostAddsItsCauseToTheClassificationThatWasAlreadyDecided
+  37 TheRunNeverThrowsForMissingArgumentsOrForAPortThatAnswersNothing
+  11 ACleanDraftIsNothingToApplyAndAConflictDraftIsNotApplicableAndAPendingTextIsPendingTextEvenWithoutTheSlot
+  10 AViewThatIsNotAvailableInTheOutgoingSystemIsAPreflightAndNothingIsImported
+  40 ANameThatDiffersAfterTheRenameIsAWarningAndACaseOnlyDifferenceIsNot
+  34 AConflictOrAPreflightOfMutateStaysWhatItIsEvenWhenTheReleaseOfTheScopeOfMutateThrows
+  43 ThePostComparisonFailsForAnotherSetOfKeysAnotherEnvelopeAndAnotherScale
+  41 TheMissingPiecesAndAFailedRegenerationAreWarningsAndTheStateStaysClean
+  35 ASealThatThrewKeepsBeingCommitThrewBecauseOfTheSealEvenIfTheAbortThrowsToo
+  33 AnOuterReleaseThatThrowsOnAConflictIsDroppedBecauseAConflictCarriesNoCause
+  31 AnOuterReleaseThatThrowsAfterPostTurnsAppliedIntoAppliedWithWarningsAndKeepsTheOtherWarnings
+  28 APostWithoutValuesOrWithoutItsRereadIsAppliedPostRereadFailed
+  26 ASealThatReturnsAndAReleaseThatThrowsGoesToPostAndTheReleaseIsAWarning
+  21 TheSurvivorsAndTheLockedLayersAreCheckedAgainInMutateAndNothingIsWritten
+  20 ABlockThatIsNotTheOneThatWasPreparedIsAPreflightAndNothingIsWritten
+  15 AnImportThatFailsIsAPreflightWithItsCauseAndNoScopeOfMutationIsStarted
+  08 ADifferenceOfTheBaseInPrepareIsAConflictWithItsDifferencesAndNothingIsImported
+
+## las lineas y ramas, con su texto
+  PushBackPilotUpdatePlan.cs:600 rama [10] if (disposition != PushBackViewDispositionKind.Redraw)
+  PushBackPilotUpdatePlan.cs:601 linea [10] return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
+  PushBackPilotUpdateRun.cs:261 rama [43] if (!admission.IsAdmitted) return PostNotAdmittedPrefix + (admission.Diagnostic ?? "sin diagnóstico");
+  PushBackPilotUpdateRun.cs:368 rama [37] if (scope == null)
+  PushBackPilotUpdateRun.cs:369 linea [37] {
+  PushBackPilotUpdateRun.cs:370 linea [37] outcome = NotAppliedFailure(NoScopeReason);
+  PushBackPilotUpdateRun.cs:371 linea [37] }
+  PushBackPilotUpdateRun.cs:391 linea [31,32,33] catch (Exception ex)
+  PushBackPilotUpdateRun.cs:392 linea [31,32,33] {
+  PushBackPilotUpdateRun.cs:393 linea [31,32,33] scopeDisposeFailure = ex;
+  PushBackPilotUpdateRun.cs:394 linea [31,32,33] }
+  PushBackPilotUpdateRun.cs:418 rama [32] if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
+  PushBackPilotUpdateRun.cs:425 rama [11] switch (prepared.Kind)
+  PushBackPilotUpdateRun.cs:431 linea [08] return DraftApplyOutcome<TState>.NotAppliedConflict(prepared.Differences);
+  PushBackPilotUpdateRun.cs:435 linea [11] return NotAppliedPreflight(NothingToApplyReason);
+  PushBackPilotUpdateRun.cs:437 linea [11] return NotAppliedPreflight(PendingTextReason);
+  PushBackPilotUpdateRun.cs:439 linea [11] return NotAppliedPreflight(NotApplicableReason);
+  PushBackPilotUpdateRun.cs:441 linea [10] return NotAppliedPreflight(prepared.Reason ?? PushBackPilotUpdatePlanner.MissingInputReason);
+  PushBackPilotUpdateRun.cs:449 rama [15] if (import == null || !import.Ok) return NotAppliedPreflight(import?.Cause ?? ImportFailedReason);
+  PushBackPilotUpdateRun.cs:483 linea [23,24,26,32,34,35] catch (Exception ex)
+  PushBackPilotUpdateRun.cs:484 linea [23,24,26,32,34,35] {
+  PushBackPilotUpdateRun.cs:485 linea [23,24,26,32,34,35] _mutationDisposeFailure = ex;
+  PushBackPilotUpdateRun.cs:486 linea [23,24,26,32,34,35] }
+  PushBackPilotUpdateRun.cs:492 rama [26] if (_mutationDisposeFailure != null) _warnings.Add(DisposeWarningPrefix + _mutationDisposeFailure.Message);
+  PushBackPilotUpdateRun.cs:529 linea [20] return NotAppliedPreflight(DestinationChangedReason);
+  PushBackPilotUpdateRun.cs:559 rama [32] if (failure == null) return decided;
+  PushBackPilotUpdateRun.cs:561 linea [23,24,32,34,35] var abort = AbortFailedPrefix + failure.Message;
+  PushBackPilotUpdateRun.cs:562 linea [23,24,32,34,35] switch (decided.Kind)
+  PushBackPilotUpdateRun.cs:566 linea [23,24,32] return _writeStarted
+  PushBackPilotUpdateRun.cs:567 linea [23,24,32] ? DraftApplyOutcome<TState>.CommitThrew(abort + "; " + decided.Cause)
+  PushBackPilotUpdateRun.cs:568 linea [23,24,32] : NotAppliedFailure(decided.Cause + "; " + abort);
+  PushBackPilotUpdateRun.cs:570 linea [35] return DraftApplyOutcome<TState>.CommitThrew(decided.Cause + "; " + abort);
+  PushBackPilotUpdateRun.cs:572 linea [34] return NotAppliedPreflight(decided.Cause + "; " + abort);
+  PushBackPilotUpdateRun.cs:575 linea [34] return decided;
+  PushBackPilotUpdateRun.cs:588 rama [28] if (values == null) return PostFailed(PostMissingReason);
+  PushBackPilotUpdateRun.cs:594 rama [30,40] if (!values.NamesByKey.TryGetValue(pair.Key, out var actual) || !string.Equals(actual, expected, StringComparison.Ordina
+  PushBackPilotUpdateRun.cs:595 linea [30,40] _warnings.Add(NameDiffersPrefix + pair.Key + " no es «" + expected + "».");
+  PushBackPilotUpdateRun.cs:598 rama [41] if (values.RegenFailure != null) _warnings.Add(RegenFailedPrefix + values.RegenFailure);
+  PushBackPilotUpdateRun.cs:663 linea [12,21] return NotAppliedPreflight(NoSurvivorsReason);
+  PushBackPilotUpdateRun.cs:680 linea [31,32,33] var text = DisposeWarningPrefix + failure.Message;
+  PushBackPilotUpdateRun.cs:681 linea [31,32,33] switch (decided.Kind)
+  PushBackPilotUpdateRun.cs:686 linea [32] return NotAppliedPreflight(decided.Cause + "; " + text);
+  PushBackPilotUpdateRun.cs:688 linea [32] return NotAppliedFailure(decided.Cause + "; " + text);
+  PushBackPilotUpdateRun.cs:690 linea [32] return DraftApplyOutcome<TState>.CommitThrew(decided.Cause + "; " + text);
+  PushBackPilotUpdateRun.cs:694 linea [31] return DraftApplyOutcome<TState>.AppliedWithWarnings(decided.PostRead!, decided.Warnings.Append(text).ToArray());
+  PushBackPilotUpdateRun.cs:699 linea [33] return decided;

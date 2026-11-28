@@ -1,0 +1,17 @@
+pruebas 428 mecanicas 375 a-mano 53
+a mano por motivo [('R-C4', 29), ('R-C9', 8), ('R-retirado', 6), ('R-C3', 5), ('R-C2,R-C9', 2), ('R-estado', 1), ('R-retirado,R-estado', 1), ('R-C2', 1)]
+a mano por clase [('WorkspaceLifecycleHostTests', 0), ('WorkspacePilotPrepareTests', 12), ('WorkspaceEditIntentHostTests', 5), ('WorkspacePilotEditHostTests', 0), ('WorkspaceCommandAdvisorTests', 0), ('WorkspacePilotUpdateRequestTests', 5), ('WorkspacePilotUpdateHostTests', 23), ('WorkspacePilotReconciliationHostTests', 8), ('WorkspaceAssociativeBookkeepingTests', 0)]
+mecanicas por clase [('WorkspaceLifecycleHostTests', 69), ('WorkspacePilotPrepareTests', 55), ('WorkspaceEditIntentHostTests', 57), ('WorkspacePilotEditHostTests', 59), ('WorkspaceCommandAdvisorTests', 54), ('WorkspacePilotUpdateRequestTests', 39), ('WorkspacePilotUpdateHostTests', 12), ('WorkspacePilotReconciliationHostTests', 20), ('WorkspaceAssociativeBookkeepingTests', 10)]
+usos del mapa (pruebas) [('M-01', 2), ('M-02', 54), ('M-03', 89), ('M-04', 201), ('M-05', 26), ('M-06', 5), ('M-07', 70), ('M-08', 2)]
+fuera de las pruebas en WorkspaceLifecycleHostTests: 0 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['LifecycleScriptedAdvisor', 'WorkspaceLifecycleHostTests']
+fuera de las pruebas en WorkspacePilotPrepareTests: 0 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['WorkspacePilotPrepareTests']
+fuera de las pruebas en WorkspaceEditIntentHostTests: 0 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['WorkspaceEditIntentHostTests']
+fuera de las pruebas en WorkspacePilotEditHostTests: 0 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['PilotEditThrowingComparer', 'PilotEditThrowingProbe', 'PilotEditAuditedReader', 'WorkspacePilotEditHostTests', 'PilotEditOutcomeProbe']
+fuera de las pruebas en WorkspaceCommandAdvisorTests: 2 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['CommandAdvisorPortDouble', 'WorkspaceCommandAdvisorTests']
+    63 [R-C3] public EditIntentOutcome TryKeepMine(EditIntentRequest request) => Refuse<EditIntentOutcome>("TryKeepMine", request.Session);
+    1137 [R-C3] public EditIntentOutcome TryKeepMine(EditIntentRequest request) => _calls.TryKeepMine(request);
+fuera de las pruebas en WorkspacePilotUpdateRequestTests: 0 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['WorkspacePilotUpdateRequestTests']
+fuera de las pruebas en WorkspacePilotUpdateHostTests: 1 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['WorkspacePilotUpdateHostTests']
+    63 [R-C4] public EditUpdateOutcome Update(string rackId = RackA) => Core.TryUpdatePilot(Request(rackId), Port);
+fuera de las pruebas en WorkspacePilotReconciliationHostTests: 0 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['WorkspacePilotReconciliationHostTests']
+fuera de las pruebas en WorkspaceAssociativeBookkeepingTests: 0 residuos, 0 de compilacion; tipos de primer nivel que se copian: ['WorkspaceAssociativeBookkeepingTests']

@@ -1,0 +1,94 @@
+{
+  "CheckedUtc": "2026-11-10T04:08:55.8930533Z",
+  "CheckerPid": 52420,
+  "Rows": [
+    {
+      "Pid": 104528,
+      "ParentPid": 1232,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-11-10T03:08:50.9731370Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 104264,
+      "ParentPid": 107144,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-10T04:08:49.8166130Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 102884,
+      "ParentPid": 104264,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-10T04:08:51.1350170Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 52420,
+      "ParentPid": 102884,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-11-10T04:08:51.2858010Z",
+      "Classification": "own-tree",
+      "Reread": null,
+      "SessionOwned": false
+    },
+    {
+      "Pid": 96672,
+      "ParentPid": 49888,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-10T04:08:52.2994760Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    },
+    {
+      "Pid": 39920,
+      "ParentPid": 104288,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-11-10T04:08:52.3378950Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    },
+    {
+      "Pid": 66112,
+      "ParentPid": 49888,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-10T04:08:52.4145370Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    },
+    {
+      "Pid": 97728,
+      "ParentPid": 39920,
+      "Name": "git.exe",
+      "CreationDateUtc": "2026-11-10T04:08:52.4280290Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    },
+    {
+      "Pid": 60236,
+      "ParentPid": 49888,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-11-10T04:08:52.4632420Z",
+      "Classification": "unattributable",
+      "Reread": "GONE",
+      "SessionOwned": false
+    }
+  ],
+  "ReadableNonParticipants": 27,
+  "Participants": 0,
+  "ParticipantsSessionOwned": 0,
+  "ParticipantsForeign": 0,
+  "SessionPid": 99012,
+  "UnattributablePersistent": 0,
+  "UnattributableCleared": 5
+}

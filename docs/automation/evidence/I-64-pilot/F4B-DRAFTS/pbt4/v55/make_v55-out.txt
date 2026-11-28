@@ -1,0 +1,43 @@
+# make_v55.py: la v5.5 desde la v5.4 de 160e019d773ba9095e2d5858cd593a954b8eec67
+v5.4 e37843fc4bb5a1d100191928ad06ce05cbf19705f5084b809442257ba866fc63 (869447 bytes)
+CT: lineas {'CT_PBT4E_01': 6, 'CT_PBT4E_02': 4, 'CT_PBT4E_03': 9, 'CT_PBT4E_04': 5}; la sonda del GREEN las da todas tal cual
+RED CT_PBT4E_01: 1 de 6 lineas difieren
+RED CT_PBT4E_02: 4 de 4 lineas difieren
+RED CT_PBT4E_03: 2 de 9 lineas difieren
+RED CT_PBT4E_04: 4 de 5 lineas difieren
+op ops-a.md replace titulo
+op ops-a.md replace s0-base
+op ops-a.md after s0-tabla-fila
+op ops-a.md after s0-decisiones
+op ops-a.md after s1-autoridades
+op ops-a.md after d01
+op ops-a.md after d19
+op ops-a.md after d20
+op ops-a.md before s3-pbt4e
+op ops-a.md after s45
+op ops-b.md replace s54
+op ops-b.md after s55
+op ops-b.md before s57
+op ops-b.md after s60-taskid
+op ops-b.md after s60-unit
+op ops-b.md after s60-rr2
+op ops-b.md after s60-rr7
+op ops-b.md after s60-rr3
+op ops-b.md after s60-filas
+op ops-b.md replace s60-ci
+op ops-c.md before s65
+op ops-d.md after s7
+op ops-d.md after s83
+op ops-d.md after s85-tanda
+op ops-d.md after s85-sesion
+op ops-d.md after s9
+op ops-d.md replace s10
+op ops-d.md after s11-2
+op ops-d.md after s11-6
+op ops-d.md after s11-7
+op ops-d.md before s11-10
+ops aplicadas 31
+lo que cambia (del diff): §0; §1; D-PBT4-01; D-PBT4-19; D-PBT4-20; §5.4; §5.5; §6.0; §7; §8.3; §8.5; §9; §10; §11
+nuevas (del diff): la sección «PB-T4e» de §3; D-PBT4-22; §4.5; §5.7; §6.5; §6.5.1; §6.5.2; el anexo V55-A
+sin cambio: 99 secciones
+v5.5 e597790ff700a2909b77c21960b5b013b2b108cf8073f2b866a0face25f8ae83 (1003976 bytes) I-64-f4b-pbt4-gate-contract-package-v55.md

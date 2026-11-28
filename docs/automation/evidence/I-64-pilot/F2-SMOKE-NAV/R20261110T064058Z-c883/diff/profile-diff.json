@@ -1,0 +1,198 @@
+{
+  "Schema": "rackcad-i64-profile-diff/v1",
+  "Baseline": {
+    "File": "profile-capture-BASELINE.json",
+    "Sha256": "d7cb4cae8cc47f457c85a71d40d685e60fad8fb354e0e077d4c6dca4bf441191",
+    "Phase": "BASELINE",
+    "CanonicalSha256": "36a5156ce6a8ebfa70defca04a2bbeaf9bac1d6cc85f406fa480557b116291db",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "Post": {
+    "File": "profile-capture-POST.json",
+    "Sha256": "6a7b2b0a01fd37ed1722c354a5c889d3fcc26ccb92f78b44de15d81531e096f4",
+    "Phase": "POST",
+    "CanonicalSha256": "55d553dab1df3c1cfb806bf93a196d2e5be594c6e5446bcaf4ee5a4fa988b557",
+    "SidecarOk": true,
+    "CanonicalOk": true,
+    "SortedOk": true
+  },
+  "PaletteKeyAcceptance": "NOT_RECORDED",
+  "Preconditions": [],
+  "ChangeCounts": {
+    "ADDED": 0,
+    "REMOVED": 1,
+    "CHANGED": 19
+  },
+  "ClassCounts": {
+    "INVALID": 0,
+    "FORBIDDEN": 0,
+    "REPORT": 0,
+    "ALLOWED": 20
+  },
+  "Disposition": "CLEAN",
+  "ExitCode": 0,
+  "Entries": [
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\NetLoadDialog|FileNameMRU0",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|140|110c387d745d18a98b0a5c327c07e18dce8f93c0ce517466492fd9fdf9c9ec7d",
+      "Post": "String|149|99da77624ca9f3ae9418b5bcc37d6219f97650806899451c2293b482e41d41d8"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\NetLoadDialog|FileNameMRU1",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|130|ca2ced020176957a94948d7a9cc29cec1eabb831fa3ac4c81d401765fb8feae3",
+      "Post": "String|140|110c387d745d18a98b0a5c327c07e18dce8f93c0ce517466492fd9fdf9c9ec7d"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\NetLoadDialog|FileNameMRU2",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|149|99da77624ca9f3ae9418b5bcc37d6219f97650806899451c2293b482e41d41d8",
+      "Post": "String|130|ca2ced020176957a94948d7a9cc29cec1eabb831fa3ac4c81d401765fb8feae3"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\NetLoadDialog|InitialDirectory",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|122|b947784192e7813a9fb08246ad693d654bb8a7cc1fb621892986029e90697501",
+      "Post": "String|131|bded9723812babd43259526286754ce3311715b53f0bdfd31d354b7cbc5c4da8"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\NetLoadDialog|ShellView-SortColumns0Direction",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "DWord|10|f807212b6748a8300fc3702322caa515edf0a6ed9bbc86e94c451e351b080c60",
+      "Post": "DWord|1|6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\OpenSaveAnavDialogs|InitialDirectory",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|11|c2eaf58b87c4102b8ede0631648939e5717885bde3f0c80803645d0c92a967fe",
+      "Post": "String|12|e96bee6eab95c3ef290f7e82fd898c373248bcb4f9a8aaddc52cb1d55d57e66a"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU0",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|23|bc1be463bf3d813559193f658c8a555750690f965802f71927023fc8a3704268",
+      "Post": "String|26|10a61e89f89f3f22884cdedbb96f467465457df8794eefca1ee31f71af302946"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU1",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|23|6059eec874a39909136ba9446982c86e5a50998ffe24b94a7ea5c320bc80966c",
+      "Post": "String|23|bc1be463bf3d813559193f658c8a555750690f965802f71927023fc8a3704268"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU10",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|37|7dc64c7aa650372d71424dc4692b3d4c0d2a8072e72e0d5304d6e40994b8075b",
+      "Post": "String|116|5f307d1ce6df594d0c35a37a36c4d19718060be74a4e33c639eef1e9787a4dde"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU2",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|23|2586e2d14fbae16895e2e96271c3927f0efa8d97cc465da1aa9ecf03472992f6",
+      "Post": "String|23|6059eec874a39909136ba9446982c86e5a50998ffe24b94a7ea5c320bc80966c"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU3",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|166|69cfd421d2a4f3f8d45554cf7aa35ae6fe90c4f00d16808c884f68a8b4b0c31d",
+      "Post": "String|23|2586e2d14fbae16895e2e96271c3927f0efa8d97cc465da1aa9ecf03472992f6"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU4",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|57|3bc6697d81c2d60d69301bc577362d1f25e6db8896ca6e5273e45ebd7cc34b9b",
+      "Post": "String|166|69cfd421d2a4f3f8d45554cf7aa35ae6fe90c4f00d16808c884f68a8b4b0c31d"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU5",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|59|a03a39ccdf684f06a27afc1217027ed09afbac870d7088d0d21a7d5256adcd0c",
+      "Post": "String|57|3bc6697d81c2d60d69301bc577362d1f25e6db8896ca6e5273e45ebd7cc34b9b"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU6",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|130|1af9b0884ddb366b16efa6f4f93e309558b3a7eddbbdf3587c851b1738e4bd4c",
+      "Post": "String|59|a03a39ccdf684f06a27afc1217027ed09afbac870d7088d0d21a7d5256adcd0c"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU7",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|62|9b84717a47e5c3481290b36fbf63e1f1285c75461ca602be74ca958606f7c906",
+      "Post": "String|130|1af9b0884ddb366b16efa6f4f93e309558b3a7eddbbdf3587c851b1738e4bd4c"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU8",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|55|b46ee11acd84302e8ef40eef41acefee07cf2028a45d27d40ac48d27322079ab",
+      "Post": "String|62|9b84717a47e5c3481290b36fbf63e1f1285c75461ca602be74ca958606f7c906"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|FileNameMRU9",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|116|5f307d1ce6df594d0c35a37a36c4d19718060be74a4e33c639eef1e9787a4dde",
+      "Post": "String|55|b46ee11acd84302e8ef40eef41acefee07cf2028a45d27d40ac48d27322079ab"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|InitialDirectory",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|11|c2eaf58b87c4102b8ede0631648939e5717885bde3f0c80803645d0c92a967fe",
+      "Post": "String|12|e96bee6eab95c3ef290f7e82fd898c373248bcb4f9a8aaddc52cb1d55d57e66a"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Dialogs\\Select File|InitialFilterIndex",
+      "Change": "CHANGED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "DWord|1|5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "Post": "DWord|1|d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+    },
+    {
+      "Id": "V|HKCU:PRODUCT\\Profiles\\<PROFILE>\\Variables|VIEWBACKSTATUS",
+      "Change": "REMOVED",
+      "Class": "ALLOWED",
+      "Rule": "R-A-03",
+      "Baseline": "String|1|6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "Post": null
+    }
+  ]
+}

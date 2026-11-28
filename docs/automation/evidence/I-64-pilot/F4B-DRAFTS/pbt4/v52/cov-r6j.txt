@@ -1,0 +1,85 @@
+# la corrida generica que ejercita WPUR (WorkspacePilotUpdateRunTests), frente al resto de la suite de Core, en 6c2820ba
+# solo las lineas que no retira el GREEN (pieza pbt4d-green-v52.txt)
+lineas que WPUR ejercita (sin las retiradas): 436; las ejercita tambien el resto: 401; solo WPUR: 35; con ramas que solo cubre WPUR: 22
+
+## quien cubre las lineas compartidas (las clases de las citas que las ejercitan)
+   211 fwr, wpuh, wpuq, fpt, fwp
+   113 fwr, wpuh, wpuq, fpt
+    25 fwp
+    17 fwr, wpuh, wpuq
+    11 wpuh, wpuq, fpt, fwp
+     7 otras
+     6 wpuh, wpuq, fwp
+     6 wpuh
+     4 wpuh, wpuq
+     1 fwr, wpuh, wpuq, fwp
+
+## las lineas que solo ejercita WPUR, por miembro
+  PushBackPilotUpdatePlan.cs:517 BuildCore: 1 lineas (601)
+  PushBackPilotUpdateRun.cs:360 Run: 7 lineas (369, 370, 371, 391, 392, 393, 394)
+  PushBackPilotUpdateRun.cs:413 Prepare: 5 lineas (431, 435, 437, 439, 441)
+  PushBackPilotUpdateRun.cs:456 Mutate: 4 lineas (483, 484, 485, 486)
+  PushBackPilotUpdateRun.cs:500 Write: 1 lineas (529)
+  PushBackPilotUpdateRun.cs:556 WithAbortFailure: 8 lineas (561, 562, 566, 567, 568, 570, 572, 575)
+  PushBackPilotUpdateRun.cs:581 Post: 1 lineas (595)
+  PushBackPilotUpdateRun.cs:659 SurvivorsAndLayers: 1 lineas (663)
+  PushBackPilotUpdateRun.cs:674 WithScopeDisposeFailure: 7 lineas (680, 681, 686, 688, 690, 694, 699)
+    PushBackPilotUpdatePlan.cs:601  return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
+    PushBackPilotUpdateRun.cs:369  {
+    PushBackPilotUpdateRun.cs:370  outcome = NotAppliedFailure(NoScopeReason);
+    PushBackPilotUpdateRun.cs:371  }
+    PushBackPilotUpdateRun.cs:391  catch (Exception ex)
+    PushBackPilotUpdateRun.cs:392  {
+    PushBackPilotUpdateRun.cs:393  scopeDisposeFailure = ex;
+    PushBackPilotUpdateRun.cs:394  }
+    PushBackPilotUpdateRun.cs:431  return DraftApplyOutcome<TState>.NotAppliedConflict(prepared.Differences);
+    PushBackPilotUpdateRun.cs:435  return NotAppliedPreflight(NothingToApplyReason);
+    PushBackPilotUpdateRun.cs:437  return NotAppliedPreflight(PendingTextReason);
+    PushBackPilotUpdateRun.cs:439  return NotAppliedPreflight(NotApplicableReason);
+    PushBackPilotUpdateRun.cs:441  return NotAppliedPreflight(prepared.Reason ?? PushBackPilotUpdatePlanner.MissingInputReason);
+    PushBackPilotUpdateRun.cs:483  catch (Exception ex)
+    PushBackPilotUpdateRun.cs:484  {
+    PushBackPilotUpdateRun.cs:485  _mutationDisposeFailure = ex;
+    PushBackPilotUpdateRun.cs:486  }
+    PushBackPilotUpdateRun.cs:529  return NotAppliedPreflight(DestinationChangedReason);
+    PushBackPilotUpdateRun.cs:561  var abort = AbortFailedPrefix + failure.Message;
+    PushBackPilotUpdateRun.cs:562  switch (decided.Kind)
+    PushBackPilotUpdateRun.cs:566  return _writeStarted
+    PushBackPilotUpdateRun.cs:567  ? DraftApplyOutcome<TState>.CommitThrew(abort + "; " + decided.Cause)
+    PushBackPilotUpdateRun.cs:568  : NotAppliedFailure(decided.Cause + "; " + abort);
+    PushBackPilotUpdateRun.cs:570  return DraftApplyOutcome<TState>.CommitThrew(decided.Cause + "; " + abort);
+    PushBackPilotUpdateRun.cs:572  return NotAppliedPreflight(decided.Cause + "; " + abort);
+    PushBackPilotUpdateRun.cs:575  return decided;
+    PushBackPilotUpdateRun.cs:595  _warnings.Add(NameDiffersPrefix + pair.Key + " no es «" + expected + "».");
+    PushBackPilotUpdateRun.cs:663  return NotAppliedPreflight(NoSurvivorsReason);
+    PushBackPilotUpdateRun.cs:680  var text = DisposeWarningPrefix + failure.Message;
+    PushBackPilotUpdateRun.cs:681  switch (decided.Kind)
+    PushBackPilotUpdateRun.cs:686  return NotAppliedPreflight(decided.Cause + "; " + text);
+    PushBackPilotUpdateRun.cs:688  return NotAppliedFailure(decided.Cause + "; " + text);
+    PushBackPilotUpdateRun.cs:690  return DraftApplyOutcome<TState>.CommitThrew(decided.Cause + "; " + text);
+    PushBackPilotUpdateRun.cs:694  return DraftApplyOutcome<TState>.AppliedWithWarnings(decided.PostRead!, decided.Warnings.Append(text).ToArray());
+    PushBackPilotUpdateRun.cs:699  return decided;
+
+## las ramas que solo cubre WPUR (linea: WPUR cubre g de t; el resto, r)
+  PushBackPilotUpdatePlan.cs:600  2/2 frente a 1  if (disposition != PushBackViewDispositionKind.Redraw)
+  PushBackPilotUpdateRun.cs:261  3/4 frente a 1  if (!admission.IsAdmitted) return PostNotAdmittedPrefix + (admission.Diagnostic ?? "sin diagnóstico");
+  PushBackPilotUpdateRun.cs:368  2/2 frente a 1  if (scope == null)
+  PushBackPilotUpdateRun.cs:418  2/2 frente a 1  if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
+  PushBackPilotUpdateRun.cs:422  2/2 frente a 1  if (origin != null) return origin;
+  PushBackPilotUpdateRun.cs:425  8/8 frente a 2  switch (prepared.Kind)
+  PushBackPilotUpdateRun.cs:449  5/8 frente a 2  if (import == null || !import.Ok) return NotAppliedPreflight(import?.Cause ?? ImportFailedReason);
+  PushBackPilotUpdateRun.cs:459  2/2 frente a 1  if (start == null) return NotAppliedFailure(NoMutationScopeReason);
+  PushBackPilotUpdateRun.cs:460  2/2 frente a 1  if (start.RejectionCode != null) return NotAppliedPreflight(start.RejectionCode);
+  PushBackPilotUpdateRun.cs:492  2/2 frente a 1  if (_mutationDisposeFailure != null) _warnings.Add(DisposeWarningPrefix + _mutationDisposeFailure.Message);
+  PushBackPilotUpdateRun.cs:510  2/2 frente a 1  if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
+  PushBackPilotUpdateRun.cs:525  5/8 frente a 4  if (mutable.Count != planned.Count
+  PushBackPilotUpdateRun.cs:559  2/2 frente a 1  if (failure == null) return decided;
+  PushBackPilotUpdateRun.cs:588  2/2 frente a 1  if (values == null) return PostFailed(PostMissingReason);
+  PushBackPilotUpdateRun.cs:589  2/2 frente a 1  if (values.ForeignScopeOpenAtPost) return PostFailed(ForeignScopeOpenCause);
+  PushBackPilotUpdateRun.cs:594  4/4 frente a 2  if (!values.NamesByKey.TryGetValue(pair.Key, out var actual) || !string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase))
+  PushBackPilotUpdateRun.cs:598  2/2 frente a 1  if (values.RegenFailure != null) _warnings.Add(RegenFailedPrefix + values.RegenFailure);
+  PushBackPilotUpdateRun.cs:599  2/2 frente a 1  if (values.Scan == null) return PostFailed(PostRereadMissingReason);
+  PushBackPilotUpdateRun.cs:604  2/2 frente a 1  if (cause != null) return PostFailed(cause);
+  PushBackPilotUpdateRun.cs:650  2/2 frente a 1  if (matches.Count == 0) return NotAppliedPreflight(PushBackPilotUpdatePlanner.NoOriginReason);
+  PushBackPilotUpdateRun.cs:651  2/2 frente a 1  if (matches.Count > 1) return NotAppliedPreflight(PushBackPilotUpdatePlanner.SeveralOriginsReason);
+  PushBackPilotUpdateRun.cs:678  2/2 frente a 1  if (failure == null) return decided;

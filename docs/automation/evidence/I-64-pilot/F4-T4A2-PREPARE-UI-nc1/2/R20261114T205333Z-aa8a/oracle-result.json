@@ -1,0 +1,57 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261114T205333Z-aa8a",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "not_run",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "not_run",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Scope",
+    "Ci",
+    "Tests",
+    "Trailer"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad son c3ae1c970c908ef541840fc583680b86376cae0b, en la rama esperada y worktree correcto. El CurrentSha declarado es deadbeefdeadbeefdeadbeefdeadbeefdeadbeef: git rev-parse y merge-base --is-ancestor CurrentSha HEAD fallan porque no es un commit. No se puede validar la identidad del producto indicado."
+  },
+  "OutputSha256": "4E0EBE7DD1C848BD5FD77180F679F5971281BC81F8DC71A2B5F727C64932D733",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,3 @@
+SECURELOAD_BASELINE_CURRENT=1
+Source=reg query HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Variables /v SECURELOAD (solo lectura; perfil activo <<Unnamed Profile>>)
+ReadUtc=2026-10-13T01:19:31.0223765Z

@@ -410,4 +410,22 @@ namespace RackCad.Application.Systems.Cantilever
         /// </summary>
         public const string BraceHasNoAdapterSection = "CANT_BRACE_HAS_NO_ADAPTER_SECTION";
     }
+
+    /// <summary>
+    /// I-64, sexta tanda, ui (O-4 b): the words of the window in the messages of the resolver. The side of an arm is «+Y» or «−Y», as the
+    /// matrix of «Brazos» and the classic editor name it, never the name of the enum; a value with no rule keeps its raw name, which is the
+    /// one fact the message can give about it.
+    /// </summary>
+    internal static class CantileverDiagnosticText
+    {
+        internal static string Side(global::RackCad.Domain.Systems.Cantilever.CantileverArmSide side)
+        {
+            switch (side)
+            {
+                case global::RackCad.Domain.Systems.Cantilever.CantileverArmSide.PositiveY: return "+Y";
+                case global::RackCad.Domain.Systems.Cantilever.CantileverArmSide.NegativeY: return "−Y";
+                default: return side.ToString();
+            }
+        }
+    }
 }

@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT3C-FULL-WRITE-ERASE",
+  "RunId": "R20261120T150458Z-e403",
+  "DelegationRunId": "R20261120T134718Z-68e5",
+  "WorkRunId": "R20261120T135026Z-80e5",
+  "Attempt": 1,
+  "VerifiedSha": "938a35f0f1636b4306d844eb9e34000e8967c05e",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-20T13:50:34Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide en TaskId, RunId, DelegationRunId y Attempt con la delegacion; ruta esperada con WorkRunId R20261120T135026Z-80e5. OutputWrittenUtc=2026-11-20T09:02:23.245821-06:00, posterior al inicio de cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exit=0; git rev-list confirma BaseSha 7dfc7c21 hijo directo de e3c293b1. git diff --name-only AuthorityRevision BaseSha lista cuatro rutas, todas docs/: evidence/I-64-evidence.md, gate-contract.json, make_pbt3c_contract.py e I-64.yml. Ninguna ruta EXTERNAL ni UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "relay-record-planning.json registra A1-A8 pass. byte-fidelity-check.json compara las ocho colecciones opacas y registra igualdad byte a byte. RequiredTests, invariantes y StopConditions pasan intactos en delegation.json."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json CurrentSha=938a35f0f1636b4306d844eb9e34000e8967c05e; git rev-parse HEAD=938a35f0f1636b4306d844eb9e34000e8967c05e; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=938a35f0f1636b4306d844eb9e34000e8967c05e. Rama y worktree coinciden; merge-base BaseSha..CurrentSha y RedSha..CurrentSha exit=0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "RemoteFacts registra ls-remote=CurrentSha y origin/main=MainSha 812baf879612320653094a8aaf46aca0bac81383. git rev-parse origin/main coincide con MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Script de alcance: AllowedWriteScope tiene 4 entradas exactas; las 4 rutas de git diff --name-only BaseSha CurrentSha, las 3 de BaseSha RedSha y las 4 de ChainBaseSha CurrentSha -- src tests estan en la lista. ForbiddenWriteScope sin interseccion. RED: fachada y dos clases nuevas; GREEN: WR y fachada."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no devuelve rutas. git check-ignore -v para el handoff de las entradas confirma .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts: push 44757675821, ref refs/heads/architecture/workspace-persistente-rackcad, head_sha CurrentSha; los cuatro jobs requeridos success. Push RED 44754080713 sobre RedSha: Tests failure, UI Tests success, Build UI success y Build Plugin skipped, segun ExpectedEvidence."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX CI: RED Core 19129=19119 Passed+4 Failed+6 Skipped; RED UI 2451=2430+0+21. GREEN Core 19129=19123+0+6; GREEN UI 2451=2430+0+21. Los 24 filtros Core y 12 UI cumplen MinSelected y resultados esperados. RED: los 4/4 CT-PBT3C-01..04 fallan por Assert.Equal, sin NotExecuted; los demas filtros pasan. GREEN: todos pasan. Workspace Core: 3478 resultados, 3472 Passed y los seis Skip S-1..S-6, sin otros omitidos en el filtro. git diff BaseSha RedSha -- tests/ da las dos clases nuevas; RedSha..CurrentSha -- tests no devuelve rutas, asi que ChainRedFiles contiene esas dos clases. TRX corresponde a ExpectedCounts."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra los dos commits RED y GREEN; ambos incluyen Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegacion solicita claude-sonnet-5-5 y effort high. relay-record-work.json registra parametro literal de transporte sonnet, ModelEffective=claude-sonnet-5-5 y EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Script PowerShell sobre los siete campos completos y los 16 terminos de AUTOMATION_PLAN 16.10: cero coincidencias. Longitudes: WorkCompleted 9341, Evidence 2311, UnexpectedFindings 924, KnownLimitations 1026, Deviations 0, OpenQuestions 0, RecommendedNextAction 287."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones y 3 resultados de herramienta con error, ninguno pendiente; procesos participantes y no atribuibles persistentes: 0."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "El registro anota tres resultados de herramienta con error, ninguno pendiente; no registra denegaciones."
+  ],
+  "RecommendedNextAction": "Remitir esta verificacion al Coordinator para las revisiones y los registros restantes."
+}

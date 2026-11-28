@@ -1,0 +1,51 @@
+{
+  "MeasuredUtc": "2026-11-09T05:24:19Z",
+  "IdentityMode": "POST_CUSTODY_VERIFIED_DELIVERY_DESCENDANT",
+  "Conditions": {
+    "1_DeliveryCurrentShaExact": true,
+    "2_HeadIsCustody": true,
+    "3_FreshRemoteBranchIsCustody": true,
+    "4_CurrentShaAncestorOfCustody": true,
+    "5_DiffOnlyDocs": true,
+    "6_DiffNoSrcTestsProjectDeployAssets": true,
+    "7_CustodyCommitDocsOnlySingleParentOnCurrent": true,
+    "8_CustodyCiSuccess4of4": true,
+    "9_RedGreenUnchanged": true,
+    "10_OriginMainUnchanged": true
+  },
+  "Facts": {
+    "Head": "82bbac8fb5837e53e057f95ba8715df31b5ec01b",
+    "LsRemoteBranch": "82bbac8fb5837e53e057f95ba8715df31b5ec01b",
+    "LsRemoteMain": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "CustodyParents": [
+      "c726410f3ac764f4a80a08a2b810b5fdda276ecc"
+    ],
+    "DiffPaths": 178,
+    "DiffAllUnderDocs": true,
+    "CustodyCi": {
+      "RunId": "42564737431",
+      "HeadSha": "82bbac8fb5837e53e057f95ba8715df31b5ec01b",
+      "Event": "push",
+      "Conclusion": "success",
+      "Jobs": [
+        [
+          "Build UI (WPF, valida API de Application)",
+          "success"
+        ],
+        [
+          "UI Tests (WPF controls, net8.0-windows)",
+          "success"
+        ],
+        [
+          "Tests (Domain + Application)",
+          "success"
+        ],
+        [
+          "Build Plugin without AutoCAD",
+          "success"
+        ]
+      ]
+    }
+  },
+  "Pass": true
+}

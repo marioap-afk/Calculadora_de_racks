@@ -79,7 +79,7 @@ dotnet build src\RackCad.Plugin\RackCad.Plugin.csproj -c Release -p:AutoCADInsta
 2. Abrir AutoCAD.
 3. Comando `NETLOAD` → seleccionar `RackCad.Plugin.dll`.
    - La primera vez AutoCAD puede preguntar si confía en el ensamblado: **Cargar / Load**.
-4. Ejecutar `RACKCAD` para abrir el menú.
+4. Ejecutar `RACKCAD` para abrir la ventana RackCad (el menú clásico es `RACKMENU`).
 
 `NETLOAD` es **por sesión**: hay que repetirlo cada vez que se abre AutoCAD (salvo carga
 automática, abajo).
@@ -205,8 +205,10 @@ Son **dos** cosas. El catálogo sí forma parte del bundle; la biblioteca DWG es
    ruta elegida por el usuario y, como fallback, un archivo con ese nombre junto a los catálogos. Contiene las
    definiciones de bloque que se clonan al dibujo cuando faltan.
 
-**Apuntar a una ubicación compartida (opcional):** desde el menú `RACKCAD` se puede ver y
-elegir la ruta de la librería de bloques. La ruta elegida se guarda por usuario en:
+**Apuntar a una ubicación compartida (opcional):** desde la ventana `RACKCAD` → «Configuración» (o el menú clásico `RACKMENU`) se puede ver y
+elegir la ruta de la librería de bloques. En «Configuración» también se cambia la carpeta de la biblioteca de diseños (por ejemplo, una
+carpeta compartida del equipo), se enciende «Abrir RackCad al iniciar AutoCAD» (apagada por defecto) y se ven la versión y las carpetas de
+los catálogos y del registro de errores («Acerca de RackCad»). Todo se guarda por usuario en:
 
 ```
 %AppData%\RackCad\settings.json
@@ -264,24 +266,28 @@ y hash). `deploy\build-bundle.ps1` encadena `dotnet publish` + verificación.
 
 Cada comando tiene un **alias corto** (columna "Atajo") que viaja con el plugin — no hay que editar
 `acad.pgp`. Si un atajo choca con un alias que ya tengas en tu `acad.pgp`, el del PGP gana; usa el
-comando completo o cambia el atajo en `RackFrameCommands.Aliases.cs`.
+comando completo. La ventana `RACKCAD` tiene esta misma lista en «Ayuda» › «Órdenes y atajos», con buscador,
+«Ejecutar» y la sección de la ventana que hace lo mismo (`RackCommandReference`, la fuente única de las dos).
 
 | Comando | Atajo | Qué hace |
 |---------|-------|----------|
-| `RACKCAD` | `RK` | Menú principal (elige el tipo de rack a diseñar). |
-| `RACKAYUDA` | `RA` | Ventana con **todos los comandos y sus atajos** dentro de AutoCAD (esta tabla, viva). |
-| `RACKCABECERA` | `RCB` | Configurador de cabecera (editor). |
+| `RACKCAD` | `RK` | Ventana RackCad (no bloquea AutoCAD): secciones y lista de racks del dibujo. |
+| `RACKMENU` | — | Menú clásico (elige el tipo de rack a diseñar), mientras las secciones de la ventana se migran. |
+| `RACKAYUDA` | `RA` | Diálogo con **todos los comandos y sus atajos** dentro de AutoCAD (esta tabla, viva); en la ventana, «Ayuda» › «Órdenes y atajos». |
+| `RACKCABECERA` | `RCB` | Abre «Nuevo» › «Cabecera en esta ventana» en la ventana RackCad; el configurador clásico sigue en el menú clásico (`RACKMENU`, «Diseñar cabecera»). |
 | `QUICKCABECERA` | `QCB` | Cabecera por línea de comandos (pide poste/fondo/alto). |
 | `RACKSISTEMADINAMICO` | `RSD` | Sistema dinámico (pallet flow). |
 | `QUICKCAMA` | `QCM` | Cama de rodamiento. |
 | `RACKSELECTIVO` | `RS` | Editor de rack selectivo (matriz frentes × niveles). |
+| `RACKPUSHBACK` | `RPB` | Sistema Push Back. LIFO: carga y descarga por el mismo extremo (bajo); vistas lateral, frontal y planta. |
+| `RACKSECCION` | — | Perfil estructural: consulta perfiles W, HSS, C, L y S del catálogo AISC, visualiza su geometría e insértala en el dibujo. `RACKSECCION` abre «Nuevo» › «Perfil estructural» en la ventana RackCad, sin bloquear AutoCAD; la ventana clásica sigue en `RACKMENU` → «Generar perfil estructural». |
 | `RACKEDITAR` | `RED` | Seleccionar un rack ya dibujado y reabrir su editor; al confirmar redibuja todas sus vistas. |
-| `RACKVARIABLES` | `RVA` | Administrar las variables del dibujo: crear, renombrar, usar un literal o una fórmula, cambiar la definición y reparar referencias rotas. |
+| `RACKVARIABLES` | `RVA` | Administrar las variables del dibujo: crear, renombrar, usar un literal o una fórmula, cambiar la definición y reparar referencias rotas. `RACKVARIABLES` y `RVA` abren la sección «Variables» de la ventana RackCad; la ventana clásica sigue en `RACKMENU`. |
 | `RACKDUPLICAR` | `RD` | Copiar **uno o varios racks** como **independientes** (GUID nuevo por rack; editar la copia no afecta al original), **al estilo COPY**: selección múltiple → punto base → puntos de destino con liga elástica, **copia múltiple por defecto** (Enter/Esc termina; `Unica` cambia a una sola). Solo se copian las **vistas físicamente seleccionadas**: una vista no arrastra a sus hermanas. En cada destino el grupo **conserva su disposición relativa** (también con UCS girado); cada rack copiado es independiente, y sus vistas comparten un GUID nuevo y un nombre ("… - copia N"). Las referencias **enlazadas** entre sí siguen enlazadas dentro de la copia. Lo que no es un rack, o está fuera del espacio modelo, se ignora con aviso; un rack que no se puede copiar detiene el comando antes del punto base, sin dibujar nada, y cada destino se coloca entero o no se coloca. |
 | `RACKLISTA` | `RL` | Tabla de todos los racks del dibujo (nombre, tipo, vistas presentes, nº de copias) con zoom al seleccionado. |
 | `RACKBOMTOTAL` | `RB` | BOM consolidado de todo el dibujo (desglose por rack × copias + gran total por componente). Su exportación a Excel agrega Cantidad total, la tabla nativa `RackCadBOM` y la hoja `Resumen` con una tabla dinámica; con Nivel en (Todas) esa suma no es necesariamente un total físico. La exportación de un solo rack no cambia. |
-| `RACKLAYOUT` | `RLY` | Replica la vista en **planta** de un rack en una rejilla de almacén: filas × columnas + pasillos + numeración automática (A1, B2…). Copias **enlazadas** (un bloque, editar una edita todas; el BOM las cuenta) o **independientes** (GUID/nombre propio por copia). Opcional: hileras **espalda-con-espalda** (pares con flue, pasillo solo entre pares) y **verificar encaje** contra un edificio (ancho × largo) — avisa si la rejilla no cabe. La orientación se hereda del rack (rótalo antes para girar la rejilla). |
-| `RACKRELLENAR` | `RR` | **Rellena automáticamente** el área disponible con un rack: dibuja el contorno de la nave como **polilínea cerrada** en la capa `RACKCAD_SITIO` (acepta formas en L; los arcos se aproximan por vértices) y las **columnas** ahí mismo (círculos, rectángulos o bloques — se libran por su caja + holgura). Calcula la rejilla máxima que cabe (prueba ambas orientaciones, opcional espalda-con-espalda), reporta cuántos racks caben y cuántas celdas se omiten, y al confirmar coloca las copias **enlazadas** + etiquetas. |
+| `RACKLAYOUT` | `RLY` | Replica la vista en **planta** de un rack en una rejilla de almacén: filas × columnas + pasillos + numeración automática (A1, B2…). Copias **enlazadas** (un bloque, editar una edita todas; el BOM las cuenta) o **independientes** (GUID/nombre propio por copia). Opcional: hileras **espalda-con-espalda** (pares con flue, pasillo solo entre pares) y **verificar encaje** contra un edificio (ancho × largo) — avisa si la rejilla no cabe. La orientación se hereda del rack (rótalo antes para girar la rejilla). El atajo `RLY` abre «Almacén» › «Rejilla» en la ventana RackCad, con el rack seleccionado como semilla; `RACKLAYOUT` abre el diálogo clásico. |
+| `RACKRELLENAR` | `RR` | **Rellena automáticamente** el área disponible con un rack: dibuja el contorno de la nave como **polilínea cerrada** en la capa `RACKCAD_SITIO` (acepta formas en L; los arcos se aproximan por vértices) y las **columnas** ahí mismo (círculos, rectángulos o bloques — se libran por su caja + holgura). Calcula la rejilla máxima que cabe (prueba ambas orientaciones, opcional espalda-con-espalda), reporta cuántos racks caben y cuántas celdas se omiten, y al confirmar coloca las copias **enlazadas** + etiquetas. El atajo `RR` abre «Almacén» › «Rellenar un área» en la ventana RackCad, con el rack seleccionado como semilla; `RACKRELLENAR` abre el diálogo clásico. |
 
 Para crear expresiones y distinguir una referencia directa de una fórmula, consulta la
 [guía de variables de proyecto y fórmulas](variables-y-formulas.md).
@@ -306,4 +312,4 @@ Para crear expresiones y distinguir una referencia directa de una fórmula, cons
 2. Copiar la carpeta de salida completa (DLLs + `catalogs\` con el `.dwg`).
 3. `NETLOAD` → `RackCad.Plugin.dll` (o dejarlo en la Startup Suite).
 4. Ejecutar `RACKCAD`.
-5. *(Opcional)* Apuntar a una librería/catálogo central desde el menú `RACKCAD`.
+5. *(Opcional)* Apuntar a una librería/catálogo central desde la ventana `RACKCAD` → «Configuración» o desde `RACKMENU`.

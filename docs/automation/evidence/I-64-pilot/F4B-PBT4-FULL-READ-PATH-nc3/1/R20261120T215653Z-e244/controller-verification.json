@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT4-FULL-READ-PATH",
+  "RunId": "R20261120T215653Z-e244",
+  "DelegationRunId": "R20261120T193416Z-a53f",
+  "WorkRunId": "R20261120T193653Z-de54",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-20T19:36:59Z y Outcome.OutputWrittenUtc=2026-11-20T20:54:16Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json presente; TaskId, RunId, DelegationRunId y Attempt corresponden a esta invocacion. OutputWrittenUtc es posterior a Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Git: merge-base --is-ancestor AuthorityRevision BaseSha exit=0. git diff --name-only 27c13fab..5aaacce3 arroja 4 rutas, todas docs/: 3 UNIT_DOC y make_pbt4a_contract.py, que no figura en Authorities. Ninguna es EXTERNAL ni UNIT_CHANGE. revision-diff.txt coincide con las rutas; SHA-256=BA2B6A194BA134821E028DA44E67CEC1FF2C8984D269F00D7DB33902668D41F3. coordinator-disposition.md ratifica el tratamiento de la ruta no listada."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json registra 10 rutas permitidas; RequiredTests tiene 38 filtros, y required-tests.txt coincide con su SHA-256 esperado 2270E05B5D0AC9329905C84DB1A03C548B44BF77F472E184E2C69E05D1C9FD4E. relay-record-planning.json registra A1-A8 8/8 y nc4; byte-fidelity-check.json marca PASS en las ocho colecciones."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff CurrentSha=faef702055990d1350a73bf4d254eb9e898d5670; git rev-parse HEAD=faef702055990d1350a73bf4d254eb9e898d5670; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=faef702055990d1350a73bf4d254eb9e898d5670. Rama y worktree coinciden. merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha devuelven exit=0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Exit HEAD y remoto son BaseSha; Entry HEAD y remoto son CurrentSha; OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, igual a MainSha. ConfigTomlSha256 coincide entre Exit y Entry con la Snapshot K."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Script de alcance: AllowedWriteScope tiene 10 rutas; cada ruta de git diff --name-only BaseSha CurrentSha, BaseSha RedSha y ChainBaseSha CurrentSha -- src tests coincide exactamente con una entrada permitida. RED agrega 7 rutas src/tests; GREEN no cambia tests/. Sin rutas fuera de src/ y tests/ en el diff completo."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produce salida. git check-ignore -v sobre el directorio inputs informa .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts: run 44814418683 es push de refs/heads/architecture/workspace-persistente-rackcad sobre CurrentSha; los cuatro jobs requeridos estan en success. Run 44810371492 es push de la misma rama sobre RedSha: Core failure, UI y Build UI success, Plugin skipped. Los cuatro TRX tienen SHA-256 iguales a los registrados."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Los 38 filtros del RequiredTests seleccionan al menos su MinSelected: script de cotejo sobre ambos TRX Core y UI, RED y GREEN, reporta cero filtros invalidos. Totales TRX: RED Core 19137=19125+5+7, RED UI 2451=2430+0+21; GREEN Core 19137=19130+0+7, GREEN UI 2451=2430+0+21. Los 5 fallos RED son CT-PBT4A-01/02/03/04/07; sus mensajes no tienen el prefijo cualificado prohibido, sus primeras lineas de stack apuntan a tests/, y no hay fallos existentes adicionales ni fallos UI. Los siete skips de Core son S-1 a S-6 y CT-PBT3A-12. RT y ChainRedFiles son tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs, PushBackFullReadGuardTests.cs, PushBackFullReadPathTests.cs y PushBackFullReadSupport.cs; git diff RedSha CurrentSha -- tests/ esta vacio."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha devuelve dos commits, RED y GREEN; ambos incluyen Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual a Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation Model=claude-sonnet-5-5 y effort=high. Participant.ModelRequested=sonnet (alias de lanzamiento), ModelEffective=claude-sonnet-5-5, EffortRequested=high y EffortEffective=high; RoutingEnforcement=required."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Script de coincidencia por frase completa, sin distinguir mayusculas, sobre los siete campos exigidos: WorkCompleted 7533 caracteres, Evidence 3010, UnexpectedFindings 770, KnownLimitations 800, Deviations 0, OpenQuestions 0 y RecommendedNextAction 151. Detecta una coincidencia en WorkCompleted, al final de la nota de limpieza; los otros seis campos no tienen coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones de permisos y tres errores de herramientas, ninguno pendiente. No hay orden fallida pendiente registrada."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "WorkCompleted contiene una coincidencia completa de un termino restringido al final de la nota de limpieza; la comprobacion FreeText falla."
+  ],
+  "RecommendedNextAction": "Eliminar la coincidencia de WorkCompleted y solicitar una nueva verificacion sobre la entrega corregida."
+}

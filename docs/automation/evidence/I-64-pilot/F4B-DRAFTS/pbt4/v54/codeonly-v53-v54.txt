@@ -1,0 +1,3 @@
+archivos solo en uno: []
+cambia el texto: ['tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs']
+cambia el codigo (sin comentarios ni lineas en blanco): []

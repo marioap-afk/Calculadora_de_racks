@@ -1,0 +1,86 @@
+{
+  "CheckedUtc": "2026-10-11T09:04:09.0766432Z",
+  "CheckerPid": 22132,
+  "SessionPid": 18312,
+  "Rows": [
+    {
+      "Pid": 10244,
+      "ParentPid": 30660,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-09T22:37:41.6499600Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 18312,
+      "ParentPid": 10244,
+      "Name": "claude.exe",
+      "CreationDateUtc": "2026-10-10T01:10:46.3458670Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 27556,
+      "ParentPid": 1256,
+      "Name": "codex-windows-sandbox-service.exe",
+      "CreationDateUtc": "2026-10-11T02:51:26.2747490Z",
+      "Classification": "nominal-exclusion",
+      "Reread": null
+    },
+    {
+      "Pid": 5364,
+      "ParentPid": 18312,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T09:04:00.2495680Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 39572,
+      "ParentPid": 5364,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T09:04:00.3030020Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 33096,
+      "ParentPid": 39572,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T09:04:07.2109160Z",
+      "Classification": "own-tree",
+      "Reread": null
+    },
+    {
+      "Pid": 22132,
+      "ParentPid": 33096,
+      "Name": "pwsh.exe",
+      "CreationDateUtc": "2026-10-11T09:04:07.5864690Z",
+      "Classification": "own-tree",
+      "Reread": null
+    }
+  ],
+  "SessionDescendants": [
+    {
+      "Pid": 14224,
+      "ParentPid": 39572,
+      "Name": "bash.exe",
+      "CreationDateUtc": "2026-10-11T09:04:07.2665740Z",
+      "Classification": "session-descendant",
+      "Reread": null
+    },
+    {
+      "Pid": 28468,
+      "ParentPid": 14224,
+      "Name": "python3.13.exe",
+      "CreationDateUtc": "2026-10-11T09:04:07.4901250Z",
+      "Classification": "session-descendant",
+      "Reread": null
+    }
+  ],
+  "Orphans": [],
+  "ReadableNonParticipants": 40,
+  "Participants": 0,
+  "UnattributablePersistent": 0,
+  "OrphansPersistent": 0
+}

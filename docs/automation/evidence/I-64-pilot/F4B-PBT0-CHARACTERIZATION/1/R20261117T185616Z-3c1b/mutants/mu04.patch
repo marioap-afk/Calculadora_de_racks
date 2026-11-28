@@ -1,0 +1,14 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs b/src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs
+index 5f59ac3b..3d01625a 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs
+@@ -208,8 +208,7 @@ namespace RackCad.Application.Systems.PushBack
+             // B invertido. Compararla contra el layout de profundidad de A daba siempre distinto (17 modulos contra
+             // 8, base 17 contra 8), asi que todo recalculo de un compuesto reconstruia desde cero.
+             var rebuildShape = state.WorkingBaseline?.Composite?.Of(PushBackSide.A)?.Local?.Structure ?? baseline;
+-            var mustRebuild = standardRestore
+-                              || restoredIds.Count > 0
++            var mustRebuild = restoredIds.Count > 0
+                               || DynamicEditorDesignAssembler.MustRebuild(rebuildShape, pallet, depthLayout);
+ 
+             DynamicRackSystem system;

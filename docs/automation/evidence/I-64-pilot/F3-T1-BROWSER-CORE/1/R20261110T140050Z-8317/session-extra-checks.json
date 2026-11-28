@@ -1,0 +1,65 @@
+{
+  "AllowedNewFirstExact": true,
+  "AllowedExistingSubsetInOrder": true,
+  "AllowedExistingChosen": [
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+  ],
+  "AllowedExistingNotChosen": [],
+  "ExactCopy.Authorities": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 2,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOfNull": true,
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "b1911aa01719cb9d0121ca5f14c1166d97d7ee1b",
+  "AuthorityRevision": "84dd689f810b42b4f4ccaecb26a6f4642d150963",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "ChainFields": {
+    "ChainBaseSha": "b1911aa01719cb9d0121ca5f14c1166d97d7ee1b",
+    "ChainRedSha": null,
+    "ChainRedFiles": []
+  },
+  "AttemptFields": {
+    "Attempt": 1,
+    "AttemptsRemaining": 2,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261110T140050Z-8317"
+  },
+  "AcceptanceCriteriaCount": 16,
+  "IssuedBy": "Controller Codex (planificacion F3-T1-BROWSER-CORE, primera delegacion de la cadena, CONTROLLER_PLANNING)"
+}

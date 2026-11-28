@@ -1,0 +1,996 @@
+diff --git a/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs b/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+index db0cd636..8871dd6f 100644
+--- a/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
++++ b/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@ -88,7 +88,11 @@ namespace RackCad.Application.Workspace
+ 
+         Error,
+ 
+-        /// <summary>It cannot be decided whether the field is changed: the comparison failed. It counts as protected.</summary>
++        /// <summary>
++        /// It cannot be decided whether the field is changed: the comparison failed. It counts as protected. It is reported only when the
++        /// ordinary state, Clean or Dirty, cannot be decided. When the draft has an explicit state (Conflict, Applying, Unknown or Error)
++        /// that state is kept, whatever the comparison says, and the field is protected all the same.
++        /// </summary>
+         Undecidable,
+     }
+ 
+@@ -119,7 +123,11 @@ namespace RackCad.Application.Workspace
+         /// <summary>The transition must not go on: the pending text is invalid, the request is not authorized or the operation failed. Nothing changed.</summary>
+         Aborted,
+ 
+-        /// <summary>The pending text was kept as it is.</summary>
++        /// <summary>
++        /// The pending text was kept as it is. For a non-blocking boundary it is the only answer. For a blocking one it means that the
++        /// draft cannot be edited now (for example it is in error, unknown or being applied): nothing was validated or applied, the
++        /// pending text is intact and the transition goes on, exactly as for <see cref="Proceeded"/>.
++        /// </summary>
+         Kept,
+ 
+         /// <summary>A read of the pilot is in progress: nothing changed and the transition must not go on.</summary>
+@@ -223,7 +231,12 @@ namespace RackCad.Application.Workspace
+         public static PilotFieldResult Invalid(PilotFieldView view, string? message) => new(PilotFieldStatus.Invalid, view, null, message);
+     }
+ 
+-    /// <summary>The answer to the crossing of a boundary. <see cref="InvalidFields"/> is never null, also for a default value.</summary>
++    /// <summary>
++    /// The answer to the crossing of a boundary. <see cref="InvalidFields"/> is never null, also for a default value.
++    /// The default value of this struct is a real answer, TabChange with Proceeded, and nothing tells it from a genuine one: so no
++    /// producer of this port and no double of it may ever return a default <see cref="PilotBoundaryResult"/>; every answer is built
++    /// with the constructor, with its kind and its decision.
++    /// </summary>
+     public readonly struct PilotBoundaryResult
+     {
+         private readonly IReadOnlyList<PilotFieldProblem>? _invalidFields;
+diff --git a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+index bd7466c3..6ec66e53 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@ -195,6 +195,12 @@ namespace RackCad.Application.Workspace
+     public enum EditCheckStatus
+     {
+         Unavailable,
++
++        /// <summary>
++        /// The check waits and nothing was read. Besides the reasons of the intention (no active document, a RackCad modal, a command or
++        /// no rest), through the edit port of the panel there are two more: a read of the pilot is already in progress, or a notice of
++        /// the panel is being delivered.
++        /// </summary>
+         Waiting,
+         Rejected,
+ 
+diff --git a/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs b/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
+index 22e357a7..a003511b 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs
+@@ -43,7 +43,7 @@ namespace RackCad.Plugin.Workspace
+         private WorkspacePaletteHost()
+         {
+             _controller = WorkspaceController.GetOrCreate();
+-            _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation, _controller.BrowserSummary);
++            _viewModel = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation, _controller.BrowserSummary, _controller.PilotEdit);
+             _root = new WorkspacePanelView(_viewModel);
+ 
+             _palette = new PaletteSet("RackCad");
+diff --git a/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs b/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+index cde57f3b..2a4ee948 100644
+--- a/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs
+@@ -1,6 +1,7 @@
+ using System;
+ using System.Collections.Generic;
+ using System.Globalization;
++using System.Linq;
+ using RackCad.Application.Workspace;
+ 
+ namespace RackCad.UI.Workspace
+@@ -22,6 +23,10 @@ namespace RackCad.UI.Workspace
+     /// surface, once per materialization, and only while the drawing can be read and no action is blocked; otherwise it is retried
+     /// at the next presentation of that same tab. The views live only in the surface, never in the tab record.
+     ///
++    /// With the edit port of the pilot (I-64 F4-T3B1) the one surface also holds the field of the pilot (<see cref="Field"/>): the browser
++    /// pins the tab and passes the gestures of the user to it, shows the mark of a protected tab, crosses the boundaries of the panel and
++    /// shows the field again at the end of every rebuild. Without that port the browser is exactly as before.
++    ///
+     /// It is synchronous: no timer, no thread, no task and no dispatcher. Without a port it is inert: no tabs, no surface.
+     /// </summary>
+     public sealed class WorkspaceBrowserViewModel : ObservableObject
+@@ -39,6 +44,7 @@ namespace RackCad.UI.Workspace
+ 
+         private readonly IWorkspaceBrowserSummaryPort _port;
+         private readonly Action _tabChanged;
++        private readonly IWorkspacePilotEditPort _pilotEdit;
+         private readonly BrowserSessionRegistry _registry = new();
+ 
+         // What the presented snapshot says (set only by Present).
+@@ -61,14 +67,20 @@ namespace RackCad.UI.Workspace
+ 
+         /// <param name="port">The read-only summary port; null leaves the browser inert.</param>
+         /// <param name="tabChanged">Called after a manual change of tabs, so the panel presents the navigation again with its last snapshot.</param>
+-        public WorkspaceBrowserViewModel(IWorkspaceBrowserSummaryPort port, Action tabChanged = null)
++        /// <param name="pilotEdit">The edit port of the pilot (I-64 F4-T3B1). Optional: without it the browser has no field and no protected mark.</param>
++        public WorkspaceBrowserViewModel(IWorkspaceBrowserSummaryPort port, Action tabChanged = null, IWorkspacePilotEditPort pilotEdit = null)
+         {
+             _port = port;
+             _tabChanged = tabChanged;
++            _pilotEdit = pilotEdit;
++            Field = new WorkspacePilotFieldViewModel(pilotEdit, OnFieldChanged);
+         }
+ 
+         // ------------------------------------------------------------------ what the panel shows
+ 
++        /// <summary>The field of the pilot on the one surface (I-64 F4-T3B1). Never null; not available without the edit port.</summary>
++        public WorkspacePilotFieldViewModel Field { get; }
++
+         /// <summary>False when the panel was built without a summary port: the browser is inert.</summary>
+         public bool IsAvailable => _port != null;
+ 
+@@ -125,6 +137,8 @@ namespace RackCad.UI.Workspace
+         {
+             if (_port == null) return;
+ 
++            var priorSession = _surfaceSession;
++            var priorRack = _surfaceRack;
+             _canRead = canReadDrawing;
+             _block = block;
+             _blockText = blockText ?? string.Empty;
+@@ -135,12 +149,20 @@ namespace RackCad.UI.Workspace
+             if (_current != null && context != null) _current.ApplySelectionContext(context);
+ 
+             Rebuild(retryPending: true, userRequested: false);
++            CrossObservedBoundaries(priorSession, priorRack);
+         }
+ 
+         // ------------------------------------------------------------------ the explicit user interactions
+ 
+-        /// <summary>Makes the tab the active one. Memory only; the tab becomes the live surface and the navigation is presented again.</summary>
+-        public void ActivateTab(string rackId) => Interact(session => session.Activate(rackId));
++        /// <summary>
++        /// Makes the tab the active one. Memory only; the tab becomes the live surface and the navigation is presented again. With
++        /// pending text in the live tab the change crosses the blocking boundary first: if it does not proceed, nothing changes.
++        /// </summary>
++        public void ActivateTab(string rackId)
++        {
++            if (!AllowTabChange(rackId)) return;
++            Interact(session => session.Activate(rackId));
++        }
+ 
+         /// <summary>Pins the preview tab so the automatic synchronization never replaces it. Memory only.</summary>
+         public void PinTab(string rackId) => Interact(session => session.Pin(rackId));
+@@ -148,6 +170,39 @@ namespace RackCad.UI.Workspace
+         /// <summary>Closes the tab without asking anything; if it was active the next one is. Memory only.</summary>
+         public void CloseTab(string rackId) => Interact(session => session.Close(rackId));
+ 
++        /// <summary>
++        /// The first gesture on the field of the pilot (the Edit button, a click, a key on the read-only box): pins the tab if it is a
++        /// preview and then asks the field to open the edition. Contained in the field; it never reaches the navigation.
++        /// </summary>
++        public void BeginFieldEdit()
++        {
++            if (_pilotEdit == null || _current == null) return;
++
++            try
++            {
++                var rack = _current.ActiveRackId;
++                if (rack == null) return;
++
++                if (IsPreviewTab(rack)) PinTab(rack);
++                Field.BeginEdit();
++            }
++            catch (Exception ex)
++            {
++                Field.Fail(ex);
++            }
++        }
++
++        /// <summary>The double click on a tab button: it is a gesture of the field only when, after the clicks, that tab is the active one.</summary>
++        public void BeginFieldEditFromTab(string rackId)
++        {
++            if (_current == null || rackId == null) return;
++            if (!string.Equals(_current.ActiveRackId, rackId, StringComparison.Ordinal)) return;
++            BeginFieldEdit();
++        }
++
++        /// <summary>The Reload button of the Error state of the field: shows the draft again from memory. It never reads the drawing.</summary>
++        public void ReloadField() => Field.Rematerialize();
++
+         /// <summary>
+         /// Asks again for the summary of the active tab, as a new materialization requested by the user, from any state of the surface
+         /// (ready, not found, rejected, failed, waiting). It respects the drawing availability and the action block exactly as a
+@@ -167,6 +222,7 @@ namespace RackCad.UI.Workspace
+                 Materialize(userRequested: true);
+                 var tabsChanged = RebuildTabs();
+                 RaiseAll(tabsChanged);
++                RenderField();
+             }
+             catch (Exception ex)
+             {
+@@ -206,6 +262,97 @@ namespace RackCad.UI.Workspace
+             SyncSurface(retryPending, userRequested);
+             var tabsChanged = RebuildTabs();
+             RaiseAll(tabsChanged);
++            RenderField();
++        }
++
++        // The field follows the live surface: it is shown again from the memory of the port after the strip, with the tab as it is now
++        // (a tab that was just pinned is no longer a preview). It reads no drawing and writes nothing.
++        private void RenderField()
++        {
++            if (_pilotEdit == null) return;
++
++            try
++            {
++                if (_surfaceSession.HasValue && _surfaceRack != null) Field.Show(_surfaceSession.Value, _surfaceRack, IsPreviewTab(_surfaceRack));
++                else Field.Clear();
++            }
++            catch (Exception ex)
++            {
++                Field.Fail(ex);
++            }
++        }
++
++        // The field asked for the strip again after it changed its draft: the mark of a protected tab and the pin may have changed.
++        private void OnFieldChanged()
++        {
++            if (_port == null || _current == null) return;
++            Rebuild(retryPending: false, userRequested: false);
++        }
++
++        private bool IsPreviewTab(string rackId)
++        {
++            var tab = _current?.Tabs.FirstOrDefault(t => string.Equals(t.RackId, rackId, StringComparison.Ordinal));
++            return tab != null && tab.IsPreview;
++        }
++
++        // The blocking boundary of a change of tab in the panel (D-T3B1-06): only to an existing tab other than the live one and only with
++        // pending text in the live tab. It proceeds when the host proceeds or keeps; otherwise the tab does not change and the field says why.
++        private bool AllowTabChange(string destination)
++        {
++            if (_pilotEdit == null || _current == null || !_session.HasValue) return true;
++
++            var live = _current.ActiveRackId;
++            if (live == null || string.Equals(destination, live, StringComparison.Ordinal)) return true;
++            if (!_current.Tabs.Any(t => string.Equals(t.RackId, destination, StringComparison.Ordinal))) return true;
++
++            try
++            {
++                var origin = new WorkspaceRequest(_session.Value);
++                if (_pilotEdit.GetField(origin, live).PendingText == null) return true;
++
++                var crossed = _pilotEdit.CrossBoundary(origin, live, PilotBoundaryKind.TabChange);
++                if (crossed.Decision == PilotBoundaryDecision.Proceeded || crossed.Decision == PilotBoundaryDecision.Kept) return true;
++
++                Field.ShowNotice(AbortText(crossed));
++                return false;
++            }
++            catch (Exception ex)
++            {
++                Field.Fail(ex);
++                return false;
++            }
++        }
++
++        private static string AbortText(PilotBoundaryResult crossed)
++        {
++            string reason;
++            if (crossed.InvalidFields.Count > 0)
++                reason = string.Join(" ", crossed.InvalidFields.Select(f => string.IsNullOrWhiteSpace(f.Message) ? f.FieldKey : f.Message));
++            else
++                reason = string.IsNullOrWhiteSpace(crossed.Reason) ? "sin detalle." : crossed.Reason;
++            return "No se cambió de pestaña: " + reason;
++        }
++
++        // The boundaries the panel observes when a presentation changed the live surface (D-T3B1-06). A change of the presented session
++        // crosses DocumentChange on the previous tab; a change of the active tab by the selection crosses Dematerialize on the previous
++        // one when it had a draft. Neither blocks, neither reads the drawing and neither changes the pending text.
++        private void CrossObservedBoundaries(SessionId? priorSession, string priorRack)
++        {
++            if (_pilotEdit == null || !priorSession.HasValue || priorRack == null) return;
++            if (priorSession == _surfaceSession && string.Equals(priorRack, _surfaceRack, StringComparison.Ordinal)) return;
++
++            try
++            {
++                var origin = new WorkspaceRequest(priorSession.Value);
++                if (priorSession != _surfaceSession)
++                    _pilotEdit.CrossBoundary(origin, priorRack, PilotBoundaryKind.DocumentChange);
++                else if (_pilotEdit.GetField(origin, priorRack).Exists)
++                    _pilotEdit.CrossBoundary(origin, priorRack, PilotBoundaryKind.Dematerialize);
++            }
++            catch (Exception ex)
++            {
++                Field.Fail(ex);
++            }
+         }
+ 
+         private void SyncSurface(bool retryPending, bool userRequested)
+@@ -234,6 +381,7 @@ namespace RackCad.UI.Workspace
+             _surfaceKind = null;
+             _surfaceViews = Array.Empty<string>();
+             _surfaceReason = string.Empty;
++            if (_pilotEdit != null && _session.HasValue) Field.Show(_session.Value, rack, IsPreviewTab(rack));
+         }
+ 
+         private void ClearSurface()
+@@ -245,6 +393,7 @@ namespace RackCad.UI.Workspace
+             _surfaceKind = null;
+             _surfaceViews = Array.Empty<string>();
+             _surfaceReason = string.Empty;
++            Field.Clear();
+         }
+ 
+         // One query of the port for the rack of the live surface. A blocked drawing is not read at all; the surface stays pending and
+@@ -332,8 +481,22 @@ namespace RackCad.UI.Workspace
+                 foreach (var tab in _current.Tabs)
+                 {
+                     var title = string.IsNullOrWhiteSpace(tab.Name) ? tab.RackId : tab.Name;
++                    var isPreview = tab.IsPreview;
++
++                    // A tab whose draft would lose something when the document closes carries the mark; a preview with such a draft is
++                    // pinned so the selection never replaces it. Both read the memory of the port only.
++                    if (IsProtected(tab.RackId))
++                    {
++                        title = title + " *";
++                        if (isPreview)
++                        {
++                            _current.Pin(tab.RackId);
++                            isPreview = false;
++                        }
++                    }
++
+                     tabs.Add(new WorkspaceBrowserTabItem(
+-                        tab.RackId, title, string.Equals(tab.RackId, active, StringComparison.Ordinal), tab.IsPreview));
++                        tab.RackId, title, string.Equals(tab.RackId, active, StringComparison.Ordinal), isPreview));
+                 }
+             }
+ 
+@@ -343,6 +506,22 @@ namespace RackCad.UI.Workspace
+             return true;
+         }
+ 
++        private bool IsProtected(string rackId)
++        {
++            if (_pilotEdit == null || _current == null) return false;
++
++            try
++            {
++                var view = _pilotEdit.GetField(new WorkspaceRequest(_current.Id), rackId);
++                return view.Exists && view.IsProtected;
++            }
++            catch (Exception)
++            {
++                // The mark is only information: when the port cannot say, the tab has none.
++                return false;
++            }
++        }
++
+         private static bool SameTabs(IReadOnlyList<WorkspaceBrowserTabItem> current, IReadOnlyList<WorkspaceBrowserTabItem> next)
+         {
+             if (current.Count != next.Count) return false;
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+index 481bc276..3239d5dc 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+@@ -110,7 +110,8 @@
+                             </Border.Style>
+                             <WrapPanel>
+                                 <Button Margin="0,0,4,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
+-                                        AutomationProperties.Name="Activar pestaña" Click="OnBrowserTabActivateClick">
++                                        AutomationProperties.Name="Activar pestaña" Click="OnBrowserTabActivateClick"
++                                        MouseDoubleClick="OnBrowserTabActivateDoubleClick">
+                                     <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
+                                 </Button>
+                                 <Button Content="Fijar" Margin="0,0,4,0" Padding="8,2" Style="{StaticResource SecondaryButtonStyle}"
+@@ -136,6 +137,44 @@
+                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                     <TextBlock x:Name="BrowserSurfaceStatusText" Text="{Binding Browser.SurfaceStatusText}" Style="{StaticResource OptionalText}"
+                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++                    <!-- The field of the bounded pilot (I-64 F4-T3B1): ONE box on the ONE surface, shown only with the edit port. The text
++                         is edited only through the setter of the bound property; the gestures that open it and the keys that never
++                         leave the panel are handled in the code-behind. Nothing here writes the drawing. -->
++                    <StackPanel x:Name="BrowserFieldPanel" Margin="0,8,0,0"
++                                Visibility="{Binding Browser.Field.IsAvailable, Converter={StaticResource FlagToVisibility}}">
++                        <TextBlock Text="Escala de anotación" FontWeight="SemiBold"
++                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
++                        <TextBox x:Name="BrowserFieldBox" Margin="0,2,0,0" TextWrapping="Wrap"
++                                 AutomationProperties.Name="Escala de anotación"
++                                 Text="{Binding Browser.Field.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
++                                 IsReadOnly="{Binding Browser.Field.IsReadOnly, Mode=OneWay}"
++                                 PreviewMouseLeftButtonDown="OnBrowserFieldBoxPreviewMouseLeftButtonDown"
++                                 PreviewKeyDown="OnBrowserFieldBoxPreviewKeyDown"
++                                 KeyDown="OnBrowserFieldBoxKeyDown"
++                                 LostFocus="OnBrowserFieldBoxLostFocus" />
++                        <TextBlock x:Name="BrowserFieldStateText" Text="{Binding Browser.Field.StateText}" Style="{StaticResource OptionalText}"
++                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++                        <TextBlock x:Name="BrowserFieldMessageText" Text="{Binding Browser.Field.MessageText}" Style="{StaticResource OptionalText}"
++                                   Foreground="{DynamicResource ShellStatusErrorBrush}" />
++                        <TextBlock x:Name="BrowserFieldNoticeText" Text="{Binding Browser.Field.NoticeText}" Style="{StaticResource OptionalText}"
++                                   Foreground="{DynamicResource ShellStatusWarningBrush}" />
++                        <TextBlock x:Name="BrowserFieldNotEditableText" Text="{Binding Browser.Field.NotEditableText}" Style="{StaticResource OptionalText}"
++                                   Foreground="{DynamicResource ShellStatusWarningBrush}" />
++                        <TextBlock x:Name="BrowserFieldHintText" Text="{Binding Browser.Field.ClassicEditorHintText}" Style="{StaticResource OptionalText}"
++                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
++                        <WrapPanel Margin="0,4,0,0">
++                            <Button x:Name="BrowserFieldEditButton" Content="Editar" Margin="0,2,6,0" Padding="10,3"
++                                    Style="{StaticResource SecondaryButtonStyle}"
++                                    AutomationProperties.Name="Editar el campo"
++                                    Visibility="{Binding Browser.Field.ShowEditButton, Converter={StaticResource FlagToVisibility}}"
++                                    Click="OnBrowserFieldEditClick" />
++                            <Button x:Name="BrowserFieldReloadButton" Content="Recargar" Margin="0,2,6,0" Padding="10,3"
++                                    Style="{StaticResource SecondaryButtonStyle}"
++                                    AutomationProperties.Name="Recargar el campo"
++                                    Visibility="{Binding Browser.Field.ShowReloadButton, Converter={StaticResource FlagToVisibility}}"
++                                    Click="OnBrowserFieldReloadClick" />
++                        </WrapPanel>
++                    </StackPanel>
+                     <!-- Explicit reread of the summary of the active tab, from any state of the surface. It is the surface's own button:
+                          there is still one surface and it is reused by every tab. -->
+                     <Button x:Name="BrowserSurfaceReloadButton" Content="Volver a leer" HorizontalAlignment="Left" Margin="0,6,0,0" Padding="10,3"
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+index 7067c392..9d945d60 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs
+@@ -2,6 +2,7 @@ using System;
+ using System.ComponentModel;
+ using System.Windows;
+ using System.Windows.Controls;
++using System.Windows.Input;
+ 
+ namespace RackCad.UI.Workspace
+ {
+@@ -73,6 +74,87 @@ namespace RackCad.UI.Workspace
+         // The reload of the surface (I-64 F3-T2, T2-F4): one explicit interaction that asks again for the summary of the active tab.
+         private void OnBrowserSurfaceReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadSummary());
+ 
++        // The double click on the button of a tab (I-64 F4-T3B1): a gesture of the field only when, after the clicks, that tab is the active one.
++        private void OnBrowserTabActivateDoubleClick(object sender, MouseButtonEventArgs e) =>
++            Contained(() => _viewModel.Browser.BeginFieldEditFromTab(RackOf(sender)));
++
++        // The field of the pilot (I-64 F4-T3B1). The text typed by the user reaches the view-model only through the setter of the bound
++        // property; here live the buttons, the gestures that open a read-only box and the keys that must never leave the panel.
++        private void OnBrowserFieldEditClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.BeginFieldEdit());
++
++        private void OnBrowserFieldReloadClick(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.ReloadField());
++
++        // A click on a read-only box is the first gesture; the click itself is not consumed.
++        private void OnBrowserFieldBoxPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
++        {
++            if (_viewModel.Browser.Field.IsEditable) return;
++            Contained(() => _viewModel.Browser.BeginFieldEdit());
++        }
++
++        private void OnBrowserFieldBoxPreviewKeyDown(object sender, KeyEventArgs e)
++        {
++            var field = _viewModel.Browser.Field;
++            if (field.IsEditable)
++            {
++                // Enter commits and Esc does nothing: both stay in the panel. Esc never reverts the text.
++                if (e.Key == Key.Enter)
++                {
++                    e.Handled = true;
++                    Contained(() => field.CommitPending());
++                }
++                else if (e.Key == Key.Escape)
++                {
++                    e.Handled = true;
++                }
++
++                return;
++            }
++
++            // A read-only box: a key that is not a modifier, Tab or Esc is the first gesture. It is consumed, so it is not typed into a
++            // box that may be editable a moment later and does not leave the panel. Esc is consumed with no gesture.
++            if (e.Key == Key.Escape)
++            {
++                e.Handled = true;
++                return;
++            }
++
++            if (IsModifierOrNavigation(e.Key)) return;
++
++            e.Handled = true;
++            Contained(() => _viewModel.Browser.BeginFieldEdit());
++        }
++
++        // With an editable box, whatever the editor did not consume stays in the panel (Delete, Ctrl+Z, Ctrl+V and the like must not
++        // reach the drawing); only Tab is left to the navigation of the panel.
++        private void OnBrowserFieldBoxKeyDown(object sender, KeyEventArgs e)
++        {
++            if (_viewModel.Browser.Field.IsEditable && e.Key != Key.Tab) e.Handled = true;
++        }
++
++        // Leaving the box commits the pending text; the view-model does nothing without pending text or with a box that is not editable.
++        private void OnBrowserFieldBoxLostFocus(object sender, RoutedEventArgs e) => Contained(() => _viewModel.Browser.Field.CommitPending());
++
++        private static bool IsModifierOrNavigation(Key key)
++        {
++            switch (key)
++            {
++                case Key.Tab:
++                case Key.LeftCtrl:
++                case Key.RightCtrl:
++                case Key.LeftShift:
++                case Key.RightShift:
++                case Key.LeftAlt:
++                case Key.RightAlt:
++                case Key.LWin:
++                case Key.RWin:
++                case Key.System:
++                case Key.None:
++                    return true;
++                default:
++                    return false;
++            }
++        }
++
+         private static string RackOf(object sender) => ((sender as FrameworkElement)?.DataContext as WorkspaceBrowserTabItem)?.RackId;
+ 
+         private void Contained(Action interaction)
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs b/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
+index e90acd98..ab63fecc 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs
+@@ -59,12 +59,16 @@ namespace RackCad.UI.Workspace
+         /// The read-only summary port of the browser (I-64 F3-T2). Optional: without it the browser is inert and the panel behaves
+         /// exactly as before. It is asked only for the rack of the live surface, never when the panel is built.
+         /// </param>
+-        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null, IWorkspaceBrowserSummaryPort browserSummary = null)
++        /// <param name="pilotEdit">
++        /// The edit port of the bounded pilot (I-64 F4-T3B1). Optional: without it the browser has no field of the pilot and no mark of
++        /// a protected tab, and the panel behaves exactly as before. Building the panel never calls it.
++        /// </param>
++        public WorkspacePanelViewModel(IWorkspaceHostPort port, Action<bool> setInstrumentationEnabled, IWorkspaceNavigationPort navigation = null, IWorkspaceBrowserSummaryPort browserSummary = null, IWorkspacePilotEditPort pilotEdit = null)
+         {
+             _port = port ?? throw new ArgumentNullException(nameof(port));
+             _setInstrumentationEnabled = setInstrumentationEnabled ?? throw new ArgumentNullException(nameof(setInstrumentationEnabled));
+             Navigation = new WorkspaceNavigationViewModel(navigation, Refresh);
+-            Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation);
++            Browser = new WorkspaceBrowserViewModel(browserSummary, RepresentNavigation, pilotEdit);
+             Present(InitialSnapshot(), null);
+         }
+ 
+diff --git a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+new file mode 100644
+index 00000000..e709c25c
+--- /dev/null
++++ b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@ -0,0 +1,440 @@
++using System;
++using RackCad.Application.Workspace;
++
++namespace RackCad.UI.Workspace
++{
++    /// <summary>
++    /// The field of the bounded pilot (AnnotationScale of a Push Back rack) on the ONE surface of the browser (I-64 F4-T3B1, D-T3B1-02).
++    /// The browser creates it, owns it and exposes it as <c>Browser.Field</c>; it is never null. It talks only to the edit port of the
++    /// pilot, which keeps the text in memory and never writes the drawing: the pending text lives in the draft, never here.
++    ///
++    /// The box is editable only with an existing draft that can be edited, on a pinned tab, and not for a clean draft that is possibly
++    /// stale. In every other case it is read-only, and a gesture (the Edit button, a click, a key, a double click on the active tab)
++    /// can open it. The only entry of the text typed by the user is the public setter of <see cref="Text"/>.
++    ///
++    /// It is synchronous and holds no static state. It never reaches the browser by a subscription: the browser hands it one method
++    /// that it calls after every operation that changed the draft. Only a gesture reads the drawing, and every failure of a gesture
++    /// is contained here as the Error state of the field; it never reaches the panel.
++    /// </summary>
++    public sealed class WorkspacePilotFieldViewModel : ObservableObject
++    {
++        /// <summary>What the box shows while the rack has no draft.</summary>
++        public const string NoDraftMarker = "—";
++
++        private readonly IWorkspacePilotEditPort _port;
++        private readonly Action _changed;
++
++        private SessionId? _session;
++        private string _rack;
++        private bool _isPreview;
++
++        private PilotFieldView _view;
++        private string _text = NoDraftMarker;
++        private bool _editable;
++        private bool _showEdit;
++        private bool _showReload;
++        private string _stateText = string.Empty;
++        private string _messageText = string.Empty;
++
++        // What belongs to the surface and stays until a new gesture or a change of surface.
++        private string _noticeText = string.Empty;
++        private string _diagnostic;
++        private string _hint;
++        private bool _readyNote;
++        private string _failure;
++
++        /// <param name="port">The edit port of the pilot; null leaves the field inert and not available.</param>
++        /// <param name="changed">Called after an operation that changed the draft, so the browser rebuilds its strip. It is a method, not a subscription.</param>
++        public WorkspacePilotFieldViewModel(IWorkspacePilotEditPort port, Action changed = null)
++        {
++            _port = port;
++            _changed = changed;
++        }
++
++        // ------------------------------------------------------------------ what the panel shows
++
++        /// <summary>False when the panel was built without the edit port of the pilot: the view shows nothing of the field.</summary>
++        public bool IsAvailable => _port != null;
++
++        /// <summary>
++        /// The text of the box: the pending text or, without it, the committed one; the marker without a draft. Its public setter is the
++        /// only entry of what the user types: it keeps the text in the draft and restores the box when the text is not accepted.
++        /// </summary>
++        public string Text
++        {
++            get => _text;
++            set
++            {
++                try
++                {
++                    if (!_editable || !_session.HasValue || _rack == null)
++                    {
++                        // A box that is not editable accepts nothing: the value goes back to what the draft says.
++                        OnPropertyChanged(nameof(Text));
++                        return;
++                    }
++
++                    if (string.Equals(value, _text, StringComparison.Ordinal)) return;
++
++                    ClearNotices();
++                    var result = _port.SetPendingText(Origin(), _rack, value ?? string.Empty);
++                    if (result.Status == PilotFieldStatus.Applied)
++                    {
++                        Apply(result.View);
++                        _changed?.Invoke();
++                        return;
++                    }
++
++                    Render();
++                    _noticeText = RefusalOf(result);
++                    RaiseAll();
++                }
++                catch (Exception ex)
++                {
++                    EnterFailure(ex);
++                }
++            }
++        }
++
++        /// <summary>True when the box accepts the typing of the user.</summary>
++        public bool IsEditable => _editable;
++
++        public bool IsReadOnly => !_editable;
++
++        /// <summary>The Edit button: the box is read-only and a gesture can open it.</summary>
++        public bool ShowEditButton => _showEdit;
++
++        /// <summary>The Reload button of the Error state: it shows the draft again, with no read of the drawing.</summary>
++        public bool ShowReloadButton => _showReload;
++
++        /// <summary>The state in Spanish, with the mark of a possibly stale value and the reason when there is no committed text.</summary>
++        public string StateText => _stateText;
++
++        /// <summary>The message of the validation of the pending text.</summary>
++        public string MessageText => _messageText;
++
++        /// <summary>The last notice of a refusal, an abort, a wait or a failure, with its reason.</summary>
++        public string NoticeText => _noticeText;
++
++        /// <summary>The diagnostic of a read that was not admitted; empty otherwise.</summary>
++        public string NotEditableText => _diagnostic ?? string.Empty;
++
++        /// <summary>The hint of the classic editor that comes with a diagnostic; it is shown, never launched.</summary>
++        public string ClassicEditorHintText => _hint ?? string.Empty;
++
++        // ------------------------------------------------------------------ what the browser tells it
++
++        /// <summary>
++        /// The surface is this rack of this session. A new surface starts with no notice; the same one keeps its notice and its
++        /// diagnostic. It only reads the memory of the port: it never reads the drawing and never writes anything.
++        /// </summary>
++        public void Show(SessionId session, string rackId, bool isPreview)
++        {
++            if (_port == null) return;
++
++            if (!_session.HasValue || _session.Value != session || !string.Equals(_rack, rackId, StringComparison.Ordinal))
++            {
++                ResetSurfaceState();
++                _session = session;
++                _rack = rackId;
++            }
++
++            _isPreview = isPreview;
++            Render();
++        }
++
++        /// <summary>There is no surface: the field goes back to its initial state.</summary>
++        public void Clear()
++        {
++            if (_port == null) return;
++
++            ResetSurfaceState();
++            _session = null;
++            _rack = null;
++            _isPreview = false;
++            _view = default;
++            Apply(default);
++        }
++
++        /// <summary>A failure that the browser contained for this surface: the field shows it as its Error state.</summary>
++        public void Fail(Exception exception)
++        {
++            if (_port == null) return;
++            EnterFailure(exception);
++        }
++
++        /// <summary>A notice for this surface, with its reason.</summary>
++        public void ShowNotice(string notice)
++        {
++            if (_port == null) return;
++            _noticeText = notice ?? string.Empty;
++            RaiseAll();
++        }
++
++        // ------------------------------------------------------------------ the gestures of the user
++
++        /// <summary>
++        /// The first gesture on a read-only box: asks the port for the intention without a witness (or the lazy reload of a clean
++        /// draft that is possibly stale). It is the only entry that reads the drawing, once per gesture; the browser pins the tab first.
++        /// </summary>
++        public void BeginEdit()
++        {
++            if (_port == null || !_session.HasValue || _rack == null) return;
++
++            var session = _session.Value;
++            var rack = _rack;
++            try
++            {
++                ClearNotices();
++                var view = _port.GetField(new WorkspaceRequest(session), rack);
++                var stale = view.Exists && view.State == PilotFieldState.Clean && view.IsPossiblyStale;
++                var request = new EditIntentRequest(session, rack, null, null);
++                var outcome = stale ? _port.TryReload(request) : _port.TryBeginEdit(request);
++
++                if (!IsMine(session, rack))
++                {
++                    // The reading came back to another surface: its result is not shown here.
++                    Render();
++                    _noticeText = "La superficie cambió durante la lectura; el resultado no se mostró.";
++                    RaiseAll();
++                    return;
++                }
++
++                switch (outcome.Status)
++                {
++                    case EditIntentStatus.Admitted:
++                    case EditIntentStatus.AlreadyOpen:
++                    case EditIntentStatus.Reloaded:
++                    case EditIntentStatus.NotNeeded:
++                        _readyNote = true;
++                        break;
++                    case EditIntentStatus.NotAdmitted:
++                        _diagnostic = outcome.Diagnostic ?? string.Empty;
++                        _hint = outcome.ClassicEditorHint ?? string.Empty;
++                        if (stale) _noticeText = "No se recargó: el borrador se conserva tal como estaba.";
++                        break;
++                    default:
++                        _noticeText = Describe(outcome.Status, outcome.Reason);
++                        break;
++                }
++
++                Render();
++                _changed?.Invoke();
++            }
++            catch (Exception ex)
++            {
++                EnterFailure(ex);
++            }
++        }
++
++        /// <summary>Enter or leaving the box: commits the pending text, only with pending text and an editable box.</summary>
++        public void CommitPending()
++        {
++            if (_port == null || !_session.HasValue || _rack == null) return;
++
++            try
++            {
++                var view = _port.GetField(Origin(), _rack);
++                if (view.PendingText == null || !EditableOf(view)) return;
++
++                ClearNotices();
++                var result = _port.CommitField(Origin(), _rack);
++                switch (result.Status)
++                {
++                    case PilotFieldStatus.Applied:
++                        Apply(result.View);
++                        break;
++                    case PilotFieldStatus.Invalid:
++                        // The text stays exactly as typed, with its message: nothing is repaired.
++                        Apply(result.View);
++                        _messageText = result.Message ?? result.View.PendingMessage ?? string.Empty;
++                        RaiseAll();
++                        break;
++                    default:
++                        Render();
++                        _noticeText = RefusalOf(result);
++                        RaiseAll();
++                        break;
++                }
++
++                _changed?.Invoke();
++            }
++            catch (Exception ex)
++            {
++                EnterFailure(ex);
++            }
++        }
++
++        /// <summary>The Reload button: shows the draft again from the memory of the port, without any read of the drawing.</summary>
++        public void Rematerialize()
++        {
++            if (_port == null) return;
++
++            try
++            {
++                ClearNotices();
++                _failure = null;
++                Render();
++            }
++            catch (Exception ex)
++            {
++                EnterFailure(ex);
++            }
++        }
++
++        // ------------------------------------------------------------------ internals
++
++        private WorkspaceRequest Origin() => new WorkspaceRequest(_session.Value);
++
++        private bool IsMine(SessionId session, string rack) =>
++            _session.HasValue && _session.Value == session && string.Equals(_rack, rack, StringComparison.Ordinal);
++
++        private void ResetSurfaceState()
++        {
++            _noticeText = string.Empty;
++            _diagnostic = null;
++            _hint = null;
++            _readyNote = false;
++            _failure = null;
++        }
++
++        // A new gesture ends the notice of the previous one.
++        private void ClearNotices()
++        {
++            _noticeText = string.Empty;
++            _diagnostic = null;
++            _hint = null;
++            _readyNote = false;
++        }
++
++        // Reads the memory of the port for the surface and shows it. It never reads the drawing and keeps the notices.
++        private void Render()
++        {
++            if (!_session.HasValue || _rack == null)
++            {
++                Apply(default);
++                return;
++            }
++
++            PilotFieldView view;
++            try
++            {
++                view = _port.GetField(Origin(), _rack);
++            }
++            catch (Exception ex)
++            {
++                EnterFailure(ex);
++                return;
++            }
++
++            Apply(view);
++        }
++
++        private bool EditableOf(PilotFieldView view) =>
++            _failure == null
++            && view.Exists
++            && view.CanEdit
++            && !_isPreview
++            && !(view.State == PilotFieldState.Clean && view.IsPossiblyStale);
++
++        private void Apply(PilotFieldView view)
++        {
++            _view = view;
++            _editable = EditableOf(view);
++
++            var openable = view.Exists && view.CanEdit && !_editable && _failure == null;
++            _showEdit = _failure == null && _session.HasValue && (!view.Exists || openable);
++            _showReload = _failure != null || (view.Exists && view.State == PilotFieldState.Error);
++
++            _text = view.Exists ? view.PendingText ?? view.CommittedText ?? string.Empty : NoDraftMarker;
++            _messageText = view.Exists ? view.PendingMessage ?? string.Empty : string.Empty;
++            _stateText = StateOf(view);
++            RaiseAll();
++        }
++
++        private string StateOf(PilotFieldView view)
++        {
++            if (_failure != null) return "Error: " + _failure;
++            if (!view.Exists) return _diagnostic != null ? "No editable aquí" : "Sin borrador.";
++            if (view.State == PilotFieldState.Error)
++                return "Error: " + (string.IsNullOrWhiteSpace(view.CommittedTextReason) ? "sin detalle." : view.CommittedTextReason);
++
++            string state;
++            if (_readyNote && _editable && view.State == PilotFieldState.Clean && view.PendingText == null) state = "Listo para editar";
++            else state = NameOf(view.State);
++
++            if (view.IsPossiblyStale) state = state + " (posiblemente obsoleto)";
++            if (view.CommittedText == null && !string.IsNullOrWhiteSpace(view.CommittedTextReason)) state = state + ": " + view.CommittedTextReason;
++            return state;
++        }
++
++        private static string NameOf(PilotFieldState state)
++        {
++            switch (state)
++            {
++                case PilotFieldState.Clean: return "Limpio";
++                case PilotFieldState.Dirty: return "Modificado";
++                case PilotFieldState.Conflict: return "Conflicto";
++                case PilotFieldState.Applying: return "Aplicando";
++                case PilotFieldState.Unknown: return "Desconocido";
++                case PilotFieldState.Error: return "Error";
++                case PilotFieldState.Undecidable: return "Sin decidir";
++                default: return "Sin borrador.";
++            }
++        }
++
++        // The failure of a gesture or of a read: the field shows it as its own Error state, read-only, with the reload button.
++        private void EnterFailure(Exception exception)
++        {
++            try
++            {
++                _failure = string.IsNullOrWhiteSpace(exception?.Message) ? exception?.GetType().Name : exception.Message;
++                Apply(_view);
++            }
++            catch (Exception)
++            {
++                // Nothing else can be done here without risking the message loop of the host.
++            }
++        }
++
++        private void RaiseAll()
++        {
++            OnPropertyChanged(nameof(Text));
++            OnPropertyChanged(nameof(IsEditable));
++            OnPropertyChanged(nameof(IsReadOnly));
++            OnPropertyChanged(nameof(ShowEditButton));
++            OnPropertyChanged(nameof(ShowReloadButton));
++            OnPropertyChanged(nameof(StateText));
++            OnPropertyChanged(nameof(MessageText));
++            OnPropertyChanged(nameof(NoticeText));
++            OnPropertyChanged(nameof(NotEditableText));
++            OnPropertyChanged(nameof(ClassicEditorHintText));
++        }
++
++        private static string RefusalOf(PilotFieldResult result)
++        {
++            var reason = string.IsNullOrWhiteSpace(result.Reason) ? "sin detalle." : result.Reason;
++            switch (result.Status)
++            {
++                case PilotFieldStatus.Busy: return "El texto no se aplicó: hay una lectura en curso. " + reason;
++                case PilotFieldStatus.NotEditable: return "El texto no se aplicó: el campo no se puede editar ahora. " + reason;
++                case PilotFieldStatus.Invalid: return "El texto no es válido: " + (result.Message ?? reason);
++                default: return "El texto no se aplicó: " + reason;
++            }
++        }
++
++        private static string Describe(EditIntentStatus status, string reason)
++        {
++            var detail = string.IsNullOrWhiteSpace(reason) ? "sin detalle." : reason;
++            switch (status)
++            {
++                case EditIntentStatus.Waiting: return "En espera: " + detail;
++                case EditIntentStatus.Unavailable: return "No disponible: " + detail;
++                case EditIntentStatus.Rejected: return "Rechazado: " + detail;
++                case EditIntentStatus.NotFound: return "Sin borrador: " + detail;
++                case EditIntentStatus.Failed: return "Fallo: " + detail;
++                default: return "No se pudo abrir la edición: " + detail;
++            }
++        }
++    }
++}

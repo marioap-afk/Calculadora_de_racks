@@ -1,0 +1,51 @@
+inventario: e01-estilo.txt
+sha256: 05851957a390990dc6af4c4c469efa8c88f12565c31fbbdc8feabbdebceecc11
+bytes: 5130149
+
+(inventario en Windows-1252; resumido desde una copia en UTF-8)
+REF 16
+  REF handle=37BA4D nombre=Selectivo 2 - lateral 1 capa=A-TEXTO
+  REF handle=33F9C5 nombre=Selectivo 2 - copia capa=A-TEXTO
+  REF handle=33D1EE nombre=Selectivo 2 - planta capa=A-TEXTO
+  REF handle=339C17 nombre=Selectivo 2 capa=A-TEXTO
+  REF handle=31226C nombre=PB C - lateral 1_1 capa=A-TEXTO
+  REF handle=30F02D nombre=PB D - lateral 1 capa=A-TEXTO
+  REF handle=30CFEE nombre=PB E - lateral 1 capa=A-TEXTO
+  REF handle=30977A nombre=PB F - lateral 1 capa=A-TEXTO
+  REF handle=307246 nombre=PB G - lateral 1 capa=A-TEXTO
+  REF handle=303BC4 nombre=PB B - copia capa=0
+  REF handle=2FB5CB nombre=PB B - planta capa=0
+  REF handle=2FA633 nombre=PB C - planta capa=0
+  REF handle=2FA632 nombre=PB D - planta capa=0
+  REF handle=2F7FD7 nombre=PB F - planta capa=0
+  REF handle=2F3B9B nombre=PB E - planta capa=0
+  REF handle=2F127C nombre=PB G - planta capa=0
+DEF 22
+  DEF PB G - planta entidades=1769 json=265283 ('pushback', 'planta', 'PB G', '8b3a89ec-f3e0-4011-98a5-392568735375', -1)
+  DEF PB E - planta entidades=2175 json=283943 ('pushback', 'planta', 'PB E', 'e9f453ef-1821-4c66-b368-e46d0d5c8a07', -1)
+  DEF PB F - planta entidades=2175 json=283937 ('pushback', 'planta', 'PB F', '77a36905-5672-4023-8ef6-f909761a73fa', -1)
+  DEF PB D - planta entidades=2032 json=265021 ('pushback', 'planta', 'PB D', '09b032dd-3d6c-4684-8a5f-ba6451dc5aa3', -1)
+  DEF PB C - planta entidades=1910 json=284091 ('pushback', 'planta', 'PB C', '4b0b7357-53fa-457d-85b3-e628da14bb1a', -1)
+  DEF PB A - planta entidades=1832 json=274092 ('pushback', 'planta', 'PB A', 'e511b9d1-d9e2-40ec-b37c-0c4884da315e', -1)
+  DEF PB B - planta entidades=2241 json=273817 ('pushback', 'planta', 'PB B', '5a399f13-ba9a-4e57-8158-d4e0c8ea0ba4', -1)
+  DEF PB B - copia entidades=1832 json=273412 ('pushback', 'planta', 'PB A', 'f2852305-51cf-47c1-abb2-98bad23028bf', -1)
+  DEF PB G - lateral 1 entidades=68 json=265283 ('pushback', 'lateral', 'PB G', '8b3a89ec-f3e0-4011-98a5-392568735375', 0)
+  DEF PB F - lateral 1 entidades=93 json=283937 ('pushback', 'lateral', 'PB F', '77a36905-5672-4023-8ef6-f909761a73fa', 0)
+  DEF PB C - lateral 1 entidades=74 json=284091 ('pushback', 'lateral', 'PB C', '4b0b7357-53fa-457d-85b3-e628da14bb1a', 0)
+  DEF PB E - lateral 1 entidades=93 json=283943 ('pushback', 'lateral', 'PB E', 'e9f453ef-1821-4c66-b368-e46d0d5c8a07', 0)
+  DEF PB D - lateral 1 entidades=86 json=265021 ('pushback', 'lateral', 'PB D', '09b032dd-3d6c-4684-8a5f-ba6451dc5aa3', 0)
+  DEF PB C - lateral 1_1 entidades=74 json=284091 ('pushback', 'lateral', 'PB C', '4b0b7357-53fa-457d-85b3-e628da14bb1a', 0)
+  DEF Selectivo 1 - planta entidades=73 json=15579 ('selective', 'planta', 'Selectivo 1', '0b481509-d0e4-4bc2-a96e-3d41d2eaedf7', -1)
+  DEF Selectivo 1 entidades=110 json=15579 ('selective', 'frontal', 'Selectivo 1', '0b481509-d0e4-4bc2-a96e-3d41d2eaedf7', 0)
+  DEF Cabecera 1 - planta entidades=5 json=16212 ('cabecera', 'planta', 'Cabecera 1', '83811a7d-c91f-458a-94b5-85adb51e822d', -1)
+  DEF Cabecera 2 - planta entidades=5 json=16210 ('cabecera', 'planta', 'Cabecera 2', '53375141-0daf-4eed-b10e-44b43f44752d', -1)
+  DEF Selectivo 2 entidades=174 json=222067 ('selective', 'frontal', 'Selectivo 2', 'f77d1564-9a9b-487d-be72-2dd4d1061107', 0)
+  DEF Selectivo 2 - planta entidades=105 json=222067 ('selective', 'planta', 'Selectivo 2', 'f77d1564-9a9b-487d-be72-2dd4d1061107', -1)
+  DEF Selectivo 2 - copia entidades=105 json=222113 ('selective', 'planta', 'Selectivo 1', '90ee442b-07af-4677-8676-2d9d773caf7d', -1)
+  DEF Selectivo 2 - lateral 1 entidades=46 json=222067 ('selective', 'lateral', 'Selectivo 2', 'f77d1564-9a9b-487d-be72-2dd4d1061107', 0)
+BLK 5909 ; DEF entre las BLK: True
+NEST 4
+  NEST contenedor=A$Ceb3b79ff flags70=0 dinamico=0 anidada=PB G - planta handle=2F0F38
+  NEST contenedor=*U5642 flags70=1 dinamico=0 anidada=Cabecera 1 - planta handle=328910
+  NEST contenedor=*U5706 flags70=1 dinamico=0 anidada=Cabecera 1 - planta handle=361F53
+  NEST contenedor=*U7045 flags70=1 dinamico=0 anidada=Cabecera 1 - planta handle=37864A

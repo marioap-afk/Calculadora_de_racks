@@ -1,0 +1,85 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261119T021056Z-448d",
+  "SourceVerification": "R20261119T020026Z-dc81",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT1B-LOSSLESS-STATE-TYPE/2/R20261119T020026Z-dc81/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "tests/RackCad.Tests/PushBackEditableStateCopyTests.cs",
+      "tests/RackCad.Tests/PushBackEditableStateLoadTests.cs",
+      "tests/RackCad.Tests/PushBackEditorOutputGateTests.cs",
+      "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs",
+      "tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs"
+    ],
+    "FirstLexicographic": "tests/RackCad.Tests/PushBackEditableStateCopyTests.cs",
+    "CoveringEntries": [
+      "tests/RackCad.Tests/PushBackEditableStateCopyTests.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs",
+      "src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs",
+      "tests/RackCad.Tests/PushBackEditableStateLoadTests.cs",
+      "tests/RackCad.Tests/PushBackEditableStateCopyTests.cs",
+      "tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs",
+      "tests/RackCad.Tests/PushBackEditorOutputGateTests.cs",
+      "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs",
+      "tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs",
+      "src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs",
+      "src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs",
+      "tests/RackCad.Tests/PushBackEditableStateLoadTests.cs",
+      "tests/RackCad.Tests/PushBackEditableStateOwnershipTests.cs",
+      "tests/RackCad.Tests/PushBackEditorOutputGateTests.cs",
+      "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs",
+      "tests/RackCad.UI.Tests/PushBackEditableStateParityTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "C4468790E9369F04CB05ADBBB4B14062F07A3F7D6B78FA1E187E1F78AF7C9368",
+    "New": "CD69236E57FA207AACB01306A271155368F36C37D80490A411903ADE8EE35FD0",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "C451C4FC29D4AAA4FD87EE068ABF11A33F9205F92AEEF9C1C16C9F338FE89C62",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "2E857655EC76B5B8F1D26B6346B5AC1938CDE1AA73647A180A08B52EC9B2C012",
+    "coordinator-disposition.md": "9FAE27F2138C20A83B0F085F7B020E503312BC869304B84930D2F20D3A674356",
+    "delegation-intento1.json": "2907F4577E4E6251FCF8F26442B42CAAF381C47DC00E90B74CA8A5AE13D8FAA7",
+    "delegation.json": "CD69236E57FA207AACB01306A271155368F36C37D80490A411903ADE8EE35FD0",
+    "gate-contract.json": "222F1343DCF651D89F41562AEA1E412A75D52D222E4A329F94A039B3D26B16EE",
+    "relay-record-planning.json": "8809A1169AB5573F696E8B514DE8113D5C2719665A4CA6308D13D6F883B8312D",
+    "relay-record-work.json": "605A3758A3A3BDF185EF3BEB2C67183622FB1FBF7B5DA9367ECB5C12123B6158",
+    "worker-handoff-intento1.json": "8EF3CED696E908E011C7DF8D66A9FDE10F51883859D5E30BD5A6A1BFBE3F660D",
+    "worker-handoff.json": "D9C5D1C425F77C3CB215378A9875079FB229B5763A1B298B973FAC264FF0DDDA",
+    "ci-core/44438060317/core.trx": "E061E814B3B9C70CB34A14DF53A52B197D3D7B593FB48298783EE1FB112C223D",
+    "ci-core-red/44430615074/core.trx": "000B28DFB5380398F58D92FE0559C44EF3F7BBDFE5FFE7059A34CC2189D7E656",
+    "ci-ui/44438060317/ui.trx": "7003F19237CE0E2E8BEB09862AABC98DBBAD386389C8898E5DD6A4FEBCDED189",
+    "ci-ui-red/44430615074/ui.trx": "BFDD785B8F86A5AEB0D5C0DCD90B143FDCF5C8865515A047C68C3490448D6785"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

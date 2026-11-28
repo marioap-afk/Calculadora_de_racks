@@ -1,0 +1,49 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261115T040533Z-855b",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "MutatedCheck": {
+    "Scope": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": "4314c1803b7a047f0521c34d631950a475e7cd32",
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": true,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha returns 21 paths. Each is an exact entry in delegation.json AllowedWriteScope; none matches ForbiddenWriteScope. The diff includes 11 test paths. git diff --name-only BaseSha RedSha -- tests/ defines ChainRedFiles; git diff --name-only RedSha CurrentSha -- tests/ is empty."
+  },
+  "OutputSha256": "7CA8F3FF09A4ECE56438D4FE5F3B3E57D56FD49BC88719585C2A05ABA32DB07F",
+  "ManualFreeText1610": []
+}

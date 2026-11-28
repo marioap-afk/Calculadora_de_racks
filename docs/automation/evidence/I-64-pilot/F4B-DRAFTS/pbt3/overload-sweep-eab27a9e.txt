@@ -1,0 +1,184 @@
+overload_sweep.py on eab27a9e340afa9ffe66a4a9866949806b6dfee3: 1796 C# files of src/ and tests/
+
+== conversions between the old and the new parameter types
+   DraftSession: src/RackCad.Application/Workspace/Drafts/DraftSession.cs:239 public sealed class DraftSession<TState> : IDraftEntry
+   PushBackPilotDraftState: src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs:13 public sealed class PushBackPilotDraftState
+   PushBackFullDraftState: src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftState.cs:10 public sealed class PushBackFullDraftState
+   PushBackPilotIntentResult: src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs:25 public sealed class PushBackPilotIntentResult
+   PushBackFullIntentResult: src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftReader.cs:12 public sealed class PushBackFullIntentResult
+   PushBackPilotPrepareInput: src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:19 public sealed class PushBackPilotPrepareInput
+   PushBackFullPrepareInput: not declared at rev (new)
+   implicit operators in src/ and tests/: none
+   dynamic in Application and in the Core tests: src/RackCad.Application/Systems/FlowBed/FlowBedLateralBuilder.cs:68, src/RackCad.Application/Systems/FlowBed/FlowBedLateralBuilder.cs:76, src/RackCad.Application/Systems/FlowBed/FlowBedLateralBuilder.cs:84, tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryTests.cs:128, tests/RackCad.Tests/ComputedParameters/ComputedParametersSummaryTests.cs:129, tests/RackCad.Tests/DimensionViewsRestampTests.cs:126, tests/RackCad.Tests/DimensionViewsRestampTests.cs:127, tests/RackCad.Tests/DimensionViewsRestampTests.cs:128, tests/RackCad.Tests/G16BlockNameTests.cs:131, tests/RackCad.Tests/G16BlockNameTests.cs:133, tests/RackCad.Tests/G16BlockNameTests.cs:134, tests/RackCad.Tests/G16BlockNameTests.cs:135, tests/RackCad.Tests/G16BlockNameTests.cs:203, tests/RackCad.Tests/G16BlockNameTests.cs:209, tests/RackCad.Tests/G16FirstViewCorrectiveTests.cs:105, tests/RackCad.Tests/G16FirstViewCorrectiveTests.cs:109, tests/RackCad.Tests/RackDesignLibraryTests.cs:40, tests/RackCad.Tests/RackDesignLibraryTests.cs:45, tests/RackCad.Tests/RackViewFrameTests.cs:129, tests/RackCad.Tests/RackViewFrameTests.cs:130, tests/RackCad.Tests/RackViewFrameTests.cs:131, tests/RackCad.Tests/RackViewFrameTests.cs:73, tests/RackCad.Tests/RackViewFrameTests.cs:74, tests/RackCad.Tests/RackViewFrameTests.cs:78, tests/RackCad.Tests/RackViewFrameTests.cs:83, tests/RackCad.Tests/SharedViewCodecTests.cs:60, tests/RackCad.Tests/SharedViewCodecTests.cs:63, tests/RackCad.Tests/SharedViewFoundationF5Tests.cs:167, tests/RackCad.Tests/SharedViewFoundationF5Tests.cs:174
+
+== T3B-1 (PB-T3b) PushBackPilotUpdateRun.Precheck
+   existing declarations in src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs: line 122, 1 parameters
+   optional parameters in the existing declarations: none
+   new overload: 1 parameters, the same arity: they differ at 0
+   uses (5):
+   src/RackCad.Application/Workspace/WorkspaceHostCore.cs:864  (draft)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:34  (clean)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:42  (pending)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:51  (conflict)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:58  (dirty)  -> typed at the differing positions: binds by the static type
+   method groups or nameof (0): none
+   string literals that are exactly the name (reflection lookups or text guards) (1):
+     tests/RackCad.Tests/RackDefinitionCreatorGuardTests.cs:353 var precheck = body.IndexOf("Precheck(", StringComparison.Ordinal);
+
+== T3B-3 (PB-T3b) PushBackPilotUpdatePlan.PushBackPilotUpdatePlan (constructor)
+   existing declarations in src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: line 210, 7 parameters
+   optional parameters in the existing declarations: none
+   new overload: 9 parameters (another arity: a call with 7 arguments cannot bind to it)
+   uses (4):
+   src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:428  (input.RackId, origins[0].Entry.Key, expectedBase, input.StaleBase.VariableRegistryText, scale, plans, expectation)  -> 7 arguments: only the existing arity
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1971  (plan.RackId, plan.OriginKey, plan.ExpectedBase, plan.ExpectedVariableRegistryText, plan.AnnotationScale, plan.Members.Reverse(), plan.PostExpectation)  -> 7 arguments: only the existing arity
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1975  (plan.RackId, plan.OriginKey, plan.ExpectedBase, plan.ExpectedVariableRegistryText, plan.AnnotationScale, plan.Members, plan.PostExpectation)  -> 7 arguments: only the existing arity
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:878  (PrepareKit.Rack, "", Array.Empty<DraftStaleBaseEntry>(), null, 2.25, members, new PushBackPilotPostExpectation(2.25, Array.Empty<PushBa...)  -> 7 arguments: only the existing arity
+   method groups or nameof (0): none
+   string literals that are exactly the name (reflection lookups or text guards) (1):
+     tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:92 foreach (var type in new[] { "PushBackPilotPrepareInput", "PushBackPilotUpdatePlanner", "PushBackPilotUpdatePlan", "PushBackPilotPrepareResu
+
+== T3B-4 (PB-T3b) PushBackPilotPostExpectation.PushBackPilotPostExpectation (constructor)
+   existing declarations in src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: line 183, 2 parameters
+   optional parameters in the existing declarations: none
+   new overload: 3 parameters (another arity: a call with 2 arguments cannot bind to it)
+   uses (4):
+   src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs:427  (scale, plans.Select(plan => new PushBackPilotKeyedText(plan.Key,...)  -> 2 arguments: only the existing arity
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1980  (double.NaN, Array.Empty<PushBackPilotKeyedText>())  -> 2 arguments: only the existing arity
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1981  (double.NaN, Array.Empty<PushBackPilotKeyedText>())  -> 2 arguments: only the existing arity
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:880  (2.25, Array.Empty<PushBackPilotKeyedText>())  -> 2 arguments: only the existing arity
+   method groups or nameof (0): none
+   string literals that are exactly the name (reflection lookups or text guards) (0): none
+
+== T3C-1 (PB-T3c) RackPilotMutationScope.RackPilotMutationScope (constructor)
+   existing declarations in src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs: line 239, 5 parameters
+   optional parameters in the existing declarations: none
+   new: a changed signature (one more parameter): every existing call has to be in the owner file
+   uses (1):
+   src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs:156  (database, transaction, _prepared, _staleDefinitions)  -> OWNER FILE
+   method groups or nameof (0): none
+   string literals that are exactly the name (reflection lookups or text guards) (1):
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:38 private static string MutationScope(string code) => Class(code, "RackPilotMutationScope");
+
+== the new names (PBT3B-C13 and PBT3C-C13, with the names of F4B-E45): as a word, in the files they go to (has to be 0), and anywhere
+   PrepareFull                    in its files 0; anywhere 0
+   ExecuteFull                    in its files 0; anywhere 0
+   ComparePostFull                in its files 0; anywhere 0
+   ComparePostCore                in its files 0; anywhere 0
+   PushBackFullPrepareInput       in its files 0; anywhere 0
+   BuildCore                      in its files 0; anywhere 6 src/RackCad.Application/Systems/Dynamic/DynamicSystemLateralBuilder.cs:36, src/RackCad.Application/Systems/Dynamic/DynamicSystemLateralBuilder.cs:56, src/RackCad.Application/Systems/Dynamic/DynamicSystemLateralBuilder.cs:59, src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs:292 ...
+   BuildFull                      in its files 0; anywhere 0
+   BlockedPrefix                  in its files 0; anywhere 0
+   FrontalBOfOneWayPrefix         in its files 0; anywhere 0
+   FrontalBOfOneWaySuffix         in its files 0; anywhere 0
+   AllViewsObsoleteReason         in its files 0; anywhere 0
+   Erasures                       in its files 0; anywhere 0
+   PostOriginKey                  in its files 0; anywhere 0
+   ErasedKeys                     in its files 0; anywhere 0
+   EraseUnsupportedReason         in its files 0; anywhere 0
+   PostErasedStillPresentPrefix   in its files 0; anywhere 0
+   _prepare                       in its files 0; anywhere 0
+   _originOf                      in its files 0; anywhere 0
+   _postRead                      in its files 0; anywhere 0
+   _origin                        in its files 0; anywhere 0
+   IPushBackPilotViewEraser       in its files 0; anywhere 0
+   EraseUnit                      in its files 0; anywhere 0
+   RackViewBlockEraser            in its files 0; anywhere 0
+   EraseInTransaction             in its files 0; anywhere 0
+   _erasures                      in its files 0; anywhere 0
+   PrecheckFull                   in its files 0; anywhere 0
+
+== reflection over the types whose members change (typeof(T) in tests/, with the 8 lines that follow it)
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1958 typeof(PushBackPilotPostExpectation): GetFields, GetProperties
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1958 typeof(PushBackPilotUpdatePlan): GetFields, GetProperties
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2147 typeof(PushBackPilotPrepareInput): GetMethods
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2147 typeof(PushBackPilotUpdatePlan): GetMethods
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2148 typeof(PushBackPilotPostExpectation): GetMethods; by name: Prepare
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2149 typeof(PushBackPilotUpdatePlanner): GetMethods; by name: Prepare  -> BREAKS with a second 'Prepare'
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2155 typeof(PushBackPilotUpdatePlanner): GetMethods; by name: Prepare  -> BREAKS with a second 'Prepare'
+
+== positive control: the v4.5 names (the overloads that the attempt 1 of PB-T3b added; Prepare is the third, by reflection)
+
+== C-1 (PB-T3b v4.5) PushBackPilotUpdateRun.Execute
+   existing declarations in src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs: line 139, 3 parameters
+   optional parameters in the existing declarations: none
+   new overload: 3 parameters, the same arity: they differ at 0
+   uses (11):
+   src/RackCad.Application/Workspace/WorkspaceHostCore.cs:895  (draft, new PushBackPilotUpdateRequest(documentId, request.RackId), port)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:185  (draft, new PushBackPilotUpdateRequest(100, PrepareKit.Rack), port)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:202  (draft, new PushBackPilotUpdateRequest(100, PrepareKit.Rack), port)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:215  (clean.Draft, clean.Request, clean.Port)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:221  (pending.Draft, pending.Request, pending.Port)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:227  (conflict.Draft, conflict.Request, conflict.Port)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:669  (null!, setup.Request, setup.Port)  -> AMBIGUOUS: untyped null! at 0
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:670  (setup.Draft, null!, setup.Port)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:671  (setup.Draft, setup.Request, null!)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:854  (draft, first.Request, first.Port)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs:277  (Draft, Request, Port)  -> typed at the differing positions: binds by the static type
+   method groups or nameof (0): none
+   string literals that are exactly the name (reflection lookups or text guards) (12):
+     src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs:39 /// <summary>The run ended without reaching the update. It is called at most once, and never after <see cref="Execute"/>.</summary>
+     tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs:199 new ComposeCall("src/RackCad.Plugin/ProjectVariableMutationExecutor.cs", "Execute", "view.Embed"),
+     tests/RackCad.Tests/HeaderBatchContractTests.cs:524 var engineVerbs = new[] { "Execute", "Run", "Resolve", "Prepare", "Mutate", "Recompute", "Apply", "Commit", "Cancel", "Confirm", "Reconcile"
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostDouble.cs:315 _events.Add("Execute");
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostDouble.cs:317 if (ThrowAt.Contains("Execute")) throw new InvalidOperationException("execute boom");
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs:33 new[] { "Enter", "TryOpenTarget", "Admit", "Lock", "Begin", "CreateWriter", "Execute", "Retire", "Unlock", "Completed" },
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs:48 Assert.True(At(kit.Events, "CreateWriter") < At(kit.Events, "Execute"));
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs:50 Assert.True(At(kit.Events, "Execute") < At(kit.Events, "Retire"));
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs:63 Assert.True(At(kit.Events, "Execute") < At(kit.Events, "Retire"));
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs:303 kit.Run.ThrowAt.Add("Execute");
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs:353 kit.Run.ThrowAt.Add("Execute");
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs:454 new[] { "Admit", "Begin", "Completed", "Execute", "NotRun" },
+
+== C-2 (PB-T3b v4.5) PushBackPilotUpdateRun.ComparePost
+   existing declarations in src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs: line 163, 2 parameters
+   optional parameters in the existing declarations: none
+   new overload: 2 parameters, the same arity: they differ at 1
+   uses (9):
+   src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:482  (plan, read)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:788  (plan, good)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:791  (plan, fewer)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:794  (plan, more)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:797  (plan, edited)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:799  (plan, null)  -> AMBIGUOUS: untyped null at 1
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:801  (plan, notAdmitted)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:813  (plan, read)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:822  (plan, same)  -> typed at the differing positions: binds by the static type
+   method groups or nameof (0): none
+   string literals that are exactly the name (reflection lookups or text guards) (0): none
+
+== C-3 (PB-T3b v4.5) PushBackPilotUpdatePlanner.Prepare
+   existing declarations in src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: line 309, 3 parameters
+   optional parameters in the existing declarations: none
+   new overload: 3 parameters, the same arity: they differ at 0, 1
+   uses (16):
+   src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:126  (PushBackPilotPrepareInput.From(draft), null!, null!)  -> typed at the differing positions: binds by the static type
+   src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs:315  (_input, pilot, values.Catalog!)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:96  (PushBackPilotPrepareInput.From(draft), reread, PilotKit.Catalog)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1458  (PushBackPilotPrepareInput.From(draft), reread!, PilotKit.Catalog)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1469  (PushBackPilotPrepareInput.From(draft), IntentKit.Read(PrepareKit.RealScan()), PilotKit.Catalog)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1474  (PushBackPilotPrepareInput.From(draft), reread!, null!)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1644  (PushBackPilotPrepareInput.From(draft), read, armed.Catalog)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1653  (PushBackPilotPrepareInput.From(draft), read, failing.Catalog)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1807  (null!, read, PilotKit.Catalog)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1808  (input, null!, PilotKit.Catalog)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1809  (input, read, null!)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1833  (input, changed, null!)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1834  (input, notAdmitted, null!)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1835  (input, read, null!)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:1844  (input, null!, PilotKit.Catalog)  -> typed at the differing positions: binds by the static type
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs:268  (PushBackPilotPrepareInput.From(Draft), IntentKit.Read(Scan), PilotKit.Catalog)  -> typed at the differing positions: binds by the static type
+   method groups or nameof (0): none
+   string literals that are exactly the name (reflection lookups or text guards) (6):
+     tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs:178 body.Contains("EnsureForPlan") || body.Contains("PrepareRedraw") || body.Contains("Prepare("),
+     tests/RackCad.Tests/HeaderBatchContractTests.cs:524 var engineVerbs = new[] { "Execute", "Run", "Resolve", "Prepare", "Mutate", "Recompute", "Apply", "Commit", "Cancel", "Confirm", "Reconcile"
+     tests/RackCad.Tests/RackProjectionCommandGuardTests.cs:349 foreach (var forbidden in new[] { "Resolve(", "Prepare(", "PrepareExisting(", "Compare(", "RackResolvePorts", "RackAuthoredComparatorPorts",
+     tests/RackCad.Tests/RackViewPlacementGuardTests.cs:26 Assert.DoesNotContain(".Prepare(", source, StringComparison.Ordinal);
+     tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs:16 Assert.DoesNotContain("Prepare(", source);
+     tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2156 var prepare = Assert.Single(members, m => m.Name == "Prepare");
+
+== result
+   control (v4.5): 2 ambiguous calls: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:669, tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:799
+   reflection by name over a v4.5 overload: tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs:2156 (Prepare)
+   v4.6 (PB-T3b and PB-T3c): 0 ambiguous or broken calls; 0 method groups; 3 exact-name string literals (read one by one above)
+   new names already used in the files they go to: none

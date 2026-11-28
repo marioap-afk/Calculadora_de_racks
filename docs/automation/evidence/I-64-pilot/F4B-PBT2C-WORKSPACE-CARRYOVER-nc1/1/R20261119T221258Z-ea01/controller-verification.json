@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT2C-WORKSPACE-CARRYOVER",
+  "RunId": "R20261119T221258Z-ea01",
+  "DelegationRunId": "R20261119T203120Z-65ce",
+  "WorkRunId": "R20261119T203340Z-05b7",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false. OutputWrittenUtc=2026-11-19T16:06:55.570544-06:00, despues de Cession.StartUtc=2026-11-19T20:33:46Z."
+    },
+    "Handoff": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json tiene TaskId, RunId, DelegationRunId y Attempt esperados; OutputWrittenUtc es posterior al inicio. Su CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef no existe: git rev-parse deadbeefdeadbeefdeadbeefdeadbeefdeadbeef^{commit} devolvio fatal unknown revision."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Desde Git: git show MainSha:docs/AUTOMATION_PLAN.md contiene 16.3, 16.8, 16.9 y 16.10; README de agent-execution contiene seccion 8; AGENTS.md leido desde MainSha. git merge-base --is-ancestor AuthorityRevision BaseSha exit 0. git diff --name-only AuthorityRevision BaseSha da cuatro rutas docs; ninguna es UNIT_CHANGE ni una ruta EXTERNAL. Los cinco paths EXTERNAL no difieren entre merge-base(MainSha,AuthorityRevision)=MainSha y AuthorityRevision; los blobs UNIT_DOC no cambiaron."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Comparacion A3-A5 de delegation.json con gate-contract.json: AllowedWriteScope igual (3), ForbiddenWriteScope igual (173), Invariants igual (11), StopConditions igual (33), Authorities igual (50), RequiredTests igual (39). byte-fidelity-check.json marca PASS en las ocho colecciones."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "CurrentSha declarado literalmente: deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse HEAD=b19683412ec1202bac141aa80654eddad274a023; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=b19683412ec1202bac141aa80654eddad274a023. BaseSha es ancestro de HEAD y RedSha esta entre ambos; el CurrentSha declarado no resuelve y no coincide con HEAD/remoto."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json Entry.LsRemoteSha=b19683412ec1202bac141aa80654eddad274a023, distinto del CurrentSha declarado deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. MainSha declarado y git rev-parse refs/remotes/origin/main coinciden en 812baf879612320653094a8aaf46aca0bac81383; RemoteFacts CurrentRun refiere push de la rama exacta con head b1968341."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "Script de solo lectura: AllowedWriteScope tiene 3 rutas exactas; git diff --name-only BaseSha CurrentSha termina con exit 128, fatal bad object deadbeef; git diff --name-only ChainBaseSha CurrentSha -- src tests tambien termina con exit 128. git diff --name-only BaseSha HEAD muestra solo tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs, incluida exactamente en AllowedWriteScope. No es posible acreditar el alcance del SHA declarado."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain no produjo salida. git check-ignore -v sobre el worker-handoff.json de las entradas devuelve .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 44619492077 es push de refs/heads/architecture/workspace-persistente-rackcad, head b19683412ec1202bac141aa80654eddad274a023, y sus cuatro jobs requeridos estan en success. No corresponde al CurrentSha declarado deadbeef. RedPart: run 44618262418 es push del RedSha 7aeb61707b7ffaccd2e15c1366ade039c7ecd674; Core y UI fallan, Build UI success y Build Plugin skipped."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "TRX actual: Core 19094/19094 Passed; UI 2429 Passed, 0 Failed y 21 NotExecuted. Las 39 selecciones requeridas alcanzan MinSelected en green, con al menos MinSelected Passed y cero Failed, pero los TRX no pueden atribuirse al CurrentSha deadbeef. RedPart: el TRX UI RED selecciona y falla por asercion los 3 CT-PBT2C; los TRX m1/m2/m3 hacen fallar por asercion el CT de cada mutante; las 21 fallas existentes del RED aparecen nombradas en la atribucion y ExistentesQueLaEntregaNoNombra esta vacio. git diff BaseSha..RedSha -- tests/ contiene solo la clase nueva; git diff RedSha..HEAD -- tests esta vacio. ChainRedFiles=tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD muestra commits RED y GREEN, ambos con Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al trailer declarado y coherente con ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high; la delegacion solicita el mismo modelo y effort. ModelRequested=sonnet es el alias literal de lanzamiento subagent; EffectiveSource registra 204 turnos con claude-sonnet-5-5."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Script de solo lectura sobre los siete campos completos y los 16 terminos de AUTOMATION_PLAN 16.10, con coincidencia insensible a mayusculas por palabra o frase: WorkCompleted 11429 caracteres, Evidence 3821, UnexpectedFindings 1283, KnownLimitations 849, Deviations 0, OpenQuestions 0, RecommendedNextAction 294; cero coincidencias."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra 0 denegaciones, 5 errores de herramientas sin pendientes y ningun aviso de limite. No hay denegacion pendiente."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "La entrega declara CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, pero Git, origin de la rama y la corrida CI actual identifican b19683412ec1202bac141aa80654eddad274a023; el SHA declarado no resuelve como commit.",
+    "La evidencia de diff y TRX concuerda con el HEAD medido: BaseSha..HEAD solo agrega la clase nueva; los tres cambios mutantes estan en BaseSha..RedSha y W/WC vuelven a los blobs de BaseSha en HEAD.",
+    "El arbol esta limpio, ambos commits tienen el trailer declarado, las 39 selecciones alcanzan sus minimos y las ocho colecciones byte-fidelity coinciden."
+  ],
+  "RecommendedNextAction": "Resolver con el Coordinator la discrepancia del SHA de la entrega y emitir una entrega coherente antes de repetir la verificacion."
+}

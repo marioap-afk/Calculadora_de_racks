@@ -98,11 +98,15 @@ namespace RackCad.Application.Persistence
         public double? PrimerNivelAltura { get; set; }
         public List<GridCellDocument> OffCells { get; set; }
 
+        /// <summary>I-64, cuarta tanda: the off cells are read by post (true only; absent = the historic reading, every older document).</summary>
+        public bool? CellsByPost { get; set; }
+
         public static DesviadorSelectionDocument From(SelectiveDesviadorConfig config) => new DesviadorSelectionDocument
         {
             Longitud = config.Longitud,
             PrimerNivelAltura = config.PrimerNivelAltura,
-            OffCells = SafetyDocumentMapping.Cells(config.OffCells)
+            OffCells = SafetyDocumentMapping.Cells(config.OffCells),
+            CellsByPost = config.CellsByPost ? true : (bool?)null
         };
 
         public SelectiveDesviadorConfig ToDomain()
@@ -112,7 +116,8 @@ namespace RackCad.Application.Persistence
                 Longitud = Longitud.HasValue && Longitud.Value > 0.0 ? Longitud.Value : SelectiveSafetyDefaults.DesviadorLongitud,
                 PrimerNivelAltura = PrimerNivelAltura.HasValue && PrimerNivelAltura.Value > 0.0
                     ? PrimerNivelAltura.Value
-                    : SelectiveSafetyDefaults.DesviadorPrimerNivelAltura
+                    : SelectiveSafetyDefaults.DesviadorPrimerNivelAltura,
+                CellsByPost = CellsByPost ?? false
             };
             SafetyDocumentMapping.AddCells(OffCells, config.OffCells);
             return config;
@@ -123,13 +128,15 @@ namespace RackCad.Application.Persistence
             document.DesviadorLongitud = Longitud;
             document.DesviadorPrimerNivelAltura = PrimerNivelAltura;
             document.DesviadorOffCells = OffCells;
+            document.DesviadorCellsByPost = CellsByPost;
         }
 
         public static DesviadorSelectionDocument ReadFrom(SafetySelectionDocument document) => new DesviadorSelectionDocument
         {
             Longitud = document.DesviadorLongitud,
             PrimerNivelAltura = document.DesviadorPrimerNivelAltura,
-            OffCells = document.DesviadorOffCells
+            OffCells = document.DesviadorOffCells,
+            CellsByPost = document.DesviadorCellsByPost
         };
     }
 

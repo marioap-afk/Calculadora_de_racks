@@ -1,0 +1,9 @@
+rows 85; UI filters 19: ['PushBackFullDraftWindowParityTests', 'Workspace', 'PushBackWindowOnStateTests', 'PushBackClassicCharacterization', 'PushBackFullEditorCharacterization', 'PushBackStateNet', 'PushBackDeclaredCorrection', 'Cantilever', 'PushBackWorkspaceModeTests', 'PushBackWorkspaceApplyCloseTests', 'PushBackFieldValidationConcordanceTests', 'PushBackWorkspaceCarryoverTests', 'PushBackFullPanelFieldTests', 'NumericFieldValidationTests', 'NumericFieldTests', 'FullPanelCopyWorkspacePilotReconciliationGreenTests', 'FullPanelCopyWorkspacePilotReconciliationViewGreenTests', 'PushBackEditAllWindowTests', 'PushBackEditAllApplyCloseTests']
+test classes outside the UI filters that match: 7
+  BlankFrontDesviadorHandoffTests.cs                             BlankFrontDesviadorHandoffTests                      sweep
+  BoundedEditorContractTests.cs                                  BoundedEditorContractTests                           sweep
+  CustomPropertiesHelpCensusTests.cs                             CustomPropertiesHelpCensusTests                      sweep
+  EditorClosePolicyTests.cs                                      EditorClosePolicyTests                               pendingwork
+  RichEditorCloseContractTests.cs                                RichEditorCloseContractTests                         pendingwork
+  SelectiveWindowConstructionGuardTests.cs                       SelectiveWindowConstructionGuardTests                sweep
+  UiSystemBoundaryGuardTests.cs                                  UiSystemBoundaryGuardTests                           sweep

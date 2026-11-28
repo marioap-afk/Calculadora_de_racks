@@ -1,0 +1,58 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261119T074938Z-0302",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD = 5ddeb3b4ed99cb17d05142c67d47a26e89e238f9; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad = el mismo SHA. La entrega declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. BaseSha es ancestro de RedSha y CurrentSha real; RedSha precede al CurrentSha real. La igualdad requerida con el CurrentSha declarado falla."
+  },
+  "OutputSha256": "CA1DAF31A7E140AE84E7E4791ADE25F60C2D18CCCF05B7F315EB86AC878E12CF",
+  "ManualFreeText1610": []
+}

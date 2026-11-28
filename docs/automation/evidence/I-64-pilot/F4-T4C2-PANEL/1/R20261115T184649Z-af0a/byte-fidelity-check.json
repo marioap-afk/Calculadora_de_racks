@@ -1,0 +1,375 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4-T4C2-PANEL",
+  "PlanningRunId": "R20261115T184649Z-af0a",
+  "Authority": "F4-E19 y F4-E26: comparacion previa a la aceptacion",
+  "OutputSha256": "0d6e529aeba76b1cdb589bd39cc18e5fa04aa9e4e65f223dd7054a6908476174",
+  "ContractSha256": "c2b4e35a959bb8b761ffbcfaea0cb4c9df80a1d1e690163a5a9e9622423d7ab9",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "bd0fbc7540732a9c2c459ba23344f985f1a0b143ac4e15dff2f30b7673cc379e",
+      "OutputSha256": "bd0fbc7540732a9c2c459ba23344f985f1a0b143ac4e15dff2f30b7673cc379e",
+      "Differences": []
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "e538d8207021c95572118b7d197af0c8b99da15c5fe4cdafb4f351723d7b598b",
+      "OutputSha256": "e538d8207021c95572118b7d197af0c8b99da15c5fe4cdafb4f351723d7b598b",
+      "Differences": []
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "492cdce07663a8f99d6eb48df3e9520044073975b4f4427e6e73f5770c593eec",
+      "OutputSha256": "492cdce07663a8f99d6eb48df3e9520044073975b4f4427e6e73f5770c593eec",
+      "Differences": []
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "0786a324566b621b3fa11bd37cb446662f97106686b18cc88138bd18dd3d2683",
+      "OutputSha256": "0786a324566b621b3fa11bd37cb446662f97106686b18cc88138bd18dd3d2683",
+      "Differences": []
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "cf82e827a4831912ba612883769488f0927ee320c74aae4ac30a33e3cdf24874",
+      "OutputSha256": "cf82e827a4831912ba612883769488f0927ee320c74aae4ac30a33e3cdf24874",
+      "Differences": []
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "9b9f43e701860e572d7f542e8029b4b9aeeaf69d0c53922c6f67b6e35c4a705b",
+      "OutputSha256": "9b9f43e701860e572d7f542e8029b4b9aeeaf69d0c53922c6f67b6e35c4a705b",
+      "Differences": []
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": true,
+      "Utf8BytesEqual": true,
+      "SourceSha256": "814de19c37f67260338a5ceae783a252cd575007f9fda3a9a23eb97c19a34e95",
+      "OutputSha256": "814de19c37f67260338a5ceae783a252cd575007f9fda3a9a23eb97c19a34e95",
+      "Differences": []
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "ccdd786337e9ee5f262f42fc0edc9182a03a0d5c0f439beb7a83794507180733",
+      "OutputSha256": "d43df76814ecddb7d78d877ee4a122f7b8ed2393d2a336663b21a7c18c9bc418",
+      "Differences": [
+        {
+          "Index": 102,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs"
+        },
+        {
+          "Index": 103,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs"
+        },
+        {
+          "Index": 104,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs"
+        },
+        {
+          "Index": 105,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs"
+        },
+        {
+          "Index": 106,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs"
+        },
+        {
+          "Index": 107,
+          "Offset": 40,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs"
+        },
+        {
+          "Index": 108,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs"
+        },
+        {
+          "Index": 109,
+          "Offset": 0,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceH",
+          "Output": "src/RackCad.Application/Workspace/IWorks"
+        },
+        {
+          "Index": 110,
+          "Offset": 34,
+          "Source": "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+          "Output": "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs"
+        },
+        {
+          "Index": 111,
+          "Offset": 34,
+          "Source": "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs",
+          "Output": "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs"
+        },
+        {
+          "Index": 112,
+          "Offset": 34,
+          "Source": "src/RackCad.Application/Workspace/IWorkspaceBridgeLink.cs",
+          "Output": "src/RackCad.Application/Workspace/EventBridgeCore.cs"
+        },
+        {
+          "Index": 113,
+          "Offset": 34,
+          "Source": "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+          "Output": "src/RackCad.Application/Workspace/WorkspaceSession.cs"
+        },
+        {
+          "Index": 114,
+          "Offset": 0,
+          "Source": "src/RackCad.Application/Workspace/Worksp",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceP"
+        },
+        {
+          "Index": 115,
+          "Offset": 50,
+          "Source": "Cad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs",
+          "Output": "Cad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs"
+        },
+        {
+          "Index": 116,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceOwnMutationTests.cs"
+        },
+        {
+          "Index": 117,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceOwnMutationTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs"
+        },
+        {
+          "Index": 118,
+          "Offset": 50,
+          "Source": "Cad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs",
+          "Output": "Cad.Tests/Workspace/WorkspacePilotUpdateHostDouble.cs"
+        },
+        {
+          "Index": 119,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostDouble.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs"
+        },
+        {
+          "Index": 120,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs"
+        },
+        {
+          "Index": 121,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs"
+        },
+        {
+          "Index": 122,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs"
+        },
+        {
+          "Index": 123,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs"
+        },
+        {
+          "Index": 124,
+          "Offset": 50,
+          "Source": "Cad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+          "Output": "Cad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs"
+        },
+        {
+          "Index": 125,
+          "Offset": 50,
+          "Source": "Cad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs",
+          "Output": "Cad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs"
+        },
+        {
+          "Index": 126,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs"
+        },
+        {
+          "Index": 127,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs"
+        },
+        {
+          "Index": 128,
+          "Offset": 39,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs",
+          "Output": "tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport.cs"
+        },
+        {
+          "Index": 129,
+          "Offset": 14,
+          "Source": "tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport",
+          "Output": "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserScena"
+        },
+        {
+          "Index": 130,
+          "Offset": 50,
+          "Source": "Cad.UI.Tests/Workspace/WorkspaceBrowserScenarioHarnessTests.cs",
+          "Output": "Cad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs"
+        },
+        {
+          "Index": 131,
+          "Offset": 49,
+          "Source": "kCad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs",
+          "Output": "kCad.UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs"
+        },
+        {
+          "Index": 132,
+          "Offset": 53,
+          "Source": ".UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs",
+          "Output": ".UI.Tests/Workspace/WorkspaceBrowserViewTests.cs"
+        },
+        {
+          "Index": 133,
+          "Offset": 42,
+          "Source": "sts/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs",
+          "Output": "sts/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs"
+        },
+        {
+          "Index": 134,
+          "Offset": 52,
+          "Source": "d.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs",
+          "Output": "d.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs"
+        },
+        {
+          "Index": 135,
+          "Offset": 52,
+          "Source": "d.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs",
+          "Output": "d.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs"
+        },
+        {
+          "Index": 136,
+          "Offset": 42,
+          "Source": "sts/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTest",
+          "Output": "sts/RackCad.UI.Tests/Workspace/WorkspaceNavigationPortDouble.cs"
+        },
+        {
+          "Index": 137,
+          "Offset": 52,
+          "Source": "d.UI.Tests/Workspace/WorkspaceNavigationPortDouble.cs",
+          "Output": "d.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs"
+        },
+        {
+          "Index": 138,
+          "Offset": 56,
+          "Source": ".Tests/Workspace/WorkspaceNavigationViewModelTests.cs",
+          "Output": ".Tests/Workspace/WorkspaceNavigationViewTests.cs"
+        },
+        {
+          "Index": 139,
+          "Offset": 42,
+          "Source": "sts/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewTests.cs",
+          "Output": "sts/RackCad.UI.Tests/Workspace/WorkspacePanelContextTests.cs"
+        },
+        {
+          "Index": 140,
+          "Offset": 47,
+          "Source": "ackCad.UI.Tests/Workspace/WorkspacePanelContextTests.cs",
+          "Output": "ackCad.UI.Tests/Workspace/WorkspacePanelErrorTests.cs"
+        },
+        {
+          "Index": 141,
+          "Offset": 47,
+          "Source": "ackCad.UI.Tests/Workspace/WorkspacePanelErrorTests.cs",
+          "Output": "ackCad.UI.Tests/Workspace/WorkspacePanelInstrumentationTests.cs"
+        },
+        {
+          "Index": 142,
+          "Offset": 47,
+          "Source": "ackCad.UI.Tests/Workspace/WorkspacePanelInstrumentationTests.cs",
+          "Output": "ackCad.UI.Tests/Workspace/WorkspacePanelNoWorkTests.cs"
+        },
+        {
+          "Index": 143,
+          "Offset": 47,
+          "Source": "ackCad.UI.Tests/Workspace/WorkspacePanelNoWorkTests.cs",
+          "Output": "ackCad.UI.Tests/Workspace/WorkspacePanelStateTests.cs"
+        },
+        {
+          "Index": 144,
+          "Offset": 47,
+          "Source": "ackCad.UI.Tests/Workspace/WorkspacePanelStateTests.cs",
+          "Output": "ackCad.UI.Tests/Workspace/WorkspacePanelViewTests.cs"
+        },
+        {
+          "Index": 145,
+          "Offset": 43,
+          "Source": "ts/RackCad.UI.Tests/Workspace/WorkspacePanelViewTests.cs",
+          "Output": "ts/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncTests.cs"
+        },
+        {
+          "Index": 146,
+          "Offset": 56,
+          "Source": ".Tests/Workspace/WorkspacePilotCloseSyncTests.cs",
+          "Output": ".Tests/Workspace/WorkspacePilotCloseSyncViewTests.cs"
+        },
+        {
+          "Index": 147,
+          "Offset": 47,
+          "Source": "ackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncViewTests.cs",
+          "Output": "ackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs"
+        },
+        {
+          "Index": 148,
+          "Offset": 43,
+          "Source": "ts/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs",
+          "Output": "ts/RackCad.UI.Tests/Workspace/WorkspacePortDouble.cs"
+        },
+        {
+          "CountSource": 150,
+          "CountOutput": 149
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": true,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 150,
+    "Output": 149
+  }
+}

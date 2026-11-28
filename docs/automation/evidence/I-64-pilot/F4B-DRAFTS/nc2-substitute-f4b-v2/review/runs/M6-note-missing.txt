@@ -1,0 +1,18 @@
+> **Redaccion para el repo publico:** las rutas locales y las variables de entorno de carpetas del usuario se sustituyen por marcadores (`<scratchpad>`, `<worktree-de-I-64>`, `<checkout-principal>`, `<datos-locales-del-usuario>`, `<datos-de-aplicacion-del-usuario>`). El resto no cambia.
+
+exit=1
+--- stdout
+
+--- stderr
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt2acc2\nc2-substitute-f4b\nc2_exact_whitelist_substitute_f4b.py", line 337, in <module>
+    sys.exit(main(*sys.argv[1:7]))
+             ~~~~^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt2acc2\nc2-substitute-f4b\nc2_exact_whitelist_substitute_f4b.py", line 315, in main
+    'note': ld(note_path) if note_path else None}
+            ~~^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt2acc2\nc2-substitute-f4b\nc2_exact_whitelist_substitute_f4b.py", line 305, in <lambda>
+    ld = lambda p: json.load(open(p, encoding='utf-8'))
+                             ~~~~^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<scratchpad>/hs65/pbt2acc2/nc2-substitute-f4b\\review\\mut\\M6-note-missing\\planning\\session-inject-note.json'
+

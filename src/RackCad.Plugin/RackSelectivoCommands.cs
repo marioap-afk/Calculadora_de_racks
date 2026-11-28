@@ -33,6 +33,7 @@ namespace RackCad.Plugin
         [CommandMethod("RACKSELECTIVO")]
         public void RackSelectivo()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.SelectiveView); // T6 ui (O-3): the jig names the view of the Selectivo
             try
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
@@ -126,87 +127,141 @@ namespace RackCad.Plugin
             var system = window.SystemToInsert;
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             system.Name = name; // the "Colocar nombre de rack" annotation draws this
-            // Base name for syncing the block-definition names across views (null = keep each view's descriptive default).
-            var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
             if (!window.UpdateOnly)
             {
-                // G9b keeps Insertar's whitespace cure entirely outside Actualizar's historical identity path.
-                var insertId = string.IsNullOrWhiteSpace(embed.Id) ? window.RackId : embed.Id;
-                var insertReconciled = LinkedPropertyReconciler.Reconcile(
-                    saved, design, window.LinkedPropertyFinalStates, registry, insertId, name);
-                if (!insertReconciled.IsSuccess)
-                {
-                    editor.WriteMessage("\nRackCad: " + insertReconciled.Error);
-                    return;
-                }
-
-                var designJson = SerializeSelectiveAuthored(insertReconciled.Authored);
-                var requested = window.InsertionRequest.Views;
-                var firstSyntax = RackViewCodec.Encode(RackSystemKind.SelectiveRack, requested[0]);
-                var port = new SelectiveInsertPort(document, blockId, embed, system, designJson, insertId, name,
-                    firstSyntax.View, requested[0]);
-                var membership = port.ScanAndClassifyOnce();
-                var properties = port.CheckCustomProperties(membership);
-                if (!properties.Accepted)
-                {
-                    editor.WriteMessage("\nRackCad: SIBLING_GATE_FAILED — " + properties.Diagnostic);
-                    return;
-                }
-
-                var prepared = new System.Collections.Generic.Dictionary<RackViewAddress,
-                    RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>();
-                foreach (var address in requested)
-                {
-                    if (prepared.ContainsKey(address)) continue;
-                    if (!port.TryPrepare(address, membership, out var product, out var diagnostic))
-                    {
-                        editor.WriteMessage("\nRackCad: PREPARE_FAILED — " + diagnostic);
-                        return;
-                    }
-                    prepared.Add(address, product);
-                }
-
-                var redrawPort = port.CreateRedrawPort(prepared[requested[0]]);
-                var redraw = RackSiblingRedrawRun.Execute(membership, redrawPort);
-                if (redraw.Outcome == RackSiblingRedrawOutcome.PrepareFailed
-                    || redraw.Outcome == RackSiblingRedrawOutcome.Discarded)
-                {
-                    editor.WriteMessage("\nRackCad: REDRAW_ROLLED_BACK — " + redraw.Diagnostic);
-                    return;
-                }
-                if (redraw.Plan?.Disposition == RackSiblingRedrawDisposition.DeferToFirstPlacement)
-                {
-                    var units = redraw.Plan.RedrawUnits.Select(item => item.Unit)
-                        .Concat(redraw.Plan.EraseUnits.Select(item => item.Unit)).ToList();
-                    var mutation = redrawPort.Mutate(units);
-                    if (mutation == null || mutation.Kind == RackSiblingMutationKind.Discarded)
-                    {
-                        editor.WriteMessage("\nRackCad: REDRAW_ROLLED_BACK — " + mutation?.Diagnostic);
-                        return;
-                    }
-                    redrawPort.Post(redraw.Plan, mutation);
-                }
-
-                var request = RackViewBatchProductSession<SelectivePalletDesignDocument, SelectiveRackSystem,
-                    RackCad.Application.Drawing.HeaderRunPlan>.Request(
-                        RackProductSourceKind.ExistingRack, RackSystemKind.SelectiveRack, insertId, requested);
-                var driver = new RackViewBatchDriver<RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>(
-                    document.Database.TransactionManager,
-                    item => RackViewBatchPreparation<RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>
-                        .Success(prepared[item.Address]),
-                    _ => RackViewBatchGateResult.Accept(),
-                    _ => redraw.Outcome == RackSiblingRedrawOutcome.Committed
-                        || redraw.Plan?.Disposition == RackSiblingRedrawDisposition.DeferToFirstPlacement
-                            ? RackViewBatchRedrawResult.Applied()
-                            : RackViewBatchRedrawResult.NotRequired(),
-                    (_, product) => RackViewPlacement.PlaceSelective(document, product, regen: false));
-                var batch = driver.Execute(request);
-                if (batch.Report.PlacedCount > 0) editor.Regen();
-                editor.WriteMessage("\nRackCad ID18: " + batch.Outcome + " ("
-                    + batch.Report.PlacedCount + "/" + batch.Report.RequestedCount + ").");
+                InsertSelectiveViews(document, blockId, embed, saved, registry, window, window.InsertionRequest.Views);
                 return;
             }
+
+            // «Actualizar»: the drawing half shared with the RackCad window (I-64 A-14, line D, Selectivo E1-A). RACKEDITAR ignores its count.
+            ApplySelectiveEdit(document, blockId, embed, saved, registry, window);
+        }
+
+        /// <summary>
+        /// The «Insertar» drawing half of RACKEDITAR on a Selectivo (I-64 A-14, line D, Selectivo E2, part A): everything EditSelective did
+        /// after its window closed asking to insert, with the result of the editor and the views as arguments instead of the window,
+        /// unchanged, so RACKSELECTIVOINSERTAR of the RackCad window runs the SAME path. It reconciles, redraws the views that exist and
+        /// places the requested ones as linked copies (the same identity). It answers how many views it placed, or -1 when it refused before
+        /// placing any (the reason is on the command line); RACKEDITAR ignores the answer.
+        /// </summary>
+        internal static int InsertSelectiveViews(
+            Document document,
+            ObjectId blockId,
+            RackEmbedDocument embed,
+            SelectivePalletDesignDocument saved,
+            ProjectVariablesReadResult registry,
+            ISelectiveEditOutcome window,
+            System.Collections.Generic.IReadOnlyList<RackViewAddress> requested)
+        {
+            var editor = document.Editor;
+            var design = window.DesignToInsert;
+            var system = window.SystemToInsert;
+            var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
+            system.Name = name; // the "Colocar nombre de rack" annotation draws this
+
+            // G9b keeps Insertar's whitespace cure entirely outside Actualizar's historical identity path.
+            var insertId = string.IsNullOrWhiteSpace(embed.Id) ? window.RackId : embed.Id;
+            var insertReconciled = LinkedPropertyReconciler.Reconcile(
+                saved, design, window.LinkedPropertyFinalStates, registry, insertId, name);
+            if (!insertReconciled.IsSuccess)
+            {
+                editor.WriteMessage("\nRackCad: " + insertReconciled.Error);
+                return -1;
+            }
+
+            var designJson = SerializeSelectiveAuthored(insertReconciled.Authored);
+            var firstSyntax = RackViewCodec.Encode(RackSystemKind.SelectiveRack, requested[0]);
+            var port = new SelectiveInsertPort(document, blockId, embed, system, designJson, insertId, name,
+                firstSyntax.View, requested[0]);
+            var membership = port.ScanAndClassifyOnce();
+            var properties = port.CheckCustomProperties(membership);
+            if (!properties.Accepted)
+            {
+                editor.WriteMessage("\nRackCad: SIBLING_GATE_FAILED — " + properties.Diagnostic);
+                return -1;
+            }
+
+            var prepared = new System.Collections.Generic.Dictionary<RackViewAddress,
+                RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>();
+            foreach (var address in requested)
+            {
+                if (prepared.ContainsKey(address)) continue;
+                if (!port.TryPrepare(address, membership, out var product, out var diagnostic))
+                {
+                    editor.WriteMessage("\nRackCad: PREPARE_FAILED — " + diagnostic);
+                    return -1;
+                }
+                prepared.Add(address, product);
+            }
+
+            var redrawPort = port.CreateRedrawPort(prepared[requested[0]]);
+            var redraw = RackSiblingRedrawRun.Execute(membership, redrawPort);
+            if (redraw.Outcome == RackSiblingRedrawOutcome.PrepareFailed
+                || redraw.Outcome == RackSiblingRedrawOutcome.Discarded)
+            {
+                editor.WriteMessage("\nRackCad: REDRAW_ROLLED_BACK — " + redraw.Diagnostic);
+                return -1;
+            }
+            if (redraw.Plan?.Disposition == RackSiblingRedrawDisposition.DeferToFirstPlacement)
+            {
+                var units = redraw.Plan.RedrawUnits.Select(item => item.Unit)
+                    .Concat(redraw.Plan.EraseUnits.Select(item => item.Unit)).ToList();
+                var mutation = redrawPort.Mutate(units);
+                if (mutation == null || mutation.Kind == RackSiblingMutationKind.Discarded)
+                {
+                    editor.WriteMessage("\nRackCad: REDRAW_ROLLED_BACK — " + mutation?.Diagnostic);
+                    return -1;
+                }
+                redrawPort.Post(redraw.Plan, mutation);
+            }
+
+            var request = RackViewBatchProductSession<SelectivePalletDesignDocument, SelectiveRackSystem,
+                RackCad.Application.Drawing.HeaderRunPlan>.Request(
+                    RackProductSourceKind.ExistingRack, RackSystemKind.SelectiveRack, insertId, requested);
+            var driver = new RackViewBatchDriver<RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>(
+                document.Database.TransactionManager,
+                item => RackViewBatchPreparation<RackPreparedProductView<RackCad.Application.Drawing.HeaderRunPlan>>
+                    .Success(prepared[item.Address]),
+                _ => RackViewBatchGateResult.Accept(),
+                _ => redraw.Outcome == RackSiblingRedrawOutcome.Committed
+                    || redraw.Plan?.Disposition == RackSiblingRedrawDisposition.DeferToFirstPlacement
+                        ? RackViewBatchRedrawResult.Applied()
+                        : RackViewBatchRedrawResult.NotRequired(),
+                (_, product) => RackViewPlacement.PlaceSelective(document, product, regen: false));
+            var batch = driver.Execute(request);
+            if (batch.Report.PlacedCount > 0) editor.Regen();
+            editor.WriteMessage("\nRackCad ID18: " + batch.Outcome + " ("
+                + batch.Report.PlacedCount + "/" + batch.Report.RequestedCount + ").");
+            return batch.Report.PlacedCount;
+        }
+
+        /// <summary>
+        /// The «Actualizar» drawing half of RACKEDITAR on a Selectivo (I-64 A-14, line D, Selectivo E1-A): everything EditSelective did
+        /// after its window closed asking to update, with the result of the editor as arguments instead of the window, unchanged. RACKEDITAR
+        /// passes what its window produced, with the authored document and the register it read before opening; the RackCad window passes
+        /// its draft, with the document and the register read again by its command. It redraws in place every view of the rack with the same
+        /// GUID (the frontal of each fondo, the lateral cut of each post, the planta), erases the views a shrink left behind (only when one
+        /// view survives) and regenerates once. It answers how many views it redrew and how many it erased (zero and zero when the
+        /// reconciliation refused before touching any geometry); RACKEDITAR ignores the answer, the window uses it so «written» means
+        /// written (I-08 of Dinámico). The branch that inserted a new view after the update is not here: RACKEDITAR inserts through its own
+        /// path above and never reached it.
+        /// </summary>
+        internal static (int Redrawn, int Erased) ApplySelectiveEdit(
+            Document document,
+            ObjectId blockId,
+            RackEmbedDocument embed,
+            SelectivePalletDesignDocument saved,
+            ProjectVariablesReadResult registry,
+            ISelectiveEditOutcome window)
+        {
+            var editor = document.Editor;
+            var design = window.DesignToInsert;
+            var system = window.SystemToInsert;
+            var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
+            system.Name = name; // the "Colocar nombre de rack" annotation draws this
+            // Base name for syncing the block-definition names across views (null = keep each view's descriptive default).
+            var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
             // Actualizar retains the exact empty-only identity predicate it had before G9b.
             var id = string.IsNullOrEmpty(embed.Id) ? window.RackId : embed.Id;
@@ -236,7 +291,7 @@ namespace RackCad.Plugin
             if (!reconciled.IsSuccess)
             {
                 editor.WriteMessage("\nRackCad: " + reconciled.Error);
-                return;
+                return (0, 0);
             }
 
             var updateDesignJson = new SelectivePalletDesignStore().Serialize(reconciled.Authored);
@@ -352,22 +407,8 @@ namespace RackCad.Plugin
                 document.Editor.Regen(); // ONE regeneration refreshes every redefined (and drops every erased) view-block
             }
 
-            // "Insertar": after refreshing the existing views above, place a NEW linked view-block (same GUID) of the
-            // requested view via the normal insertion path (jig). DrawSelectiveView writes its own outcome. "Actualizar"
-            // (UpdateOnly) inserts nothing — the refresh above is the whole action.
-            if (!window.UpdateOnly)
-            {
-                // I-48 G4C.1: la vista NUEVA porta el MISMO authored reconciliado que las que ya existian, no
-                // uno reconstruido desde el diseno efectivo. Un diseno de dominio no puede llevar vinculos, asi
-                // que reconstruirlo dejaba la vista nueva sin vinculo y con el valor de la variable escrito como
-                // literal del rack -- es decir, divergencia authored entre hermanas del mismo rack, que es el
-                // estado que ninguna operacion puede resolver eligiendo una vista.
-                //
-                // A NEW view inserted during an edit inherits the initiating (picked) envelope's metadata (I-11).
-                DrawSelectiveViewFromAuthored(window.InsertView, system, updateDesignJson, id, name, embed);
-                return;
-            }
-
+            // "Actualizar" inserts nothing: the refresh above is the whole action. (The branch that placed a NEW view here after the
+            // refresh was unreachable from RACKEDITAR, whose "Insertar" returns through its own path, and left with the extraction.)
             editor.WriteMessage(updatedFrontal + updatedLateral + updatedPlanta + erasedPhantoms > 0
                 ? "\nRackCad: sistema actualizado; sus vistas se redibujaron (frontal x"
                     + updatedFrontal.ToString(CultureInfo.InvariantCulture) + ", lateral x"
@@ -375,15 +416,17 @@ namespace RackCad.Plugin
                     + updatedPlanta.ToString(CultureInfo.InvariantCulture) + ")."
                     + (erasedPhantoms > 0 ? " Vistas obsoletas retiradas: x" + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + "." : string.Empty)
                 : "\nRackCad: no se pudo actualizar el rack.");
+            return (updatedFrontal + updatedLateral + updatedPlanta, erasedPhantoms);
         }
 
         /// <summary>
         /// The drawing's project-variable register AND its sweep, read in ONE short transaction (I-47 G7/G8).
         /// It is a READ and it happens before the editor exists, so it owns its transaction rather than
         /// borrowing one. The sweep travels with it because a binding gesture has to reason over the rack's
-        /// views, and reading it twice could read two different drawings.
+        /// views, and reading it twice could read two different drawings. The commands of the RackCad window to a Selectivo
+        /// (RACKSELECTIVOABRIR, RACKSELECTIVOAPLICAR) read the register through it too, in their own command context.
         /// </summary>
-        private static ProjectVariablesReadResult ReadProjectVariables(
+        internal static ProjectVariablesReadResult ReadProjectVariables(
             Document document, out System.Collections.Generic.IReadOnlyList<ProjectVariableScanEntry> entries)
         {
             var swept = new System.Collections.Generic.List<ProjectVariableScanEntry>();

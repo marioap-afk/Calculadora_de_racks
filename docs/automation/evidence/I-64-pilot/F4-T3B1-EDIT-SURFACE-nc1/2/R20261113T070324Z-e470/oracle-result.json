@@ -1,0 +1,52 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261113T070324Z-e470",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "pass"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Ci"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD=1708e76428ba81012596b0c643074449a1db41f3; branch=architecture/workspace-persistente-rackcad; worktree matches ExpectedWorktree. BaseSha 1c69fbc4ef7e63e68cd371445f5fd603104c62bf and RedSha 40f5727c8d3800f123c71d60fa2fb33d39aafcca are ancestors of CurrentSha. refs/remotes/origin/architecture/workspace-persistente-rackcad equals CurrentSha."
+  },
+  "OutputSha256": "E756E820E1B055DE7323DD77D56D00261767A13DCDDFB957D626D23BCFD5F708",
+  "ManualFreeText1610": []
+}

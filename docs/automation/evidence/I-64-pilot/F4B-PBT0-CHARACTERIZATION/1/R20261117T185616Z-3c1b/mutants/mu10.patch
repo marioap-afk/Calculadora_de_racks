@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..a94a018f 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3362,7 +3362,7 @@ namespace RackCad.UI.Systems.PushBack
+                 return;
+             }
+ 
+-            session.Identity.SetName(NameBox.Text?.Trim());
++            session.Identity.SetName(NameBox.Text);
+             session.SetModel(lastComputation.Design, lastComputation.System);
+             if (updateOnly)
+             {

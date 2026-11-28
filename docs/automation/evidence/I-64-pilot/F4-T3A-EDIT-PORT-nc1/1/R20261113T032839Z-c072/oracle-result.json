@@ -1,0 +1,51 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261113T032839Z-c072",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "Handoff CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef does not exist. Git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 18471988fc59dbfdeee1ffc409127c4f7226004b. Branch and worktree match; BaseSha and RedSha are ancestors of the actual HEAD."
+  },
+  "OutputSha256": "6A8ED4C0B7EC2562676C816A5ED916973570B29D89F97CBC87853979CEA231FE",
+  "ManualFreeText1610": []
+}

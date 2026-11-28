@@ -1,0 +1,166 @@
+{
+  "Id": "F4T2B2A-NC2-SCOPE-SIGNAL-01",
+  "NotA4": true,
+  "Scope": "solo F4-T2B2A-INTENT-WIRING, intento 2; no reemplaza al Controller ni a nc2 en otras tareas",
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "ruta quitada en el diff, fuera del alcance mutado; Controller con Scope = fail por otro motivo",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "A2",
+      "Description": "lo mismo y el Controller nombra la ruta quitada",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "B",
+      "Description": "el alcance mutado sigue cubriendo la ruta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C",
+      "Description": "cambia un segundo campo de la delegacion",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D",
+      "Description": "la mutacion anade otra ruta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "E",
+      "Description": "la delegacion real no es la lista exacta del contrato",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "F",
+      "Description": "hash derivado incoherente",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "G",
+      "Description": "cambia otra entrada ademas de las derivadas",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H",
+      "Description": "el Controller no dio Scope = fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "I",
+      "Description": "Scope fail pero FailureClass distinto",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    }
+  ],
+  "SelfTestPass": true,
+  "SelfTestDeterministic": true,
+  "RealVerification": "artifacts/orchestration/I-64/F4-T2B2A-INTENT-WIRING/2/R20261112T170518Z-ed09",
+  "Nc2Run": "artifacts/orchestration/I-64/F4-T2B2A-INTENT-WIRING-nc2/2/R20261112T171913Z-7a93",
+  "BaseSha": "36b497ad20a522e4aebd27d9632485f80ff68a19",
+  "CurrentSha": "56b0d4977c6c9dae1eef78d1bcff5842ca45dcc5",
+  "ChangedPaths": [
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs",
+    "src/RackCad.Plugin/Views/RackSiblingScan.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs"
+  ],
+  "RealAllowedWriteScope": [
+    "src/RackCad.Plugin/Views/RackSiblingScan.cs",
+    "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceEditIntentReader.cs",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs"
+  ],
+  "MutatedAllowedWriteScope": [
+    "src/RackCad.Plugin/Views/RackSiblingScan.cs",
+    "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceEditIntentReader.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs"
+  ],
+  "Nc2ControllerScopeEvidence": "git diff --name-only BaseSha..CurrentSha lists 8 paths, all in AllowedWriteScope and none in ForbiddenWriteScope. However, the diff includes WorkspaceEditIntentGuardTests.cs and WorkspaceEditIntentHostTests.cs, changed guard/test files beyond the three F4-T2B1 carry-over test files. This triggers F4T2B2A-C02.",
+  "Measured": {
+    "RemovedPath": "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "DelegationFieldsChanged": [
+      "AllowedWriteScope"
+    ],
+    "ChangedInputs": [
+      "delegation.json",
+      "relay-record-planning.json"
+    ],
+    "ScopeOnReal": "pass",
+    "ScopeOnMutated": "fail",
+    "Controller": {
+      "Classification": "EXECUTION_BLOCKED",
+      "Disposition": "STOP",
+      "FailureClass": "Scope",
+      "Scope": "fail",
+      "Contract": "pass",
+      "TriggeredStopConditions": [
+        "F4T2B2A-C02"
+      ]
+    },
+    "ControllerScopeEvidenceNamesRemovedPath": false
+  },
+  "Properties": {
+    "1_AcceptedRealDelegationMatchesContract": true,
+    "2_RemovedPathInDiffAndInsideRealScope": true,
+    "3_Nc2RemovesExactlyThatPath": true,
+    "4_NoOtherDelegationFieldChanges": true,
+    "5_DerivedHashesConsistent": true,
+    "6_RemovedPathOutsideMutatedScope": true,
+    "7_ScopeMustFail": true,
+    "8_ControllerReportedScopeFail": true
+  },
+  "SubstituteResult": "PASS",
+  "Notes": {
+    "SignalNotDemonstrated": "la Evidence de Scope del Controller afirma que todas las rutas del diff estan en AllowedWriteScope y atribuye el fail a F4T2B2A-C02 por dos archivos de prueba propios de la tarea; no nombra la ruta quitada (Measured.ControllerScopeEvidenceNamesRemovedPath)",
+    "ContractPass": "Contract dio pass apoyandose en byte-fidelity-check.json, que atestigua la delegacion REAL (su OutputSha256 es el de la delegacion real), sin comparar la lista mutada con la exacta del contrato",
+    "ProtocolDebt": "PD-F4-03: el Controller puede fallar Scope por un motivo ajeno a la mutacion y no detectar la ruta quitada; deuda de protocolo, sin solucion global dentro de I-64"
+  },
+  "Record": {
+    "Nc2OrdinaryRun": "ORACULO MECANICO CUMPLIDO / SENAL NO DEMOSTRADA (se conserva tal cual)",
+    "nc2": "SATISFIED_UNDER_F4T2B2A_SCOPE_SIGNAL_SUBSTITUTE"
+  }
+}

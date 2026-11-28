@@ -1,0 +1,108 @@
+{
+  "Schema": "rackcad-i64-scope-bridge-run/v1",
+  "TaskId": "F3-T1-BROWSER-CORE",
+  "RunId": "R20261110T144636Z-0548",
+  "Amendment": "docs/initiatives/I-64-A-4.md",
+  "Authorization": "docs/automation/evidence/I-64-pilot/F3-BROWSER/f3-dispositions.md (F3-E06): I64-SCOPE-BRIDGE-01 una vez para F3-T1 tras el defecto conocido del Controller en nc2, bajo la orden del Owner I-64 F2 CLOSE RATIFICATION / F3 AUTHORIZATION",
+  "HeadSha": "a92039bbbdc85c38c380a8a319e577d625d3910c",
+  "StartedUtc": "2026-11-10T14:46:37.378593+00:00",
+  "Nc2RunId": "R20261110T144043Z-0464",
+  "OracleMapping": "A-2 Sec. 2 / A-4 (accepted semantics, unchanged): REAL = accepted delegation + delivery -> PASS; ADVERSARIAL = same delivery and SHAs with the nc2-mutated AllowedWriteScope -> FAIL whose only reason is OUTSIDE_ALLOWED_WRITE_SCOPE and OutsideAllowed = [excluded file]. The disposition's \"expected REAL result: FAIL / OUTSIDE MUTATED SCOPE\" is the A-4 ADVERSARIAL run over the mutated delegation.",
+  "Verifier": {
+    "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+    "HeadBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBytesSha256": "14e3dc3e47e176bb88e6f3c30db11ab15e98ccb8a821615d7c957573adca0557",
+    "ExecutedPath": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE-scope-bridge/R20261110T144636Z-0548/verifier/verify_scope_bridge.py",
+    "ExecutedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "Sha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "AuthorizedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "AuthorizedSha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "Note": "se ejecutan los bytes exactos del blob autorizado extraidos de HEAD (git cat-file blob); la copia del arbol de trabajo puede tener CRLF por core.autocrlf (mismo blob)",
+    "IdentityOk": true
+  },
+  "Inputs": {
+    "RealDelegation": {
+      "Path": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T143422Z-057f/inputs/delegation.json",
+      "Sha256": "6b317a3e52b82cc4791ae4a692b11ac23fdd68a25bc3c098a08cd9dfa49c457f"
+    },
+    "AdversarialDelegation": {
+      "Path": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE-nc2/1/R20261110T144043Z-0464/inputs/delegation.json",
+      "Sha256": "bb960d8f0b637842bd1d1bb026bedb560059647e95f755b5eb32f4f67b750727"
+    },
+    "Handoff": {
+      "Path": "artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T143422Z-057f/inputs/worker-handoff.json",
+      "Sha256": "9724d48a8f6296c59b3d315b5c8722496f5fff5ba90f3e660fa283a6041bc8de"
+    },
+    "RealDelegationEqualsAccepted": true,
+    "HandoffEqualsWorkerDelivery": true,
+    "AdversarialEqualsNc2InputAsCustodiedInMutation": true,
+    "AdversarialScopeEqualsDisposition": true,
+    "AdversarialDiffersOnlyInAllowedWriteScope": true,
+    "Excluded": "src/RackCad.Application/Workspace/BrowserSession.cs",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/BrowserSession.cs",
+      "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+    ],
+    "UnderRemovedPrefix": [
+      "src/RackCad.Application/Workspace/BrowserSession.cs",
+      "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs"
+    ]
+  },
+  "Real": {
+    "Command": "python <bytes del blob cf381ab9 extraidos de HEAD:docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py> --repo <worktree> --delegation artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T143422Z-057f/inputs/delegation.json --handoff artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T143422Z-057f/inputs/worker-handoff.json --expected-base b1911aa01719cb9d0121ca5f14c1166d97d7ee1b --expected-current a92039bbbdc85c38c380a8a319e577d625d3910c",
+    "ExitCode": 0,
+    "OutputSha256": "1541cb308a306d92334553abc6ad229630e1c5a1d5d004abbd1443607939a90e",
+    "Stderr": "",
+    "Result": "PASS",
+    "Reasons": [],
+    "ChangedPaths": [
+      "src/RackCad.Application/Workspace/BrowserSession.cs",
+      "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+    ],
+    "OutsideAllowed": [],
+    "ForbiddenHits": []
+  },
+  "Adversarial": {
+    "Command": "python <bytes del blob cf381ab9 extraidos de HEAD:docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py> --repo <worktree> --delegation artifacts/orchestration/I-64/F3-T1-BROWSER-CORE-nc2/1/R20261110T144043Z-0464/inputs/delegation.json --handoff artifacts/orchestration/I-64/F3-T1-BROWSER-CORE/1/R20261110T143422Z-057f/inputs/worker-handoff.json --expected-base b1911aa01719cb9d0121ca5f14c1166d97d7ee1b --expected-current a92039bbbdc85c38c380a8a319e577d625d3910c",
+    "ExitCode": 1,
+    "OutputSha256": "654148475cf6e5eb88e4ccbcdfbfda54404fd1e7cc0ab0808990ac9b1aaea1dc",
+    "Stderr": "",
+    "Result": "FAIL",
+    "Reasons": [
+      {
+        "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+        "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Application/Workspace/BrowserSession.cs\"]"
+      }
+    ],
+    "ChangedPaths": [
+      "src/RackCad.Application/Workspace/BrowserSession.cs",
+      "src/RackCad.Application/Workspace/BrowserSessionRegistry.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs"
+    ],
+    "OutsideAllowed": [
+      "src/RackCad.Application/Workspace/BrowserSession.cs"
+    ],
+    "ForbiddenHits": []
+  },
+  "Oracle": {
+    "RealPass": true,
+    "AdversarialExpectedFail": true,
+    "SameChangedPaths": true,
+    "SameIdentityHashes": true,
+    "NoUnexpectedFileUnderRemovedPrefix": true,
+    "Ok": true
+  },
+  "FinishedUtc": "2026-11-10T14:46:38.622004+00:00"
+}

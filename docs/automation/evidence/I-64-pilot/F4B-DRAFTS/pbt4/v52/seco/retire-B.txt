@@ -1,0 +1,62 @@
+# retirada del piloto, variante B, sobre 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+static\s+PushBackPilotComposition\s+ComposeForWrite\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+static\s+PushBackPilotDraftState\s+KeepPilotEditsOn\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+static\s+PushBackPilotPrepareResult\s+Prepare\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs private\s+static\s+PushBackPilotPrepareResult\s+Build\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+static\s+PushBackPilotPrepareInput\s+From\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+PushBackPilotPrecheck\s+Precheck\s*\(\s*DraftSession
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+DraftApplyOutcome<PushBackPilotDraftState>\s+Execute
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+sealed\s+class\s+PushBackPilotPrepareInput\b
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+sealed\s+class\s+PushBackPilotComposition\b
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+string\?\s+ComparePost\s*\(
+tests tests/RackCad.Tests/PushBackFullWritePrepareTests.cs: 15 miembros (15 tramos)
+tests tests/RackCad.Tests/PushBackFullWriteRunTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs: 3 miembros (3 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs: 5 miembros (5 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs: 27 miembros (27 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs: 11 miembros (11 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs: 23 miembros (23 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs: 6 miembros (6 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs: 20 miembros (20 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs: 33 miembros (35 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs: 8 miembros (8 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs: 48 miembros (48 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs: 3 miembros (3 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs: 3 miembros (3 tramos)
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+en seco src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs: 253 -> 149 lineas
+en seco src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs: 648 -> 536 lineas
+en seco src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs: 713 -> 645 lineas
+en seco tests/RackCad.Tests/PushBackFullWritePrepareTests.cs: 831 -> 208 lineas
+en seco tests/RackCad.Tests/PushBackFullWriteRunTests.cs: 437 -> 376 lineas
+en seco tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs: 251 -> 210 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs: 616 -> 538 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs: 949 -> 387 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs: 521 -> 445 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs: 1245 -> 861 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs: 1298 -> 1258 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs: 1183 -> 1080 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs: 1701 -> 1264 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs: 431 -> 411 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs: 2162 -> 1299 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs: 772 -> 585 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs: 1149 -> 1131 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs: 1085 -> 1076 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs: 964 -> 92 lineas
+en seco tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs: 279 -> 265 lineas
+en seco tests/RackCad.UI.Tests/PushBackDeclaredCorrectionPilotParityTests.cs: 93 -> 21 lineas
+en seco tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs: 193 -> 164 lineas
+en seco tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs: 62 -> 24 lineas
+en seco tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs: 85 -> 48 lineas
+en seco tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs: 100 -> 64 lineas
+en seco tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs: 334 -> 253 lineas

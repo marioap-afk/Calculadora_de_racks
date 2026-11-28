@@ -1,0 +1,2 @@
+filas 1 {'Failed': 1}; inicio 2026-11-21T12:26:06.4665016-06:00; fin 2026-11-21T12:26:06.4665225-06:00
+  Failed RackCad.Tests.TmpPbt4cEditAllProbe.Probe | at RackCad.Tests.TmpPbt4cEditAllProbe.Probe() in <copia>\tests\RackCad.Tests\TmpEditall.cs:line 216 | sin-anfitrion estado=NotAvailable motivo=[No editable aquí: el panel no tiene el editor completo.] aplicadas=0 abierto=False lecturas=0 borrador=False

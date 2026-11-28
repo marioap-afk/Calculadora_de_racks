@@ -1,0 +1,22 @@
+diff --git a/src/RackCad.UI/Views/RackViewBatchDialog.xaml b/src/RackCad.UI/Views/RackViewBatchDialog.xaml
+index 04f0b74e..910222d2 100644
+--- a/src/RackCad.UI/Views/RackViewBatchDialog.xaml
++++ b/src/RackCad.UI/Views/RackViewBatchDialog.xaml
+@@ -19,7 +19,7 @@
+             </GroupBox>
+             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,10,0">
+                 <Button Content="Agregar →" Click="Add_Click" Margin="0,3" Padding="10,5"/>
+-                <Button Content="← Quitar" Click="Remove_Click" Margin="0,3" Padding="10,5"/>
++                <Button Content="← Quitar" IsCancel="True" Click="Remove_Click" Margin="0,3" Padding="10,5"/>
+             </StackPanel>
+             <GroupBox Grid.Column="2" Header="Cola de colocación">
+                 <DockPanel>
+@@ -32,7 +32,7 @@
+             </GroupBox>
+         </Grid>
+         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+-            <Button Content="Cancelar" IsCancel="True" Margin="0,0,8,0" Padding="14,6"/>
++            <Button Content="Cancelar" Margin="0,0,8,0" Padding="14,6"/>
+             <Button Content="Insertar cola" IsDefault="True" Click="Accept_Click" Padding="14,6"/>
+         </StackPanel>
+     </Grid>

@@ -1,0 +1,411 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Threading;
+using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
+using RackCad.Application.Diagnostics;
+using RackCad.Application.Workspace;
+using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+
+namespace RackCad.Plugin.Workspace
+{
+    /// <summary>
+    /// The one and only subscriber to AutoCAD events for the workspace panel (I-64 D-04, INV-02). It owns every
+    /// <c>+=</c> / <c>-=</c> on AutoCAD events and nothing else: which sources are hooked, and when, is decided by the
+    /// pure <see cref="EventBridgeCore"/>; this class only performs one native hookup per attachment it is asked for.
+    ///
+    /// Nothing is hooked at construction or at plugin load: the first hookup happens in <see cref="Start"/>, which the
+    /// host of the panel calls when the panel is first opened. Ordinary handlers only forward the notification to the
+    /// core (which enqueues a hint on the right session); they open no transaction, lock no document, read no stored
+    /// data, ask for nothing, write no selection or view, and never let an exception reach AutoCAD.
+    /// The callback of the Idle event only asks the <see cref="WorkspaceIdleScheduler"/> to schedule the idle pass: the
+    /// scheduler posts the continuation once, with BeginInvoke at background priority, to the dispatcher of the main thread,
+    /// and the continuation (the idle pass, with every read of the drawing) runs after the callback has returned.
+    /// The class keeps no document, no transaction and no database object: a per-document hookup finds its document
+    /// only while attaching and keeps just the delegate that undoes the hookup.
+    /// </summary>
+    public sealed class AutoCadEventBridge : IHostEventSource, IDisposable
+    {
+        private readonly EventBridgeCore _core;
+        private readonly Dictionary<SourceAttachment, Action> _detachers = new();
+        private readonly Dispatcher _dispatcher;
+        private readonly WorkspaceIdleScheduler _idleScheduler;
+
+        public AutoCadEventBridge()
+        {
+            _core = new EventBridgeCore(this, LogFault);
+
+            // I-64 F4-T2C (IC-04): the callback of Idle only schedules. The continuation (the idle pass, with every read of the
+            // drawing) is posted ONCE to the dispatcher of the main thread, at background priority, and runs after the callback has
+            // returned. The dispatcher is the one of the thread that creates the bridge (the controller, during RACKPANEL).
+            _dispatcher = Dispatcher.CurrentDispatcher;
+            _idleScheduler = new WorkspaceIdleScheduler(_core.CanDrainNow, RunIdleContinuation, LogFault);
+            _idleScheduler.SetPost(action => _dispatcher.BeginInvoke(DispatcherPriority.Background, action));
+        }
+
+        /// <summary>Raised from the idle pass with the pure result of one drain. The drain performs no read in this bridge.</summary>
+        public event Action<DrainOutcome> Drained;
+
+        /// <summary>
+        /// In-memory notice that the active session may have changed (I-64 D-03, D-04). It is raised only from the two
+        /// existing document-lifecycle handlers, inside their own containment and after the core has been updated:
+        /// <c>DocumentActivated</c>, and <c>DocumentToBeDestroyed</c> when the active session changed. It carries no
+        /// argument and no AutoCAD type, adds no AutoCAD subscription and is internal: the public surface of the bridge
+        /// does not grow. The controller relays it; nothing in the bridge reads the drawing because of it.
+        /// </summary>
+        internal event Action ActiveSessionChanged;
+
+        /// <summary>
+        /// In-memory notice that the command state of a session changed (I-64 F1-T3-HOST-C2): raised only from the two
+        /// existing handlers of <c>CommandWillStart</c> and <c>EnteringQuiescentState</c>, inside their containment, after the
+        /// core has been updated and only when the core reports a change. It carries no argument and no AutoCAD type, adds no
+        /// AutoCAD subscription and is internal. It queues no hint, attaches no idle source and drains nothing; the controller
+        /// relays it so that the visible panel pulls a fresh snapshot.
+        /// </summary>
+        internal event Action CommandStateChanged;
+
+        /// <summary>Whether the active session runs a command, as the core knows it in memory. It reads nothing of the drawing.</summary>
+        internal bool IsCommandActiveInActiveSession => _core.IsCommandActiveInActiveSession;
+
+        /// <summary>
+        /// Assigns the advisor of the lifecycle to the core (I-64 F4-T2B2B): the controller calls it once with the host when it creates
+        /// the bridge. It forwards and nothing else: it adds no AutoCAD subscription, keeps no state and is internal, so the public
+        /// surface of the bridge does not grow.
+        /// </summary>
+        internal void SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor advisor) => _core.SetLifecycleAdvisor(advisor);
+
+        /// <summary>First panel open: hooks the document-collection sources and the active document. Repeating it adds nothing.</summary>
+        public void Start()
+        {
+            try
+            {
+                _core.Start();
+                var active = AcApplication.DocumentManager.MdiActiveDocument;
+                if (active != null) _core.OnDocumentActivated(NativeId(active), active.Editor.IsQuiescent);
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("AutoCadEventBridge.Start", ex);
+            }
+        }
+
+        // Thin facades over the single core (I-64 F1-T3A). They add no state, no subscription and no read of the drawing.
+
+        /// <summary>The session of the active document, or none when no document is open.</summary>
+        public SessionId? ActiveSession => _core.ActiveSession;
+
+        public bool TryGetSession(SessionId id, out WorkspaceSession session)
+        {
+            var found = _core.TryGetSession(id, out var live);
+            session = live;
+            return found;
+        }
+
+        public RequestDecision Authorize(WorkspaceRequest request, long executingNativeInstanceId) =>
+            _core.Authorize(request, executingNativeInstanceId);
+
+        /// <summary>Queues the reconciliation hint of the active session; the drain happens later, at rest.</summary>
+        public void RequestReconciliation() => _core.RequestReconciliation();
+
+        public void SetPanelVisible(bool visible) => _core.SetPanelVisible(visible);
+
+        public void SetModalRackCadActive(bool active) => _core.SetModalRackCadActive(active);
+
+        // I-64 F4-T4C1-HOST (D-T4C-09, IC-09): three internal forwarders to the one core, for the own mutation of the update of the pilot and
+        // the bound of its ticket. They add no state, no subscription and no read of the drawing, and the public surface does not grow.
+        internal void OpenOwnMutation(SessionId session) => _core.OpenOwnMutation(session);
+
+        internal void CloseOwnMutation(SessionId session) => _core.CloseOwnMutation(session);
+
+        internal int? ForeignCommandStartsOf(SessionId session) => _core.ForeignCommandStartsOf(session);
+
+        /// <summary>Removes every hookup. The bridge is then back to zero subscriptions.</summary>
+        public void Dispose()
+        {
+            try
+            {
+                _core.Stop();
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("AutoCadEventBridge.Dispose", ex);
+            }
+        }
+
+        void IHostEventSource.Attach(SourceAttachment attachment)
+        {
+            if (_detachers.ContainsKey(attachment)) return;
+            _detachers.Add(attachment, Hook(attachment));
+        }
+
+        void IHostEventSource.Detach(SourceAttachment attachment)
+        {
+            if (!_detachers.Remove(attachment, out var detach)) return;
+            detach();
+        }
+
+        private Action Hook(SourceAttachment a)
+        {
+            switch (a.Source)
+            {
+                case BridgeSource.DocumentCreated:
+                {
+                    var documents = AcApplication.DocumentManager;
+                    DocumentCollectionEventHandler handler = (s, e) => Contain("DocumentCreated", () => _core.OnDocumentCreated(NativeId(e.Document)));
+                    documents.DocumentCreated += handler;
+                    return () => documents.DocumentCreated -= handler;
+                }
+                case BridgeSource.DocumentActivated:
+                {
+                    var documents = AcApplication.DocumentManager;
+                    DocumentCollectionEventHandler handler = (s, e) => Contain("DocumentActivated", () =>
+                    {
+                        // The Start tab activates with no document: from now on there is no active document (I-64
+                        // F1-T3-HOST-C2). The sessions stay alive; the notice below tells the panel either way.
+                        if (e.Document == null) _core.OnNoActiveDocument();
+                        else _core.OnDocumentActivated(NativeId(e.Document), e.Document.Editor.IsQuiescent);
+                        ActiveSessionChanged?.Invoke();
+                    });
+                    documents.DocumentActivated += handler;
+                    return () => documents.DocumentActivated -= handler;
+                }
+                case BridgeSource.DocumentToBeDestroyed:
+                {
+                    var documents = AcApplication.DocumentManager;
+                    DocumentCollectionEventHandler handler = (s, e) => Contain("DocumentToBeDestroyed", () =>
+                    {
+                        var before = _core.ActiveSession;
+                        _core.OnDocumentToBeDestroyed(NativeId(e.Document));
+                        if (_core.ActiveSession != before) ActiveSessionChanged?.Invoke();
+                    });
+                    documents.DocumentToBeDestroyed += handler;
+                    return () => documents.DocumentToBeDestroyed -= handler;
+                }
+                case BridgeSource.BeginDocumentClose:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    DocumentBeginCloseEventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnBeginDocumentClose(a.Session) == CloseDecision.Veto) e.Veto(); });
+                    document.BeginDocumentClose += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.BeginDocumentClose -= handler);
+                }
+                case BridgeSource.ImpliedSelectionChanged:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    EventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    document.ImpliedSelectionChanged += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.ImpliedSelectionChanged -= handler);
+                }
+                case BridgeSource.CommandWillStart:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    CommandEventHandler handler = (s, e) => ContainSession(a, () =>
+                    {
+                        if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged();
+
+                        // A command that is not the update itself: only its name is read, from the argument of the event, in memory.
+                        if (!string.Equals(e.GlobalCommandName, "EXECUTEFUNCTION", StringComparison.OrdinalIgnoreCase)) _core.NoteForeignCommandStart(a.Session);
+                    });
+                    document.CommandWillStart += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.CommandWillStart -= handler);
+                }
+                case BridgeSource.CommandEnded:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    document.CommandEnded += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.CommandEnded -= handler);
+                }
+                case BridgeSource.CommandCancelled:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    document.CommandCancelled += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.CommandCancelled -= handler);
+                }
+                case BridgeSource.CommandFailed:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    CommandEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
+                    document.CommandFailed += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.CommandFailed -= handler);
+                }
+                case BridgeSource.EnteringQuiescentState:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    EventHandler handler = (s, e) => ContainSession(a, () => { if (_core.OnSourceEvent(a.Session, a.Source)) RaiseCommandStateChanged(); });
+                    document.Editor.EnteringQuiescentState += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.Editor.EnteringQuiescentState -= handler);
+                }
+                case BridgeSource.ObjectAppended:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                    document.Database.ObjectAppended += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectAppended -= handler);
+                }
+                case BridgeSource.ObjectErased:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    ObjectErasedEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                    document.Database.ObjectErased += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectErased -= handler);
+                }
+                case BridgeSource.ObjectModified:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                    document.Database.ObjectModified += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectModified -= handler);
+                }
+                case BridgeSource.ObjectUnappended:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                    document.Database.ObjectUnappended += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectUnappended -= handler);
+                }
+                case BridgeSource.ObjectReappended:
+                {
+                    var document = FindDocument(a.NativeInstanceId);
+                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                    document.Database.ObjectReappended += handler;
+                    return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectReappended -= handler);
+                }
+                case BridgeSource.Idle:
+                {
+                    EventHandler handler = (s, e) => Contain("Idle", OnIdleTick);
+                    AcApplication.Idle += handler;
+                    return () => AcApplication.Idle -= handler;
+                }
+                default:
+                    throw new InvalidOperationException("Unknown bridge source: " + a.Source);
+            }
+        }
+
+        // Inside the callback of Idle: it only asks the scheduler to schedule the continuation. Nothing is drained, announced or read here.
+        private void OnIdleTick()
+        {
+            _idleScheduler.OnIdleTick();
+        }
+
+        // The continuation the scheduler runs after the callback of Idle returned: the idle pass, contained, and then the check of
+        // INV-14 (Debug only), once every subscriber of the drain, the summary read of the panel included, has finished.
+        private void RunIdleContinuation()
+        {
+            Contain("IdleContinuation.Pass", OnIdle);
+            CheckNoOpenTransactionAfterTheDrain();
+        }
+
+        // Debug only (I-64 D-02, INV-14, F4-T2C D-T2C-05): a drain leaves no transaction open. It only logs: the transaction may belong
+        // to another add-in running a nested loop, and a failed assertion would end AutoCAD.
+        [Conditional("DEBUG")]
+        private static void CheckNoOpenTransactionAfterTheDrain()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                var open = document?.TransactionManager.TopTransaction;
+                if (open != null)
+                    LogFault("AutoCadEventBridge.IdleContinuation.OpenTransaction", new InvalidOperationException("A transaction was still open when the drain of the panel ended; it may belong to another add-in running a nested loop."));
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("AutoCadEventBridge.IdleContinuation.Check", ex);
+            }
+        }
+
+        private void OnIdle()
+        {
+            foreach (var outcome in _core.OnIdle())
+            {
+                try
+                {
+                    Drained?.Invoke(outcome);
+                }
+                catch (System.Exception ex)
+                {
+                    LogFault("AutoCadEventBridge.Drained", ex);
+                }
+            }
+        }
+
+        // The command state of a session changed: the notice is raised and a failing subscriber is only logged. It never
+        // degrades the session and never reaches AutoCAD.
+        private void RaiseCommandStateChanged()
+        {
+            try
+            {
+                CommandStateChanged?.Invoke();
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("AutoCadEventBridge.CommandStateChanged", ex);
+            }
+        }
+
+        // I-64 F4-T4-HOST-C1 (IC-10): the kind of the object of an object event, by its type alone. The associative framework of the host
+        // (AssocAction, which includes AssocNetwork, and AssocDependency) modifies itself while it locks, commits and ends commands: those events
+        // are not a change of the drawing. Only type tests of the argument of the event, in memory and of constant cost: the object is not
+        // opened and nothing of it is read. It is evaluated inside the containment of the handler.
+        private static ObjectEventSubject SubjectOf(DBObject o) => o is AssocAction || o is AssocDependency ? ObjectEventSubject.AssociativeBookkeeping : ObjectEventSubject.Drawing;
+
+        private static long NativeId(Document document) => document.UnmanagedObject.ToInt64();
+
+        private static Document FindDocumentOrNull(long nativeInstanceId)
+        {
+            foreach (Document candidate in AcApplication.DocumentManager)
+            {
+                if (NativeId(candidate) == nativeInstanceId) return candidate;
+            }
+
+            return null;
+        }
+
+        private static Document FindDocument(long nativeInstanceId) =>
+            FindDocumentOrNull(nativeInstanceId)
+            ?? throw new InvalidOperationException("The document of the session is no longer open.");
+
+        // Undoing a hookup looks the document up again: if it is already gone its hookups died with it.
+        private static void WithDocument(long nativeInstanceId, Action<Document> undo)
+        {
+            var document = FindDocumentOrNull(nativeInstanceId);
+            if (document != null) undo(document);
+        }
+
+        // An exception in a handler is logged and never propagates to AutoCAD.
+        private void Contain(string context, Action body)
+        {
+            try
+            {
+                body();
+            }
+            catch (System.Exception ex)
+            {
+                LogFault("AutoCadEventBridge." + context, ex);
+            }
+        }
+
+        // Same, and the session the handler belongs to goes to degraded mode (the other sessions are untouched).
+        private void ContainSession(SourceAttachment attachment, Action body)
+        {
+            try
+            {
+                body();
+            }
+            catch (System.Exception ex)
+            {
+                try
+                {
+                    _core.ReportFault(attachment.Session, "AutoCadEventBridge." + attachment.Source, ex);
+                }
+                catch (System.Exception inner)
+                {
+                    LogFault("AutoCadEventBridge.ReportFault", inner);
+                }
+            }
+        }
+
+        private static void LogFault(string context, System.Exception exception) => RackLog.Exception(context, exception);
+    }
+}

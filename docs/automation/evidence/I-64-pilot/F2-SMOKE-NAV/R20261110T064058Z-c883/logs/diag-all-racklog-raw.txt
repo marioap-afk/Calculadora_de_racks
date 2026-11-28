@@ -1,0 +1,63 @@
+[2026-11-10T07:13:28.940Z] WARN NAVDIAG: ExecuteAsync begin action=View copy=0 isAppCtx=True mdiActive=True
+[2026-11-10T07:13:28.972Z] WARN NAVDIAG: callback enter isAppCtx=False cmdNames=EXECUTEFUNCTION
+[2026-11-10T07:13:28.974Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:13:29.013Z] WARN NAVDIAG: before SetCurrentView center=(50,30) w=184.6268221574344 h=66
+[2026-11-10T07:13:29.019Z] WARN NAVDIAG: after SetCurrentView current center=(50,30)
+[2026-11-10T07:13:29.080Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=4 refresh=False
+[2026-11-10T07:13:29.091Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=
+[2026-11-10T07:16:46.867Z] WARN NAVDIAG: ExecuteAsync begin action=View copy=0 isAppCtx=True mdiActive=True
+[2026-11-10T07:16:46.915Z] WARN NAVDIAG: callback enter isAppCtx=False cmdNames=EXECUTEFUNCTION
+[2026-11-10T07:16:46.916Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:16:47.014Z] WARN NAVDIAG: before SetCurrentView center=(50,30) w=184.6268221574344 h=66
+[2026-11-10T07:16:47.018Z] WARN NAVDIAG: after SetCurrentView current center=(50,30)
+[2026-11-10T07:16:47.023Z] WARN NAVDIAG: focus skipped (variante diagnostica)
+[2026-11-10T07:16:47.025Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=4 refresh=False
+[2026-11-10T07:16:47.035Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=
+[2026-11-10T07:19:47.038Z] WARN NAVDIAG: ExecuteAsync begin action=View copy=0 isAppCtx=True mdiActive=True
+[2026-11-10T07:19:47.040Z] WARN NAVDIAG: variante: contexto de aplicacion con bloqueo del documento
+[2026-11-10T07:19:47.043Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:19:47.084Z] WARN NAVDIAG: before SetCurrentView center=(50,30) w=184.6268221574344 h=66
+[2026-11-10T07:19:47.088Z] WARN NAVDIAG: after SetCurrentView current center=(50,30)
+[2026-11-10T07:19:47.149Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=4
+[2026-11-10T07:19:47.151Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=
+[2026-11-10T07:23:09.982Z] WARN NAVDIAG: ExecuteAsync begin action=View copy=0 isAppCtx=True mdiActive=True
+[2026-11-10T07:23:09.983Z] WARN NAVDIAG: variante 4: aplicacion con bloqueo y vista fuera de la transaccion
+[2026-11-10T07:23:09.985Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:23:10.082Z] WARN NAVDIAG: before SetCurrentView center=(50,30) w=184.6268221574344 h=66
+[2026-11-10T07:23:10.085Z] WARN NAVDIAG: after SetCurrentView current center=(50,30)
+[2026-11-10T07:23:10.141Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=4
+[2026-11-10T07:23:10.142Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=
+[2026-11-10T07:23:27.981Z] WARN NAVDIAG: ExecuteAsync begin action=View copy=1 isAppCtx=True mdiActive=True
+[2026-11-10T07:23:27.982Z] WARN NAVDIAG: variante 4: aplicacion con bloqueo y vista fuera de la transaccion
+[2026-11-10T07:23:27.984Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:23:27.996Z] WARN NAVDIAG: before SetCurrentView center=(450,30) w=184.6268221574344 h=66
+[2026-11-10T07:23:27.997Z] WARN NAVDIAG: after SetCurrentView current center=(450,30)
+[2026-11-10T07:23:28.047Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=4
+[2026-11-10T07:23:28.048Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=
+[2026-11-10T07:23:52.297Z] WARN NAVDIAG: ExecuteAsync begin action=Center copy=2 isAppCtx=True mdiActive=True
+[2026-11-10T07:23:52.298Z] WARN NAVDIAG: variante 4: aplicacion con bloqueo y vista fuera de la transaccion
+[2026-11-10T07:23:52.299Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:23:52.312Z] WARN NAVDIAG: before SetCurrentView center=(25.333333333333336,230) w=184.6268221574344 h=66
+[2026-11-10T07:23:52.313Z] WARN NAVDIAG: after SetCurrentView current center=(25.333333333333336,230)
+[2026-11-10T07:23:52.362Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=4
+[2026-11-10T07:23:52.363Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=
+[2026-11-10T07:25:07.198Z] WARN NAVDIAG: ExecuteAsync begin action=LocateView copy=0 isAppCtx=True mdiActive=True
+[2026-11-10T07:25:07.199Z] WARN NAVDIAG: variante 4: aplicacion con bloqueo y vista fuera de la transaccion
+[2026-11-10T07:25:07.202Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:25:07.211Z] WARN NAVDIAG: before SetCurrentView center=(50,30) w=184.6268221574344 h=66
+[2026-11-10T07:25:07.214Z] WARN NAVDIAG: after SetCurrentView current center=(50,30)
+[2026-11-10T07:25:07.265Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=2
+[2026-11-10T07:25:07.267Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=
+[2026-11-10T07:25:13.830Z] WARN NAVDIAG: ExecuteAsync begin action=LocateView copy=1 isAppCtx=True mdiActive=True
+[2026-11-10T07:25:13.831Z] WARN NAVDIAG: variante 4: aplicacion con bloqueo y vista fuera de la transaccion
+[2026-11-10T07:25:13.832Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:25:13.843Z] WARN NAVDIAG: before SetCurrentView center=(450,30) w=184.6268221574344 h=66
+[2026-11-10T07:25:13.845Z] WARN NAVDIAG: after SetCurrentView current center=(450,30)
+[2026-11-10T07:25:13.899Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=2
+[2026-11-10T07:25:13.901Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=
+[2026-11-10T07:25:25.994Z] WARN NAVDIAG: ExecuteAsync begin action=Select copy=0 isAppCtx=True mdiActive=True
+[2026-11-10T07:25:25.995Z] WARN NAVDIAG: variante 4: aplicacion con bloqueo y vista fuera de la transaccion
+[2026-11-10T07:25:25.997Z] WARN NAVDIAG: authorize decision=Accepted tileMode=True
+[2026-11-10T07:25:26.010Z] WARN NAVDIAG: after SetImpliedSelection status=OK count=4
+[2026-11-10T07:25:26.066Z] WARN NAVDIAG: callback exit status=Executed verdict=Act reason= count=4
+[2026-11-10T07:25:26.068Z] WARN NAVDIAG: ExecuteAsync end status=Executed verdict=Act reason=

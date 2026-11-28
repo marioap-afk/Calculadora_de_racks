@@ -1,0 +1,16 @@
+tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs: namespace RackCad.Tests.FullPanelCopies; -> namespace RackCad.Tests;
+copias reescritas: 15

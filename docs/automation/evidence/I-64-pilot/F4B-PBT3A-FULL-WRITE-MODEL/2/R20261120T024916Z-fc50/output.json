@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-delegation/v1",
+  "TaskId": "F4B-PBT3A-FULL-WRITE-MODEL",
+  "RunId": "R20261120T024916Z-fc50",
+  "Initiative": "I-64",
+  "Unit": "I-64",
+  "Gate": "F4B",
+  "Attempt": 2,
+  "AuthorityRevision": "5bda5569330d75fb2f03ae809ada1a47676139da",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "BaseSha": "485b5651bcec132761347b40ed38b60cfec0db04",
+  "ExpectedBranch": "architecture/workspace-persistente-rackcad",
+  "ExpectedWorktree": "<worktree-de-I-64>",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261120T024916Z-fc50"
+  },
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Medium",
+    "Horizon": "Medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "anthropic/subagent/claude-sonnet-5-5"
+  },
+  "Model": "claude-sonnet-5-5",
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "RoutingReason": "Verificado el 2026-11-20: tarea transversal corta, acotada por el contrato v4.5 a un modelo nuevo de Application, seis clases de pruebas y sin conectar el modelo. Ambiguity Medium por el diseno detallado y el RED exacto; ArchitecturalSensitivity High por el estado completo, la propiedad de referencias y las fronteras del piloto; Breadth Medium; ToolUse High por las corridas locales y CI requeridas; FailureCost High por las guardas, D2 y la cadena RED/GREEN; MechanicalRepetition Medium; Horizon Medium porque es una subtarea delimitada. Para Implementacion transversal a capas corta, el nivel inicial es Deep; la sensibilidad y el coste lo mantienen en Deep, sin horizonte High. Se elige la celda elegible claude-sonnet-5-5/subagent, el nivel mas bajo adecuado entre las celdas del contrato: catalogo verificado 2026-09-30, esfuerzo high medido en U-04 el 2026-10-01 y uso real como Worker el 2026-10-01, sin aviso de limite. La solicitud Deep/high coincide con la celda; ModelEscalationReason es null. HEAD y origin/main se verificaron el 2026-11-20 y origin/main coincide con MainSha.",
+  "ModelEscalationReason": null,
+  "RoutingEnforcement": "required",
+  "Authorities": [],
+  "Objective": "",
+  "AllowedWriteScope": [],
+  "ForbiddenWriteScope": [],
+  "Invariants": [],
+  "AcceptanceCriteria": [
+    "BaseSha y ChainBaseSha son 485b5651bcec132761347b40ed38b60cfec0db04; ChainRedSha es null y ChainRedFiles esta vacio. La base de la cadena es la reemision porque el intento 1 paro antes del RED y no dejo commits.",
+    "El punto de partida puede ser opcionalmente cualquiera de estos parches del intento 1, con ForWrite cambiado a ForFullWrite; ninguno es autoridad: artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/wip-red-tree.patch sha256 9f5964d13ab768aa08fd1c58ec37c1dec01426955070aa7944301b2fec48ac71; artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/rr/skeleton.patch sha256 70886a1683818eadb56aa098b7398900f49cee64a6a232522ed7f7ca30d153fd; artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/1/R20261120T001738Z-7d92/rr/green-wip.patch sha256 92b4de2a7d8a2cc9d91f20fc24512668875550e7b99982a2d0469fbe222069d9.",
+    "El RED contiene el esqueleto exacto de la seccion 6.1 del paquete v4.5 en los ocho archivos nuevos de src/RackCad.Application/Systems/PushBack/Draft/: los tipos, enumerados, constructores y propiedades completos; comparer Equals como ReferenceEquals, GetHashCode igual a 0 y Copy con el cuerpo prescrito; Pass devuelve null; LoadExisting devuelve un PushBackEditableState nuevo; Materialize devuelve Failed con UnreadableOrFutureDiagnostic; Read devuelve NotAdmitted con MaterializeDiagnostic y la base de BuildStaleBase(scan); ForFullWrite devuelve Rejected con NonPilotContentReason; KeepOn devuelve current; Of devuelve todo Redraw; Classify devuelve listas vacias y AllViewsObsolete falso.",
+    "El RED agrega las seis clases de prueba prescritas: en Core, PushBackFullDraftLoadTests (CT-02 a 05), PushBackFullDraftCompositionTests (CT-06, 07 y 11), PushBackFullDraftViewTests (CT-08), PushBackFullDraftClassifierTests (CT-09 y 10) y PushBackDraftWriteGuardTests (CT-12 a 14); en UI, PushBackFullDraftWindowParityTests (CT-01). Hay un metodo Fact por cada CT, con el nombre definido en la seccion 5.2.",
+    "La tabla CT -> asercion que falla en el RED queda en la entrega. CT-01 falla porque el esqueleto no materializa; CT-02 porque siempre da Failed; CT-03 porque no admite; CT-04 porque el lector completo produce otro diagnostico; CT-05 porque Equals es ReferenceEquals; CT-06 porque la composicion rechaza siempre; CT-07 porque KeepOn devuelve current; CT-08 porque Of da todo Redraw; CT-09 y CT-10 porque Classify no produce las entradas esperadas. Cada fallo esperado es por asercion, con la primera linea del stack trace bajo tests/.",
+    "Los dos filtros ExpectRed seleccionan como minimo las cantidades del contrato: Core FullyQualifiedName~RackCad.Tests.PushBackFullDraft, MinSelected 10; UI FullyQualifiedName~RackCad.UI.Tests.PushBackFullDraftWindowParityTests, MinSelected 1. En el RED todos sus metodos fallan por asercion y Failed es igual a Selected. CT-12 a CT-14 seleccionan al menos 3 pruebas de guardia; pasan en el RED y sus autopruebas detectan las inyecciones prescritas.",
+    "G-9, WorkspacePilotUpdateIntegrationGuardTests.G9NoFileOfThePluginOrOfApplicationThatNamesThePilotUsesAWriteApiOrALockOutsideTheFourExceptionsWithTheirExactCounts, pasa en el RED y en el GREEN. No se cambia G-9 ni ninguna prueba o ayudante existente.",
+    "El GREEN implementa D-PBT3-02 a D-PBT3-07 exclusivamente en los ocho archivos nuevos de Draft/. No modifica archivos existentes bajo src/ ni conecta el modelo al panel. PushBackFullComposition.ForFullWrite tiene la firma cerrada del contrato y usa el nombre ForFullWrite en la API, llamadas y textos asociados.",
+    "Se cumple PBT3A-C13: no se agregan declaraciones publicas o internas fuera de la lista cerrada de D-PBT3-02 a D-PBT3-07 y sus constructores; las declaraciones privadas quedan limitadas por INV-PBT3A-13. Si se necesita otra declaracion, el Worker se detiene antes de anadirla.",
+    "Cada archivo nuevo usa un solo namespace de bloque RackCad.Application.Systems.PushBack.Draft. Se cumplen las prohibiciones de D-PBT3-08: sin directiva nullable, referencias a Autodesk, Plugin, UI, WPF, Transaction, Database, async, await, Task, File o System.IO, RackEmbedComposer ni new RackEmbedDocument.",
+    "Cada lectura invoca PushBackPilotIntentReader.Read una vez y cada materializacion invoca PushBackEditableStateSeat.LoadExisting una vez. Los tipos nuevos solo se nombran en Draft/ y en PP y UR, conforme a INV-PBT3A-05 y 06.",
+    "Se cumplen los oraculos literales de CT-PBT3A-01 a 14 y las lineas prescritas de la seccion 5.2 sin ajustar expectativas. Las recetas usan los ayudantes existentes indicados por la seccion 5.0 sin editarlos; las lecturas ocurren en el momento indicado y cada gesto escribe solo un campo conservado por el ensamblador. CT-01 verifica igualdad de estado y diseno; si estado-igual o diseno-igual es False, se aplica PBT3A-C15.",
+    "Las pruebas de ForFullWrite, KeepOn y Classify verifican D2: ninguna mutacion de PushBackSystem ni RackModuleReconciliationResult adoptados y ninguna referencia mutable compartida fuera de las dos referencias permitidas y lo que alcanzan. Si el trabajo requiere mutar esos objetos o compartir otra referencia mutable, se aplica PBT3A-C17. Las comparaciones y el clasificador son deterministas conforme a INV-PBT3A-09.",
+    "El RED no produce fallos de pruebas existentes. En la CI exacta del RED, tests y ui-tests terminan en failure por los fallos esperados, build-ui termina en success, build-plugin queda omitido por needs y no hay cuelgue. La CI del GREEN tiene los cuatro jobs requeridos en success; los conteos previstos son Core 19107 Passed y UI 2451 resultados, 0 Failed, 21 Skipped y 2430 Passed, o se explica la diferencia con el diff.",
+    "En local se ejecuta Core Full y se cumplen los filtros locales prescritos por INV-PBT3A-10; de UI solo se ejecutan los filtros del contrato, nunca la suite completa. Los filtros ExpectRed se ejecutan sobre RED y GREEN; sobre GREEN se registran tres corridas exitosas de cada filtro. Los filtros muestran conteo seleccionado y conservan TRX y log; las corridas temporales terminan en Assert.Fail(string.Join(\"\\n\", lineas)) y no entran en commits.",
+    "Si se necesita reparar el RED, se aplica solo la regla RR-1 a RR-7 incorporada al contrato: un unico commit de reparacion despues del push RED y antes del GREEN, limitado a pruebas nuevas que anadio el RED, sin tocar src/, pruebas existentes, fixtures ni archivos fuera del alcance; se cambia solo el cuando o como de una lectura o gesto ya prescrito y se repite el criterio RED completo sobre RedRepairSha. Se conservan sin cambio los literales de la tabla RR-3 y los conteos por clase: PushBackDraftWriteGuardTests 23 lineas y 0 valores; PushBackFullDraftClassifierTests 10 lineas y 4 valores; PushBackFullDraftCompositionTests 3 lineas y 3 valores; PushBackFullDraftLoadTests 49 lineas y 0 valores; PushBackFullDraftViewTests 11 lineas y 0 valores; PushBackFullDraftWindowParityTests 3 lineas y 0 valores. Se registra conforme a RR-5 y se aplica PBT3A-C18 ante cualquier incumplimiento.",
+    "La entrega incluye el mapa CT -> metodo, las rutas relativas comprobadas, los resultados y TRX requeridos y el Trailer real de los commits RED, RED repair si existe, y GREEN. La ruta de entrega es artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/2/{WorkRunId}/worker-handoff.json."
+  ],
+  "RequiredTests": [],
+  "ExpectedEvidence": [],
+  "StopConditions": [],
+  "MaxReworkLoops": 3,
+  "AttemptsRemaining": 1,
+  "ChainBaseSha": "485b5651bcec132761347b40ed38b60cfec0db04",
+  "ChainRedSha": null,
+  "ChainRedFiles": [],
+  "CorrectionOf": {
+    "RunId": "R20261120T001738Z-7d92",
+    "FailureClass": "StopCondition",
+    "AnalysisSha256": "7a615033c57403ab52e3b254f81a87fbfad1fc1aae7fd95ad15281b0210e105a"
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F4B-PBT3A-FULL-WRITE-MODEL/2/{WorkRunId}/worker-handoff.json",
+  "IssuedBy": "Controller Codex (planificacion F4B-PBT3A-FULL-WRITE-MODEL, correccion del intento 2, CONTROLLER_PLANNING)"
+}

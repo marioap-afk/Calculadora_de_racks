@@ -1,0 +1,2 @@
+core-red.trx | FullyQualifiedName~RackCad.Tests.Workspace | filas 3314 {'Passed': 2862, 'NotExecuted': 452} | de las copias: 0 {}
+core-red.trx | FullyQualifiedName~RackCad.Tests.Workspace | filas 3924 {'Passed': 3183, 'Failed': 289, 'NotExecuted': 452} | de las copias: 610 {'Passed': 321, 'Failed': 289}

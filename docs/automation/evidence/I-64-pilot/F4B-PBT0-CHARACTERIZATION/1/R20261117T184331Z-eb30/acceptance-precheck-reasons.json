@@ -1,0 +1,14 @@
+{
+  "A1": [],
+  "A2": [],
+  "A3": [],
+  "A4": [
+    "3 entradas prohibidas del contrato sin cubrir; primeras: src/RackCad.Application/Units/, src/RackCad.Application/Views/, src/RackCad.Application/Workspace/"
+  ],
+  "A5": [
+    "autoridades ausentes: src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs las decoraciones de vista (est"
+  ],
+  "A6": [],
+  "A7": [],
+  "A8": []
+}

@@ -1,0 +1,14 @@
+S1-literal-not-at-0          ideal=?     got=PASS  exit=0 false=[] matched=PB-T3 bytesEq=True bind=True record=SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S2-cross-package-literal     ideal=?     got=PASS  exit=0 false=[] matched=PB-T2 bytesEq=True bind=True record=SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S3-json-escape               ideal=PASS  got=PASS  exit=0 false=[] matched=PB-T3 bytesEq=True bind=True record=SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S4-nbsp                      ideal=FAIL  got=FAIL  exit=1 false=['8_ContractFailsOnlyByExactWhitelist'] matched=None bytesEq=True bind=True record=NOT SATISFIED id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S5-homoglyph                 ideal=FAIL  got=FAIL  exit=1 false=['8_ContractFailsOnlyByExactWhitelist'] matched=None bytesEq=True bind=True record=NOT SATISFIED id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S6-accent                    ideal=FAIL  got=FAIL  exit=1 false=['8_ContractFailsOnlyByExactWhitelist'] matched=None bytesEq=True bind=True record=NOT SATISFIED id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S7-contract-taskid-other     ideal=?     got=PASS  exit=0 false=[] matched=PB-T3 bytesEq=True bind=True record=SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S8-deleg-taskid-spoof        ideal=?     got=PASS  exit=0 false=[] matched=PB-T3 bytesEq=True bind=True record=SATISFIED_UNDER_PBT3B_EXACT_WHITELIST_SUBSTITUTE_F4B id=PBT3B-NC2-EXACT-WHITELIST-F4B-01
+S9-validation                ideal=?     got=PASS  exit=0 false=[] matched=PB-T3 bytesEq=True bind=True record=VALIDATION_ONLY_NO_RECORD id=PBTx-NC2-EXACT-WHITELIST-F4B-01
+S10-lowercase-task           ideal=PASS  got=PASS  exit=0 false=[] matched=PB-T3 bytesEq=True bind=True record=SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S11-wrong-task-pbt2a         ideal=FAIL  got=FAIL  exit=1 false=[] matched=PB-T2 bytesEq=True bind=False record=NOT SATISFIED id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S12-task-flag-no-value       ideal=FAIL  got=FAIL (--task es obligatorio: PBT2A, PBT3A, PBT3B, PBT3C, PBT exit=1 false=[] matched=None bytesEq=None bind=None record=None id=PBTx-NC2-EXACT-WHITELIST-F4B-01
+S13-task-twice               ideal=?     got=PASS  exit=0 false=[] matched=PB-T3 bytesEq=True bind=True record=SATISFIED_UNDER_PBT3A_EXACT_WHITELIST_SUBSTITUTE_F4B id=PBT3A-NC2-EXACT-WHITELIST-F4B-01
+S14-pbt2a-literal-on-pbt2a   ideal=PASS  got=PASS  exit=0 false=[] matched=PB-T2 bytesEq=True bind=True record=SATISFIED_UNDER_PBT2A_EXACT_WHITELIST_SUBSTITUTE_F4B id=PBT2A-NC2-EXACT-WHITELIST-F4B-01

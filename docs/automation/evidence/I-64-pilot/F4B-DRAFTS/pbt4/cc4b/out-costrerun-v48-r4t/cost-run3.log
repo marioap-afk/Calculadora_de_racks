@@ -1,0 +1,101 @@
+Serie de pruebas para <copia>\tests\RackCad.Tests\bin\Release\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:12:08.75]     RackCad.Tests.TmpReadCostProbe.Measure_the_pure_cost_of_the_read_on_the_green_of_pbt4b [FAIL]
+  Con error RackCad.Tests.TmpReadCostProbe.Measure_the_pure_cost_of_the_read_on_the_green_of_pbt4b [12 m 1 s]
+  Mensaje de error:
+   copia=<el GREEN de PB-T4b> (GREEN PB-T4b, paquete v4.5)
+entorno framework=.NET 8.0.29 config=Release cpus=8 servergc=False hires=True
+escenario pb-01-base x2 vistas definiciones=2 | origen-encontrado=B2 completo=Admitted | materializaciones Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1
+medida | pb-01-base x2 vistas | base-emulada (piloto+FromPilot) | mediana=3.470 ms | p95=5.806 ms | n=623
+medida | pb-01-base x2 vistas | t4a Begin | mediana=32.581 ms | p95=47.447 ms | n=200
+medida | pb-01-base x2 vistas | t4a relectura origen-encontrado | mediana=76.904 ms | p95=104.471 ms | n=200
+medida | pb-01-base x2 vistas | t4a relectura cae-al-Primary (sin coincidencia) | mediana=41.827 ms | p95=57.581 ms | n=200
+medida | pb-01-base x2 vistas | t4a relectura origen-es-Primary | mediana=41.889 ms | p95=54.385 ms | n=200
+medida | pb-01-base x2 vistas | t4b Begin | mediana=42.471 ms | p95=58.812 ms | n=200
+medida | pb-01-base x2 vistas | t4b relectura origen-encontrado | mediana=41.697 ms | p95=60.194 ms | n=200
+medida | pb-01-base x2 vistas | t4b relectura cae-al-Primary (sin coincidencia) | mediana=49.780 ms | p95=70.982 ms | n=200
+medida | pb-01-base x2 vistas | t4b relectura origen-es-Primary | mediana=53.791 ms | p95=73.844 ms | n=200
+medida | pb-01-base x2 vistas | parte: solo el escaneo (ctor) | mediana=0.000 ms | p95=0.002 ms | n=1000
+medida | pb-01-base x2 vistas | parte: solo BuildStaleBase | mediana=0.535 ms | p95=0.722 ms | n=1000
+medida | pb-01-base x2 vistas | parte: solo el piloto | mediana=3.893 ms | p95=5.781 ms | n=740
+medida | pb-01-base x2 vistas | parte: solo el completo | mediana=50.658 ms | p95=62.724 ms | n=200
+escenario pb-07-combinado x2 vistas definiciones=2 | origen-encontrado=B2 completo=Admitted | materializaciones Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1
+medida | pb-07-combinado x2 vistas | base-emulada (piloto+FromPilot) | mediana=4.749 ms | p95=6.993 ms | n=528
+medida | pb-07-combinado x2 vistas | t4a Begin | mediana=63.447 ms | p95=81.524 ms | n=200
+medida | pb-07-combinado x2 vistas | t4a relectura origen-encontrado | mediana=127.648 ms | p95=177.549 ms | n=200
+medida | pb-07-combinado x2 vistas | t4a relectura cae-al-Primary (sin coincidencia) | mediana=66.286 ms | p95=98.359 ms | n=200
+medida | pb-07-combinado x2 vistas | t4a relectura origen-es-Primary | mediana=62.114 ms | p95=82.410 ms | n=200
+medida | pb-07-combinado x2 vistas | t4b Begin | mediana=56.053 ms | p95=81.439 ms | n=200
+medida | pb-07-combinado x2 vistas | t4b relectura origen-encontrado | mediana=49.913 ms | p95=72.845 ms | n=200
+medida | pb-07-combinado x2 vistas | t4b relectura cae-al-Primary (sin coincidencia) | mediana=50.177 ms | p95=65.891 ms | n=200
+medida | pb-07-combinado x2 vistas | t4b relectura origen-es-Primary | mediana=47.872 ms | p95=64.932 ms | n=200
+medida | pb-07-combinado x2 vistas | parte: solo el escaneo (ctor) | mediana=0.000 ms | p95=0.001 ms | n=1000
+medida | pb-07-combinado x2 vistas | parte: solo BuildStaleBase | mediana=0.438 ms | p95=0.686 ms | n=1000
+medida | pb-07-combinado x2 vistas | parte: solo el piloto | mediana=3.499 ms | p95=5.165 ms | n=418
+medida | pb-07-combinado x2 vistas | parte: solo el completo | mediana=43.502 ms | p95=59.358 ms | n=200
+escenario pb-21-cola x2 vistas definiciones=2 | origen-encontrado=B2 completo=NotAdmitted | materializaciones Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1
+medida | pb-21-cola x2 vistas | base-emulada (piloto+FromPilot) | mediana=4.338 ms | p95=6.690 ms | n=744
+medida | pb-21-cola x2 vistas | t4a Begin | mediana=8.267 ms | p95=12.526 ms | n=376
+medida | pb-21-cola x2 vistas | t4a relectura origen-encontrado | mediana=16.343 ms | p95=35.352 ms | n=200
+medida | pb-21-cola x2 vistas | t4a relectura cae-al-Primary (sin coincidencia) | mediana=12.656 ms | p95=19.982 ms | n=211
+medida | pb-21-cola x2 vistas | t4a relectura origen-es-Primary | mediana=9.695 ms | p95=12.717 ms | n=239
+medida | pb-21-cola x2 vistas | t4b Begin | mediana=9.746 ms | p95=14.891 ms | n=329
+medida | pb-21-cola x2 vistas | t4b relectura origen-encontrado | mediana=14.782 ms | p95=21.203 ms | n=200
+medida | pb-21-cola x2 vistas | t4b relectura cae-al-Primary (sin coincidencia) | mediana=10.561 ms | p95=14.569 ms | n=200
+medida | pb-21-cola x2 vistas | t4b relectura origen-es-Primary | mediana=9.427 ms | p95=12.919 ms | n=306
+medida | pb-21-cola x2 vistas | parte: solo el escaneo (ctor) | mediana=0.000 ms | p95=0.001 ms | n=1000
+medida | pb-21-cola x2 vistas | parte: solo BuildStaleBase | mediana=0.596 ms | p95=0.834 ms | n=1000
+medida | pb-21-cola x2 vistas | parte: solo el piloto | mediana=4.437 ms | p95=6.708 ms | n=747
+medida | pb-21-cola x2 vistas | parte: solo el completo | mediana=4.171 ms | p95=6.487 ms | n=722
+escenario pb-20-ab x2 vistas definiciones=2 | origen-encontrado=B2 completo=Admitted | materializaciones Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1
+medida | pb-20-ab x2 vistas | base-emulada (piloto+FromPilot) | mediana=4.607 ms | p95=7.414 ms | n=693
+medida | pb-20-ab x2 vistas | t4a Begin | mediana=58.042 ms | p95=95.626 ms | n=200
+medida | pb-20-ab x2 vistas | t4a relectura origen-encontrado | mediana=110.545 ms | p95=145.697 ms | n=200
+medida | pb-20-ab x2 vistas | t4a relectura cae-al-Primary (sin coincidencia) | mediana=60.861 ms | p95=97.586 ms | n=200
+medida | pb-20-ab x2 vistas | t4a relectura origen-es-Primary | mediana=59.532 ms | p95=85.598 ms | n=200
+medida | pb-20-ab x2 vistas | t4b Begin | mediana=56.915 ms | p95=72.223 ms | n=200
+medida | pb-20-ab x2 vistas | t4b relectura origen-encontrado | mediana=65.414 ms | p95=84.921 ms | n=200
+medida | pb-20-ab x2 vistas | t4b relectura cae-al-Primary (sin coincidencia) | mediana=55.102 ms | p95=87.194 ms | n=200
+medida | pb-20-ab x2 vistas | t4b relectura origen-es-Primary | mediana=52.158 ms | p95=72.607 ms | n=200
+medida | pb-20-ab x2 vistas | parte: solo el escaneo (ctor) | mediana=0.000 ms | p95=0.001 ms | n=1000
+medida | pb-20-ab x2 vistas | parte: solo BuildStaleBase | mediana=0.631 ms | p95=0.935 ms | n=1000
+medida | pb-20-ab x2 vistas | parte: solo el piloto | mediana=4.259 ms | p95=7.363 ms | n=800
+medida | pb-20-ab x2 vistas | parte: solo el completo | mediana=43.498 ms | p95=55.440 ms | n=200
+escenario pb-07-combinado x4 vistas +200 racks ajenos definiciones=204 | origen-encontrado=B2 completo=Admitted | materializaciones Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1
+medida | pb-07-combinado x4 vistas +200 racks ajenos | base-emulada (piloto+FromPilot) | mediana=4.661 ms | p95=5.795 ms | n=636
+medida | pb-07-combinado x4 vistas +200 racks ajenos | t4a Begin | mediana=47.063 ms | p95=75.474 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | t4a relectura origen-encontrado | mediana=94.020 ms | p95=141.961 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | t4a relectura cae-al-Primary (sin coincidencia) | mediana=43.327 ms | p95=85.461 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | t4a relectura origen-es-Primary | mediana=41.802 ms | p95=64.734 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | t4b Begin | mediana=40.548 ms | p95=59.665 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | t4b relectura origen-encontrado | mediana=49.809 ms | p95=68.902 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | t4b relectura cae-al-Primary (sin coincidencia) | mediana=46.063 ms | p95=62.844 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | t4b relectura origen-es-Primary | mediana=47.600 ms | p95=61.907 ms | n=200
+medida | pb-07-combinado x4 vistas +200 racks ajenos | parte: solo el escaneo (ctor) | mediana=0.014 ms | p95=0.022 ms | n=1000
+medida | pb-07-combinado x4 vistas +200 racks ajenos | parte: solo BuildStaleBase | mediana=1.027 ms | p95=1.544 ms | n=1000
+medida | pb-07-combinado x4 vistas +200 racks ajenos | parte: solo el piloto | mediana=5.271 ms | p95=8.033 ms | n=459
+medida | pb-07-combinado x4 vistas +200 racks ajenos | parte: solo el completo | mediana=38.621 ms | p95=45.177 ms | n=200
+escenario pb-20-ab x4 vistas +200 racks ajenos definiciones=204 | origen-encontrado=B2 completo=Admitted | materializaciones Begin=1 origen-encontrado=1 cae-al-Primary=1 origen-es-Primary=1
+medida | pb-20-ab x4 vistas +200 racks ajenos | base-emulada (piloto+FromPilot) | mediana=7.438 ms | p95=9.076 ms | n=287
+medida | pb-20-ab x4 vistas +200 racks ajenos | t4a Begin | mediana=61.180 ms | p95=82.834 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | t4a relectura origen-encontrado | mediana=122.617 ms | p95=160.417 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | t4a relectura cae-al-Primary (sin coincidencia) | mediana=61.252 ms | p95=80.576 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | t4a relectura origen-es-Primary | mediana=65.408 ms | p95=157.235 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | t4b Begin | mediana=58.226 ms | p95=71.647 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | t4b relectura origen-encontrado | mediana=71.975 ms | p95=109.587 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | t4b relectura cae-al-Primary (sin coincidencia) | mediana=60.560 ms | p95=83.231 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | t4b relectura origen-es-Primary | mediana=60.088 ms | p95=83.251 ms | n=200
+medida | pb-20-ab x4 vistas +200 racks ajenos | parte: solo el escaneo (ctor) | mediana=0.015 ms | p95=0.026 ms | n=1000
+medida | pb-20-ab x4 vistas +200 racks ajenos | parte: solo BuildStaleBase | mediana=1.294 ms | p95=1.960 ms | n=1000
+medida | pb-20-ab x4 vistas +200 racks ajenos | parte: solo el piloto | mediana=7.506 ms | p95=9.481 ms | n=313
+medida | pb-20-ab x4 vistas +200 racks ajenos | parte: solo el completo | mediana=50.972 ms | p95=64.338 ms | n=200
+  Seguimiento de la pila:
+     at RackCad.Tests.TmpReadCostProbe.Measure_the_pure_cost_of_the_read_on_the_green_of_pbt4b() in <copia>\tests\RackCad.Tests\TmpReadCostProbe.cs:line 199
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Archivo de resultados: <copia>\_trx\cost-run3.trx
+
+Con error! - Con error:     1, Superado:     0, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)

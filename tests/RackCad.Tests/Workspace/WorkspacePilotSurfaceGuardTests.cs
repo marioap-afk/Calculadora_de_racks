@@ -1,0 +1,409 @@
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Xunit;
+using Src = RackCad.Tests.WorkspaceHostSource;
+
+namespace RackCad.Tests;
+
+// I-64 F4-T3B1-EDIT-SURFACE (INV-F4T3B1-01, 03, 04, 09, 10, 14; D-T3B1-12): source guards of the edit surface of the pilot in the panel. The Core
+// test project cannot reference the Plugin (it needs AutoCAD) nor load WPF, so those files are read as text, like the rest of the guards of the
+// workspace. These guards are ADDITIVE and live in a new file. By the rule I-1 they are limited to this task, they are written in the negative
+// and by the body of a member, and none of them fixes an exact set of a whole file or forbids what belongs to F4-T3B2 (the discard of a tab or
+// of the document, the notices of veto and loss, the retention by selection), to F4-T3C or to F4-T4. Each one has a self-test that mutates a
+// synthetic source and proves that the guard sees the violation, and that it leaves the legitimate text alone.
+public class WorkspacePilotSurfaceGuardTests
+{
+    private const string UiFolder = "src/RackCad.UI/Workspace/";
+    private const string FieldModelPath = UiFolder + "WorkspacePilotFieldViewModel.cs";
+    private const string BrowserModelPath = UiFolder + "WorkspaceBrowserViewModel.cs";
+    private const string PanelModelPath = UiFolder + "WorkspacePanelViewModel.cs";
+    private const string XamlPath = UiFolder + "WorkspacePanelView.xaml";
+    private const string CodeBehindPath = UiFolder + "WorkspacePanelView.xaml.cs";
+    private const string PaletteHostPath = "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs";
+
+    private static readonly Regex TheThreeReads = new(@"\b(?:TryBeginEdit|TryReload|TryCheckNow)\b");
+    private static readonly Regex TheTwoGestureReads = new(@"\b(?:TryBeginEdit|TryReload)\b");
+
+    // ------------------------------------------------------------------ helpers: the body of a member, by its name
+
+    // The text between the braces that open at or after 'from' (or up to the semicolon of an expression body).
+    private static string BodyFrom(string code, int from)
+    {
+        var open = code.IndexOf('{', from);
+        var arrow = code.IndexOf("=>", from, StringComparison.Ordinal);
+        if (arrow >= 0 && (open < 0 || arrow < open))
+        {
+            var end = code.IndexOf(';', arrow);
+            return end < 0 ? code.Substring(arrow) : code.Substring(arrow, end - arrow + 1);
+        }
+
+        if (open < 0) return string.Empty;
+        var depth = 0;
+        for (var i = open; i < code.Length; i++)
+        {
+            if (code[i] == '{') depth++;
+            else if (code[i] == '}' && --depth == 0) return code.Substring(open, i - open + 1);
+        }
+
+        return code.Substring(open);
+    }
+
+    // The gesture methods of this task (the browser and the field): the three reads are not used in their bodies either. Comprobar ahora
+    // (TryCheckNow) belongs to F4-T4, so a member of that later task is not in this list and is not bound by it.
+    private static IEnumerable<(string Name, string Body)> T3B1GestureMembers(string code)
+    {
+        var names = @"BeginEdit|CommitPending|Rematerialize|BeginFieldEdit|BeginFieldEditFromBox|BeginFieldEditFromTab|ReloadField";
+        foreach (Match m in Regex.Matches(code, @"\bvoid\s+(?<name>" + names + @")\s*\("))
+            yield return (m.Groups["name"].Value, BodyFrom(code, m.Index + m.Length));
+    }
+
+    // Every body of a method with one of the names ('void' or 'bool' members), of a constructor of one of the classes and of every property setter.
+    private static IEnumerable<(string Name, string Body)> NonGestureMembers(string code)
+    {
+        var names = @"Present|Refresh|Show|Clear|RebuildTabs|SyncSurface|StartSurface|ClearSurface|Materialize";
+        foreach (Match m in Regex.Matches(code, @"\b(?:void|bool)\s+(?<name>" + names + @")\s*\("))
+            yield return (m.Groups["name"].Value, BodyFrom(code, m.Index + m.Length));
+
+        foreach (Match m in Regex.Matches(code, @"\bpublic\s+(?<name>WorkspaceBrowserViewModel|WorkspacePilotFieldViewModel|WorkspacePanelViewModel)\s*\("))
+            yield return (m.Groups["name"].Value + " (constructor)", BodyFrom(code, m.Index + m.Length));
+
+        foreach (Match m in Regex.Matches(code, @"\bset\s*(?=\{|=>)"))
+            yield return ("a setter", BodyFrom(code, m.Index + m.Length));
+    }
+
+    // ------------------------------------------------------------------ INV-F4T3B1-09: only a gesture reads
+
+    // The reads of the port (TryBeginEdit and TryReload) are named only by the gesture methods of the field view-model; the presentation, the
+    // rebuilds, the constructors and the setters never name any of the three, and the bodies of the gestures of this task do not use the check
+    // of the draft (TryCheckNow is of F4-T4: no other member and no other file of the UI is bound by this guard on it).
+    private static IEnumerable<string> ReadViolations(IEnumerable<(string Path, string Code)> files)
+    {
+        foreach (var (path, code) in files)
+        {
+            foreach (var (name, body) in NonGestureMembers(code))
+                if (TheThreeReads.IsMatch(body))
+                    yield return path + ": " + name + " names " + TheThreeReads.Match(body).Value;
+
+            foreach (var (name, body) in T3B1GestureMembers(code))
+                if (Regex.IsMatch(body, @"\bTryCheckNow\b"))
+                    yield return path + ": " + name + " names TryCheckNow";
+
+            if (!path.EndsWith("WorkspacePilotFieldViewModel.cs", StringComparison.Ordinal) && TheTwoGestureReads.IsMatch(code))
+                yield return path + " names a read of the port outside the field view-model";
+        }
+    }
+
+    [Fact]
+    public void OnlyTheGestureMethodsOfTheFieldNameTheThreeReadsAndThePresentationNeverDoes()
+    {
+        Assert.Empty(ReadViolations(Src.Files(UiFolder)));
+        Assert.Empty(ReadViolations(Src.Files("src/RackCad.Plugin/Workspace/").Where(f => f.Path == PaletteHostPath)));
+    }
+
+    [Theory]
+    [InlineData("public void Present(int a) { _port.TryReload(r); }")]
+    [InlineData("private void Refresh() => _port.TryBeginEdit(r);")]
+    [InlineData("public void Show(int a) { x = 1; _port.TryBeginEdit(r); }")]
+    [InlineData("private void RebuildTabs() { _port.TryReload(r); }")]
+    [InlineData("private void SyncSurface(bool a) { _port.TryBeginEdit(r); }")]
+    [InlineData("private void StartSurface(string a) { _port.TryBeginEdit(r); }")]
+    [InlineData("private void ClearSurface() { _port.TryReload(r); }")]
+    [InlineData("private void Materialize(bool a) { _port.TryReload(r); }")]
+    [InlineData("public WorkspacePilotFieldViewModel(object p) { p.TryBeginEdit(r); }")]
+    [InlineData("public string Text { get => x; set { _port.TryReload(r); } }")]
+    public void TheGuardOfTheReadsSeesAReadInAMemberThatIsNotAGesture(string member)
+    {
+        var violations = ReadViolations(new[] { (FieldModelPath, "class C { " + member + " }") }).ToList();
+
+        Assert.NotEmpty(violations);
+    }
+
+    [Fact]
+    public void TheGuardOfTheReadsLeavesAGestureAloneAndSeesAReadOutsideTheFieldAndTheCheckInTheBodiesOfThisTask()
+    {
+        Assert.Empty(ReadViolations(new[] { (FieldModelPath, "class C { public void BeginEdit() { var o = _port.TryBeginEdit(r); var p = _port.TryReload(r); } public void Show(int a) { x = 1; } }") }));
+        Assert.NotEmpty(ReadViolations(new[] { (BrowserModelPath, "class C { public void BeginFieldEdit() { _port.TryBeginEdit(r); } }") }));
+        Assert.NotEmpty(ReadViolations(new[] { (FieldModelPath, "class C { public void BeginEdit() { _port.TryCheckNow(r); } }") }));
+        Assert.NotEmpty(ReadViolations(new[] { (BrowserModelPath, "class C { public void BeginFieldEditFromTab(string r) { _port.TryCheckNow(r); } }") }));
+        Assert.NotEmpty(ReadViolations(new[] { (FieldModelPath, "class C { public void Show(int a) { _port.TryCheckNow(r); } }") }));
+    }
+
+    [Fact]
+    public void TheGuardOfTheReadsDoesNotBindTheCheckOfTheDraftThatBelongsToTheNextTask()
+    {
+        // Comprobar ahora (F4-T4) is a new gesture of the field or of the browser and a use of TryCheckNow elsewhere in the UI is not forbidden here.
+        Assert.Empty(ReadViolations(new[] { (FieldModelPath, "class C { public void CheckNow() { var o = _port.TryCheckNow(r); } }") }));
+        Assert.Empty(ReadViolations(new[] { (BrowserModelPath, "class C { public void CheckField() { _port.TryCheckNow(r); } }") }));
+        Assert.Empty(ReadViolations(new[] { ("src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs", "class C { public void Check() { _port.TryCheckNow(r); } }") }));
+    }
+
+    // ------------------------------------------------------------------ I-64 F4-T4C2 (D-T4C-03, F-1; row 18 of D-T4C-20): the presentation takes the progress, and reads nothing
+
+    // The presentation of the field may call TakeUpdateProgress (a repaint of the live surface takes what the port knows about the update of its rack)
+    // and NO read: none of the six reads of the drawing and not the request of the update. TakeUpdateProgress is named only by the field view-model, and
+    // there exactly three times: once in Show and twice in the gesture of the update (before the request and after it).
+    private static readonly Regex TheSixReadsAndTheRequest =
+        new(@"\b(?:TryBeginEdit|TryReload|TryCheckNow|TryConfirmBase|TryKeepMine|TryDiscardAndReload|RequestUpdate)\b");
+
+    private static IEnumerable<string> PresentationViolations(IEnumerable<(string Path, string Code)> files)
+    {
+        foreach (var (path, code) in files)
+        {
+            // The presentation members of the workspace folder; the editors of the systems have members of their own with those names and are not bound here.
+            if (path.StartsWith(UiFolder, StringComparison.Ordinal))
+                foreach (var (name, body) in NonGestureMembers(code))
+                    if (TheSixReadsAndTheRequest.IsMatch(body))
+                        yield return path + ": " + name + " names " + TheSixReadsAndTheRequest.Match(body).Value;
+
+            var takes = Src.Count(code, @"\bTakeUpdateProgress\b");
+            if (path.EndsWith("WorkspacePilotFieldViewModel.cs", StringComparison.Ordinal))
+            {
+                var show = Regex.Match(code, @"\bpublic\s+void\s+Show\s*\(");
+                var inShow = show.Success ? Src.Count(BodyFrom(code, show.Index + show.Length), @"\bTakeUpdateProgress\b") : 0;
+                var update = Regex.Match(code, @"\bpublic\s+void\s+Update\s*\(\s*\)");
+                var inUpdate = update.Success ? Src.Count(BodyFrom(code, update.Index + update.Length), @"\bTakeUpdateProgress\b") : 0;
+                if (inShow != 1) yield return path + ": Show does not take the progress exactly once";
+                if (inUpdate != 2) yield return path + ": Update does not take the progress exactly twice";
+                if (takes != inShow + inUpdate) yield return path + " names TakeUpdateProgress outside Show and Update";
+            }
+            else if (takes > 0)
+            {
+                yield return path + " names TakeUpdateProgress outside the field view-model";
+            }
+        }
+    }
+
+    [Fact]
+    public void ThePresentationOfTheFieldTakesTheProgressOfTheUpdateInShowAndInTheGestureOnlyAndReadsNothing()
+    {
+        Assert.Empty(PresentationViolations(Src.Files("src/RackCad.UI/")));
+    }
+
+    [Fact]
+    public void TheGuardOfThePresentationAllowsTheTakeAndSeesAReadAnAnotherTakeAndATakeOutsideTheField()
+    {
+        const string good = "class C { public void Show(int a) { var p = _port.TakeUpdateProgress(o, r); } public void Update() { _port.TakeUpdateProgress(o, r); x(); _port.TakeUpdateProgress(o, r); } }";
+
+        Assert.Empty(PresentationViolations(new[] { (FieldModelPath, good) }));
+        foreach (var read in new[] { "_port.TryReload(r);", "_port.TryBeginEdit(r);", "_port.TryCheckNow(r);", "_port.TryConfirmBase(r);", "_port.TryKeepMine(r);", "_port.TryDiscardAndReload(r);", "_port.RequestUpdate(r);" })
+            Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good.Replace("var p =", read + " var p =", StringComparison.Ordinal)) }));
+
+        // A second take in Show, a third in Update, one in another member of the field and one in another file.
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good.Replace("var p =", "var q = _port.TakeUpdateProgress(o, r); var p =", StringComparison.Ordinal)) }));
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good.Replace("x();", "_port.TakeUpdateProgress(o, r);", StringComparison.Ordinal)) }));
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good + " class D { void Other() { _port.TakeUpdateProgress(o, r); } }") }));
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, good), (BrowserModelPath, "class C { void M() { _pilotEdit.TakeUpdateProgress(o, r); } }") }));
+        Assert.NotEmpty(PresentationViolations(new[] { (FieldModelPath, "class C { public void Show(int a) { } public void Update() { } }") }));
+    }
+
+    // ------------------------------------------------------------------ INV-F4T3B1-04: SetPendingText only in the setter of the text
+
+    // The text typed by the user reaches the draft only through the public setter of Text of the field view-model: nobody else in the UI
+    // names SetPendingText, and inside the field view-model it is named only within that setter.
+    private static IEnumerable<string> SetPendingViolations(IEnumerable<(string Path, string Code)> files)
+    {
+        foreach (var (path, code) in files)
+        {
+            var total = Src.Count(code, @"\bSetPendingText\b");
+            if (total == 0) continue;
+            if (!path.EndsWith("WorkspacePilotFieldViewModel.cs", StringComparison.Ordinal))
+            {
+                yield return path + " names SetPendingText";
+                continue;
+            }
+
+            var property = Regex.Match(code, @"\bpublic\s+string\s+Text\b");
+            var inside = 0;
+            if (property.Success)
+            {
+                var propertyBody = BodyFrom(code, property.Index + property.Length);
+                var setter = Regex.Match(propertyBody, @"\bset\s*(?=\{)");
+                if (setter.Success) inside = Src.Count(BodyFrom(propertyBody, setter.Index + setter.Length), @"\bSetPendingText\b");
+            }
+
+            if (inside != total) yield return path + " names SetPendingText outside the setter of Text";
+        }
+    }
+
+    [Fact]
+    public void SetPendingTextIsNamedOnlyInTheSetterOfTheTextOfTheFieldViewModel()
+    {
+        Assert.Empty(SetPendingViolations(Src.Files(UiFolder)));
+    }
+
+    [Fact]
+    public void TheGuardOfSetPendingTextSeesItOutsideTheSetterAndLeavesTheSetterAlone()
+    {
+        const string good = "class C { public string Text { get => _t; set { _port.SetPendingText(o, r, value); } } public void Show() { } }";
+        const string elsewhere = "class C { public string Text { get => _t; set { _port.SetPendingText(o, r, value); } } public void Show() { _port.SetPendingText(o, r, \"x\"); } }";
+        const string getter = "class C { public string Text { get { _port.SetPendingText(o, r, \"x\"); return _t; } set { } } }";
+
+        Assert.Empty(SetPendingViolations(new[] { (FieldModelPath, good) }));
+        Assert.NotEmpty(SetPendingViolations(new[] { (FieldModelPath, elsewhere) }));
+        Assert.NotEmpty(SetPendingViolations(new[] { (FieldModelPath, getter) }));
+        Assert.NotEmpty(SetPendingViolations(new[] { (BrowserModelPath, good) }));
+    }
+
+    // ------------------------------------------------------------------ INV-F4T3B1-04: the box is bound, never captured
+
+    // The XAML and the code-behind do not capture the text of the box: no TextChanged (a handler with RoutedEventArgs would be valid for a
+    // TextChangedEventHandler by contravariance), no SourceUpdated, no TargetUpdated, and the code-behind assigns no Text.
+    private static IEnumerable<string> BoxCaptureViolations(string xaml, string codeBehind)
+    {
+        if (Regex.IsMatch(xaml, @"\bTextChanged\s*=")) yield return "the XAML captures TextChanged";
+        if (Regex.IsMatch(xaml, @"\b(?:SourceUpdated|TargetUpdated)\b")) yield return "the XAML captures SourceUpdated or TargetUpdated";
+        if (Regex.IsMatch(codeBehind, @"\b(?:TextChanged|SourceUpdated|TargetUpdated)\b")) yield return "the code-behind captures the text";
+        if (Regex.IsMatch(codeBehind, @"\.Text\s*=(?!=)")) yield return "the code-behind assigns Text";
+    }
+
+    [Fact]
+    public void NeitherTheXamlNorTheCodeBehindCaptureTheTextOfTheBoxAndTheCodeBehindAssignsNoText()
+    {
+        var xaml = Regex.Replace(Src.Text(XamlPath), @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
+
+        Assert.Empty(BoxCaptureViolations(xaml, Src.Code(CodeBehindPath)));
+    }
+
+    [Theory]
+    [InlineData("<TextBox TextChanged=\"OnChanged\" />", "")]
+    [InlineData("<TextBox TextChanged = \"OnChanged\" />", "")]
+    [InlineData("<TextBox SourceUpdated=\"OnX\" />", "")]
+    [InlineData("<TextBox TargetUpdated=\"OnX\" />", "")]
+    [InlineData("<TextBox />", "box.TextChanged += OnChanged;")]
+    [InlineData("<TextBox />", "box.Text = \"x\";")]
+    [InlineData("<TextBox />", "FieldBox.Text=value;")]
+    public void TheGuardOfTheBoxSeesTheCaptureOfTheText(string xaml, string codeBehind)
+    {
+        Assert.NotEmpty(BoxCaptureViolations(xaml, codeBehind));
+    }
+
+    [Fact]
+    public void TheGuardOfTheBoxLeavesTheBindingAndTheComparisonsAlone()
+    {
+        Assert.Empty(BoxCaptureViolations(
+            "<TextBox Text=\"{Binding Browser.Field.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}\" />",
+            "if (box.Text == \"x\") { } var t = box.Text;"));
+    }
+
+    [Fact]
+    public void TheBoxIsBoundTwoWayToTheTextOfTheFieldAndItsGesturesAreDeclaredInTheXaml()
+    {
+        var xaml = Regex.Replace(Src.Text(XamlPath), @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
+        // The box of the field is found by its name; the guard says nothing about how many other boxes the panel may have.
+        var box = Regex.Matches(xaml, @"<TextBox\b[^>]*>", RegexOptions.Singleline).Select(m => m.Value)
+            .Single(t => t.Contains("x:Name=\"BrowserFieldBox\"", StringComparison.Ordinal));
+
+        Assert.Contains("x:Name=\"BrowserFieldBox\"", box);
+        Assert.Matches(@"Text=""\{Binding\s+Browser\.Field\.Text\s*,\s*Mode=TwoWay\s*,\s*UpdateSourceTrigger=PropertyChanged\}""", box);
+        foreach (var handler in new[] { "PreviewMouseLeftButtonDown", "PreviewKeyDown", "LostFocus" })
+            Assert.Matches(@"\b" + handler + @"=""OnBrowserFieldBox\w+""", box);
+    }
+
+    // ------------------------------------------------------------------ INV-F4T3B1-01: the palette only passes the port of the controller
+
+    private static IEnumerable<string> PaletteViolations(string host)
+    {
+        if (Src.Count(host, @"_controller\.PilotEdit\b") != 1) yield return "the palette does not pass _controller.PilotEdit exactly once";
+        if (Regex.IsMatch(host, @"IWorkspacePilotEditPort|PilotField|PilotBoundary|EditIntent|WorkspaceBrowser"))
+            yield return "the palette names a type of the port";
+    }
+
+    [Fact]
+    public void ThePaletteHostPassesTheEditPortOfTheControllerExactlyOnceAndNamesNoTypeOfIt()
+    {
+        Assert.Empty(PaletteViolations(Src.Code(PaletteHostPath)));
+    }
+
+    [Fact]
+    public void TheGuardOfThePaletteSeesAMissingPortASecondUseAndATypeNameAndLeavesTheOtherMembersOfTheControllerAlone()
+    {
+        const string good = "var vm = new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation, _controller.BrowserSummary, _controller.PilotEdit); _controller.StateChanged += OnX;";
+
+        Assert.Empty(PaletteViolations(good));
+        Assert.NotEmpty(PaletteViolations(good.Replace(", _controller.PilotEdit", string.Empty)));
+        // The guard is written in the negative: it does not enumerate the members of the controller that the palette may use.
+        Assert.Empty(PaletteViolations(good + " var x = _controller.TryGetSession; _controller.OtherMember();"));
+        Assert.NotEmpty(PaletteViolations(good + " IWorkspacePilotEditPort p;"));
+        Assert.NotEmpty(PaletteViolations(good + " var y = _controller.PilotEdit;"));
+    }
+
+    // ------------------------------------------------------------------ INV-F4T3B1-10 and 14: no write, no focus, no subdialog, no scheduling
+
+    // What the UI of the workspace never names in this task: the drawing, the commands, the focus and the dialogs. It does not forbid the
+    // operations of the port that belong to the later tasks (the discard, the notices and the risks).
+    private static IEnumerable<string> LimitViolations(IEnumerable<(string Path, string Code)> files)
+    {
+        var drawing = new Regex(@"\bTransaction|\bDatabase\b|\.Commit\s*\(|SendStringToExecute|CommandMethod|ExecuteInCommandContextAsync|Autodesk");
+        var focus = new Regex(@"\bKeyboard|FocusManager|SetFocus|\.Focus\s*\(|InputManager");
+        var dialogs = new Regex(@"EnterPanelModal|ShowModalWindow|ShowDialog|MessageBox");
+        var scheduling = new Regex(@"\bDispatcher\b|\w*Timer\b|\bTask\b|\basync\b|\bawait\b|\bThread\b|\.Result\b|\.Wait\s*\(");
+        foreach (var (path, code) in files)
+        {
+            foreach (var (kind, pattern) in new[] { ("writes or reaches the drawing", drawing), ("uses the focus", focus), ("opens a dialog", dialogs) })
+                if (pattern.IsMatch(code)) yield return path + " " + kind + ": " + pattern.Match(code).Value;
+            if (path != "src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs" && scheduling.IsMatch(code))
+                yield return path + " schedules: " + scheduling.Match(code).Value;
+        }
+    }
+
+    [Fact]
+    public void TheUiOfTheWorkspaceNamesNoApiOfWritingTheDrawingNorOfTheFocusNorADialogAndSchedulesNothing()
+    {
+        Assert.Empty(LimitViolations(Src.Files(UiFolder)));
+    }
+
+    [Theory]
+    [InlineData("var t = db.TransactionManager;")]
+    [InlineData("tr.Commit();")]
+    [InlineData("doc.SendStringToExecute(\"X\");")]
+    [InlineData("Keyboard.Focus(box);")]
+    [InlineData("box.Focus();")]
+    [InlineData("FocusManager.SetFocusedElement(a, b);")]
+    [InlineData("using (_c.EnterPanelModal()) { }")]
+    [InlineData("MessageBox.Show(\"x\");")]
+    [InlineData("Dispatcher.BeginInvoke(a);")]
+    [InlineData("var t = new DispatcherTimer();")]
+    public void TheGuardOfTheLimitsSeesEachOfTheForbiddenNames(string statement)
+    {
+        Assert.NotEmpty(LimitViolations(new[] { (FieldModelPath, "class C { void M() { " + statement + " } }") }));
+    }
+
+    [Fact]
+    public void TheGuardOfTheLimitsLeavesTheOperationsOfTheLaterTasksAndTheEventArgsAlone()
+    {
+        const string legitimate = "void M(KeyEventArgs e, TextCompositionEventArgs t) { _port.DiscardRack(o, r); _port.GetRacksAtRisk(o); _port.TakeCloseNotices(); e.Handled = true; } void LostFocusX() { }";
+
+        Assert.Empty(LimitViolations(new[] { (FieldModelPath, "class C { " + legitimate + " }") }));
+    }
+
+    // The field view-model has no subscription, no event, no delegate type of its own and no static state: it tells the browser by the
+    // method that its constructor receives.
+    [Fact]
+    public void TheFieldViewModelIsSynchronousHasNoSubscriptionNoEventAndNoStaticState()
+    {
+        var code = Src.Code(FieldModelPath);
+
+        Assert.DoesNotMatch(new Regex(@"\+=|-=|\bevent\b|\bdelegate\b|\bstatic\s+(?!readonly\s+string\b)\w+\s+\w+\s*;"), code);
+        Assert.DoesNotMatch(new Regex(@"Autodesk|RackCad\.Plugin|WorkspaceHostCore|WorkspaceController|IWorkspaceHostPort"), code);
+        Assert.Matches(@"public\s+sealed\s+class\s+WorkspacePilotFieldViewModel\s*:\s*ObservableObject\b", code);
+        Assert.Equal(1, Src.Count(code, @"\bpublic\s+WorkspacePilotFieldViewModel\s*\("));
+        Assert.Matches(@"WorkspacePilotFieldViewModel\s*\(\s*IWorkspacePilotEditPort\s+\w+\s*,\s*Action\s+\w+", code);
+    }
+
+    [Fact]
+    public void TheBrowserOwnsTheFieldAndTheOnlyPublicConstructorTakesThePilotPortAsItsThirdOptionalParameter()
+    {
+        var code = Src.Code(BrowserModelPath);
+
+        Assert.Equal(1, Src.Count(code, @"\bpublic\s+WorkspaceBrowserViewModel\s*\("));
+        Assert.Matches(
+            @"public\s+WorkspaceBrowserViewModel\s*\(\s*IWorkspaceBrowserSummaryPort\s+\w+\s*,\s*Action\s+\w+\s*=\s*null\s*,\s*IWorkspacePilotEditPort\s+\w+\s*=\s*null\s*\)",
+            code);
+        Assert.Matches(@"public\s+WorkspacePilotFieldViewModel\s+Field\b", code);
+        Assert.Equal(1, Src.Count(code, @"\bnew\s+WorkspacePilotFieldViewModel\s*\("));
+        Assert.DoesNotMatch(new Regex(@"\bnew\s+WorkspacePilotFieldViewModel\b"), Src.Code(PanelModelPath));
+    }
+}

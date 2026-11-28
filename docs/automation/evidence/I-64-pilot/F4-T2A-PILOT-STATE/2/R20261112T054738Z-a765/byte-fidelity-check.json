@@ -1,0 +1,142 @@
+{
+  "Schema": "rackcad-i64-byte-fidelity/v1",
+  "TaskId": "F4-T2A-PILOT-STATE",
+  "PlanningRunId": "R20261112T054738Z-a765",
+  "Authority": "F4-E19 (owner-f4t2a-a5-recovery.md)",
+  "OutputSha256": "2dca8e34d8034235b67b57b340de0391555123356addc5d1da918a5d40a4f811",
+  "ContractSha256": "f40d3372950311c426032e38918e11ff746521276c16852884dcaf0d92818891",
+  "Fields": [
+    {
+      "Field": "Invariants",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "5a0b6cf3c89f2544bb045edc1c587abc02eedb053056e0ccfac6299a3851f6ea",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 16,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "RequiredTests",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "e9a642b754e05569f5141227e7196e1eb30f2c4258f9cff4c8b5b4cbb2a077c2",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 4,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "StopConditions",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "b566224c4d428a9f888107f86c557801d280e7bc8314f5a90b11fa33580c43c5",
+      "OutputSha256": "7a881633de619d8b222e606a7dc0a86947e17a4a0cae6491da136fbe20341330",
+      "Differences": [
+        {
+          "Index": 0,
+          "Offset": 3,
+          "Source": "S-02",
+          "Output": "S-04"
+        },
+        {
+          "Index": 1,
+          "Offset": 0,
+          "Source": "architecture outside Freeze",
+          "Output": "contradictory evidence"
+        },
+        {
+          "CountSource": 48,
+          "CountOutput": 2
+        }
+      ]
+    },
+    {
+      "Field": "Authorities",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "7886172a86bfd8446cc7ca5454e8b39cfdf5f07463933c7208a47cffe62b95f7",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 111,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "ExpectedEvidence",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "ae3573c2cc28d01144edc39f6c16a6b0423d9a728f52a5296cafd8dd77113608",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 9,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "Objective",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "247e64d52f274c3882de75c3d00bd36f57b0753672aad88170e735c5fc245be3",
+      "OutputSha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "Differences": [
+        {
+          "Index": 0,
+          "Offset": 0,
+          "Source": "Implementar en Application pura el estad",
+          "Output": ""
+        }
+      ]
+    },
+    {
+      "Field": "AllowedWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "a56929d476cbb309b17cfa02f087d6c2c2a42f0c037982ad5dcdc0f294c7a5fa",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 15,
+          "CountOutput": 0
+        }
+      ]
+    },
+    {
+      "Field": "ForbiddenWriteScope",
+      "Source": "contrato",
+      "DecodedEqual": false,
+      "Utf8BytesEqual": false,
+      "SourceSha256": "5920e3501d5234781f1827163b80e7702d26c22a040d3925805085dee6b08d08",
+      "OutputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Differences": [
+        {
+          "CountSource": 57,
+          "CountOutput": 0
+        }
+      ]
+    }
+  ],
+  "Result": "REJECTED",
+  "AllowedWriteScopeElementwiseInOrder": false,
+  "ForbiddenWriteScopeCount": {
+    "Contract": 57,
+    "Output": 0
+  }
+}

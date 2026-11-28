@@ -1,0 +1,13 @@
+vuelta 0: bajas 223, errores 4 (distintos 1), miembros nuevos 1, sin resolver 0
+vuelta 1: bajas 224, errores 10 (distintos 5), miembros nuevos 4, sin resolver 0
+vuelta 2: bajas 228, errores 70 (distintos 18), miembros nuevos 3, sin resolver 0
+vuelta 3: bajas 231, errores 0 (distintos 0), miembros nuevos 0, sin resolver 0
+SUS-01 (PB-TC)	tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs	TheWindowAndThePilotDifferOnlyInTheKnownClasses
+compilacion v0 CS0535: 'PilotEditThrowingComparer' no implementa el miembro de interfaz 'IEqualityComparer<PushBackPilotDraftState>.GetHashCode(PushBackPilotDraftState)'	tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs	tipo:PilotEditThrowingComparer
+compilacion v1 CS0246: El nombre del tipo o del espacio de nombres 'PilotEditThrowingComparer' no se encontró (¿falta una directiva using o una referencia de ensamblado?)	tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs	TheOuterCatchOfGetFieldAnswersTheViewInErrorWhenTheCopierOfTheStateAnswersNull
+compilacion v1 CS0246: El nombre del tipo o del espacio de nombres 'PilotEditThrowingComparer' no se encontró (¿falta una directiva using o una referencia de ensamblado?)	tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs	TheReasonOfAFieldThatCannotBeReadIsInSpanish
+compilacion v1 CS0117: 'PrepareKit' no contiene una definición para 'DraftOf'	tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs	ReadyPlan
+compilacion v1 CS0117: 'PrepareKit' no contiene una definición para 'DraftOf'	tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs	PilotUpdateSetup
+compilacion v2 CS0103: El nombre 'ReadyPlan' no existe en el contexto actual	tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs	TheReadyPlanHoldsTheRackTheOriginTheExpectedBaseTheScaleAndTheMembersByKeyInOrdinalOrder
+compilacion v2 CS0103: El nombre 'ReadyPlan' no existe en el contexto actual	tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs	ThePlanIsImmutableAndItsEqualityIsExplicitOrdinalElementByElementAndInOrder
+compilacion v2 CS0103: El nombre 'ReadyPlan' no existe en el contexto actual	tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs	ThePlanIsBuiltOnlyFromTheRereadSoAChangeOfTheCurrentScaleOnlyChangesTheScaleAndTheTextsThatCarryIt

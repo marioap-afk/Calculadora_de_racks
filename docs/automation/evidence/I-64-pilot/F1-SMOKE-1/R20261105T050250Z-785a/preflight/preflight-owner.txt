@@ -1,0 +1,34 @@
+preflight-owner R20261105T050250Z-785a inicio UTC 2026-11-05T17:23:33.1722062Z
+1 acad.exe count = 0; RAMElements.exe count = 0
+2 HEAD=b5ea02f5d193d80e4b921b82bbeb7f87a0c8be0d (esperado b5ea02f5d193d80e4b921b82bbeb7f87a0c8be0d) porcelain=0 CandidateAncestor=True deltaSrc=0 deltaTests=0 deltaProjectFiles=0 deltaOutsideDocsAutomation=0
+2 CandidateDll sha256=3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0 ProductVersion=1.0.0+cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6
+3 Capture-ProfileState.ps1 750a9097d4d84a75ac1787a7bf40032c44556c64399182aac0b95694b48226e1
+3 Compare-ProfileState.ps1 de642515371b19a59230940ef9659f3d84413f66c8831be201abf55fa73cbd65
+3 Test-ProfileDiff.ps1 d0bb54be83291e060aeaf4d2ec792743d70fc0f621202a1e24ee2fb41de94d8b
+4 selftest: SELFTEST PASS: 26/26 (codigo 0) resultado SHA-256 2981350C0738159ABC8EDEEB8FB2662130EAA98F14D7043AC4D04704766A5B3D
+5 D I64-SMOKE1-FIXTURES-D.dxf 03e5606c1e311f700640125b892fe09bf408dd5642115ebcb433b57474ccf165
+5 A Dibujo A.dwg 90750e8b969a027fe8e61bc75542671b7bdd4c17eaaabdd6a746f71437434852
+5 B Dibujo B.dwg fb9b97f96a3a9e6bd2bb4baa06b33a20fe24b98d34babcc677eaea4c81c9682b
+5 C Dibujo C.dwg ede7cdb350428f9f095d4d9c9ef1ddf4a65564f9752805db48cd5abaea00a53c
+5 biblioteca Base_de_datos_AutoCAD_V.0.dwg B4CA2248DB9C3D72487AC8B5B1E5510CDD8ABA231AB340541D91BEBCA2D560E8
+6 acad.exe count = 0; RAMElements.exe count = 0
+6 reg query HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles /ve
+
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles
+    (Predeterminado)    REG_SZ    <<Unnamed Profile>>
+6 reg query HKCU\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Variables /v SECURELOAD
+
+HKEY_CURRENT_USER\Software\Autodesk\AutoCAD\R25.0\ACAD-8101:409\Profiles\<<Unnamed Profile>>\Variables
+    SECURELOAD    REG_SZ    1
+6 SECURELOAD_BASELINE_CURRENT = 1
+6b acad.exe count = 0; RAMElements.exe count = 0
+6b HOST-EXTRAS BEFORE codigo 0
+  HOST-EXTRAS BEFORE OK sha256=F9499F0FAB9927D5F236086F7C9251B7B2453A7959F9566B16EACAD5E2A50C79
+    AssemblyMap exists=True lastWrite=2026-11-02T19:54:39.812Z RackCad.Plugin=False
+    CoreUser 15FCE767F24F74D1: exists=True keys=555 entries=29
+    CoreUser BlockPreviewUser: exists=True keys=555 entries=28
+    ProductKey: keys=550 entries=23
+7 acad.exe count = 0; RAMElements.exe count = 0
+7 BASELINE codigo 0
+  BASELINE: CanonicalSha256=980ce80f208e87ebc2da5fce50249ce88391d5fd2823d97c17fe105d202123dd lines=2241 keys=399 values=1772 files=21 plugins=3 env=0 unreadable=0
+OK: preflight, HOST-EXTRAS BEFORE y BASELINE correctos. AutoCAD solo se abre tras verificar la BASELINE y con la guarda PG-1a (acad = 0).

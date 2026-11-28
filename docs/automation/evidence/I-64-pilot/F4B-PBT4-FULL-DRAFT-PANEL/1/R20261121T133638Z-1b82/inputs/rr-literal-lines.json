@@ -1,0 +1,328 @@
+{
+  "Regla": "RR-3 (a), section 6.0 del paquete v4.9 (la tabla de RR-3): para cada clase de PorClase y cada literal de ListaDeLaClase, una linea (Tipo linea) aparece en git show RedRepairSha:<clase> (leido como UTF-8) como subcadena exacta EnRedSha veces, y un valor (Tipo valor) aparece EnRedSha veces como token, sin un digito, una letra ni un punto pegados; si no, PBT4B-C07. Los literales de NoEnRedSha, los archivos SinFila y los demas cambios van a Findings.",
+  "Paquete": "8f783df58fb0e5688d58299951fcbdcde727f33e:docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md",
+  "RedSha": "c1e4f4585217abc8c85d90b499a07bb93c84be2c",
+  "RedRepairSha": "9b2d18937d3aa03b4cbeaf0546cd0e6b44a4f6fe",
+  "PorClase": {
+    "tests/RackCad.Tests/PushBackFullPanelTests.cs": {
+      "ListaDeLaClase": [
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "begin tipo=PushBackFullDraftState piloto=null editable-igual=True origen-igual=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "begin-sin-completo estado=NotAdmitted diagnostico=No editable aquí: la lectura no trae el modelo completo. pista=True borradores=0",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "pb-20-ab estado=Admitted borrador=PushBackFullDraftState",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "pb-21-cola estado=NotAdmitted diagnostico-fuera-del-piloto=True pista=True borrador=null",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "auth-13 estado=NotAdmitted borrador=null",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "campo commit=Applied escala=2.5 resto-igual=True isdirty=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "campo texto=[] estado=Invalid mensaje=Escribe un valor.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "campo texto=[abc] estado=Invalid mensaje=Valor no numérico.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "campo texto=[0] estado=Invalid mensaje=El valor debe ser > 0.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "campo texto=[-1] estado=Invalid mensaje=El valor debe ser > 0.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "actualizar estado=Applied begin-mutation=1 seal=1 borrador=Clean",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "borrado EraseUnit:B2",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "presentar estado=Presented testigo-clave=A1 testigo-texto-igual-al-origen=True borrador-igual=True huella-igual=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "presentar Cambiado fuera: el nombre.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "presentar Cambiado por ti: las anotaciones.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of lineas=7",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of Cambiado fuera: el nombre y los frentes.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of Cambiado por ti: las anotaciones, la seguridad y los módulos.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of Cambiado en los dos: el rack.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of Cambios estructurales: los frentes y los módulos.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of Vistas: se borrarán 2 laterales obsoletos.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of Vistas: 1 no se puede conservar.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of Todas las vistas quedarían obsoletas.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of-singular Vistas: se borrará 1 lateral obsoleto.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of-plural Vistas: 3 no se pueden conservar.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "of-vacia lineas=0 isempty=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "segundo-si testigo-viejo estado=Presented conservado=False borrador-igual=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "segundo-si testigo-vigente estado=Kept initial-igual-a-la-relectura=True editable-del-borrador=True origen-nuevo=True estado-del-borrador=Dirty",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "tras-conservar-y-actualizar estado=Applied diseno-del-borrador=True resto-del-rack-actual=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "lado-b-sin-frentes diseno-escrito-sin-lado-b=True declaracion-hasta-el-rebase=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "Begin huellas-iguales=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "CommitField huellas-iguales=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "Presentar huellas-iguales=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "KeepOn huellas-iguales=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "Rebase huellas-iguales=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "sustituir-referencia isdirty=False",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "nan-longitud-modulo igual-a-su-copia=False",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "borrador estado=Clean origen-es-la-primera-redibujada=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "relectura lector=ReadIntentAtOrigin origen-del-borrador=True",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": " estado=Presented",
+          "EnRedSha": 2,
+          "EnRedRepairSha": 2
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": " huellas-iguales=True",
+          "EnRedSha": 5,
+          "EnRedRepairSha": 5
+        },
+        {
+          "Tipo": "linea",
+          "Parte": "todo",
+          "Literal": "No editable aquí: la lectura no trae el modelo completo.",
+          "EnRedSha": 1,
+          "EnRedRepairSha": 1
+        },
+        {
+          "Tipo": "valor",
+          "Parte": "todo",
+          "Literal": "2.25",
+          "EnRedSha": 4,
+          "EnRedRepairSha": 4
+        },
+        {
+          "Tipo": "valor",
+          "Parte": "todo",
+          "Literal": "2.5",
+          "EnRedSha": 4,
+          "EnRedRepairSha": 4
+        },
+        {
+          "Tipo": "valor",
+          "Parte": "todo",
+          "Literal": "Otro nombre",
+          "EnRedSha": 2,
+          "EnRedRepairSha": 2
+        }
+      ],
+      "NoEnRedSha": []
+    }
+  }
+}

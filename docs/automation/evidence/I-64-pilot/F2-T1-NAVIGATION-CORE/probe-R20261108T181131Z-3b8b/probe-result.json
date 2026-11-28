@@ -1,0 +1,85 @@
+{
+  "RunId": "R20261108T181131Z-3b8b",
+  "ExitCode": 0,
+  "EventTypes": [
+    "item.completed",
+    "item.started",
+    "thread.started",
+    "turn.completed",
+    "turn.started"
+  ],
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1bc5b-d81a-79a0-a055-db664f6b7f66",
+  "Usage": {
+    "input_tokens": 48273,
+    "cached_input_tokens": 23680,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 580,
+    "reasoning_output_tokens": 200
+  },
+  "Commands": [
+    {
+      "Command": "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -Command 'git rev-parse HEAD'",
+      "Exit": 0
+    },
+    {
+      "Command": "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -Command 'git rev-parse origin/main'",
+      "Exit": 0
+    },
+    {
+      "Command": "mendoza\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -Command 'git rev-parse HEAD:docs/automation/state/I-64.yml'",
+      "Exit": 0
+    }
+  ],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OracleMatch": {
+    "HeadSha": true,
+    "OriginMainSha": true,
+    "StateBlob": true
+  },
+  "OutputSha256": "1D02AF696E8CA4EC241C759B37F74AB8F2D1D055F7FEF9C305AE8DF71FC6552D",
+  "Oracle": {
+    "HeadSha": "90f5872e89660655a93606e16d50f4bc19aa3c9c",
+    "OriginMainSha": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "StateBlob": "45e71140ce3563ffe3d9c028d2c6bb57a7744301"
+  },
+  "CliVersion": "0.167.0-alpha.3.2",
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "PermissionProfile": {
+    "type": "managed",
+    "file_system": {
+      "type": "restricted",
+      "entries": [
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "root"
+            }
+          },
+          "access": "read"
+        }
+      ]
+    },
+    "network": "restricted"
+  },
+  "CollaborationSettings": {
+    "model": "gpt-6-luna",
+    "reasoning_effort": "high",
+    "developer_instructions": null
+  },
+  "Effective": [
+    "gpt-6-luna",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-11-08T12-11-38-01a1bc5b-d81a-79a0-a055-db664f6b7f66.jsonl",
+  "EffectiveSourceSha256": "EBD4DA2CAFE369639702F8CC14F49C66EAD7142C66DBFBE262E0A33C34028D2C",
+  "LimitPatternContexts": {},
+  "EventsSha256": "8D865D5FA796294500EC13F4D7A894E1E0EF67E2693C8EA47D01D9E473FEE64D",
+  "StderrBytes": 39,
+  "StderrText": "Reading additional input from stdin...\n",
+  "Pass": true
+}

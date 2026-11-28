@@ -1,0 +1,2 @@
+filas 0 {}; omitidas por origen {}
+no pasan: 0

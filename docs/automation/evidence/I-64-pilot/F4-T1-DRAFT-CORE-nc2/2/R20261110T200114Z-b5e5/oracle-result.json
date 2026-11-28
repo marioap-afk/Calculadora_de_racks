@@ -1,0 +1,53 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261110T200114Z-b5e5",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Scope"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "P-03"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha CurrentSha muestra 9 rutas, todas dentro del alcance del contrato y ninguna en ForbiddenWriteScope. Sin embargo, src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs no esta en las 9 rutas de AllowedWriteScope de la delegacion. Es una escritura fuera del alcance delegado y activa P-03."
+  },
+  "OutputSha256": "06513FB288BF314F24C7665B4A1A122348261A2992F43E750F77D66639A52906",
+  "ManualFreeText1610": []
+}

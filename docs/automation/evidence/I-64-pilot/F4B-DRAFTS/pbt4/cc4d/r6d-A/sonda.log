@@ -1,0 +1,123 @@
+Serie de pruebas para <copia>\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:08.41]     RackCad.Tests.TmpPbt4dFullCopyProbe.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList [FAIL]
+  Con error RackCad.Tests.TmpPbt4dFullCopyProbe.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList [1 s]
+  Mensaje de error:
+   ESPERADO
+original PushBackFullReadGuard igual-a-la-base=True skip=2
+original PushBackFullReadPath igual-a-la-base=True skip=1
+original PushBackWritePathGuard igual-a-la-base=True skip=1
+original WorkspaceAssociativeBookkeeping igual-a-la-base=True skip=10
+original WorkspaceCommandAdvisor igual-a-la-base=True skip=54
+original WorkspaceEditIntentGuard igual-a-la-base=True skip=7
+original WorkspaceHostHardeningGuard igual-a-la-base=True skip=1
+original WorkspaceEditIntentHost igual-a-la-base=True skip=62
+original WorkspaceLifecycleGuard igual-a-la-base=True skip=2
+original WorkspaceLifecycleHost igual-a-la-base=True skip=69
+original WorkspacePilotEditGuard igual-a-la-base=True skip=5
+original WorkspacePilotEditHost igual-a-la-base=True skip=59
+original WorkspacePilotPrepare igual-a-la-base=True skip=67
+original WorkspacePilotReconciliationGuard igual-a-la-base=True skip=1
+original WorkspacePilotReconciliationHost igual-a-la-base=True skip=28
+original WorkspacePilotUpdateGuard igual-a-la-base=True skip=1
+original WorkspacePilotUpdateHost igual-a-la-base=True skip=35
+original WorkspacePilotUpdateIntegrationGuard igual-a-la-base=True skip=2
+original WorkspacePilotUpdateRequest igual-a-la-base=True skip=44
+original WorkspacePilotReconciliation igual-a-la-base=True skip=21
+original WorkspacePilotReconciliationView igual-a-la-base=True skip=6
+copia WorkspaceAssociativeBookkeeping pruebas=10 mecanicas=10 a-mano=0 igual-al-mapa=True sha256=True
+copia WorkspaceCommandAdvisor pruebas=54 mecanicas=54 a-mano=0 igual-al-mapa=True sha256=True
+copia WorkspaceEditIntentHost pruebas=62 mecanicas=57 a-mano=5 igual-al-mapa=True sha256=True
+copia WorkspaceLifecycleHost pruebas=69 mecanicas=68 a-mano=1 igual-al-mapa=True sha256=True
+copia WorkspacePilotEditHost pruebas=59 mecanicas=53 a-mano=6 igual-al-mapa=True sha256=True
+copia WorkspacePilotPrepare pruebas=67 mecanicas=46 a-mano=21 igual-al-mapa=True sha256=True
+copia WorkspacePilotReconciliationHost pruebas=28 mecanicas=17 a-mano=11 igual-al-mapa=True sha256=True
+copia WorkspacePilotUpdateHost pruebas=35 mecanicas=12 a-mano=23 igual-al-mapa=True sha256=True
+copia WorkspacePilotUpdateRequest pruebas=44 mecanicas=39 a-mano=5 igual-al-mapa=True sha256=True
+copia PushBackFullReadGuard pruebas=1 sha256=True
+copia PushBackFullReadPath pruebas=1 sha256=True
+copia PushBackWritePathGuard pruebas=1 sha256=True
+copia WorkspaceEditIntentGuard pruebas=7 sha256=True
+copia WorkspaceHostHardeningGuard pruebas=1 sha256=True
+copia WorkspaceLifecycleGuard pruebas=2 sha256=True
+copia WorkspacePilotEditGuard pruebas=5 sha256=True
+copia WorkspacePilotReconciliationGuard pruebas=1 sha256=True
+copia WorkspacePilotUpdateGuard pruebas=1 sha256=True
+copia WorkspacePilotUpdateIntegrationGuard pruebas=2 sha256=True
+copia WorkspacePilotReconciliation pruebas=21 sha256=True
+copia WorkspacePilotReconciliationView pruebas=6 sha256=True
+kit sha256=True
+particion-por-filas WorkspaceLifecycleHost.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively red=3 green=7 filas-del-original=True
+particion-por-filas WorkspacePilotEditGuard.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance red=1 green=3 filas-del-original=True
+particion-por-filas WorkspacePilotPrepare.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing red=7 green=1 filas-del-original=True
+particion-por-filas WorkspacePilotPrepare.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading red=7 green=1 filas-del-original=True
+kit FullOf-igual-al-lector=True escaneos=5
+sin-nombres-del-kit-del-piloto=True
+autoprueba-linea-de-mas=falla
+autoprueba-asercion-cambiada=falla
+autoprueba-skip-de-mas=falla
+autoprueba-sin-copia=falla
+REAL
+original PushBackFullReadGuard igual-a-la-base=True skip=2
+original PushBackFullReadPath igual-a-la-base=True skip=1
+original PushBackWritePathGuard igual-a-la-base=True skip=1
+original WorkspaceAssociativeBookkeeping igual-a-la-base=True skip=10
+original WorkspaceCommandAdvisor igual-a-la-base=True skip=54
+original WorkspaceEditIntentGuard igual-a-la-base=True skip=7
+original WorkspaceHostHardeningGuard igual-a-la-base=True skip=1
+original WorkspaceEditIntentHost igual-a-la-base=False skip=60
+original WorkspaceLifecycleGuard igual-a-la-base=True skip=2
+original WorkspaceLifecycleHost igual-a-la-base=True skip=69
+original WorkspacePilotEditGuard igual-a-la-base=False skip=5
+original WorkspacePilotEditHost igual-a-la-base=False skip=41
+original WorkspacePilotPrepare igual-a-la-base=False skip=34
+original WorkspacePilotReconciliationGuard igual-a-la-base=True skip=1
+original WorkspacePilotReconciliationHost igual-a-la-base=False skip=21
+original WorkspacePilotUpdateGuard igual-a-la-base=False skip=1
+original WorkspacePilotUpdateHost igual-a-la-base=True skip=35
+original WorkspacePilotUpdateIntegrationGuard igual-a-la-base=False skip=2
+original WorkspacePilotUpdateRequest igual-a-la-base=True skip=44
+original WorkspacePilotReconciliation igual-a-la-base=True skip=21
+original WorkspacePilotReconciliationView igual-a-la-base=True skip=6
+copia WorkspaceAssociativeBookkeeping pruebas=10 mecanicas=10 a-mano=0 igual-al-mapa=True sha256=True
+copia WorkspaceCommandAdvisor pruebas=54 mecanicas=54 a-mano=0 igual-al-mapa=True sha256=True
+copia WorkspaceEditIntentHost pruebas=60 mecanicas=55 a-mano=5 igual-al-mapa=True sha256=True
+copia WorkspaceLifecycleHost pruebas=69 mecanicas=68 a-mano=1 igual-al-mapa=True sha256=True
+copia WorkspacePilotEditHost pruebas=41 mecanicas=41 a-mano=0 igual-al-mapa=True sha256=True
+copia WorkspacePilotPrepare pruebas=34 mecanicas=26 a-mano=8 igual-al-mapa=True sha256=True
+copia WorkspacePilotReconciliationHost pruebas=21 mecanicas=12 a-mano=9 igual-al-mapa=True sha256=True
+copia WorkspacePilotUpdateHost pruebas=35 mecanicas=12 a-mano=23 igual-al-mapa=True sha256=True
+copia WorkspacePilotUpdateRequest pruebas=44 mecanicas=39 a-mano=5 igual-al-mapa=True sha256=True
+copia PushBackFullReadGuard pruebas=1 sha256=True
+copia PushBackFullReadPath pruebas=1 sha256=True
+copia PushBackWritePathGuard pruebas=1 sha256=True
+copia WorkspaceEditIntentGuard pruebas=7 sha256=True
+copia WorkspaceHostHardeningGuard pruebas=1 sha256=True
+copia WorkspaceLifecycleGuard pruebas=2 sha256=True
+copia WorkspacePilotEditGuard pruebas=5 sha256=True
+copia WorkspacePilotReconciliationGuard pruebas=1 sha256=True
+copia WorkspacePilotUpdateGuard pruebas=1 sha256=True
+copia WorkspacePilotUpdateIntegrationGuard pruebas=2 sha256=True
+copia WorkspacePilotReconciliation pruebas=21 sha256=True
+copia WorkspacePilotReconciliationView pruebas=6 sha256=True
+kit sha256=True
+particion-por-filas WorkspaceLifecycleHost.EachOperationThatCanChangeADraftEndsTheMarkSoTheSessionIsRetiredConservatively red=3 green=7 filas-del-original=True
+particion-por-filas WorkspacePilotEditGuard.TheHostGuardTripsOnAPublicOperationAnOrderOfBasesOrAnAdapterThatIsAFieldOfInstance red=1 green=3 filas-del-original=True
+particion-por-filas WorkspacePilotPrepare.ConfirmAppliesOnlyToCleanDirtyAndConflictAndTheOthersReadNothing red=7 green=1 filas-del-original=True
+particion-por-filas WorkspacePilotPrepare.KeepAppliesToConflictAndToDirtyMarkedStaleApplyingWaitsAndTheOthersAreNotNeededAllWithoutReading red=7 green=1 filas-del-original=True
+kit FullOf-igual-al-lector=True escaneos=5
+sin-nombres-del-kit-del-piloto=True
+autoprueba-linea-de-mas=falla
+autoprueba-asercion-cambiada=falla
+autoprueba-skip-de-mas=falla
+autoprueba-sin-copia=falla
+  Seguimiento de la pila:
+     at RackCad.Tests.TmpPbt4dFullCopyProbe.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList() in <copia>\tests\RackCad.Tests\TmpFullcopy.cs:line 657
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Archivo de resultados: <copia>\_trx\sonda.trx
+
+Con error! - Con error:     1, Superado:     0, Omitido:     0, Total:     1, Duración: < 1 ms - RackCad.Tests.dll (net8.0)

@@ -1,0 +1,349 @@
+--- I-64-f4b-pbt5-package-v2.3.md	2026-11-23 03:36:15.480312500 -0600
++++ I-64-f4b-pbt5-package-v2.4.md	2026-11-23 04:18:46.338815900 -0600
+@@ -1,19 +1,20 @@
+-# I-64 F4B — Paquete de PB-T5: CI exacta, Smoke-PB y gate-close de F4B (v2.3)
++# I-64 F4B — Paquete de PB-T5: CI exacta, Smoke-PB y gate-close de F4B (v2.4)
+ 
+ > **Redacción para el repo público:** las rutas locales van como marcadores, salvo la carpeta de trabajo del Smoke-PB, `<raiz-de-trabajo>\`, que fijó la sesión principal. Al custodiar, `<carpeta-del-Smoke-PB>` pasa a `<carpeta-del-Smoke-PB>` y `<carpeta-de-respaldo>` a `<carpeta-de-respaldo>`, como las copias exportadas `r71…` pasaron a `<copia>` (F4B-E60). No hay nombres personales ni de clientes. La hora del Owner, en UTC; su zona horaria, como `<zona-horaria-del-Owner>`.
+ 
+-**Estado:** v2.3. **Aplica las siete decisiones del Owner** de `owner-pbt5-decisions.md` ([OD5]), literal. Es la versión que pasa la comprobación acotada que exige la emisión condicional (Q-PBT5-7). **No está emitido.**
++**Estado:** v2.4. **Corrige la v2.3 con su comprobación acotada** ([CA5]: EMITIBLE TRAS CORRECCIONES, B 0 / I 4 / M 15): I-01 e I-02; I-03 e I-04 **por el lado estrecho,** sin decisión nueva del Owner; y los menores. **Aplica las siete decisiones del Owner** de `owner-pbt5-decisions.md` ([OD5]), literal. Es la versión que pasa la recomprobación acotada que exige la emisión condicional (Q-PBT5-7). **No está emitido.**
+ 
+ **Base y método:**
+-- Todo se lee por objetos git en `7da361eb`. No se leyó el worktree. No se compiló, no se ejecutó ninguna prueba y no se abrió AutoCAD.
+-- **El cierre de PB-T4e,** leído por objetos git: F4B-E61 y la §291, en `ebd304a3773495fa9071de6611936c4c01a7b06c`, que es el Candidato. El producto es el GREEN `0eac7911a025a59628b446db8b768035175f96de`: `src/` y `tests/` del Candidato son los suyos. La CI del GREEN es `45123886125`, 4/4; la de push del Candidato, `45147867500`, estaba en curso al escribir esto. Ya no queda nada marcado [T4e].
++- Todo se lee por objetos git en `7da361eb` y en `ebd304a3`. No se leyó el worktree. No se compiló, no se ejecutó ninguna prueba y no se abrió AutoCAD.
++- **El cierre de PB-T4e,** leído por objetos git: F4B-E61 y la §291, en `ebd304a3773495fa9071de6611936c4c01a7b06c`, que es el Candidato. El producto es el GREEN `0eac7911a025a59628b446db8b768035175f96de`: `src/` y `tests/` del Candidato son los suyos. La CI del GREEN es `45123886125`, 4/4. La de push del Candidato, `45147867500`, terminó 4/4 en `success` con los totales de §2 (la verificó [CA5]). Ya no queda nada marcado [T4e].
+ 
+ **Los documentos de PB-T5:**
+ - **este paquete;**
+-- **`smoke-run-v1.md`:** la guía operativa del Smoke-PB contratado, con las órdenes exactas;
+-- **`_tools/emit_pbt5.py`:** el guion de la emisión, con `--dry` y `--commit`, que corre la sesión;
++- **`smoke-run-v2.md`:** la guía operativa del Smoke-PB contratado, con las órdenes exactas;
++- **`_tools/emit_pbt5.py`:** el guion de la emisión, con `--dry` y `--commit`, que corre la sesión. Toma por argumento el paquete y la guía que se emiten;
+ - **`owner-pbt5-decisions.md`:** el registro literal de las decisiones. Al custodiar, va a `F4B-DRAFTS/coordinator/`;
+-- **la historia:** las versiones v1 a v2.2 del paquete y de las preguntas, la revisión independiente y sus cuatro recomprobaciones (`review-v1/`), las guías de la corrida previa (`pre-run-tonight-v2.md` a `v2.4.md`), que no llegó a hacerse, y los traspasos.
++- **la historia:** las versiones v1 a v2.3 del paquete y v1 a v2.2 de las preguntas; `smoke-run-v1.md`; la revisión independiente y sus cuatro recomprobaciones (`review-v1/`); la comprobación acotada de la v2.3 (`review-v23/`); las guías de la corrida previa (`pre-run-tonight-v2.md` a `v2.4.md`), que no llegó a hacerse; y los traspasos.
++- **La lista local de la selección de Smoke-2** (`s2-selection.local.json`): un archivo de la sesión, fuera de la carpeta del paquete. **No se custodia,** porque lleva rutas y nombres de clientes. [SR] la lee por su ruta, con su SHA-256 comprobado, y no copia su contenido a nada que se custodie.
+ 
+ **Abreviaturas:**
+ - **[F]:** el paquete de la fase, `docs/initiatives/I-64-f4b-push-back-completo-package.md` v3.1;
+@@ -24,7 +25,30 @@
+ - **[BM]:** el bloque M de PB-T0;
+ - **[IR1]:** la revisión independiente del paquete, con sus recomprobaciones;
+ - **[OD5]:** `owner-pbt5-decisions.md`;
+-- **[SR]:** `smoke-run-v1.md`.
++- **[SR]:** `smoke-run-v2.md`;
++- **[CA5]:** la comprobación acotada de la v2.3, `review-v23/bounded-check-pbt5-v23.md`.
++
++---
++
++## Registro de cambios v2.3 → v2.4
++
++Corrige los hallazgos de [CA5]. Los dos importantes de alcance (I-03 e I-04) van por el lado estrecho que propone [CA5], válido sin una decisión nueva del Owner.
++
++| Hallazgo | Qué cambia en la v2.4 |
++|---|---|
++| **I-01** (P-09 y SPB-07 sin órdenes exactas ni integridad final) | P-09 y SPB-51, reescritos. [SR] trae ahora bloques exactos: el 13 (lee la lista local por su ruta y su SHA-256, y compara cada original con su SHA-256 de Smoke-2 sin parar), el 13b (`s01` y `s02`), el 8 para cualquier paso entre copias `cNN`, `eNN` y `sNN`, y el 10 ampliado a `estilo.json`, `s-copias.json`, los respaldos `eNN-respaldo.dwg` y los originales de la lista |
++| **I-02** (el contrato remitía a la v2.2 para sus paradas) | §6.4 escribe las 17 paradas enteras. PBT5-C01 y la fila SPB-51 llevan la regla de HEAD de antes y de después de la emisión: antes, HEAD = Candidato; después, el Candidato antepasado de HEAD y el diff vacío en `src`, `tests` y `assets` |
++| **I-03, lado estrecho** (la franja de 12:00 a 13:00 UTC) | La sesión opera sola **solo si la emisión y P-01 a P-08 están hechas antes de las 12:00 UTC.** Si no, prepara y espera al Owner. La parada de las 13:00 UTC no cambia (§0, §5.4, PBT5-C11, S-1; [SR] §2) |
++| **I-04, lado estrecho** (PBT5-C16 ampliaba Q-PBT5-9) | Una discrepancia de la revisión de la evidencia no deja repetir un paso como adenda. La sesión solo corrige transcripciones y vuelve a la revisión. Si la discrepancia cambia un resultado o exige repetir un paso en AutoCAD, vuelve al Owner, que puede pedir una adenda: solo esa no cuenta (§6.4 y §6.6) |
++| M-01, M-02 y M-03 | El guion de la emisión: `yml_new` y la inexistencia del contrato y del mensaje, comprobados en el `--dry`; el procedimiento si queda un estado parcial; la línea `BOUNDED_RESULT` atada a los sha256 de lo que se emite, con el token exacto `EMITIBLE;`; la guía exigida como copia (§6.7) |
++| M-04 a M-08 | En [SR]: `hash-object --no-filters`; c01 rotulada «P-09 (D1)»; «Comprobar ahora» en SPB-60 y SPB-61; un bloque exacto de lectura para SPB-52 (el 15); y la biblioteca de bloques como bloque entero (el B4) |
++| M-09 | La custodia pasa los patrones de privacidad por todo lo que se custodie, y lo que case va solo por su sha256; el registro no copia órdenes con rutas (§5.8; [SR] §7) |
++| M-10 | La lista local vive fuera de la carpeta del paquete, que es la que barre la emisión |
++| M-11 | Una regla escrita para los contextos construidos: si el inventario no muestra el estado esperado, o una respuesta nativa no es la prevista, STOP del paso y LIMITATION, sin improvisar órdenes. «Variable de sistema» es la de la configuración, no el estado del dibujo de una copia (§5.3 y §5.6) |
++| M-12 | SPB-45: la falta de aviso es un hecho ya informado; PASS si coincide con la gemela |
++| M-13 | PBT5-C17, con sus dos matices: tras resolver y recomprobar, y con la reejecución de PBT5-C15 antes |
++| M-14 | Un solo orden: `--dry`, el build, `--commit` (§6.7 y [SR] §4.10). La revisión de la evidencia, en `F4B-PBT5-SMOKE-PB-GATE-CLOSE/` (§3.3). §2 cita `7da361eb` y `ebd304a3`. El título de §4.1 separa P-09, que necesita AutoCAD. La §292 nombra bien la historia |
++| M-15 | La emisión conserva en `I-64.yml` la nota de OWNER-01 de PB-T4e |
+ 
+ ---
+ 
+@@ -58,7 +82,7 @@
+   - 56 los mide la sesión; 9 necesitan además el juicio visual del Owner (S+O);
+   - los A/B y los cuatro contextos construidos van rotulados **CONSTRUCTED REPRESENTATIVE TEST CASES**;
+   - lo demás, sobre racks reales, en copias.
+-- **Quién opera:** la sesión, si puede empezar antes de las 13:00 UTC; a las 13:00 UTC para en el siguiente límite de paso y espera al Owner. Después, con el Owner. Los juicios S+O, la revisión de la evidencia y la firma no los hace la sesión.
++- **Quién opera:** la sesión, sola, **solo si la emisión y P-01 a P-08 están hechas antes de las 12:00 UTC;** si no, prepara lo que no necesita AutoCAD y espera al Owner. A las 13:00 UTC para en el siguiente límite de paso y espera al Owner. Después, con el Owner. Los juicios S+O, la revisión de la evidencia y la firma no los hace la sesión.
+ - **El gate-close:** tras la revisión independiente de la evidencia y la firma del Owner, como F4-E81. No cambian `main`, HANDOFF, ROADMAP ni [G].
+ 
+ ---
+@@ -87,9 +111,9 @@
+ 
+ ## 2. Hechos de partida
+ 
+-**Medidos en `7da361eb`:**
++**Medidos en `7da361eb` y en `ebd304a3`** (lo del cierre de PB-T4e, en `ebd304a3`):
+ - 17 tareas de F4B están cerradas: las 16 de antes y PB-T4e, CLOSED / PASS WITH LIMITATIONS sobre `0eac7911`, intento 1 de 3 (F4B-E61, en `ebd304a3`);
+-- los totales esperados en la CI del GREEN de PB-T4e: Core 19 421 = 19 018 + 0 + 403; UI 2 465 = 2 417 + 0 + 48 (F4B-E60), confirmados en el cierre: la CI del GREEN `45123886125`, 4/4 (F4B-E61);
++- los totales esperados en la CI del GREEN de PB-T4e: Core 19 421 = 19 018 + 0 + 403; UI 2 465 = 2 417 + 0 + 48 (F4B-E60), confirmados en el cierre: la CI del GREEN `45123886125`, 4/4 (F4B-E61). La CI de push del Candidato, `45147867500`, da los mismos totales, 4/4 ([CA5]);
+ - `I-64.yml`: `current_phase: F4B`, `state: implementing`, `gate: none`, `attempts: 1`;
+ - **la numeración:** tras el cierre de PB-T4e, [DISP] llega a F4B-E61 y la evidencia a la §291. La emisión de PB-T5 es **F4B-E62** con la **§292**. El guion lo comprueba (§6.7).
+ 
+@@ -97,7 +121,7 @@
+ - D1 (R006), con 14 sobres Push Back de un sentido, sin `DimensionStyle`, y una referencia anidada de una planta en un bloque pegado;
+ - D2 (R053), sin referencias de nivel superior;
+ - ningún A/B real con referencias;
+-- los demás dibujos reales con racks Push Back de la selección de Smoke-2, donde nadie ha contado el estilo de cotas (Q-PBT5-2).
++- los demás dibujos reales con racks Push Back de la selección de Smoke-2, donde nadie ha contado el estilo de cotas (Q-PBT5-2). **La lista local de la selección** tiene siete entradas, cada una con su ruta, su SHA-256, sus papeles en Smoke-2 (D1, D2, D3a, D3b, D4 y D5-01 a D5-05) y si existía. Sus siete SHA-256 son los O1 a O7 de `F4-SMOKE-2/run/integrity.md`. Qué dibujos tienen hoy racks Push Back no se ha medido: lo dice el recuento.
+ 
+ **Lo de la carga, la contención de perfil, el diálogo de la biblioteca y los literales:** como en la v2.2 (§2), sin cambios.
+ 
+@@ -145,7 +169,7 @@
+ 8. **La revisión independiente de la evidencia** (Q-PBT5-8) y, después, **la firma del Owner.**
+ 9. **Sin integración parcial en `main`.**
+ 
+-**Lo que cambia y lo que no:** como en la v2.2 (§3.3), con la revisión de la evidencia en `F4B-DRAFTS/pbt5/` y su resultado en la entrada de [DISP] de la disposición del Owner.
++**Lo que cambia y lo que no:** como en la v2.2 (§3.3), con la revisión de la evidencia en `I-64-pilot/F4B-PBT5-SMOKE-PB-GATE-CLOSE/` (como dicen §6.2 y §6.5) y su resultado en la entrada de [DISP] de la disposición del Owner.
+ 
+ **La redacción del cierre:**
+ - «F4B CLOSED / PASS WITH LIMITATIONS» o «CLOSED / PASS»;
+@@ -190,7 +214,7 @@
+ - **N-I1:** entre la orden medida y sus `U` no se teclea nada.
+ - **Los literales** entre comillas latinas están en `src/` de `7da361eb`. La guía los copia del `src/` del Candidato.
+ 
+-### 4.1 Precondiciones (la sesión, con AutoCAD cerrado)
++### 4.1 Precondiciones (la sesión; P-01 a P-08 con AutoCAD cerrado, P-09 en la instancia de la sesión)
+ 
+ | Id | Origen | Qué se hace | Criterio (si no se cumple, STOP) |
+ |---|---|---|---|
+@@ -202,9 +226,9 @@
+ | P-06 | [F] OB-09.2 y §6.3; M-18; M-26 | Las carpetas, nuevas (si ya existen, se para), fuera del perfil del usuario, del worktree, del checkout principal y de todo repositorio, comprobado con `git rev-parse`; esta noche, `<raiz-de-trabajo>\`. El SHA-256 del original, frente al registrado (para D1, el de `F4-SMOKE-2/run/integrity.md`), **antes** del respaldo. Después, el respaldo en `<carpeta-de-respaldo>`, las copias con `copy` desde el original y el manifiesto `copias.json`. **Ninguna escritura sobrescribe:** se para si el destino ya existe | Respaldo = original; copia = original; el original, igual antes y después. **Los originales nunca se abren** |
+ | P-07 | [S2] F4-E71, precondición 7 | Ningún Worker ni otra sesión en el worktree | Sin delegaciones abiertas |
+ | P-08 | OB-09.1; M-01 | La guía del operador, con los literales copiados del `src/` del Candidato, en local, y su versión redactada | Los rótulos de los A/B y de los contextos construidos, en la guía |
+-| P-09 | **Q-PBT5-2: «Contar antes en otros»**; [S2] `prep/selection.md` | **El recuento del estilo de cotas, antes de SPB-07:** de cada original de la selección de Smoke-2 con racks Push Back, además de D1 y D2, un respaldo y una copia, con la regla de P-06; cada copia abierta en la instancia de la sesión, solo para leer (`RCDUMP estilo`), y cerrada sin guardar; el recuento, con `dimkeys.py` de [BM] | Respaldo = original; copia = original; el original, igual antes y después. El recuento, por dibujo y sin nombres. **Si hay alguno con estilo:** dos copias más de ese dibujo para SPB-07 (a) y (b) |
++| P-09 | **Q-PBT5-2: «Contar antes en otros»**; [S2] `prep/selection.md` y `run/integrity.md` (O1 a O7); [BM] M-7 | **El recuento del estilo de cotas, antes de SPB-07.**<br>• **La lista** de la selección de Smoke-2 es local y no se custodia (lleva rutas y nombres de clientes): [SR] la lee por su ruta y comprueba su SHA-256 antes de usarla, y no copia su contenido a nada que se custodie.<br>• **De cada original de la lista, salvo D1 y D2,** un respaldo y una copia `eNN`, con la regla de P-06 (bloque 13 de [SR]). D1 se cuenta en c01 (P-09 (D1)); D2 ya está contado en [BM] M-7 (8 sobres, todos con el estilo nulo).<br>• **El SHA-256 de cada original** se compara con el suyo de `F4-SMOKE-2/run/integrity.md`. El resultado va al registro, **sin parar:** un original que cambió desde Smoke-2 se cuenta igual, porque se copia tal como está hoy.<br>• **Cada copia,** abierta en la instancia de la sesión solo para leer (`RCDUMP estilo`), y cerrada sin guardar, con el bloque 8.<br>• **El recuento,** con `dimkeys.py` de [BM] (bloque 14) | La lista, con su SHA-256; respaldo = original; copia = original; el original, igual antes y después, y otra vez al final (SPB-51, bloque 10). El recuento, por dibujo y sin nombres. **Si hay alguno con estilo:** dos copias más de ese dibujo, `s01` y `s02`, para SPB-07 (a) y (b), con su manifiesto (bloque 13b) |
+ 
+-**«Listo para empezar»** = P-01 a P-08 cumplidas. **La emisión no forma parte de esto** (B-02).
++**«Listo para empezar»** = P-01 a P-08 cumplidas. **La emisión no forma parte de esto** (B-02). **Pero la frontera sí la cuenta** (§5.4): la sesión opera sola solo si, antes de las 12:00 UTC, están hechas la emisión y P-01 a P-08.
+ 
+ ### 4.2 Los pasos
+ 
+@@ -295,7 +319,7 @@
+ | Id | Origen | Qué se hace | Qué se observa | Criterio | Observa |
+ |---|---|---|---|---|---|
+ | SPB-44 | [T4] §5.5; [T3] §5.5 («el rack abierto desde un lateral que la edición deja obsoleto», V2-01); F4B-E51 (OWNER-01; OWNER-03 (b)); M-09; M-10 | Copia con el lateral del último poste insertado. Seleccionar **ese lateral** → «Editar» → «Editar todo» → un frente menos → «Aplicar al borrador» → «Actualizar» → «Comprobar ahora» → «Editar». El tiempo de cada uno | Se aplica y borra el lateral de origen. **El reanclaje de POST es interno:** se mide su efecto, que la relectura siguiente funcione sobre otra vista. Se registra a qué vista va | PASS si se aplica y la relectura sigue. OBSERVADO si el origen cae en el `Primary` o sale «Ningún sobre editable de la relectura coincide con el origen del borrador.». El tiempo, INFORMATIVO | S |
+-| SPB-45 | OWNER-1 de PB-T3c (F4B-E48); **Q-PBT5-4: «Construirlos y rotularlos»** | **CONSTRUCTED REPRESENTATIVE TEST CASES.** Copia y gemela, las dos construidas igual: el lateral del último poste insertado con RACKEDITAR («Insertar lateral») y una segunda referencia de esa definición en la primera presentación, con `-LAYOUT` y `-INSERT` tecleados → panel: un frente menos → «Actualizar» → `RCDUMP`. En la gemela, la misma edición con RACKEDITAR → `RCDUMP` | Las dos referencias, la de modelo y la de papel, borradas con la definición; si hay aviso; igual que la gemela (MA H-063) | PASS si el panel hace lo mismo que el clásico. La falta de aviso, OBSERVADO (riesgo ya informado). FAIL si el panel deja una referencia sin definición o difiere del clásico sin declaración | S |
++| SPB-45 | OWNER-1 de PB-T3c (F4B-E48); **Q-PBT5-4: «Construirlos y rotularlos»** | **CONSTRUCTED REPRESENTATIVE TEST CASES.** Copia y gemela, las dos construidas igual: el lateral del último poste insertado con RACKEDITAR («Insertar lateral») y una segunda referencia de esa definición en la primera presentación, con `-LAYOUT` y `-INSERT` tecleados → panel: un frente menos → «Actualizar» → `RCDUMP`. En la gemela, la misma edición con RACKEDITAR → `RCDUMP` | Las dos referencias, la de modelo y la de papel, borradas con la definición; si hay aviso; igual que la gemela (MA H-063) | PASS si el panel hace lo mismo que el clásico. **La falta de aviso no es un OBSERVADO:** la pregunta que respondió el Owner ya la caracterizó («sin avisar, igual que RACKEDITAR», Q-PBT5-4). Se registra como hecho informado, y es PASS si coincide con la gemela. FAIL si el panel deja una referencia sin definición o difiere del clásico sin declaración | S |
+ | SPB-46 | OWNER-2 de PB-T3c; [T3] §5.5 (1), «con una referencia anidada»; [BM] §3; **Q-PBT5-4** | **CONSTRUCTED REPRESENTATIVE TEST CASES.** Copia y gemela: el lateral insertado, metido en un bloque del usuario con `-BLOCK` tecleado (nombre `ZZ-CONSTRUCTED-SPB46`) e insertado otra vez con `-INSERT` → panel: un frente menos → «Actualizar» → `RCDUMP` (`rcblk` y `rcnest`). En la gemela, RACKEDITAR | Qué queda del bloque del usuario y de las definiciones anidadas (la purga de un nivel) | Como SPB-45 | S |
+ | SPB-47 | OWNER-3 de PB-T3c; M-21; M-28 | Recuento con `rcnest` en las copias, si pasaron los controles de `rcnest` y de `rcdyn`; si no, LIMITATION. Solo cuentan los contenedores dinámicos (`rcdyn` = 1) o anónimos `*U…`; el control positivo de D1, en un bloque pegado, no cuenta. Si hay alguno, lo mismo que SPB-46, sin construir nada | — | Si no hay: NOT AVAILABLE FOR PHYSICAL SMOKE | S |
+ | SPB-48 | OWNER-2 de PB-T3b, la parte del rechazo (AUTH-13) | Recuento, desde el JSON de `RCDUMP`, de los sobres con `SchemaVersion` 1.1 y de los racks con sobres de nombres distintos. Si hay alguno: «Editar» | El rechazo, con su diagnóstico | Si no hay: NOT AVAILABLE FOR PHYSICAL SMOKE. Los pasos 5 a 7 de D-PB-05 se miran en SPB-26 y SPB-28 | S |
+@@ -311,8 +335,8 @@
+ | Id | Origen | Qué se hace | Qué se observa | Criterio | Observa |
+ |---|---|---|---|---|---|
+ | SPB-50 | [F] §6.3; [S2] R7; M-16 | En cada copia: si hay borradores en riesgo, el producto veta el cierre (INV-20), así que primero «Descartar borradores de este documento» → «Descartar» ([S2], pasos 80 y 82); después `CLOSE` → «No». Al final, cerrar la instancia de la sesión. La del Owner no se toca | Ninguna copia guardada; ningún `acad.exe` de la sesión | PASS / FAIL | S |
+-| SPB-51 | [S2] `integrity.md`; [BM], «Al cerrar» | SHA-256 de originales, respaldos y copias frente a `copias.json`; autoguardados; `git -C <worktree> status` y HEAD | Originales y respaldos iguales; copias = original; el árbol limpio; HEAD = Candidato | PASS / FAIL | S |
+-| SPB-52 | [S2] F4-E79; M-17 | `RACKCAD_DEBUG_*`; líneas `ERROR` del registro de RackCad; eventos de error de acad; `Applications`, `Loaded` y `AssemblyMap`; el número de `Dialogs\RackCad.*`; la disposición del configurador y `settings.json` | Lo mismo que en P-05 en `Applications`, `Loaded` y `AssemblyMap`. Las `Dialogs`, registradas como escritura esperada del host | PASS si no queda configuración de RackCad ni errores sin explicar | S |
++| SPB-51 | [S2] `integrity.md`; [BM], «Al cerrar»; Q-PBT5-2 | El bloque 10 de [SR]: el SHA-256 de D1 y de su respaldo, y de las copias `cNN`, frente a `copias.json`; el de los originales de P-09 (leídos de la lista local, con su SHA-256 comprobado), de sus respaldos `eNN-respaldo.dwg` y de sus copias, frente a `estilo.json`; el de `s01` y `s02`, frente a `s-copias.json`, si existen; autoguardados; `git -C <worktree> status`; `merge-base --is-ancestor <Candidato> HEAD` y el diff `<Candidato>..HEAD -- src tests assets` | Originales y respaldos iguales; cada copia, igual a su original; el árbol limpio; **el Candidato, antepasado de HEAD, y el diff vacío.** Tras la emisión, HEAD es su commit documental, encima del Candidato (PBT5-C01) | PASS / FAIL | S |
++| SPB-52 | [S2] F4-E79; M-17 | Los bloques 2, 3, 4 y 15 de [SR]: `RACKCAD_DEBUG_*`; líneas `ERROR` del registro de RackCad; eventos de error de acad; `Applications`, `Loaded` y `AssemblyMap`; el número de `Dialogs\RackCad.*`; la disposición del configurador y el SHA-256 de `settings.json`, frente a P-05 | Lo mismo que en P-05 en `Applications`, `Loaded` y `AssemblyMap`. Las `Dialogs`, registradas como escritura esperada del host | PASS si no queda configuración de RackCad ni errores sin explicar | S |
+ 
+ #### Bloque I. La lista de [T3] §5.5 (B-01)
+ 
+@@ -325,8 +349,8 @@
+ | SPB-57 | [T3] §5.5 (4); `PushBackPilotUpdateRun.LockedLayerPrefix`; **Q-PBT5-4** | **CONSTRUCTED REPRESENTATIVE TEST CASES.** Copia y gemela: el lateral insertado y la capa de su referencia bloqueada con `-LAYER` → panel: un frente menos → «Actualizar» → `RCDUMP`. En la gemela, la misma edición con RACKEDITAR → `RCDUMP` | En el panel, un texto que empieza por «LOCKED_LAYER: » y nada escrito; en la gemela, lo que haga el clásico | PASS si el panel rechaza sin escribir nada. Lo del clásico se registra como hecho | S |
+ | SPB-58 | [T3] §5.5 (5), el último vínculo; [BM] M-2b; `PushBackPilotUpdatePlan.AllViewsObsoleteReason`; **Q-PBT5-4** | **CONSTRUCTED REPRESENTATIVE TEST CASES.** Copia y gemela, sobre un rack sin referencias anidadas: el lateral insertado; `ERASE` de las demás referencias del rack y `-PURGE` de sus definiciones, tecleados (el método de [BM] M-2b) → seleccionar el lateral → panel: un frente menos → «Actualizar» → `RCDUMP`. En la gemela, RACKEDITAR | En el panel, «Todas las vistas del rack quedarían obsoletas: no se elimina el último vínculo del rack.» y nada escrito; en la gemela, lo medido en [BM] M-2b | PASS si el panel rechaza sin escribir nada | S |
+ | SPB-59 | [T3] §5.5 (6); [T3] `:915` (la cuenta incluye `EraseUnit`); [S2], pasos 78 a 80; R-PB-03; **Q-PBT5-10: «Hacerlas como en Smoke-2»** | Un AutoCAD propio, lanzado con `RACKCAD_DEBUG_FAIL_PILOT_UPDATE_UNIT=2` **solo en el entorno de ese proceso**, con una copia con el lateral insertado → panel: un frente menos (la segunda unidad puede ser el borrado) → «Actualizar» → `RCDUMP` → «Descartar» → `QUIT` → «No». Antes y después, ninguna variable en el usuario, la máquina ni el shell | «No se aplicó: La escritura falló antes de confirmarse: …»; ninguna vista cambia ni se borra; una entrada de Deshacer | PASS si el aborto no deja nada escrito ni borrado | S |
+-| SPB-60 | [T3] §5.5 (6), el sellado; [S2], paso 82; **Q-PBT5-10** | Lo mismo que SPB-59, en otro AutoCAD propio, con `RACKCAD_DEBUG_FAIL_PILOT_UPDATE_SEAL=before` | El estado desconocido, «Comprobar ahora» y que nada cambió | Como el paso 82 de [S2] | S |
+-| SPB-61 | [T3] §5.5 (6); [S2], paso 84; **Q-PBT5-10** | Lo mismo, en otro AutoCAD propio, con `RACKCAD_DEBUG_FAIL_PILOT_UPDATE_SEAL=after` | El estado desconocido; la escritura confirmada, con el borrado incluido | Como el paso 84 de [S2] | S |
++| SPB-60 | [T3] §5.5 (6), el sellado; [S2], paso 82; **Q-PBT5-10** | Lo mismo que SPB-59, en otro AutoCAD propio, con `RACKCAD_DEBUG_FAIL_PILOT_UPDATE_SEAL=before`. Tras «Actualizar»: el estado y lo que se ofrece → «Comprobar ahora» → el texto literal y lo que se ofrece. **«Actualizar» no se vuelve a pulsar** | El estado desconocido, «Comprobar ahora» y que nada cambió | Como el paso 82 de [S2] | S |
++| SPB-61 | [T3] §5.5 (6); [S2], paso 84; **Q-PBT5-10** | Lo mismo, en otro AutoCAD propio, con `RACKCAD_DEBUG_FAIL_PILOT_UPDATE_SEAL=after`. Tras «Actualizar»: el estado y lo que se ofrece → «Comprobar ahora» → el texto literal y lo que se ofrece, sin «Actualizar» → «Descartar y recargar» → «Sí», como en el paso 84 de [S2] | El estado desconocido; la escritura confirmada, con el borrado incluido | Como el paso 84 de [S2] | S |
+ 
+ #### Bloque J. La relectura con el origen: los subcasos de PB-T4a (M-10)
+ 
+@@ -438,6 +462,8 @@
+ ### 5.3 La configuración de AutoCAD, la carga y el inventario
+ 
+ - **No se toca nada:** ni Trusted Locations, ni SECURELOAD, ni «Always Load», ni el registro, ni ninguna variable de sistema. Tampoco «Always ignore» ni la casilla de «Proxy Information».
++  - **«Variable de sistema»** es aquí la de la configuración: las que guardan el perfil o el registro, como `FILEDIA`, `PICKFIRST` o `SECURELOAD`.
++  - **El estado del dibujo de una copia no es configuración.** Las órdenes de los contextos construidos (§5.6) cambian `CTAB` y `TILEMODE` de su copia (`-LAYOUT`, `PSPACE` y `MODEL`), y la copia se cierra sin guardar.
+ - **La carga,** como en [G] §3: NETLOAD del DLL exacto, por expresión, y «Load Once» en el aviso.
+ - **El inventario,** con las funciones de [BM], tecleadas en cada documento, más `rcblk`, `rcdyn`, `rcnest` y `rcdynchk`, de solo lectura, con sus controles. `RCDUMP` no sobrescribe.
+ - **El paso de una copia a la siguiente,** sin COM (I-07 de [IR1]):
+@@ -452,9 +478,11 @@
+ 
+ ### 5.4 Quién opera
+ 
+-- **La frontera de esta noche** (la lectura de la sesión principal del mensaje del Owner; Q-PBT5-5 no se le preguntó):
+-  - la sesión opera el Smoke-PB contratado **solo si puede empezar antes de las 13:00 UTC** del 2026-11-23;
+-  - **a las 13:00 UTC para** en el siguiente límite de paso y espera al Owner. AutoCAD y la copia abierta se quedan como estén, sin guardar, y solo se hacen SPB-51 y SPB-52, que leen.
++- **La frontera de esta noche,** en su lectura estrecha ([CA5] I-03). El mensaje del Owner pone como condición «se complete antes de las 6 am», las 12:00 UTC, y excluye «después de las 7 am», las 13:00 UTC. La lectura estrecha vale en las dos interpretaciones de «se complete» y no necesita una decisión nueva:
++  - **la sesión opera sola el Smoke-PB contratado solo si la emisión de PB-T5 y P-01 a P-08 están hechas antes de las 12:00 UTC** del 2026-11-23;
++  - **si no lo están,** la sesión prepara lo que no necesita AutoCAD (P-01 a P-08 y la emisión, si se cumplen sus condiciones) y espera al Owner;
++  - **a las 13:00 UTC para,** como antes, en el siguiente límite de paso, y espera al Owner. AutoCAD y la copia abierta se quedan como estén, sin guardar, y solo se hacen SPB-51 y SPB-52, que leen.
++  - **La franja de 12:00 a 13:00 UTC** solo la usa una corrida que ya empezó, lista antes de las 12:00 UTC. Empezar en esa franja sin el Owner sería la lectura amplia, que exige preguntar Q-PBT5-5.
+ - **Después de la frontera,** o si el Owner aparece:
+   - **el Owner** opera los gestos del producto de los pasos que quiera;
+   - **la sesión** mide lo de máquina, avisa antes de teclear y devuelve el control después.
+@@ -483,14 +511,17 @@
+ - **La línea entre preparar y construir:**
+   - insertar una vista con RACKEDITAR es un gesto del producto, y se usa como preparación;
+   - poner el dibujo con órdenes nativas en un estado que el producto no crea es construir.
++- **La regla de las respuestas nativas** ([CA5] M-11). Las órdenes de [SR] §4.12 suponen unas respuestas de AutoCAD que no se han visto en estas copias (por ejemplo, que `-INSERT` pida la escala X, la Y y el giro, sin atributos). **Si una orden pide algo distinto de lo previsto, da un error, o si el inventario `CONSTRUCTED-construido` no muestra el estado esperado:** STOP del paso y LIMITATION (NO VERIFICABLE FÍSICAMENTE), con el literal en el registro. **No se improvisan órdenes.** La gemela del mismo contexto tampoco se hace.
+ - **Las órdenes exactas,** en [SR] §4.12.
+ 
+ ### 5.7 El recuento del estilo de cotas (Q-PBT5-2, «Contar antes en otros»)
+ 
+-- **Antes de SPB-07,** en la precondición P-09: de cada original de la selección de Smoke-2 con racks Push Back, un respaldo y una copia.
++- **Antes de SPB-07,** en la precondición P-09: de cada original de la lista local de la selección de Smoke-2, salvo D1 y D2, un respaldo y una copia.
++- **La lista local no se custodia** (lleva rutas y nombres de clientes). [SR] la lee por su ruta, comprueba su SHA-256 y no copia su contenido a nada que se custodie: los manifiestos y el registro nombran cada dibujo por su `eNN` y sus papeles de Smoke-2. Vive fuera de la carpeta del paquete, que es la que barre la emisión ([CA5] M-10).
++- **Cada original** se compara, sin parar, con su SHA-256 de Smoke-2, y se mide otra vez al final (SPB-51).
+ - **Cada copia se abre** en la instancia de la sesión, solo para `RCDUMP estilo`, y se cierra sin guardar.
+-- **El recuento** se hace fuera de AutoCAD, con `dimkeys.py` de [BM].
+-- **Si alguno guarda un estilo,** SPB-07 se hace con dos copias nuevas de ese dibujo. **Si ninguno,** SPB-07 vuelve al Owner.
++- **El recuento** se hace fuera de AutoCAD, con `dimkeys.py` de [BM], sacado byte a byte de los objetos git.
++- **Si alguno guarda un estilo,** SPB-07 se hace con dos copias nuevas de ese dibujo, `s01` y `s02` (el primero por orden de `eNN`, si son varios). **Si ninguno,** SPB-07 vuelve al Owner.
+ - **Las órdenes,** en [SR] §4.13.
+ 
+ ### 5.8 Las reglas de operación, la evidencia y las capturas
+@@ -509,6 +540,9 @@
+   - las crudas, nunca custodiadas;
+   - las custodiadas, recortadas o tapadas con un rectángulo opaco, con la lista de antes de custodiar y `derivation-record.txt`;
+   - nunca la paleta de referencias externas, el aviso de NETLOAD ni los diálogos de archivos.
++- **La privacidad del texto que se custodia** ([CA5] M-09):
++  - **el registro no copia órdenes con rutas** (el eco de `NETLOAD`, de `vla-open` o de un STOP que nombre una ruta): guarda la orden con sus marcadores y el resultado;
++  - **antes del commit de custodia,** los patrones locales de privacidad pasan por todo lo que se custodie, con `_tools/scan_custody.py`. Lo que case va solo por su sha256, como en la emisión y en F4B-E60.
+ 
+ ### 5.9 Lo que no se finge
+ 
+@@ -561,7 +595,7 @@
+ | INV-PBT5-05 | Nada se finge. Ninguna `RACKCAD_DEBUG_*` en el usuario, la máquina ni el shell; solo en el entorno de los AutoCAD de SPB-59 a SPB-61 (Q-PBT5-10) |
+ | INV-PBT5-06 | Los A/B y los cuatro contextos construidos llevan el rótulo **CONSTRUCTED REPRESENTATIVE TEST CASES**, y cada contexto construido tiene su gemela clásica (Q-PBT5-4) |
+ | INV-PBT5-07 | Los resultados de la sesión son propuestas. F4B se cierra solo con la firma del Owner, después de la revisión independiente de la evidencia (Q-PBT5-8) |
+-| INV-PBT5-08 | La evidencia custodiada no lleva rutas locales, nombres de clientes ni datos personales |
++| INV-PBT5-08 | La evidencia custodiada no lleva rutas locales, nombres de clientes ni datos personales. La lista local de la selección de Smoke-2 no se custodia, ni se copia su contenido. Antes de custodiar, los patrones locales de privacidad pasan por todo, y lo que case va solo por su sha256 |
+ | INV-PBT5-09 | [G] no cambia |
+ | INV-PBT5-10 | Sin integración en `main`; HANDOFF y ROADMAP sin cambios |
+ | INV-PBT5-11 | Una captura antes de cada clic, abierta y revisada; coordenadas y captura de después en cada resultado negativo |
+@@ -574,12 +608,27 @@
+ 
+ ### 6.4 Paradas
+ 
+-Son las de la v2.2 (§6.4: PBT5-C01 a PBT5-C15), con estos cambios:
+-- **PBT5-C04:** una `RACKCAD_DEBUG_*` en el usuario, la máquina o el shell; o en el entorno de un AutoCAD que no sea el de su inyección.
+-- **PBT5-C11:** a las 13:00 UTC, se para en el límite de paso y se espera al Owner; después, solo SPB-51 y SPB-52, que leen.
+-- **PBT5-C15** (Q-PBT5-8, confirmada): una prueba que falla en la CI o en local sobre el Candidato vuelve al Owner. **La CI en rojo solo por el detector de cuelgue en una prueba lenta conocida** admite una reejecución de los trabajos fallidos sobre el mismo SHA; otra causa, o un segundo rojo, vuelve al Owner.
+-- **PBT5-C16, nueva:** la revisión independiente de la evidencia encuentra que el registro, las capturas o los inventarios no coinciden. Vuelve a la sesión, que corrige el registro o repite el paso, sin cambiar un resultado, y otra vez a la revisión. Si hace falta repetir un paso en AutoCAD, es una adenda, que no gasta intento (§6.6).
+-- **PBT5-C17, nueva:** una de las tres condiciones de la emisión condicional (Q-PBT5-7) no se cumple. No se emite, y vuelve al Owner.
++Las 17 paradas, enteras. Este §6 es el contrato, y no remite a ninguna versión anterior.
++
++| Id | Cuándo | Qué se hace |
++|---|---|---|
++| PBT5-C01 | **El entorno.** **Antes de la emisión:** el árbol sucio; HEAD distinto del Candidato; el diff `<producto>..<Candidato> -- src tests assets` no vacío; la CI sin la corrida de push exacta del Candidato; el DLL que no identifica el Candidato; o un SHA-256 del DLL que cambia. **Después de la emisión** (HEAD es su commit documental): el árbol sucio; el Candidato que no es antepasado de HEAD; el diff `<Candidato>..HEAD -- src tests assets` no vacío; o lo mismo del DLL | STOP antes de abrir AutoCAD, o en el momento |
++| PBT5-C02 | Una copia distinta de su original, o un original cambiado durante la corrida (D1 o uno de P-09). Que un original de P-09 no coincida con su SHA-256 de Smoke-2 **antes** de copiarlo no es parada: se registra (P-09) | STOP; si cambió un original, aviso inmediato al Owner |
++| PBT5-C03 | Haría falta cambiar la configuración (§5.3) | STOP |
++| PBT5-C04 | Una `RACKCAD_DEBUG_*` en el usuario, la máquina o el shell; o en el entorno de un AutoCAD que no sea el de su inyección | STOP |
++| PBT5-C05 | Un FAIL de producto | Se registra con toda su evidencia, se siguen solo los pasos independientes e inocuos, y vuelve al Owner |
++| PBT5-C06 | Una escritura posible fuera de las copias o de `<carpeta-del-Smoke-PB>\salidas` | STOP del paso; LIMITATION |
++| PBT5-C07 | La tercera repetición por error del operador, o la duda | Al Owner |
++| PBT5-C08 | Un AutoCAD del Owner abierto al compilar, o que haría falta tocar | No se toca; STOP del build. Nunca se usa COM para abrir o cerrar documentos, ni `Stop-Process`. Antes de `CloseMainWindow`, el PID se comprueba por su ruta, su hora de inicio y su título |
++| PBT5-C09 | Un Worker u otra sesión en el worktree | STOP |
++| PBT5-C10 | Solo observable fingiendo | NO VERIFICABLE FÍSICAMENTE |
++| PBT5-C11 | **La frontera horaria** (§5.4) | **Si la emisión y P-01 a P-08 no están hechas antes de las 12:00 UTC,** la sesión no opera AutoCAD sola: prepara lo que no lo necesita y espera al Owner. **A las 13:00 UTC,** se para en el límite de paso y se espera al Owner; después, solo SPB-51 y SPB-52, que leen |
++| PBT5-C12 | AutoCAD se cuelga o se cierra | Se registra y se cierra de forma ordinaria. El bloque a medias se repite en una copia nueva, dentro de la misma corrida; el segundo caso, al Owner |
++| PBT5-C13 | Un comportamiento no caracterizado | OBSERVADO, con toda la evidencia |
++| PBT5-C14 | Haría falta el intento 3 | Al Owner |
++| PBT5-C15 | **Una prueba falla en la CI o en local sobre el Candidato** | Es un fallo de producto y un modo nuevo: vuelve al Owner, no es una parada de entorno. **La regla de reejecutar, confirmada por el Owner (Q-PBT5-8):** una CI en rojo solo por el detector de cuelgue (`blame-hang`) en una prueba lenta ya conocida admite una sola reejecución de los trabajos fallidos sobre el mismo SHA; otra causa, o un segundo rojo, vuelve al Owner |
++| PBT5-C16 | **La revisión independiente de la evidencia** encuentra que el registro, las capturas o los inventarios no coinciden | **La sesión solo corrige transcripciones:** el registro frente a la captura o al inventario. Después, vuelve a la revisión. **Si la discrepancia cambia un resultado, o exige repetir un paso en AutoCAD, vuelve al Owner,** que puede pedir una adenda. Solo la adenda que pida el Owner no cuenta como intento (§6.6) |
++| PBT5-C17 | **Una de las tres condiciones de la emisión condicional** (Q-PBT5-7) no se cumple, **después de resolver los hallazgos y recomprobar:** la recomprobación acotada no da 0 bloqueantes y 0 importantes sin resolver; aparece una decisión material nueva; o la CI exacta del Candidato no está en verde | No se emite, y vuelve al Owner. **Si la CI está en rojo solo por el detector de cuelgue** en una prueba lenta conocida, antes va la reejecución de PBT5-C15; si con ella queda en verde, la condición se cumple |
+ 
+ ### 6.5 La evidencia esperada
+ 
+@@ -600,6 +649,7 @@
+   - repetir un paso por error del operador (dos veces como máximo);
+   - una parada del entorno antes de abrir AutoCAD;
+   - una adenda que pida el Owner al revisar.
++- **Solo la adenda que pida el Owner no cuenta** ([CA5] I-04). Una discrepancia de la revisión de la evidencia no permite repetir un paso como adenda: la sesión corrige transcripciones, o vuelve al Owner (PBT5-C16). **Un paso repetido por otra causa** no es una adenda: cuenta según la definición de intento.
+ - **Se adoptan las tres reglas de Smoke-2:**
+   - las etiquetas: NOT AVAILABLE FOR PHYSICAL SMOKE; NO VERIFICABLE FÍSICAMENTE / CUBIERTO POR PRUEBA AUTOMATIZADA; OBSERVADO;
+   - traer la evidencia antes de decidir un OBSERVADO;
+@@ -608,18 +658,20 @@
+ 
+ ### 6.7 La cadena
+ 
+-1. **Esta v2.3 y su comprobación acotada,** que tiene que dar 0 bloqueantes y 0 importantes sin resolver. Su resultado va en una línea `BOUNDED_RESULT:`, que lee el guion.
+-2. **El cierre de PB-T4e,** hecho: F4B-E61 y §291, en `ebd304a3`, que es el Candidato. La CI de push del Candidato tiene que terminar 4/4 (`45147867500`).
+-3. **`emit_pbt5.py --dry`,** que corre la sesión. Comprueba:
++1. **Esta v2.4 y su recomprobación acotada,** que tiene que dar 0 bloqueantes y 0 importantes sin resolver. Su resultado va en una sola línea `BOUNDED_RESULT:`, que lee el guion. **La línea** empieza por el token exacto `EMITIBLE;`, lleva `B 0 / I 0` y los prefijos sha256 (8 caracteres) de lo revisado, en la forma `paquete <p>, guia <g>, guion <e>`. El guion los compara con el paquete, la guía y el guion que emite ([CA5] M-02).
++2. **El cierre de PB-T4e,** hecho: F4B-E61 y §291, en `ebd304a3`, que es el Candidato. La CI de push del Candidato terminó 4/4 (`45147867500`).
++3. **`emit_pbt5.py --dry`,** que corre la sesión con HEAD = Candidato, después del bloque 1 de [SR]. Solo lee. Comprueba:
+    - la numeración: existen F4B-E61 y la §291, y no existen F4B-E62 ni la §292;
+    - el Candidato, su árbol y la CI exacta en verde;
+-   - la línea `BOUNDED_RESULT:`;
+-   - los sha256 de lo que se custodia y la redacción.
++   - la línea `BOUNDED_RESULT:` y sus sha256;
++   - los sha256 de lo que se custodia y la redacción, con la guía y el paquete exigidos como copia;
++   - que no existan el contrato ni el archivo del mensaje del commit;
++   - y el cambio de `I-64.yml`, calculado sobre `HEAD:` (sus claves, sus marcas y que no diga ya «PB-T5 EMITIDA»).
+ 
+    Escribe su listado.
+-4. **La preparación y el build en el Candidato** ([SR] §3 y §4.1 a §4.3).
++4. **La preparación y el build en el Candidato** ([SR] §4.10: B1 a B4 y los bloques 2, 3, 4 y 4b). El build va antes de la emisión.
+ 5. **`emit_pbt5.py --commit`,** que corre la sesión:
+-   - compara con el listado del `--dry`;
++   - repite las comprobaciones y compara con el listado del `--dry`;
+    - copia con la redacción;
+    - saca el contrato (§6) a `contract.md`;
+    - añade F4B-E62 y la §292;
+@@ -627,7 +679,9 @@
+    - y hace el commit documental y lo sube, sin forzar.
+ 
+    **Es la emisión,** por la autorización condicional del Owner (Q-PBT5-7).
+-6. **El Smoke-PB contratado** ([SR]), con la frontera de §5.4.
++
++   **Si el `--commit` para a mitad** y deja un estado parcial: `git -C <worktree> status`; se restauran [DISP], `I-64-evidence.md` e `I-64.yml` desde HEAD (`git -C <worktree> restore --source=HEAD --staged --worktree -- <esas tres rutas>`), y se retiran solo las rutas nuevas del listado del `--dry` y el contrato, si quedaron. Si el estado no se entiende, o el commit llegó a hacerse sin subirse, al Owner.
++6. **El Smoke-PB contratado** ([SR]), con la frontera de §5.4: la sesión lo opera sola solo si la emisión y P-01 a P-08 están hechas antes de las 12:00 UTC.
+ 7. **La custodia** de la corrida, redactada, en un commit documental de la sesión.
+ 8. **La revisión independiente de la evidencia** (Q-PBT5-8), en solo lectura.
+ 9. **La disposición del Owner** (los S+O, los OBSERVADO, SPB-07 si toca) **y su firma.**
+@@ -638,7 +692,8 @@
+ ## 7. Riesgos
+ 
+ Son los de la v2.2 (§7), con estos cambios:
+-- **R-1:** la corrida es larga (65 pasos y 44 copias, más las de P-09). La frontera de las 13:00 UTC la corta, y se sigue con el Owner. Los bloques son independientes, y el orden de [SR] deja para el final las inyecciones, que necesitan sus propios AutoCAD.
++- **R-1:** la corrida es larga (65 pasos y 44 copias, más las de P-09). Solo empieza sin el Owner si está lista antes de las 12:00 UTC, y la frontera de las 13:00 UTC la corta; se sigue con el Owner. Los bloques son independientes, y el orden de [SR] deja para el final las inyecciones, que necesitan sus propios AutoCAD.
++- **R-18, nuevo: la lista local de la selección se filtra a la custodia.** Vive fuera de la carpeta del paquete; [SR] la lee por su ruta y su SHA-256, y los manifiestos y el registro solo nombran `eNN` y papeles de Smoke-2. Los patrones de privacidad pasan por todo lo que se custodia (§5.8).
+ - **R-15, nuevo: una variable de depuración que se escapa del proceso de su inyección.** Se lanza con `ProcessStartInfo.Environment`, y antes y después se comprueban el usuario, la máquina y el shell. Ninguna otra instancia de la sesión puede estar viva al lanzarla.
+ - **R-16, nuevo: un contexto construido que se toma por real.** El rótulo, la gemela clásica y la línea entre preparar y construir (§5.6).
+ - **R-17, nuevo: recompilar el DLL después del commit de la emisión.** Cambiaría la `ProductVersion`, y el bloque 7 de [SR] lo detectaría. El build va antes del commit (§3.1).
+@@ -647,7 +702,7 @@
+ 
+ ## 8. Supuestos declarados
+ 
+-- **S-1:** la frontera de esta noche es la lectura de la sesión principal del mensaje del Owner (§5.4). El Owner no la confirmó, porque Q-PBT5-5 no se le preguntó.
++- **S-1:** la frontera de esta noche es la **lectura estrecha** del mensaje del Owner (§5.4; [CA5] I-03): la sesión opera sola solo si la emisión y P-01 a P-08 están hechas antes de las 12:00 UTC, y para a las 13:00 UTC. Vale en las dos interpretaciones de «se complete», así que no necesita confirmación. La lectura amplia (empezar sola hasta las 13:00 UTC) sí la necesitaría: es Q-PBT5-5, que no se preguntó.
+ - **S-3:** el Candidato es la punta del cierre de PB-T4e, desde la que se compila el DLL, y el commit de la emisión va encima (§3.1).
+ - **S-4 a S-7, S-10 y S-11:** como en la v2.2 (§8). S-7, una copia por escenario, deja de ser un supuesto: el Owner la adoptó (Q-PBT5-9).
+ - **S-12, nuevo:** la emisión de PB-T5 es un solo commit documental, F4B-E62 y la §292. Lleva el paquete, el registro del Owner, el contrato como documento y la historia. Las tareas de F4B con `gate-contract.json` emitían en dos commits (X y BASE), pero sin contrato JSON no hay BASE que generar.
+@@ -657,7 +712,7 @@
+ ## 9. Las decisiones del Owner, y lo que le queda
+ 
+ - **Decididas** ([OD5]): Q-PBT5-7, Q-PBT5-8, Q-PBT5-9, Q-PBT5-1, Q-PBT5-10, Q-PBT5-4 y Q-PBT5-2.
+-- **No preguntada:** Q-PBT5-5. La corrida previa no se hizo.
++- **No preguntada:** Q-PBT5-5. La corrida previa no se hizo. La v2.4 aplica la lectura estrecha de la frontera, que no la necesita (S-1).
+ - **Lo que le queda al Owner en PB-T5:**
+   - los 9 juicios S+O;
+   - SPB-07 si ningún dibujo guarda un estilo;
+@@ -674,7 +729,10 @@
+ 
+ ## 10. Lo no verificado
+ 
+-- **La CI de push del Candidato** (`45147867500`): en curso al escribir esto.
++- **Verificado desde la v2.3:**
++  - la CI de push del Candidato (`45147867500`), 4/4 en `success` con los totales de §2 ([CA5]);
++  - **medido en esta v2.4,** sin AutoCAD: en PowerShell 7.7, `git show <rev>:…/dimkeys.py > <archivo>` deja los bytes tal cual (0 CR), y `git hash-object --no-filters` da el mismo id que `git rev-parse` (`57decb54…`, igual en `7da361eb` y en `ebd304a3`);
++  - **la forma de la lista local de la selección,** sin leer sus rutas: siete entradas con `Source`, `Sha256`, `Roles` y `Exists`, y sus siete SHA-256 son los O1 a O7 de `F4-SMOKE-2/run/integrity.md`.
+ - **Sin AutoCAD, sin verificar:**
+   - `vla-item` por nombre;
+   - `rcdyn` y `rcdynchk`;
+@@ -683,7 +741,8 @@
+   - las órdenes nativas de los contextos construidos (`-LAYOUT`, `-INSERT`, `-BLOCK`, `-LAYER` y `-PURGE`) con sus respuestas;
+   - que `QUIT` cierre limpio la instancia de cada inyección.
+ - **Si se llega a «Conservar»** (R-2), si se alcanza escenificar un módulo (SPB-21), si hay un rack real con un diagnóstico bloqueante (SPB-56) y si la copia enlazada de D1 sigue teniendo el mismo texto (SPB-63).
+-- **Los originales** de D1 y de los demás dibujos de la selección de Smoke-2: dónde están hoy y sus SHA-256.
++- **Los originales** de D1 y de los demás dibujos de la selección de Smoke-2: si siguen en las rutas de la lista, si sus SHA-256 de hoy son los de Smoke-2 y cuáles tienen racks Push Back. Lo miden los bloques 13 y 14 de [SR].
++- **Que `gh run list --commit`** exista en la versión de `gh` de la sesión (bloque 1 de [SR]); si no, el bloque para.
+ - **Que la herramienta deje correr en segundo plano** las órdenes de más de 10 minutos.
+ - **La duración real** de la corrida.
+-- **El guion de la emisión** no se ha ejecutado, ni en `--dry`.
++- **El guion de la emisión** no se ha ejecutado, ni en `--dry`. Sus funciones sin efectos (`yml_new`, la extracción del contrato y la línea `BOUNDED_RESULT`) se probaron en local sobre `ebd304a3:docs/automation/state/I-64.yml` y esta v2.4 (traspaso v4).

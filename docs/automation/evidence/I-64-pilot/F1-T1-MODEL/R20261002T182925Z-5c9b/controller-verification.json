@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T1-MODEL",
+  "RunId": "R20261002T182925Z-5c9b",
+  "DelegationRunId": "R20261002T171954Z-754a",
+  "WorkRunId": "R20261002T181905Z-faf1",
+  "Attempt": 3,
+  "VerifiedSha": "39f7caa411a5ebb372614c233a32255de7398cca",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, Cession.SessionOperated=false; Cession.StartUtc=2026-10-02T18:19:46Z. No active Worker process is reported."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present and identifies TaskId=F1-T1-MODEL, Attempt=3, DelegationRunId=R20261002T171954Z-754a, RunId=R20261002T181905Z-faf1. relay-record-work.json records OutputWrittenUtc=2026-10-02T18:25:22.614962Z, after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git rev-parse confirms AuthorityRevision=e0587355b0e84d98807057a56dfc50591da87489; git merge-base --is-ancestor AuthorityRevision BaseSha exits 0. External instructions were read from MainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c. git diff --name-only MainSha..AuthorityRevision shows no change to docs/AUTOMATION_PLAN.md, docs/automation/agent-execution/README.md or AGENTS.md. git diff --name-only AuthorityRevision..BaseSha has no EXTERNAL authority path. The contract and delegation each list 24 authorities."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json: Unit/Gate/TaskId, AuthorityRevision, MainSha, AllowedWriteScope, ForbiddenWriteScope, Invariants, StopCondition IDs and RequiredTests match. The planning relay records A1-A8 all pass and the Coordinator accepted the package before the Worker invocation."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD, CurrentSha and refs/remotes/origin/architecture/workspace-persistente-rackcad all return 39f7caa411a5ebb372614c233a32255de7398cca. git rev-parse --abbrev-ref HEAD returns architecture/workspace-persistente-rackcad. git merge-base --is-ancestor BaseSha CurrentSha exits 0. Handoff branch and worktree match the delegation. RedSha is null."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts records LsRemoteSha=39f7caa411a5ebb372614c233a32255de7398cca and OriginMainSha=819955d61a6da4c811a11fbd11b5dca13f634b7c, matching CurrentSha and MainSha. Local origin branch ref also resolves to CurrentSha. A live git ls-remote query was attempted but could not connect through the restricted network."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only 0b7db52f12ddbf7ed36c8c2d020645818335c0fa..39f7caa411a5ebb372614c233a32255de7398cca returns only src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs, which is the sole exact path in the acceptance criteria and is within AllowedWriteScope. No forbidden path is present."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --short --branch reports a clean worktree on architecture/workspace-persistente-rackcad at the remote-tracking tip. git check-ignore -v for the handoff input reports .gitignore:3:artifacts/, confirming the orchestration package path is ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "relay-record-work.json records push run 37046833476 on refs/heads/architecture/workspace-persistente-rackcad at exact head 39f7caa411a5ebb372614c233a32255de7398cca, conclusion success. All four required jobs are success: Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application), and Build Plugin without AutoCAD. The Plugin job log reports Release publish and solution Release build succeeded without warnings and AutoCAD compile-reference verification passed. No RED is required: the diff touches none of the five ChainRedFiles and ChainRedSha is a9778068af566bc2b84ba6a0005711b6452a2666. The prior relay record identifies push RED run 37019198364 for that ChainRedSha."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "not_applicable",
+      "Evidence": "core.trx for run 37046833476 reports total=12447, executed=12447, passed=12447, failed=0. The RequiredTests filter FullyQualifiedName~RackCad.Tests.Workspace selected 51, passed 51 and failed 0, matching relay-record-work.json. The handoff also reports local filter 51/51 and Core suite 12447/12447. No RED is required because the current diff touches none of ChainRedFiles: tests/RackCad.Tests/Workspace/SelectionContextTests.cs, WorkspaceHintDrainTests.cs, WorkspaceModelBoundaryTests.cs, WorkspaceSelectionContextTests.cs and WorkspaceSessionTests.cs. The prior relay record for ChainRedSha a9778068af566bc2b84ba6a0005711b6452a2666 reports RED run 37019198364 with 51 selected, 22 passed and 29 failed. ui.trx reports total=1654, executed=1637, passed=1637, failed=0; the 17 omitted Skip results are recorded as NotExecuted while Counters.notExecuted=0 under the stated logger convention."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows one commit with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer. relay-record-work.json records the effective model as claude-sonnet-5-5 and effective effort medium, consistent with the delegated cell."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json identify the eligible cell claude-sonnet-5-5|subagent with tested effort medium. relay-record-work.json records effective model claude-sonnet-5-5 and effective effort medium."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against the AUTOMATION_PLAN 16.10 term list; no match."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes reports no permission denial and zero limit-warning matches. It describes one intermediate script error while rewriting the handoff path, corrected in later calls; the final handoff is valid and no failed order remains pending."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The only changed line is the XML class comment in WorkspaceSessionRegistry.cs: git show confirms it now describes a transient in-memory registry without persistence authority.",
+    "A live git ls-remote recheck was blocked by network access; the work relay records the matching remote SHA, and the local origin branch ref matches CurrentSha.",
+    "The handoff lists Owner validation and AutoCAD interaction as pending boundaries; no AutoCAD or owner action was part of this verification.",
+    "Both TRX files have zero failed tests. The UI logger reports 17 omitted tests through result outcomes while Counters.notExecuted remains zero."
+  ],
+  "RecommendedNextAction": "Entregar esta verificacion al Coordinator para continuar con la custodia y el relevo."
+}

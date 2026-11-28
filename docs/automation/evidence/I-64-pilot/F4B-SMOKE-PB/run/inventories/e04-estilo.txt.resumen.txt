@@ -1,0 +1,36 @@
+inventario: e04-estilo.txt
+sha256: c1445b6f827f6ec0ec355403d27c275233fc2de2feddcc37062c4957c7a43100
+bytes: 1397933
+
+(inventario en Windows-1252; resumido desde una copia en UTF-8)
+REF 6
+  REF handle=2F9A70 nombre=Rack B 15 Frentes - frontal salida capa=0
+  REF handle=2F3E75 nombre=Rack B 15 Frentes - planta capa=0
+  REF handle=2EF942 nombre=Rack B 15 Frentes - lateral 1 capa=0
+  REF handle=2EBF16 nombre=Rack A 21 Frentes - frontal salida capa=0
+  REF handle=2E3733 nombre=Rack A 21 Frentes - planta capa=0
+  REF handle=2DE7B3 nombre=Rack A 21 Frentes - lateral 1 capa=0
+DEF 21
+  DEF Selectivo frontal - 22 frentes - H240 entidades=111 json=22729 ('selective', 'frontal', '', 'c06e61fd-87ba-419b-9b70-98305f5cf660', -1)
+  DEF Selectivo - lateral 3 entidades=26 json=22728 ('selective', 'lateral', '', 'c06e61fd-87ba-419b-9b70-98305f5cf660', 2)
+  DEF Selectivo - lateral 1 entidades=24 json=22728 ('selective', 'lateral', '', 'c06e61fd-87ba-419b-9b70-98305f5cf660', 0)
+  DEF Selectivo planta - 22 frentes entidades=159 json=22728 ('selective', 'planta', '', 'c06e61fd-87ba-419b-9b70-98305f5cf660', -1)
+  DEF Selectivo entidades=74 json=18792 ('selective', 'frontal', '', '31162c2e-1fd6-43c3-8351-925c2f78d213', 0)
+  DEF Selectivo - lateral 1_1 entidades=160 json=18792 ('selective', 'lateral', '', '31162c2e-1fd6-43c3-8351-925c2f78d213', 0)
+  DEF Selectivo planta - 5 frentes entidades=112 json=18792 ('selective', 'planta', '', '31162c2e-1fd6-43c3-8351-925c2f78d213', -1)
+  DEF Push Back - lateral 1 - 1 frentes entidades=95 json=68859 ('pushback', 'lateral', '', 'd4244f83-de78-46d5-8873-4845f63c63ac', 0)
+  DEF Push Back frontal entrada-salida - 3 frentes entidades=60 json=68859 ('pushback', 'frontal', '', 'd4244f83-de78-46d5-8873-4845f63c63ac', 0)
+  DEF Push Back planta - 3 frentes entidades=169 json=68859 ('pushback', 'planta', '', 'd4244f83-de78-46d5-8873-4845f63c63ac', -1)
+  DEF Selectivo_1 entidades=22 json=2494 ('selective', 'frontal', '', 'b1a7b00e-474e-4e97-a8fc-6837c7de0662', 0)
+  DEF Dinamico - lateral 1 entidades=78 json=49866 ('dynamic', 'lateral', '', '1a57ac82-a500-4689-95fc-f4872300a511', 0)
+  DEF RACKCAD_CANTILEVER_LINEA_FRONTAL entidades=2011 json=5691 ('cantilever', 'frontal', '', '1cf2f315-eb62-44a9-a797-93110345b57f', -1)
+  DEF RACKCAD_CANTILEVER_LINEA_LATERAL_E1 entidades=425 json=5690 ('cantilever', 'lateral', '', '1cf2f315-eb62-44a9-a797-93110345b57f', 0)
+  DEF RACKCAD_CANTILEVER_LINEA_PLANTA entidades=2498 json=5690 ('cantilever', 'planta', '', '1cf2f315-eb62-44a9-a797-93110345b57f', -1)
+  DEF Rack A 21 Frentes - lateral 1 entidades=162 json=183181 ('dynamic', 'lateral', 'Rack A 21 Frentes', '885d4477-bf05-4ac8-8b7e-ddde5bb327de', 0)
+  DEF Rack A 21 Frentes - planta entidades=809 json=183181 ('dynamic', 'planta', 'Rack A 21 Frentes', '885d4477-bf05-4ac8-8b7e-ddde5bb327de', -1)
+  DEF Rack A 21 Frentes - frontal salida entidades=358 json=183181 ('dynamic', 'frontal', 'Rack A 21 Frentes', '885d4477-bf05-4ac8-8b7e-ddde5bb327de', 0)
+  DEF Rack B 15 Frentes - lateral 1 entidades=139 json=132834 ('dynamic', 'lateral', 'Rack B 15 Frentes', '2d0d20be-64c7-4b90-a487-5071ba69969c', 0)
+  DEF Rack B 15 Frentes - planta entidades=555 json=132834 ('dynamic', 'planta', 'Rack B 15 Frentes', '2d0d20be-64c7-4b90-a487-5071ba69969c', -1)
+  DEF Rack B 15 Frentes - frontal salida entidades=262 json=132834 ('dynamic', 'frontal', 'Rack B 15 Frentes', '2d0d20be-64c7-4b90-a487-5071ba69969c', 0)
+BLK 1224 ; DEF entre las BLK: True
+NEST 0

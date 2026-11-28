@@ -1,0 +1,53 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261118T124024Z-1d1d",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Ci"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "La rama y el worktree coinciden. git merge-base confirma BaseSha eedb069ce8ae79cda684f2620694949fd402051d y RedSha 3677847c59e92b34567fa42c600eb2c01e65576c como ancestros de HEAD. git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4; ambos contradicen el CurrentSha falso del relevo."
+  },
+  "OutputSha256": "EF99D82D527539331BC94865AE888F3597485A94A66404DE0F8B21DD2BA2254C",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T1-BROWSER-CORE",
+  "RunId": "R20261110T143036Z-9cbf",
+  "DelegationRunId": "R20261110T140050Z-8317",
+  "WorkRunId": "R20261110T140432Z-0e2b",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt=1, DelegationRunId and WorkRunId; OutputWrittenUtc 2026-11-10T14:20:58Z is after Cession.StartUtc 14:04:53Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git diff --name-only AuthorityRevision BaseSha lists only docs/automation/evidence/I-64-evidence.md, docs/automation/state/I-64.yml and the gate-contract.json, all UNIT_DOC in delegation Authorities; no EXTERNAL or UNIT_CHANGE path."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Delegation scopes, invariants, stop-condition IDs and RequiredTests match gate-contract.json; all 17 Freeze invariants are present."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git confirms BaseSha is ancestor of RedSha and RedSha of CurrentSha; HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both equal CurrentSha a92039bbbdc85c38c380a8a319e577d625d3910c. Branch and worktree match delegation."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records ls-remote=CurrentSha and origin/main=MainSha 812baf879612320653094a8aaf46aca0bac81383; CurrentRun head_sha and ref match the pushed CurrentSha and branch."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists exactly the 6 AllowedWriteScope paths; no ForbiddenWriteScope path is present."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty; git check-ignore -v confirms the verification input package is ignored by .gitignore rule artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "CurrentRun 42833048949 is completed success for push refs/heads/architecture/workspace-persistente-rackcad at CurrentSha; all four required jobs succeeded. RedRun 42832249016 is a push at RedSha with Tests (Domain + Application) failed. Its core.trx shows 39 matching Workspace failures."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RequiredTests filter matched 855 UnitTestResult entries in each CI core.trx, above MinSelected=782. CurrentSha TRX: 855 passed, 0 failed; RedSha TRX: 816 passed, 39 failed. These counts agree with worker-handoff.json. git diff BaseSha..RedSha -- tests/ gives the 4 Workspace test paths (ChainRedFiles); git diff RedSha CurrentSha lists only BrowserSession.cs and BrowserSessionRegistry.cs, so GREEN leaves RT untouched."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both RED and GREEN commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json."
+    },
+    "Routing": {
+      "Result": "fail",
+      "Evidence": "The delegation requests Model=claude-sonnet-5-5 and effort high. relay-record-work.json records ModelRequested=sonnet, ModelEffective=claude-sonnet-5-5 and EffortEffective=high. The required routing check compares requested and effective model values; sonnet does not equal claude-sonnet-5-5."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against the complete 16.10 term list; no whole-word or whole-phrase match."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials, 0 tool errors and none pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "BLOCKED",
+  "FailureClass": "Routing",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Required routing does not match: requested model is sonnet, while the effective model is claude-sonnet-5-5."
+  ],
+  "RecommendedNextAction": "Resolve the required model-routing mismatch and submit a new verification run."
+}

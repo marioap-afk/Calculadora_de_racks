@@ -1,0 +1,91 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261114T205928Z-7e23",
+  "SourceVerification": "R20261114T204712Z-88aa",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T4A2-PREPARE-UI/2/R20261114T204712Z-88aa/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "CoveringEntries": [
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "E3C0163BAA8F78D3439708D626CD1AE681BEA8F555D048A599DA70F661F78903",
+    "New": "4F801BC821C681F5C99002AD44317B961DAA020E2476A453611056187859C3D2",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "770285C9CBAB2D4DFB9A8A29E0F520201F4F06570ADF175F02190D43C143EAB1",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "EB271EC7C56E621F4DC4EE1CD751408E9F13EAFAE2B093E4CD7BD2E46BD12EA1",
+    "clarification-note.md": "2F27420F236A931B1A0037405315BBAD251084F0D47C420E3D3A821535186260",
+    "delegation.json": "4F801BC821C681F5C99002AD44317B961DAA020E2476A453611056187859C3D2",
+    "gate-contract.json": "58DC069ADE4F2FAA5D106A016FD4E57AB199E52EA53EC92D6A5FD7A598022DC9",
+    "relay-record-planning.json": "7E3563533CC62FDEEC3BBA1E635DD897513CE3798D36F28BF12D88DBB08A5B33",
+    "relay-record-work.json": "2BA552D53040B103C5A3B43FEC3C56544248E2A2AA9BA8EFC5EB895C1DFEF6AE",
+    "worker-handoff.json": "25FD64D5364D95E482ABD042BD5014CC103A9A80084FBEE4EE81E44E23D1DD39",
+    "ci-core/43617317131/core.trx": "56416DA556239DDBC7BF33169D6915445A7D634A267A591C39A4B9FCA94C5922",
+    "ci-core-red/43616238873/core.trx": "DB169D14352C45DD779A405251A5C222B0057DD058B789D6CD760ED6E32B1EF4",
+    "ci-ui/43617317131/ui.trx": "F0BB2E6F2DDB353CF278725AAC217BEE15F85C6C153A8EEE562565B72BFB0632",
+    "ci-ui-red/43616238873/ui.trx": "CB9AAE14F5A67596C547E91EE55E632A2AA4C62ECA3A1BF157FC954B8982C52D"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

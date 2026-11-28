@@ -1,0 +1,53 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261120T151131Z-8a51",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD=938a35f0f1636b4306d844eb9e34000e8967c05e; refs/remotes/origin/architecture/workspace-persistente-rackcad has the same SHA; branch and worktree match. BaseSha is an ancestor of RedSha and RedSha an ancestor of HEAD (both merge-base checks exit 0). worker-handoff.json CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, which differs from HEAD and the remote ref."
+  },
+  "OutputSha256": "41E85973DAB1D5B8F01B3D0ADA8725F4391A7078C8E7FF9F94283059724911C7",
+  "ManualFreeText1610": []
+}

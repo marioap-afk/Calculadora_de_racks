@@ -1,0 +1,171 @@
+{
+  "Schema": "rackcad-i64-scope-bridge-run/v1",
+  "TaskId": "F1-T3B-HOST-UI",
+  "RunId": "R20261011T155756Z-b8c9",
+  "Amendment": "docs/initiatives/I-64-A-4.md",
+  "HeadSha": "e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+  "StartedUtc": "2026-10-11T15:58:25.754203+00:00",
+  "Nc2RunId": "R20261011T155301Z-d68b",
+  "Verifier": {
+    "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+    "HeadBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBytesSha256": "14e3dc3e47e176bb88e6f3c30db11ab15e98ccb8a821615d7c957573adca0557",
+    "ExecutedPath": "artifacts/orchestration/I-64/F1-T3B-HOST-UI-scope-bridge/R20261011T155756Z-b8c9/verifier/verify_scope_bridge.py",
+    "ExecutedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "Sha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "AuthorizedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "AuthorizedSha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "Note": "se ejecutan los bytes exactos del blob autorizado extraidos de HEAD (git cat-file blob); la copia del arbol de trabajo tiene CRLF por core.autocrlf tras el checkout del rebase (mismo blob)",
+    "IdentityOk": true
+  },
+  "Inputs": {
+    "RealDelegation": {
+      "Path": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/delegation.json",
+      "Sha256": "683cbe6f53ddf34ea4d2b6a1097d3949c6de6b00cf5872edbd6cc6555b068009"
+    },
+    "AdversarialDelegation": {
+      "Path": "artifacts/orchestration/I-64/F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/delegation.json",
+      "Sha256": "fb84211df5cac2c82773d968ffec18c6758449ed90dcbe678c1dab5f8966cb66"
+    },
+    "Handoff": {
+      "Path": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/worker-handoff.json",
+      "Sha256": "b41f5499c0f2ee99a5cba705918ada24d77e3b92b0b3c01104e337799ecd7776"
+    },
+    "RealDelegationEqualsAccepted": true,
+    "AdversarialEqualsNc2InputAsCustodiedInMutation": true,
+    "Excluded": "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+      "src/RackCad.UI/Workspace/WorkspaceMeasurementRow.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelState.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelContextTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelErrorTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelInstrumentationTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelNoWorkTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelStateTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelViewTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePortDouble.cs"
+    ]
+  },
+  "Real": {
+    "Command": "python <bytes del blob cf381ab9 extraidos de HEAD:docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py> --repo <worktree> --delegation artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/delegation.json --handoff artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/worker-handoff.json --expected-base f3a9f40e0d0057e14a6eb7a6681590b78cecf37f --expected-current e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+    "ExitCode": 0,
+    "OutputSha256": "7da05efb01f666fb65ef080a36ff070f59fed234e298f6f1e547498c77de4238",
+    "Stderr": "",
+    "Result": "PASS",
+    "Reasons": [],
+    "ChangedPaths": [
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+      "src/RackCad.UI/Workspace/WorkspaceMeasurementRow.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelState.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelContextTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelErrorTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelInstrumentationTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelNoWorkTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelStateTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelViewTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePortDouble.cs"
+    ],
+    "OutsideAllowed": [],
+    "ForbiddenHits": [],
+    "ExactDeltaDisposition": {
+      "Classification": "T3B-SCOPE-NONSEMANTIC-WHITESPACE-01",
+      "Source": "artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/coordinator-disposition.md",
+      "SourceSha256": "91a87b226837a4a7527b333ecaa850bde7a4de48db33258f9ed3bd42c8d1fdb9",
+      "BaseLine": "private const string HostCorePath = \"src/RackCad.Application/Workspace/WorkspaceHostCore.cs\";",
+      "ProductLine": "private const string HostCorePath =\"src/RackCad.Application/Workspace/WorkspaceHostCore.cs\";",
+      "LinesQuotedInDisposition": true,
+      "ExactDeltaFiles": {
+        "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs": {
+          "ChangedLinesExact": 22,
+          "ChangedLinesIgnoringWhitespace": 22,
+          "WhitespaceOnlyChangedLines": []
+        },
+        "src/RackCad.Plugin/Workspace/WorkspaceController.cs": {
+          "ChangedLinesExact": 66,
+          "ChangedLinesIgnoringWhitespace": 66,
+          "WhitespaceOnlyChangedLines": []
+        },
+        "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs": {
+          "ChangedLinesExact": 11,
+          "ChangedLinesIgnoringWhitespace": 11,
+          "WhitespaceOnlyChangedLines": []
+        },
+        "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs": {
+          "ChangedLinesExact": 19,
+          "ChangedLinesIgnoringWhitespace": 17,
+          "WhitespaceOnlyChangedLines": [
+            "-    private const string HostCorePath = \"src/RackCad.Application/Workspace/WorkspaceHostCore.cs\";",
+            "+    private const string HostCorePath =\"src/RackCad.Application/Workspace/WorkspaceHostCore.cs\";"
+          ]
+        }
+      },
+      "Rule": "la excepcion se aplica solo a la linea HostCorePath exacta de WorkspaceHostSourceGuardTests.cs; en los archivos de delta exacto no puede haber ninguna otra linea cambiada solo por espacios; el resto del contenido de esos archivos lo valida la verificacion del Controller contra el contrato original (G1/G2/G3 e INV-F1-T3B-03/04/05)",
+      "Note": "el verificador cf381ab9 evalua el alcance por rutas (AllowedWriteScope/ForbiddenWriteScope) y no inspecciona lineas; la disposicion no cambia ninguna ruta, por lo que su resultado REAL no depende de ella; esta seccion registra junto al REAL la parte de delta exacto conforme a la disposicion, sin modificar el verificador ni los bytes del producto",
+      "ExceptionAppliedOnlyToThatLine": true
+    }
+  },
+  "Adversarial": {
+    "Command": "python <bytes del blob cf381ab9 extraidos de HEAD:docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py> --repo <worktree> --delegation artifacts/orchestration/I-64/F1-T3B-HOST-UI-nc2/3/R20261011T155301Z-d68b/inputs/delegation.json --handoff artifacts/orchestration/I-64/F1-T3B-HOST-UI/3/R20261011T153749Z-7910/inputs/worker-handoff.json --expected-base f3a9f40e0d0057e14a6eb7a6681590b78cecf37f --expected-current e0205b5a9f000bbd44aa1f7556d30f06411c3db7",
+    "ExitCode": 1,
+    "OutputSha256": "2b47d8286ea39a6c5e16bd3494e10747435a5f5edaaf6d6717a2c163dd0775b7",
+    "Stderr": "",
+    "Result": "FAIL",
+    "Reasons": [
+      {
+        "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+        "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs\"]"
+      }
+    ],
+    "ChangedPaths": [
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+      "src/RackCad.UI/Workspace/WorkspaceMeasurementRow.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelState.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelContextTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelErrorTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelInstrumentationTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelNoWorkTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelStateTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePanelViewTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePortDouble.cs"
+    ],
+    "OutsideAllowed": [
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs"
+    ],
+    "ForbiddenHits": []
+  },
+  "Oracle": {
+    "RealPass": true,
+    "AdversarialExpectedFail": true,
+    "SameChangedPaths": true,
+    "SameIdentityHashes": true,
+    "RealExactDeltaUnderDisposition": true,
+    "Ok": true
+  },
+  "FinishedUtc": "2026-10-11T15:58:27.651279+00:00"
+}

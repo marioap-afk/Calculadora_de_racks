@@ -1,0 +1,83 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs b/src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs
+index 6f690985..7a4ed204 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs
+@@ -1,21 +1,31 @@
++using System;
+ using RackCad.Application.Persistence;
+ 
+ namespace RackCad.Application.Systems.PushBack
+ {
+     /// <summary>
+     /// The typed argument that opens the full Push Back editor in Workspace mode: the state to edit, the identity of the
+-    /// rack, the project the rack comes from and the port through which the edited state goes back.
++    /// rack, the project the rack comes from and the port through which the edited state goes back. It keeps the
++    /// references it is given as they are: it copies nothing.
+     /// </summary>
+     public sealed class PushBackDraftEditorLaunch
+     {
+         public PushBackDraftEditorLaunch(PushBackEditableState state, string rackId, RackProject sourceProject, IPushBackDraftStatePort port)
+         {
++            if (state == null) throw new ArgumentNullException(nameof(state));
++            if (string.IsNullOrWhiteSpace(rackId)) throw new ArgumentException("A rack id is required.", nameof(rackId));
++            if (port == null) throw new ArgumentNullException(nameof(port));
++            State = state;
++            RackId = rackId;
++            SourceProject = sourceProject;
++            Port = port;
+         }
+ 
+         public PushBackEditableState State { get; }
+ 
+         public string RackId { get; }
+ 
++        /// <summary>The inner project of the envelope, with its metadata. It may be null.</summary>
+         public RackProject SourceProject { get; }
+ 
+         public IPushBackDraftStatePort Port { get; }
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs b/src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs
+index 305282f1..a16af51e 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackDraftStatePort.cs
+@@ -1,3 +1,4 @@
++using System;
+ using RackCad.Application.Persistence;
+ using RackCad.Application.Workspace.Drafts;
+ 
+@@ -34,21 +35,33 @@ namespace RackCad.Application.Systems.PushBack
+         PushBackDraftApplyResult ApplyToDraft(PushBackEditableState edited);
+     }
+ 
+-    /// <summary>The port over the draft of a rack: it hands the edited state to the draft, which keeps a copy of it.</summary>
++    /// <summary>
++    /// The port over the draft of a rack: it hands the edited state to the draft, which keeps a COPY of it. The adapter
++    /// itself copies nothing, validates nothing and calls no other operation of the draft.
++    /// </summary>
+     public sealed class PushBackDraftSessionPort : IPushBackDraftStatePort
+     {
++        private readonly DraftSession<PushBackEditableState> draft;
++
+         public PushBackDraftSessionPort(DraftSession<PushBackEditableState> draft)
+         {
++            if (draft == null) throw new ArgumentNullException(nameof(draft));
++            this.draft = draft;
+         }
+ 
+         public PushBackDraftApplyResult ApplyToDraft(PushBackEditableState edited)
+         {
+-            return new PushBackDraftApplyResult(PushBackDraftApplyStatus.NotEditable, false);
++            if (edited == null) throw new ArgumentNullException(nameof(edited));
++            var result = draft.SetCurrentDraftState(edited);
++            return new PushBackDraftApplyResult(
++                result.Status == DraftEditStatus.Updated ? PushBackDraftApplyStatus.Applied : PushBackDraftApplyStatus.NotEditable,
++                result.IsDirty);
+         }
+ 
+         public static PushBackDraftEditorLaunch LaunchFor(DraftSession<PushBackEditableState> draft, RackProject sourceProject)
+         {
+-            return null;
++            if (draft == null) throw new ArgumentNullException(nameof(draft));
++            return new PushBackDraftEditorLaunch(draft.CurrentDraftState, draft.RackId, sourceProject, new PushBackDraftSessionPort(draft));
+         }
+     }
+ }

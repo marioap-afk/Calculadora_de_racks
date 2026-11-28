@@ -1,0 +1,118 @@
+# measure_pbt3c.py: la remedicion de PB-T3c sobre el cierre de PB-T3b (fe1c67f4), por objetos git; generador make_pbt3c_contract.py (sha256 ba83ba6ee826b2eb), paquete I-64-f4b-pbt3-gate-contract-package-v47.md (sha256 976361c00388c9af)
+
+== el seco (el contrato en seco, sha256 E19FA3A9707B370C49C63FBCE372FA682F4B76CE2481399CE03C0EE19437589E)
+  DRY rev fe1c67f4 (objetos del checkout principal) allowed 4 forbidden 181 (src 56 tests 108 [core 39 ui 69] root 17 ) inv 12 stops 33 required 36 evidence 15 authorities 50 anchors-ok 28 bytes 54162 sha256 E19FA3A9707B370C49C63FBCE372FA682F4B76CE2481399CE03C0EE19437589E
+  anclaje: desciende de d8ccbcb8 (F4B-E29), c40eea4a (F4B-E43), eab27a9e (F4B-E44), c7441653 (F4B-E45), el GREEN c7582785 y el cierre fe1c67f4 (F4B-E46); src y tests == el cierre == el GREEN de PB-T3b; la CI 44707482956 (Core 19124 con 6 Skipped; UI 2451 con 21) en la entrada de cierre y en count-rows-out.txt | f4b-dispositions hasta F4B-E46
+  contrato de PB-T3b: docs/automation/evidence/I-64-pilot/F4B-PBT3B-FULL-WRITE-RUN/coordinator/gate-contract.json en fe1c67f4 (reemitido, AuthorityRevision 2bb3b759, 66 autoridades) | tests de PB-T3c: Core 39 y UI 69; src: 56
+  PBT3C-C11: el bloque citado con el prefijo de PB-T3c; nc1 41440edc; nc2 v2 c033e96c, con --task PBT3C en su lista (PBT2A, PBT3A, PBT3B, PBT3C, PBT4, PBT5) y la primera evidencia en F4B_EXACT_EVIDENCES
+  tabla de RR-3 (filas de PB-T3c): 2 clases, una fila cada una; PushBackViewEraseGuardTests 16 lineas y 0 valores; PushBackWritePathPluginGuardTests 11 lineas (las ocho fichas de D2 de PushBackSharedReferenceGuardTests.cs:35-36 y las reglas Rule1, Rule1b y Rule1c de :57-69, en la revision)
+  la CI prevista (F4B-E46, el total exacto de su unica rama): Previstos, con el total exacto de cada rama (F4B-E46; V47-03): PB-T3c no quita ningun Skip de D-1 ni anade ninguna Theory, asi que hay una sola rama. El RED: Core 19 129 resultados, con 19 119 Passed, 4 Failed (CT-01 a 04) y 6 Skipped. El GREEN: Core 19 129, con 19 123 Passed, 0 Failed y 6 Skipped. UI, en los dos: 2 451, con 2 430 Passed y 21 Skipped.
+  D1: needs de build-plugin = ['tests', 'build-ui'] | (A') en el contrato: 0
+  emision (F4B-E47, tras el cierre F4B-E46): F4B-E47 en f4b-dispositions.md: no (lo entrega el commit X) | evidencia: X 274 y BASE 275, tras la 273
+  paquete leido: --package-file I-64-f4b-pbt3-gate-contract-package-v47.md -> v4.7 | sha256 976361c00388c9af | textos de la v4.7 comprobados: sin (A') en 34 textos copiados, Objective (v4.7), AllowedWri ...
+  los MinSelected:
+    Core PushBackViewEraseGuardTests                      new    paquete=4     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=4 ExpectRed=True
+    Core PushBackWritePathPluginGuardTests                new    paquete=1     medido: clases=0 ejecutables=0 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    Core WorkspacePilotUpdateGuardTests                   f4     paquete=-     medido: clases=1 ejecutables=86 skip=1 memberdata=0 -> MinSelected=86 ExpectRed=False
+         WorkspacePilotUpdateGuardTests: 86, los Passed de la TRX del GREEN de PB-T3b (count-rows-out.txt); medido estatico 86 ejecutables, 1 skip y 0 Theory con MemberData
+    Core WorkspacePilotUpdateIntegrationGuardTests        f4     paquete=-     medido: clases=1 ejecutables=123 skip=2 memberdata=0 -> MinSelected=123 ExpectRed=False
+         WorkspacePilotUpdateIntegrationGuardTests: 123, los Passed de la TRX del GREEN de PB-T3b (count-rows-out.txt); medido estatico 123 ejecutables, 2 skip y 0 Theory con MemberData
+    Core PushBackSharedReferenceGuardTests                t3b    paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+    UI   PushBackFullDraftWindowParityTests               parity paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    Core PushBackFullWrite                                t3b    paquete=13    medido: clases=2 ejecutables=13 skip=0 memberdata=0 -> MinSelected=13 ExpectRed=False
+    Core PushBackPilotUpdateEquivalenceGuardTests         t3b    paquete=6     medido: clases=1 ejecutables=6 skip=0 memberdata=0 -> MinSelected=6 ExpectRed=False
+    Core PushBackWritePathGuardTests                      t3b    paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+    Core Workspace                                        t3b    paquete=3261  medido: clases=74 ejecutables=3261 skip=10 memberdata=33 -> MinSelected=3261 ExpectRed=False
+    Core PushBackFullDraft                                t3b    paquete=10    medido: clases=4 ejecutables=10 skip=0 memberdata=0 -> MinSelected=10 ExpectRed=False
+    Core PushBackDraftWriteGuardTests                     t3b    paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+    UI   Workspace                                        t3b    paquete=547   medido: clases=20 ejecutables=547 skip=0 memberdata=16 -> MinSelected=547 ExpectRed=False
+    Core PushBackEditableState                            t3b    paquete=13    medido: clases=3 ejecutables=13 skip=0 memberdata=0 -> MinSelected=13 ExpectRed=False
+    Core PushBackEditorOutputGate                         t3b    paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    Core PushBackWindowSharedReferenceGuardTests          t3b    paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    Core PushBackWindowOnStateSourceGuardTests            t3b    paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    UI   PushBackWindowOnStateTests                       t3b    paquete=2     medido: clases=1 ejecutables=2 skip=0 memberdata=0 -> MinSelected=2 ExpectRed=False
+    UI   PushBackClassicCharacterization                  t3b    paquete=55    medido: clases=6 ejecutables=55 skip=0 memberdata=0 -> MinSelected=55 ExpectRed=False
+    Core PushBackClassicCharacterization                  t3b    paquete=10    medido: clases=1 ejecutables=7 skip=0 memberdata=1 -> MinSelected=10 ExpectRed=False
+         estatico 7 (+1 Theory con MemberData) < 10: vale porque el contrato de PB-T3b fija el mismo filtro con 10
+    UI   PushBackFullEditorCharacterization               t3b    paquete=16    medido: clases=6 ejecutables=16 skip=2 memberdata=0 -> MinSelected=16 ExpectRed=False
+    Core PushBackFullEditorCharacterization               t3b    paquete=3     medido: clases=3 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+    UI   PushBackStateNet                                 t3b    paquete=14    medido: clases=6 ejecutables=14 skip=0 memberdata=0 -> MinSelected=14 ExpectRed=False
+    UI   PushBackDeclaredCorrection                       t3b    paquete=14    medido: clases=7 ejecutables=14 skip=0 memberdata=0 -> MinSelected=14 ExpectRed=False
+    UI   Cantilever                                       t3b    paquete=67    medido: clases=3 ejecutables=67 skip=0 memberdata=0 -> MinSelected=67 ExpectRed=False
+    Core I58F1                                            t3b    paquete=10    medido: clases=2 ejecutables=8 skip=0 memberdata=2 -> MinSelected=10 ExpectRed=False
+         estatico 8 (+2 Theory con MemberData) < 10: vale porque el contrato de PB-T3b fija el mismo filtro con 10
+    Core CustomPropertiesEnvelopeGuardTests               t3b    paquete=9     medido: clases=1 ejecutables=18 skip=0 memberdata=1 -> MinSelected=9 ExpectRed=False
+    Core NamespaceFolderGuardTests                        t3b    paquete=7     medido: clases=1 ejecutables=7 skip=0 memberdata=0 -> MinSelected=7 ExpectRed=False
+    Core PushBackDraftStatePortTests                      t3b    paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+    Core PushBackDraftPortSharedReferenceGuardTests       t3b    paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    Core PushBackWorkspaceModeSourceGuardTests            t3b    paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    Core PushBackWorkspaceSharedReferenceGuardTests       t3b    paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    UI   PushBackWorkspaceModeTests                       t3b    paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+    UI   PushBackWorkspaceApplyCloseTests                 t3b    paquete=4     medido: clases=1 ejecutables=4 skip=0 memberdata=0 -> MinSelected=4 ExpectRed=False
+    UI   PushBackFieldValidationConcordanceTests          t3b    paquete=1     medido: clases=1 ejecutables=1 skip=0 memberdata=0 -> MinSelected=1 ExpectRed=False
+    UI   PushBackWorkspaceCarryoverTests                  t3b    paquete=3     medido: clases=1 ejecutables=3 skip=0 memberdata=0 -> MinSelected=3 ExpectRed=False
+  AVISOS (23):
+    - emision: el paquete custodiado en la revision no es la v4.7 (sha256 09210abe; la v4.6): la custodia el commit X de PB-T3c
+    - emision: F4B-E47 (la emision de F4B-PBT3C-FULL-WRITE-ERASE) aun no esta en f4b-dispositions.md
+    - emision: la comprobacion acotada de PB-T3c (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/independent-review-pbt3c-check.md) aun no existe (ni en la revision ni --bounded-file)
+    - emision: a custodiar con la emision de PB-T3c, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/pbt3c-anchors-out.txt
+    - emision: a custodiar con la emision de PB-T3c, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/independent-review-pbt3c-check.md
+    - emision: al custodiado le faltan apartados (## PB-T3c; los trae el commit X): docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md
+    - emision: al custodiado le faltan apartados (## R-23.; los trae el commit X): docs/initiatives/I-64-f4b-pbt3-measurements.md
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/package-v46.md
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/v47-delta.md
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/make_v47.py
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/check_v47.py
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/check-v47-out.txt
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/sweep-pbt3c-close.txt
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/overload_sweep_t3c.py
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/overload-sweep-pbt3c-fe1c67f4.txt
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/name_check_t3c.py
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/name-check-pbt3c-fe1c67f4.txt
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/pbt3c-skeleton.patch
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/make_pbt3c_skeleton.py
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/independent-review-pbt3c-check-prompt.md
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/make_pbt3c_contract-dry.txt
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/measure_pbt3c.py
+    - emision: a custodiar con la emision, sin ser autoridad, aun no en la revision: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt3/compile-check-pbt3c/compile-check.md
+
+== los barridos sobre el cierre (section 4.1; V47-01 y V47-05)
+  sweep-pbt3c-close.txt (sha256 e6bb13fa595d8a1c):
+    antes: scanned guard files: 92 | filas del corpus: 410
+    despues: scanned guard files: 94 | filas del corpus: 419
+    filas del corpus nuevas: 9 | perdidas: 0
+    guardas con coincidencias en el corpus: antes 61, despues 62; nuevas: tests/RackCad.Tests/PushBackWritePathGuardTests.cs
+  overload-sweep-pbt3c-fe1c67f4.txt (sha256 5da25ac74262e724):
+    == conversions between the old and the new parameter types
+    == T3C-1 (PB-T3c) RackPilotMutationScope.RackPilotMutationScope (constructor)
+    == T3B-1 (PB-T3b (regresion)) PushBackPilotUpdateRun.Precheck
+    == the new names of PB-T3c (PBT3C-C13): as a word, in the files they go to (WR and the facade; has to be 0), and anywhere
+    == reflection over the types whose members change (typeof(T) in tests/, with the 8 lines that follow it)
+    == positive control: the v4.5 names (the overloads that the attempt 1 of PB-T3b added; Prepare is the third, by reflection)
+    == C-1 (PB-T3b v4.5) PushBackPilotUpdateRun.Execute
+    == C-2 (PB-T3b v4.5) PushBackPilotUpdateRun.ComparePost
+    == C-3 (PB-T3b v4.5) PushBackPilotUpdatePlanner.Prepare
+    == result
+    control (v4.5): 2 ambiguous calls: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:669, tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs:799
+    reflection by name over a v4.5 overload: none
+    v4.7 (the targets of PB-T3c and the regression of PB-T3b): 0 ambiguous or broken calls; 0 method groups; 3 exact-name string literals (read one by one above)
+    new names already used in the files they go to: none
+  name-check-pbt3c-fe1c67f4.txt (sha256 601837b5ee79c4a1):
+    == EraseInTransaction: 124 overlapping literals, 78 also on the neutral name, 46 SPECIFIC
+    == RackViewBlockEraser: 83 overlapping literals, 66 also on the neutral name, 17 SPECIFIC
+    == EraseUnit: 58 overlapping literals, 54 also on the neutral name, 4 SPECIFIC
+    == _erasures: 69 overlapping literals, 68 also on the neutral name, 1 SPECIFIC
+
+== WR en el cierre (D-PBT3-11; INV-PBT3C-03)
+  sha256 eaa7d994f9a29546; igual al de la emision de PB-T3b (eab27a9e): True
+  clases RackPilot*          3
+  StartTransaction           1
+  .Commit(                   1
+  PurgeAfterCommit           1
+  [Conditional("DEBUG")]     2
+  GetBlockReferenceIds       0
+  Erase(                     0
+  EraseViewBlocks            0
+  ForWrite                   0
+  UpgradeOpen                0
+  .Name =                    0

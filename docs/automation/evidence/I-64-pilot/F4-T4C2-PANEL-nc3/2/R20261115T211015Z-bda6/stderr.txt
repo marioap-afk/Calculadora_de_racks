@@ -1,0 +1,3 @@
+Reading additional input from stdin...
+2026-11-15T21:13:57.653102Z ERROR codex_core::session: failed to record rollout items: thread 01a1e10c-1fb6-7613-a347-a967ea7eaee5 not found
+2026-11-15T21:13:57.654350Z ERROR codex_core::session: failed to record rollout items: thread 01a1e10c-1fb6-7613-a347-a967ea7eaee5 not found

@@ -1,0 +1,7 @@
+filtros heredados y de las CT de §6.2.1 (sin los de las copias): 46
+hoy (FullPanelCopies): 0 filtros seleccionan copias
+raiz, nombres de hoy: 2 filtros seleccionan copias
+  #12 RackCad.Tests.Workspace (MinSelected **2719**, ExpectRed false): 30 clases de copia, 15 Red
+  #15 RackCad.UI.Tests.Workspace (MinSelected **521**, ExpectRed false): 4 clases de copia, 2 Red
+raiz, prefijo FullCopy: 0 filtros seleccionan copias
+raiz, prefijo FullPanelCopy: 0 filtros seleccionan copias

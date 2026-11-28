@@ -1,0 +1,3 @@
+filas 44 {'Failed': 1, 'Passed': 43}; omitidas por origen {}
+  Failed RackCad.Tests.PushBackRetirePilotGuardTests.RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays | at RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays() in <copia>\tests\RackCad.Tests\PushBackRetirePilotGuardTests.cs:line 165 | Assert.Equal() Failure: Strings differ
+no pasan: 1

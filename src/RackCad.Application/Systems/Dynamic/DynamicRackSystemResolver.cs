@@ -104,7 +104,7 @@ namespace RackCad.Application.Systems.Dynamic
                 var levels = DynamicLoadBeamGeometry.ResolveLevels(
                     front.Levels.ToList(),
                     front.FirstLevelHeight,
-                    DynamicHeaderHeightCalculator.CalculateSlope(frontDepth),
+                    DynamicHeaderHeightCalculator.CalculateSlope(frontDepth, front.SlopePerFoot),
                     troquelGridBase,
                     SelectiveRackDefaults.TroquelPaso,
                     datum);
@@ -380,7 +380,11 @@ namespace RackCad.Application.Systems.Dynamic
                         PalletsDeep = front.PalletsDeep,
                         DepthStartPosition = front.DepthStartPosition,
                         BeamLengthOverride = front.BeamLengthOverride,
-                        FirstLevelHeight = front.FirstLevelHeight
+                        FirstLevelHeight = front.FirstLevelHeight,
+                        RollerId = front.RollerId,
+                        RollerPitch = front.RollerPitch,
+                        BrakeEveryRollers = front.BrakeEveryRollers,
+                        SlopePerFoot = front.SlopePerFoot
                     };
                     foreach (var peralte in front.IntermediateBeamDepths)
                     {

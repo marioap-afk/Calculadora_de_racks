@@ -1,0 +1,424 @@
+{
+ "Original": {
+  "A": {
+   "Expected": true,
+   "Ok": true,
+   "FalseProps": []
+  },
+  "B": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "10_NoAlternativeOneFieldMutation",
+    "2_RealChangedPathInsideAcceptedScope",
+    "3_Nc2RemovesExactlyThatPath",
+    "4_NoOtherDelegationFieldChanges",
+    "5_DerivedHashesConsistent",
+    "6_ChangedPathNotInMutatedScope",
+    "7_ScopeMustFail",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ]
+  },
+  "C": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges"
+   ]
+  },
+  "D": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ]
+  },
+  "E": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "1_AcceptedRealDelegationMatchesContract"
+   ]
+  },
+  "F": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ]
+  },
+  "G": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "9_ControllerReportedScopeFail"
+   ]
+  },
+  "H": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ]
+  },
+  "I": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "3_Nc2RemovesExactlyThatPath",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ]
+  },
+  "J": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ]
+  },
+  "K": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ]
+  },
+  "L": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ]
+  },
+  "M": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "10_NoAlternativeOneFieldMutation",
+    "2_RealChangedPathInsideAcceptedScope",
+    "3_Nc2RemovesExactlyThatPath",
+    "6_ChangedPathNotInMutatedScope",
+    "7_ScopeMustFail"
+   ]
+  },
+  "N": {
+   "Expected": true,
+   "Ok": true,
+   "FalseProps": []
+  }
+ },
+ "Adapted": {
+  "A": {
+   "Expected": true,
+   "Ok": true,
+   "FalseProps": [],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "B": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "10_NoAlternativeOneFieldMutation",
+    "2_RealChangedPathInsideAcceptedScope",
+    "3_Nc2RemovesExactlyThatPath",
+    "4_NoOtherDelegationFieldChanges",
+    "5_DerivedHashesConsistent",
+    "6_ChangedPathNotInMutatedScope",
+    "7_ScopeMustFail",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "C": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "D": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "E": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "1_AcceptedRealDelegationMatchesContract"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "F": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "G": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "9_ControllerReportedScopeFail"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "H": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": null,
+   "Property5Rule": "F4"
+  },
+  "I": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "3_Nc2RemovesExactlyThatPath",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "J": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "K": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "L": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "M": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "10_NoAlternativeOneFieldMutation",
+    "2_RealChangedPathInsideAcceptedScope",
+    "3_Nc2RemovesExactlyThatPath",
+    "6_ChangedPathNotInMutatedScope",
+    "7_ScopeMustFail"
+   ],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "N": {
+   "Expected": true,
+   "Ok": true,
+   "FalseProps": [],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4"
+  },
+  "O": {
+   "Expected": true,
+   "Ok": true,
+   "FalseProps": [],
+   "Target": null,
+   "ExactWhitelistBy": "BYTE_COMPARISON",
+   "Property5Rule": "F4B-E21"
+  },
+  "P": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Target": "5_DerivedHashesConsistent",
+   "ExactWhitelistBy": "BYTE_COMPARISON",
+   "Property5Rule": "F4B-E21"
+  },
+  "Q": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Target": "5_DerivedHashesConsistent",
+   "ExactWhitelistBy": "BYTE_COMPARISON",
+   "Property5Rule": "F4B-E21"
+  },
+  "R": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Target": "5_DerivedHashesConsistent",
+   "ExactWhitelistBy": "BYTE_COMPARISON",
+   "Property5Rule": "F4B-E21"
+  },
+  "S": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Target": "5_DerivedHashesConsistent",
+   "ExactWhitelistBy": "BYTE_COMPARISON",
+   "Property5Rule": "F4B-E21"
+  },
+  "T": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": "8_ContractFailsOnlyByExactWhitelist",
+   "ExactWhitelistBy": null,
+   "Property5Rule": "F4B-E21"
+  },
+  "U": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": "8_ContractFailsOnlyByExactWhitelist",
+   "ExactWhitelistBy": null,
+   "Property5Rule": "F4B-E21"
+  },
+  "V": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": "8_ContractFailsOnlyByExactWhitelist",
+   "ExactWhitelistBy": null,
+   "Property5Rule": "F4B-E21"
+  },
+  "W": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "1_AcceptedRealDelegationMatchesContract",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Target": "8_ContractFailsOnlyByExactWhitelist",
+   "ExactWhitelistBy": null,
+   "Property5Rule": "F4B-E21"
+  },
+  "X": {
+   "Expected": false,
+   "Ok": false,
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Target": "5_DerivedHashesConsistent",
+   "ExactWhitelistBy": "BYTE_COMPARISON",
+   "Property5Rule": "F4B-E21"
+  },
+  "Y": {
+   "Expected": true,
+   "Ok": true,
+   "FalseProps": [],
+   "Target": null,
+   "ExactWhitelistBy": "EXACT_CLAUSE",
+   "Property5Rule": "F4B-E21"
+  }
+ },
+ "A_N_SameVectors": true,
+ "A_N_SameBundles": true,
+ "NewNegativeCases": {
+  "P": {
+   "Target": "5_DerivedHashesConsistent",
+   "TargetBroken": true,
+   "AlsoBroken": []
+  },
+  "Q": {
+   "Target": "5_DerivedHashesConsistent",
+   "TargetBroken": true,
+   "AlsoBroken": []
+  },
+  "R": {
+   "Target": "5_DerivedHashesConsistent",
+   "TargetBroken": true,
+   "AlsoBroken": []
+  },
+  "S": {
+   "Target": "5_DerivedHashesConsistent",
+   "TargetBroken": true,
+   "AlsoBroken": []
+  },
+  "T": {
+   "Target": "8_ContractFailsOnlyByExactWhitelist",
+   "TargetBroken": true,
+   "AlsoBroken": []
+  },
+  "U": {
+   "Target": "8_ContractFailsOnlyByExactWhitelist",
+   "TargetBroken": true,
+   "AlsoBroken": []
+  },
+  "V": {
+   "Target": "8_ContractFailsOnlyByExactWhitelist",
+   "TargetBroken": true,
+   "AlsoBroken": []
+  },
+  "W": {
+   "Target": "8_ContractFailsOnlyByExactWhitelist",
+   "TargetBroken": true,
+   "AlsoBroken": [
+    "1_AcceptedRealDelegationMatchesContract"
+   ]
+  },
+  "X": {
+   "Target": "5_DerivedHashesConsistent",
+   "TargetBroken": true,
+   "AlsoBroken": []
+  }
+ },
+ "AdaptedSelfTestPass": true,
+ "AdaptedSelfTestDeterministic": true
+}

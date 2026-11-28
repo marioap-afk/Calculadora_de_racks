@@ -1,0 +1,663 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F4B",
+  "TaskId": "F4B-PBT0-CHARACTERIZATION",
+  "Objective": "Caracterizar con pruebas nuevas el comportamiento observable ACTUAL del estado editable de la ventana clasica de Push Back y de las funciones Application de las que dependen PB-T1, PB-T2 y PB-T3, segun la section 6.2 del paquete de F4B v3.1 y la lista cerrada CT-PB0-01..21. El RED lleva solo los mutantes de la tabla cerrada MU-PB0-01..20, y el GREEN los revierte con los bytes del producto identicos a la base. No se corrige nada ni se ejecuta AutoCAD.",
+  "AuthorityRevision": "ca4165bb8aa0a1949bd15c327ed2f082e0eb8cdb",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-f4b-pbt0-gate-contract-package.md",
+      "Section": "archivo completo (v2.1): section 2 (hechos medidos), section 3 (decisiones), section 4 (CT-PB0-01 a CT-PB0-21 y las tablas T-1 a T-8), section 5 (la tabla CERRADA de mutantes), section 6 (el contrato) y section 7",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4b-push-back-completo-package.md",
+      "Section": "paquete de la fase F4B v3.1: section 6 (PB-T0: 6.1 a 6.5), section 7 (reglas de proceso, T1B y RACKEDITAR) y OB-06",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md",
+      "Section": "archivo completo: disposicion del Owner y del Coordinator de F4B ([OD]); PB-T0 characterization / measurement only y la emision condicional con attempts 1/3",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-procedure-decisions.md",
+      "Section": "archivo completo: decisiones de procedimiento del Owner ([DP], F4B-E03): preguntas 1 a 3",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-PBT0-CHARACTERIZATION/coordinator/pbt0-block-m-procedure.md",
+      "Section": "el anexo del bloque M (v2, con N-I1); aparte del bloque C",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/f4b-dispositions.md",
+      "Section": "archivo completo: F4B-E01 a F4B-E04",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/package/map-a-classic-write-path.md",
+      "Section": "MA: el camino de escritura clasico (no fiarse sin medir, INV-PBT0-04)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/package/map-b-editor-state-testability.md",
+      "Section": "MB: el estado del editor y su testabilidad (no fiarse sin medir, INV-PBT0-04)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-t1b-gate-contract-package.md",
+      "Section": "el patron de T1B ([T1B]): D-T1B-03 y la atribucion de las existentes rotas",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T1B-PILOT-CHARACTERIZATION/coordinator/gate-contract.json",
+      "Section": "el contrato de T1B ([T1B-C]): las paradas estandar, los ayudantes y las celdas",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T1B-PILOT-CHARACTERIZATION/task-close-package.md",
+      "Section": "las lecciones de T1B ([T1B-X]), en especial section 6",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/f4-dispositions.md",
+      "Section": "las fuentes de PD-F4-01 (:1103-1106, :1540, :520, :562) y PD-F4-04 (:1657-1660), y F4-E59",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t3-authorization.md",
+      "Section": "la firma literal de PD-F4-04 (:255-265)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "estado vigente completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "section 231 y siguientes",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4B-PBT0-CHARACTERIZATION/coordinator/gate-contract.json",
+      "Section": "este contrato",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "Section": "la ventana clasica de Push Back; en neto no cambia (el RED la muta solo segun la tabla cerrada)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "Section": "la parte compuesta de la ventana; en neto no cambia (el RED la muta solo segun la tabla cerrada)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs",
+      "Section": "el estado del editor compuesto; en neto no cambia (el RED lo muta solo segun la tabla cerrada)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs",
+      "Section": "el ensamblador del diseno; en neto no cambia (el RED lo muta solo segun la tabla cerrada)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs",
+      "Section": "la disponibilidad de vistas; en neto no cambia (el RED la muta solo segun la tabla cerrada)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs",
+      "Section": "las decoraciones de vista (estilo de cotas y escala); en neto no cambia (el RED las muta solo segun la tabla cerrada)",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+      "Section": "el XAML de la ventana; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/StaTestRunner.cs",
+      "Section": "el hilo STA y el suelo del aviso; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/EditorWindowTestSupport.cs",
+      "Section": "los ayudantes de prueba; no cambian",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.UI.Tests/EditorDiscardPromptCollection.cs",
+      "Section": "la coleccion sin paralelismo; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md",
+      "Section": "D7, D8, D9 y D13",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "section 16.1 a section 16.10",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "celdas medidas y vigentes para Controller y Worker",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "relevo, Git e integracion",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationStateTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationModuleTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCompositeTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSubdialogTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationCatalogTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationRoundingLossTests.cs",
+    "tests/RackCad.UI.Tests/PushBackFullEditorCharacterizationSupport.cs",
+    "tests/RackCad.Tests/PushBackFullEditorCharacterizationLateralCutTests.cs",
+    "tests/RackCad.Tests/PushBackFullEditorCharacterizationDimensionStyleLossTests.cs",
+    "tests/RackCad.Tests/PushBackFullEditorCharacterizationRoundingEffectTests.cs",
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs",
+    "src/RackCad.Application/Systems/Shared/RackViewAvailability.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/Cantilever/",
+    "src/RackCad.Application/Systems/Dynamic/DynamicAnnotationOptions.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicDefenseFaces.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicDepthGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicDerivedPostGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicEditorCell.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicEditorDesignAssembler.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicEditorFront.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicEditorSafety.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicEditorValues.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicEndBeamIdentity.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicEntranceGuidePlan.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicFlowBedGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicFlowBedLateralBuilder.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicForkliftDefensePlan.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicFrontActivation.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicFrontGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicFrontMatrix.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicHeaderAddress.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicHeaderBatch.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicHeaderBatchPreparation.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicHeaderBatchRequest.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicHeaderBatchState.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicHeaderHeightCalculator.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicHeaderSource.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicIntermediateBeamGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicIntermediateBeamLateralBuilder.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicLateralCorte.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicLoadBeamGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicModuleTargets.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicRackCellScope.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicRackLevelGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicRackRebuild.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicRackSystemBuilder.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicRackSystemResolver.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicSafetyDefaults.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicSafetyLateralBuilder.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicSafetyMultiViewBuilder.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicSeparatorGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicSystemFrontalBuilder.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicSystemLateralBuilder.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicSystemPlantaBuilder.cs",
+    "src/RackCad.Application/Systems/Dynamic/DynamicSystemPreviewGeometry.cs",
+    "src/RackCad.Application/Systems/Dynamic/SystemBomBuilder.cs",
+    "src/RackCad.Application/Systems/FlowBed/",
+    "src/RackCad.Application/Systems/Larguero/",
+    "src/RackCad.Application/Systems/PushBack/Pilot/",
+    "src/RackCad.Application/Systems/PushBack/PushBackAdvancedRackParameters.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackBedRotation.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackBedSlope.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackBedSpan.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackBomBuilder.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackBootPlan.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCellDepth.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCompositeContent.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCompositeDiagnostics.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorAssembler.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCompositeFrontal.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCompositePlanta.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCompositeResolver.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackCompositeStructure.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackDefensePlan.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackDefenseSides.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackDiverterPlan.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackEditorCell.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackEditorComputation.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackEditorFront.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackEditorInputs.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackEditorState.Load.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackEditorValues.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackElevations.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackFlowBedGeometry.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackFlowBedLateralBuilder.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackFunctionalSides.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackHeaderHeight.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackIntermediateBeamLateralBuilder.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackLoadBeamGeometry.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackMirror.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackPalletProjection.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackPlacements.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackPlanComposer.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackRearTopeBuilder.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackResolver.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackRunGeometry.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackRunSupports.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackRuns.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackSafetyAuthority.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackSideAnnotations.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackSideConfiguration.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackSystemFrontalBuilder.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackSystemLateralBuilder.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackSystemPlantaBuilder.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackTarimaPlacement.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackTopeSurface.cs",
+    "src/RackCad.Application/Systems/PushBack/PushBackTroquelGrid.cs",
+    "src/RackCad.Application/Systems/Selective/",
+    "src/RackCad.Application/Systems/Shared/AuthoredCanonical.cs",
+    "src/RackCad.Application/Systems/Shared/AuthoredRawReader.Shapes.cs",
+    "src/RackCad.Application/Systems/Shared/AuthoredRawReader.cs",
+    "src/RackCad.Application/Systems/Shared/AuthoredTypedValues.cs",
+    "src/RackCad.Application/Systems/Shared/DimensionViewPolicy.cs",
+    "src/RackCad.Application/Systems/Shared/HeaderBatchCodes.cs",
+    "src/RackCad.Application/Systems/Shared/HeaderBatchOutcome.cs",
+    "src/RackCad.Application/Systems/Shared/HeaderBatchPlan.cs",
+    "src/RackCad.Application/Systems/Shared/HeaderConfigurationSnapshot.cs",
+    "src/RackCad.Application/Systems/Shared/LibraryBlockRequirements.cs",
+    "src/RackCad.Application/Systems/Shared/LibraryPieceRequirementsV2.cs",
+    "src/RackCad.Application/Systems/Shared/RackAuthoredComparator.FourKinds.cs",
+    "src/RackCad.Application/Systems/Shared/RackAuthoredComparator.cs",
+    "src/RackCad.Application/Systems/Shared/RackAuthoredInput.cs",
+    "src/RackCad.Application/Systems/Shared/RackFirstLevelDatum.cs",
+    "src/RackCad.Application/Systems/Shared/RackLevelElevations.cs",
+    "src/RackCad.Application/Systems/Shared/RackModuleDescriptor.cs",
+    "src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs",
+    "src/RackCad.Application/Systems/Shared/RackModuleHeaderApply.cs",
+    "src/RackCad.Application/Systems/Shared/RackModuleReconciliation.cs",
+    "src/RackCad.Application/Systems/Shared/RackPhysicalSelection.cs",
+    "src/RackCad.Application/Systems/Shared/RackResolveContract.cs",
+    "src/RackCad.Application/Systems/Shared/RackSourceTransformFactsV2.cs",
+    "src/RackCad.Application/Systems/Shared/RackTransformFacts.cs",
+    "src/RackCad.Application/Systems/Shared/RackViewAddress.cs",
+    "src/RackCad.Application/Systems/Shared/RackViewBaseName.cs",
+    "src/RackCad.Application/Systems/Shared/RackViewCodec.cs",
+    "src/RackCad.Application/Systems/Shared/RackViewFrame.cs",
+    "src/RackCad.Application/Systems/Shared/RackViewFrameAdapters.cs",
+    "src/RackCad.Application/Systems/Shared/RackViewPreparation.cs",
+    "src/RackCad.Application/Systems/Shared/RackViewProductNames.cs",
+    "src/RackCad.Application/Systems/Shared/SafetyDormantCells.cs",
+    "src/RackCad.Application/Systems/Shared/SeparatorLevelCalculator.cs",
+    "src/RackCad.Application/Systems/Shared/SystemDescriptor.cs",
+    "src/RackCad.Application/Systems/Shared/SystemRegistry.Default.cs",
+    "src/RackCad.Application/Systems/Shared/SystemRegistry.cs",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/Workspace/",
+    "src/RackCad.Domain/",
+    "src/RackCad.Plugin/",
+    "src/RackCad.UI/CatalogOption.cs",
+    "src/RackCad.UI/Controls/",
+    "src/RackCad.UI/Editor/",
+    "src/RackCad.UI/EnumDisplayConverter.cs",
+    "src/RackCad.UI/MainMenuAction.cs",
+    "src/RackCad.UI/ObservableObject.cs",
+    "src/RackCad.UI/Preview/",
+    "src/RackCad.UI/PreviewCanvasPainter.cs",
+    "src/RackCad.UI/ProjectVariableRepairText.cs",
+    "src/RackCad.UI/RackBomWindow.xaml",
+    "src/RackCad.UI/RackBomWindow.xaml.cs",
+    "src/RackCad.UI/RackCad.UI.csproj",
+    "src/RackCad.UI/RackCommandHelpWindow.cs",
+    "src/RackCad.UI/RackCommandReference.cs",
+    "src/RackCad.UI/RackConsolidatedBomWindow.xaml",
+    "src/RackCad.UI/RackConsolidatedBomWindow.xaml.cs",
+    "src/RackCad.UI/RackCustomPropertiesWindow.xaml",
+    "src/RackCad.UI/RackCustomPropertiesWindow.xaml.cs",
+    "src/RackCad.UI/RackDesignLibraryWindow.xaml",
+    "src/RackCad.UI/RackDesignLibraryWindow.xaml.cs",
+    "src/RackCad.UI/RackFrames/",
+    "src/RackCad.UI/RackListRow.cs",
+    "src/RackCad.UI/RackListWindow.xaml",
+    "src/RackCad.UI/RackListWindow.xaml.cs",
+    "src/RackCad.UI/RackMainMenuWindow.xaml",
+    "src/RackCad.UI/RackMainMenuWindow.xaml.cs",
+    "src/RackCad.UI/RackProjectVariablesWindow.xaml",
+    "src/RackCad.UI/RackProjectVariablesWindow.xaml.cs",
+    "src/RackCad.UI/RackWarehouseFillWindow.cs",
+    "src/RackCad.UI/RackWarehouseLayoutWindow.cs",
+    "src/RackCad.UI/SafetyDefensaGridWindow.cs",
+    "src/RackCad.UI/SafetyDefenseFace.cs",
+    "src/RackCad.UI/SafetyDesviadorGridWindow.cs",
+    "src/RackCad.UI/SafetyGuiaEntradaGridWindow.cs",
+    "src/RackCad.UI/SafetyParrillaGridWindow.cs",
+    "src/RackCad.UI/SafetyTopeGridWindow.cs",
+    "src/RackCad.UI/SelectiveSafetyWindow.cs",
+    "src/RackCad.UI/Shell/",
+    "src/RackCad.UI/StructuralSections/",
+    "src/RackCad.UI/Systems/Cantilever/",
+    "src/RackCad.UI/Systems/Dynamic/",
+    "src/RackCad.UI/Systems/FlowBed/",
+    "src/RackCad.UI/Systems/Larguero/",
+    "src/RackCad.UI/Systems/PushBack/PushBackBootSection.cs",
+    "src/RackCad.UI/Systems/PushBack/PushBackDefenseSection.cs",
+    "src/RackCad.UI/Systems/PushBack/PushBackMatrixCardModel.cs",
+    "src/RackCad.UI/Systems/PushBack/PushBackPreviewModel.cs",
+    "src/RackCad.UI/Systems/PushBack/PushBackPreviewRenderer.cs",
+    "src/RackCad.UI/Systems/PushBack/PushBackRearTopeDialogAdapter.cs",
+    "src/RackCad.UI/Systems/PushBack/PushBackRearTopeSection.cs",
+    "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml",
+    "src/RackCad.UI/Systems/Selective/",
+    "src/RackCad.UI/Themes/",
+    "src/RackCad.UI/UiSupport.cs",
+    "src/RackCad.UI/Views/",
+    "src/RackCad.UI/Workspace/",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Workspace/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "tests/RackCad.UI.Tests/Workspace/",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+    "tests/RackCad.UI.Tests/StaTestRunner.cs",
+    "tests/RackCad.UI.Tests/EditorWindowTestSupport.cs",
+    "tests/RackCad.UI.Tests/EditorDiscardPromptCollection.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationCloseTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationIntentTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationOwnerTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationResourceTests.cs",
+    "tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs",
+    "tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs",
+    "tests/RackCad.Tests/NamespaceFolderGuardTests.cs",
+    "tests/RackCad.Tests/PushBackDimensionLegacyCharacterizationTests.cs",
+    "tests/RackCad.Tests/BlankFrontBoundaryTests.cs",
+    "tests/RackCad.Tests/RackModuleEditSessionTests.cs",
+    "tests/RackCad.Tests/I55DeferredProductFixCharacterizationTests.cs",
+    "tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests.cs",
+    "tests/RackCad.Tests/ProductPolicyIndependenceGuardTests.cs",
+    "tests/RackCad.UI.Tests/PushBackModuleEditorWindowTests.cs",
+    "tests/RackCad.UI.Tests/PushBackDimensionViewsWindowTests.cs",
+    "tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs",
+    "tests/RackCad.UI.Tests/PushBackSafetyPerPostFlowTests.cs",
+    "tests/RackCad.UI.Tests/EditorClosePolicyTests.cs",
+    "tests/RackCad.UI.Tests/RichEditorCharacterizationTests.cs",
+    "tests/RackCad.UI.Tests/RichEditorCloseContractTests.cs",
+    "tests/RackCad.UI.Tests/RichEditorContractTests.cs",
+    "tests/RackCad.UI.Tests/PushBackShellAdoptionTests.cs",
+    "tests/RackCad.Tests/PushBackPluginSourceGuardTests.cs",
+    "tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs",
+    "tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".editorconfig",
+    ".gitattributes",
+    ".gitignore"
+  ],
+  "Invariants": [
+    "INV-PBT0-01 (sin cambio de producto, anclado a ChainBaseSha): git diff ChainBaseSha..CurrentSha -- src vacio; git diff --name-only ChainBaseSha..CurrentSha = exactamente los diez archivos nuevos de prueba; git diff --name-only BaseSha..CurrentSha dentro de las 16 rutas de AllowedWriteScope; para cada archivo de MutantScope que el RED toco, los bytes en CurrentSha son identicos a los de ChainBaseSha (cualquier residuo es FAIL).",
+    "INV-PBT0-02 (RED por mutantes revertidos): el commit RED lleva el mensaje \"RED con mutantes deliberados, revertidos en el GREEN\" y ese SHA no sirve para ningun smoke ni para el bloque M. Criterio mecanico, SOLO sobre los resultados de los dos filtros nuevos (I-01) y con todos los mutantes a la vez: todos los resultados con outcome Failed; un Message sin el prefijo de tipo ^(?:[A-Za-z_][\\w`]*[.+])+[A-Za-z_][\\w`]* : ; la primera linea de StackTrace en un archivo bajo tests/; ninguno NotExecuted ni Skipped; y Failed == Selected >= MinSelected contando los resultados cuyo FullyQualifiedName coincide con el filtro. Las pruebas existentes rotas se admiten solo por los mutantes, se miden como union en la CI del RED y se atribuyen por analisis declarado (T-8); para ellas solo cuentan el cuelgue y el timeout. El GREEN es el inverso exacto de los mutantes y no toca tests/. Para el Controller: las escrituras del RED en MutantScope revertidas por el GREEN no son escritura fuera de alcance, y las filas de la tabla son conformes por construccion.",
+    "INV-PBT0-03 (se fija lo que hay): ninguna prueba existente se edita, se reactiva ni se borra; sin Skip; lo contrario a una regla se comenta \"INCUMPLIMIENTO CARACTERIZADO\" con la regla citada; \"No product cleanup in PB-T0\".",
+    "INV-PBT0-04 (medido, no inferido, M-21): todo hecho \"lectura\" de MA o MB se mide antes de fijarlo; las clases distintas de (a) y (b) llevan su archivo:linea medido; una clase nueva se fija tal cual y se enumera en T-2, sin STOP (OB-06.5); el codigo de medicion es temporal y no entra en ningun commit; no se caracteriza ningun gesto de teclado ni el foco real (section 4.1 del paquete).",
+    "INV-PBT0-05 (el aviso): todas las clases de UI van en EditorDiscardPromptCollection; nunca un MessageBox real.",
+    "INV-PBT0-06 (ninguna escritura nueva, M-12): texto de [P]:598: \"ninguna prueba ejecuta Guardar en biblioteca, el BOM, el configurador real ni un MessageBox real\"; lectura declarada (D-PBT0-06): \"el BOM\" es el gesto, la ventana y la exportacion, y leer PushBackEditorComputation.Bom no es ejecutarlo. Por tanto ninguna prueba ejecuta SaveLibrary_Click, PromptSaveToLibrary, RackProjectStore.Save, Bom_Click, RackBomWindow, InsertBatch_Click, InsertViewAt ni \"Insertar\"; ninguna instancia RackFrameConfiguratorWindow ni asigna HeaderConfiguratorPresenter ni SafetyWindowDialog; ConfigureModuleHeaderButton solo se pulsa con HeaderConfiguratorDialog asignado. Prueba de la limpieza: el SHA-256 y la fecha del archivo de disposicion del configurador (en los datos locales del usuario) y de la carpeta de biblioteca (en los datos de aplicacion del usuario), antes y despues de las corridas locales, no cambian.",
+    "INV-PBT0-07 (las ventanas): sin mostrar, salvo CT-14; sin esperas fijas; todas se cierran en finally; nada queda vivo; ninguna asercion dentro de una costura.",
+    "INV-PBT0-08 (solo ejecucion): sin guardas de texto.",
+    "INV-PBT0-09 (textos exactos): copiados del producto byte a byte.",
+    "INV-PBT0-10 (sin infraestructura nueva): sin costuras nuevas, sin cambios en InternalsVisibleTo, sin paquetes, sin P/Invoke y sin rutas propias de una maquina; solo las costuras existentes de H-03 del paquete (incluidas las de las secciones y las de SafetyPerPostWindow, I-04) y los ayudantes de H-18; T-7 da cada una con su uso.",
+    "INV-PBT0-11 (determinismo, M-11): toda ventana se crea con Ventana() del paquete (section 4.1), con el GUID fijo de newIdFactory; cultura invariante fijada y restaurada; orden ordinal; sin hora ni aleatoriedad; en Core, sin coma flotante fijada, con los umbrales de magnitud declarados (0.001 y 1e-9).",
+    "INV-PBT0-12 (CI y compilacion): CI del GREEN 4/4 en success con las suites completas; CI del RED con tests y ui-tests en failure, build-ui en success y build-plugin omitido por su needs, sin blame-hang ni timeout; sin avisos nuevos de las clases CS, MSB, NU y NETSDK, tampoco con los mutantes (sin CS0162, CS0168, CS0169, CS0219, CS0414 ni CS8321).",
+    "INV-PBT0-13 (correcciones, section 5 del paquete): toda correccion vuelve a aplicar todos los mutantes de los filtros con ExpectRed; Core pasa a ExpectRed false solo si no se vuelve a aplicar ningun mutante de Application, y se declara; las comprobaciones de producto se anclan a ChainBaseSha.",
+    "INV-PBT0-14 (tabla CERRADA de mutantes, section 5 del paquete; W = src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs, WC = src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs, CS = src/RackCad.Application/Systems/PushBack/PushBackCompositeEditorState.cs, DA = src/RackCad.Application/Systems/PushBack/PushBackEditorDesignAssembler.cs; MutantScope = esos cuatro mas src/RackCad.Application/Systems/Shared/RackViewAvailability.cs y src/RackCad.Application/Systems/Dynamic/DynamicViewDecorations.cs, todos con mutantes de comportamiento): cada mutante con su archivo:linea medido en la base, su cambio exacto y el metodo del CT que tiene que fallar CON ESE MUTANTE SOLO aplicado sobre BaseSha; \"alternativa\" es la unica admitida y solo si la principal no discrimina o hace fallar un metodo nuevo por excepcion: MU-PB0-01 [W:315] antes de LoadFromModel(inputs, rackName); de LoadExisting: if (design.IsComposite) inputs.PalletTolerance += 1.0; -> falla el metodo de CT-01; MU-PB0-02 [W:3365] antes de session.Identity.SetName(NameBox.Text?.Trim()); de RequestDraw: lastComputation.Design.Structure.PalletTolerance += 1.0; -> falla el metodo de CT-02; MU-PB0-03 [W:2463] se quita RequestRecompute(); de ConfirmModule_Click -> falla el metodo de CT-03; MU-PB0-04 [DA:211-213] mustRebuild sin el termino standardRestore || -> falla el metodo de CT-04; MU-PB0-05 [DA:300] if (standardRestore) -> if (standardRestore && editorInputs == null); alternativa: W:2499, antes de RequestStandardRestore();, advanced.DerivedPostHeight = null; -> falla el metodo de CT-05; MU-PB0-06 [WC:839-840] el primer argumento de ParkDormantTail -> structure.Modules.Take(0) -> falla el metodo de CT-06; MU-PB0-07 [CS:320-323] se quita la rama else if (!present && DefaultTopology == PushBackCellTopology.Encontradas) { ... }; alternativa: WC:119, se quita RequestRecompute(); de SideBPresent_Changed (si se usa, R-02 se vuelve a estimar y se registra, N-08) -> falla el metodo de CT-07; MU-PB0-08 [W:1138] composite.SetSlotCount(state.Structure.Count + 1) -> composite.SetSlotCount(state.Structure.Count + 2) -> falla el metodo de CT-08 y CT-09; MU-PB0-09 [RackViewAvailability.cs:111] return posts.Contains(address.Variant.Index); -> return posts.Contains(address.Variant.Index) || address.Variant.Index >= 0; -> falla el metodo de CT-10; MU-PB0-10 [W:3365] SetName(NameBox.Text?.Trim()) -> SetName(NameBox.Text) -> falla el metodo de CT-11; MU-PB0-11 [W:1946] StageHeaderConfiguration(module, edited); -> StageHeaderConfiguration(module, copy); -> falla el metodo de CT-12; MU-PB0-12 [W:2626] Authorize(chosen) -> Authorize(safetySelections) -> falla el metodo de CT-13; MU-PB0-13 [W:2642] se quita ApplyBootSections(bootSectionA, bootSectionB); -> falla el metodo de CT-14; MU-PB0-14 [W:2638] se quita ApplyDefenseSections(defenseSectionA, defenseSectionB, defenseCarrierId); -> falla el metodo de CT-15; MU-PB0-15 [W:2653] se quita state.LoadRearTopeConfig(topeSection.Config); y queda else { } -> falla el metodo de CT-16; MU-PB0-16 [W:407] Math.Min((int)DimensionDetail.Detailed, ...) -> Math.Min((int)DimensionDetail.Standard, ...); alternativa: W:387, ? \"kg\" : -> ? \"lb\" : -> falla el metodo de CT-17; MU-PB0-17 [DynamicViewDecorations.cs:402] DimensionStyleName = style -> DimensionStyleName = style?.ToLowerInvariant() -> falla el metodo de CT-18; MU-PB0-18 [W:406] AnnotationScaleBox.SetNumber(...) con un segundo argumento \"0.######\" -> falla el metodo de CT-19; MU-PB0-19 [W:819] generalPallet.Height (el tercer argumento) -> Math.Round(generalPallet.Height, 3) -> falla el metodo de CT-20; MU-PB0-20 [DynamicViewDecorations.cs:329] ? system.AnnotationScale : -> ? Math.Round(system.AnnotationScale, 3) :; sin alternativa (M-02) -> falla el metodo de CT-21. Un mutante fuera de esta tabla o de MutantScope es STOP (PBT0-C04); un mutante que no discrimina su CT en aislado, o que hace fallar un metodo nuevo por excepcion sin alternativa valida, es defecto del contrato y STOP (PBT0-C10); el Worker no inventa mutantes. Reglas: ningun mutante toca una asignacion de Owner, un ShowDialog, un MessageBox ni EditorDiscardPrompt; ni la comprobacion de nulo de una costura (W:1938, :2615, :2722, :2849, :2981, :3018); ni las guardas de RequestDraw (W:3325-3363) ni el cuerpo del constructor; no anade .RequestUpdate( ni literales de T-SG; no provoca una escritura; no deja un modal abierto. La conjuncion: con todos aplicados, todos los metodos nuevos fallan por asercion y ningun mutante anula a otro.",
+    "INV-PBT0-15 (prueba por mutante): el Worker aplica cada mutante de la tabla SOLO sobre BaseSha y corre los dos filtros, siempre, y ademas la suite completa de Core si el mutante es de Application (MU-PB0-04, 05, 07, 09, 17 y 20); registra por mutante el archivo:linea medido en la base y el parche custodiado, las pruebas que fallan y si las nuevas fallan por asercion, y la fila que instancia.",
+    "INV-PBT0-16 (las clases de escritura): PB-T0 solo ejerce la clase (B), la intencion que la ventana expone y otro consume despues; las clases (A) y (C) las sigue fijando F4-T1B.",
+    "INV-PBT0-17 (el corpus): ningun archivo nuevo de fixtures; tests/RackCad.Tests/Fixtures/I64 en solo lectura; toda construccion en codigo va declarada.",
+    "INV-PBT0-18 (las perdidas, en sus clases, D-PBT0-03): solo CT-18 a CT-20 aseveran (a) o (b); CT-05 fija solo los seis avanzados (M-07).",
+    "INV-PBT0-19 (no duplicacion): section 4.2 del paquete y la tabla T-5.",
+    "INV-PBT0-20 (contencion de las corridas locales, F4-E59 y [T1B-X] section 6): nunca la suite completa de UI en local, solo los filtros; la de Core, si; ninguna sonda temporal con entradas validas en un camino con dialogo o escritura (\"Actualizar\" no es uno de ellos, H-08); MAX_PATH: sin copias de arboles, cada mutante con git apply y git restore en el mismo worktree; las corridas que muestran ventanas, sin uso interactivo del equipo; OD-6: el bloque M no se opera mientras el Worker corre en local los filtros de UI, y el Worker no los corre mientras haya una medicion del bloque M en curso.",
+    "INV-PBT0-21 (guardas, H-19): un solo namespace igual a la raiz; INV-14 y los literales partidos en Core; el corpus de WLC.",
+    "INV-PBT0-22 (las tablas del informe): T-1 a T-8 van en la entrega; \"material\" es la formula mecanica de CT-PB0-21; el Worker no juzga la aceptabilidad.",
+    "INV-PBT0-23 (reglas de F4B, [P] section 7.2 con [DP] y D-PB-10): la planificacion segun PBT0-C08; los controles segun PBT0-C11, con las firmas literales de la section 6.7 del paquete; antes de un intento 3, siempre al Owner (PBT0-C12).",
+    "INV-PBT0-24 (sin AutoCAD): el bloque M es aparte (el anexo pbt0-block-m-procedure.md), no consume intentos de este bloque y respeta OD-6."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.PushBackFullEditorCharacterization",
+      "MinSelected": 3,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.PushBackFullEditorCharacterization",
+      "MinSelected": 18,
+      "ExpectRed": true
+    }
+  ],
+  "ExpectedEvidence": [
+    "Antes del Worker: gate-contract valido; delegacion del Controller valida; comparacion byte a byte, aceptacion A1-A8 y nc4 (primera delegacion de la cadena F4B-PBT0); AllowedWriteScope de la delegacion = exactamente el del contrato; si hubo una replanificacion por PBT0-C08, su registro.",
+    "Commit RED y push propios antes del GREEN, con el mensaje de INV-PBT0-02; CI del RED de INV-PBT0-12; los TRX de los dos filtros cumplen el criterio mecanico de INV-PBT0-02; la union de existentes rotas con su atribucion en T-8.",
+    "La prueba por mutante de INV-PBT0-15: una corrida local aislada por mutante de la tabla cerrada, con las pruebas que fallan, si las nuevas fallan por asercion y la fila que instancia; la suite completa de Core por cada mutante de Application.",
+    "Commit GREEN, inverso exacto de los mutantes, y push: git diff ChainBaseSha..CurrentSha -- src vacio y --name-only igual a los diez archivos; la tabla de SHA-256 por archivo de MutantScope tocado (ChainBaseSha, RedSha distinto, CurrentSha igual al de ChainBaseSha); CI del GREEN 4/4 en success.",
+    "En local: build Release de la solucion, Plugin incluido y sin avisos nuevos, sobre el RED (con los mutantes) y sobre el GREEN; los dos filtros sobre el RED y el GREEN; tres corridas seguidas en verde del filtro de UI, sin uso interactivo del equipo; la prueba de la limpieza de INV-PBT0-06.",
+    "worker-handoff.json conforme a su esquema con RED, GREEN, alcance real, trailer, conteos, la tabla de mutantes, el mapa CT a metodo, las tablas T-1 a T-8 y KnownLimitations.",
+    "Despues: Controller verification valida; nc1, nc2 y nc3 segun README section 10, conservando cada salida ordinaria; un control que no da CONTROL PASS se resuelve SOLO como dice PBT0-C11 (el sustituto unicamente con la firma literal exacta; si no, el Owner); cada uso se registra en F4B-DRAFTS/f4b-dispositions.md; la verificacion 14/14 sola no basta para cerrar.",
+    "Sin AutoCAD: la ventana y Application se caracterizan en UI.Tests y RackCad.Tests con el producto real; el bloque M (medicion fisica) va aparte, segun el anexo."
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive or irreversible action not authorized"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch or worktree ownership conflict"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify AuthorityRevision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"
+    },
+    {
+      "Id": "S-14",
+      "Text": "I-64 Freeze or contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "config.toml no longer matches the accepted Snapshot in force (today Snapshot I, docs/automation/evidence/I-64-pilot/F4-ENVIRONMENT/snapshot-I/snapshot-i.json)"
+    },
+    {
+      "Id": "P-02",
+      "Text": "foreign live participant, unattributable process or more than one open delegation"
+    },
+    {
+      "Id": "P-03",
+      "Text": "delegation outside gate contract"
+    },
+    {
+      "Id": "P-04",
+      "Text": "BLOCKED cap reached"
+    },
+    {
+      "Id": "P-05",
+      "Text": "invocation differs from accepted delegation package"
+    },
+    {
+      "Id": "P-06",
+      "Text": "usage or credit-limit warning"
+    },
+    {
+      "Id": "P-07",
+      "Text": "another invocation would exceed the invocation budget"
+    },
+    {
+      "Id": "P-08",
+      "Text": "responsible session operates the worktree during cession"
+    },
+    {
+      "Id": "PBT0-C01",
+      "Text": "a characterization point (CT) would need a product change or a new seam beyond the reverted RED mutants of the closed table"
+    },
+    {
+      "Id": "PBT0-C02",
+      "Text": "an existing test or helper would have to be edited, re-enabled or deleted; a .csproj, InternalsVisibleTo or the packages would have to change; or something would have to be added under tests/RackCad.Tests/Fixtures/"
+    },
+    {
+      "Id": "PBT0-C03",
+      "Text": "a CT would need AutoCAD, a real MessageBox, the real configurator, the BOM gesture, window or export, Guardar en biblioteca, or a write to the user profile or to disk"
+    },
+    {
+      "Id": "PBT0-C04",
+      "Text": "a mutant outside the closed table (INV-PBT0-14) or outside MutantScope, or one that violates the rules of section 5 of the package; a new test method that no table mutant detects in the conjunction; or an assertion without its own mutant that is not declared as an anchor"
+    },
+    {
+      "Id": "PBT0-C05",
+      "Text": "the full CI of the GREEN fails outside the new tests, reproduces on a second run and is not attributable to the new tests (attributable is REWORK; not reproduced is a BLOCKED rerun within the 16.8 limits)"
+    },
+    {
+      "Id": "PBT0-C06",
+      "Text": "a path or a target text of the closed mutant table does not match the base"
+    },
+    {
+      "Id": "PBT0-C07",
+      "Text": "the facts of section 2 of the package do not hold on the base in a way that changes a CT"
+    },
+    {
+      "Id": "PBT0-C08",
+      "Text": "a planning output rejected ONLY by the literal byte-fidelity comparison of the collections before the Worker allows ONE replanning with a reinforced prompt, without consuming an attempt ([DP] question 2); a second planning fidelity rejection is STOP and returns to the Owner; any other planning rejection (A1-A8 or another cause) is STOP and returns to the Owner"
+    },
+    {
+      "Id": "PBT0-C09",
+      "Text": "a characterization test would hang, leave a modal, a dispatcher or a window alive, write to real user profile data or depend on machine-specific paths"
+    },
+    {
+      "Id": "PBT0-C10",
+      "Text": "a mutant of the closed table does not discriminate its CT in its isolated run, or makes a NEW test method fail by exception instead of assertion, and no admitted alternative works (contract defect); the Worker does not invent a new mutant"
+    },
+    {
+      "Id": "PBT0-C11",
+      "Text": "a negative control (nc1, nc2 or nc3) does not give CONTROL PASS: its ordinary output is kept as is and there are only two exits without returning to the Owner ([DP] question 1, \"Extender firmas exactas\"): (1) nc2 with the EXACT signature of PD-F4-01 (source f4-dispositions.md:1103-1106: Scope in fail on the removed path; Contract in fail only by the exactness clause; EXECUTION_BLOCKED/STOP; applied literally at :1540: no check other than the real verification differs; the exactness clause includes Contract evidence citing the contrast of the narrowed AllowedWriteScope with the contract or with byte-fidelity-check.json, f4-dispositions.md:520, :562, and nothing else) -> substitute PBT0-NC2-EXACT-WHITELIST-01, a copy of F4T1B-NC2-EXACT-WHITELIST-01 with ONLY the id and the scope changed, recorded as nc2 = SATISFIED_UNDER_PBT0_EXACT_WHITELIST_SUBSTITUTE; (2) nc1 with the EXACT signature of PD-F4-04 (source owner-f4t3-authorization.md:255-265: false CurrentSha correctly detected; Identity = fail; Handoff also fails first only because the handoff itself contains the false SHA; outcome BLOCKED / STOP; all other intended checks match; as applied in F4, f4-dispositions.md:1657-1660, Ci in fail only as a consumer of the false CurrentSha is part of the signature, with Remote in pass) -> substitute PBT0-NC1-IDENTITY-SIGNAL-01, a copy of F4T3C2-NC1-IDENTITY-SIGNAL-01 with ONLY the id and the scope changed, recorded as nc1 = SATISFIED_UNDER_PBT0_NC1_IDENTITY_SIGNAL_SUBSTITUTE. Matching is decided never by check name: the control output is compared with the real verification check by check (the set of failing checks, the first failing check, Outcome and StopClass, and the evidence text); the only admitted differences are those listed for each signature in section 6.7 of the package; the session records the comparison table in f4b-dispositions.md. Any other signature or variation (PD-F4-05, PD-F4-06, nc2 with Ci or Trailer also in fail, any nc1 that does not reproduce the literal signature, any failure of nc3, or an evidence text that cannot be assigned to an admitted difference) returns to the Owner before any substitute"
+    },
+    {
+      "Id": "PBT0-C12",
+      "Text": "a correction would be attempt 3 of 3: it returns to the Owner before it is issued (D-PB-10)"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md: celda write-commit-push medida por U-04; effort high medido y usada como Worker real",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/process/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "process",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "sonda neutra de F4 R20261111T180028Z-32f7 (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT G 7C1516A9135D59FA38F6004D56B71C7E1313502D6C6BFEA6FB5D8F97A62DD723 antes y despues; F4-E13) sobre codex-cli 0.167.0-alpha.3.2, bin 5449c1f0f26f1f98, codex.exe SHA-256 4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17; acreditacion del binario: sonda R20261110T034758Z-6a68",
+      "VerifiedOn": "2026-11-11"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Sesion principal de I-64 (Claude) por la autorizacion condicional del Owner y del Coordinator de F4B (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-f4b-disposition.md: PB-T0 se emite con attempts 1/3 si la revision de la v2 queda sin bloqueantes ni importantes sin resolver y sin decision material nueva), las decisiones de procedimiento owner-f4b-procedure-decisions.md (F4B-E03) y la orden del Owner en el chat de arrancar la custodia y la emision de PB-T0 (F4B-E04)",
+  "IssuedUtc": "2026-11-17T18:40:02Z"
+}

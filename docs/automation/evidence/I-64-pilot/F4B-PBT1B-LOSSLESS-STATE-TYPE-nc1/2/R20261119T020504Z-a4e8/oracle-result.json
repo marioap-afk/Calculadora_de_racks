@@ -1,0 +1,56 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261119T020504Z-a4e8",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "worker-handoff.json declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse HEAD=a18ba345eddc5333c22b8bacbad5c2ed4dbf5959 y git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad devuelve el mismo SHA; git cat-file no resuelve el CurrentSha declarado. git merge-base --is-ancestor BaseSha HEAD y RedSha HEAD devuelve 0, pero el SHA declarado no satisface la identidad requerida."
+  },
+  "OutputSha256": "11B810432E81CBE1994191F2A5830830192D7F626260624E8C8A4BEEA2747870",
+  "ManualFreeText1610": []
+}

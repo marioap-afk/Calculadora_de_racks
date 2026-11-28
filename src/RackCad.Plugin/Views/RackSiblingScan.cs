@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.CustomProperties;
@@ -59,6 +60,14 @@ namespace RackCad.Plugin.Views
         internal IReadOnlyDictionary<string, CustomPropertiesReadResult> Properties { get; }
         internal IReadOnlyDictionary<string, IReadOnlyList<RackSiblingLayerRequirement>> Layers { get; }
 
+        /// <summary>
+        /// The raw text of the envelope of each scanned definition that has text, by key (ordinal): the same text that
+        /// <c>Traverse</c> deserializes. It is a read-only view; the scan still writes nothing. It is assigned at the one point
+        /// where a scan is built (<c>Traverse</c>); a scan without it carries null, and the read of the intention then fails
+        /// with a typed failure instead of receiving an empty dictionary in silence.
+        /// </summary>
+        internal IReadOnlyDictionary<string, string> RawEnvelopes { get; init; }
+
         /// <summary>The members of one rack among the scanned definitions; no source is selected, so none is erased by kind.</summary>
         internal RackSiblingMembershipSnapshot MembershipFor(string rackId)
             => RackSiblingMembership.Classify(Facts, rackId, null, false);
@@ -91,68 +100,82 @@ namespace RackCad.Plugin.Views
             ObjectId selectedDefinition,
             Func<RackEmbedDocument, bool> eraseByKind)
         {
+            using (document.LockDocument())
+            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            {
+                var scan = TraverseCore(transaction, document.Database, selectedDefinition, eraseByKind);
+                transaction.Commit();
+                return scan;
+            }
+        }
+
+        internal static RackSiblingDrawingScan TraverseCore(
+            Transaction transaction,
+            Database database,
+            ObjectId selectedDefinition,
+            Func<RackEmbedDocument, bool> eraseByKind)
+        {
             var facts = new List<RackSiblingScanFact>();
             var definitions = new Dictionary<string, ObjectId>(StringComparer.Ordinal);
             var envelopes = new Dictionary<string, RackEmbedDocument>(StringComparer.Ordinal);
             var properties = new Dictionary<string, CustomPropertiesReadResult>(StringComparer.Ordinal);
             var layers = new Dictionary<string, IReadOnlyList<RackSiblingLayerRequirement>>(StringComparer.Ordinal);
+            var rawEnvelopes = new Dictionary<string, string>(StringComparer.Ordinal);
             var embedStore = new RackEmbedStore();
             var propertyStore = new CustomPropertiesStore();
 
-            using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            var table = (BlockTable)transaction.GetObject(database.BlockTableId, OpenMode.ForRead);
+            foreach (ObjectId definitionId in table)
             {
-                var table = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
-                foreach (ObjectId definitionId in table)
+                var definition = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
+                if (definition.IsLayout || definition.IsAnonymous) continue;
+
+                var json = RackBlockData.Read(transaction, definitionId);
+                if (string.IsNullOrEmpty(json)) continue;
+
+                var envelope = embedStore.Deserialize(json);
+                var key = definitionId.Handle.ToString();
+                var layoutReferences = 0;
+                var nestedReferences = 0;
+                var layerFacts = new List<RackSiblingLayerRequirement>();
+                foreach (ObjectId referenceId in definition.GetBlockReferenceIds(directOnly: true, forceValidity: true))
                 {
-                    var definition = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
-                    if (definition.IsLayout || definition.IsAnonymous) continue;
-
-                    var json = RackBlockData.Read(transaction, definitionId);
-                    if (string.IsNullOrEmpty(json)) continue;
-
-                    var envelope = embedStore.Deserialize(json);
-                    var key = definitionId.Handle.ToString();
-                    var layoutReferences = 0;
-                    var nestedReferences = 0;
-                    var layerFacts = new List<RackSiblingLayerRequirement>();
-                    foreach (ObjectId referenceId in definition.GetBlockReferenceIds(directOnly: true, forceValidity: true))
-                    {
-                        var reference = transaction.GetObject(referenceId, OpenMode.ForRead) as BlockReference;
-                        var owner = reference == null ? null : transaction.GetObject(reference.OwnerId, OpenMode.ForRead) as BlockTableRecord;
-                        if (owner?.IsLayout == true) layoutReferences++; else nestedReferences++;
-                        AddLayer(transaction, reference?.LayerId ?? ObjectId.Null, RackSiblingLayerUse.DirectReference, layerFacts);
-                    }
-
-                    foreach (ObjectId entityId in definition)
-                        AddLayer(transaction, (transaction.GetObject(entityId, OpenMode.ForRead) as Entity)?.LayerId ?? ObjectId.Null,
-                            RackSiblingLayerUse.ExistingDefinitionEntity, layerFacts);
-
-                    var probe = envelope?.Id ?? RackEnvelopeIdProbe.Probe(json);
-                    facts.Add(new RackSiblingScanFact(
-                        key,
-                        envelope?.View,
-                        definitionId == selectedDefinition,
-                        definition.IsFromExternalReference,
-                        envelope != null,
-                        envelope?.Id,
-                        probe,
-                        layoutReferences,
-                        nestedReferences,
-                        envelope != null && eraseByKind != null && eraseByKind(envelope)));
-                    definitions.Add(key, definitionId);
-                    layers.Add(key, layerFacts);
-                    if (envelope != null)
-                    {
-                        envelopes.Add(key, envelope);
-                        properties.Add(key, propertyStore.ReadElement(envelope.CustomProperties));
-                    }
+                    var reference = transaction.GetObject(referenceId, OpenMode.ForRead) as BlockReference;
+                    var owner = reference == null ? null : transaction.GetObject(reference.OwnerId, OpenMode.ForRead) as BlockTableRecord;
+                    if (owner?.IsLayout == true) layoutReferences++; else nestedReferences++;
+                    AddLayer(transaction, reference?.LayerId ?? ObjectId.Null, RackSiblingLayerUse.DirectReference, layerFacts);
                 }
 
-                transaction.Commit();
+                foreach (ObjectId entityId in definition)
+                    AddLayer(transaction, (transaction.GetObject(entityId, OpenMode.ForRead) as Entity)?.LayerId ?? ObjectId.Null,
+                        RackSiblingLayerUse.ExistingDefinitionEntity, layerFacts);
+
+                var probe = envelope?.Id ?? RackEnvelopeIdProbe.Probe(json);
+                facts.Add(new RackSiblingScanFact(
+                    key,
+                    envelope?.View,
+                    definitionId == selectedDefinition,
+                    definition.IsFromExternalReference,
+                    envelope != null,
+                    envelope?.Id,
+                    probe,
+                    layoutReferences,
+                    nestedReferences,
+                    envelope != null && eraseByKind != null && eraseByKind(envelope)));
+                definitions.Add(key, definitionId);
+                rawEnvelopes.Add(key, json);
+                layers.Add(key, layerFacts);
+                if (envelope != null)
+                {
+                    envelopes.Add(key, envelope);
+                    properties.Add(key, propertyStore.ReadElement(envelope.CustomProperties));
+                }
             }
 
-            return new RackSiblingDrawingScan(facts, definitions, envelopes, properties, layers);
+            return new RackSiblingDrawingScan(facts, definitions, envelopes, properties, layers)
+            {
+                RawEnvelopes = new ReadOnlyDictionary<string, string>(rawEnvelopes)
+            };
         }
 
         private static void AddLayer(Transaction transaction, ObjectId layerId, RackSiblingLayerUse use,

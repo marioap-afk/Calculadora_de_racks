@@ -1,0 +1,41 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261110T185024Z-3b7f",
+  "SourceVerification": "R20261110T184730Z-e455",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/1/R20261110T184730Z-e455/inputs",
+  "Mutation": {
+    "File": "worker-handoff.json",
+    "Field": "CurrentSha",
+    "Old": "aefc34a53ff5c00ff1e3663044df067c41ee53cb",
+    "New": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "NewExistsInRepo": false
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-work.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "1572299F584AA2F2616BAF848E8DDC3E9FB186AEABD792BEA43B751C9BAC9498",
+    "New": "FE5E7906EB63A4DF8A99C6516BA189DF76D5D63597A5AE67367A065E7C6EDC6B",
+    "Reason": "hash derivado de worker-handoff.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "7AD37F03C1FC66D09AC4FA82406C1213534CB30CB0D685C8ACB8BF18CB45A10D",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "delegation.json": "B0D49A5CDCEFE97ABF14C9C9D66496CC93932D42EE1008CAC059FEA4D077C0BF",
+    "gate-contract.json": "160BB80D1532FF201C896F0902F1E6210E8EA3AEFC88E399D992116C31CB3A16",
+    "relay-record-planning.json": "00C986C1D27678DBFF59C283B413C47AD12EFCC2B3993974A22B2C01DF84BE20",
+    "relay-record-work.json": "06BCF56C87E04896D041EE0B7C27FBDC3BFC2998CF81F4682028AACF21EAC329",
+    "worker-handoff.json": "FE5E7906EB63A4DF8A99C6516BA189DF76D5D63597A5AE67367A065E7C6EDC6B",
+    "ci-core/42877329473/core.trx": "51A41102700E63EC8A8862BC7B5284ACA2451E1CE9536FCB1B1BD926D5028B89",
+    "ci-core-red/42877124150/core.trx": "736BA5DF39C54C28A0BCA10FAC756FC8DE0A6A8373727F465BBCCC29C0DD9801"
+  },
+  "ChangedVsVerifiedInputs": [
+    "relay-record-work.json",
+    "worker-handoff.json"
+  ]
+}

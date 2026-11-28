@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2B1-INTENT-READ",
+  "RunId": "R20261112T093234Z-6d39",
+  "DelegationRunId": "R20261112T090925Z-614a",
+  "WorkRunId": "R20261112T091237Z-96a8",
+  "Attempt": 2,
+  "VerifiedSha": "fe7f136b09900880e1ebe2cb20491e2f84c85988",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; OutputWrittenUtc=2026-11-12T03:31:28.907799-06:00, after Cession.StartUtc=2026-11-12T09:12:42Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists and matches TaskId, Attempt=2, DelegationRunId, RunId and BaseSha; CurrentSha=fe7f136b09900880e1ebe2cb20491e2f84c85988; output time follows cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor e20a294c5e9f7160581e5674e08f8156accf876a fe7f136b09900880e1ebe2cb20491e2f84c85988 succeeded. External authority paths had no diff from MainSha to AuthorityRevision. The AuthorityRevision..CurrentSha diff is only the contract, state and evidence UNIT_DOC paths listed in Authorities."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Compared delegation.json with gate-contract.json: Authorities, AllowedWriteScope, ForbiddenWriteScope, Invariants, RequiredTests, StopConditions and ExpectedEvidence match elementwise; byte-fidelity-check.json reports PASS for all eight collections. relay-record-planning.json records A1-A8 pass."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned fe7f136b09900880e1ebe2cb20491e2f84c85988; branch is architecture/workspace-persistente-rackcad and worktree matches the delegated path. BaseSha is an ancestor of RedSha; RedSha is an ancestor of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts.CurrentRun: event=push, exact branch ref, HeadSha=fe7f136b09900880e1ebe2cb20491e2f84c85988, completed/success; origin main is 812baf879612320653094a8aaf46aca0bac81383, matching MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists only PushBackPilotIntentReader.cs, PushBackPilotIntentScan.cs and the three delegated Workspace test files. All five are exact AllowedWriteScope entries; none intersects ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v on the delivered inputs path matched .gitignore rule artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records push run 43190415649 on the exact branch and SHA with all four required jobs successful. RED push run 43190225114 is for RedSha; Core job failed as expected. The Core RED TRX has 3 filtered failures; UI RED job succeeded."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Direct TRX filter counts: Core GREEN 1592 selected/0 failed; UI GREEN 248/0; Core RED 1592/3; UI RED 248/0. The three Core RED failures are M-3, M-5 and M-7. TestResults agrees. RT is the three ChainRedFiles; the RED diff adds no other test paths, and git diff RedSha CurrentSha -- tests/ is empty. ChainRedFiles remains those three paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show --format=%B for both RED a044bb4b3346b239555c87f6ddf28e1d528b6791 and GREEN fe7f136b09900880e1ebe2cb20491e2f84c85988 contains the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. The relay records launch alias sonnet and effective model claude-sonnet-5-5 with high effort; this matches the subagent transport alias rule."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked the worker handoff text fields listed by AUTOMATION_PLAN 16.10 against its complete term list; no matching term found."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials and one tool error with none pending. No failed order remains."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The correction RED commit changes only the three delegated test files; the GREEN commit changes only the two product files in scope.",
+    "The CI TRX filter counts and outcomes agree with the worker handoff counts."
+  ],
+  "RecommendedNextAction": "Registrar esta verificacion en el relevo y continuar con las revisiones independientes previstas."
+}

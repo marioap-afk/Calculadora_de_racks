@@ -1,0 +1,3 @@
+PB-T2c final: informe=independent-review-pbt2c-v25-check.md paquete=I-64-f4b-pbt2-gate-contract-package-v29.md errores=0 ascii=True
+   control (el titulo literal del encargo): errores=1 ['un encabezado de recomprobacion no tiene la forma "## <seccion>n. Recomprobacion sobre la vX.Y" (n puede ser un numero o una letra, como R): [\'## \\xa713. Recomprobaci\\xf3n final sobre el cierre de PB-T2b\']']
+   control (sin ninguna mencion exacta de la v2.9): errores=1

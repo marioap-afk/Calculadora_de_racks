@@ -1,0 +1,4 @@
+enabled=True | class=HwndWrapper[DefaultDomain;;dc384024-c6b7-4be9-8a69-ba73406268f9] | title=Sistema Push Back - editor
+enabled=False | class=Afx:00007FF602760000:8:0000000000010003:0000000000000000:0000000000000000 | title=RackCad
+enabled=False | class=AfxMDIFrame140u | title=Autodesk AutoCAD 2025 - [c19.dwg]
+Autodesk AutoCAD 2025 - [c19.dwg] | id=BrowserFieldBox | name=Escala de anotación | value=1 | readOnly=True | enabled=True | rect=117,90,213,22

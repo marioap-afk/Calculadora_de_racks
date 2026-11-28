@@ -29,10 +29,10 @@ namespace RackCad.Plugin
     /// </summary>
     public sealed partial class RackInventarioCommands
     {
-        [CommandMethod("RB")]  public void AliasRackBomTotal() => RackBomTotal();          // RACKBOMTOTAL
-
-        [CommandMethod("RACKBOMTOTAL")]
-        public void RackBomTotal()
+        // T4 bom (BM-11): RACKBOMTOTAL and RB open the page «BOM y lista de racks» of the RackCad window instead
+        // (RackInventarioCommands.Ventana.cs), whose reading (RACKBOMLEER) keeps these rules; this classic flow is kept, not
+        // registered, until its retirement (F9).
+        internal void RackBomTotalClassic()
         {
             try
             {

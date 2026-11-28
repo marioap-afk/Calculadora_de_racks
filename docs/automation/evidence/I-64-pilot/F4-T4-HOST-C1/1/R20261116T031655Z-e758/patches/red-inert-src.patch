@@ -1,0 +1,144 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs
+index e248ac7d..b5f020da 100644
+--- a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs
+@@ -17,6 +17,8 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+ 
+         public const string NotPushBackReason = "El diseño saliente del plan no es de Push Back.";
+ 
++        public const string UnreadableEnvelopeReason = "El sobre del miembro del plan no se puede leer.";
++
+         /// <summary>
+         /// The system of the serialized design of a member of the plan. A design that cannot be read, or that is not of Push Back, is an
+         /// <see cref="InvalidOperationException"/> with its reason: the caller decides what that means.
+@@ -35,6 +37,17 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+             return new PushBackResolver(catalog).Resolve(design);
+         }
+ 
++        /// <summary>
++        /// The system of a member of the plan, the way the classic editor redraws it (I-64 F4-T4-HOST-C1, D-C1-01): the system of
++        /// <see cref="Build"/> over the design text of the member, carrying the rack name of the envelope of the same member, as it is
++        /// written there (raw: not trimmed, not changed, and a null or blank name stays so and draws no label). Nothing else of the system changes.
++        /// A member whose envelope cannot be read is an <see cref="InvalidOperationException"/> with <see cref="UnreadableEnvelopeReason"/>.
++        /// </summary>
++        public static PushBackSystem BuildForMember(PushBackPilotMemberPlan member, RackCatalog catalog)
++        {
++            return Build(member.DesignText, catalog);
++        }
++
+         /// <summary>True when the system is a composite rack (two sides): its frontal cuts then carry the side in their name.</summary>
+         public static bool IsComposite(PushBackSystem system)
+         {
+diff --git a/src/RackCad.Application/Workspace/BridgeSource.cs b/src/RackCad.Application/Workspace/BridgeSource.cs
+index 665ae41d..db679281 100644
+--- a/src/RackCad.Application/Workspace/BridgeSource.cs
++++ b/src/RackCad.Application/Workspace/BridgeSource.cs
+@@ -35,6 +35,17 @@ namespace RackCad.Application.Workspace
+         Idle,
+     }
+ 
++    /// <summary>
++    /// What the object of a database object event is, as the bridge classifies it by its type alone (I-64 F4-T4-HOST-C1, IC-10): a plain
++    /// object of the drawing, or an object of the associative framework of the host, which the host modifies by itself while it locks, commits
++    /// and ends commands. Neutral: it names no type of the host.
++    /// </summary>
++    public enum ObjectEventSubject
++    {
++        Drawing,
++        AssociativeBookkeeping,
++    }
++
+     /// <summary>Static classification of <see cref="BridgeSource"/>: which ones are global, which per session, which are synchronization.</summary>
+     public static class BridgeSources
+     {
+diff --git a/src/RackCad.Application/Workspace/EventBridgeCore.cs b/src/RackCad.Application/Workspace/EventBridgeCore.cs
+index ce500ce4..2361de6d 100644
+--- a/src/RackCad.Application/Workspace/EventBridgeCore.cs
++++ b/src/RackCad.Application/Workspace/EventBridgeCore.cs
+@@ -365,6 +365,15 @@ namespace RackCad.Application.Workspace
+             }
+         }
+ 
++        /// <summary>
++        /// Handler of the object events of the database (I-64 F4-T4-HOST-C1, IC-10). It is <see cref="OnSourceEvent"/> with one more fact, the
++        /// kind of object, that the bridge classifies by type alone.
++        /// </summary>
++        public bool OnObjectEvent(SessionId session, BridgeSource source, ObjectEventSubject subject)
++        {
++            return OnSourceEvent(session, source);
++        }
++
+         /// <summary>
+         /// Close-begin handler. It lives as long as the session, degraded or not, and decides only from in-memory
+         /// state: it reads no stored data, resolves nothing, writes nothing and opens no dialog. Without an advisor it allows. With
+diff --git a/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs b/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+index 6966d2c9..b7fec3da 100644
+--- a/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
++++ b/src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs
+@@ -115,7 +115,7 @@ namespace RackCad.Plugin.Views
+                 var embed = store.Deserialize(member.EnvelopeText)
+                     ?? throw new InvalidOperationException("El sobre de la vista " + member.Key + " no se puede leer.");
+                 var address = RackViewCodec.Decode(embed.Kind, embed.View, embed.Section).Address;
+-                var system = PushBackPilotSystemRebuild.Build(member.DesignText, _catalog);
++                var system = PushBackPilotSystemRebuild.BuildForMember(member, _catalog);
+                 PreparedViewRedraw prepared;
+                 switch (address.Kind)
+                 {
+diff --git a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+index 5db728d6..de53a704 100644
+--- a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
++++ b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+@@ -240,35 +240,35 @@ namespace RackCad.Plugin.Workspace
+                 case BridgeSource.ObjectAppended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                     document.Database.ObjectAppended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectAppended -= handler);
+                 }
+                 case BridgeSource.ObjectErased:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectErasedEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectErasedEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                     document.Database.ObjectErased += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectErased -= handler);
+                 }
+                 case BridgeSource.ObjectModified:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                     document.Database.ObjectModified += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectModified -= handler);
+                 }
+                 case BridgeSource.ObjectUnappended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                     document.Database.ObjectUnappended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectUnappended -= handler);
+                 }
+                 case BridgeSource.ObjectReappended:
+                 {
+                     var document = FindDocument(a.NativeInstanceId);
+-                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnSourceEvent(a.Session, a.Source));
++                    ObjectEventHandler handler = (s, e) => ContainSession(a, () => _core.OnObjectEvent(a.Session, a.Source, SubjectOf(e.DBObject)));
+                     document.Database.ObjectReappended += handler;
+                     return () => WithDocument(a.NativeInstanceId, d => d.Database.ObjectReappended -= handler);
+                 }
+@@ -344,6 +344,12 @@ namespace RackCad.Plugin.Workspace
+             }
+         }
+ 
++        // I-64 F4-T4-HOST-C1 (IC-10): the kind of the object of an object event, by its type alone. The associative framework of the host
++        // (AssocAction, which includes AssocNetwork, and AssocDependency) modifies itself while it locks, commits and ends commands: those events
++        // are not a change of the drawing. Only type tests of the argument of the event, in memory and of constant cost: the object is not
++        // opened and nothing of it is read. It is evaluated inside the containment of the handler.
++        private static ObjectEventSubject SubjectOf(DBObject o) => o is AssocAction || o is AssocDependency ? ObjectEventSubject.AssociativeBookkeeping : ObjectEventSubject.Drawing;
++
+         private static long NativeId(Document document) => document.UnmanagedObject.ToInt64();
+ 
+         private static Document FindDocumentOrNull(long nativeInstanceId)

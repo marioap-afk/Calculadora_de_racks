@@ -1,0 +1,84 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261011T014542Z-0c58",
+  "DelegationRunId": "R20261010T082206Z-21c1",
+  "WorkRunId": "R20261010T202008Z-3df4",
+  "Attempt": 3,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, LaunchedPid=null; Cession.StartUtc=2026-10-10T20:23:57Z y EndUtc=2026-10-10T20:52:59Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json existe en la ruta esperada para WorkRunId R20261010T202008Z-3df4; TaskId, Attempt=3, DelegationRunId, RunId, BaseSha y Branch coinciden con la delegacion. OutputWrittenUtc=2026-10-10T20:52:30Z es posterior al inicio de cesion."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Leidos AUTOMATION_PLAN.md §16 en AuthorityRevision d5bdcb7a..., agent-execution/README.md §8 y AGENTS.md en MainSha bb0d5522..., y los UNIT_DOC declarados en d5bdcb7a.... merge-base(MainSha, AuthorityRevision)=bb0d5522...; no hay cambios de las autoridades EXTERNAL entre esos SHA ni entre AuthorityRevision y BaseSha. Secciones localizadas normalizando diacriticos y raya larga."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json y gate-contract.json coinciden en Unit, Gate, TaskId, AllowedWriteScope, ForbiddenWriteScope, Invariants, StopConditions, Authorities y RequiredTests. A3-A5 pasan: alcance permitido dentro del contrato, prohibido cubre el alcance prohibido y las colecciones normativas coinciden."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=e2f642b86197441eea0838c8055c1db666606f11; origin/architecture/workspace-persistente-rackcad coincide; rama architecture/workspace-persistente-rackcad. merge-base --is-ancestor BaseSha CurrentSha y RedSha CurrentSha terminan con exit 0. RedSha=31e3c57a... aparece entre BaseSha y CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry registra HeadSha y LsRemoteSha=e2f642b8..., OriginMainSha=bb0d5522...; RemoteFacts registra LsRemoteSha=e2f642b8... y OriginMainSha=bb0d5522..., sin avance de main."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha enumera exactamente 10 archivos nuevos bajo src/RackCad.Application/Workspace/, src/RackCad.Plugin/Workspace/ y tests/RackCad.Tests/Workspace/. Todos quedan dentro de AllowedWriteScope y fuera de ForbiddenWriteScope; no se modifican los cinco archivos de producto T1 ni las pruebas T1."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no devuelve entradas. git check-ignore para artifacts/orchestration/I-64/F1-T2-BRIDGE-nc3/3/R20261011T014542Z-0c58/inputs/worker-handoff.json termina con exit 0 e informa que la ruta esta ignorada."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 38085381131: event=push, ref exacta refs/heads/architecture/workspace-persistente-rackcad, head_sha=e2f642b8..., status=completed, conclusion=success; los cuatro jobs requeridos estan en success. RedRun 38084788650 apunta al RedSha, es push en la misma rama y tiene Tests en failure; Plugin skipped, como corresponde a RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "core.trx CurrentSha: 12754/12754 Passed. El filtro Workspace selecciona 159/159 Passed; coincide con TestResults. core.trx RedSha: selecciona 159, 97 Passed y 62 Failed; los 62 fallos son aserciones, incluida la de soporte 'no live session for native id 100', sin fallo de compilacion. El diff BaseSha..RedSha en tests/ contiene cinco archivos WorkspaceBridge*. El diff RedSha..CurrentSha en tests/ esta vacio. ChainRedFiles queda como RT: WorkspaceBridgeDegradedModeTests.cs, WorkspaceBridgeHintAndDrainTests.cs, WorkspaceBridgeSourceGuardTests.cs, WorkspaceBridgeSubscriptionLifecycleTests.cs y WorkspaceBridgeTestSupport.cs. ui.trx: total=1654, 1637 Passed y 17 NotExecuted; las 17 filas NotExecuted explican la diferencia entre total y ejecutadas."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%P%n%B BaseSha..CurrentSha muestra Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> en los commits RED y GREEN; coincide con Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Participant registra modelo y effort efectivos claude-sonnet-5-5/high; Worker del handoff declara modelo y effort solicitados claude-sonnet-5-5/high. Coinciden con la celda y el enrutamiento required de la delegacion."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json WorkCompleted contiene una expresion reservada por AUTOMATION_PLAN §16.10. La comprobacion reviso WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions y RecommendedNextAction."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes registra cero denegaciones de permisos y cero avisos de limite; el error transitorio de un script se supero y no quedo orden fallida pendiente. Los procesos no atribuibles desaparecieron en la relectura y constan como CLEARED_BY_REREAD."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [
+    "C-13",
+    "S-11"
+  ],
+  "Findings": [
+    "FreeText falla por contenido de WorkCompleted; la comprobacion exacta esta identificada en Checks.FreeText.",
+    "La delegacion registra Attempt=3 y AttemptsRemaining=0; el paquete de la delegacion define C-13 como presupuesto agotado. El nuevo resultado REWORK activa tambien S-11 segun AUTOMATION_PLAN §16.8.",
+    "La CI y los TRX del CurrentSha y RedSha concuerdan con el registro de relevo y con los diffs; los 62 fallos RED son fallos por asercion.",
+    "La disposicion Owner/Coordinator sobre P-01 y su lista cerrada permiten esta verificacion para las dos instantaneas declaradas; no se observa otra senal de parada por P-01.",
+    "Esta verificacion cubre evidencia automatizada y registros. La validacion en AutoCAD queda fuera del perfil de Controller."
+  ],
+  "RecommendedNextAction": "Detener la cadena por C-13 y solicitar al Coordinator una disposicion para el hallazgo FreeText antes de cualquier nueva delegacion."
+}

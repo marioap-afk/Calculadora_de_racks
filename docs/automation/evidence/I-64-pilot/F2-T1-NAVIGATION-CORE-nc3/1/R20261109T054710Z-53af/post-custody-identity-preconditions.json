@@ -1,0 +1,51 @@
+{
+  "MeasuredUtc": "2026-11-09T05:47:11Z",
+  "IdentityMode": "POST_CUSTODY_VERIFIED_DELIVERY_DESCENDANT",
+  "VerifiedProductSha": "c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+  "ControlHeadSha": "7002678f46b3816aa06df4cb77a945cbf250af54",
+  "Conditions": {
+    "1_VerifiedProductSha": true,
+    "2_HeadEqualsOriginBranch": true,
+    "3_VerifiedAncestorOfControlHead": true,
+    "4_DiffDocsEvidenceStateOnly": true,
+    "5_NoSrc": true,
+    "6_NoTests": true,
+    "7_NoProjectFiles": true,
+    "8_NoDeployAssets": true,
+    "9_ControlHeadCiSuccess": true,
+    "10_OriginMainUnchanged": true,
+    "RedGreenUnchanged": true,
+    "AnalysisVersionedInHead": true
+  },
+  "Facts": {
+    "LsRemoteBranch": "7002678f46b3816aa06df4cb77a945cbf250af54",
+    "LsRemoteMain": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60",
+    "DiffPaths": 206,
+    "ControlHeadCi": {
+      "RunId": "42568842371",
+      "HeadSha": "7002678f46b3816aa06df4cb77a945cbf250af54",
+      "Event": "push",
+      "Branch": "architecture/workspace-persistente-rackcad",
+      "Conclusion": "success",
+      "Jobs": [
+        [
+          "Tests (Domain + Application)",
+          "success"
+        ],
+        [
+          "Build UI (WPF, valida API de Application)",
+          "success"
+        ],
+        [
+          "UI Tests (WPF controls, net8.0-windows)",
+          "success"
+        ],
+        [
+          "Build Plugin without AutoCAD",
+          "success"
+        ]
+      ]
+    }
+  },
+  "Pass": true
+}

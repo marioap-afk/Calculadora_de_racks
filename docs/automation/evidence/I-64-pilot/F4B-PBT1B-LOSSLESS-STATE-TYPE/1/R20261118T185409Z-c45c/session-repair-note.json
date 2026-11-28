@@ -1,0 +1,30 @@
+{
+  "Decision": "F4B-E18 (Owner: «La sesion pone la lista (Recomendado)»)",
+  "RunId": "R20261118T185409Z-c45c",
+  "OutputSha256": "A97406A954386F9942799B249FB75CF76F6E6F9A88114D4615911703F73B092F",
+  "DelegationSha256": "D9E2FF238EBBD37EEB6ED2B9AD0F7A98C4B4267AA3F710B79F3F159684143065",
+  "Repaired": "ForbiddenWriteScope",
+  "OutputCount": 196,
+  "ContractCount": 213,
+  "MissingInOutput": [
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".editorconfig",
+    ".gitattributes",
+    ".gitignore"
+  ],
+  "OtherCollectionsIdentical": true,
+  "Fidelity": "PASS sobre delegation.json (session-repair/byte-fidelity-check.json)"
+}

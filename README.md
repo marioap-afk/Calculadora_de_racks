@@ -30,8 +30,11 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 
 | Comando | Uso |
 |---|---|
-| `RACKCAD` | Menú principal y bibliotecas. |
-| `RACKCABECERA` / `QUICKCABECERA` | Diseñar una cabecera. |
+| `RACKCAD` / `RK` | Abre la ventana RackCad, que no bloquea AutoCAD: las secciones (Nuevo, Variables, BOM y lista de racks, Biblioteca de diseños, Configuración) y la lista de los racks del dibujo, con buscador y filtros. `RACKPANEL` abre la misma ventana. |
+| `RACKMENU` | El menú clásico de RackCad (modal), mientras las secciones de la ventana se migran. |
+| `RACKNUEVO` | Abre el editor de un sistema nuevo por su palabra clave (Selectivo, PushBack, Dinamico, Cantilever, Cabecera, Cama, Larguero), por la misma ruta del menú; lo usa «Nuevo» de la ventana. |
+| `RACKBIBLIOTECA` | Abre la biblioteca de diseños y el editor del diseño elegido, por la misma ruta del menú. |
+| `RACKCABECERA` / `QUICKCABECERA` | Diseñar una cabecera. `RACKCABECERA` abre la ventana RackCad en «Nuevo» › «Cabecera en esta ventana»; el configurador clásico está en `RACKMENU` › «Diseñar cabecera». |
 | `RACKSISTEMADINAMICO` | Dibujar el sistema dinámico predeterminado. |
 | `QUICKCAMA` | Dibujar una cama de rodamiento. |
 | `RACKSELECTIVO` | Diseñar un rack selectivo. |
@@ -43,7 +46,7 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 | `RACKLISTA` | Listar racks, vistas y copias del dibujo. |
 | `RACKBOMTOTAL` | Generar el BOM consolidado. |
 | `RACKLAYOUT` / `RACKRELLENAR` | Colocar racks en una rejilla o sitio. |
-| `RACKSECCION` | Ver una sección estructural del catálogo AISC e insertarla como geometría. También desde `RACKCAD` → «Generar perfil estructural». |
+| `RACKSECCION` | Ver una sección estructural del catálogo AISC e insertarla como geometría. Abre la página «Nuevo» › «Perfil estructural» de la ventana RackCad, sin bloquear AutoCAD; la ventana clásica sigue en `RACKMENU` → «Generar perfil estructural». |
 | `RACKRAMPAQUETE` | Exportar una estación de un rack Cantilever como paquete de construcción para RAM Elements (equivalencia de transferencia; sin análisis ni resultados). Usa la tabla de secciones y materiales que viaja junto al Plugin (salida de compilación y bundle del Autoloader). |
 | `RACKAYUDA` | Consultar comandos y alias dentro de AutoCAD. |
 

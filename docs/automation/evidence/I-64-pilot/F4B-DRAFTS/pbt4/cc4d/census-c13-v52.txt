@@ -1,0 +1,65 @@
+# C13 de PB-T4d por texto: el GREEN (pbt4d-green-v52.txt) frente a la base 6c2820bab4d8b41e3e229e23f3a1638ccbb04735, en los 6 archivos que cambia o borra
+nuevas en el GREEN: 0 []
+quitadas: 57; lista cerrada: 57; iguales=True
+  quitada PushBackPilotComposition.Composed x1
+  quitada PushBackPilotComposition.Editor x1
+  quitada PushBackPilotComposition.Inputs x1
+  quitada PushBackPilotComposition.IsComposed x1
+  quitada PushBackPilotComposition.PushBackPilotComposition x1
+  quitada PushBackPilotComposition.Reason x1
+  quitada PushBackPilotComposition.Rejected x1
+  quitada PushBackPilotFieldAdapter.AnnotationScaleKey x1
+  quitada PushBackPilotFieldAdapter.Apply x1
+  quitada PushBackPilotFieldAdapter.EmptyMessage x1
+  quitada PushBackPilotFieldAdapter.NotANumberMessage x1
+  quitada PushBackPilotFieldAdapter.NotPositiveMessage x1
+  quitada PushBackPilotFieldAdapter.UnknownFieldMessage x1
+  quitada PushBackPilotFieldAdapter.Validate x1
+  quitada PushBackPilotMaterializer.ComposeForWrite x1
+  quitada PushBackPilotMaterializer.KeepPilotEditsOn x1
+  quitada PushBackPilotPrepareInput.ConsideredStatus x1
+  quitada PushBackPilotPrepareInput.CurrentDraftState x1
+  quitada PushBackPilotPrepareInput.From x1
+  quitada PushBackPilotPrepareInput.HasPendingText x1
+  quitada PushBackPilotPrepareInput.InitialDraftState x1
+  quitada PushBackPilotPrepareInput.IsDirty x1
+  quitada PushBackPilotPrepareInput.PushBackPilotPrepareInput x1
+  quitada PushBackPilotPrepareInput.RackId x1
+  quitada PushBackPilotPrepareInput.StaleBase x1
+  quitada PushBackPilotStateComparer.AnnotationsEqual x1
+  quitada PushBackPilotStateComparer.CellsEqual x1
+  quitada PushBackPilotStateComparer.Copy x1
+  quitada PushBackPilotStateComparer.CopyAnnotations x1
+  quitada PushBackPilotStateComparer.CopyEditor x1
+  quitada PushBackPilotStateComparer.CopyInputs x1
+  quitada PushBackPilotStateComparer.CopyPallet x1
+  quitada PushBackPilotStateComparer.EditorsEqual x1
+  quitada PushBackPilotStateComparer.Equals x1
+  quitada PushBackPilotStateComparer.FrontsEqual x1
+  quitada PushBackPilotStateComparer.GetHashCode x1
+  quitada PushBackPilotStateComparer.InputsEqual x1
+  quitada PushBackPilotStateComparer.Instance x1
+  quitada PushBackPilotStateComparer.PalletsEqual x1
+  quitada PushBackPilotStateComparer.PushFrontsEqual x1
+  quitada PushBackPilotStateComparer.SidesEqual x1
+  quitada PushBackPilotStateComparer.TopologiesEqual x1
+  quitada PushBackPilotUpdatePlanner.Build x1
+  quitada PushBackPilotUpdatePlanner.Prepare x1
+  quitada PushBackPilotUpdatePlanner.ViewUnavailablePrefix x1
+  quitada PushBackPilotUpdatePlanner.ViewUnavailableSuffix x1
+  quitada PushBackPilotUpdateRun.ComparePost x1
+  quitada PushBackPilotUpdateRun.Execute x1
+  quitada PushBackPilotUpdateRun.Precheck x1
+  quitada StructuralEquality.Equal x2
+  quitada StructuralEquality.MaxDepth x1
+  quitada tipo:PushBackPilotComposition x1
+  quitada tipo:PushBackPilotFieldAdapter x1
+  quitada tipo:PushBackPilotPrepareInput x1
+  quitada tipo:PushBackPilotStateComparer x1
+  quitada tipo:StructuralEquality x1
+allowErase en el GREEN: 0
+censo PASA
+autoprueba-una-declaracion-de-mas=falla
+autoprueba-una-de-menos=falla
+autoprueba-el-parametro-allowErase=falla
+autoprueba-una-constante-retirada-de-vuelta=falla

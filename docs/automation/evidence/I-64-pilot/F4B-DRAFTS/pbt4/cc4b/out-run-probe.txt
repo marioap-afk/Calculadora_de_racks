@@ -1,0 +1,75 @@
+fase probe; copia /d/r4g; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957; paquete sha256 6543b99d6278ad95d5ce77c1f225a1e893932795d687560d6e77d3c0b7ef31cb
+copia exportada: 12886 archivos
+ESCRITOS 47 archivos; conjunto 25412d8457bae8320c7b58ca89e532bfb627cee3c63ebcea89f2e30cecd2bd2f
+probe-core-tests rc=1 errores=82 avisos-CS=0
+    <copia>\tests\RackCad.Tests\Workspace\WorkspaceCommandAdvisorFull.cs(309,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspaceCommandAdvisorFull.cs(318,51): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspaceEditIntentHostFull.cs(47,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspaceEditIntentHostFull.cs(51,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspaceLifecycleHostFull.cs(115,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspaceLifecycleHostFull.cs(124,51): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspaceLifecycleHostFull.cs(90,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspaceLifecycleHostFull.cs(99,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(105,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(115,29): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(134,51): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(15,55): error CS0535: 'PilotEditThrowingComparerFull' no implementa el miembro de interfaz 'IEqualityComparer<PushBackFullDraftState>.Equals(PushBackFullDraftState?, PushBackFullDraftState?)' [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(15,73): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(19,24): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(19,51): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(25,28): error CS0246: El nombre del tipo o del espacio de nombres 'PushBackFullDraftState' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(280,24): error CS0103: El nombre 'PushBackFullFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(281,22): error CS0103: El nombre 'PushBackFullFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(282,23): error CS0103: El nombre 'PushBackFullFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+    <copia>\tests\RackCad.Tests\Workspace\WorkspacePilotEditHostFull.cs(283,21): error CS0103: El nombre 'PushBackFullFieldAdapter' no existe en el contexto actual [<copia>\tests\RackCad.Tests\RackCad.Tests.csproj]
+probe-ui-tests rc=0 errores=0 avisos-CS=0
+probe-plugin rc=0 errores=0 avisos-CS=0
+probe: errores 82, avisos CS 0 (en total, hasta aqui)
+  binario 56d4baaca596cc4464db57f630f2bb0b1268ff1f8a7e032492090eebf61c5008 tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario 2a86c3ac05a002882ed72c7874bf1fa9b88f4f34780d3cc02ccda25634b4471f _plugin-out-probe/RackCad.Plugin.dll
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check.py", line 298, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check.py", line 280, in main
+    cmd_summary(a[1], a[2])
+    ~~~~~~~~~~~^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check.py", line 100, in cmd_summary
+    rs, (start, finish) = results(trx)
+                          ~~~~~~~^^^^^
+  File "<scratchpad>\hs65\pbt4bcc\compile\p6_check.py", line 40, in results
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/core-probe.trx'
+sha256sum: /d/r4g/_trx/core-probe.trx: No such file or directory
+head: cannot open '/tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-probe/core-probe-outcomes.txt' for reading: No such file or directory
+test core-probe.trx rc=1 segundos=2 trx-sha256= :: 
+test ui-probe.trx rc=0 segundos=9 trx-sha256=79200b3f7497332e433b349840c9e992276f329d97a9ebd53449551e5f057289 :: filas 36 {'Passed': 36}; inicio 2026-11-20T16:58:58.2396001-06:00; fin 2026-11-20T16:59:03.8361241-06:00
+partition red rc=1
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4\partition_pbt4b_v45.py", line 150, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4\partition_pbt4b_v45.py", line 105, in main
+    per = collect([core, ui])
+  File "<scratchpad>\hs65\pbt4\partition_pbt4b_v45.py", line 72, in collect
+    for cls, method, outcome, stack, msg in results(p):
+                                            ~~~~~~~^^^
+  File "<scratchpad>\hs65\pbt4\partition_pbt4b_v45.py", line 52, in results
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/core-probe.trx'
+build-server shutdown rc=0
+procesos: 0
+MAINCO []
+exit 0

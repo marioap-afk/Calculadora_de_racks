@@ -58,7 +58,10 @@ namespace RackCad.Application.Systems.Dynamic
                 BedType = FlowBedType.Dynamic,
                 LaneDepth = laneDepth,
                 PalletDepth = system.Pallet?.Depth ?? 0.0,
-                RollerId = FlowBedDefaults.RollerId
+                // The bed of the front (step 3 of Dinámico); a front without one keeps the bed it always had.
+                RollerId = string.IsNullOrWhiteSpace(front?.RollerId) ? FlowBedDefaults.RollerId : front.RollerId,
+                RollerPitchOverride = front?.RollerPitch,
+                BrakeEveryRollers = front?.BrakeEveryRollers
             }, catalog);
             if (localAssembly.Count == 0)
             {

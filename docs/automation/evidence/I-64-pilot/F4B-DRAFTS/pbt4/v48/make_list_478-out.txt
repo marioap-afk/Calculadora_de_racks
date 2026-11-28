@@ -1,0 +1,2 @@
+pbt4b-substitution-list-478.tsv sha256 8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b 105379 bytes; filas 478 {'PB-T4b C-5': 23, 'PB-T4b UI': 27, 'PB-T4b C-0': 428}; Core 451, UI 27; archivos 21
+nueva: PB-T4b C-5	tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs	NoneOfThe30LiteralsInEnglishStaysInTheHostOrTheSupportAndTheFourIdentifiersAreKept	491-499	C-5: WHHG, la guarda de los 30 textos del anfitrion cuenta tres que el GREEN cambia (2 -> 0, 5 -> 6 y 1 -> 0; D-PBT4-04 y D-PBT4-08; owner-pbt4b-list-478-decision.md)

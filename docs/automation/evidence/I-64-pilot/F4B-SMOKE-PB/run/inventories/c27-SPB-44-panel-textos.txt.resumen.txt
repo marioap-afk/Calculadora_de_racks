@@ -1,0 +1,5 @@
+inventario: c27-SPB-44-panel-textos.txt
+sha256: 88e959451dab58010b5f5428a28d7c84865b47e16fa7ca525a24c10f99ac536c
+bytes: 9099
+
+(no es un inventario RCDUMP: solo su SHA-256)

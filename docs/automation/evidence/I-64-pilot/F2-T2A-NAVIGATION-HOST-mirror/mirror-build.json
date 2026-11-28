@@ -1,0 +1,104 @@
+{
+  "Schema": "rackcad-i64-historical-control-mirror/v1",
+  "Statement": "The historical environment exists only to evaluate a negative control relative to verification 89a6. It does not claim that a140eb3a is current main.",
+  "LiveRemoteFacts": {
+    "origin/main": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "origin/product-branch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "Source": "git ls-remote, immediately before construction",
+    "MainAdvancedAfterVerifiedOccurrence": true,
+    "CommitsBetween": 19,
+    "MovementAlreadyKnown": "accepted by the Coordinator: coordinator-f2t2a-a13-preactivation-disposition.md and coordinator-f2t2a-nc2-remote-preemption-disposition.md",
+    "AuthorityBlobsIdentical": true,
+    "AuthorityBlobs": [
+      {
+        "Path": "docs/INITIATIVE_LIFECYCLE.md",
+        "Historical": "6415c33bd2f86fa05444e00b630d7fed5e5d7a22",
+        "Live": "6415c33bd2f86fa05444e00b630d7fed5e5d7a22"
+      },
+      {
+        "Path": "docs/AUTOMATION_PLAN.md",
+        "Historical": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+        "Live": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0"
+      },
+      {
+        "Path": "docs/WORKFLOW.md",
+        "Historical": "884ed305ce242bda575cef74a9eff8c28ce7b67c",
+        "Live": "884ed305ce242bda575cef74a9eff8c28ce7b67c"
+      },
+      {
+        "Path": "docs/automation/agent-execution/README.md",
+        "Historical": "64ae952b6fb01ce206200c64d2a1d8683b5a297d",
+        "Live": "64ae952b6fb01ce206200c64d2a1d8683b5a297d"
+      },
+      {
+        "Path": "docs/automation/agent-execution/schemas/worker-handoff.schema.json",
+        "Historical": "cc3c9cf76b2247f3312e99bd447554326cc3700a",
+        "Live": "cc3c9cf76b2247f3312e99bd447554326cc3700a"
+      },
+      {
+        "Path": "docs/automation/agent-execution/schemas/relay-record.schema.json",
+        "Historical": "2deba19606d058fd82b389687934b0c3dfef8c06",
+        "Live": "2deba19606d058fd82b389687934b0c3dfef8c06"
+      },
+      {
+        "Path": "docs/automation/agent-execution/schemas/controller-verification.schema.json",
+        "Historical": "72747225daa2a83ba139ec1ffacb57d8943cf0af",
+        "Live": "72747225daa2a83ba139ec1ffacb57d8943cf0af"
+      },
+      {
+        "Path": "docs/automation/agent-execution/schemas/delegation.schema.json",
+        "Historical": "62c026764a3b917c9b4ffeb6df049247ea613869",
+        "Live": "62c026764a3b917c9b4ffeb6df049247ea613869"
+      },
+      {
+        "Path": "docs/automation/agent-execution/schemas/gate-contract.schema.json",
+        "Historical": "56ced893586abc4a571d842f631e435342906f6a",
+        "Live": "56ced893586abc4a571d842f631e435342906f6a"
+      },
+      {
+        "Path": "AGENTS.md",
+        "Historical": "dd0d5a2d9ac3d3d8502ef7a556c8a5f1d62c9c29",
+        "Live": "dd0d5a2d9ac3d3d8502ef7a556c8a5f1d62c9c29"
+      }
+    ],
+    "ProductBranchMoved": false
+  },
+  "HistoricalControlRemoteFacts": {
+    "HEAD": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "refs/heads/product-branch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "origin/product-branch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "origin/main": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60"
+  },
+  "ObjectsTransferred": 26647,
+  "PackSha256": "1e02ecde0634281470233ce4cc7a769aa343a5c4db6aebedb9c87ef4d377fd23",
+  "Source": "local objects of the real repository only (rev-list --objects + pack-objects); no network",
+  "FsckExit": 0,
+  "RefreshExit": 0,
+  "RealRepositoryUnchanged": true,
+  "RealBefore": {
+    "ForEachRefSha256": "9ac496f1b9fda40207bb671591f0645cf0ecdd066ea4ae79fae48dcfb6f3d892",
+    "Head": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "TrackingMain": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "TrackingBranch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "StatusPorcelain": "",
+    "Files": {
+      "packed-refs": "eec99b0cd30d9a17762eea714e4d49c4df9f8d4aaae0446c10ef251751b31db7",
+      "worktree-HEAD": "151bd1a723664b51bba2799a134cbd64e9d96700ae415d3fd237f879cc4a9206",
+      "worktree-index": "e13eb7c0bcb2964d9f4f1280f186d446fe2180a915dd9a8e87501b4cfacbef16",
+      "config": "a42bb2f8b1fa581e34a8aba6ddbd9fcb4f0286433e28db35dde4df79a0cf4dc6"
+    }
+  },
+  "RealAfter": {
+    "ForEachRefSha256": "9ac496f1b9fda40207bb671591f0645cf0ecdd066ea4ae79fae48dcfb6f3d892",
+    "Head": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "TrackingMain": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "TrackingBranch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "StatusPorcelain": "",
+    "Files": {
+      "packed-refs": "eec99b0cd30d9a17762eea714e4d49c4df9f8d4aaae0446c10ef251751b31db7",
+      "worktree-HEAD": "151bd1a723664b51bba2799a134cbd64e9d96700ae415d3fd237f879cc4a9206",
+      "worktree-index": "e13eb7c0bcb2964d9f4f1280f186d446fe2180a915dd9a8e87501b4cfacbef16",
+      "config": "a42bb2f8b1fa581e34a8aba6ddbd9fcb4f0286433e28db35dde4df79a0cf4dc6"
+    }
+  }
+}

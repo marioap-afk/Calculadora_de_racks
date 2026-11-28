@@ -1,0 +1,55 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261111T181855Z-50da",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Contract",
+    "Scope"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "P-03",
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "git diff --name-only BaseSha..CurrentSha devuelve tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs. La ruta no pertenece al AllowedWriteScope vacio de delegation.json; no coincide con el alcance de una ruta afirmado en relay-record-planning.json. git diff --name-only tambien se cotejo con las 66 entradas de ForbiddenWriteScope."
+  },
+  "OutputSha256": "3F9213B5683E2C19E4AFC9CA9B4F066FAECCC510331DDF5EEEF2077E1AA9A7FA",
+  "ManualFreeText1610": []
+}

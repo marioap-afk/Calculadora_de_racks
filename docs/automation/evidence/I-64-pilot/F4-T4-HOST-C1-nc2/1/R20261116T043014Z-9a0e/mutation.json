@@ -1,0 +1,86 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261116T043014Z-9a0e",
+  "SourceVerification": "R20261116T042032Z-ba30",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T4-HOST-C1/1/R20261116T042032Z-ba30/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs",
+      "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs",
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeObjectSubjectGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs",
+      "src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs",
+      "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeObjectSubjectGuardTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs",
+      "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+      "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeObjectSubjectGuardTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "2293CC13135E19040332BB0F26DD2B114AC0F19DDF931C4566A763FE7C95F031",
+    "New": "A1C905FE501E3C1ED5C125415C11DAB2E362C8B84D770FA16B1182AF56ECD591",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "891F4DC2A7DE0BBEE5A44593CDBB58C70BA238F6CDEA9F8E02400C0F0F662E3D",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "3A853DD2B1115D93F87C7C88E5AA0E4449E0C0ED4422436674B3492C996AFDCF",
+    "delegation.json": "A1C905FE501E3C1ED5C125415C11DAB2E362C8B84D770FA16B1182AF56ECD591",
+    "gate-contract.json": "B52FC5D95043A6ED780055E27ECD8CC002020604D2B1F9F95B39118AC4CBE383",
+    "relay-record-planning.json": "D1FBE843EF5CC3819EF229DDF5CCFCEA1E68BB84D4632858A8B0FB9BC5C3E423",
+    "relay-record-work.json": "2007B755A233F2C5B04F745E7211B34641FB2C2405D7BBD3513079965B8C0999",
+    "worker-handoff.json": "1810ECE7121B67DF0A3E63F34D74FA66EB8E3C0DB527D36712257F1C415653A3",
+    "ci-core/43801607010/core.trx": "9CAE1670C4A98A46590A3FDB91CD1F508DE1A5EE37ECFA38EF8826B5C7DBAA13",
+    "ci-core-red/43799572094/core.trx": "FF77E19CE99B1BBCD1ED2CE1A1B1F0439790F911AE09B31FE02A3D0ED127B6DA",
+    "ci-ui/43801607010/ui.trx": "E3549EB37FB678FE863B5CBF779FE62C175DBC70D3EFEB08F4EF770543EB6813",
+    "ci-ui-red/43799572094/ui.trx": "010B00C37337F88E411326EE3E225B4F4061A016B76B95445141B7CDAC6231B0"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

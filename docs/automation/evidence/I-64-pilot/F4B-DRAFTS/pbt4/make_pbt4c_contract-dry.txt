@@ -1,0 +1,47 @@
+DRY (FASE 2) rev 6adff90d (objetos del checkout principal) TaskId F4B-PBT4-EDIT-ALL-WINDOW | contrato en seco: PENDIENTES 0 AVISOS 13
+anclaje: desciende de f5ff00ee y 8f783df5 (PB-T4b, F4B-E52; X y BASE), de su RED c1e4f458, de su reparacion 9b2d1893, de su GREEN c065080d y de su cierre 6adff90d; src y tests == c065080d
+numeracion prevista: F4B-E54 (la emision); la evidencia 283 (X) y 284 (BASE) | hoy: F4B-E53 y la 282
+la CI del GREEN de PB-T4b (44903818806, la base C): Core 19605 = 19147 + 0 + 458, UI 2481 = 2433 + 0 + 48
+contrato de PB-T4b (docs/automation/evidence/I-64-pilot/F4B-PBT4-FULL-DRAFT-PANEL/coordinator/gate-contract.json, AuthorityRevision f5ff00ee): 17 paradas estandar, PBT4B-C11 -> PBT4C-C11 (3869 caracteres), EVID[0] en F4B_EXACT_EVIDENCES del v2, 77 filtros
+la lista de PB-T4c (4; pbt4c-substitution-list-4.tsv, pbt4c-substitution-list-4.tsv junto a --package-file): PushBackSharedReferenceGuardTests.cs:307 CT_PBT1B_15_TheWritersOfNameInThePluginR; WorkspacePilotEditGuardTests.cs:156 ThePortDeclaresTheSeventeenOperationsWit; WorkspaceFullCopyGuardTests.cs:569 CT_PBT4B_20_TheScriptOfSkipAndDuplicateG; PushBackWorkspaceApplyCloseTests.cs:687 CT_PBT2B_06_ClosingAsksOnlyForWhatWasNot
+los filtros heredados de PB-T4b con los Skip de la lista: 77 filas, 4 cambian; pruebas de la lista fuera de todo filtro heredado: ninguna
+  n.o  7 Core PushBackSharedReferenceGuardTests                              MinSelected    2 -> 1    (Skip de la lista 1) medido: clases=1 ejecutables=2 skip=0 memberdata=0
+  n.o 12 Core Workspace                                                      MinSelected 2718 -> 2716 (Skip de la lista 2) medido: clases=75 ejecutables=2719 skip=553 memberdata=33
+  n.o 36 UI   Tests.PushBackWorkspaceApplyCloseTests                         MinSelected    4 -> 3    (Skip de la lista 1) medido: clases=1 ejecutables=4 skip=0 memberdata=0
+  n.o 43 Core WorkspaceFullCopyGuardTests                                    MinSelected    1 -> 0    (Skip de la lista 1) medido: clases=1 ejecutables=1 skip=0 memberdata=0
+6.3 de la v5.1: Objective 1698 caracteres, ASCII; alcance 26 rutas (UNIT_CHANGE 9, nuevas de src/ 4, de tests/ 9, Skip 4); RequiredTests 85 (76 heredados, el n.o 43 fuera, y 9 nuevos; 4 con ExpectRed); piezas por sha256: pbt4c-skeleton-v51.txt f8840c67; pbt4c-green-v51.txt 081ef77e; green_pbt4c_v51.py a8a3afa2; pbt4c_skips_v50.py a59a3aed; make_equivalents_pbt4c_v50.py d81fcb41; apply_red_pbt4c_v51.py 03dbb6a7; apply_green_pbt4c_v51.py 8b944545; check_skips_pbt4c_v50.py 71521e52; pbt4c_ct_table_v51.py 5ee03f8e; make_list_pbt4c_4.py 02096c2a
+la precondicion 6 (pbt4c-precondition6.json, sha256 29179a12): la lista, las 10 piezas que nombra, EquivalentSha de 4, D 0, E 4, 0 avisos CS y Core sin las CT 19608 (GREEN y RED); las claves de la v5.1, leidas: Rehearsal (RED PASA, GREEN PASA), Control VE I-01, Census PASA, ClassResults 12 tablas; campos que no lee: Binaries, Builds, CheckSkips, Checks, DriverPieces, FilterOverlap, GreenFiles, History, InheritedCoreFiltersGreen, IsDirtyCost, Package, Probes, Skeleton, SkipFiles, SuiteDurationSeconds
+la CI prevista (la lista de 4: K_CORE 3 y K_UI 1; D_C 0; sobre C): RED Core 19619 = 19149 + 9 Failed + 461, UI 2486 = 2432 + 5 Failed + 49; GREEN Core 19619 = 19158 + 0 + 461, UI 2486 = 2437 + 0 + 49; iguales a los que midio el autor con la de 4
+CONTRATO (en seco) allowed 26 forbidden 510 (src 255 tests 238 [prefijos partidos: ninguno] root 17) inv 14 stops 34 required 85 (de 85) evidence 16 authorities 70 bytes 97901 sha256 F74DF0A53A20CB1A8D452D82E96152269D9E01067A196D1E7D79D1B3ADCE9D4A
+BOUNDED_RESULT: EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 3; las importantes corregidas en el paquete v5.1 (I-01, los dos archivos nuevos de Draft/ empiezan por #nullable enable y la pureza de CT-PBT4C-15 lo prohibe: sin la directiva y sin el ? de ProjectOf); sin decisiones nuevas del Owner; precondicion 6 sobre 6adff90d: pasos 2 a 7 cumplen, sin las CT; recomprobacion v5.1: EMITIBLE, B 0 / I 0 / M 1 | bounded_check: sin errores sobre --bounded-file independent-review-v1.md, secciones 22 y 23
+autoridades que aun no estan en la revision (sin la n.o 37, este contrato, que escribe la BASE): 15
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4c-list-3-decision.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4c-list-4-decision.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/session-pbt4c-design-decisions.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-substitution-list-4.tsv
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-skeleton-v51.txt
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-green-v51.txt
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/green_pbt4c_v51.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c_skips_v50.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/make_equivalents_pbt4c_v50.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/apply_red_pbt4c_v51.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/apply_green_pbt4c_v51.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/check_skips_pbt4c_v50.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c_ct_table_v51.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/make_list_pbt4c_4.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-precondition6.json
+PENDIENTES (0):
+AVISOS (13):
+  - emision: F4B-E54 (la emision de F4B-PBT4-EDIT-ALL-WINDOW) aun no esta en f4b-dispositions.md
+  - emision: la lista de PB-T4c docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-substitution-list-4.tsv aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: pbt4c-skeleton-v51.txt (sha256 f8840c67) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: pbt4c-green-v51.txt (sha256 081ef77e) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: green_pbt4c_v51.py (sha256 a8a3afa2) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: pbt4c_skips_v50.py (sha256 a59a3aed) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: make_equivalents_pbt4c_v50.py (sha256 d81fcb41) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: apply_red_pbt4c_v51.py (sha256 03dbb6a7) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: apply_green_pbt4c_v51.py (sha256 8b944545) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: check_skips_pbt4c_v50.py (sha256 71521e52) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: pbt4c_ct_table_v51.py (sha256 5ee03f8e) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: make_list_pbt4c_4.py (sha256 02096c2a) aun no esta en la revision (la custodia X de PB-T4c)
+  - emision: el registro declarado aun no tiene la entrada de PB-T4c (las 4, con su tabla al cerrar)

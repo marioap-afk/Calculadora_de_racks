@@ -1,0 +1,4 @@
+I-64 -> I-52, aviso antes de abrir AutoCAD (R20261103T175351Z-0a77)
+SentUtc: 2026-11-03T19:52:43Z
+message_id: 64622bad-9596-4304-9a9d-b5d4f58a2606 (delivered; lectura no confirmada)
+Contenido: BASELINE confirmada (9fbf0c32...a116; TRUSTEDPATHS/SECURELOAD/perfil/acad MATCH); HOST-EXTRAS BEFORE c858f955...; H10 retenido por I-52 hasta la POST y su recomprobacion; aviso de nuevo al cerrar.

@@ -1,0 +1,9 @@
+Nota de la sesion principal (no del Worker). Invocacion del Worker R20261118T190205Z-6d33 de la delegacion R20261118T185409Z-c45c (F4B-PBT1B-LOSSLESS-STATE-TYPE, intento 1).
+
+El Owner ordeno pausar todo para reiniciar el equipo (chat, 2026-11-18: "Tengo que reiniciar la computadora, pausa todo"). La sesion detuvo al Worker con TaskStop, sin entrega (no hay worker-handoff.json).
+
+Estado medido por la sesion tras la parada: HEAD = remoto = BaseSha 7905b3a95311aa4de172c9ab89b5825ab57dd280; git status vacio (solo bin/ y obj/ ignorados); ningun commit ni push; reflog sin entradas nuevas; los servidores de compilacion se apagaron con dotnet build-server shutdown y no quedo ningun proceso dotnet.
+
+Hecho por esta invocacion: paso 0 (tests/b0: las tres builds Release de linea base y cleanliness-before.txt) y paso 1 (tests/p1: p1.trx, p1.log, step1-lines.txt). Las seis lineas del paso 1 son validas: c-02 en la rama ordinal (fila b: PostBox.SelectedId=<null>) y c-09 en la rama "conserva" (fila f: carga=[kg] WeightUnitBox.SelectedItem=lb antes=ton salida=lb); ninguna parada PBT1B-C14. Las carpetas g1, r1 y redci estaban vacias.
+
+Continuacion: una invocacion nueva del Worker sobre la misma delegacion, en el intento 1 y sin gastar intento (no hubo ningun cambio de producto), con un bloque de reanudacion en su prompt.

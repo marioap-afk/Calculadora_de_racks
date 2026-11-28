@@ -1,0 +1,12 @@
+## RackCad.Tests.PushBackRetirePilotCensusGuardTests.CT_PBT4D_02_NoFileOfTheTestsNamesWhatTheRetirementOfThePilotRemoves
+Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 53)
+Expected: ···"ombran-lo-retirado=[]\nautoprueba-PushBack"···
+Actual:   ···"ombran-lo-retirado=[PushBackFullWritePrep"···
+                                  ↑ (pos 53)
+## RackCad.Tests.PushBackRetirePilotGuardTests.CT_PBT4D_01_TheCodeOfThePilotThatThePanelNoLongerUsesIsRetiredAndWhatTheFullModelUsesStays
+Assert.Equal() Failure: Strings differ
+                                  ↓ (pos 54)
+Expected: ···"eComparer.cs existe=False\nretirado-archiv"···
+Actual:   ···"eComparer.cs existe=True\nretirado-archivo"···
+                                  ↑ (pos 54)

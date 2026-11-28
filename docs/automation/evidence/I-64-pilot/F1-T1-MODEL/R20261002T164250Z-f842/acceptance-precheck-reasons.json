@@ -1,0 +1,18 @@
+{
+  "A1": [],
+  "A2": [],
+  "A3": [],
+  "A4": [],
+  "A5": [
+    "invariante ausente: INV-F1-T1-02: Una sesión representa una ",
+    "invariante ausente: INV-F1-T1-08: No existe estado por pesta",
+    "invariante ausente: INV-F1-T1-09: La destrucción de una sesi",
+    "invariante ausente: INV-F1-T1-10: MASTER-I63-I64-02 permanec",
+    "invariante ausente: INV-F1-T1-11: ADR 0047 permanece propues",
+    "autoridad ausente: docs/automation/evidence/I-64-evidence.md ## 19. F1-T0-ADR — Contrato re",
+    "autoridad ausente: docs/AUTOMATION_PLAN.md ## 16. Ejecución delegada bajo"
+  ],
+  "A6": [],
+  "A7": [],
+  "A8": []
+}

@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 6ca4f29e..7844f67c 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3663,7 +3663,7 @@ namespace RackCad.UI.Systems.PushBack
+         private double? OptionalVal(NumericField field, double? sideValue)
+             => field.Value.HasValue
+                 ? (MixedBoth(field) ? field.Value : KeepOptional(field, sideValue))
+-                : (IsMixed(field) ? sideValue : null);
++                : null;
+ 
+         /// <summary>I-64 F4B PB-TC (D-PBTC-01) — el formato con el que <see cref="NumericField.SetNumber"/> pinta estas cajas.</summary>
+         private const string ShownFormat = "0.###";

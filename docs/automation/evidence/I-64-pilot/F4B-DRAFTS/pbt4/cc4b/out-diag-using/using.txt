@@ -1,0 +1,13 @@
+using anadido: tests/RackCad.Tests/PushBackWritePathGuardFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs
+using anadido: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs

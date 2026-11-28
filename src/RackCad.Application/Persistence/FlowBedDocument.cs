@@ -28,6 +28,15 @@ namespace RackCad.Application.Persistence
         public string RollerId { get; set; } = FlowBedDefaults.RollerId;
         public double? RollerPitchOverride { get; set; }
 
+        /// <summary>
+        /// T5 cm (I-64, quinta tanda; question 3 of the prototype «camas», accepted): «Freno cada N rodillos» of a bed of its own, a field
+        /// the builder already reads (<see cref="FlowBedConfiguration.BrakeEveryRollers"/>, step 3 of Dinámico) and this document did not
+        /// keep. A declared change of calculation: it is written ONLY when it has a value, so a bed without it is written byte for byte as
+        /// before, and an older build keeps it as an unknown field (<see cref="ExtensionData"/>) without using it.
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? BrakeEveryRollers { get; set; }
+
         /// <summary>JSON fields this build does not know about, preserved verbatim across a load/save (I-11, D3).</summary>
         [JsonExtensionData]
         public Dictionary<string, JsonElement> ExtensionData { get; set; }
@@ -45,7 +54,8 @@ namespace RackCad.Application.Persistence
                 LaneDepth = config.LaneDepth,
                 PalletDepth = config.PalletDepth,
                 RollerId = config.RollerId,
-                RollerPitchOverride = config.RollerPitchOverride
+                RollerPitchOverride = config.RollerPitchOverride,
+                BrakeEveryRollers = config.BrakeEveryRollers // T5 cm (question 3)
             };
         }
 
@@ -57,7 +67,8 @@ namespace RackCad.Application.Persistence
                 LaneDepth = LaneDepth,
                 PalletDepth = PalletDepth,
                 RollerId = RollerId,
-                RollerPitchOverride = RollerPitchOverride
+                RollerPitchOverride = RollerPitchOverride,
+                BrakeEveryRollers = BrakeEveryRollers // T5 cm (question 3)
             };
         }
     }

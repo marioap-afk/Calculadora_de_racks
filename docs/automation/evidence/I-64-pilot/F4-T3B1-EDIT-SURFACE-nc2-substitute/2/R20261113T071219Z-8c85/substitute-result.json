@@ -1,0 +1,224 @@
+{
+  "Id": "F4T3B1-NC2-EXACT-WHITELIST-01",
+  "NotA4": true,
+  "Scope": "solo F4-T3B1-EDIT-SURFACE, intento 2; no reemplaza al Controller ni a nc2 en otras tareas",
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "ruta exacta cambiada; la mutacion de README 10 la quita; Controller con Scope = fail",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "B",
+      "Description": "el alcance mutado sigue cubriendo la ruta cambiada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C",
+      "Description": "cambia un segundo campo de la delegacion",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D",
+      "Description": "cambia ForbiddenWriteScope",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "E",
+      "Description": "la delegacion real no es la lista exacta del contrato",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "F",
+      "Description": "el hash derivado no coincide con los bytes de la delegacion mutada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "G",
+      "Description": "el Controller no informo Scope = fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H",
+      "Description": "el contrato no exige la lista blanca exacta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "I",
+      "Description": "la mutacion anade otra ruta",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "J",
+      "Description": "cambia otra entrada ademas de las derivadas",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "K",
+      "Description": "cambia la atestacion de fidelidad de la delegacion real",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "L",
+      "Description": "A5 llano tambien falla (se quitan invariantes): Contract no falla solo por la exactitud",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "M",
+      "Description": "la ruta quitada no esta en el diff",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "N",
+      "Description": "prefijo: README 10 sustituye el prefijo por los demas archivos del diff",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    }
+  ],
+  "SelfTestPass": true,
+  "SelfTestDeterministic": true,
+  "RealVerification": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE/2/R20261113T070017Z-c3a6",
+  "Nc2Run": "artifacts/orchestration/I-64/F4-T3B1-EDIT-SURFACE-nc2/2/R20261113T070654Z-5b85",
+  "BaseSha": "1c69fbc4ef7e63e68cd371445f5fd603104c62bf",
+  "CurrentSha": "1708e76428ba81012596b0c643074449a1db41f3",
+  "ChangedPaths": [
+    "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs"
+  ],
+  "RealAllowedWriteScope": [
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs"
+  ],
+  "MutatedAllowedWriteScope": [
+    "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs"
+  ],
+  "Nc2ControllerClassification": "EXECUTION_BLOCKED",
+  "Nc2ControllerDisposition": "STOP",
+  "Nc2ControllerFailureClass": "Contract",
+  "Nc2ControllerChecks": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "fail",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "Measured": {
+    "ChangedPath": "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+    "DelegationFieldsChanged": [
+      "AllowedWriteScope"
+    ],
+    "ChangedInputs": [
+      "delegation.json",
+      "relay-record-planning.json"
+    ],
+    "ScopeOnReal": "pass",
+    "ScopeOnMutated": "fail",
+    "PlainA3A5OnMutated": {
+      "A3": true,
+      "A4": true,
+      "A5": true
+    },
+    "ControllerScope": "fail",
+    "ControllerContract": "fail",
+    "AlternativeCandidatesExcludingPath": 786432
+  },
+  "Properties": {
+    "1_AcceptedRealDelegationMatchesContract": true,
+    "2_RealChangedPathInsideAcceptedScope": true,
+    "3_Nc2RemovesExactlyThatPath": true,
+    "4_NoOtherDelegationFieldChanges": true,
+    "5_DerivedHashesConsistent": true,
+    "6_ChangedPathNotInMutatedScope": true,
+    "7_ScopeMustFail": true,
+    "8_ContractFailsOnlyByExactWhitelist": true,
+    "9_ControllerReportedScopeFail": true,
+    "10_NoAlternativeOneFieldMutation": true
+  },
+  "SubstituteResult": "PASS",
+  "Notes": {
+    "ByteFidelityAttestation": "byte-fidelity-check.json no cambia en la copia de nc2: atestigua la delegacion REAL (su OutputSha256 es el SHA de la delegacion real) y sigue siendo cierta; no es un hash derivado de la copia mutada",
+    "ForbiddenRoute": "anadir la ruta al ForbiddenWriteScope no la excluye del AllowedWriteScope (fuera de la propiedad 10), no es la mutacion que README 10 define para nc2 y romperia la copia exacta aceptada que registra byte-fidelity-check.json",
+    "WhyOrdinaryOracleUnreachable": "bajo la lista blanca exacta, quitar una ruta del AllowedWriteScope viola a la vez la clausula de exactitud del contrato (Contract, comprobacion 4) y la contencion del diff (Scope, comprobacion 7); el orden fijo de 16.9 da FailureClass = Contract"
+  },
+  "Record": {
+    "Nc2OrdinaryRun": "CONTROL NOT PASSED (se conserva tal cual)",
+    "nc2": "SATISFIED_UNDER_F4T3B1_EXACT_WHITELIST_SUBSTITUTE"
+  }
+}

@@ -1,0 +1,293 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F2-T2B-NAVIGATION-UI",
+  "RunId": "R20261110T045058Z-7d3d",
+  "DelegationRunId": "R20261110T044730Z-20c9",
+  "Initiative": "I-64",
+  "Gate": "F2",
+  "Attempt": 2,
+  "BaseSha": "2deb0454e4c41c15e02382437176ecbb9bbb4eda",
+  "RedSha": "f64a13b3827bf89ca6e65ddbbcaa7d124ccb3d74",
+  "CurrentSha": "6c01f644d5048a45449aecf6ecc9b4a8aa50b246",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "src/RackCad.Application/Workspace/IWorkspaceNavigationPort.cs",
+    "src/RackCad.Plugin/Workspace/WorkspacePaletteHost.cs",
+    "src/RackCad.UI/Workspace/WorkspaceNavigationViewModel.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+    "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+    "src/RackCad.UI/Workspace/WorkspacePanelViewModel.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationPortDouble.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewModelTests.cs",
+    "tests/RackCad.UI.Tests/Workspace/WorkspaceNavigationViewTests.cs"
+  ],
+  "WorkCompleted": "Tipos creados: WorkspaceNavigationViewModel y WorkspaceViewChoice (src/RackCad.UI/Workspace). Campo aditivo WorkspaceNavigationResult.TargetCount (int?, null por defecto) calculado en WorkspaceNavigationRunner.Run desde NavigationTargets.Resolve. WorkspacePanelViewModel gana el tercer parametro opcional IWorkspaceNavigationPort y expone Navigation; WorkspacePanelView.xaml gana la seccion Navegacion con WrapPanels sin anchos fijos (Seleccionar, Ver, Centrar, Siguiente copia, selector de vista, Localizar); el code-behind cablea los clics explicitos; WorkspacePaletteHost construye el view-model con _controller.Navigation. Deltas de guardas en WorkspacePaletteHostSourceGuardTests: regex del host (linea 188), regex del view-model (linea 533) y excepcion por archivo exacto de async/await con recuentos (linea 541); el recuento de 45 pruebas del archivo no cambia. Pruebas nuevas: 79 de UI (view-model y vista) y 24 de Core. RED f64a13b3 (UI 70 fallos de 143; Core 20 de 780, todos por asercion), GREEN 6c01f644 (UI 143/143; Core 780/780).",
+  "TestsExecuted": [
+    {
+      "RunRef": "RED-UI-WORKSPACE",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=red-ui.trx\" --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/red-ui",
+      "Phase": "RED",
+      "TreeSha": "f64a13b3827bf89ca6e65ddbbcaa7d124ccb3d74",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/red-ui/red-ui.trx"
+    },
+    {
+      "RunRef": "RED-CORE-WORKSPACE",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=red-core.trx\" --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/red-core",
+      "Phase": "RED",
+      "TreeSha": "f64a13b3827bf89ca6e65ddbbcaa7d124ccb3d74",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/red-core/red-core.trx"
+    },
+    {
+      "RunRef": "GREEN-UI-WORKSPACE",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build --filter \"FullyQualifiedName~RackCad.UI.Tests.Workspace\" --logger \"trx;LogFileName=green-ui.trx\" --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/green-ui",
+      "Phase": "GREEN",
+      "TreeSha": "6c01f644d5048a45449aecf6ecc9b4a8aa50b246",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/green-ui/green-ui.trx"
+    },
+    {
+      "RunRef": "GREEN-CORE-WORKSPACE",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=green-core.trx\" --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/green-core",
+      "Phase": "GREEN",
+      "TreeSha": "6c01f644d5048a45449aecf6ecc9b4a8aa50b246",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/green-core/green-core.trx"
+    },
+    {
+      "RunRef": "RELEVANT-CORE-FULL-DEBUG",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug --logger \"trx;LogFileName=relevant-core.trx\" --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/relevant-core",
+      "Phase": "RELEVANT",
+      "TreeSha": "6c01f644d5048a45449aecf6ecc9b4a8aa50b246",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/relevant-core/relevant-core.trx"
+    },
+    {
+      "RunRef": "RELEVANT-UI-FULL-DEBUG",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug --logger \"trx;LogFileName=relevant-ui.trx\" --results-directory artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/relevant-ui",
+      "Phase": "RELEVANT",
+      "TreeSha": "6c01f644d5048a45449aecf6ecc9b4a8aa50b246",
+      "ResultsFile": "artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/tests/relevant-ui/relevant-ui.trx"
+    },
+    {
+      "RunRef": "RELEVANT-CORE-FULL-RELEASE-PRECOMMIT",
+      "Command": "dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build (arbol de trabajo con el contenido exacto del GREEN, antes del commit)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": null
+    },
+    {
+      "RunRef": "RELEVANT-UI-FULL-RELEASE-PRECOMMIT",
+      "Command": "dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Release --no-build (arbol de trabajo con el contenido exacto del GREEN, antes del commit)",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": null
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "RED-UI-WORKSPACE",
+      "Selected": 143,
+      "Passed": 73,
+      "Failed": 70,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ACopyBeyondTheTargetsThatShrankGoesBackToTheFirstOne",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ADisabledActionExplainsWhyAndNeverCallsThePort(kind: Diagnostic, canRead: True, block: None)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ADisabledActionExplainsWhyAndNeverCallsThePort(kind: NoIdentity, canRead: True, block: None)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ADisabledActionExplainsWhyAndNeverCallsThePort(kind: None, canRead: True, block: None)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ADisabledActionExplainsWhyAndNeverCallsThePort(kind: One, canRead: False, block: None)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ADisabledActionExplainsWhyAndNeverCallsThePort(kind: One, canRead: True, block: CommandActive)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ADisabledActionExplainsWhyAndNeverCallsThePort(kind: One, canRead: True, block: Degraded)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ADisabledActionExplainsWhyAndNeverCallsThePort(kind: Selection, canRead: True, block: None)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.AFailureOfThePortIsContainedAndPresentedAndTheActionsAreReleased(synchronous: System.InvalidOperationException: fallo-síncrono, inTheTask: null, expected: \"fallo-síncrono\")",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.AFailureOfThePortIsContainedAndPresentedAndTheActionsAreReleased(synchronous: null, inTheTask: System.InvalidOperationException: fallo-en-la-tarea, expected: \"fallo-en-la-tarea\")",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ANewSnapshotDoesNotRedirectAnActionAlreadyInProgressNorFeedTheNewRack",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ARepeatedSnapshotOfTheSameRackKeepsTheCopy",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.AnActionInProgressDisablesEverythingAndASecondClickDoesNotCallThePort",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.EveryRequestCarriesTheSessionAndTheRackOfTheSnapshotPresentedAtTheClick",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.EveryStatusHasItsOwnSpanishText",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.LocateAfterViewStartsItsOwnCopyBecauseItsCountBelongsToTheRequestedView",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.LocateUsesTheExplicitViewAndLocatesWithViewByDefault",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ModelSpaceUnavailabilityIsExplainedAsSuchWithoutChangingSpace",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.OneTargetOffersNoNextCopyAndZeroTargetsSayTheyHaveNone",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.OnlyAnAnswerThatRequiresARefreshAsksThePanelForExactlyOneNewSnapshot(status: Executed, refreshRequired: False, expectedRefreshes: 0)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.OnlyAnAnswerThatRequiresARefreshAsksThePanelForExactlyOneNewSnapshot(status: Failed, refreshRequired: False, expectedRefreshes: 0)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.OnlyAnAnswerThatRequiresARefreshAsksThePanelForExactlyOneNewSnapshot(status: Rejected, refreshRequired: False, expectedRefreshes: 0)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.OnlyAnAnswerThatRequiresARefreshAsksThePanelForExactlyOneNewSnapshot(status: Stale, refreshRequired: False, expectedRefreshes: 0)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.OnlyAnAnswerThatRequiresARefreshAsksThePanelForExactlyOneNewSnapshot(status: Stale, refreshRequired: True, expectedRefreshes: 1)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.OnlyAnAnswerThatRequiresARefreshAsksThePanelForExactlyOneNewSnapshot(status: Unavailable, refreshRequired: False, expectedRefreshes: 0)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.SelectNeverUsesTheCopyAndLeavesItUntouched",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: Diagnostic, canRead: True, block: None, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: NoIdentity, canRead: True, block: None, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: None, canRead: True, block: None, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: One, canRead: False, block: None, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: One, canRead: True, block: CommandActive, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: One, canRead: True, block: Degraded, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: One, canRead: True, block: ModalActive, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: One, canRead: True, block: NoDocument, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: One, canRead: True, block: None, expected: True)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: One, canRead: True, block: NotStarted, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock(kind: Selection, canRead: True, block: None, expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheCopyRestartsWhenTheRackChangesAndMBecomesUnknownAgain",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheCopyRestartsWhenTheRequestedViewChanges",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheCopyStartsUnknownAndMComesOnlyFromTheAnswerOfThePort",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheErrorStateOfThePanelTurnsTheNavigationOffAndARecoveryTurnsItOnAgain",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheExecutedTextNamesWhatEachActionDid",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheNextCopyTravelsAsTheCopyIndexAndAfterTheLastOneReturnsToTheFirst",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ThePanelEnablesTheNavigationOnlyForTheSnapshotsThatAllowIt(snapshot: \"command\", expected: False)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ThePanelEnablesTheNavigationOnlyForTheSnapshotsThatAllowIt(snapshot: \"one\", expected: True)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ThePanelFeedsTheNavigationWithTheSessionAndTheRackOfOneSnapshotAndNeverMixesThem",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ThePropertiesTheViewBindsToAreAnnounced",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheReasonOfABlockedPanelIsTheTextTheSnapshotGave",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheRefreshCallbackIsCalledOncePerAnswerNeverMore",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.TheTwoArgumentConstructorStillWorksAndTheNavigationIsPresentButUnavailable",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.ViewAndCenterAskForNoSpecificViewAndTheChoiceOfViewOffersTheFourOrders",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.WithoutANavigationPortTheActionsAreUnavailableAndSayIt",
+        "RackCad.UI.Tests.WorkspaceNavigationViewModelTests.WithoutASessionNothingIsEnabledEvenWithARackInTheContext",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.ADisabledActionExplainsWhyOnTheViewAndAClickOnItReachesNoPort",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.AFailureOfThePortNeverEscapesTheControlAndIsShownInTheNavigationSection",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.AnAnswerThatRequiresARefreshCostsExactlyOneQueryOfTheSnapshot",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.EachActionButtonSendsOneRequestWithTheSessionAndTheRackOfThePresentedSnapshot(button: \"NavigationCenterButton\", expected: Center)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.EachActionButtonSendsOneRequestWithTheSessionAndTheRackOfThePresentedSnapshot(button: \"NavigationLocateButton\", expected: LocateView)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.EachActionButtonSendsOneRequestWithTheSessionAndTheRackOfThePresentedSnapshot(button: \"NavigationSelectButton\", expected: Select)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.EachActionButtonSendsOneRequestWithTheSessionAndTheRackOfThePresentedSnapshot(button: \"NavigationViewButton\", expected: View)",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.NoNavigationControlHasAFixedWidthAMinimumOrAMaximum",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.TheActionButtonsAreEnabledOnlyForExactlyOneRack",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.TheAnswerOfThePortIsShownAsText",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.TheCenteringChoiceOfLocateReachesThePort",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.TheControlsFitTheNarrowBarAndTheWideSurfaceAndWrapWhenTheSpaceIsShort",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.TheNavigationControlsLiveInWrapPanelsThatReflowWithTheWidthOfTheSurface",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.TheNavigationIsPartOfTheOneRootControlWithNoWindowAndNoDialog",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.TheNextCopyButtonIsOfferedOnlyOnceMIsKnownAndMovesTheCopyThatTheNextClickSends",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.TheViewSelectorOffersTheFourViewsAndLocateUsesTheOneChosen",
+        "RackCad.UI.Tests.WorkspaceNavigationViewTests.WhenTheActionsAreEnabledTheReasonDisappears"
+      ]
+    },
+    {
+      "RunRef": "RED-CORE-WORKSPACE",
+      "Selected": 780,
+      "Passed": 760,
+      "Failed": 20,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceNavigationHostTests.AFailingEffectIsStillAFailedValueAndCarriesTheCount",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ALocateViewWithoutARequestedViewCountsNoTargetAndActsOnNothing",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ARackWithoutTargetsAnswersZeroTargetsAndAnotherRackOfTheSessionDoesNotCount",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ATargetThatVanishedKeepsTheCountOfTheSetTheActionWasPlannedFrom",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ForLocateViewTheCountIsOnlyThatOfTheRequestedView(view: Frontal, expected: 2)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ForLocateViewTheCountIsOnlyThatOfTheRequestedView(view: Lateral, expected: 1)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ForLocateViewTheCountIsOnlyThatOfTheRequestedView(view: Other, expected: 0)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ForLocateViewTheCountIsOnlyThatOfTheRequestedView(view: Planta, expected: 0)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.OnlyTheNavigationViewModelCallsTheNavigationPortAndTheViewReachesItOnlyThroughExplicitClicks",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheCountDoesNotDependOnTheCopyAskedFor",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheCountIsCalculatedInTheRunnerFromTheAuthorityAndTheHostDoesNotChange",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheNavigationControlsOfTheViewHaveNoFixedWidthNoMinimumAndNoMaximumAndReflowInWrapPanels",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheNavigationViewModelDerivesNoTargetNeverOrdersReferencesAndHoldsNoInventory",
+        "RackCad.Tests.WorkspaceNavigationHostTests.ThePaletteHostOnlyGainsTheNavigationPortAsTheThirdArgumentAndNothingElse",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheRunnerAnswersWithTheNumberOfAllTheTargetsOfTheRackForSelectViewAndCenter(action: Center, expected: 3)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheRunnerAnswersWithTheNumberOfAllTheTargetsOfTheRackForSelectViewAndCenter(action: Select, expected: 3)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheRunnerAnswersWithTheNumberOfAllTheTargetsOfTheRackForSelectViewAndCenter(action: View, expected: 3)",
+        "RackCad.Tests.WorkspaceNavigationHostTests.TheUiNamesOnlyTheNavigationTypesItIsAllowedToAndNeverTheAuthority",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheUiFolderHasNoTimerNoPollingNoThreadNoAsyncAndNoGlobalExceptionHandler",
+        "RackCad.Tests.WorkspacePaletteHostSourceGuardTests.TheViewModelIsFedOnlyByTheInjectedPortAndTheNeutralToggleDelegate"
+      ]
+    },
+    {
+      "RunRef": "GREEN-UI-WORKSPACE",
+      "Selected": 143,
+      "Passed": 143,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-CORE-WORKSPACE",
+      "Selected": 780,
+      "Passed": 780,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RELEVANT-CORE-FULL-DEBUG",
+      "Selected": 16318,
+      "Passed": 16318,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RELEVANT-UI-FULL-DEBUG",
+      "Selected": 1797,
+      "Passed": 1780,
+      "Failed": 0,
+      "Skipped": 17,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RELEVANT-CORE-FULL-RELEASE-PRECOMMIT",
+      "Selected": 16318,
+      "Passed": 16318,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RELEVANT-UI-FULL-RELEASE-PRECOMMIT",
+      "Selected": 1797,
+      "Passed": 1778,
+      "Failed": 2,
+      "Skipped": 17,
+      "FailedTests": [
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsWhenTheTypedTextDiffers",
+        "RackCad.UI.Tests.PendingTextFieldTests.ShowOnADirtyField_ThrowsEvenWhenTheTypedTextEqualsTheCommittedOne"
+      ]
+    }
+  ],
+  "Evidence": [
+    "INV-F2T2B-01: WorkspaceNavigationViewModel solo llama IWorkspaceNavigationPort.ExecuteAsync; guarda Core TheUiNamesOnlyTheNavigationTypesItIsAllowedToAndNeverTheAuthority y TheNavigationViewModelDerivesNoTargetNeverOrdersReferencesAndHoldsNoInventory (WorkspaceNavigationHostTests); OnlyTheNavigationViewModelCallsTheNavigationPort...",
+    "INV-F2T2B-02: WorkspaceNavigationViewModelTests.TheActionsAreEnabledOnlyWithExactlyOneRackAReadableDrawingAndNoActionBlock y ADisabledActionExplainsWhyAndNeverCallsThePort; WorkspaceNavigationViewTests.TheActionButtonsAreEnabledOnlyForExactlyOneRack",
+    "INV-F2T2B-03: EveryRequestCarriesTheSessionAndTheRackOfTheSnapshotPresentedAtTheClick, ANewSnapshotDoesNotRedirectAnActionAlreadyInProgressNorFeedTheNewRack, ThePanelFeedsTheNavigationWithTheSessionAndTheRackOfOneSnapshotAndNeverMixesThem",
+    "INV-F2T2B-04: pruebas de copia k/M (TheCopyStartsUnknown..., TheNextCopyTravelsAsTheCopyIndexAndAfterTheLastOneReturnsToTheFirst, TheCopyRestarts* para rack, sesion y vista, SelectNeverUsesTheCopyAndLeavesItUntouched); M solo de WorkspaceNavigationResult.TargetCount",
+    "INV-F2T2B-05: LocateUsesTheExplicitViewAndLocatesWithViewByDefault, ViewAndCenterAskForNoSpecificView...; guarda TheUiOffersNoActionThatWritesAndNeverTouchesFocusLayoutOrSystemVariables",
+    "INV-F2T2B-06: EveryStatusHasItsOwnSpanishText, ModelSpaceUnavailabilityIsExplainedAsSuchWithoutChangingSpace, AFailureOfThePortIsContainedAndPresentedAndTheActionsAreReleased, OnlyAnAnswerThatRequiresARefreshAsksThePanelForExactlyOneNewSnapshot",
+    "INV-F2T2B-07: WorkspaceNavigationResult.TargetCount (int?, null por defecto) calculado en WorkspaceNavigationRunner.Run via CountTargets/NavigationTargets.Resolve; pruebas TargetCount* en WorkspaceNavigationHostTests con puertos simulados; WorkspaceNavigationHost.cs sin cambios (git diff vacio)",
+    "INV-F2T2B-08: delta de TheUiFolderHasNoTimerNoPollingNoThreadNoAsyncAndNoGlobalExceptionHandler: excepcion por archivo exacto WorkspaceNavigationViewModel.cs con un async, un await sobre _port.ExecuteAsync y cero ConfigureAwait/Task.Run/Task.Factory/ContinueWith/.Wait/.Result/GetAwaiter/Dispatcher/Thread/Timer",
+    "INV-F2T2B-09: NoNavigationControlHasAFixedWidthAMinimumOrAMaximum, TheNavigationControlsLiveInWrapPanelsThatReflowWithTheWidthOfTheSurface, TheControlsFitTheNarrowBarAndTheWideSurfaceAndWrapWhenTheSpaceIsShort; guarda Core TheNavigationControlsOfTheViewHaveNoFixedWidth...; constantes del host intactas (ThePaletteHostOnlyGainsTheNavigationPortAsTheThirdArgumentAndNothingElse)",
+    "INV-F2T2B-10: guarda Core TheUiOffersNoActionThatWritesAndNeverTouchesFocusLayoutOrSystemVariables (sin Keyboard, FocusManager, SetFocus, .Focus()); el foco lo devuelve el host verificado de T2A, sin cambios",
+    "INV-F2T2B-11: WorkspaceNavigationPrivacyGuardTests sin cambios y en verde en los filtros y en las suites completas",
+    "INV-F2T2B-12: WorkspacePaletteHost.cs solo cambia a new WorkspacePanelViewModel(_controller.Port, _controller.SetInstrumentationEnabled, _controller.Navigation); regex del host (linea 188) y del view-model (linea 533) actualizadas; los 64 tests UI previos de Workspace siguen en verde (143 = 64 + 79 nuevos)",
+    "INV-F2T2B-13: BuildingPresentingAndRefreshingNeverAskThePortForNavigation, TheNavigationViewModelItselfIsBuiltAndPresentedWithoutAnyCall, ConstructingShowingAndWaitingNeverAsksThePortForNavigation; guarda ThePanelViewModelNeverCallsTheNavigationPort...",
+    "INV-F2T2B-14: git diff --name-only BaseSha..CurrentSha contiene solo las 11 rutas del alcance; ningun cambio en docs/",
+    "INV-F2T2B-15: RED f64a13b3 compila y falla por asercion (UI 70 de 143, Core 20 de 780, ningun fallo de otra clase); el GREEN 6c01f644 no toca tests/ (git diff RED..GREEN -- tests vacio); filtros UI 143 y Core 780 en verde",
+    "Build Plugin Release --no-incremental con -o bajo la carpeta de la corrida: 0 errores, 2 avisos MSB3277 (linea base)",
+    "Builds Release --no-incremental de RackCad.Tests y RackCad.UI.Tests: 0 errores y ningun aviso CS/NU/NETSDK/MSB; solo avisos xUnit preexistentes",
+    "Parche de la implementacion y copias de los archivos de producto en artifacts/orchestration/I-64/F2-T2B-NAVIGATION-UI/2/R20261110T045058Z-7d3d/green-impl-product.patch e impl-copy/"
+  ],
+  "UnexpectedFindings": [
+    "En Release, RackCad.UI.Tests tiene 2 fallos preexistentes e independientes de este cambio: PendingTextFieldTests.ShowOnADirtyField_* esperan una excepcion que PendingTextField lanza solo bajo #if DEBUG. En Debug (configuracion que usa la CI) pasan: UI 1780 superadas, 0 fallidas, 17 omitidas.",
+    "Los enlaces de la vista a Navigation.* no se evaluan hasta el primer layout del UserControl (arbol logico sin plantilla del ScrollViewer aplicada); las pruebas de vista miden/organizan antes de afirmar. En ejecucion real el panel se muestra y se organiza antes de que el usuario haga clic."
+  ],
+  "KnownLimitations": [
+    "El comportamiento real en AutoCAD (clics, foco, vista, seleccion, Espacio Modelo) no se ha demostrado: lo comprueba Smoke-NAV SN-01..SN-10.",
+    "La CI de push del SHA GREEN exacto (cuatro jobs, incluido Build Plugin without AutoCAD) no la ejecuta el Worker.",
+    "La corrida completa Release no tiene archivo trx (se ejecuto antes del commit con el contenido exacto del GREEN); las corridas con trx de la suite completa son las de Debug.",
+    "El texto de las respuestas Unavailable distingue espacio modelo de sin objetivos solo por la presencia de Verdict (sin nombrar el tipo del veredicto, por INV-F2T2B-01)."
+  ],
+  "Deviations": [
+    "El parche de un campo del view-model (epoca de objetivo) se aplico con un script de Python con heredoc en lugar de la herramienta de edicion; contenido verificado sin CR ni caracteres corruptos.",
+    "El RED incluye ademas un esqueleto minimo de WorkspacePanelViewModel (tercer parametro y propiedad Navigation sin cablear) para que las pruebas de UI compilen; por eso el delta de la regex del view-model (linea 533) ya pasa en el RED."
+  ],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Ejecutar la CI de push del SHA GREEN exacto, la verificacion del Controller y nc1..nc3; despues Smoke-NAV SN-01..SN-10 por el Owner.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

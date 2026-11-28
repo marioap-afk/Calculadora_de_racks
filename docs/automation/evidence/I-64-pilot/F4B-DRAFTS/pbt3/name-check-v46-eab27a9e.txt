@@ -1,0 +1,50 @@
+name_check_v46.py on eab27a9e340afa9ffe66a4a9866949806b6dfee3: 165 test files that read code, 22548 literals tried
+
+== ExecuteFull: 88 overlapping literals, 80 also on the neutral name, 8 SPECIFIC
+   tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs:199 'Execute'
+   tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageWriterTests.cs:332 'x.'
+   tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1088 '\\.CompleteApply\\s*\\(|PushBackPilotUpdateRun\\.Execute'
+   tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs:26 'Navigate|Execute|Run|Send|Import|Export|Move|Modify|Edit|Draw|Redraw|Rename|Publish|Open|Close|Load|Reset|Clea'
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:57 'TryUpdatePilot|PushBackPilotUpdateRun\\.Execute|\x08Precheck\x08|TryBeginApply|CompleteApply|\x08Rebase\x08|MarkPossiblySta'
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:57 'TryUpdatePilot|PushBackPilotUpdateRun\\.Execute|\\bPrecheck\\b|TryBeginApply|CompleteApply|\\bRebase\\b|MarkPossibl'
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:175 'TryUpdatePilot|PushBackPilotUpdateRun\\.Execute|\x08Precheck\x08|TryBeginApply|CompleteApply|\x08Rebase\x08|MarkPossiblySta'
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:175 'TryUpdatePilot|PushBackPilotUpdateRun\\.Execute|\\bPrecheck\\b|TryBeginApply|CompleteApply|\\bRebase\\b|MarkPossibl'
+   reference, the old name Execute in the same places: 12 specific
+     tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs:199 'Execute'
+     tests/RackCad.Tests/StructuralAnalysis/StructuralAnalysisRamElementsPackageWriterTests.cs:332 'x.'
+     tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:1088 '\\.CompleteApply\\s*\\(|PushBackPilotUpdateRun\\.Execute'
+     tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs:26 'Navigate|Execute|Run|Send|Import|Export|Move|Modify|Edit|Draw|Redraw|Rename|Publish|Open|Close|Load|Reset|Clea'
+     tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:299 'TryUpdatePilot|\\.Execute\\s*\\('
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:834 'PushBackPilotUpdateRun.Execute('
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs:837 'PushBackPilotUpdateRun\\.Execute\\s*\\('
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:57 'TryUpdatePilot|PushBackPilotUpdateRun\\.Execute|\x08Precheck\x08|TryBeginApply|CompleteApply|\x08Rebase\x08|MarkPossiblySta'
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:57 'TryUpdatePilot|PushBackPilotUpdateRun\\.Execute|\\bPrecheck\\b|TryBeginApply|CompleteApply|\\bRebase\\b|MarkPossibl'
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:175 'TryUpdatePilot|PushBackPilotUpdateRun\\.Execute|\x08Precheck\x08|TryBeginApply|CompleteApply|\x08Rebase\x08|MarkPossiblySta'
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:175 'TryUpdatePilot|PushBackPilotUpdateRun\\.Execute|\\bPrecheck\\b|TryBeginApply|CompleteApply|\\bRebase\\b|MarkPossibl'
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:500 'PushBackPilotUpdateRun\\.Execute\\s*\\('
+
+== ComparePostFull: 75 overlapping literals, 72 also on the neutral name, 3 SPECIFIC
+   tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs:342 'Compare'
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs:812 'Post'
+   tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs:856 'Post'
+   reference, the old name ComparePost in the same places: 3 specific
+     tests/RackCad.Tests/PushBackRoundTripSourceGuardTests.cs:342 'Compare'
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs:812 'Post'
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs:856 'Post'
+
+== PrepareFull: 74 overlapping literals, 73 also on the neutral name, 1 SPECIFIC
+   tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs:131 '[CommandMethod("RPR")] [CommandMethod("RPRO")]'
+   reference, the old name Prepare in the same places: 13 specific
+     tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs:178 'Prepare('
+     tests/RackCad.Tests/ComputedParameters/ComputedParametersPopulationGuardTests.cs:89 '\\b(?:public|private|internal|protected)\\s+(?:static\\s+)?[\\w<>\\[\\],.?]+\\s+'
+     tests/RackCad.Tests/PushBackWindowOnStateSourceGuardTests.cs:66 '\\b(?:private|internal|public|protected)\\s+(?:static\\s+)?(?:readonly\\s+)?[\\w<>\\[\\]?,.]+\\s+'
+     tests/RackCad.Tests/RackProjectionCommandGuardTests.cs:349 'Prepare('
+     tests/RackCad.Tests/RackViewPlacementGuardTests.cs:26 '.Prepare('
+     tests/RackCad.Tests/SiblingRedrawSeamGuardTests.cs:16 'Prepare('
+     tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:509 'RackCad\\.Application\\.Systems\\.PushBack\\.Pilot|\\bPushBackPilot\\w*'
+     tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:110 '\\bDraft\\w*|\\bPushBack\\w*|RackCad\\.Application\\.Systems|Workspace\\.Drafts'
+     tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:275 '\\bpublic\\s+[\\w<>,\\s?]+\\s+'
+     tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs:1011 '\\bPushBackPilot\\w*|RackCad\\.Application\\.Systems\\.PushBack\\.Pilot'
+     tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:92 'PushBackPilotPrepareResult'
+     tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs:198 'public\\s+static\\s+PushBackPilotPrepareResult\\s+Prepare\\s*\\('
+     tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs:679 'PushBackPilot\\w*|RackPilot\\w*|RackCad\\.Application\\.Systems\\.PushBack\\.Pilot'

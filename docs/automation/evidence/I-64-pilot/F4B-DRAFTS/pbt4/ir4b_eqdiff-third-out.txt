@@ -1,0 +1,73 @@
+### TheExpressionOfTheDiagnosticOfTheAdmissionIsInTheWholeHostCoreExactlyTwiceOnceInTheGeneralCheckAndOnceInCheckNow (tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs)
+   (identical)
+
+### TheGuardOfTheExpressionOfTheDiagnosticSeesAThirdOneInTheCoreASecondOneInCheckNowAndOneInKeep (tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs)
+--- original
++++ equivalente
+@@ -11,3 +11,3 @@
+         // The expression itself is the one of the package: the same text, once more, is not allowed by the consumers.
+-        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(core + "\nvar d = pilot.Read.Admission.Diagnostic;"));
++        Assert.Matches(BaseOrReadUse, WithoutTheAllowedConsumers(core + "\nvar d = full.Read.Admission.Diagnostic;"));
+     }
+
+### TheMarkingOnlyTouchesTheDraftsOfThePilotOfTheSessionAndIsOnlyAHint (tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs)
+--- original
++++ equivalente
+@@ -6,3 +6,3 @@
+         Assert.Contains("_drafts.RackIdsOf(session)", body);
+-        Assert.Contains("_drafts.Find<PushBackPilotDraftState>(session, rackId)", body);
++        Assert.Contains("_drafts.Find<PushBackFullDraftState>(session, rackId)", body);
+         Assert.Contains(".MarkPossiblyStale()", body);
+
+### TheReloadIsAMethodOfItsOwnWithTheGateAndTheEightStepsOfTheTableAndOneReadThatOnlyReachesDiscardAndReload (tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs)
+--- original
++++ equivalente
+@@ -10,10 +10,10 @@
+             "PassGate(",
+-            "_drafts.Find<PushBackPilotDraftState>(",
++            "_drafts.Find<PushBackFullDraftState>(",
+             ".NeedsLazyReload",
+             "_editIntentReader!.ReadIntent(",
+-            ".DiscardAndReload(pilot.Read);");
++            ".DiscardAndReload(full.Read);");
+         Assert.Equal(1, Src.Count(body, @"\.ReadIntent\s*\("));
+         Assert.Equal(1, Src.Count(body, @"_editIntentReader\s*[.!]"));
+-        Assert.Equal(1, Src.Count(body, @"\bpilot\.Read\b"));
+-        Assert.Matches(@"\.DiscardAndReload\s*\(\s*pilot\.Read\s*\)\s*;", body);
++        Assert.Equal(1, Src.Count(body, @"\bfull\.Read\b"));
++        Assert.Matches(@"\.DiscardAndReload\s*\(\s*full\.Read\s*\)\s*;", body);
+         // F4-T3A (M-2): the call is fixed in the body of the reload, not in the whole file, so a later operation of the host that reloads
+
+### TheBodyOfTheUpdateFollowsTheOrderOfThePackageAndEndsTheMarkOfKnownCleanAfterTheClose (tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs)
+--- original
++++ equivalente
+@@ -9,9 +9,9 @@
+             "string.IsNullOrWhiteSpace(request.RackId)",
+-            "_drafts.Find<PushBackPilotDraftState>(",
++            "_drafts.Find<PushBackFullDraftState>(",
+             "PushBackPilotUpdateRun.Precheck(",
+             ".TryBeginApply(",
+-            "PushBackPilotUpdateRun.Execute(",
++            "PushBackPilotUpdateRun.ExecuteFull(",
+             ".CompleteApply(",
+             "_knownClean.Remove(request.Session);");
+-        Assert.Equal(1, Src.Count(body, @"PushBackPilotUpdateRun\.Execute\s*\("));
++        Assert.Equal(1, Src.Count(body, @"PushBackPilotUpdateRun\.ExecuteFull\s*\("));
+         Assert.Equal(1, Src.Count(body, @"PushBackPilotUpdateRun\.Precheck\s*\("));
+
+### G4OnlyTheExecuteOfTheRunOfTheCoreCallsTheUpdateAndOnlyTheCoreCallsTheRunOfT4B (tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs)
+--- original
++++ equivalente
+@@ -4,2 +4,8 @@
+         Assert.Empty(G4Violations(Product()));
++        // I-64 F4B PB-T4b (the self-test of IG:510-517 over the full run): a caller of the run outside the core, a caller of the update
++        // outside the core and a second call in the core trip the guard.
++        Assert.NotEmpty(G4Violations(Append(Product(), HostRunPath, "var o = PushBackPilotUpdateRun.ExecuteFull(draft, request, port);")));
++        Assert.NotEmpty(G4Violations(Append(Product(), ControllerPath, "var u = _host.TryUpdatePilot(request, port);")));
++        Assert.NotEmpty(G4Violations(Append(Product(), AdapterPath, "var u = core.TryUpdatePilot(request, port);")));
++        Assert.NotEmpty(G4Violations(With(Product(), CorePath, code => code.Replace("public EditUpdateOutcome TryUpdatePilot(", "public EditUpdateOutcome Other() { return TryUpdatePilot(null!, null!); }\n        public EditUpdateOutcome TryUpdatePilot(", StringComparison.Ordinal))));
+     }
+
+### G4TripsOnAGroupOfMethodsOfTheUpdateOutsideTheCoreAndInsideItAndNotOnTheNameInsideAString (tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs)
+   (identical)
+

@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT2A-DRAFT-STATE-PORT",
+  "RunId": "R20261119T074453Z-10a9",
+  "DelegationRunId": "R20261119T065628Z-7de7",
+  "WorkRunId": "R20261119T065932Z-3b39",
+  "Attempt": 2,
+  "VerifiedSha": "5ddeb3b4ed99cb17d05142c67d47a26e89e238f9",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, OutputWrittenUtc=2026-11-19T07:42:57.441081+00:00 after Cession.StartUtc=2026-11-19T06:59:37Z; Cession.SessionOperated=false. Notes report 0 persistent participants and 0 unattributable processes at exit and entry."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present and matches delegation.json: TaskId F4B-PBT2A-DRAFT-STATE-PORT, Attempt 2, DelegationRunId R20261119T065628Z-7de7, RunId R20261119T065932Z-3b39. OutputWrittenUtc follows cession start; WorkerStatus=IMPLEMENTATION_COMPLETE, Disposition=NONE, TriggeredStopConditions=[]."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha returned 0. git log --reverse AuthorityRevision..BaseSha shows 0dc623ca, c33ac6ac, 17872be8; git diff --name-only shows 10 paths, no EXTERNAL or UNIT_CHANGE authority paths. The four src/tests paths are absent from Authorities; git log per path attributes each only to c33ac6ac. delegation-intento1.json AllowedWriteScope contains those four exact paths and worker-handoff-intento1.json identifies c33ac6ac as the attempt 1 delivery. git diff MainSha AuthorityRevision for all five EXTERNAL authority paths is empty. Analysis blob SHA-256 at BaseSha is 34717ba021ddd613fc69674b5ef8433684ce6316ff7b3a3a1bdc5d805a9c61d3, matching CorrectionOf."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json match elementwise for AllowedWriteScope (4), ForbiddenWriteScope (192), Invariants (13), StopConditions (32), Authorities (39), and RequiredTests (18). relay-record-planning.json records A1-A8 8/8 and nc4; byte-fidelity-check.json Result=PASS, all eight opaque collections checked byte-for-byte."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Handoff CurrentSha=5ddeb3b4ed99cb17d05142c67d47a26e89e238f9; git rev-parse HEAD returned the same SHA; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returned the same SHA. Branch and worktree match delegation. git merge-base --is-ancestor returned 0 for BaseSha..CurrentSha, BaseSha..RedSha, RedSha..CurrentSha, and ChainBaseSha..CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha and CurrentRun.HeadSha equal CurrentSha; OriginMainSha equals delegation MainSha 812baf879612320653094a8aaf46aca0bac81383. Current run 44480898605 is completed push on refs/heads/architecture/workspace-persistente-rackcad with matching head SHA. The recorded RedRun 44478438623 is the matching push for RedSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Deterministic exact-string scope script read 4 AllowedWriteScope entries. git diff --name-only BaseSha CurrentSha lists exactly PushBackDraftEditorLaunch.cs, PushBackDraftStatePort.cs, PushBackDraftStatePortTests.cs, and PushBackDraftPortSharedReferenceGuardTests.cs; all are exact allowed entries. BaseSha..RedSha lists only PushBackDraftStatePortTests.cs. ChainBaseSha..CurrentSha -- src tests lists the four allowed paths. No listed path matches any ForbiddenWriteScope entry."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v for the verification output path returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 44480898605: exact push ref and CurrentSha; UI Tests (WPF controls, net8.0-windows), Tests (Domain + Application), Build UI (WPF, valida API de Application), and Build Plugin without AutoCAD all success. RedRun 44478438623 matches RedSha: Tests failure, UI and Build UI success, Build Plugin skipped as expected for the RED. No timeout or blame-hang recorded."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed the four supplied TRX files, matching UnitTestResult to UnitTest by testId and applying case-insensitive FQN contains. All 18 RequiredTests meet MinSelected on RED and GREEN. Core GREEN: 19092 passed, 0 failed; UI GREEN: 2439 results, 2418 passed, 21 NotExecuted, 0 failed. RED Core: 19092 results, 3 failed, exactly CT-PBT2A-01/02/03; each failed by Assert.Equal with first stack frame under tests/. No other Core failures. The ExpectRed=false guard selected 1 and passed on RED and GREEN. UI RED: 2439 results, 0 failed. RED UI FullEditorCharacterization selected 18 (16 passed, 2 NotExecuted), above minimum 16. git diff --name-only ChainBaseSha RedSha -- tests gives the two PB-T2a test files, so ChainRedFiles is those two paths; git diff --name-only RedSha CurrentSha lists only the two src files and no tests. git diff --name-only --diff-filter=MD ChainBaseSha CurrentSha -- src is empty."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows both commits, fb90c823 and 5ddeb3b4; each has Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation Model=claude-sonnet-5-5; relay Participant.ModelRequested=sonnet (subagent launch alias), ModelEffective=claude-sonnet-5-5, EffortRequested=high, EffortEffective=high. Effective model and effort match the delegation; source records 133 assistant turns with the effective model."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Deterministic case-insensitive complete word/phrase scan of the seven required worker-handoff fields found no AUTOMATION_PLAN 16.10 term. Character counts: WorkCompleted 5312, Evidence 2061, UnexpectedFindings 884, KnownLimitations 809, Deviations 571, OpenQuestions 0, RecommendedNextAction 148."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials, 2 tool errors with none pending, and no usage-limit warning."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "worker-handoff.json declares a background-task execution deviation for local commands; the relay notes report no overlapping runs. The cleanup measurement did not change, and the supplied record reports no pending tool errors."
+  ],
+  "RecommendedNextAction": "Registrar la verificacion y continuar con las revisiones y controles pendientes."
+}

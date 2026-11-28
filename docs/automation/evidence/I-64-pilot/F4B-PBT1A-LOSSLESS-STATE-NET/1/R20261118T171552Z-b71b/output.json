@@ -1,0 +1,77 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1A-LOSSLESS-STATE-NET",
+  "RunId": "R20261118T171552Z-b71b",
+  "DelegationRunId": "R20261118T141628Z-d049",
+  "WorkRunId": "R20261118T142230Z-d31d",
+  "Attempt": 1,
+  "VerifiedSha": "73d30982b0c0ce2b8c9213e626df0ab0d50b0475",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-18T14:22:36Z; OutputWrittenUtc=2026-11-18T16:06:40.810636Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists; TaskId, Attempt, DelegationRunId and RunId match the delegation and work record; CurrentSha=73d30982; OutputWrittenUtc is after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 95c8126b a3b63ccc returned 0. git diff --name-only 95c8126b a3b63ccc listed five docs/ unit paths; none are EXTERNAL or UNIT_CHANGE. Read AUTOMATION_PLAN from AuthorityRevision and external README and AGENTS.md from MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json Result=PASS; all eight collections are byte-equal and in order. Delegation AllowedWriteScope has 9 entries; contract constraints and delegation invariants, tests and stop conditions match."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff CurrentSha=73d30982b0c0ce2b8c9213e626df0ab0d50b0475; git rev-parse HEAD=73d30982b0c0ce2b8c9213e626df0ab0d50b0475; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=73d30982b0c0ce2b8c9213e626df0ab0d50b0475. Base-to-Red and Red-to-Current merge-base ancestry checks returned 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Exit LsRemoteSha=a3b63ccc and MainSha=812baf87; Entry LsRemoteSha=73d30982 and CurrentSha=73d30982. No network Git command was run."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read AllowedWriteScope from delegation.json: 9 exact paths. Scripted exact-membership check found every Base..Current path (7 test files) and Base..Red path (the same 7 plus 2 MutantScope source files) in that list; no forbidden prefix intersection. git diff --name-only Base Current -- src was empty. Red..Current changed only the two MutantScope paths. Base..Red -- src contained only those two; their blob IDs match Base and Current and differ in Red."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore on the input worker-handoff.json returned its ignored path."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 44338475965 is push for the exact branch and CurrentSha, completed success; all four required jobs succeeded. RedRun 44333116533 is push for exact RedSha; UI job failed, Core and both build jobs succeeded. TRX totals agree: Current Core 19070 passed; UI 2415 passed, 0 failed, 21 not executed. Red Core 19070 passed; UI 2359 passed, 56 failed, 21 not executed; no blame-hang or timeout in relay notes."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Read the four supplied TRX files. Current UI filters meet minima and pass: StateNet 14; Classic 55; FullEditor 18 selected, 16 passed and 2 not executed; Rounding 3; DimensionStyle 2; PilotParity 2; SideBNotice 2; StandardRestore 1; Correction2 4; Cantilever 67; CompositeWindow 52; Lifecycle 7; LoadExisting 3; BothMode 10; ModuleEditor 13; AdvancedRack 9. Current Core filters pass: 10, 3 and 15. Red StateNet has 14 selected and 14 failed; the other Red failures are the 42 existing tests attributed in delivery T-8, while the Core filters pass. Red..Current has no tests paths. RT=git diff --name-only a3b63ccc 15f1f225 -- tests/ is the seven new test files; ChainRedFiles=those seven paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B a3b63ccc..73d30982 shows both RED and GREEN commits have Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff Worker.Trailer and effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requested claude-sonnet-5-5, effort high. relay-record-work Participant.ModelEffective=claude-sonnet-5-5 and EffortEffective=high; requested transport alias sonnet matches ModelRequested."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Required read-only script scanned all seven complete worker-handoff text fields against every AUTOMATION_PLAN 16.10 term, case-insensitive with whole-word/phrase boundaries. Printed field lengths and zero matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report 0 permission denials, 3 tool errors with none pending, and no limit warning; process reread reports 0 persistent participants and 0 persistent unattributable processes."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "coordinator-disposition.md ratifies the CT-02 adjustment for this attempt; it records CT-03 as acceptable."
+  ],
+  "RecommendedNextAction": "Registrar esta verificacion y continuar con la revision independiente y los controles nc1-nc3."
+}

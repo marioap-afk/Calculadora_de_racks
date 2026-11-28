@@ -1,0 +1,43 @@
+paquete docs/initiatives/I-64-f4b-pbt4-gate-contract-package.md en 8f783df5 ; filas | PB-T4b | 105 ; clases pedidas 28 ; errores []
+  PushBackFullPanelCensusGuardTests        ct     filas=1 lineas=8 valores=0 pendiente=[]
+  PushBackFullPanelFieldTests              ct     filas=1 lineas=11 valores=0 pendiente=["CT-04 de section 5.2, un literal con un marcador: 'texto-<n> valido-igual=True mensaje-igual=True'", "CT-18 de section 5.2, un literal con un marcador: 'caso-<n> estado-igual=True valor-igual=True mensaje-igual=True'", "sin resolver: 'diez textos de CT-PBT2B-10 once casos de CT-18'"]
+  PushBackFullPanelGuardTests              ct     filas=2 lineas=32 valores=0 pendiente=["CT-12 de section 5.2, un literal con un marcador: 'autoprueba-<nombre>-en-WorkspaceHostCore.cs=falla'", "sin resolver: 'seis nombres de CT-12'", "sin resolver: 'sus expresiones'"]
+  PushBackFullPanelTests                   ct     filas=1 lineas=42 valores=3 pendiente=[]
+  PushBackPanelDraftGuardTests             ct     filas=1 lineas=26 valores=0 pendiente=[]
+  WorkspaceFullCopyGuardTests              ct     filas=1 lineas=9 valores=0 pendiente=["sin resolver: 'cuatro con (D-S5) 21 nombres de clase de origen nueve parejas de M-00 a M-08 (con seis tipos de M-00 de \\xa75 2) de 21 archivos de (\\xa76 2 1) de 21 copias del kit cinco escaneos de M-05'"]
+  PushBackFullReadGuardFull                entero filas=0 lineas=0 valores=0 pendiente=[]
+  PushBackFullReadPathFull                 entero filas=0 lineas=0 valores=0 pendiente=[]
+  PushBackWritePathGuardFull               entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspaceAssociativeBookkeepingFull      entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspaceCommandAdvisorFull              entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspaceEditIntentGuardFull             entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspaceEditIntentHostFull              entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspaceFullReadKit                     entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspaceHostHardeningGuardFull          entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspaceLifecycleGuardFull              entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspaceLifecycleHostFull               entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotEditGuardFull              entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotEditHostFull               entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotPrepareFull                entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotReconciliationFull         entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotReconciliationGuardFull    entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotReconciliationHostFull     entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotReconciliationViewFull     entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotUpdateGuardFull            entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotUpdateHostFull             entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotUpdateIntegrationGuardFull entero filas=0 lineas=0 valores=0 pendiente=[]
+  WorkspacePilotUpdateRequestFull          entero filas=0 lineas=0 valores=0 pendiente=[]
+PushBackFullPanelTests, lineas: ["begin tipo=PushBackFullDraftState piloto=null editable-igual=True origen-igual=True", "begin-sin-completo estado=NotAdmitted diagnostico=No editable aqu\u00ed: la lectura no trae el modelo completo. pista=True borradores=0", "pb-20-ab estado=Admitted borrador=PushBackFullDraftState", "pb-21-cola estado=NotAdmitted diagnostico-fuera-del-piloto=True pista=True borrador=null", "auth-13 estado=NotAdmitted borrador=null", "campo commit=Applied escala=2.5 resto-igual=True isdirty=True", "campo texto=[] estado=Invalid mensaje=Escribe un valor.", "campo texto=[abc] estado=Invalid mensaje=Valor no num\u00e9rico.", "campo texto=[0] estado=Invalid mensaje=El valor debe ser > 0.", "campo texto=[-1] estado=Invalid mensaje=El valor debe ser > 0.", "actualizar estado=Applied begin-mutation=1 seal=1 borrador=Clean", "borrado EraseUnit:B2", "presentar estado=Presented testigo-clave=A1 testigo-texto-igual-al-origen=True borrador-igual=True huella-igual=True", "presentar Cambiado fuera: el nombre.", "presentar Cambiado por ti: las anotaciones.", "of lineas=7", "of Cambiado fuera: el nombre y los frentes.", "of Cambiado por ti: las anotaciones, la seguridad y los m\u00f3dulos.", "of Cambiado en los dos: el rack.", "of Cambios estructurales: los frentes y los m\u00f3dulos.", "of Vistas: se borrar\u00e1n 2 laterales obsoletos.", "of Vistas: 1 no se puede conservar.", "of Todas las vistas quedar\u00edan obsoletas.", "of-singular Vistas: se borrar\u00e1 1 lateral obsoleto.", "of-plural Vistas: 3 no se pueden conservar.", "of-vacia lineas=0 isempty=True", "segundo-si testigo-viejo estado=Presented conservado=False borrador-igual=True", "segundo-si testigo-vigente estado=Kept initial-igual-a-la-relectura=True editable-del-borrador=True origen-nuevo=True estado-del-borrador=Dirty", "tras-conservar-y-actualizar estado=Applied diseno-del-borrador=True resto-del-rack-actual=True", "lado-b-sin-frentes diseno-escrito-sin-lado-b=True declaracion-hasta-el-rebase=True", "Begin huellas-iguales=True", "CommitField huellas-iguales=True", "Presentar huellas-iguales=True", "KeepOn huellas-iguales=True", "Rebase huellas-iguales=True", "sustituir-referencia isdirty=False", "nan-longitud-modulo igual-a-su-copia=False", "borrador estado=Clean origen-es-la-primera-redibujada=True", "relectura lector=ReadIntentAtOrigin origen-del-borrador=True", " estado=Presented", " huellas-iguales=True", "No editable aqu\u00ed: la lectura no trae el modelo completo."]
+PushBackFullPanelTests, valores: ['2.25', '2.5', 'Otro nombre']
+OK    las filas reales se leen sin errores
+OK    PushBackFullPanelTests (la reparada): ct, sin pendiente, las 11 de CT-06 que empiezan por of, los 5 fragmentos y la de No editable, 3 valores
+OK    PushBackPanelDraftGuardTests: 3 + las 8 fichas + los 15 terminos de CT-PBT4A-08, sin pendiente
+OK    PushBackFullPanelCensusGuardTests: 1 + los cinco nombres + los dos destinos, sin pendiente
+OK    WorkspaceFullCopyGuardTests, PushBackFullPanelGuardTests y PushBackFullPanelFieldTests: PENDIENTES (referencias sin enumerar)
+OK    las copias y el kit: entero (no admiten reparacion, RR-2)
+OK    negativo: "las doce of..." deja pendiente a PushBackFullPanelTests
+OK    negativo: una referencia nueva sin enumerar deja pendiente a PushBackFullPanelTests
+OK    negativo: una CT de section 5.2 que no es de la clase es error
+OK    negativo: una fila con otra forma es error (y las copias sin fila propia, sin fila)
+OK    negativo: una clase pedida sin fila es error
+OK    negativo: section 5.2 sin la fila de CT-06 es error

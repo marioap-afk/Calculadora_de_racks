@@ -1,0 +1,23 @@
+ensayo de PB-T4e (v5.5); copia /d/r71; salida r71-tr; revision 160e019d773ba9095e2d5858cd593a954b8eec67
+  pieza 647e185329ce18450eccda093d3071554759043bfc1c61e27e3f52f621da033b pbt4e-red-v55.txt
+  pieza 6727c6f20839ef28ae5895f938b2263abc4e5538a5f30baeee6b041d477fac2f red_pbt4e_v55.py
+  pieza 50b1919438ed52a4da5ee6ce60bebacb104087bd24c74b9ff7ccea0c900e9b96 apply_red_pbt4e_v55.py
+  pieza 5d26dc483f83cfca1d005adfd60c25f6d2e5eac7cc545b9342182f96bdc95407 pbt4e-green-v55.txt
+  pieza 888c9fb21832965a40a7e4c306bb21635d8c912a5c4f02f576568631dc38aee1 green_pbt4e_v55.py
+  pieza 832afa9e4eafb298b92a47794b37b38d99dd1b1e23a9eb2679d79ee509be65c0 apply_green_pbt4e_v55.py
+  pieza 078c9767371c88400547345baf825adc458815b8d2fd31e1fb2793e837ae73dd write_probe_v55.py
+  pieza 9f7eb22408c2de0ae8cfac253f7facbe683e495a49546fdcfca1aad87b687a8e t71_trial_v55.sh
+  pieza 2a67c9432f551593414e446624404103d354de75aa6b7d83c80970ce7ef89072 trx_lines_v55.py
+copia exportada: 15796 archivos
+RED de PB-T4e escrito: 2 archivos nuevos de tests/; ningun archivo existente tocado; src/ sin tocar
+r-core rc=0 errores=0 avisos-CS=0
+r-ui rc=0 errores=0 avisos-CS=0
+red-core rc=1 trx=f89cd1e6826fc8e8 :: == Failed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday;== Failed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers;== Failed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict;== Failed RackCad.Tests.SondaPushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBefore
+red-ui rc=1 trx=b3db51c7bdbb45fc :: == Failed RackCad.UI.Tests.PushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll;== Failed RackCad.UI.Tests.SondaPushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll;
+GREEN de PB-T4e escrito: 4 archivos de src/ cambiados; tests/ sin tocar
+g-core rc=0 errores=0 avisos-CS=0
+g-ui rc=0 errores=0 avisos-CS=0
+green-core rc=1 trx=a9c5aa4c5a9d22fd :: == Passed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBeforeTheEditorOpensAndLeavesEveryOtherDraftAsToday;== Passed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_02_AReloadThatDoesNotReloadTheDraftDoesNotOpenTheEditorAndCarriesWhatTheReloadOfEditarAnswers;== Passed RackCad.Tests.PushBackEditAllReloadTests.CT_PBT4E_04_FromTheChangeOutsideAndItsMarkThroughEditAllToTheUpdateWithoutAutoCadTheUpdateAppliesWithoutAConflict;== Failed RackCad.Tests.SondaPushBackEditAllReloadTests.CT_PBT4E_01_EditAllReloadsACleanDraftMarkedAsPossiblyStaleBefore
+green-ui rc=1 trx=82d10980cd8d254d :: == Passed RackCad.UI.Tests.PushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll;== Failed RackCad.UI.Tests.SondaPushBackEditAllReloadFieldTests.CT_PBT4E_03_TheFieldShowsAReloadOfEditAllThatDidNotReloadAsEditarShowsItAndOnlyAsksThePortForEditAll;
+build-server shutdown rc=0
+MAINCO []

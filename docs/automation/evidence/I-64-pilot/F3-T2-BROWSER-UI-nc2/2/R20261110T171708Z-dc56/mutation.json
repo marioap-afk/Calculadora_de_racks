@@ -1,0 +1,97 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261110T171708Z-dc56",
+  "SourceVerification": "R20261110T170317Z-c324",
+  "SourceInputs": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI/2/R20261110T170317Z-c324/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+      "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSummaryTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Workspace/BrowserRackSummaries.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+      "src/RackCad.Application/Workspace/BrowserRackSummaries.cs",
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSummaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserScenarioHarnessTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Workspace/IWorkspaceBrowserSummaryPort.cs",
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+      "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationFacts.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserSummaryTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserScenarioHarnessTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "C0D2A8ADE8093C620F28283389842A40ADAB2E64CB94E7B28F4EE9D9F970F21A",
+    "New": "1A6B617E59C7285FC7B352DE8C7202FE12F9B323ECFD2948D5A31C4E2E7045EF",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "5CA02836684FBF8F262B5E1C75BE1E3BF9CB4AE7B08072091F7BB256AD3BEE03",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "delegation.json": "1A6B617E59C7285FC7B352DE8C7202FE12F9B323ECFD2948D5A31C4E2E7045EF",
+    "gate-contract.json": "A61876AB5E8471A101E44CC91AE7548A31378E8748946D2CE56CF2FECA179F70",
+    "relay-record-planning.json": "649DC405FD765A296623FE44DC86735E7E7A6C77084FCA7078ED2D21FFC6E41D",
+    "relay-record-work.json": "1E8A4A15AB244F086BC5E8A69BB942B64586505AD761F7733E4ACFBF757DD9B4",
+    "worker-handoff.json": "A06D0AA2F00B8A330020F2F90EEEC0D3FB57CC2B113C6EF030374CE36FDBC823",
+    "ci-core/42860103890/core.trx": "4DDF497BD79F80DA97053954F6F5E1B742FBE2DFEC274F449E5E2884D0667683",
+    "ci-core-red/42855947104/core.trx": "8B5064EBE9D9A8B44259684A95F8892BFFBA4A4B06956C5635CBBB4CFF89282C",
+    "ci-ui/42860103890/ui.trx": "8A28BECB3438477A0DFCE797D6E0ACAEF05AADB70057614E87E3784D69B8DE1F",
+    "ci-ui-red/42855947104/ui.trx": "1156C9F64ED27CDDA45D9326046F10B27D0D1BE704760C428146187B746E5EBD"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261119T021418Z-2049",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "Script de solo lectura escaneo el texto completo de los siete campos; longitudes: WorkCompleted 14804, Evidence 7631, UnexpectedFindings 773, KnownLimitations 1864, Deviations 847, OpenQuestions 0, RecommendedNextAction 183 caracteres. Una coincidencia con la lista de AUTOMATION_PLAN 16.10 en WorkCompleted, al final: '... no hubo parada PBT1B-C17. GATE PASS.' Ninguna otra coincidencia."
+  },
+  "OutputSha256": "7A1CFC2759D96939A24A4ED9AA047FC4CCEA4DBC7005ECBB6AC7AC033E16597C",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,98 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261011T202537Z-1990",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "6a574fc09a64a82151aae0a9504391a67a224dab",
+    "AmendmentId": "A-7",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-7.md",
+      "Blob": "f8c3d6cde7c2bb9bdfa3024d8a964309638e0b9c"
+    },
+    "Lifecycle": {
+      "Path": "docs/INITIATIVE_LIFECYCLE.md",
+      "Blob": "6415c33bd2f86fa05444e00b630d7fed5e5d7a22"
+    },
+    "SmokeProcedure": {
+      "Path": "docs/initiatives/I-64-f1-t3d-smoke-1-procedure.md",
+      "Blob": "3292a7c2462c8760ede389c07a1b4004e001b723"
+    },
+    "GateClosePackage": {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-GATE/gate-close-package.md",
+      "Blob": "ae2b7eff196199b090e37f3a2310a8b793db0d1d"
+    },
+    "CoordinatorGateCloseReview": {
+      "Path": "docs/automation/evidence/I-64-pilot/F1-GATE/coordinator-gate-close-review-1.md",
+      "Blob": "3b535bad25994847be0127a6bb5d99fc41fb962e"
+    },
+    "CoordinatorReviewOrder": {
+      "Path": "artifacts/orchestration/I-64/A-7-review/R20261011T202537Z-1990/inputs/coordinator-a7-review-order.md",
+      "Sha256": "d6d9aa64e424d591652dc48e3b8602fea1b0f2ffcc0909089c0afbf863b1fc77"
+    }
+  },
+  "Answers": {
+    "Q1": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "I-64-A-7.md:75,115-117,137 cambia las condiciones de satisfaccion de Smoke-1: los casos literales S1-06a..e dejan de impedir su resultado satisfactorio y pasan obligatoriamente a Smoke-2. LIFECYCLE:86 no limita M-04 al fallo del producto; :194-207 exige Architect + Coordinator para una M material. El precedente I64-A1-M04 y A-2:156-167 confirma esa lectura sobre obligaciones de cierre. Concuerdo independientemente con M-04 = YES. La lista tecnica de cierre de F1 permanece igual; lo que cambia es la verificacion del hito y se resuelve su bloqueo documental."
+    },
+    "Q2": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Freeze D-01:130-136 y los oraculos S1-06a..h:847-854 siguen preservados por A-7:43-46,75-98,104-109,121-125. Campo conserva el significado de control de texto editable; la casilla no lo sustituye. S1-06a..e nunca reciben PASS en F1, SM-14a..e son solo complementarios, S1-06f/g/h permanecen en Smoke-1 y el comportamiento literal queda obligatorio en Smoke-2. S2-21 conserva DBMOD para los casos reasignados y S2-22 hace explicita la prohibicion de devolver el foco al terminar una edicion. T3D:236-259,307-321 y el paquete:112-130 coinciden con ese delta."
+    },
+    "Q3": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Freeze Sec.12.4:879-895 contiene S2-01..S2-15. A-7:88-94 introduce S2-16..S2-22 sin colision: espacios, deshacer texto, copiar/pegar texto, Supr con seleccion implicita, Esc/Enter, DBMOD en los cinco casos y foco al confirmar o salir del campo. A-7:83-84 identifica el control editable del Workspace; :96-98 exige ejecucion adicional en un hito anterior si ya dispone de campos, manteniendo Smoke-2 obligatorio."
+    },
+    "Q4": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "LIFECYCLE:255-259 distingue reasignacion mediante A-n de retiro o sustitucion de un escenario OV o su ultima asignacion, que exige Owner. A-7:104-109,125 conserva OV-19, su asignacion a I-64, su contenido conceptual y su ejecucion sobre FINAL_CANDIDATE_SHA. Cambian los IDs y el momento de las comprobaciones previas, sin eliminar ni sustituir la obligacion final. Tampoco cambia alcance, no-objetivos o una decision del Owner conforme a LIFECYCLE:94. Owner informado es correcto; su aprobacion de A-7 no es requerida."
+    },
+    "Q5": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "La distribucion de obligaciones aplicables es valida: A-7:75-79,104-117 conserva S1-06f/g/h en Smoke-1, distingue evidencia complementaria de ejecucion literal y mantiene esta ultima en F4. Freeze:790,806-811 y A-7:113-116 separan el cierre tecnico de F1 de Smoke-1 posterior. Por tanto, esta respuesta valida la cobertura aplicable al tramo F1/Smoke-1; no considera completamente verificado INV-24 antes de las comprobaciones diferidas y la OV final. El paquete:112-136 mantiene esa distincion."
+    },
+    "Q6": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-7:96-98 exige S2-16..S2-22 en Smoke-2 incluso si se ejecutan antes; :105 vincula INV-24 a F4 y :117 exige expresamente esos siete casos ademas de S2-01..S2-15 para el resultado satisfactorio de F4. Freeze:800-807 situa Smoke-2 dentro de su secuencia de cierre. LIFECYCLE:180-207 congela obligaciones de prueba y resultados verificables y exige otra A-n para cambiarlos. F4 no puede omitirlos mediante una decision de ejecucion ordinaria."
+    }
+  },
+  "M04Disposition": "AGREE",
+  "OwnerRequired": "NOT REQUIRED",
+  "OwnerRequiredBasis": "LIFECYCLE Sec.8:255-259 permite reasignar mediante A-n; reserva al Owner retirar o sustituir un escenario OV o su ultima asignacion. A-7 conserva OV-19 asignado a I-64, mantiene todos sus oraculos y exige su ejecucion final. No altera una materia OWNER-RESERVED de Sec.3:94. Esta conclusion trata exclusivamente de la aprobacion de la enmienda; la ejecucion de los hitos y la Owner Validation conservan sus autoridades.",
+  "Inv24Weakened": false,
+  "Inv24Statement": "A-7 conserva integramente INV-24 / PV2-12. La ausencia de campos editables en el XAML de e0205b5a justifica la inaplicabilidad literal en F1, sin convertirla en PASS ni usar la casilla como sustituto. S1-06f/g/h permanecen obligatorios; S2-16..S2-22 mantienen la verificacion literal posterior, DBMOD y la prohibicion de devolver el foco al terminar una edicion. OV-19 conserva su ejecucion final.",
+  "S2IdsCollide": false,
+  "S2Coverage": {
+    "TextWithSpaces": true,
+    "CtrlZOnText": true,
+    "CtrlCVOnText": true,
+    "DeleteIsolation": true,
+    "EscEnterIsolation": true,
+    "Dbmod": true,
+    "FocusNotReturnedAfterEdit": true
+  },
+  "S2Sufficient": true,
+  "S2Binding": true,
+  "S2Statement": "S2-16..S2-22 son suficientes y vinculantes para las obligaciones diferidas de A-7. Tienen IDs nuevos, control editable identificado y oraculos observables. Son obligatorios en Smoke-2 para F4 y adicionales en cualquier hito anterior que ya exponga campos editables. Su eventual ejecucion previa no elimina la exigencia de Smoke-2 ni la de OV-19 final.",
+  "Q6RequiredWording": "",
+  "SuitableForCoordinatorActivation": true,
+  "Findings": [],
+  "RequiredCount": 0,
+  "OptionalCount": 0,
+  "Verdict": "AGREED",
+  "Limitations": [
+    "Revision estatica y de solo lectura, limitada a A-7 y los insumos autorizados. No se ejecutaron AutoCAD, dotnet ni productos; no se escribieron archivos ni se realizaron commits o pushes.",
+    "El Freeze coincide por blob en el commit de origen y en el commit revisado. Los seis blobs del objeto y el SHA-256 de la orden fueron obtenidos directamente.",
+    "La suficiencia evaluada corresponde al contrato de verificacion; no acredita resultados de host, CI, pruebas o validacion manual. Este dictamen no activa A-7 ni declara gate, Candidato, cierre, integracion o aprobacion del Owner."
+  ]
+}

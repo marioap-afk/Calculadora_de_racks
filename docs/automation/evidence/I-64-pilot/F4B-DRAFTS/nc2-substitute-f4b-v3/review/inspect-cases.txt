@@ -1,0 +1,35 @@
+== PBT4A | TaskId F4B-PBT4-FULL-READ-PATH | Attempt 1
+  len AWS contrato/real/mutado: 10 10 9 | distintos en contrato: 10 | prefijos en contrato: []
+  len Forbidden contrato: 316 | diff: 10 | quitadas (real - mutado): ['src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs'] | anadidas: []
+  sorted(diff)[0]: src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs
+  real: EXECUTION_VERIFIED NONE | nc2: EXECUTION_BLOCKED STOP Contract ['P-03', 'PBT4A-C01']
+  checks que difieren real->nc2: {'Contract': ('pass', 'fail'), 'Scope': ('pass', 'fail')}
+  evidencia Scope nc2: {"Result": "fail", "Evidence": "The read-only exact-membership script printed all 9 AllowedWriteScope entries and checked git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests. All changed paths are listed except src/RackCad.Application/Systems/PushBack/Draft/PushBackOriginByText.cs, which appears in all three diffs. PBT4A-C01 applies."}
+== PBT4C | TaskId F4B-PBT4-EDIT-ALL-WINDOW | Attempt 1
+  len AWS contrato/real/mutado: 26 26 25 | distintos en contrato: 26 | prefijos en contrato: []
+  len Forbidden contrato: 510 | diff: 26 | quitadas (real - mutado): ['src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs'] | anadidas: []
+  sorted(diff)[0]: src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs
+  real: EXECUTION_VERIFIED NONE | nc2: EXECUTION_BLOCKED STOP Contract ['S-04', 'PBT4C-C01']
+  checks que difieren real->nc2: {'Contract': ('pass', 'fail'), 'Scope': ('pass', 'fail')}
+  evidencia Scope nc2: {"Result": "fail", "Evidence": "Read delegation.json AllowedWriteScope: 25 exact paths. Read-only comparison script checked git diff --name-only BaseSha CurrentSha (26 paths), BaseSha RedSha (21 src/tests paths), and ChainBaseSha CurrentSha -- src tests (26 paths); each has one path outside the exact list: src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs. No changed path i
+== PBT2A | TaskId F4B-PBT2A-DRAFT-STATE-PORT | Attempt 2
+  len AWS contrato/real/mutado: 4 4 3 | distintos en contrato: 4 | prefijos en contrato: []
+  len Forbidden contrato: 192 | diff: 3 | quitadas (real - mutado): ['src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs'] | anadidas: []
+  sorted(diff)[0]: src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs
+  real: EXECUTION_VERIFIED NONE | nc2: EXECUTION_BLOCKED STOP Contract ['S-04', 'PBT2A-C01']
+  checks que difieren real->nc2: {'Contract': ('pass', 'fail'), 'Scope': ('pass', 'fail')}
+  evidencia Scope nc2: {"Result": "fail", "Evidence": "Script de igualdad exacta sobre AllowedWriteScope de delegation.json (3 entradas): en git diff --name-only BaseSha CurrentSha, PushBackDraftEditorLaunch.cs=false y las otras dos rutas=true. En BaseSha..RedSha, PushBackDraftStatePortTests.cs=true. En ChainBaseSha..CurrentSha -- src tests, PushBackDraftEditorLaunch.cs=false y las otras tres rutas=true. Ruta fuera de l
+== PBT3A | TaskId F4B-PBT3A-FULL-WRITE-MODEL | Attempt 2
+  len AWS contrato/real/mutado: 14 14 13 | distintos en contrato: 14 | prefijos en contrato: []
+  len Forbidden contrato: 203 | diff: 14 | quitadas (real - mutado): ['src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs'] | anadidas: []
+  sorted(diff)[0]: src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs
+  real: EXECUTION_VERIFIED NONE | nc2: EXECUTION_BLOCKED STOP Contract ['S-04', 'P-03', 'PBT3A-C01']
+  checks que difieren real->nc2: {'Contract': ('pass', 'fail'), 'Scope': ('pass', 'fail')}
+  evidencia Scope nc2: {"Result": "fail", "Evidence": "Read-only scope script printed the delegation AllowedWriteScope count (13) and each entry, then checked git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests by exact string equality. Each 14-path diff includes src/RackCad.Application/Systems/PushBack/Draft/PushBackConflictClassifier.cs with allowed=false; the other 13 pat
+== PBT4D | TaskId F4B-PBT4-RETIRE-PILOT | Attempt 1
+  len AWS contrato/real/mutado: 37 37 36 | distintos en contrato: 37 | prefijos en contrato: []
+  len Forbidden contrato: 335 | diff: 37 | quitadas (real - mutado): ['src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs'] | anadidas: []
+  sorted(diff)[0]: src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+  real: EXECUTION_VERIFIED NONE | nc2: EXECUTION_BLOCKED STOP Contract ['S-04', 'P-03', 'PBT4D-C01']
+  checks que difieren real->nc2: {'Contract': ('pass', 'fail'), 'Scope': ('pass', 'fail')}
+  evidencia Scope nc2: {"Result": "fail", "Evidence": "The read-only scope script printed all 36 delegation AllowedWriteScope entries and checked each route from BaseSha..CurrentSha, BaseSha..RedSha, and ChainBaseSha..CurrentSha -- src tests by exact string equality. BaseSha..CurrentSha has 37 routes; src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs is outside the delegation list. The BaseSha..R

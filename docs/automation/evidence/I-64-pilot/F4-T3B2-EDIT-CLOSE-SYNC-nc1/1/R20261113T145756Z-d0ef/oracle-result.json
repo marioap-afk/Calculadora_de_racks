@@ -1,0 +1,53 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261113T145756Z-d0ef",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 23f67f56b8319d77448e989c0949e4ccd915bdc1; BaseSha b5ae014d and RedSha c3de6116 are ancestors in order. However worker-handoff.json claims CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, contradicting Git, RemoteFacts.CurrentRun and the relay note. This triggers S-04."
+  },
+  "OutputSha256": "09319B48AB63ED5317D239BE2FB97D096BE0D1DF1A28F17C2E721119453FF4D2",
+  "ManualFreeText1610": []
+}

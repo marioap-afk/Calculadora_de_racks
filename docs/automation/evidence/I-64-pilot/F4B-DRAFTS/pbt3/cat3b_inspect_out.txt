@@ -1,0 +1,150 @@
+dry contract-dry-pbt3b.json 5EE38DAB9883B04C 72423 | PB-T3a c40eea4a == 485b5651: True
+ASCII: True
+TaskId F4B-PBT3B-FULL-WRITE-RUN 24 | AuthRev c40eea4a | Main 812baf87
+Objective: Generalizar en su sitio el plan y la corrida de la actualizacion del Workspace de Push Back para que sirvan el modelo del piloto, conectado, y el modelo completo de PB-T3a, sin conectar: la barrera de ...
+Allowed 11
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+    src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+    src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotViewEraser.cs
+    tests/RackCad.Tests/PushBackFullWritePrepareTests.cs
+    tests/RackCad.Tests/PushBackFullWriteRunTests.cs
+    tests/RackCad.Tests/PushBackWritePathGuardTests.cs
+    tests/RackCad.Tests/PushBackPilotUpdateEquivalenceGuardTests.cs
+    tests/RackCad.Tests/PushBackFullWriteSupport.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardTests.cs
+UNIT_CHANGE: [('src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs', 'el plan de la actualizacion del piloto: PB-T3b lo generaliza en su sitio (D-PBT3'), ('src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs', 'la corrida de la actualizacion del piloto: PB-T3b la generaliza en su sitio (D-P')]
+Authorities 62 | clases: ['EXTERNAL', 'UNIT_CHANGE', 'UNIT_DOC']
+Stops 34 ['S-02', 'S-03', 'S-04', 'S-05', 'S-07', 'S-08', 'S-12', 'S-13', 'S-14', 'P-01', 'P-02', 'P-03', 'P-04', 'P-05', 'P-06', 'P-07', 'P-08', 'PBT3B-C01', 'PBT3B-C02', 'PBT3B-C03', 'PBT3B-C04', 'PBT3B-C05', 'PBT3B-C06', 'PBT3B-C07', 'PBT3B-C08', 'PBT3B-C09', 'PBT3B-C10', 'PBT3B-C11', 'PBT3B-C12', 'PBT3B-C13', 'PBT3B-C14', 'PBT3B-C16', 'PBT3B-C17', 'PBT3B-C18']
+    S-02 == PB-T3a
+    S-03 == PB-T3a
+    S-04 == PB-T3a
+    S-05 == PB-T3a
+    S-07 == PB-T3a
+    S-08 == PB-T3a
+    S-12 == PB-T3a
+    S-13 == PB-T3a
+    S-14 == PB-T3a
+    P-01 == PB-T3a
+    P-02 == PB-T3a
+    P-03 == PB-T3a
+    P-04 == PB-T3a
+    P-05 == PB-T3a
+    P-06 == PB-T3a
+    P-07 == PB-T3a
+    P-08 == PB-T3a
+    PBT3B-C01 == PB-T3a
+    PBT3B-C02 == PB-T3a
+    PBT3B-C03 == PB-T3a
+    PBT3B-C04 == PB-T3a
+    PBT3B-C05 == PB-T3a
+    PBT3B-C06 == PB-T3a
+    PBT3B-C07 difiere de PB-T3a en 1 tramos
+         ('replace', 'B', 'A')
+    PBT3B-C08 == PB-T3a
+    PBT3B-C09 == PB-T3a
+    PBT3B-C10 == PB-T3a
+    PBT3B-C11 difiere de PB-T3a en 73 tramos
+         ('replace', 'a', 'the')
+         ('replace', 'c', 'versi')
+         ('replace', 'py', 'n 2')
+         ('replace', '2A', 'x')
+         ('insert', '', '4')
+         ('delete', '4', '')
+         ('delete', 'PBT2A-', '')
+         ('delete', '-', '')
+         ('replace', 'TATE-PORT-', '/')
+         ('replace', '/', '-f4b-v')
+         ('delete', '/R20261119T125505Z-c2d3', '')
+         ('insert', '', '_v2')
+    PBT3B-C12 == PB-T3a
+    PBT3B-C13 difiere de PB-T3a en 20 tramos
+         ('replace', 'modify', 'chang')
+         ('insert', '', ' the signature of')
+         ('delete', ' file under src/; or adding, in the new files, a', '')
+         ('insert', '', 'member of PP or UR; touching UP, the Plugin, WHC or the panel port; or adding in PP, UR or IPushBackPilotViewEraser.cs a ')
+         ('insert', '', ' whose name does not exist in PP or UR at BaseSha, or a further declaration of a name that does (an overload), of any visibility')
+         ('insert', '', 'n')
+         ('delete', 'num member) who', '')
+         ('delete', 'e name is no', '')
+         ('delete', ' in the clos', '')
+         ('delete', 'lis', '')
+         ('replace', ' of D-PBT3-02 to D-PBT3-07; or a ', 'y')
+         ('delete', 'rivat', '')
+    PBT3B-C14 propia: a behaviour test of the F4 pilot (section 4) fails. STOP: it is C03.
+    PBT3B-C16 propia: the measurement of INV-PBT3B-15 differs from what is expected for variant (A), or an F4 guard outside the D-1 list fails in the RED or in the GREEN. It returns to the Owner with the list.
+    PBT3B-C17 == PB-T3a
+    PBT3B-C18 == PB-T3a
+Invariants 15
+    INV-PBT3B-01 INV-PBT3B-01. Alcance: el diff dentro de las 11 rutas del AllowedWriteScope. En src/, solo PP, UR y el archivo nuevo. En los archivos de guardas de F4, solo las lineas de atributo con Skip de S-1 a S-6.
+    INV-PBT3B-02 INV-PBT3B-02. RED y GREEN: como INV-PBT3A-02. El GREEN solo toca PP y UR. Con una reparacion del RED (F4B-E35, RR; V43-03): RedSha..RedRepairSha solo toca clases de prueba que anadio el RED (no src/ ni los tres archivos de guardas de F4 con los Skip); el crite
+    INV-PBT3B-03 INV-PBT3B-03. El API existente no cambia: cada miembro publico e interno de PP y UR en BaseSha existe en el GREEN con la misma firma.
+    INV-PBT3B-04 INV-PBT3B-04. El piloto conserva, en Prepare, su orden, sus textos y sus resultados; en la corrida, sus llamadas al puerto; su ComparePost; y su origen de POST (PostOriginKey = OriginKey). La unica excepcion es la barrera, sobre un diseno bloqueado (V2-09).
+    INV-PBT3B-05 INV-PBT3B-05. Las guardas que siguen (section 4): la llamada a ComposeForWrite en el Build del piloto, tras .CompareWith(; From(DraftSession<PushBackPilotDraftState>) y una sola new PushBackPilotPrepareInput(; el Prepare del piloto primero en el archivo; ningu
+    INV-PBT3B-06 INV-PBT3B-06. Un solo "Actualizar" logico: un Begin, un BeginMutation, un Seal y un Post por corrida, y todo EraseUnit entre BeginMutation y Seal (CT-07).
+    INV-PBT3B-07 == PB-T3a
+    INV-PBT3B-08 == PB-T3a
+    INV-PBT3B-09 == PB-T3a
+    INV-PBT3B-10 == PB-T3a
+    INV-PBT3B-11 == PB-T3a
+    INV-PBT3B-12 == PB-T3a
+    INV-PBT3B-13 == PB-T3a
+    INV-PBT3B-14 == PB-T3a
+    INV-PBT3B-15 INV-PBT3B-15. La medicion sobre el GREEN (V2-02, V3-03 y V3-08): antes de su commit GREEN, el Worker hace la corrida temporal de section 5.3, "La medicion sobre el GREEN", y la transcribe en la entrega. Para hacerla, quita en local el Skip de los metodos de D-
+RequiredTests 31
+    RackCad.Tests RackCad.Tests.PushBackFullWrite 13 True 
+    RackCad.Tests RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests 6 True 
+    RackCad.Tests RackCad.Tests.PushBackWritePathGuardTests 2 False 
+    RackCad.Tests RackCad.Tests.Workspace 3261 False PB-T3a: 3271/False
+    RackCad.Tests RackCad.Tests.PushBackFullDraft 10 False PB-T3a: 10/True
+    RackCad.Tests RackCad.Tests.PushBackDraftWriteGuardTests 3 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.Workspace 547 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackEditableState 13 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackEditorOutputGate 1 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackSharedReferenceGuardTests 2 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackWindowSharedReferenceGuardTests 1 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackWindowOnStateSourceGuardTests 1 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackWindowOnStateTests 2 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackClassicCharacterization 55 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackClassicCharacterization 10 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackFullEditorCharacterization 16 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackFullEditorCharacterization 3 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackStateNet 14 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackDeclaredCorrection 14 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.Cantilever 67 False == PB-T3a
+    RackCad.Tests RackCad.Tests.I58F1 10 False == PB-T3a
+    RackCad.Tests RackCad.Tests.CustomPropertiesEnvelopeGuardTests 9 False == PB-T3a
+    RackCad.Tests RackCad.Tests.NamespaceFolderGuardTests 7 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackDraftStatePortTests 3 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackDraftPortSharedReferenceGuardTests 1 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackWorkspaceModeSourceGuardTests 1 False == PB-T3a
+    RackCad.Tests RackCad.Tests.PushBackWorkspaceSharedReferenceGuardTests 1 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackWorkspaceModeTests 3 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests 4 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackFieldValidationConcordanceTests 1 False == PB-T3a
+    RackCad.UI.Tests RackCad.UI.Tests.PushBackWorkspaceCarryoverTests 3 False == PB-T3a
+   PB-T3a y no PB-T3b: ['RackCad.UI.Tests.PushBackFullDraftWindowParityTests']
+Evidence 15
+   [0] antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte s
+   [1] el commit RED y su push antes del GREEN; con una reparacion del RED (F4B-E35, RR-4; V43-04), ademas, el commit "RED repair" y su push antes del GREEN, con su CI, registrada como la del RED reparado, y los TRX de cada filtro con Ex
+   [2] la CI del RED como en section 6.0 (tests en failure, ui-tests y build-ui en success, build-plugin omitido, sin cuelgue); la del RED reparado, si lo hay, da lo mismo;
+   [3] la tabla "CT -> la asercion que falla en el RED" y las autopruebas de las tres guardas;
+   [4] el GREEN y su CI 4/4;
+   [5] en local: el build Release con el Plugin sin avisos nuevos, los filtros sobre el RED, sobre RedRepairSha si hay reparacion, y sobre el GREEN, y tres corridas en verde de los filtros con ExpectRed sobre el GREEN;
+   [6] la entrega con el mapa CT -> metodo, las rutas relativas comprobadas y el Trailer real de los commits RED, "RED repair" (si lo hay) y GREEN; con una reparacion del RED, ademas, RedRepairSha, la prueba y la linea corregidas, el err
+   [7] la verificacion con las tres comprobaciones de F4B-E15, y nc1 a nc3;
+   [8] con una reparacion del RED, la verificacion la lee como parte de la entrega (F4B-E35, RR-7; section 6.0; V43-05 y V44-04, CA-T3a M-01): n.o 10 (Tests): el RED se acredita con RedSha y con la CI del RED original, y sus TRX, con los
+   [9] el git diff -U0 BaseSha..CurrentSha de los archivos de guardas de F4, que solo lleva las lineas de atributo con Skip de S-1 a S-6 (V3-03): ni la reactivacion de la medicion ni ningun otro cambio;
+   [10] el recuento de Skipped y Passed del filtro Workspace en el RED y en el GREEN;
+   [11] la medicion de INV-PBT3B-15, con las lineas de censo de S-2 y S-6;
+   [12] el censo de declaraciones de PP, UR e IPushBackPilotViewEraser.cs en BaseSha y en CurrentSha, contadas una a una con su nombre (una sobrecarga es una declaracion mas): la diferencia es la lista de PBT3B-C13 de la variante (A), sin
+   [13] el Trailer real.
+   [14] Linea base de la CI: la del cierre de PB-T3a (run 44668584248 sobre 6919e17a: Core 19107; UI 2451 resultados, 21 Skipped y 2430 Passed). GREEN previsto, con la variante (A): Core + 21 (13 + 6 + 2) = 19128 resultados, con los seis 
+EligibleCells == PB-T3a: True
+Forbidden 294 | src 99 | tests 178
+   en PB-T3b y no en PB-T3a: ['src/RackCad.Application/Systems/PushBack/Draft/', 'src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotUpdatePort.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotHostRun.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentResult.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentScan.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs', 'src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs', 'tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeCommandStateTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeDegradedModeTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeNoActiveDocumentTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeObjectSubjectGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeReconciliationTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeSubscriptionLifecycleTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBridgeTestSupport.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionRegistryTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceBrowserSummaryTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftApplyTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentReadTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryContainmentTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceDraftStaleBaseTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostAuthorizationTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostDrainTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostLifecycleTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostPolicyTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostSourceSupport.cs', 'tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport.cs', 'tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulerTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceInstrumentationTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs', 'tests/RackCad.Tests/Workspace/WorkspaceOwnMutationTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostDouble.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostRunTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs', 'tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs', 'tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceSelectionMappingTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs', 'tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs', 'tests/RackCad.Tests/PushBackFullDraftLoadTests.cs', 'tests/RackCad.Tests/PushBackFullDraftCompositionTests.cs', 'tests/RackCad.Tests/PushBackFullDraftViewTests.cs', 'tests/RackCad.Tests/PushBackFullDraftClassifierTests.cs', 'tests/RackCad.Tests/PushBackDraftWriteGuardTests.cs', 'tests/RackCad.UI.Tests/PushBackFullDraftWindowParityTests.cs']
+   en PB-T3a y no en PB-T3b: ['src/RackCad.Application/Systems/PushBack/Pilot/', 'tests/RackCad.Tests/Workspace/']
+   choque con Allowed: []
+IssuedBy: Sesion principal de I-64 (Claude), emision de la segunda subtarea de PB-T3 (F4B-E44) por F4B-E35, pregunta 3, la emision condicional de PB-T3 (owner-f4b-pbt3-emission-red-repair-decisions.md): PB-T3b tras el cierre de PB-T3a (c40eea4a, F4B-E43; CLOSED / PASS WITH LIMITATIONS sobre 6919e17a), con su remedicion sobre ese cierre y su comprobacion acotada (<resultado por rellenar>); F4B-E29, D-1, la variante (A) (owner-pbt3-d1-decision.md): S-1 a S-6 con Skip y sus equivalentes E-1 a E-6, con su registro declarado; F4B-E40, la firma nueva de nc1 PD-F4B-01 y su sustituto (owner-pbt2c-nc1-decision.m
+   marcador en autoridad: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/nc2-substitute-f4b-v2/nc2_exact_whitelist_substitute_f4b_v2.py el sustituto de nc2 ampliado (F4B-E43), la v2 de PBTx-NC2-EXACT-WHITELIST-F4B-01, SHA-256 <por rellenar: el SHA-256 de la v2 revisada>, con su autoprueba y su r

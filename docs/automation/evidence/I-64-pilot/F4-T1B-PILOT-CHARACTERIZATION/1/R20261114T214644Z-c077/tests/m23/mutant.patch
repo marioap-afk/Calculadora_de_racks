@@ -1,0 +1,12 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..08d34bae 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3293,7 +3293,6 @@ namespace RackCad.UI.Systems.PushBack
+ 
+         private void InsertBatch_Click(object sender, RoutedEventArgs e)
+         {
+-            if (moduleOwner.ModuleSession.HasPendingChanges) moduleOwner.CommitModuleEdits();
+             RequestRecompute();
+             if (!currentInputsAreValid || lastComputation?.System == null
+                 || OutputBlockedAfterRecompute("Corrige los datos: no se puede dibujar un modelo bloqueado.")) return;

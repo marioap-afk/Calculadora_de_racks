@@ -1,0 +1,21 @@
+# PB-T4e v5.6: make_pieces_pbt4e_v56.py sobre 160e019d (160e019d773ba9095e2d5858cd593a954b8eec67)
+green EDIT src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs old 4 lineas new 6 lineas
+green EDIT src/RackCad.Application/Workspace/WorkspaceEditIntent.cs old 2 lineas new 5 lineas
+green EDIT src/RackCad.Application/Workspace/WorkspaceEditIntent.cs old 2 lineas new 5 lineas
+green EDIT src/RackCad.Application/Workspace/WorkspaceHostCore.cs old 14 lineas new 27 lineas
+green EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs old 1 lineas new 2 lineas
+green EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs old 1 lineas new 1 lineas
+green EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs old 2 lineas new 3 lineas
+green EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs old 5 lineas new 9 lineas
+pieza-green a745c2737a7e0fe908489a1bf17ed86569577ed3dbf54ecd3661c488faf88158 pbt4e-green-v56.txt (8 bloques EDIT, 4 archivos)
+  green 49b5245c112e3d4f0b3b95114f9ff0444469b316a3ef912947cf3b696e0c6ebd src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs (base b3a2622b490e2e787088680743662365bf9e4b0016cad7578703281b6b1c0863)
+  green bbc6882283833b02bab79c9bb70c082f3ac14b2a88650722bf8d72be0e13b5e2 src/RackCad.Application/Workspace/WorkspaceEditIntent.cs (base b937f893360b39c5751b5b5da9fe3f976a76b256799fbf685a2dc4193f141e96)
+  green 6eb9bf7ab81666b33c1280c832257624937c95a042e46f53dcc2c371baac4d7d src/RackCad.Application/Workspace/WorkspaceHostCore.cs (base 3fcabacbc9a568cc2b777d4e8bd356b76f55273f674d0ab604177f36ffeb5fee)
+  green c4b5c6990c5623e53be607fdbb461db95103b957c96627e1d63300dabe3d643b src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs (base 417c36cd68267ecec960e89c4908a237d8c9d89093ab93aecebd3f80a862f845)
+pieza-red d052f73d726817f4240f3b5edfd89a0ec8aeb7b9cc17dbce684aa8e4f433c9e1 pbt4e-red-v56.txt (2 bloques NEWFILE)
+  NewFileSha 9e849864709a964a864902c6f44e5d92014d962cc56c374cebfc7dfe42c6b017 tests/RackCad.Tests/PushBackEditAllReloadTests.cs
+  NewFileSha a29d7a362cd5de49bd787eb76e7c847dc30b46ef1314e94ae5f67041b6a4595d tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs
+  herramienta b3aba680d45ce6aebb3dbac549e228de9b832a76d870fd719ea0801302c10e73 green_pbt4e_v56.py
+  herramienta 8c38e532bf991a111e7f82193ad3a812993a64a1c2e43084a46278ad72dc54a5 red_pbt4e_v56.py
+  herramienta 492aaab155fe64cc96b317441c1bd18b2bfc47f92c44bd1dac24f131bc8378a7 apply_green_pbt4e_v56.py
+  herramienta 59a0fcb3e316b1fbde880fca87629bc2144b233859eccdf9ddb86c244d2a0ae5 apply_red_pbt4e_v56.py

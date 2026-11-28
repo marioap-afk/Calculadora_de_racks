@@ -1,0 +1,115 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Subject": "preparacion del segundo reintento de Smoke-1: Candidato cc7503e3 y recheck de host C2 (transitorios de F1-SMOKE-1-RETRY-PREP usados por la autorizacion de R20261104T194513Z-a578)",
+  "Unit": "R20261104T194513Z-a578/prep",
+  "SourceRoot": "artifacts/orchestration/I-64/F1-SMOKE-1-RETRY-PREP",
+  "Included": [
+    "candidate-cc7503e3/",
+    "host-recheck-c2/"
+  ],
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; companeros locales y registros con rutas solo por SHA-256; duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 6,
+    "EXCLUDED": 7
+  },
+  "Files": [
+    {
+      "Path": "candidate-cc7503e3/candidate.md",
+      "Bytes": 3963,
+      "Sha256": "c1caddea59f932a55bd35a63c4b7d24af479b74ede41e48b6f11ba8b408304be",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "candidate-cc7503e3/core-focused.txt",
+      "Bytes": 22476,
+      "Sha256": "0d9091dc81dd614d1faebcb963c1902dde590bd12ed46f19abad8b6ba7dbfd25",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-cc7503e3/core-test.txt",
+      "Bytes": 1242,
+      "Sha256": "7206b00699696363fae69b35a7e4624f11843f4d3046aeb193154339759096d8",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-cc7503e3/fixtures-revalidation.txt",
+      "Bytes": 1748,
+      "Sha256": "b876232bb6d2484034e766ddad706b70952bcf2c69fbc9bc7965791e3cce1bea",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "candidate-cc7503e3/harness-build.txt",
+      "Bytes": 548,
+      "Sha256": "39bca1264f84871af1f35a98f780ba34c623147ea505fca147d33695b95c149a",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-cc7503e3/plugin-build.txt",
+      "Bytes": 39243,
+      "Sha256": "c0d0c8a6035416e618e2e819759ffdfb5424d50b156a5e400b7a3e6d841f7f0f",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-cc7503e3/steps.txt",
+      "Bytes": 1826,
+      "Sha256": "40418c8d47fd8b12e8927548ae16affc6ac0ef12629f44801e4b9f40e4500d75",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "e5c017817dd47ac0f71f2bce6acb894b755a18cdc6e68cad3e0b897d991cfc59",
+      "Normalization": "CRLF->LF (todas las lineas eran CRLF; LF->CRLF reproduce el original)"
+    },
+    {
+      "Path": "candidate-cc7503e3/ui-build.txt",
+      "Bytes": 720,
+      "Sha256": "9d0e56d6d5189086fef6dfbb0734e43eefe439335c112892185b377090e07c04",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-cc7503e3/ui-focused.txt",
+      "Bytes": 5091,
+      "Sha256": "c2d80ef176406d6736e84a113b11713753263fb4a931da83b9cec80d29d56578",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "candidate-cc7503e3/ui-test.txt",
+      "Bytes": 5634,
+      "Sha256": "b4530528886fdac8281bcdfe8481070767547ac0eba0999695871a9f4d9d9673",
+      "Disposition": "EXCLUDED",
+      "Reason": "registro de dotnet con rutas locales; resultado resumido en candidate.md y steps.txt"
+    },
+    {
+      "Path": "host-recheck-c2/i52-recheck-reply.txt",
+      "Bytes": 2697,
+      "Sha256": "649cb9b3721cc4104e59378e540dc2470375262c3e93de56b74fb3f7fbb198f1",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "ce221c193673b54f8b86f84cbd607772898491168d20db65df3a65c43d329777",
+      "Redaction": [
+        "ubicacion local sustituida por: <carpeta-de-I-52>",
+        "ubicacion local sustituida por: <carpeta-local-de-I-65>"
+      ]
+    },
+    {
+      "Path": "host-recheck-c2/i64-to-i52-recheck-request-sent.md",
+      "Bytes": 1205,
+      "Sha256": "fe7fd5b6af7e566c457d90bbc44b4e3df650c972a2f58d904c8d5ff938c5d465",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "host-recheck-c2/return-package.md",
+      "Bytes": 6512,
+      "Sha256": "289624bdc141eb7ebac9a9e3126fcfa72adc01e876fd5095f248c341cb1b72e5",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "6b6a792e3fbf248a7990cf17c316ee287f5242665928a42c3546988fcc8988f8",
+      "Redaction": [
+        "ubicacion local sustituida por: <carpeta-de-I-52>",
+        "ubicacion local sustituida por: <carpeta-local-de-I-65>",
+        "ubicacion local sustituida por: <unidad-local>\\"
+      ]
+    }
+  ]
+}

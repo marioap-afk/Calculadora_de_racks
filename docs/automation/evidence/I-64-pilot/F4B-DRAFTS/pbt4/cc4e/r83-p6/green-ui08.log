@@ -1,0 +1,12 @@
+Serie de pruebas para <copia>\tests\RackCad.UI.Tests\bin\Debug\net8.0-windows\RackCad.UI.Tests.dll (.NETCoreApp,Version=v8.0)
+Versión 17.11.1 (x64) de VSTest
+
+Iniciando la ejecución de pruebas, espere...
+1 archivos de prueba en total coincidieron con el patrón especificado.
+Archivo de resultados: <copia>\_trx\green-ui08\green-ui08.trx
+
+Correctas! - Con error:     0, Superado:    67, Omitido:     0, Total:    67, Duración: 3 s - RackCad.UI.Tests.dll (net8.0)
+
+Datos adjuntos:
+  <copia>\_trx\green-ui08\f0e94c4c-37c5-442c-b589-39a8cda40300\coverage.json
+  <copia>\_trx\green-ui08\f0e94c4c-37c5-442c-b589-39a8cda40300\coverage.cobertura.xml

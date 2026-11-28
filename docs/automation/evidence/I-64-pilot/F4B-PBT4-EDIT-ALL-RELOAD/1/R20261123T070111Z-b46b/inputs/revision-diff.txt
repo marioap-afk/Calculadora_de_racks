@@ -1,0 +1,5 @@
+git diff --name-only AuthorityRevision BaseSha (2e790aa93e00dc5999d8f59f6dcaa5f4f9fd8a0a..7da361ebe8919bf31e2874c42dc946b98c62635a), una ruta por linea con su clase en Authorities del contrato:
+docs/automation/evidence/I-64-evidence.md (UNIT_DOC)
+docs/automation/evidence/I-64-pilot/F4B-PBT4-EDIT-ALL-RELOAD/coordinator/gate-contract.json (UNIT_DOC)
+docs/automation/evidence/I-64-pilot/F4B-PBT4-EDIT-ALL-RELOAD/coordinator/make_pbt4e_contract.py (no figura en Authorities)
+docs/automation/state/I-64.yml (UNIT_DOC)

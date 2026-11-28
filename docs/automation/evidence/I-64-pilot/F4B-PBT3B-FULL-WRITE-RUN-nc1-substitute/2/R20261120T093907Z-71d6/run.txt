@@ -1,0 +1,17 @@
+{
+ "Id": "PBT3B-NC1-CASCADE-SIGNAL-01",
+ "Task": "PBT3B",
+ "SubstituteResult": "PASS",
+ "Reason": null,
+ "FailingAtoms": [],
+ "FailingProperties": [],
+ "FailSet": [
+  "Handoff",
+  "Identity",
+  "Remote",
+  "Scope",
+  "Ci",
+  "Tests"
+ ],
+ "SelfTestOk": true
+}

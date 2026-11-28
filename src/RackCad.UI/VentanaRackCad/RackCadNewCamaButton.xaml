@@ -1,0 +1,23 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.RackCadNewCamaButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             HorizontalAlignment="Left">
+    <!-- T5 cm (I-64, quinta tanda; prototype «camas»): «Cama en esta ventana» of «Nuevo», beside «Selectivo en esta ventana» and «Dinámico en esta
+         ventana»: a new draft («Borrador N», SD-06) with the defaults of the classic editor. Its data context is the view-model of the window. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Button x:Name="NewCamaHereButton" HorizontalAlignment="Left" Margin="0,0,0,10" Padding="12,6" MaxWidth="560"
+            Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanStartNewCama}"
+            AutomationProperties.Name="Nueva cama en esta ventana" Click="OnNewCamaHereClick">
+        <StackPanel>
+            <TextBlock Text="Cama en esta ventana" FontWeight="SemiBold" />
+            <TextBlock TextWrapping="Wrap"
+                       Text="El editor nuevo de la cama de rodamiento, sin bloquear AutoCAD. Se coloca con «Insertar en el dibujo…» y, si no le pones nombre, toma el automático (I-60)." />
+        </StackPanel>
+    </Button>
+</UserControl>

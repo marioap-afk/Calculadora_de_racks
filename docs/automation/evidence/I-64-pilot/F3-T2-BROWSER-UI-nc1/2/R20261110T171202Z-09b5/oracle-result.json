@@ -1,0 +1,57 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261110T171202Z-09b5",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD, refs/heads/architecture/workspace-persistente-rackcad and refs/remotes/origin/architecture/workspace-persistente-rackcad all returned 206e0f7a3fe32fde2bba70ac663a74f60ee6a4f4. git merge-base --is-ancestor BaseSha HEAD and RedSha HEAD both exited 0. Branch and worktree match delegation, but handoff CurrentSha is deadbeef... and does not equal HEAD."
+  },
+  "OutputSha256": "5FDF0FD16C3FCA4A76C4F00128B3E72C3B2E436B7720B8D66115BF49523865A0",
+  "ManualFreeText1610": []
+}

@@ -1,0 +1,33 @@
+# la corrida generica que se queda, con la retirada aplicada: las lineas que WPUR ejercitaba en la base y sus ramas, en el GREEN
+# referencia: base.coverage.json; GREEN: core-green-cov.coverage.json; pieza pbt4d-green-v52.txt
+lineas 436; llevadas al GREEN 433 (texto cambiado 4); retiradas por el GREEN 3; sin ejecutar en el GREEN 0; lineas con ramas de la base sin cubrir en el GREEN 0
+cobertura PASA
+
+## sin ejecutar en el GREEN
+
+## ramas cubiertas en la base y no en el GREEN (punto, path)
+
+## las ramas vigiladas (las siete del alto del relevo, 525 y 594): las cubiertas, (punto, path)
+  PushBackPilotUpdateRun.cs:422 -> 354 base [(0, 0), (0, 1)] de 2; green [(0, 0), (0, 1)] de 2  if (origin != null) return origin;
+  PushBackPilotUpdateRun.cs:460 -> 392 base [(0, 0), (0, 1)] de 2; green [(0, 0), (0, 1)] de 2  if (start.RejectionCode != null) return NotAppliedPreflight(start.RejectionCode);
+  PushBackPilotUpdateRun.cs:510 -> 442 base [(0, 0), (0, 1)] de 2; green [(0, 0), (0, 1)] de 2  if (!values.DocumentMatches) return NotAppliedPreflight(DocumentMismatchReason);
+  PushBackPilotUpdateRun.cs:525 -> 457 base [(0, 0), (1, 0), (2, 0), (3, 0), (3, 1)] de 8; green [(0, 0), (1, 0), (2, 0), (3, 0), (3, 1)] de 8  if (mutable.Count != planned.Count
+  PushBackPilotUpdateRun.cs:589 -> 521 base [(0, 0), (0, 1)] de 2; green [(0, 0), (0, 1)] de 2  if (values.ForeignScopeOpenAtPost) return PostFailed(ForeignScopeOpenCause);
+  PushBackPilotUpdateRun.cs:594 -> 526 base [(0, 0), (0, 1), (1, 0), (1, 1)] de 4; green [(0, 0), (0, 1), (1, 0), (1, 1)] de 4  if (!values.NamesByKey.TryGetValue(pair.Key, out var actual) || !string.Equals(actual, expected, Str
+  PushBackPilotUpdateRun.cs:604 -> 536 base [(0, 0), (0, 1)] de 2; green [(0, 0), (0, 1)] de 2  if (cause != null) return PostFailed(cause);
+  PushBackPilotUpdateRun.cs:650 -> 582 base [(0, 0), (0, 1)] de 2; green [(0, 0), (0, 1)] de 2  if (matches.Count == 0) return NotAppliedPreflight(PushBackPilotUpdatePlanner.NoOriginReason);
+  PushBackPilotUpdateRun.cs:651 -> 583 base [(0, 0), (0, 1)] de 2; green [(0, 0), (0, 1)] de 2  if (matches.Count > 1) return NotAppliedPreflight(PushBackPilotUpdatePlanner.SeveralOriginsReason);
+
+## texto cambiado por el GREEN (la rama muerta de BuildCore): ramas cubiertas de las que hay
+  PushBackPilotUpdatePlan.cs:590 -> 471 base 6/6 green 4/4  if (!decoded.HasAddress || (allowErase && disposition == PushBackViewDispositionKind.NoAdd  =>  if (!decoded.HasAddress || disposition == PushBackViewDispositionKind.NoAddress)
+  PushBackPilotUpdatePlan.cs:592 -> 473 base 2/2 green 2/2  if (disposition == PushBackViewDispositionKind.ObsoleteLateral && allowErase)  =>  if (disposition == PushBackViewDispositionKind.ObsoleteLateral)
+  PushBackPilotUpdatePlan.cs:598 -> 479 base 2/2 green 2/2  if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay && allowErase)  =>  if (disposition == PushBackViewDispositionKind.FrontalBOfOneWay)
+  PushBackPilotUpdatePlan.cs:629 -> 507 base 4/4 green 2/2  if (allowErase && dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(  =>  if (dispositions.AllObsolete) return PushBackPilotPrepareResult.WithInvalid(AllViewsObsole
+
+## retiradas por el GREEN
+  PushBackPilotUpdatePlan.cs:600  if (disposition != PushBackViewDispositionKind.Redraw)
+  PushBackPilotUpdatePlan.cs:601  return PushBackPilotPrepareResult.WithInvalid(ViewUnavailablePrefix + entry.Key + ViewUnavailableSuffix);
+  PushBackPilotUpdatePlan.cs:623  var memberName = allowErase ? (string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName) : embed.Name;
+
+## las lineas nuevas del GREEN, con codigo, en los tramos que cambia (tienen que ejecutarse con todas sus ramas)
+  PushBackPilotUpdatePlan.cs:501 hits 407 ramas 2/2  var memberName = string.IsNullOrWhiteSpace(draftName) ? origins[0].Embed.Name : draftName;

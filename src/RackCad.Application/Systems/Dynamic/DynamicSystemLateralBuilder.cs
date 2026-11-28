@@ -225,8 +225,11 @@ namespace RackCad.Application.Systems.Dynamic
             {
                 // A blank front is physically at this post — its posts and header are drawn above — but it carries no
                 // bed, so it is dropped here rather than from AdjacentFronts (I-33).
+                // Two fronts at this post share one drawn bed only when the bed is the same: the bed and the slope of a front (step 3
+                // of Dinámico) are part of the key. A front without them adds empty values, so a rack as before groups as it always did.
                 foreach (var front in DynamicFrontActivation.Active(bedFronts)
-                             .GroupBy(front => string.Join("|", front.StartX, front.EndX, front.LoadLevels))
+                             .GroupBy(front => string.Join("|", front.StartX, front.EndX, front.LoadLevels,
+                                 front.RollerId, front.RollerPitch, front.BrakeEveryRollers, front.SlopePerFoot))
                              .Select(group => group.First()))
                 {
                     var flowBed = flowBedBuilder.Build(

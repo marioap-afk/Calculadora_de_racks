@@ -1,0 +1,22 @@
+HEAD 7bdcbfd9558eb396a229508e1bc26af456571cd5 STATUS []
+8.0.423
+Serie de pruebas para <worktree-de-I-64>\tests\RackCad.Tests\bin\Debug\net8.0\RackCad.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+
+Correctas! - Con error:     0, Superado: 16318, Omitido:     0, Total: 16318, Duración: 1 m 41 s - RackCad.Tests.dll (net8.0)
+core_ec=0
+Serie de pruebas para <worktree-de-I-64>\tests\RackCad.UI.Tests\bin\Debug\net8.0-windows\RackCad.UI.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+
+Correctas! - Con error:     0, Superado:  1791, Omitido:    17, Total:  1808, Duración: 4 m 34 s - RackCad.UI.Tests.dll (net8.0)
+ui_ec=0
+    0 Errores
+
+Tiempo transcurrido 00:00:03.36
+uibuild_ec=0
+    2 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:04.23
+plugbuild_ec=0
+POST HEAD 7bdcbfd9558eb396a229508e1bc26af456571cd5 STATUS []

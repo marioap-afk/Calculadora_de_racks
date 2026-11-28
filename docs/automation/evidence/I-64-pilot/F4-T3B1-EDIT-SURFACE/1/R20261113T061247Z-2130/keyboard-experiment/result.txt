@@ -1,0 +1,12 @@
+Experimento de la sesion (2026-11-13, fuera del repositorio): ventana WPF minima con un TextBox, net8.0-windows, dotnet 8.0.423 del usuario.
+Se envian con PostMessage WM_KEYDOWN y WM_KEYUP de la tecla A (VK 0x41) a la ventana y se bombea el dispatcher, de modo que el mensaje
+recorre el camino real de WPF (preproceso del HwndSource, TranslateMessage, WM_CHAR y TextInput).
+
+Salida literal:
+mode=none focused=True keyDowns=1 textInputs=1 text='a'
+mode=keydown-all-but-tab focused=True keyDowns=1 textInputs=0 text=''
+mode=previewkeydown-all focused=True keyDowns=0 textInputs=0 text=''
+
+Lectura: marcar Handled en el KeyDown de burbuja de una tecla de caracter (que TextBox no consume en KeyDown, sino en TextInput)
+suprime el WM_CHAR y el TextInput: la caja editable no recibe el texto. La regla de D-T3B1-04 v3 («un KeyDown de burbuja marca Handled
+toda tecla que el editor no haya consumido, salvo Tab») impide escribir en la caja.

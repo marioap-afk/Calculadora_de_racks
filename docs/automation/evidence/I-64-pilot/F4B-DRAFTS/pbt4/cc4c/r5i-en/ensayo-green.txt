@@ -1,0 +1,11 @@
+RackCad.Tests.TmpPbt4cTextCt08 CT08 Passed
+RackCad.Tests.TmpPbt4cTextCt01 CT01 Passed
+RackCad.Tests.TmpPbt4cTextCt13 CT13 Passed
+RackCad.Tests.TmpPbt4cTextCt07 CT07 Passed
+RackCad.Tests.TmpPbt4cTextCt15 CT15 Passed
+esperado CT01 Passed: OK
+esperado CT07 Passed: OK
+esperado CT08 Passed: OK
+esperado CT13 Passed: OK
+esperado CT15 Passed: OK
+ensayo green: PASA

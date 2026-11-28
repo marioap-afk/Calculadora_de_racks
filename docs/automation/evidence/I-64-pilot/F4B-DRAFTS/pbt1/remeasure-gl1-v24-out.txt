@@ -1,0 +1,32 @@
+== CT-PBT1B-14 (Application, archivos que existen) archivos 47
+   alias PushBackEditorState.cs asignacion structure
+   alias PushBackEditorState.cs asignacion signature
+   alias PushBackCompositeEditorAssembler.cs asignacion baseline
+   alias PushBackEditorDesignAssembler.cs asignacion baseline
+   alias PushBackEditorDesignAssembler.cs asignacion rebuildShape
+  miembros=997 alias={'asignacion': 5}
+  TOTAL regla1=0 regla1b=0 regla1c=0 regla2=0
+== CT-PBT1C-04 (W y WC) archivos 2
+   alias RackPushBackSystemWindow.xaml.cs asignacion outputIsBlocked
+   alias RackPushBackSystemWindow.xaml.cs lambda module
+   alias RackPushBackSystemWindow.xaml.cs asignacion reconciliation
+  miembros=320 alias={'asignacion': 2, 'lambda': 1}
+  TOTAL regla1=0 regla1b=0 regla1c=0 regla2=0
+== autopruebas en negativo (cada una sola, dentro de un miembro neutro)
+  a              regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+  b              regla1=0 regla1b=0 regla1c=0 regla2=1 -> SALTA
+  c              regla1=0 regla1b=1 regla1c=0 regla2=0 -> SALTA
+  d              regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+  e              regla1=0 regla1b=0 regla1c=0 regla2=1 -> SALTA
+  f1             regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+  f2             regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+  f3             regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+  g1             regla1=0 regla1b=1 regla1c=0 regla2=0 -> SALTA
+  g2             regla1=0 regla1b=1 regla1c=0 regla2=1 -> SALTA
+  h1             regla1=0 regla1b=0 regla1c=0 regla2=1 -> SALTA
+  h2             regla1=0 regla1b=0 regla1c=0 regla2=1 -> SALTA
+  i              regla1=1 regla1b=0 regla1c=0 regla2=0 -> SALTA
+  j              regla1=0 regla1b=0 regla1c=1 regla2=0 -> SALTA
+  L1-alias2      regla1=0 regla1b=0 regla1c=0 regla2=0 -> NO SALTA
+  L2-anidado     regla1=0 regla1b=0 regla1c=0 regla2=0 -> NO SALTA
+  L3-otro-metodo regla1=0 regla1b=0 regla1c=0 regla2=0 -> NO SALTA

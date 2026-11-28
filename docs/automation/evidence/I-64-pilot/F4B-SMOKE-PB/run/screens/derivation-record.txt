@@ -1,0 +1,2070 @@
+# Registro de derivacion de los recortes redactados de Smoke-PB (intento 1).
+# Coordenadas en pixeles de la imagen cruda: x0,y0 incluidos; x1,y1 excluidos. Las zonas tapadas se rellenan con gris opaco RGB(128,128,128), sin desenfoque.
+
+recorte: c01-SPB-04-lista-deshacer.png
+cruda: c01-SPB-04-lista-deshacer.jpg sha256=f32a792803fca73c67deefb137e553039dde5b79bcef34c95c306664e6391cea
+paso: SPB-04 (línea de base)
+rectangulo: 0,0,111,180
+tapado: ninguno
+sha256-recorte: f1d5b89c682c4801365373e202caea28e14f8dd317a578f1c7a06340e354919c
+
+recorte: c01-SPB-05-botones-clasico.png
+cruda: c01-SPB-05-botones-clasico.jpg sha256=6cf016053c3092915e1e49a06e305808c618c7d88bf0febb00f6344bb25ddd2b
+paso: SPB-05
+rectangulo: 0,0,1100,82
+tapado: ninguno
+sha256-recorte: 40333709ac264d735fe2fb0dc925bc44a550803cdb52a9e60ab6f732f832731b
+
+recorte: c01-SPB-08-aviso.png
+cruda: c01-SPB-08-aviso.jpg sha256=dfc950edab1130d89bfa0fdf333bc41750b39ffba6c53660caa4ab78e5098f40
+paso: SPB-08
+rectangulo: 0,0,936,79
+tapado: ninguno
+sha256-recorte: 1f0a2fcf3b8a46a72350b2d6a9129682cfc01243d3a205c4de420a327e89bbaa
+
+recorte: c01-SPB-08-casilla-lado-B.png
+cruda: c01-SPB-08-casilla-lado-B.jpg sha256=3fdbba5801cd527ca138d7ef9706c0adf65749e8e2df22abf082866a86ec6273
+paso: SPB-08
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: d7b742b34a9fb4bd0bcb94e87a9c7552b63ca60ee1a391dcd54209bdbb6cf6f2
+
+recorte: c01-SPB-08-reabrir-casilla.png
+cruda: c01-SPB-08-reabrir-casilla.jpg sha256=448afcc69b1f3085267d159effa4f395e0067476af21e1eae0c1adc6ec6d1a2e
+paso: SPB-08
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: c2846246c21b065554a26d92b07768c78e3bb04887a92dc23f17bfd06f15137f
+
+recorte: c02-SPB-06-antes-fondo-48.png
+cruda: c02-SPB-06-antes-fondo-48.jpg sha256=256ecab6ec2aa6358d10159eaa89f2bc9fe2245f9a3f86aa8559f6c0fa592aac
+paso: SPB-06 (a), intento con el ejemplo de la guía
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 58d8fec17174a018850af9b5e6261044d42fe2ae932951ff08321dd5d05e9d47
+
+recorte: c02-SPB-06-fondo-48.0004.png
+cruda: c02-SPB-06-fondo-48.0004.jpg sha256=8affc4157ccb6a33a8949f13f7c7bb521885342d4a0db2c6a3c92a7db09e61f3
+paso: SPB-06 (a), intento con el ejemplo de la guía
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 7314d4f2d9431985bf21c808e30d2f5260c17212796b54b3daae24127609710b
+
+recorte: c02-SPB-06-r1-editar-todo-escala-2.png
+cruda: c02-SPB-06-r1-editar-todo-escala-2.jpg sha256=47135d59a4112853b990a75fac65c843c362f3971034c8db2e3d9afb78c79efc
+paso: SPB-06 (b)
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 97f18f2b92fa71c061f86ac739ac165140114edd9fd31b69febfc3555af15b2c
+
+recorte: c02-SPB-06-r1-fondo-48.1234.png
+cruda: c02-SPB-06-r1-fondo-48.1234.jpg sha256=24b866a8472be962fbb778ec73b7e0e98975e73e58836b2716f6a3c389e80fe8
+paso: SPB-06 (a), repetición 1 de 2
+rectangulo: 109,58,689,369
+tapado: ninguno
+sha256-recorte: 1b02da8a0ee9e78cba03dfdafe7176eb051a48a78fddb17458822ddc8f5b0d40
+
+recorte: c02-SPB-06-r1-panel-actualizado.png
+cruda: c02-SPB-06-r1-panel-actualizado.jpg sha256=cf8869a479758c6eac46d8f541989b53c76a6ac86b5920f3c9b471530a627479
+paso: SPB-06 (b)
+rectangulo: 64,66,298,486
+tapado: ninguno
+sha256-recorte: 34200d0d0235cdf29e00d4616f3f560e324f5cb3fc99a1bfcd31c6cae7da59e7
+
+recorte: c02-SPB-06-r1-reabrir-48.123.png
+cruda: c02-SPB-06-r1-reabrir-48.123.jpg sha256=7dd394118ccb769e1cc849dc9d4b0173182676763d9d4540bfa21c3f4fe96f5f
+paso: SPB-06 (a), repetición 1 de 2
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: efa9532b0584755bdd775f1e7f27a7617bb9bde1c9f60e2211d5feec83d8430a
+
+recorte: c03-SPB-09-antes-lateral.png
+cruda: c03-SPB-09-antes-lateral.jpg sha256=9656e01c05d004b3cf0b9faafea432c67256166d2c112f883da8be08bc0a3125
+paso: SPB-09, antes
+rectangulo: 400,150,975,670
+tapado: ninguno
+sha256-recorte: 9b74037c9368b366ec3bf1dd2409e13ea91d53b0e557ba033daba0d645ce5463
+
+recorte: c03-SPB-09-antes-planta.png
+cruda: c03-SPB-09-antes-planta.jpg sha256=b402f289e17e638d4c7de3016ee0139bbacc28d14607e12773a59a9adcade28c
+paso: SPB-09, antes
+rectangulo: 405,150,765,670
+tapado: 488,392,538,424 — texto de anotacion del dibujo de origen (zona del almacen)
+sha256-recorte: 20b70b41d7c0356b0179f74bddd8bd6e27de2a76768f4247b9d5b7dbf634a163
+
+recorte: c03-SPB-09-cabecera-400.png
+cruda: c03-SPB-09-cabecera-400.jpg sha256=970e3c7f15c842e6bf222e736876652e53212cb79f88215e7c197ab2e9845a92
+paso: SPB-09, r1
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: c36a1e147421d667bad2732cf40a5c0e758c6ac55896bfc1f3ba8fcff31a34cd
+
+recorte: c03-SPB-09-r1-lateral.png
+cruda: c03-SPB-09-r1-lateral.jpg sha256=33f6084d5f9f73b5e5f2e7a09d5a7a199e2f1acd037b6996912d6f7e72c48912
+paso: SPB-09, r1
+rectangulo: 400,150,975,670
+tapado: ninguno
+sha256-recorte: 07f942ff3c556cee547d9b6a21fbb5e3d6522afbd78d459c66f6a73fbcab1742
+
+recorte: c03-SPB-09-r1-planta.png
+cruda: c03-SPB-09-r1-planta.jpg sha256=a259e7748e830ef3712b5188e45b8c0c6a4acb6c1576176454d4406fd3a68d62
+paso: SPB-09, r1
+rectangulo: 405,150,765,670
+tapado: 488,392,538,424 — texto de anotacion del dibujo de origen (zona del almacen)
+sha256-recorte: 20b70b41d7c0356b0179f74bddd8bd6e27de2a76768f4247b9d5b7dbf634a163
+
+recorte: c03-SPB-09-r2-lateral.png
+cruda: c03-SPB-09-r2-lateral.jpg sha256=c110555473f0f61292d87606ea79e3721aafce81ec77f11bc0f5dc6ae47642c3
+paso: SPB-09, r2
+rectangulo: 400,150,975,670
+tapado: ninguno
+sha256-recorte: eb3d15c74884074544f7ade052468557e55465765fa409d375f70b02f24083c4
+
+recorte: c03-SPB-09-r2-planta.png
+cruda: c03-SPB-09-r2-planta.jpg sha256=2e889477ffac0de5e2b433ac25790b942f43f9cd8de4f3e3ebb28b0edd9b33b8
+paso: SPB-09, r2
+rectangulo: 405,150,765,670
+tapado: 488,392,538,424 — texto de anotacion del dibujo de origen (zona del almacen)
+sha256-recorte: 20b70b41d7c0356b0179f74bddd8bd6e27de2a76768f4247b9d5b7dbf634a163
+
+recorte: c03-SPB-09-restaurar-estandar-marcada.png
+cruda: c03-SPB-09-restaurar-estandar-marcada.jpg sha256=37c9aac02b97fdccbc42810789270c7876dde9f40a656683c6a2b216ccbd7d18
+paso: SPB-09, r2
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 3b920bbed7516956864bdfdfad0f689f022d8252623eb6630e0629ba95f8534c
+
+recorte: c04-SPB-10-modulo-48.1234.png
+cruda: c04-SPB-10-modulo-48.1234.jpg sha256=9091dcea1d8986868ae89df9f60aa2128af9b00ee21870e95cf965f343affa75
+paso: SPB-10
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 993f7120acb9ba5f74ddb01ceff43ca53d7f8c8826137aed359e7e250769ebcd
+
+recorte: c04-SPB-10-paso-por-la-caja.png
+cruda: c04-SPB-10-paso-por-la-caja.jpg sha256=d8eb756f9bfc58d21905fbedfe01ba27c448594a9b93657ded0a3c6a1e735442
+paso: SPB-10
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 866ad16b153ccdc7a42d04aa33e65389fec24915b6842b370382201396781d77
+
+recorte: c05-cerrar-confirmar-cambios-sin-aplicar.png
+cruda: c05-cerrar-confirmar-cambios-sin-aplicar.jpg sha256=e92f79e6af2a8da8bb2ce386ebdf46ecf22ef0e1a75ff4ce91b0d77034245d87
+paso: OBSERVADO, informativo
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: f210f884e9b156b6fd82bc3f53970c9c7fe3a6587f0a4005424eb019c1994084
+
+recorte: c05-SPB-11-ventana-workspace-tooltip.png
+cruda: c05-SPB-11-ventana-workspace-tooltip.jpg sha256=7c89e95a53dd44943ec121d938d451221a86bd8c7ef045c64d17eedd24bb3973
+paso: SPB-11
+rectangulo: 185,99,1146,628
+tapado: ninguno
+sha256-recorte: 5b7470166f78d01499c99b09d92b1d8d27e96362d99cd8c62cdd0e125b307219
+
+recorte: c05-SPB-12-comprobar-ahora-responde.png
+cruda: c05-SPB-12-comprobar-ahora-responde.jpg sha256=28c9a207aeb3a5ece9fa57abad7b520124d8e2fa94bc888d0f98c2c74ebd7282
+paso: SPB-12
+rectangulo: 64,66,298,486
+tapado: ninguno
+sha256-recorte: 12582ea2814fd968b6623bbc0ff482622bcac0b7978a8268c562f2fcfebc8f42
+
+recorte: c05-SPB-12-despues-clic-paleta-115-407.png
+cruda: c05-SPB-12-despues-clic-paleta-115-407.jpg sha256=c2454f9acca230163c819894ac1b5dcbbacc9280c3469f7e0878041c2274e6d7
+paso: SPB-12
+rectangulo: 66,99,1146,614
+tapado: ninguno
+sha256-recorte: 590be347c8e8fcb116b63622ddb38b3bf8b594bb8b6ad9fb7e5598b689059f96
+
+recorte: c05-SPB-12-paleta-tras-cerrar.png
+cruda: c05-SPB-12-paleta-tras-cerrar.jpg sha256=c72d496be7a72233334a6091c80e5c0a2f5e5a9919834953dd7339f397f5c76e
+paso: SPB-12
+rectangulo: 64,66,298,486
+tapado: ninguno
+sha256-recorte: b89e0f27d9a229e38378b46aef63d7e80eaa90f3107eca6830081de1fdff05eb
+
+recorte: c05-SPB-13-despues-zzz-clic-1300-640.png
+cruda: c05-SPB-13-despues-zzz-clic-1300-640.jpg sha256=313c658ae53ab490c776fb3229df9d2fc677c7a93611dec5c049a89de2af0951
+paso: SPB-13
+rectangulo: 34,99,1146,760
+tapado: 34,99,66,156 — cinta de opciones y pestanas de archivo de AutoCAD
+sha256-recorte: b559f96ccdad456de351d1203b598b0e3ffa54abc7e35132311ff044fb4d746e
+
+recorte: c05-SPB-14-despues-retroceso-tab-supr.png
+cruda: c05-SPB-14-despues-retroceso-tab-supr.jpg sha256=5c8c275d1ffab23a10c5fcc09388d3615c9ee7db98cddff33232d04c5f7b8494
+paso: SPB-14
+rectangulo: 34,99,1146,760
+tapado: 34,99,66,156 — cinta de opciones y pestanas de archivo de AutoCAD
+sha256-recorte: ad9bda8ac780da6847eef3cbaeef4e694d93beebfdab388acc3eb7639bd54481
+
+recorte: c05-SPB-14-nombre-x.png
+cruda: c05-SPB-14-nombre-x.jpg sha256=8f6b000164b6f8529a078fcb1192b70c40697f5486cf3e20920f9e7c635d6ce9
+paso: SPB-14
+rectangulo: 0,0,253,31
+tapado: ninguno
+sha256-recorte: 9f4d097f596116111bb2db60f869a4cc96fb5e60686a9cea1bbe1ee2d2afdfc4
+
+recorte: c05-SPB-15-cerrar-2s.png
+cruda: c05-SPB-15-cerrar-2s.jpg sha256=1ad3a3f16cfba9348ee087fd1b9875019893688e845d31d0a43178c038cb6afa
+paso: SPB-15
+rectangulo: 64,66,298,486
+tapado: ninguno
+sha256-recorte: b89e0f27d9a229e38378b46aef63d7e80eaa90f3107eca6830081de1fdff05eb
+
+recorte: c05-SPB-15-cerrar-7s.png
+cruda: c05-SPB-15-cerrar-7s.jpg sha256=1ad3a3f16cfba9348ee087fd1b9875019893688e845d31d0a43178c038cb6afa
+paso: SPB-15
+rectangulo: 64,66,298,486
+tapado: ninguno
+sha256-recorte: b89e0f27d9a229e38378b46aef63d7e80eaa90f3107eca6830081de1fdff05eb
+
+recorte: c05-SPB-15-deshacer-antes.png
+cruda: c05-SPB-15-deshacer-antes.jpg sha256=a19dd142b2d3f5636f71921d7699ce335a62566a21cf1111cbb466fba66e03ca
+paso: SPB-15, línea de base (rehecha)
+rectangulo: 170,21,285,190
+tapado: ninguno
+sha256-recorte: 98ceb112d698fbe58cfbb72cdb6d3336b79d05a099000f1bc9deb5be6ff87c99
+
+recorte: c05-SPB-15-deshacer-despues.png
+cruda: c05-SPB-15-deshacer-despues.jpg sha256=2227a8ba1436ed36f2db5417685a3fa00be7be5bb2e7b9fa346c6c6297c772c0
+paso: SPB-15
+rectangulo: 170,21,285,218
+tapado: ninguno
+sha256-recorte: 1d50f9d7aa963747bdf914232a51d0e18dd49744709ac9fbfb717187cc3824f5
+
+recorte: c05-SPB-15-editar-todo-abierta.png
+cruda: c05-SPB-15-editar-todo-abierta.jpg sha256=0379f739f8642bd152b7e631e6bc72e45d182bee2ca8fada08634f955cd255e0
+paso: SPB-15
+rectangulo: 66,99,1146,614
+tapado: ninguno
+sha256-recorte: 590be347c8e8fcb116b63622ddb38b3bf8b594bb8b6ad9fb7e5598b689059f96
+
+recorte: c05-SPB-16-aviso-ampliado.png
+cruda: c05-SPB-16-aviso-ampliado.jpg sha256=681626d8445e267d1c26a6f55f2cb8e5815b0f4fe14c12791e381ac2d7bc7c7e
+paso: SPB-16
+rectangulo: 0,0,844,112
+tapado: ninguno
+sha256-recorte: ccdc236b398da5e155d4a5141d517140caf580e6ed0e1c00ff3034242feb6bd4
+
+recorte: c05-SPB-16-lado-B-desmarcado.png
+cruda: c05-SPB-16-lado-B-desmarcado.jpg sha256=c3ad0bcd8696febb4ace1f87581e4579463f4b396e7cf8d6d0e0d24223de6e26
+paso: SPB-16
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 73c6adcdfe4b2255318c2198a60f5a62e361585b8a14969c740cc65cd8a45cb8
+
+recorte: c05-SPB-16-lado-B-marcado.png
+cruda: c05-SPB-16-lado-B-marcado.jpg sha256=c86618edac5ec6a78ca4152c1e39667f7bdf99b5dfcdfb9766915e847868b1c7
+paso: SPB-16
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 53b3c7d7f8d7f2adf83561fafe884b45e0ae10ee1df5f129d69478e1b5641e82
+
+recorte: c05-SPB-49-panel-0.png
+cruda: c05-SPB-49-panel-0.jpg sha256=afa67d6342bb69e61d58177dbfb0537a46b0e4c172a46108673b26a28c996c22
+paso: SPB-49
+rectangulo: 0,0,211,63
+tapado: ninguno
+sha256-recorte: 5949d6bcfbdc33fa7433c7057242c4c59282d66372a121a477c2222f273096d3
+
+recorte: c05-SPB-49-panel-abc.png
+cruda: c05-SPB-49-panel-abc.jpg sha256=48a05a7887527142b40bb79ff90bb96a69aa7c4281dff9aa9040c90b3d06df52
+paso: SPB-49
+rectangulo: 0,0,211,63
+tapado: ninguno
+sha256-recorte: bd2d45924ec50ef9d5eb82ba48b16bbedc538f05829affb229d80b8eb47c4196
+
+recorte: c05-SPB-49-panel-menos1.png
+cruda: c05-SPB-49-panel-menos1.jpg sha256=28071da1bfc29c15f1e4156feda520d48aece714533ad16765e6954817904bf3
+paso: SPB-49
+rectangulo: 0,0,211,63
+tapado: ninguno
+sha256-recorte: 035c1e6e72a6f57c5b0663aaf70a86ec05263d97fde8987c9dd74d6041819690
+
+recorte: c05-SPB-49-panel-restaurado-1.png
+cruda: c05-SPB-49-panel-restaurado-1.jpg sha256=bad2863029239ad2c7ea242665b9f5aba8baf177f6adb5e5ebce3c84892e3509
+paso: SPB-49
+rectangulo: 64,66,298,486
+tapado: ninguno
+sha256-recorte: 374e0b989582aa441553a22a31b56d4859b0f64ca2b15d02ca9e774a4bcb1636
+
+recorte: c05-SPB-49-ventana-0.png
+cruda: c05-SPB-49-ventana-0.jpg sha256=7ed40f117e84670f3cc5dfcf68bdd56cce75e36d51de8674ffe68bb630d338a9
+paso: SPB-49
+rectangulo: 0,0,844,59
+tapado: ninguno
+sha256-recorte: da0af478d8fd4b4f97f6b93238986741a0c4e5a80753754adb47cd7d3941dee5
+
+recorte: c05-SPB-49-ventana-abc.png
+cruda: c05-SPB-49-ventana-abc.jpg sha256=bfa716063ececcfaf7887b64b63fb14e4141e43bcd0848c5ead77b61c1ddf4dd
+paso: SPB-49
+rectangulo: 0,0,844,59
+tapado: ninguno
+sha256-recorte: ba9811b364f5c80ff754d435b49414f242c1877ac95771031e4c181ec66dd362
+
+recorte: c05-SPB-49-ventana-menos1.png
+cruda: c05-SPB-49-ventana-menos1.jpg sha256=7ed40f117e84670f3cc5dfcf68bdd56cce75e36d51de8674ffe68bb630d338a9
+paso: SPB-49
+rectangulo: 0,0,844,59
+tapado: ninguno
+sha256-recorte: da0af478d8fd4b4f97f6b93238986741a0c4e5a80753754adb47cd7d3941dee5
+
+recorte: c05-SPB-49-ventana-restaurada-1.png
+cruda: c05-SPB-49-ventana-restaurada-1.jpg sha256=93ffe6eab0ebfeb808e7f06eb58c731bbc1ea6021e6785cc239608291b4b335e
+paso: SPB-49
+rectangulo: 0,0,844,92
+tapado: ninguno
+sha256-recorte: 6d4c01c90ebafcc0b2a8fb6950b6d42e44fdc679d385cecb5c8dcd60c9507e10
+
+recorte: c06-SPB-17-bom-exportada.png
+cruda: c06-SPB-17-bom-exportada.jpg sha256=f4ece73a9b636d8eca6efac5bd368fc046abd51cb4e17094f57a9080d7f3c541
+paso: SPB-17, primera pasada
+rectangulo: 185,99,1146,614
+tapado: 597,348,762,366 — ruta de archivo con letra de unidad en el mensaje «Lista exportada a:»
+sha256-recorte: 86ea857536323bebfb599114afb50d72fbfece29de49d8950de576e7f6c4b9b2
+
+recorte: c06-SPB-17-pasada1-guardado.png
+cruda: c06-SPB-17-pasada1-guardado.jpg sha256=f72e0ac891174ea3b0a0d9f6fcd9b3d6a122b5102141f65cb6ee1b39ba29a56a
+paso: SPB-17, primera pasada
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 9217490e6b060e0325b770fae2938eb6eb9a6cef3310465701c7b8bb60c66fa2
+
+recorte: c06-SPB-17-pasada2-aplicar-sin-cambios.png
+cruda: c06-SPB-17-pasada2-aplicar-sin-cambios.jpg sha256=73fe9af1dbabd757e09b1be0ae44ed8a2f11f9e2a869a9dc4b9f2a20a507f8cb
+paso: SPB-17, segunda pasada
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: c24172ac8a6fa337cdc421a1975d65e0a1803c408cbd1bfc67d27ec2b1f48036
+
+recorte: c06-SPB-17-pasada2-nombre-PB-G.png
+cruda: c06-SPB-17-pasada2-nombre-PB-G.jpg sha256=d9dcdf3b96519f4d5302060cce083868dcba6d559be201aeb25f822f778b0447
+paso: SPB-17, segunda pasada
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: 8e0b5634d12c4e221a0acf0a45cccd27f2e7ad3d7fbce7f68954839a9942d1b9
+
+recorte: c07-SPB-18-a-tras-cerrar-modificado.png
+cruda: c07-SPB-18-a-tras-cerrar-modificado.jpg sha256=d56703de1123ad011158cf3018b7fb627f2c1dd593c5e164cc80d38087dc905c
+paso: SPB-18, panel
+rectangulo: 64,66,298,486
+tapado: ninguno
+sha256-recorte: a5f54bf21852dfb55128592282ccc9c42ecd04272e4dc2f4cbae75da31b95a26
+
+recorte: c07-SPB-18-aplicado.png
+cruda: c07-SPB-18-aplicado.jpg sha256=b546799693676be8d0f592b67e6932c97b3817b6bf3fe578e7412aeed1105277
+paso: SPB-18, panel
+rectangulo: 0,0,506,35
+tapado: ninguno
+sha256-recorte: 01fe7b5f26ca5aaa7020823295b2ef355753496d92c854c065d050dab8336ba0
+
+recorte: c07-SPB-18-e-lateral-post.png
+cruda: c07-SPB-18-e-lateral-post.jpg sha256=f6c41b943e152d160749ec20c20cf83fd345ebbe09db18692b197f884075c37c
+paso: SPB-18, panel
+rectangulo: 300,153,1335,672
+tapado: ninguno
+sha256-recorte: ced683d9fef300bd8c8808d06176ed8948bb2969c40075ad48e6a194f014d4ff
+
+recorte: c07-SPB-18-e-planta-post.png
+cruda: c07-SPB-18-e-planta-post.jpg sha256=637913dfe7c71e73fb7bb7208111bffdd30abc29a143afa3efef5bef2225d780
+paso: SPB-18, panel
+rectangulo: 495,153,870,672
+tapado: 595,385,640,418 — texto de anotacion del dibujo de origen (zona del almacen)
+sha256-recorte: 7d24036c239137588bf657a2a5de16dfad523763cf40ab4414843e454ece3773
+
+recorte: c07-SPB-18-ventana-71-frentes-escala-2.5.png
+cruda: c07-SPB-18-ventana-71-frentes-escala-2.5.jpg sha256=26fb1763aad6bbc77caba2e8e15a8f697c157edc7df32f47b4cbde8e5caba646
+paso: SPB-18, panel
+rectangulo: 185,99,1146,614
+tapado: ninguno
+sha256-recorte: e8c44bf8079cac6a9824fdcbe7ebd00a607c706dd90c9fca2d6cd8c5b3aee50a
+
+recorte: c09-SPB-19-antes-ins.png
+cruda: c09-SPB-19-antes-ins.jpg sha256=43158361a17e1c77dd7f7c8698ab5dfcd497352a191e7aa7245b3173f129531a
+paso: SPB-19, preparación
+rectangulo: 17,153,1317,758
+tapado: 552,150,580,178 — texto de calle del dibujo de origen
+tapado: 605,192,1000,398 — texto de resumen del proyecto de origen
+tapado: 1110,200,1317,400 — tabla del proyecto de origen
+sha256-recorte: a2f9a22bc77fb2ce19f6150193050f7ca3c52ab78daca3a57d9f40e402429279
+
+recorte: c09-SPB-19-r1-panel-conflicto.png
+cruda: c09-SPB-19-r1-panel-conflicto.jpg sha256=30beffc5eadf87507f0bc01787c3459bddfc205cad8ee89c0d5155df9086bb0f
+paso: SPB-19, repetición 1 de 2: punto de partida
+rectangulo: 0,0,221,396
+tapado: ninguno
+sha256-recorte: a6aac87b53bc7e778e02e2336721a1d5bc04cf511eace1111d4cba58fbd6afa0
+
+recorte: c09-SPB-19-r1-panel-tras-U-2.5-obsoleto.png
+cruda: c09-SPB-19-r1-panel-tras-U-2.5-obsoleto.jpg sha256=b9ecf9d6fcd7ea62727c43a1c45c60c5a9c620dc5554a4addfa42022ae596f39
+paso: SPB-19, repetición 1 de 2: punto de partida
+rectangulo: 0,0,221,396
+tapado: ninguno
+sha256-recorte: 71870c07fdc5879bbc71795fd7ea8d89410c6efcc2394d69e63bfd644b10a895
+
+recorte: c09-SPB-19-r1-tras-actualizar.png
+cruda: c09-SPB-19-r1-tras-actualizar.jpg sha256=37378e6c4fde3db7a3686a2ff14cfaa3c7bef56b503e050edc15b73b1f2d17fb
+paso: SPB-19, repetición 1 de 2
+rectangulo: 13,122,1054,606
+tapado: 442,118,464,144 — texto de calle del dibujo de origen
+tapado: 484,154,800,318 — texto de resumen del proyecto de origen
+tapado: 888,160,1054,320 — tabla del proyecto de origen
+sha256-recorte: b4e1b2621496707ec1098662e2f3b8c3d6d82965511a26f17ee90da8dfe6e26d
+
+recorte: c09-SPB-19-r1-tras-REDO.png
+cruda: c09-SPB-19-r1-tras-REDO.jpg sha256=247d59ba4fe2e847a0ffe7b578ddc2e1b04cacf6eb299d9297ef1d5f00f7868e
+paso: SPB-19, repetición 1 de 2
+rectangulo: 13,122,1054,606
+tapado: 442,118,464,144 — texto de calle del dibujo de origen
+tapado: 484,154,800,318 — texto de resumen del proyecto de origen
+tapado: 888,160,1054,320 — tabla del proyecto de origen
+sha256-recorte: 0c81c68e0422271f9a022a41268f3455133d679b3bf198c18977f4043d1ee46d
+
+recorte: c09-SPB-19-r1-tras-U.png
+cruda: c09-SPB-19-r1-tras-U.jpg sha256=705f0a7f6abd70c8ca13cb028d7e71d11702b7b28a755a11e1b6822e6914a517
+paso: SPB-19, repetición 1 de 2
+rectangulo: 13,122,1054,606
+tapado: 442,118,464,144 — texto de calle del dibujo de origen
+tapado: 484,154,800,318 — texto de resumen del proyecto de origen
+tapado: 888,160,1054,320 — tabla del proyecto de origen
+sha256-recorte: 98ce0fb081536609ba879c0704d068da5c0f131709da7bdb7e8b32492c272d8a
+
+recorte: c09-SPB-19-r1-ventana-71-escala-2.5.png
+cruda: c09-SPB-19-r1-ventana-71-escala-2.5.jpg sha256=13c8301f0e89b1bb71de44f95df3159b59aaa83bdf467968954f9df7eefc6ea7
+paso: SPB-19, repetición 1 de 2
+rectangulo: 175,0,1015,451
+tapado: ninguno
+sha256-recorte: c03e8c6afde009919a9faab09c0a116f4c425006d6375d734adb20378dcf077c
+
+recorte: c09-SPB-19-redo-nothing-to-redo.png
+cruda: c09-SPB-19-redo-nothing-to-redo.jpg sha256=b7b2b3cb49076b839102423f2ee4d669dc4c190607d89b92ea0b69a6f95d7102
+paso: SPB-19
+rectangulo: 17,153,1317,758
+tapado: 552,150,580,178 — texto de calle del dibujo de origen
+tapado: 605,192,1000,398 — texto de resumen del proyecto de origen
+tapado: 1110,200,1317,400 — tabla del proyecto de origen
+sha256-recorte: 4edf8736f8f38c3566a3c3e943c771bba7ac9ecdf5cf21ce44005570d55e0897
+
+recorte: c09-SPB-19-tras-actualizar.png
+cruda: c09-SPB-19-tras-actualizar.jpg sha256=ae0a1c6042e6f816f5542df672362600041966e99417278967d92ce6461f7270
+paso: SPB-19
+rectangulo: 17,153,1317,758
+tapado: 552,150,580,178 — texto de calle del dibujo de origen
+tapado: 605,192,1000,398 — texto de resumen del proyecto de origen
+tapado: 1110,200,1317,400 — tabla del proyecto de origen
+sha256-recorte: 23a3c275ad030896f4558f9a4e6b20898623c746b3c93fbe6ac047170202c921
+
+recorte: c09-SPB-19-tras-U.png
+cruda: c09-SPB-19-tras-U.jpg sha256=049091d9aa3791dd91db57f444cf715277df4f240678a8c9cbdc8832ba5ec0fc
+paso: SPB-19
+rectangulo: 17,153,1317,758
+tapado: 552,150,580,178 — texto de calle del dibujo de origen
+tapado: 605,192,1000,398 — texto de resumen del proyecto de origen
+tapado: 1110,200,1317,400 — tabla del proyecto de origen
+sha256-recorte: 26c2d616f109687a5a4a9bc60551043c1e6c91cb021c96edb81a4aa83705e149
+
+recorte: c09-SPB-19-ventana-71-escala-2.5.png
+cruda: c09-SPB-19-ventana-71-escala-2.5.jpg sha256=9db47a7246fc2cc117fbae32070e3be51576411d4537595424e1a01c68524d7c
+paso: SPB-19
+rectangulo: 175,0,1015,451
+tapado: ninguno
+sha256-recorte: c03e8c6afde009919a9faab09c0a116f4c425006d6375d734adb20378dcf077c
+
+recorte: c10-SPB-20-aplicado.png
+cruda: c10-SPB-20-aplicado.jpg sha256=d658869cdd15b49ee0d832eb8fd3761bc79a7398ef333b696b539e783a299a3c
+paso: SPB-20
+rectangulo: 175,0,1015,451
+tapado: ninguno
+sha256-recorte: 8afad20d192ee40e1a1179509abd41f74ebf7036d3a3228771a97818f516df9f
+
+recorte: c10-SPB-20-lateral-rotulo.png
+cruda: c10-SPB-20-lateral-rotulo.jpg sha256=650161403a04e5f2e458e9dda3cee75d50045ce45fef8b671cebfd3dc80a9d55
+paso: SPB-20
+rectangulo: 0,0,237,40
+tapado: ninguno
+sha256-recorte: fe7f82be7467cf83c2fd3645855c370aaefbe7c53f9b566c11ca1fd5ad0f041a
+
+recorte: c10-SPB-20-lateral.png
+cruda: c10-SPB-20-lateral.jpg sha256=bd817cdf5be6f1c69876ab90ae7a933413fb37f5211a72c0e661908504b6a8f2
+paso: SPB-20
+rectangulo: 410,153,915,672
+tapado: ninguno
+sha256-recorte: ec72a32bae8aee4cec0382e7be2bc9e3a9c084d2c2f85549281a79e65c21a87f
+
+recorte: c10-SPB-20-nombre-vacio.png
+cruda: c10-SPB-20-nombre-vacio.jpg sha256=f6a969aff464dbbaa1eb31437520fd47641dc60d53a10e7caf435d9ad75cee4e
+paso: SPB-20
+rectangulo: 175,0,1015,451
+tapado: ninguno
+sha256-recorte: 043bd145ea68ce507f080f336c9b91f52ae0dce61e3952354de4d72ca9145deb
+
+recorte: c10-SPB-20-panel-actualizado.png
+cruda: c10-SPB-20-panel-actualizado.jpg sha256=2ec19156e00d4a526b171cf97614af0268bda2ed2f65bf7eb3131cdb12a86c1e
+paso: SPB-20
+rectangulo: 0,0,221,396
+tapado: ninguno
+sha256-recorte: b3bc58255a6f66276e87f6a7d4d46b0909a267cfebf09d4f6e4c40078ea0bcb7
+
+recorte: c10-SPB-20-panel-modificado.png
+cruda: c10-SPB-20-panel-modificado.jpg sha256=a81d54b41ead672d49c0c1fd1182d669e2acdc26a58cfefa31113a44249ddb79
+paso: SPB-20
+rectangulo: 0,0,221,396
+tapado: ninguno
+sha256-recorte: 9185ddb906985ae2957c1b2df6c330c2002e609b33027e0e201297dfb825b2be
+
+recorte: c10-SPB-20-planta-rotulo.png
+cruda: c10-SPB-20-planta-rotulo.jpg sha256=e87572017f0e1dd10014852204e0611579a6d78be7fca18fe5a71cd18d31c180
+paso: SPB-20
+rectangulo: 300,153,1000,672
+tapado: ninguno
+sha256-recorte: cea0b65c68dee08b4590ced16f8ad5bcbce28123603430bb5c1094b19cb94583
+
+recorte: c10-SPB-20-planta-seleccionada.png
+cruda: c10-SPB-20-planta-seleccionada.jpg sha256=6f4fc88ca75a669e11346a8900108755a17bacfbf4c65fbbb8422a8713c26dd1
+paso: SPB-20
+rectangulo: 405,153,770,672
+tapado: 480,388,535,425 — texto de anotacion del dibujo de origen (zona del almacen)
+sha256-recorte: 2f9435723b6893307be74591634fe49bccbf5b9368368a4770ad21b5cb56d3ba
+
+recorte: c11-SPB-21-cambios-pendientes.png
+cruda: c11-SPB-21-cambios-pendientes.jpg sha256=11d03e4b9031a174e0a3c45c56b38457f8c3fad71d948f01443e18554f4d3143
+paso: SPB-21
+rectangulo: 175,0,1015,451
+tapado: ninguno
+sha256-recorte: 351fbf7a269a5ba7b22234762b4d8a1adec39822367024946412eff351da5a6a
+
+recorte: c11-SPB-21-modulo-60.png
+cruda: c11-SPB-21-modulo-60.jpg sha256=e40eae6e4dbcb6c3c1a343b71599277cd18f9554238f14bd78a74f84cb2789af
+paso: SPB-21
+rectangulo: 175,0,1015,451
+tapado: ninguno
+sha256-recorte: 507575a786cf3145f2c62d21bfef3ec3a84a82d5df24a8830a5d999964ba2c5e
+
+recorte: c11-SPB-21-panel-tras-cerrar.png
+cruda: c11-SPB-21-panel-tras-cerrar.jpg sha256=2825c36a5e832f8ce1d882a9b798e4c94fef22dac9e9edab8d544cdf6bb63ddd
+paso: SPB-21
+rectangulo: 0,0,221,396
+tapado: ninguno
+sha256-recorte: 69ade6e5c6b4f4f0005efe41cb9793676eb90e194ee2ba8d77bb5f56a2d567e3
+
+recorte: c11-SPB-21-pregunta-unica.png
+cruda: c11-SPB-21-pregunta-unica.jpg sha256=a78c6b303f79043b756885a94bece6042dd5faa99f4d40eab6f7781e03f357ea
+paso: SPB-21
+rectangulo: 175,0,1015,451
+tapado: ninguno
+sha256-recorte: b7dfe9422222eeef50b13ac9cde8d210c363d42a6b2c5e0a1ad30432ffb64416
+
+recorte: c12-SPB-24-actualizar-no-se-aplico.png
+cruda: c12-SPB-24-actualizar-no-se-aplico.jpg sha256=23e4d8ca75742cde58b12d97d952a9ffc09a2390efb9c9ddd745948d0a3e9d80
+paso: SPB-24
+rectangulo: 62,64,300,486
+tapado: ninguno
+sha256-recorte: c8e9650fc5a23e1f51408e529cf512ad8b6a540726b1f5c291c7acec1f7a0295
+
+recorte: c12-SPB-24-comprobar-conflicto.png
+cruda: c12-SPB-24-comprobar-conflicto.jpg sha256=d2564e0cbac6458eb6a7adef29e30a2d2c53d22f07583e01cf9acce5e749aa64
+paso: SPB-24
+rectangulo: 62,64,300,486
+tapado: ninguno
+sha256-recorte: 04f8ddfb1ad9ddc643d2cfc1c9ca524b5c3a4e5f4f7e3362321d148ce1df1b18
+
+recorte: c12-SPB-24-conflicto-botones.png
+cruda: c12-SPB-24-conflicto-botones.jpg sha256=522451285198422b1bcd7be893625a168e4ed7df812c5fef492af69a8ac1006a
+paso: SPB-24
+rectangulo: 62,64,300,486
+tapado: ninguno
+sha256-recorte: 204593592e466edf880776a77fdce259e277691fba4cc4089468ee28d1687ae0
+
+recorte: c12-SPB-24-panel-obsoleto-antes.png
+cruda: c12-SPB-24-panel-obsoleto-antes.jpg sha256=fbe8ece8f74048567e78f7c304444043ff7a21c7829a97e1100c4e4b5491b578
+paso: SPB-24
+rectangulo: 62,64,300,486
+tapado: ninguno
+sha256-recorte: 0e8549becadec1435ccfc749ee9062541369b11847134e45e18eea48a2b79363
+
+recorte: c12-SPB-24-rackeditar-actualizado.png
+cruda: c12-SPB-24-rackeditar-actualizado.jpg sha256=ec51b1a69f4009f7735bcc429d3b17cc6b875f18fce9ca362f2c1d5fc106bb33
+paso: SPB-24
+rectangulo: 10,405,600,447
+tapado: ninguno
+sha256-recorte: 207ef69be10353f1550f098316947e583b5731edad38bf0a3c9b7203128d4127
+
+recorte: c12-SPB-25-conservar-pregunta.png
+cruda: c12-SPB-25-conservar-pregunta.jpg sha256=89181d039a1c2bbd3d915f790c6b0c2e36b41f59c2e8d8de5379e89f828aff2d
+paso: SPB-25
+rectangulo: 62,64,300,486
+tapado: ninguno
+sha256-recorte: 82049b1f869c65108efb7a9fd6376db919f452b67c8b476a6222d9f6d96fed57
+
+recorte: c12-SPB-25-grupos-y-segundo-si.png
+cruda: c12-SPB-25-grupos-y-segundo-si.jpg sha256=74f2cbb363bd8145f879445530f6ce106e2eb0d6d208e8f99f7527dd60873711
+paso: SPB-25
+rectangulo: 0,0,253,453
+tapado: ninguno
+sha256-recorte: 6de47fd9fb26168eee611b14de8fe16b3c3bd016c551141cc79d7fbf5928208c
+
+recorte: c12-SPB-25-primer-si-grupos.png
+cruda: c12-SPB-25-primer-si-grupos.jpg sha256=c0f0f2fb438da3d121fbeaeecb73aa57aa0738b11710f2ad7fde7de3b0d9d0e7
+paso: SPB-25
+rectangulo: 62,64,300,486
+tapado: ninguno
+sha256-recorte: 81404115e30ded59101023e902fe3c0ba6cadd3193e9d1dc9d5ceab1c80f7111
+
+recorte: c12-SPB-26-actualizado.png
+cruda: c12-SPB-26-actualizado.jpg sha256=c64debe9b1771e7cf58b258f12242a2cab5bc7b0fc205f1b283e5f6da5401f20
+paso: SPB-26
+rectangulo: 0,0,253,453
+tapado: ninguno
+sha256-recorte: a46f5ba874b5c9191b066545a824a8404b5b881ee6dfe4173fc42f16f44d1dce
+
+recorte: c12-SPB-26-segundo-si-2s.png
+cruda: c12-SPB-26-segundo-si-2s.jpg sha256=e954d65d079fa561ed65b12b24f6535f9c551b42cfef764b5d21d131c6ce33ff
+paso: SPB-26
+rectangulo: 0,0,253,453
+tapado: ninguno
+sha256-recorte: be7a7c46beaf7fb27c7260ee7d993a387210e915f75f3a112e5f2d5f9c093783
+
+recorte: c13-SPB-27-comprobar-conflicto.png
+cruda: c13-SPB-27-comprobar-conflicto.jpg sha256=77068d09ae55877de3119b914c4d58124459d036a1e4f11b5b24f6c47d28d325
+paso: SPB-27, intento 1
+rectangulo: 37,38,181,291
+tapado: ninguno
+sha256-recorte: df5b34dbc8e5bb8b059cbede83f40f7d7cd39376c3618940accd11cd6314393a
+
+recorte: c13-SPB-27-conservado-despues.png
+cruda: c13-SPB-27-conservado-despues.jpg sha256=4bdd615facd0295691f42fe6b6371851980d27c51473da75d92fa747846b2ecc
+paso: SPB-27, intento 1
+rectangulo: 31,33,150,244
+tapado: ninguno
+sha256-recorte: cbf8375adc3df6dc6468052c93ec6be48da4fd61c8693417c966fb77a3733b99
+
+recorte: c13-SPB-27-conservado-panel.png
+cruda: c13-SPB-27-conservado-panel.jpg sha256=d9d47437d9975fed798a043afb2d2f2d55c3995c878362426c1e88aa7451b3c7
+paso: SPB-27, intento 1
+rectangulo: 0,6,253,453
+tapado: ninguno
+sha256-recorte: 555a4a8d541f1267878bd4aad2b7b2ec5ccd70129f2f21d2c7d0a86fad0ab6bc
+
+recorte: c13-SPB-27-fuera2-numerar-niveles.png
+cruda: c13-SPB-27-fuera2-numerar-niveles.jpg sha256=de148a761604be98c8bd1ddad014ff239ec1524f1852f933eb256b9f579b2d49
+paso: SPB-27, intento 1
+rectangulo: 0,0,316,47
+tapado: ninguno
+sha256-recorte: f7417f59471660ffc8128d1146f30cef7329b229f03e1075c01a896cd646af26
+
+recorte: c13-SPB-27-panel-tras-fuera2.png
+cruda: c13-SPB-27-panel-tras-fuera2.jpg sha256=64640af0df96aef8744d9ed1e0481e5689dd63edf8d2dfe30d9d0e01b3f8189c
+paso: SPB-27, intento 1
+rectangulo: 37,38,181,291
+tapado: ninguno
+sha256-recorte: 164cdde6c3cb2d7ae2ffa3aeb7be0e54e77a0ad6595bb963b98b97ab6e4ed4b3
+
+recorte: c13-SPB-27-primer-si-grupos.png
+cruda: c13-SPB-27-primer-si-grupos.jpg sha256=9c707e8c454b715506332b91f6357297f9d0fdb8a9c6514c72a6dec7ac69ec50
+paso: SPB-27, intento 1
+rectangulo: 0,6,253,453
+tapado: ninguno
+sha256-recorte: cd172cb35bb9a70fcd3f9f3649d8def9e9209b0a4b38317aa9179cb3775bec34
+
+recorte: c13-SPB-27-r1-fuera2-nombre-PB-E2.png
+cruda: c13-SPB-27-r1-fuera2-nombre-PB-E2.jpg sha256=a174e95d9eba3b05b7b8662fea3ecfc17ae754d3d8b8fe0aeb933d64f58fcd2b
+paso: SPB-27, repetición 1 de 2
+rectangulo: 0,0,301,35
+tapado: ninguno
+sha256-recorte: 2dfcfb785c270eea97762881731efbcfcd024a73f11bb1388df5c3012d60aa66
+
+recorte: c13-SPB-27-r1-primer-si-grupos.png
+cruda: c13-SPB-27-r1-primer-si-grupos.jpg sha256=daffa3f8a8a40b79bd9bea96cb9f126d565d5c7202aebbd45312270ff26f5237
+paso: SPB-27, repetición 1 de 2
+rectangulo: 0,7,253,453
+tapado: ninguno
+sha256-recorte: aad257ea283c7e394e2cae64cd3f85ea2203f9fa23c4e6ccce7a8f5fe8b2351f
+
+recorte: c13-SPB-27-r1-segundo-si-15s-represento.png
+cruda: c13-SPB-27-r1-segundo-si-15s-represento.jpg sha256=1354276ec4a5b24b4b21965a18282cf2243ba59f7382c7018795c3c144558f71
+paso: SPB-27, repetición 1 de 2
+rectangulo: 0,7,253,453
+tapado: ninguno
+sha256-recorte: f4d5431f840857e56e4275f555baf4bba9239b232205cef82ccb8abedbc91033
+
+recorte: c13-SPB-27-r1-segundo-si-25s-sin-conservar.png
+cruda: c13-SPB-27-r1-segundo-si-25s-sin-conservar.jpg sha256=1354276ec4a5b24b4b21965a18282cf2243ba59f7382c7018795c3c144558f71
+paso: SPB-27, repetición 1 de 2
+rectangulo: 0,7,253,453
+tapado: ninguno
+sha256-recorte: f4d5431f840857e56e4275f555baf4bba9239b232205cef82ccb8abedbc91033
+
+recorte: c13-SPB-27-segundo-si-5s.png
+cruda: c13-SPB-27-segundo-si-5s.jpg sha256=8660768ed3b4cb500bbef3f7ea836df57b0ccc9bf00432eefc5f048839e86399
+paso: SPB-27, intento 1
+rectangulo: 0,6,253,453
+tapado: ninguno
+sha256-recorte: 68e3710874d8d2f67427d3ea07d4d5eb6101f75edf38e666c1f27f4631460f31
+
+recorte: c14-SPB-28-actualizado.png
+cruda: c14-SPB-28-actualizado.jpg sha256=148e74c14a8ab6ea0f842ff9a266537f05ea42d53d37e2a73a430f24a89f96bc
+paso: SPB-28
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 183e11a0cd1b7ae0205db33fa7327f8a9886cf0ef9d5fb5bf62278c3c4244a4a
+
+recorte: c14-SPB-28-clic-erroneo-pregunta-descartar.png
+cruda: c14-SPB-28-clic-erroneo-pregunta-descartar.jpg sha256=fc92dd74e7b5a93b574a1e10ca3f20bfc085e548e6585b00b5c1b748c1fd82bc
+paso: Incidente de la sesión (declarado)
+rectangulo: 0,4,231,396
+tapado: ninguno
+sha256-recorte: 5133201a92e6dd15037285ac817a494b5fae04135be9177ef426e4b7ca5b0b2d
+
+recorte: c14-SPB-28-editar-todo.png
+cruda: c14-SPB-28-editar-todo.jpg sha256=c37aaddb7f193dec4f3a55086309ff5d2da9ccb5a07b7577a3a72420a2ff5178
+paso: SPB-28
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 77e4e8081184246ab1e6492e594f87815dc0eedd3196cd5d1b62500258986541
+
+recorte: c14-SPB-28-no-eleccion-cancelada.png
+cruda: c14-SPB-28-no-eleccion-cancelada.jpg sha256=c74be9c5b3992841755de2892ff29df7ab5dc6acb53d51a9316e0f18b8ebbee1
+paso: Incidente de la sesión (declarado)
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 14b8017e7bd24c2d66c5370f46781188488d3314b64110e3d9de3c56d164b3f6
+
+recorte: c14-SPB-28-primer-si-grupos-zoom.png
+cruda: c14-SPB-28-primer-si-grupos-zoom.jpg sha256=a09248c76da08dcdcdba1e66b7b6973b2629fbce35c7ef1a9875514152c2e25c
+paso: SPB-28
+rectangulo: 0,0,166,194
+tapado: ninguno
+sha256-recorte: f8c55477f00c3fb73cc12f6a9703d9f94e4b77916305e4609adcc441e386ebb7
+
+recorte: c14-SPB-28-segundo-si-18s.png
+cruda: c14-SPB-28-segundo-si-18s.jpg sha256=835c170f78bca39ed241504b1091022ffdff10553dbb1d9b3311860273467cd3
+paso: SPB-28
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 644fc79fa81b04c15ee2681602dd4b4b38564df2cf3b9a82b20fb2ded1ff7842
+
+recorte: c14-SPB-28-segundo-si-3s.png
+cruda: c14-SPB-28-segundo-si-3s.jpg sha256=835c170f78bca39ed241504b1091022ffdff10553dbb1d9b3311860273467cd3
+paso: SPB-28
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 644fc79fa81b04c15ee2681602dd4b4b38564df2cf3b9a82b20fb2ded1ff7842
+
+recorte: c15-SPB-29-listo-para-editar.png
+cruda: c15-SPB-29-listo-para-editar.jpg sha256=7b2da0bc28575665b0ae96bf7aa668f0c06b1356a908adf8a3b693a05d8efe0a
+paso: SPB-29
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: ce0a95dd2a121f29e9f85483acf163e20080277619108e9458af7b1035ab644f
+
+recorte: c15-SPB-29-pestana-fijada.png
+cruda: c15-SPB-29-pestana-fijada.jpg sha256=dd8d3899a08c310a61982c08911b1874c16304bdfb6fdbb163be89f27af7f36e
+paso: SPB-29
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 94bcce7b16732e9e9b4bdb4ae2667ff63ed4f599a6bb837ec311d87fb29f426a
+
+recorte: c15-SPB-29-pestana-sin-fijar.png
+cruda: c15-SPB-29-pestana-sin-fijar.jpg sha256=198509c4e28e4d196802597c55ce724a9610e3c5d814d0a24022b1001a356b84
+paso: SPB-29
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 07e3e9300a1b27c85e6b19f4f8b89e60edc478338ce2f779f99d1258b24727c6
+
+recorte: c15-SPB-30-fuera-escala-2.png
+cruda: c15-SPB-30-fuera-escala-2.jpg sha256=6bb6705bf8924cf8474f4a2ab5dd468573d150fd2df3a4d5db1c01d5b72e2cbf
+paso: SPB-30
+rectangulo: 0,0,325,206
+tapado: ninguno
+sha256-recorte: 7d18610c5a26a32437dc7855e6777d3abadfc509e6bfd0efef83c16b6043a27c
+
+recorte: c15-SPB-30-limpio-obsoleto-zoom.png
+cruda: c15-SPB-30-limpio-obsoleto-zoom.jpg sha256=21bf63e751ebac225967d86983669aaa0014d3c908c8d153fdaacd0a4091c5b3
+paso: SPB-30
+rectangulo: 0,0,185,208
+tapado: ninguno
+sha256-recorte: c727cb7801829d70e1213e5865febafcbbb5073f99a2479226ba0d6b732123aa
+
+recorte: c15-SPB-31-cerrado-sin-cambios.png
+cruda: c15-SPB-31-cerrado-sin-cambios.jpg sha256=678fabf717b555f572601a6136e54d515eaa576bcad87baeb365650bdbf63f50
+paso: SPB-31
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: db109eec8c5b16400d0d743e555db81ff5152faaa32001b01546dae5cbd8324e
+
+recorte: c15-SPB-31-editar-todo-escala-2.png
+cruda: c15-SPB-31-editar-todo-escala-2.jpg sha256=a2af192a049bf940f0cf494b3ed4cb7e1db16b01e547f71827f690f8f3212696
+paso: SPB-31
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 43c8bc8f30cb011f5de30394d2267cd883f9215b76f7da022b818f7f151ad169
+
+recorte: c15-SPB-32-actualizado.png
+cruda: c15-SPB-32-actualizado.jpg sha256=089d62baff26f0973e4c4d3fb3ac45070a6d9857f2fe75026ffac59780830333
+paso: SPB-32
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 0a7d42427364f527545272332f041153230da57003d31bc33162bbe717147dce
+
+recorte: c15-SPB-32-aplicado-al-borrador.png
+cruda: c15-SPB-32-aplicado-al-borrador.jpg sha256=35987ed3ecd4570d125340cdd57781725bddbd4d432ddab5bd6d13d08730c383
+paso: SPB-32
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: cb99c5bc82312b618cb465e2516d4fdb83ba33378bcfc831f5d51cb942bdf55b
+
+recorte: c15-SPB-32-editar-todo-2.5.png
+cruda: c15-SPB-32-editar-todo-2.5.jpg sha256=7bf86f374abc83eed417d6a9feb30dadc0e24f608c6188dda7e1182543113ceb
+paso: SPB-32
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: f4d93eff807076ccbb2621db6c9a0035d523b06d77d6fe76070be3d0d1ee9fd3
+
+recorte: c15-SPB-32-fuera-escala-2.5.png
+cruda: c15-SPB-32-fuera-escala-2.5.jpg sha256=391e54bdc1505e2c6462f1d33984934cdffdf5df7cfc49d1603a621a0871bfe5
+paso: SPB-32
+rectangulo: 0,0,325,206
+tapado: ninguno
+sha256-recorte: 873176eda0d6094787bc4000ff79b64ca8d7089af3697599058c414ef419cb17
+
+recorte: c15-SPB-32-limpio-obsoleto.png
+cruda: c15-SPB-32-limpio-obsoleto.jpg sha256=7fced8368191c4f5df97387dc7b2ca99ba89cc0cf255e2b8c7a022b4b454af90
+paso: SPB-32
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: a036320c0a84a28afc120ec27ddc791f0bcfd8870a6cc14ecae1b02defa63c4e
+
+recorte: c15-SPB-32-panel-modificado.png
+cruda: c15-SPB-32-panel-modificado.jpg sha256=7f432ba777fbab94bf12cc9e364f58ea78ad68292c486dc25566575b3ce61132
+paso: SPB-32
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: b694923c552d1f3e9a3d8f4436a69a3dcfccd7e8dc3e58e04729252fa6cbf64c
+
+recorte: c16-SPB-33-cerrado-sin-cambios.png
+cruda: c16-SPB-33-cerrado-sin-cambios.jpg sha256=d97a909a0835206f82395c1aa950d7101bc153270543778e71bf6f3a38ad944a
+paso: SPB-33
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 2b184175ff4f9d084c335054dc46eb5af45407a0d849b0827ff8148da0f6f0f3
+
+recorte: c16-SPB-33-comprobar-sin-cambios.png
+cruda: c16-SPB-33-comprobar-sin-cambios.jpg sha256=9bebde0b5c5c88a7e8d52076df194effc6e0e074e27fa59d9fb18afa73b66839
+paso: SPB-33
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 2ece7faeaaeab020049b70f81a68d6da5b48037ca0b8a829caa147e0684a052d
+
+recorte: c16-SPB-33-editar-todo-abre.png
+cruda: c16-SPB-33-editar-todo-abre.jpg sha256=80352a1b5a738c76829c1327a6da4c5a9f682bc9ee6d1b40ac337d0ea045f43b
+paso: SPB-33
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: f973724b256d642a2871f6c2074673a27d1e013d9937ed7a1361bff1f70f8f5d
+
+recorte: c16-SPB-33-erase-limpio-obsoleto.png
+cruda: c16-SPB-33-erase-limpio-obsoleto.jpg sha256=5bc6c2bd2a3ce13651093d475997f0178777ef5cb5b13f6cf000672f3b32d278
+paso: SPB-33
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: fdbfadfb92f556dfe31ed25b76d25eb2fd3bbae47d229125fd80a8cff894587c
+
+recorte: c16-SPB-33-listo-para-editar.png
+cruda: c16-SPB-33-listo-para-editar.jpg sha256=a9b5717f77459b288f58ccfcc7ddbe40bf7739ae63047d06513d55d31071cdfd
+paso: SPB-33
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: ce0a95dd2a121f29e9f85483acf163e20080277619108e9458af7b1035ab644f
+
+recorte: c16-SPB-33-restaurado.png
+cruda: c16-SPB-33-restaurado.jpg sha256=26f5ff427a9b1418e1e837de4d96c94fa27fa29c6314ace875a1621edf9b8f09
+paso: SPB-33
+rectangulo: 0,0,1192,105
+tapado: ninguno
+sha256-recorte: 5d49cceb70270796222af64ebf8ac8737cb9e76ae57d258d820a430e98e164b0
+
+recorte: c16-SPB-33-u1-comprobacion.png
+cruda: c16-SPB-33-u1-comprobacion.jpg sha256=7082712c388606db99da932376a013583f68fbfef6ed84c8652d112acbfe1a36
+paso: SPB-33
+rectangulo: 0,0,1192,105
+tapado: ninguno
+sha256-recorte: cd53989b648265e02dc50a5eb00311fcf03cc015e7ffc881c010aacfe1d94bbd
+
+recorte: c16-SPB-33-u2-comprobacion.png
+cruda: c16-SPB-33-u2-comprobacion.jpg sha256=f4233256dfaac5dc05793790c387ea8d1c4851813eb7ff1879f627338fea1ffe
+paso: SPB-33
+rectangulo: 0,0,1192,105
+tapado: ninguno
+sha256-recorte: 0ab221f51907485eaad873a4da7573cc60d94ec45f5745f241443c167ecf631a
+
+recorte: c16-SPB-33-undo-10.png
+cruda: c16-SPB-33-undo-10.jpg sha256=ba5887129e695a813d9e59db811ad839d7a7fbfb7705f1f3e7af1bf33f5377ed
+paso: SPB-33
+rectangulo: 0,0,1192,105
+tapado: ninguno
+sha256-recorte: 7d50f76d8ce8b21df59a53bd3b18c3286ff409af0cb7ee03783fd95bfa2fb0e9
+
+recorte: c16-SPB-33-undoctl.png
+cruda: c16-SPB-33-undoctl.jpg sha256=29dc722e74d0d7e3d06cad0924bf839b01b4ce5499b203bd9fbd567dd2e6a9dc
+paso: SPB-33
+rectangulo: 0,0,1192,105
+tapado: ninguno
+sha256-recorte: ee846e4c2435027a77d5388c7cc568bde86b0140c3f000a8ab93f26897948a67
+
+recorte: c17-SPB-34-actualizar-no-se-aplico-zoom.png
+cruda: c17-SPB-34-actualizar-no-se-aplico-zoom.jpg sha256=67219d8995dba2576c626472e37c78c3094eae428e2cf4b8d452eb01d694aeeb
+paso: SPB-34, copia (c17)
+rectangulo: 0,0,185,110
+tapado: ninguno
+sha256-recorte: 45e4c735702bb665b9d1b9d1de994068445da690217c0987f2ce546d7ed0e6d7
+
+recorte: c17-SPB-34-editar-todo-base-de-antes.png
+cruda: c17-SPB-34-editar-todo-base-de-antes.jpg sha256=91a2dbd33a265000f1b53d04708973f8c84f20dd6a97543b57f8a6487ced02f0
+paso: SPB-34, copia (c17)
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 26286014ff039e2185e7bc12602c651ce74f36bc85edd9a4a3b078e33efaf650
+
+recorte: c17-SPB-34-modificado-obsoleto.png
+cruda: c17-SPB-34-modificado-obsoleto.jpg sha256=2943ce7de314c1fa9e2ab5205aa2897e46df48345a897446c1b58c9dfbe13d4f
+paso: SPB-34, copia (c17)
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 28bebff4a206519af1910eacaf7b9de3073a2f5ac06e315e1cbb96818ff51857
+
+recorte: c17-SPB-34-panel-modificado.png
+cruda: c17-SPB-34-panel-modificado.jpg sha256=ae637237cfdeadeb1a5a1dc72a7061ab5a2a23d566df35b7d1a85fa9b93f8512
+paso: SPB-34, copia (c17)
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: a42dd15ced31321c2e3f7b6b1d730d3c39493127a48304633ebddfb543571a07
+
+recorte: c18-SPB-34-actualizar-no-se-aplico-zoom.png
+cruda: c18-SPB-34-actualizar-no-se-aplico-zoom.jpg sha256=4751b8a2469d80779005eeb26e57123c99229493c4efd4a370d8eb4758c74ccf
+paso: SPB-34, gemela (c18)
+rectangulo: 0,0,185,101
+tapado: ninguno
+sha256-recorte: 104721e5b00ae856a7d28b725649bdf09317a8fb93aaee9ced526956da60bd4a
+
+recorte: c18-SPB-34-modificado-obsoleto.png
+cruda: c18-SPB-34-modificado-obsoleto.jpg sha256=e2f10fbc10fa565f1b156e257d4f1059d087153e4c3d8be6bc3202ba98b794f8
+paso: SPB-34, gemela (c18)
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 97d06b5b9e22c67305998baa0eb8a9618050a2e6c79d1c95f64950b946a2fdfa
+
+recorte: c18-SPB-34-panel-modificado.png
+cruda: c18-SPB-34-panel-modificado.jpg sha256=22622fb9252b064d8f6bd67f68fdbe0559b57b2f8a9aa9a0c4ceae773e1f25ef
+paso: SPB-34, gemela (c18)
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: f4eef4a100148703b67de9f2e1abe8bdb0769066d116da3755b997c5f19aac15
+
+recorte: c19-SPB-35-cerrado-sin-cambios.png
+cruda: c19-SPB-35-cerrado-sin-cambios.jpg sha256=aa6c6c9134e7e8ad77454d0265b84b3cf82eb4794302d7cadcaf1b0c4e862ddf
+paso: SPB-35
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: afc3640fdc07d14dc84bfb816faae9742eb82227672bc135d6dbb745d669ca24
+
+recorte: c19-SPB-35-deshacer-antes-zoom.png
+cruda: c19-SPB-35-deshacer-antes-zoom.jpg sha256=c5ee2df958906340c68d9a85cc5ce497bf5fb28af299e796639272555178d7fd
+paso: SPB-35
+rectangulo: 0,0,119,114
+tapado: ninguno
+sha256-recorte: 418cdfb5ee9c094e32355a8c466086b6fa01cf77f23a825373aab46007ccec54
+
+recorte: c19-SPB-35-deshacer-despues-zoom.png
+cruda: c19-SPB-35-deshacer-despues-zoom.jpg sha256=77aeb76837d67536fc819220197a904f757158f59ea9ffc62824a4c1061aef9b
+paso: SPB-35
+rectangulo: 0,0,119,146
+tapado: ninguno
+sha256-recorte: 026e1d4a8755ba845e4cd7b79a59e280eda7686d1382fe34a7e59f55887f3fdf
+
+recorte: c19-SPB-35-editar-todo-abierta.png
+cruda: c19-SPB-35-editar-todo-abierta.jpg sha256=49f8086f94dfaa69213d2318440f9bb0d2fccc071734a1de8901a717978c3efa
+paso: SPB-35
+rectangulo: 0,0,603,322
+tapado: ninguno
+sha256-recorte: af9c668f6c853219a8f94e0028ea541edc18c7b826d42dd539119b79512d7cee
+
+recorte: c19-SPB-35-incidente-undo.png
+cruda: c19-SPB-35-incidente-undo.jpg sha256=f55c5e37cee35ca1e5325b6cba5a8d4ec93efb189747cc86987a41448063c8dd
+paso: Incidente de la sesión (declarado)
+rectangulo: 12,383,680,446
+tapado: ninguno
+sha256-recorte: af9da8b42a9af6c488401ce2873a2ee5ef672c0225776127d199df8a68d78505
+
+recorte: c19-SPB-35-lista-tras-incidente.png
+cruda: c19-SPB-35-lista-tras-incidente.jpg sha256=b6dadfd9d27c710a5acd0161beb7c8996e0982c6431bba490482f7ac21fc5824
+paso: Incidente de la sesión (declarado)
+rectangulo: 128,14,214,88
+tapado: ninguno
+sha256-recorte: aa64c4f023b77c2133ab442826b51746278c627e6b6ec5268efedb36210ffc90
+
+recorte: c19-SPB-36-cerrado-responde.png
+cruda: c19-SPB-36-cerrado-responde.jpg sha256=49d7940b744b234977f1e9d53977fea8eeec3ae2b7b65ece582499f3ea336845
+paso: SPB-36
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 64d90f045b052bb5895a542229439e073434b9a2007f8c68bbb023018f1de239
+
+recorte: c19-SPB-36-editar-todo-con-marca.png
+cruda: c19-SPB-36-editar-todo-con-marca.jpg sha256=bb9c14544077b22f9da90771d53a37139c0f8b3b42205ca9e66a3a53174cc2ed
+paso: SPB-36
+rectangulo: 0,0,603,322
+tapado: ninguno
+sha256-recorte: f0e9be835e7ce97d8126a310ec5f9acaf53da7b932854a247a3663c102156c78
+
+recorte: c19-SPB-36-marca-obsoleto.png
+cruda: c19-SPB-36-marca-obsoleto.jpg sha256=7b97a1ea68cdf2a40a339adcea65235935b5baedbb618fa0be9e6f3b7b39e021
+paso: SPB-36
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 6823bc6799779952ffcdb41a6f67c3ca30b2a06c7209bcb491cd9f365daa955b
+
+recorte: c20-CONSTRUCTED-SPB-38-listo-para-editar.png
+cruda: c20-CONSTRUCTED-SPB-38-listo-para-editar.jpg sha256=42deb1047f1a26b32ddf60da93578b65f2c29e512d8791eccf439246ca8de59f
+paso: SPB-38 · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 788c4dfc3aed61b16bd4d6ba0ef8fe8f6aa676e06ff48b31199869c2737a94c9
+
+recorte: c20-CONSTRUCTED-SPB-38-panel-PB-F.png
+cruda: c20-CONSTRUCTED-SPB-38-panel-PB-F.jpg sha256=704125c20839a87c011f8e59019146690bd816a76d639627ecb3fe21dff16caa
+paso: SPB-38 · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: eb209442c2aa15f2ff2c54245f57f9d648463d3af4bb68c7e004c930d5c008ec
+
+recorte: c20-CONSTRUCTED-SPB-39-actualizado.png
+cruda: c20-CONSTRUCTED-SPB-39-actualizado.jpg sha256=41881d5474d4eea26065dec0d395fa3a21dcf8cbfc6b1f539045811aade58778
+paso: SPB-39 (copia, c20) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: b2b286bc523ba76083bca438d77e1cc87ab00432e04f42a2708a70725ddb6e08
+
+recorte: c20-CONSTRUCTED-SPB-39-frente2-activo.png
+cruda: c20-CONSTRUCTED-SPB-39-frente2-activo.jpg sha256=218722bcf0cd9a3b001de24088725509c7658b8595582c5195b561f1ea477136
+paso: SPB-39 (copia, c20) · CONSTRUCTED
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 72c56ec193fd1d16b878374f8ac0438500643c2763971a2271ba320663cbe7ca
+
+recorte: c21-CONSTRUCTED-SPB-39-gemela-actualizado.png
+cruda: c21-CONSTRUCTED-SPB-39-gemela-actualizado.jpg sha256=adc54eb7d05ae9c6975bfded203f5c00de70685444cef12e540734f48c34f464
+paso: SPB-39 (gemela, c21) · CONSTRUCTED · S+O: PENDIENTE DE REVISIÓN DEL OWNER
+rectangulo: 0,0,1192,105
+tapado: ninguno
+sha256-recorte: 8c7ffc0c5463afe7564b9c1e62fed97a31c7ca14a02d7bc7c4bf54e1f77f1605
+
+recorte: c22-CONSTRUCTED-SPB-40-antes-frontal-B.png
+cruda: c22-CONSTRUCTED-SPB-40-antes-frontal-B.jpg sha256=2bdd25055c8041630004711be0cddb3e86f8cdc0f313b02704fd0a156ea504e0
+paso: SPB-40 (copia, c22) · CONSTRUCTED
+rectangulo: 188,115,615,382
+tapado: ninguno
+sha256-recorte: 5342b53eef253056f9250109124801de02e18e3ab6da473c5320dc1e4973ce61
+
+recorte: c22-CONSTRUCTED-SPB-40-despues-no-se-aplico.png
+cruda: c22-CONSTRUCTED-SPB-40-despues-no-se-aplico.jpg sha256=f478d7fa017746ddc4a28449feccadca683ae7e5f2a8cd4a1f8a57fab57d0651
+paso: SPB-40 (copia, c22) · CONSTRUCTED
+rectangulo: 188,115,615,382
+tapado: ninguno
+sha256-recorte: fc0c9e3781e4746d1e8193deaa12ec7d3f201d5c34a8e64dcca2f5647e7a201a
+
+recorte: c22-CONSTRUCTED-SPB-40-mensaje-zoom.png
+cruda: c22-CONSTRUCTED-SPB-40-mensaje-zoom.jpg sha256=bc8de47e25734d6a19d2313f4dae3d11f0df530c59020a62b99358f0e75cc1f8
+paso: SPB-40 (copia, c22) · CONSTRUCTED
+rectangulo: 0,0,185,110
+tapado: ninguno
+sha256-recorte: 119adb78ba909d4804d04f41c91846832c01545879d169ae8319698d628da8d4
+
+recorte: c23-CONSTRUCTED-SPB-40-gemela-actualizado.png
+cruda: c23-CONSTRUCTED-SPB-40-gemela-actualizado.jpg sha256=fc9ec3d96aad87e84e7052c824fc367ccd28598b1e0fba8ea9a40200b0188f27
+paso: SPB-40 (gemela, c23) · CONSTRUCTED
+rectangulo: 0,0,1192,105
+tapado: ninguno
+sha256-recorte: 726401f283bc639666121b5794ba025ac6a691f4f51f912eb4727da67408c0d0
+
+recorte: c23-CONSTRUCTED-SPB-40-gemela-antes-frontal-B.png
+cruda: c23-CONSTRUCTED-SPB-40-gemela-antes-frontal-B.jpg sha256=c8ed127fd3c16c8e16ea1e6f71865f8e314e7cf22ff02f9191ef2b5889b17a78
+paso: SPB-40 (gemela, c23) · CONSTRUCTED
+rectangulo: 188,115,615,382
+tapado: ninguno
+sha256-recorte: 5342b53eef253056f9250109124801de02e18e3ab6da473c5320dc1e4973ce61
+
+recorte: c23-CONSTRUCTED-SPB-40-gemela-despues-frontal.png
+cruda: c23-CONSTRUCTED-SPB-40-gemela-despues-frontal.jpg sha256=86da9f54af4fcb3d6ace52949a263c93f47671cc154d5e701908d21d90963a7a
+paso: SPB-40 (gemela, c23) · CONSTRUCTED
+rectangulo: 0,115,680,382
+tapado: ninguno
+sha256-recorte: 6764b04cde57499dd2874fe45471262a2731d653518998a5c93b12313dea13d7
+
+recorte: c24-CONSTRUCTED-SPB-41-actualizado.png
+cruda: c24-CONSTRUCTED-SPB-41-actualizado.jpg sha256=be91673869ef34fd2018df8252547373a22368f383f391f433c0cb35aff0aea7
+paso: SPB-41 (copia, c24) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: b2b286bc523ba76083bca438d77e1cc87ab00432e04f42a2708a70725ddb6e08
+
+recorte: c24-CONSTRUCTED-SPB-41-hueco-18.png
+cruda: c24-CONSTRUCTED-SPB-41-hueco-18.jpg sha256=510ee5a0e6df4fee78a52a1fd12365e8af2f945d3482e5bf1d4923d0be8ab419
+paso: SPB-41 (copia, c24) · CONSTRUCTED
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: dfa728f025320df61eaf8c533de9f740ec905548fbfc6f3518e28c50ccdbcb62
+
+recorte: c24-CONSTRUCTED-SPB-41-restaurado.png
+cruda: c24-CONSTRUCTED-SPB-41-restaurado.jpg sha256=d15891e94bf5b70bfa95c2bc3875d34135bf51eecfe18f5d66e01a5dbb4bbb11
+paso: SPB-41 (copia, c24) · CONSTRUCTED
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: a6fc73d5e6f57065a8c3579e68601060bb23efd0d364326b6fa757c7ec9d6382
+
+recorte: c24-CONSTRUCTED-SPB-41-tooltip-restaurar.png
+cruda: c24-CONSTRUCTED-SPB-41-tooltip-restaurar.jpg sha256=cf20df3e6d74ebc7af9009997bcdfe01c7a8f5f6bd4784042ccbd96d2882ac0d
+paso: SPB-41 (copia, c24) · CONSTRUCTED
+rectangulo: 0,0,395,79
+tapado: ninguno
+sha256-recorte: 4ac0f3b8219afc67f8ddc6f5a5d6c74e14d2177d6bf48067634af428e65ad191
+
+recorte: c25-CONSTRUCTED-SPB-41-gemela-actualizado.png
+cruda: c25-CONSTRUCTED-SPB-41-gemela-actualizado.jpg sha256=08db00aab2a8cee70a747b071c21cdc0aaaf6a79bac21e0e233ee8f694143e5f
+paso: SPB-41 (gemela, c25) · CONSTRUCTED
+rectangulo: 0,0,1192,105
+tapado: ninguno
+sha256-recorte: 1940cd3e61b0ed734f339dbdb82104106ba599f23b39998a04c099c04aec0624
+
+recorte: c25-CONSTRUCTED-SPB-41-gemela-hueco-18-tooltip.png
+cruda: c25-CONSTRUCTED-SPB-41-gemela-hueco-18-tooltip.jpg sha256=aab39d5468aac04b989d2ac6562cda53df90c2137371f4ef141794faec6219e8
+paso: SPB-41 (gemela, c25) · CONSTRUCTED
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 1dda3756f3a8b58400cbf56a9238e13c8e57753bdb65afa09a83e58cbb6fe64d
+nota: el tooltip de «Restaurar» se ve con una fila de botones del pie solapada (M-13 de la revision independiente)
+
+recorte: c25-CONSTRUCTED-SPB-41-gemela-restaurado.png
+cruda: c25-CONSTRUCTED-SPB-41-gemela-restaurado.jpg sha256=d0950e2a634faa83e0f83c64cc89f829c7e20aecd7c6c173f9c2005839c387ee
+paso: SPB-41 (gemela, c25) · CONSTRUCTED
+rectangulo: 0,0,578,79
+tapado: ninguno
+sha256-recorte: 357484c64cf39223d6bd2ba73d8a617fe32aa011f7290dac08243570e529554d
+
+recorte: c26-CONSTRUCTED-SPB-42a-actualizado.png
+cruda: c26-CONSTRUCTED-SPB-42a-actualizado.jpg sha256=e2b22fd5d4f5a445dffef09eb310185102d6761766611015ec845ac09e130106
+paso: SPB-42 (a) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: b2b286bc523ba76083bca438d77e1cc87ab00432e04f42a2708a70725ddb6e08
+
+recorte: c26-CONSTRUCTED-SPB-42a-cerrado-sin-actualizar.png
+cruda: c26-CONSTRUCTED-SPB-42a-cerrado-sin-actualizar.jpg sha256=587a9195e3d9fa3bc24bb3eb98d234402efb2327a3c1efea6130a04c6ccd9c22
+paso: SPB-42 (a) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 0e5a405d853a3c2e3d3ef94ccbe4a6459aaa096ba5b3429d36de735d2a03a113
+
+recorte: c26-CONSTRUCTED-SPB-42a-hueco-12.3456.png
+cruda: c26-CONSTRUCTED-SPB-42a-hueco-12.3456.jpg sha256=d2b5f290564122854d212b7636b9eba7061e7fa540c8bd75ccd2184b86f0bec6
+paso: SPB-42 (a) · CONSTRUCTED
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 0c620399d8a6774a1fc4266d546b1ef671743c06c5992ce1d22a3bc446e54f25
+
+recorte: c26-CONSTRUCTED-SPB-42a-incidente-clic.png
+cruda: c26-CONSTRUCTED-SPB-42a-incidente-clic.jpg sha256=95468670284cebf042b05db7beb04451525acd70fbb9d0e599b35d4525a05678
+paso: SPB-42 (a) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 69c4070cefb3bea23721089228894c00fd2a202cca43ba91e7afe30213f7bdca
+
+recorte: c26-CONSTRUCTED-SPB-42a-pasar-caja-sin-cambios.png
+cruda: c26-CONSTRUCTED-SPB-42a-pasar-caja-sin-cambios.jpg sha256=53e5c6c96ebf5bc057e3a111fdb831838d2b3bd7aa7fc5df7c8ea60def219633
+paso: SPB-42 (a) · CONSTRUCTED
+rectangulo: 0,0,554,55
+tapado: ninguno
+sha256-recorte: 74fc49906af5b2b727e7ad0cbedba18a13f0a6722cfb258b7dad818d0c8a7b3a
+
+recorte: c26-CONSTRUCTED-SPB-42a-pasar-caja.png
+cruda: c26-CONSTRUCTED-SPB-42a-pasar-caja.jpg sha256=45a9e38e292e3e22f13a9386a854841744303c45e6eaee3f4771870b1ab61143
+paso: SPB-42 (a) · CONSTRUCTED
+rectangulo: 0,0,332,62
+tapado: ninguno
+sha256-recorte: 35b48c1616b472fd08d0f331a2270f17cbd72dbde1ba820021593efa0efe5e92
+
+recorte: c26-CONSTRUCTED-SPB-42a-rackeditar-actualizado.png
+cruda: c26-CONSTRUCTED-SPB-42a-rackeditar-actualizado.jpg sha256=b6fffe6af063c932e201929ff53ccaeeef2a53e48b4e361182cb65171c49d61e
+paso: SPB-42 (a) · CONSTRUCTED
+rectangulo: 0,9,1192,116
+tapado: ninguno
+sha256-recorte: 3939dacf8bdda5501e8d38d4295f8cc104f03bca45d7d522cc5bb314ab1b5192
+
+recorte: c26-CONSTRUCTED-SPB-42a-rackeditar-pasar-caja.png
+cruda: c26-CONSTRUCTED-SPB-42a-rackeditar-pasar-caja.jpg sha256=b1546d608c4612d635ae666aa42568920dac7f9d946cfc729b458f56a9a7df2d
+paso: SPB-42 (a) · CONSTRUCTED
+rectangulo: 0,0,332,62
+tapado: ninguno
+sha256-recorte: 551ea7fd359e91d354a348a88e79c4785612a3c61f07ebc79622119041e67c05
+
+recorte: c26-CONSTRUCTED-SPB-42b-actualizado.png
+cruda: c26-CONSTRUCTED-SPB-42b-actualizado.jpg sha256=ceccbe00e6a835a8c555036fab129dfa33d102f3896e6f2e338d30e78fc5e03d
+paso: SPB-42 (b) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: da5e02f5779bfd5de1f896a590a09e467b7ee75a962042921537b19ded0aa073
+
+recorte: c26-CONSTRUCTED-SPB-42b-ambos-74.803.png
+cruda: c26-CONSTRUCTED-SPB-42b-ambos-74.803.jpg sha256=5381c23bd10b87243da9001c83e0685ab615ef9063501c83e6b89adffd6ea66a
+paso: SPB-42 (b) · CONSTRUCTED
+rectangulo: 0,0,332,126
+tapado: ninguno
+sha256-recorte: 16bbf369140670ecd436cf7981d31a4a22897960664fd60515ae68b166ea2b4e
+
+recorte: c26-CONSTRUCTED-SPB-42b-ambos-lados.png
+cruda: c26-CONSTRUCTED-SPB-42b-ambos-lados.jpg sha256=b93c7deeabeec6d224da7b02285893bbd7e88116e336ff73e823804d63948175
+paso: SPB-42 (b) · CONSTRUCTED
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 24df7bfe3a28d0fe83e2a065eecb276e8c0c6d337aefba8772dae7d64648eeb4
+nota: el selector «Ambos lados» queda fuera del recorte; que estaba elegido lo anota el registro (M-13 de la revision independiente)
+
+recorte: c26-CONSTRUCTED-SPB-42b-ambos-mixta-zoom.png
+cruda: c26-CONSTRUCTED-SPB-42b-ambos-mixta-zoom.jpg sha256=1eb0115712df10187434162226cf5406154a68e185b02a0bd42ff68c68780846
+paso: SPB-42 (b) · CONSTRUCTED
+rectangulo: 0,0,332,126
+tapado: ninguno
+sha256-recorte: a74eeb95442d4d3f09b24466334fb9aa63890512ffa3625ec66f9e9fd4aa21c3
+
+recorte: c26-CONSTRUCTED-SPB-42b-lado-B-74.8034.png
+cruda: c26-CONSTRUCTED-SPB-42b-lado-B-74.8034.jpg sha256=f491e47b9898ce334e4c12f84b0e07bc753e81cf51172f55d9d2da36995965f3
+paso: SPB-42 (b) · CONSTRUCTED
+rectangulo: 0,0,332,126
+tapado: ninguno
+sha256-recorte: e091b1c01ce6cba609f152f72ae81a0f7bff11f04eaf30a552a8ec874f388409
+
+recorte: c26-CONSTRUCTED-SPB-42b-preparacion-actualizada.png
+cruda: c26-CONSTRUCTED-SPB-42b-preparacion-actualizada.jpg sha256=5d2748c8209e9889ac97a0d6a6a3c0e40f21099ded995922611e957d1fe7a122
+paso: SPB-42 (b) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: da5e02f5779bfd5de1f896a590a09e467b7ee75a962042921537b19ded0aa073
+
+recorte: c27-SPB-44-actualizado.png
+cruda: c27-SPB-44-actualizado.jpg sha256=5abda355c578bdd4fa43f52bb0487a7e98aaa2af73bacd1ceb3877f90c5dcdcc
+paso: SPB-44
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: f7a27195ea04b2cdd6b8f6e8980eb4a9908b707b3f42dabb79e72026904b9610
+
+recorte: c27-SPB-44-comprobar-ahora.png
+cruda: c27-SPB-44-comprobar-ahora.jpg sha256=dbf25b3e22b3a28fd08883cbc48de88a006daa165a806f667698d178430bd247
+paso: SPB-44
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: a5fe8a24fe56dafe9641f6fedf8b2c0d1ed02f5626406fe408410925407ca165
+
+recorte: c27-SPB-44-editar-listo.png
+cruda: c27-SPB-44-editar-listo.jpg sha256=07b6f0b916c1eb78083f25466949135ad33c770ed86e72f2b64eecd0bab24450
+paso: SPB-44
+rectangulo: 0,0,166,205
+tapado: ninguno
+sha256-recorte: 5aea92e68f6f3b7768af4cd290e7825388948c1c15f35e5871e425d6bc40f9b7
+
+recorte: c27-SPB-44-editar-todo-71.png
+cruda: c27-SPB-44-editar-todo-71.jpg sha256=b78a4cadf6967e4a610817da9ddf2f173ea9f62875d4b09310e42ddc4da91377
+paso: SPB-44
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: c6b3751f71268d6a8c9d7c929d6353b68bdf49009b57eb65deb5df408fc60cae
+
+recorte: c27-SPB-44-handles-definiciones.png
+cruda: c27-SPB-44-handles-definiciones.jpg sha256=90af4c5cc9f4bd4f5da9b46e9298c1f038717e95676d612ea95f7373529042a6
+paso: SPB-44
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 470b469f2775a7fdeba6d4845f766e18103971fcf967170ff9b81ec4b7f11b16
+
+recorte: c27-SPB-44-listo-para-editar.png
+cruda: c27-SPB-44-listo-para-editar.jpg sha256=ad00aa9505cd29ccabeaffc5b2017bda38660ed972e59892a086be53cc5993bb
+paso: SPB-44
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 7436749e6dd2584feae053a2040f935c37c1e653869d5155dd9790af818e7a63
+
+recorte: c27-SPB-44-modificado.png
+cruda: c27-SPB-44-modificado.jpg sha256=e6a20c43d2b7ab92792d29c86d521f10a8538995cdb05e2eaa48e2291728e107
+paso: SPB-44
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 8ea63239f1995cc557104317c8a2c6c2bd5dd163fba268495d7e9acaad8b186d
+
+recorte: c27-SPB-44-seleccion-lateral-73.png
+cruda: c27-SPB-44-seleccion-lateral-73.jpg sha256=2f34d389410cf865c69b346f92c9659f1a49c6585a0bff64fd39d491921e8388
+paso: SPB-44
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 68468e9ec057f56dc2c0d73d0cfafdf42fd78a0b1f21f837a1f0932170159660
+
+recorte: c27-SPB-44-sin-editar-zoom.png
+cruda: c27-SPB-44-sin-editar-zoom.jpg sha256=1cba4e38e996f824a72f474055743be8d3c9e3c0022695e7fa2728a2b2af32d7
+paso: SPB-44
+rectangulo: 0,0,166,205
+tapado: ninguno
+sha256-recorte: 6534d5a331beca9497b8fc39c6f659cca4052bf8122b07967c21ac5c87f151c8
+
+recorte: c27-SPB-44-tras-rcdump-obsoleto.png
+cruda: c27-SPB-44-tras-rcdump-obsoleto.jpg sha256=8d994d0a7531a0d11780e8b57e424a48e23eee91292369345506d4e139e83b2e
+paso: SPB-44
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 1c7f2d09561551c98e52ce28833eb52575d730de8159dda0579b72d6502813aa
+
+recorte: c27-SPB-44-ventana-71-aplicado.png
+cruda: c27-SPB-44-ventana-71-aplicado.jpg sha256=b9b1382826c6177a220b85400c38a80472d7ad11044e5ee7fa596b597d17c12f
+paso: SPB-44
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: c5497e2e566b44db9d201f4d4e5d9658429c3c7e4774c589ef2770da33d15c03
+
+recorte: c28-incidente-array-historial.png
+cruda: c28-incidente-array-historial.jpg sha256=c00c5a534173a16236fb2c6b17a3d83c15bbc33409ab78a060929b8c7f47ae78
+paso: Paso c27 → c28
+rectangulo: 0,0,870,460
+tapado: ninguno
+sha256-recorte: b9319332d8fd35270ff11b91847d5ced5481d63190c32afbe0a3d9d71f24e7c1
+
+recorte: c28-SPB-53-actualizado-con-avisos.png
+cruda: c28-SPB-53-actualizado-con-avisos.jpg sha256=19fe2253e1335283b4e784494448c1dccff5ead7cb2af36f5da90ff95d524d00
+paso: SPB-53
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: f805acfa10cd7e71b98873a5c508b5597ba88540a1943fb14d000a79e4158d61
+
+recorte: c28-SPB-53-aviso-zoom.png
+cruda: c28-SPB-53-aviso-zoom.jpg sha256=a92ace79470883d8522a92c59c910d04b62898d82ccf1a3406a5d6cac97d2ee8
+paso: SPB-53
+rectangulo: 0,0,222,391
+tapado: ninguno
+sha256-recorte: 800d2c6546e450d914b8c348cb7a6be9c8be359d905a5bc4401fd5171ff97ba7
+
+recorte: c28-SPB-53-modificado.png
+cruda: c28-SPB-53-modificado.jpg sha256=bc4bad21870321e16bab86abf4e60372dbb9f3ea4207f47276d0b55bf7b5e3d6
+paso: SPB-53
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 5f04ad8eaf4906ed3a145b6d4ce4bc50dc49b86bc3805d8359c31c47dcc70ebe
+
+recorte: c28-SPB-53-nombre-PB-E.png
+cruda: c28-SPB-53-nombre-PB-E.jpg sha256=a3c0d43d2b6bde40751ed2e05a05b545273b8e92244fe604c67b687bd2fb1ef2
+paso: SPB-53
+rectangulo: 0,0,332,79
+tapado: ninguno
+sha256-recorte: 452d17d9e0877bb6fb2e3bc79396f29bbe93f4c713d80f9ab36681f2d2052d34
+
+recorte: c29-SPB-54-actualizado.png
+cruda: c29-SPB-54-actualizado.jpg sha256=c56b43bbcdeade26d08271b41c99e942fe88d8365af1fe120a95f54c7b87f940
+paso: SPB-54
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 06d61601c94287e06c508fcb8696475eca3bf4eaa71a66f1579c5b4642adfb1b
+
+recorte: c29-SPB-54-modificado.png
+cruda: c29-SPB-54-modificado.jpg sha256=8daff0dae56d35af13c652a1fa0223de9d9d4d624cc5a03decb257c206f93f5b
+paso: SPB-54
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 5f04ad8eaf4906ed3a145b6d4ce4bc50dc49b86bc3805d8359c31c47dcc70ebe
+
+recorte: c29-SPB-54-nombre-PB-F2.png
+cruda: c29-SPB-54-nombre-PB-F2.jpg sha256=eb55124fc96ef80ac6f99ff44d292962003f5788fff640caf4b51a605ea798c8
+paso: SPB-54
+rectangulo: 0,0,332,79
+tapado: ninguno
+sha256-recorte: 9e5f8c3685cdbcacaea4068780079a35e80e5fb34e89be7e0f571e61281b6fce
+
+recorte: c29-SPB-54-REDO.png
+cruda: c29-SPB-54-REDO.jpg sha256=303e7d00bf03a3454fa46091492a63aed4fb0699c90d34ea05d4a5a1d9610d7f
+paso: SPB-54
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 25b4deb5f2ee0c089585e899aaa28e3f90765347d23c8882e0b0007a4dcb4bae
+
+recorte: c29-SPB-54-U.png
+cruda: c29-SPB-54-U.jpg sha256=5217d8887c58e352571764e800ca7f92799a9299622681f03f5f380b4ef838a6
+paso: SPB-54
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: dd80bf61a607c20425402348a475368e408986cf1f0013e42a55c040925cae0c
+
+recorte: c30-CONSTRUCTED-SPB-55-actualizado.png
+cruda: c30-CONSTRUCTED-SPB-55-actualizado.jpg sha256=e203e0b162c414093d67b6e6321f345316d95b5edf4ca8aa262172a2e6838670
+paso: SPB-55 · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 06d61601c94287e06c508fcb8696475eca3bf4eaa71a66f1579c5b4642adfb1b
+
+recorte: c30-CONSTRUCTED-SPB-55-frente-1-activo.png
+cruda: c30-CONSTRUCTED-SPB-55-frente-1-activo.jpg sha256=935ea91698eb0d8520551aee0e850cc8d42e5a025f9c04757d9da87a8182cbdf
+paso: SPB-55 · CONSTRUCTED
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: ffa9d74ee1ac6a3a219dbf715b004588e6c30a9651ec295633232b12e471fcbb
+
+recorte: c30-CONSTRUCTED-SPB-55-lado-B-marcado.png
+cruda: c30-CONSTRUCTED-SPB-55-lado-B-marcado.jpg sha256=d45c22535d300d0941ae101a4f4c786f51e75ff74b03b6678626e6465da5e14c
+paso: SPB-55 · CONSTRUCTED
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 19f2fd0a0dfd58524369e029f4c26055f35c0314a1f64244694be2cfd8d40436
+
+recorte: c30-CONSTRUCTED-SPB-55-modificado.png
+cruda: c30-CONSTRUCTED-SPB-55-modificado.jpg sha256=d7255a0f48986209bdd82fb581d4525d4e7068727632ccc7ed4c053144ec11cf
+paso: SPB-55 · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 5f04ad8eaf4906ed3a145b6d4ce4bc50dc49b86bc3805d8359c31c47dcc70ebe
+
+recorte: c30-CONSTRUCTED-SPB-55-REDO.png
+cruda: c30-CONSTRUCTED-SPB-55-REDO.jpg sha256=78bcc40c139c5641c8d665c6d3ff38e483eddf29243b39c75ebef6133f66e3eb
+paso: SPB-55 · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 688ead1cc1373599f0ecdc656ad4c7f809bd0587d3c6776df27fc7ce20a4a95c
+
+recorte: c30-CONSTRUCTED-SPB-55-U.png
+cruda: c30-CONSTRUCTED-SPB-55-U.jpg sha256=5217d8887c58e352571764e800ca7f92799a9299622681f03f5f380b4ef838a6
+paso: SPB-55 · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: dd80bf61a607c20425402348a475368e408986cf1f0013e42a55c040925cae0c
+
+recorte: c31-SPB-62-comprobar-ahora-zoom.png
+cruda: c31-SPB-62-comprobar-ahora-zoom.jpg sha256=529383577cdb9de4a74465a7af4c4124950c7d01eafa6301836d840906d5e154
+paso: SPB-62
+rectangulo: 0,0,222,391
+tapado: ninguno
+sha256-recorte: 5d6bd7d77c853f45e603caa2e566909560dad4ea0ea1d3de4441927fc25e2c55
+
+recorte: c31-SPB-62-comprobar-ahora.png
+cruda: c31-SPB-62-comprobar-ahora.jpg sha256=d29111c0ba96ce9cc8077a71eeab276af20ca22095d27264247a9a0258cf9da7
+paso: SPB-62
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: d782187eedb403fb634ae1391ee943e1f4808f888b7e5a04543c7bfcb1d53b65
+
+recorte: c31-SPB-62-erase.png
+cruda: c31-SPB-62-erase.jpg sha256=966fcc1ea5e4995d50b1db6d330cbd4e4ea027683cf9321efe23edd2f112e9d1
+paso: SPB-62
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 55a9360632912b0064b4b4de197b40ca24e3b2cfc04c669ca0f063ec55a6168f
+
+recorte: c31-SPB-62-listo-para-editar.png
+cruda: c31-SPB-62-listo-para-editar.jpg sha256=9dd3a9f50329ac7718ff40aceb6611ce933ab45b54fa9d10196284f86f5a7e3e
+paso: SPB-62
+rectangulo: 0,0,166,205
+tapado: ninguno
+sha256-recorte: c541ac91c2e32bfc68db8edabf4deb9c0eb123fc625b05c49cfb5a920c9dadc2
+
+recorte: c31-SPB-62-seleccion-lateral-1.png
+cruda: c31-SPB-62-seleccion-lateral-1.jpg sha256=b62da140ca07eab014b081420a8b0390205f3d78a3571f7234f093b5394bba13
+paso: SPB-62
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 68468e9ec057f56dc2c0d73d0cfafdf42fd78a0b1f21f837a1f0932170159660
+
+recorte: c31-SPB-62-tras-erase-obsoleto.png
+cruda: c31-SPB-62-tras-erase-obsoleto.jpg sha256=d7b5ca7697a18916fcf7ffd8f9f3d4f46cee8677af6c425b04092ad7a70c6a4f
+paso: SPB-62
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: c3f0a0e4b396bd5c45f599b326d94cd0e3c5674461ea4e54aecb50baad87d4d6
+
+recorte: c32-SPB-63-comprobar-ahora.png
+cruda: c32-SPB-63-comprobar-ahora.jpg sha256=e00a67ada852658b6ef11b7570c60b67914eecee9c2e76e2907e6419b76fe1c6
+paso: SPB-63
+rectangulo: 0,0,222,422
+tapado: ninguno
+sha256-recorte: 919e40ecff0c5030d1cceec971961b2388959f55007f3e55e60ba4a4bae19fbe
+
+recorte: c32-SPB-63-extra-actualizar-varios.png
+cruda: c32-SPB-63-extra-actualizar-varios.jpg sha256=a7e253f99a806318df2784b268276f9c0d1c90071b39d2d049142218704f0331
+paso: SPB-63
+rectangulo: 0,0,222,422
+tapado: ninguno
+sha256-recorte: ecbe3d8fab2bca2a7eef407198c5faa59743c515d33933160b9ecd80abff1512
+
+recorte: c32-SPB-63-extra-modificado-escala-2.png
+cruda: c32-SPB-63-extra-modificado-escala-2.jpg sha256=c7669249c03d49b0391a39558be2e2201dd47c68fb894f8c817e0bd893a81d3a
+paso: SPB-63
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: a350b1f90cfb36426cbc9d582512dc07bec2d341948c916093021e5e78e51c0f
+
+recorte: c32-SPB-63-listo-para-editar.png
+cruda: c32-SPB-63-listo-para-editar.jpg sha256=18634651e4d1f5d81c8f29a3ce88540610c6889366bb9f62fb623f79ee39cc58
+paso: SPB-63
+rectangulo: 0,0,222,391
+tapado: ninguno
+sha256-recorte: 0f2fdb7a380a82f9fb0d675ef3b38b31f73ed0ccfd0572e152b3bfd9c9f0590b
+
+recorte: c32-SPB-63-seleccion-lateral-1_1.png
+cruda: c32-SPB-63-seleccion-lateral-1_1.jpg sha256=68da0796aa8373c0d6a26913acee624e2e791f0630f1d9cbc8d55579bb25644f
+paso: SPB-63
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: b2e68503f60018453ecd410b9d1fc45d14824e013efcec66664d7a7f0c8b6fd7
+
+recorte: c33-SPB-64-comprobar-ahora.png
+cruda: c33-SPB-64-comprobar-ahora.jpg sha256=63bf5bf2e406b653c84ab776b9dfae4912fb8814a2cc62b9b81ed5ee0adf654e
+paso: SPB-64
+rectangulo: 0,0,222,422
+tapado: ninguno
+sha256-recorte: a6056faa0cc1a93ca3f79e0a50494bd5b8597df59f6fb1421eaaceca282c404d
+
+recorte: c33-SPB-64-listo-para-editar.png
+cruda: c33-SPB-64-listo-para-editar.jpg sha256=f5ca2938e712c00641a4cf93b5c2a09a4c2d6881a628ef582fa87a5e79b343e0
+paso: SPB-64
+rectangulo: 0,0,222,391
+tapado: ninguno
+sha256-recorte: 3a66108971aaddf073e34bd6d4f6a3e4bfec38d0ebc0b799e4d456635ac0a4a7
+
+recorte: c33-SPB-64-seleccion-lateral-1.png
+cruda: c33-SPB-64-seleccion-lateral-1.jpg sha256=91f2e089cf295e7f73ad7469fe2b0ae3ba4e3f6a289331fe04a3d745aff95796
+paso: SPB-64
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 68468e9ec057f56dc2c0d73d0cfafdf42fd78a0b1f21f837a1f0932170159660
+
+recorte: c33-SPB-64-volver-a-leer.png
+cruda: c33-SPB-64-volver-a-leer.jpg sha256=899a8cd66280f4f7b085d19289007913d40152589d4d43f1975c0cebb85bbcd4
+paso: SPB-64
+rectangulo: 0,0,222,422
+tapado: ninguno
+sha256-recorte: acc1f3864f8f709c8675abedfe13e6f8697b8db9839cc06e128bef4a64d7dc4f
+
+recorte: c34-CONSTRUCTED-SPB-45-layout-S.png
+cruda: c34-CONSTRUCTED-SPB-45-layout-S.jpg sha256=ef091d30cec54b08cb8592634606768760ccfe381e8b97309e4e57af1d660438
+paso: SPB-45 (c34) · CONSTRUCTED · STOP de §4.12
+rectangulo: 0,11,1192,116
+tapado: 232,50,404,65 — nombres de presentaciones (layouts) del proyecto de origen
+sha256-recorte: f5f05be3a8ef71f4da5a8bdb53556a2f44e7a26b4cf604e7658c5dde9277bfc4
+
+recorte: c34-CONSTRUCTED-SPB-45-pspace-already.png
+cruda: c34-CONSTRUCTED-SPB-45-pspace-already.jpg sha256=f50ae5d708fbddaea33ca9853a0c40214397eec04beebf595097d75ec660b127
+paso: SPB-45 (c34) · CONSTRUCTED · STOP de §4.12
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 59a343f74c9fffceafce0274e72ffbabb84deba89690b6801b0bb5c74a489044
+
+recorte: c36-CONSTRUCTED-SPB-46-actualizado.png
+cruda: c36-CONSTRUCTED-SPB-46-actualizado.jpg sha256=5e42ed80253b3c7132e5bca38247e76d6d5093a024a0e4c2a8bec97957e5f9c8
+paso: SPB-46 (copia, c36) · CONSTRUCTED
+rectangulo: 0,0,222,422
+tapado: ninguno
+sha256-recorte: 3629467c91b158ad2374d8641a67d9ea4ce8da39a776b4a45eb707006451e5ec
+
+recorte: c36-CONSTRUCTED-SPB-46-block.png
+cruda: c36-CONSTRUCTED-SPB-46-block.jpg sha256=3aa49d783f76f5de4c830e9da3dac3c09a6addd17559478ef6bed88543e2f50e
+paso: SPB-46 (copia, c36) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 5fb76de12746eb265d14760fdbc40fbdca0d69d71b9dd4ac54a474beb6ca9a7e
+
+recorte: c36-CONSTRUCTED-SPB-46-insert.png
+cruda: c36-CONSTRUCTED-SPB-46-insert.jpg sha256=b8727fdedda743b31c4169135162f725af1212ab901d6df6d02dbb7d798fdc2e
+paso: SPB-46 (copia, c36) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: fffa7128c1a83968837505fda53159d319dd9b98924133ddf36ae75223ffd087
+
+recorte: c36-CONSTRUCTED-SPB-46-modificado.png
+cruda: c36-CONSTRUCTED-SPB-46-modificado.jpg sha256=eaef75a46961efd0a6d81b30681bf1537505fa5bd2b8122b11b54e521d443a70
+paso: SPB-46 (copia, c36) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 8ea63239f1995cc557104317c8a2c6c2bd5dd163fba268495d7e9acaad8b186d
+
+recorte: c36-CONSTRUCTED-SPB-46-zz-vacio.png
+cruda: c36-CONSTRUCTED-SPB-46-zz-vacio.jpg sha256=63ed7684cdbe85ed2c5e49f29df6e3a4d3fdb890d4bf6f99f4d1535a4c4ffc9d
+paso: SPB-46 (copia, c36) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 92590a6da17ff28efad6a15e9ccb7a592afa9cf012a527f3b23a0a6c34475b79
+
+recorte: c37-CONSTRUCTED-SPB-46-gemela-actualizado.png
+cruda: c37-CONSTRUCTED-SPB-46-gemela-actualizado.jpg sha256=a0db6a760e61f49a2ec93580a29028128c618701c1a28e3893b9c17405b346fb
+paso: SPB-46 (gemela, c37) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: f2bfa498f273f9db8c68b35fa48e2decee8ed371b9f72244abac2926c4a0661d
+
+recorte: c37-CONSTRUCTED-SPB-46-gemela-block.png
+cruda: c37-CONSTRUCTED-SPB-46-gemela-block.jpg sha256=3aa49d783f76f5de4c830e9da3dac3c09a6addd17559478ef6bed88543e2f50e
+paso: SPB-46 (gemela, c37) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 5fb76de12746eb265d14760fdbc40fbdca0d69d71b9dd4ac54a474beb6ca9a7e
+
+recorte: c37-CONSTRUCTED-SPB-46-gemela-insert.png
+cruda: c37-CONSTRUCTED-SPB-46-gemela-insert.jpg sha256=b8727fdedda743b31c4169135162f725af1212ab901d6df6d02dbb7d798fdc2e
+paso: SPB-46 (gemela, c37) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: fffa7128c1a83968837505fda53159d319dd9b98924133ddf36ae75223ffd087
+
+recorte: c37-CONSTRUCTED-SPB-46-gemela-zz-vacio.png
+cruda: c37-CONSTRUCTED-SPB-46-gemela-zz-vacio.jpg sha256=9b2464d3620744759155e48a25dd456a77edd80092a4f68dc7e3b898d820416b
+paso: SPB-46 (gemela, c37) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 285c088834a9e0dbc47be28eea3edbb2fa1671b67d5a26fac24a40f648d56377
+
+recorte: c38-CONSTRUCTED-SPB-57-capa-bloqueada-4.png
+cruda: c38-CONSTRUCTED-SPB-57-capa-bloqueada-4.jpg sha256=d41ba1bc2686098a08b6d5440b219493c69dc65a6280fcd2d615bb5ebc1ca605
+paso: SPB-57 (copia, c38) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 6cdddacdc97c2b64841186bd351d089a0850cb008848dd9181bb96f7ed9d30e1
+
+recorte: c38-CONSTRUCTED-SPB-57-layer-lo.png
+cruda: c38-CONSTRUCTED-SPB-57-layer-lo.jpg sha256=fcaa444f4bb69735b91c3872fa270357da39b265425eedf6f5a377eb6711288d
+paso: SPB-57 (copia, c38) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 99d1e8c09534c1c16b80de6bf70fa76289a109caf8c1ead06e8c382060697307
+
+recorte: c38-CONSTRUCTED-SPB-57-locked-layer.png
+cruda: c38-CONSTRUCTED-SPB-57-locked-layer.jpg sha256=a2587d08e30ccce644741abd273db7bfe6f066fd2e677268248b60c8870b9497
+paso: SPB-57 (copia, c38) · CONSTRUCTED
+rectangulo: 0,0,222,422
+tapado: ninguno
+sha256-recorte: ab1840b694b4d508911e48af9b49c2d5096771aeecec139ca7fcfd158c2f77c2
+
+recorte: c38-CONSTRUCTED-SPB-57-modificado.png
+cruda: c38-CONSTRUCTED-SPB-57-modificado.jpg sha256=f74117047298fb135ccc47d1b34710bca6d6d15f4cdb0f0b54940e422298a764
+paso: SPB-57 (copia, c38) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 4856cfbbfeac157d013df6a756c85b273947001cc628113dc4f35f902ba30a70
+
+recorte: c39-CONSTRUCTED-SPB-57-gemela-capa-bloqueada-4.png
+cruda: c39-CONSTRUCTED-SPB-57-gemela-capa-bloqueada-4.jpg sha256=b2f859b8ddbdcf03ee165a10250b8d79464a64acc741dc41d0d3e1c11df8154d
+paso: SPB-57 (gemela, c39) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 08d2766cf0c6ac66da97e8b2fb75871d422b4dae2d4a14343a7fa282a365835b
+
+recorte: c39-CONSTRUCTED-SPB-57-gemela-eOnLockedLayer.png
+cruda: c39-CONSTRUCTED-SPB-57-gemela-eOnLockedLayer.jpg sha256=614fcb4262422e043912afc12db30d6b69ac28d40c42de24c2257e4a0a5afe53
+paso: SPB-57 (gemela, c39) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 2592db237a38f49a370576cf49bc0f44b0130adcd3c3dd983e9d54f6bfe16277
+
+recorte: c39-CONSTRUCTED-SPB-57-gemela-layer-lo.png
+cruda: c39-CONSTRUCTED-SPB-57-gemela-layer-lo.jpg sha256=fcaa444f4bb69735b91c3872fa270357da39b265425eedf6f5a377eb6711288d
+paso: SPB-57 (gemela, c39) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 99d1e8c09534c1c16b80de6bf70fa76289a109caf8c1ead06e8c382060697307
+
+recorte: c40-CONSTRUCTED-SPB-58-erase-lateral-1.png
+cruda: c40-CONSTRUCTED-SPB-58-erase-lateral-1.jpg sha256=c569b2d5be6c1456268e877bd60a0ecfdda4c0b5d635575b06c4219c42921339
+paso: SPB-58 (copia, c40) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 8797e46b6bd9368685c4db2724c5b42fdd039c1f2f2de4f24444df8da9e9ef58
+
+recorte: c40-CONSTRUCTED-SPB-58-modificado.png
+cruda: c40-CONSTRUCTED-SPB-58-modificado.jpg sha256=21dbd3568bca63be066f7b1b6d0bee6d56b3af33f1c130b709255b643cd9a288
+paso: SPB-58 (copia, c40) · CONSTRUCTED
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: dd9d06ff7f717727cb7614c0fcaa26ea5c6c91b2d4202858bc66a5802886b088
+
+recorte: c40-CONSTRUCTED-SPB-58-purge-historial.png
+cruda: c40-CONSTRUCTED-SPB-58-purge-historial.jpg sha256=7af9a816ca631944bed668f16bd92eda71f41453a2ad410cf270d55c5d83d041
+paso: SPB-58 (copia, c40) · CONSTRUCTED
+rectangulo: 0,0,870,460
+tapado: ninguno
+sha256-recorte: 8cdc1d9e92512032cf5591e7ea381f2a77afd80dca641d106d53ac0bb5e9150d
+
+recorte: c40-CONSTRUCTED-SPB-58-purge-planta.png
+cruda: c40-CONSTRUCTED-SPB-58-purge-planta.jpg sha256=514edef8900b55e0e531c9076d0dfde5a404994cf246e6540cd737ae36b666be
+paso: SPB-58 (copia, c40) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 1f9b5bbbf34e393fda1cf32903181df248ee035c5585dfbf676fcc2463208772
+
+recorte: c40-CONSTRUCTED-SPB-58-ultimo-vinculo.png
+cruda: c40-CONSTRUCTED-SPB-58-ultimo-vinculo.jpg sha256=dbc190b7405f750b823affb960afbb560ab4d84282fd8772e3ab813fed2cd208
+paso: SPB-58 (copia, c40) · CONSTRUCTED
+rectangulo: 0,0,222,433
+tapado: ninguno
+sha256-recorte: 21eb341f944745ed2db137a3ca851652d12dbf2b82413513cfbe5c17a3c4c19c
+
+recorte: c41-CONSTRUCTED-SPB-58-gemela-purge-lateral-1.png
+cruda: c41-CONSTRUCTED-SPB-58-gemela-purge-lateral-1.jpg sha256=517c9c8d82d4accade64501844cb9ac62ac8eaffa7dd10515e1dcb2fe8b59ed0
+paso: SPB-58 (gemela, c41) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 1f28afd27db1c6c3fa2cd6978550c251240f3eb0389ed24dcd64db38088c98a4
+
+recorte: c41-CONSTRUCTED-SPB-58-gemela-purge-planta.png
+cruda: c41-CONSTRUCTED-SPB-58-gemela-purge-planta.jpg sha256=514edef8900b55e0e531c9076d0dfde5a404994cf246e6540cd737ae36b666be
+paso: SPB-58 (gemela, c41) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 1f9b5bbbf34e393fda1cf32903181df248ee035c5585dfbf676fcc2463208772
+
+recorte: c41-CONSTRUCTED-SPB-58-gemela-ultimo-vinculo.png
+cruda: c41-CONSTRUCTED-SPB-58-gemela-ultimo-vinculo.jpg sha256=3d3d20527a95fea9eb4b84be30fb3eb0df7fea8e2eb3e674ec7ff95d402e4a28
+paso: SPB-58 (gemela, c41) · CONSTRUCTED
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: 9b90cfc8301a476ecced29469a1581288ffb5e86ec9d50e2b34636535af17954
+
+recorte: c42-SPB-59-antes-editar-sin-borrador.png
+cruda: c42-SPB-59-antes-editar-sin-borrador.jpg sha256=79023f8d19d0c3aed3444e2b7f7e27a2082c5aeb3a80d6218a02a82f7f9689b5
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: e6a4265ddabde56bd2dcc0ed451f45b208dc815138b33f88b8ebd06145fbd19c
+
+recorte: c42-SPB-59-aplicado-al-borrador.png
+cruda: c42-SPB-59-aplicado-al-borrador.jpg sha256=450b4a12326b0174985fd39fb3d2a246d6b5fd5e7d02342b3eace6601f99edf9
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,0,646,64
+tapado: ninguno
+sha256-recorte: 34d71df4f2943ccc822dc4e8c21b630e7a1a3c1e2f4714367b7ffbcb964158ac
+
+recorte: c42-SPB-59-descartados.png
+cruda: c42-SPB-59-descartados.jpg sha256=703d1c1d7ce53d57baafcc66aa05a476748721cae5f0611a3b81a222d551c741
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,5,240,391
+tapado: ninguno
+sha256-recorte: 810302dfec47525bb01d4738709559921cd01d57564d77a7729018045b439b5b
+
+recorte: c42-SPB-59-descartar-pregunta.png
+cruda: c42-SPB-59-descartar-pregunta.jpg sha256=4873ef0881d2b98ce829c4cda4642d9ad59c9a3f0315ed1b119948ca2e95aa06
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,5,240,391
+tapado: ninguno
+sha256-recorte: 4d414efcfc6d5f20201a0f558d597597b8bfad803950b46cd3b85ba649f38527
+
+recorte: c42-SPB-59-deshacer-linea-ordenes-sin-undo.png
+cruda: c42-SPB-59-deshacer-linea-ordenes-sin-undo.jpg sha256=78052f7819887b88e456ae9644b91665981a7302f7ef97649a2ed0ca94a645b0
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,10,894,87
+tapado: ninguno
+sha256-recorte: 54f65952fdfe2f418820393732efd1237bea8bb249c66c4bd732c95cc7981217
+
+recorte: c42-SPB-59-editar-todo-72.png
+cruda: c42-SPB-59-editar-todo-72.jpg sha256=b7e476a9b5b56d4f71804e6ff19eb8f96dd7014df0582413a10d58429498e59d
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 14b14560c89139ddcfbaeda563a89f0c2101c7620f26ca91516ff4aa1b4c454a
+
+recorte: c42-SPB-59-lista-deshacer-zoom.png
+cruda: c42-SPB-59-lista-deshacer-zoom.jpg sha256=5a1875093f9c6992852012971de617081abfb84097048e4e622547d0d1ac67ee
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,0,158,410
+tapado: ninguno
+sha256-recorte: 354105830faf5f223dd0978531d18c2891da08271e381f5b554ed6fe88769dd9
+
+recorte: c42-SPB-59-listo-para-editar.png
+cruda: c42-SPB-59-listo-para-editar.jpg sha256=fe45b60b40171758a5466d8790f2f5912ba91982f0f9e2f667ceb89097170c2d
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 44f0bf79526ec221ecac8acf580b4b4552706fd7fa7635a950eafd15fb0a5960
+
+recorte: c42-SPB-59-modificado-antes-actualizar.png
+cruda: c42-SPB-59-modificado-antes-actualizar.jpg sha256=1700ac4e8280a2a551f87620b3df86fe953bc31db6432954870c5457532c059f
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 72d7f3d0760fc2fc1c398e9b6d5718cb65125593d36a52b6793fc069d2aa1d16
+
+recorte: c42-SPB-59-panel-tras-rcdump-post.png
+cruda: c42-SPB-59-panel-tras-rcdump-post.jpg sha256=57e1c394ff20e57ba9d6d21619f39229369264a33a02025408fda3872f875e64
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,5,240,391
+tapado: ninguno
+sha256-recorte: 6650fad8c81f872b09447ae5287587534586f8d3426bfa8802f4120589e4a154
+
+recorte: c42-SPB-59-prep-corte-69-lateral-73.png
+cruda: c42-SPB-59-prep-corte-69-lateral-73.jpg sha256=40ec7e3fff7eede88b01ac55e7a05488c2c4b49fdf095d1b3a321fb72b0e4c74
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,0,812,63
+tapado: ninguno
+sha256-recorte: dbf02dd561a2f6119c5f8c2ad2658c10ebe98eac04a88edeb27a3b1a17d4295b
+
+recorte: c42-SPB-59-prep-id18-completed.png
+cruda: c42-SPB-59-prep-id18-completed.jpg sha256=7cc40cccb4a43c5afebbc8b275d4d4825edd08668dc4ae44652dc51487aa8f32
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: fa6e0d204817ac3b37d2886d2dba5b64436cc9329702744619fe3862a8c6347e
+
+recorte: c42-SPB-59-tras-actualizar-linea-ordenes.png
+cruda: c42-SPB-59-tras-actualizar-linea-ordenes.jpg sha256=10c41c2f0cbfdee40c0033e13668eb3eb780629e00dca7bb5456885246442cd7
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: dc95ed46ae707e13acf4b1df1be4f2db78ce4bb18eef6dfa71a39620b9f0a6cd
+
+recorte: c42-SPB-59-tras-actualizar-panel-zoom.png
+cruda: c42-SPB-59-tras-actualizar-panel-zoom.jpg sha256=755e05bc61e13b66d66c2fe85f96da0970208732502a305195cd5ee7b66ab40e
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,5,274,447
+tapado: ninguno
+sha256-recorte: ee2323fda5a4fed3eb0df3e5b43753d58e5acd816874014bfafc5ef7509b86ef
+
+recorte: c42-SPB-59-tras-esc-linea-ordenes.png
+cruda: c42-SPB-59-tras-esc-linea-ordenes.jpg sha256=38c6e0831fad582e7cd41394980ce0c340f5c79d4015fbe405bf412679e7f60d
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,10,894,87
+tapado: ninguno
+sha256-recorte: 54f65952fdfe2f418820393732efd1237bea8bb249c66c4bd732c95cc7981217
+
+recorte: c42-SPB-59-ventana-71.png
+cruda: c42-SPB-59-ventana-71.jpg sha256=e717a0c843ad9794812b3ca37bd73ef65562fba38fc3240be7182c193444afee
+paso: SPB-59 · inyección `UNIT=2`
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 240feae8c2b9a6839b9ed7e3f6a32798b83fa8319b2d5ece9f6be511a6b061c0
+
+recorte: c43-SPB-60-antes-editar-sin-borrador.png
+cruda: c43-SPB-60-antes-editar-sin-borrador.jpg sha256=ce492db0b59dc193448ac360ca1e8ddd18c2929e4b63f346adc32c428abb5648
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 2cca6314fe3b4200ae39104d97f5b903003403056bcc91c19bba091c486805f2
+
+recorte: c43-SPB-60-aplicado-al-borrador.png
+cruda: c43-SPB-60-aplicado-al-borrador.jpg sha256=4824076730d99962c2f2d61ba4defe612a082db914691b3b3fd5ea4a52ccf6bf
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,0,554,55
+tapado: ninguno
+sha256-recorte: 3c9e7bb232cc1c3d5e154b5669d30df14c8e7c955814833d0abda581c3c0f89c
+
+recorte: c43-SPB-60-descartados.png
+cruda: c43-SPB-60-descartados.jpg sha256=703d1c1d7ce53d57baafcc66aa05a476748721cae5f0611a3b81a222d551c741
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,5,240,391
+tapado: ninguno
+sha256-recorte: 810302dfec47525bb01d4738709559921cd01d57564d77a7729018045b439b5b
+
+recorte: c43-SPB-60-descartar-pregunta.png
+cruda: c43-SPB-60-descartar-pregunta.jpg sha256=4873ef0881d2b98ce829c4cda4642d9ad59c9a3f0315ed1b119948ca2e95aa06
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,5,240,391
+tapado: ninguno
+sha256-recorte: 4d414efcfc6d5f20201a0f558d597597b8bfad803950b46cd3b85ba649f38527
+
+recorte: c43-SPB-60-deshacer-linea-ordenes-sin-undo.png
+cruda: c43-SPB-60-deshacer-linea-ordenes-sin-undo.jpg sha256=78052f7819887b88e456ae9644b91665981a7302f7ef97649a2ed0ca94a645b0
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,10,894,87
+tapado: ninguno
+sha256-recorte: 54f65952fdfe2f418820393732efd1237bea8bb249c66c4bd732c95cc7981217
+
+recorte: c43-SPB-60-editar-todo-72.png
+cruda: c43-SPB-60-editar-todo-72.jpg sha256=b7e476a9b5b56d4f71804e6ff19eb8f96dd7014df0582413a10d58429498e59d
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 14b14560c89139ddcfbaeda563a89f0c2101c7620f26ca91516ff4aa1b4c454a
+
+recorte: c43-SPB-60-lista-deshacer-zoom.png
+cruda: c43-SPB-60-lista-deshacer-zoom.jpg sha256=821c228bcbfaafb330bdbca4c709d3dac56e968955d531b89687df543512c323
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,0,158,410
+tapado: ninguno
+sha256-recorte: 13fa21aac548a95288d869b501af958513752a68368cb142bc7d336e0365f356
+
+recorte: c43-SPB-60-listo-para-editar.png
+cruda: c43-SPB-60-listo-para-editar.jpg sha256=2f1456ab29b9dd3955a35f3da9dcf273a798d66ace9b713ad0c559abf0e0ba8d
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 1a90b981b597245eda42986ecde88bae3b17f6d36470a78cef5e3a331d271ddb
+
+recorte: c43-SPB-60-modificado-antes-actualizar.png
+cruda: c43-SPB-60-modificado-antes-actualizar.jpg sha256=ef995303ddc94d191a8b40c13732b8e0b9405ff406767f5175db2ba4ab1fa6d2
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 0707b0e2049f23f55dead96c70f95adcae69e432b8d144495d2ae9ff60fb0acc
+
+recorte: c43-SPB-60-prep-corte-69-lateral-73.png
+cruda: c43-SPB-60-prep-corte-69-lateral-73.jpg sha256=40ec7e3fff7eede88b01ac55e7a05488c2c4b49fdf095d1b3a321fb72b0e4c74
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,0,812,63
+tapado: ninguno
+sha256-recorte: dbf02dd561a2f6119c5f8c2ad2658c10ebe98eac04a88edeb27a3b1a17d4295b
+
+recorte: c43-SPB-60-prep-id18-completed.png
+cruda: c43-SPB-60-prep-id18-completed.jpg sha256=152882105fead75412eaa391269dc67926cbd74acc7c861be642d745aed3e1b1
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,10,894,87
+tapado: ninguno
+sha256-recorte: ceb495fb37142df8d2b2b3e3028c1e3734efa697e41c3cb4cb7de0b52f4784ef
+
+recorte: c43-SPB-60-tras-actualizar-linea-ordenes.png
+cruda: c43-SPB-60-tras-actualizar-linea-ordenes.jpg sha256=10c41c2f0cbfdee40c0033e13668eb3eb780629e00dca7bb5456885246442cd7
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: dc95ed46ae707e13acf4b1df1be4f2db78ce4bb18eef6dfa71a39620b9f0a6cd
+
+recorte: c43-SPB-60-tras-actualizar-panel-zoom.png
+cruda: c43-SPB-60-tras-actualizar-panel-zoom.jpg sha256=a628ad369a77c5032f7469a1662b27bcf8528ef69ffd0144ae69457ca0d4ef58
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,5,274,447
+tapado: ninguno
+sha256-recorte: 14da32b75616b6ef17298d89101410a50ca25a9dedabc7bf040a458c312d422b
+
+recorte: c43-SPB-60-tras-comprobar-ahora-panel-zoom.png
+cruda: c43-SPB-60-tras-comprobar-ahora-panel-zoom.jpg sha256=7798e13886014e25c4676cb5df8fafe0a51ca4f3cb4a607d7ba0cf39b74ed2a8
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,5,274,447
+tapado: ninguno
+sha256-recorte: 4140a2fa4dc92d52beb5d4809c2a886482c371972e79b228a8e284cd86c6ab45
+
+recorte: c43-SPB-60-tras-esc-linea-ordenes.png
+cruda: c43-SPB-60-tras-esc-linea-ordenes.jpg sha256=38c6e0831fad582e7cd41394980ce0c340f5c79d4015fbe405bf412679e7f60d
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,10,894,87
+tapado: ninguno
+sha256-recorte: 54f65952fdfe2f418820393732efd1237bea8bb249c66c4bd732c95cc7981217
+
+recorte: c43-SPB-60-ventana-71.png
+cruda: c43-SPB-60-ventana-71.jpg sha256=e717a0c843ad9794812b3ca37bd73ef65562fba38fc3240be7182c193444afee
+paso: SPB-60 · inyección `SEAL=before`
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 240feae8c2b9a6839b9ed7e3f6a32798b83fa8319b2d5ece9f6be511a6b061c0
+
+recorte: c44-SPB-61-antes-editar-sin-borrador.png
+cruda: c44-SPB-61-antes-editar-sin-borrador.jpg sha256=0b11219a5da7651417f1bca3a90ba10ee86e2734f57211e43e086774323d1d48
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 2cca6314fe3b4200ae39104d97f5b903003403056bcc91c19bba091c486805f2
+
+recorte: c44-SPB-61-aplicado-al-borrador.png
+cruda: c44-SPB-61-aplicado-al-borrador.jpg sha256=4824076730d99962c2f2d61ba4defe612a082db914691b3b3fd5ea4a52ccf6bf
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,0,554,55
+tapado: ninguno
+sha256-recorte: 3c9e7bb232cc1c3d5e154b5669d30df14c8e7c955814833d0abda581c3c0f89c
+
+recorte: c44-SPB-61-descartar-borradores-ninguno.png
+cruda: c44-SPB-61-descartar-borradores-ninguno.jpg sha256=0663ea76052ed356d367fa66c8deeab0ad50cad7d2e74a1edff0675a14f3aaec
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,5,240,391
+tapado: ninguno
+sha256-recorte: 6e4e94447d627fc3f65a6b0d8105ce08d86cf0f21007652e820be031fa420080
+
+recorte: c44-SPB-61-deshacer-linea-ordenes-sin-undo.png
+cruda: c44-SPB-61-deshacer-linea-ordenes-sin-undo.jpg sha256=78052f7819887b88e456ae9644b91665981a7302f7ef97649a2ed0ca94a645b0
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,10,894,87
+tapado: ninguno
+sha256-recorte: 54f65952fdfe2f418820393732efd1237bea8bb249c66c4bd732c95cc7981217
+
+recorte: c44-SPB-61-editar-todo-72.png
+cruda: c44-SPB-61-editar-todo-72.jpg sha256=d0a73638253fa0545aae005e20f02a36d39a376a4fc47ba45f49cf1663db422b
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 14b14560c89139ddcfbaeda563a89f0c2101c7620f26ca91516ff4aa1b4c454a
+
+recorte: c44-SPB-61-lista-deshacer-zoom.png
+cruda: c44-SPB-61-lista-deshacer-zoom.jpg sha256=b9c49557773059a6d51dd93500d468719fd2150bda49733045c4d1bd30003f2f
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,0,158,410
+tapado: ninguno
+sha256-recorte: 044621a8dc46fa73cd04b35329c043d8b31f44d9a460de48afcb2ed4cdd8e0df
+
+recorte: c44-SPB-61-listo-para-editar.png
+cruda: c44-SPB-61-listo-para-editar.jpg sha256=5e2b4e0de49eadcf3203198e832bec906d77b532b3968aa34559ceacd63036d5
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 1a90b981b597245eda42986ecde88bae3b17f6d36470a78cef5e3a331d271ddb
+
+recorte: c44-SPB-61-modificado-antes-actualizar.png
+cruda: c44-SPB-61-modificado-antes-actualizar.jpg sha256=b4ea9bf8e1bd333af2e7a648e462988a7c4858894e721610c2241ab628685019
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 38,38,186,290
+tapado: ninguno
+sha256-recorte: 0707b0e2049f23f55dead96c70f95adcae69e432b8d144495d2ae9ff60fb0acc
+
+recorte: c44-SPB-61-pregunta-descartar-y-recargar-zoom.png
+cruda: c44-SPB-61-pregunta-descartar-y-recargar-zoom.jpg sha256=466e175cc9df4b84127495d5b8ab5c61dd149c53ad1570509e3abe5db7f50986
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,5,274,447
+tapado: ninguno
+sha256-recorte: cde97a48aea737c62b6dd54a9e8da5731dd054e6f4d39845d1f467e75f4725ac
+
+recorte: c44-SPB-61-prep-corte-69-lateral-73.png
+cruda: c44-SPB-61-prep-corte-69-lateral-73.jpg sha256=40ec7e3fff7eede88b01ac55e7a05488c2c4b49fdf095d1b3a321fb72b0e4c74
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,0,812,63
+tapado: ninguno
+sha256-recorte: dbf02dd561a2f6119c5f8c2ad2658c10ebe98eac04a88edeb27a3b1a17d4295b
+
+recorte: c44-SPB-61-prep-id18-completed.png
+cruda: c44-SPB-61-prep-id18-completed.jpg sha256=aba880bceb59b772e31546a3178937eea8e340f45ff09f4fdadaf66ca89c0047
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,10,894,87
+tapado: ninguno
+sha256-recorte: 869e77becadf546c337fa5b9713e854150d3a01f03563d44999e906968e620e9
+
+recorte: c44-SPB-61-tras-actualizar-linea-ordenes.png
+cruda: c44-SPB-61-tras-actualizar-linea-ordenes.jpg sha256=10c41c2f0cbfdee40c0033e13668eb3eb780629e00dca7bb5456885246442cd7
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,11,1192,116
+tapado: ninguno
+sha256-recorte: dc95ed46ae707e13acf4b1df1be4f2db78ce4bb18eef6dfa71a39620b9f0a6cd
+
+recorte: c44-SPB-61-tras-actualizar-panel-zoom.png
+cruda: c44-SPB-61-tras-actualizar-panel-zoom.jpg sha256=43698c1a5d428eebcb86afa949e03cf4f9bb3998ad37aa18012664ce08cbf025
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,5,274,447
+tapado: ninguno
+sha256-recorte: f107488f01ce9874b8fb4c47f898a76ea4b87889e328e7243cfc9dda34d83fd9
+
+recorte: c44-SPB-61-tras-comprobar-ahora-panel-zoom.png
+cruda: c44-SPB-61-tras-comprobar-ahora-panel-zoom.jpg sha256=cb128bb2d626ed71a7e0a8fe63eeed40339f60a5f1639f3992e8e6182dd071b1
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,5,274,447
+tapado: ninguno
+sha256-recorte: e599ee5dc9e2926f885ce6bc5e8f817e1a88992ee869f841fc4a30cc256d9c4f
+
+recorte: c44-SPB-61-tras-esc-linea-ordenes.png
+cruda: c44-SPB-61-tras-esc-linea-ordenes.jpg sha256=38c6e0831fad582e7cd41394980ce0c340f5c79d4015fbe405bf412679e7f60d
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,10,894,87
+tapado: ninguno
+sha256-recorte: 54f65952fdfe2f418820393732efd1237bea8bb249c66c4bd732c95cc7981217
+
+recorte: c44-SPB-61-tras-si-recargado-zoom.png
+cruda: c44-SPB-61-tras-si-recargado-zoom.jpg sha256=725b5e1ff5d55e991220b68fee53a8a4266186f77c98a8756c1c3b9925975f90
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,5,274,447
+tapado: ninguno
+sha256-recorte: 224aa678af27246fe482945ebdab6f200ff6bdb5b1a257e29165b0a8213e3eeb
+
+recorte: c44-SPB-61-ventana-71.png
+cruda: c44-SPB-61-ventana-71.jpg sha256=59781613bf9eb730dab2cf514fa371ea7ce37a957ccc157d28ec2ff0b5c1f078
+paso: SPB-61 · inyección `SEAL=after`
+rectangulo: 0,0,724,386
+tapado: ninguno
+sha256-recorte: 240feae8c2b9a6839b9ed7e3f6a32798b83fa8319b2d5ece9f6be511a6b061c0
+

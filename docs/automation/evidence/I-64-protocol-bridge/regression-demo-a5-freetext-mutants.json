@@ -1,0 +1,46 @@
+{
+  "Schema": "rackcad-i64-freetext-bridge-mutant-demo/v1",
+  "Purpose": "la autoprueba falla contra variantes debilitadas del verificador (mutantes generados por la sesion, no versionados)",
+  "Mutants": [
+    {
+      "Mutant": "m1-case-sensitive",
+      "Change": "re.IGNORECASE eliminado de la compilacion de terminos",
+      "MutantSha256": "e16cb3da638ca020786eee4139a9d861e569c90de6d29ea5ef921112879b6dc6",
+      "SelftestResult": "FAIL",
+      "FailedCases": [
+        "T19"
+      ]
+    },
+    {
+      "Mutant": "m2-no-word-boundary",
+      "Change": "sin limites de palabra (?<!\\w)/(?!\\w)",
+      "MutantSha256": "6ccd43d67742864788146d2b9c9f4e01fd13fdf4a7afd55f5c88268491ea2fc8",
+      "SelftestResult": "FAIL",
+      "FailedCases": [
+        "T20"
+      ]
+    },
+    {
+      "Mutant": "m3-no-exact-append",
+      "Change": "comprobacion de append exacto siempre verdadera",
+      "MutantSha256": "4d1d5fb0c0275177a79a4ea98a73840b135eec37b44e050ecf12a6b8e8924e92",
+      "SelftestResult": "FAIL",
+      "FailedCases": [
+        "T06",
+        "T21",
+        "T22"
+      ]
+    },
+    {
+      "Mutant": "m4-accepts-nan",
+      "Change": "parse_constant acepta NaN/Infinity",
+      "MutantSha256": "22134817ab92c5fa1313880bc90010543fb3b561e879297abcb97b4b58b806fe",
+      "SelftestResult": "FAIL",
+      "FailedCases": [
+        "T10",
+        "T11"
+      ]
+    }
+  ],
+  "AllMutantsDetected": true
+}

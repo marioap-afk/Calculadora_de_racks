@@ -1,0 +1,7 @@
+resultados en el TRX: 19107 {'Passed': 19107}
+RackCad.Tests.PushBackFullWrite                            resultados     0  metodos     0  {}
+RackCad.Tests.PushBackPilotUpdateEquivalenceGuardTests     resultados     0  metodos     0  {}
+RackCad.Tests.PushBackWritePathGuardTests                  resultados     0  metodos     0  {}
+RackCad.Tests.Workspace                                    resultados  3482  metodos  2102  {'Passed': 3482}
+RackCad.Tests.PushBackFullDraft                            resultados    10  metodos    10  {'Passed': 10}
+RackCad.Tests.PushBackDraftWriteGuardTests                 resultados     3  metodos     3  {'Passed': 3}

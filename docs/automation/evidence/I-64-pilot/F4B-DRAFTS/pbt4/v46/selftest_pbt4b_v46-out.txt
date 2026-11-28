@@ -1,0 +1,5 @@
+1. Skip: 477; con el motivo a mano: 68
+2. copias: 20, conjunto f72b1f2f7b9e7ce2fced8caef466ecec4d87016ec07333fb1ad91c1301e4fb58; revision: 90 entradas (68 a mano, 21 de guarda, 1 ayudantes)
+   con la directiva de Draft/ (MU): 10: PushBackFullReadPathFull.cs, WorkspaceAssociativeBookkeepingFull.cs, WorkspaceCommandAdvisorFull.cs, WorkspaceEditIntentHostFull.cs, WorkspaceLifecycleHostFull.cs, WorkspacePilotEditHostFull.cs, WorkspacePilotPrepareFull.cs, WorkspacePilotReconciliationHostFull.cs, WorkspacePilotUpdateHostFull.cs, WorkspacePilotUpdateRequestFull.cs
+   Env.OpenUndecidable: en la copia, lectura completa 1 y del piloto 0; en el original (sin tocar), del piloto 1
+3. Begin con una lectura del piloto en las copias de C-0: 0 []

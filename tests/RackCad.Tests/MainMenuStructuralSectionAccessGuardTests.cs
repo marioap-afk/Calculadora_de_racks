@@ -48,13 +48,18 @@ namespace RackCad.Tests
 
         private static string Flow => ReadPlugin("StructuralSectionCommandFlow.cs");
 
-        /// <summary>Los archivos del Plugin cuyo CODIGO —sin comentarios— menciona un simbolo.</summary>
-        private static string[] PluginFilesMentioning(string symbol) =>
-            Directory.GetFiles(PluginDirectory, "*.cs", SearchOption.AllDirectories)
+        /// <summary>
+        /// T7 per (revision I-1): los archivos del Plugin Y de la UI cuyo CODIGO menciona un simbolo, por su ruta desde la raiz. La pagina
+        /// «Perfil estructural» de la ventana RackCad es una segunda superficie del mismo inspector: una copia en la UI seria la misma
+        /// deriva que esta guarda impide en el Plugin.
+        /// </summary>
+        private static string[] ProductFilesMentioning(string symbol) =>
+            new[] { PluginDirectory, Path.Combine(RepoRoot().FullName, "src", "RackCad.UI") }
+                .SelectMany(directory => Directory.GetFiles(directory, "*.cs", SearchOption.AllDirectories))
                 .Where(path => !path.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar))
                 .Where(path => !path.Contains(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar))
                 .Where(path => CodeOnly(File.ReadAllText(path)).Contains(symbol, StringComparison.Ordinal))
-                .Select(Path.GetFileName)
+                .Select(path => Path.GetRelativePath(RepoRoot().FullName, path).Replace(Path.DirectorySeparatorChar, '/'))
                 .OrderBy(name => name, StringComparer.Ordinal)
                 .ToArray();
 
@@ -79,25 +84,37 @@ namespace RackCad.Tests
         public void TheMenuAndTheCommandRunTheSameFlow()
         {
             Assert.Contains("StructuralSectionCommandFlow.Run(document)", CodeOnly(Menu), StringComparison.Ordinal);
-            Assert.Contains("StructuralSectionCommandFlow.Run(", CodeOnly(Command), StringComparison.Ordinal);
+
+            // T7 per (I-64, septima tanda; el Owner: «Abren la ventana»): RACKSECCION abre la pagina «Perfil estructural» de la ventana RackCad, y
+            // la pagina dibuja por RACKSECCIONINSERTAR con la materializacion del MISMO flujo (Place). Reapuntada, no debilitada: sigue habiendo un
+            // solo flujo; el menu lo corre entero, la puerta de la ventana corre su materializacion, y RACKSECCION no reimplementa nada.
+            Assert.Contains("StructuralSectionCommandFlow.Place(", CodeOnly(ReadPlugin("RackSeccionCommands.Ventana.cs")), StringComparison.Ordinal);
+            Assert.DoesNotContain("StructuralSectionCommandFlow", CodeOnly(Command), StringComparison.Ordinal);
         }
 
         [Theory]
-        [InlineData("StructuralSectionInspectorWindow", "StructuralSectionCommandFlow.cs")]      // el inspector
-        [InlineData("StructuralSectionInsertService", "StructuralSectionCommandFlow.cs")]        // la insercion
-        [InlineData("WeightInPounds", "StructuralSectionCommandFlow.cs")]                        // el calculo de peso
-        [InlineData("SectionFidelity", "StructuralSectionCommandFlow.cs")]                       // la fidelidad
-        [InlineData("CsvStructuralSectionCatalogProvider", "StructuralSectionCatalogAccess.cs")] // la carga
-        [InlineData("StructuralSectionCatalogException", "StructuralSectionCatalogAccess.cs")]   // el fallo cerrado
-        public void ExactlyOnePlaceInThePluginOwnsEachPieceOfTheFlow(string symbol, string owner)
+        [InlineData("StructuralSectionInspectorWindow", "src/RackCad.Plugin/StructuralSectionCommandFlow.cs;src/RackCad.UI/StructuralSections/StructuralSectionInspectorWindow.cs")] // el inspector
+        [InlineData("StructuralSectionInsertService", "src/RackCad.Plugin/StructuralSectionCommandFlow.cs")] // la insercion
+        [InlineData("WeightInPounds", "src/RackCad.Plugin/StructuralSectionCommandFlow.cs;src/RackCad.UI/StructuralSections/StructuralSectionInspectorState.cs")] // el calculo de peso
+        [InlineData("SectionFidelity", "src/RackCad.Plugin/StructuralSectionCommandFlow.cs;src/RackCad.UI/StructuralSections/StructuralSectionInspectorState.cs")] // la fidelidad
+        [InlineData("CsvStructuralSectionCatalogProvider", "")] // la carga: StructuralSectionCatalogSource, en Application
+        [InlineData("StructuralSectionCatalogException", "")]   // el fallo cerrado: tambien alli
+        public void ExactlyOnePlaceInThePluginOwnsEachPieceOfTheFlow(string symbol, string owners)
         {
             // I-37D: la CARGA del catalogo y su fallo cerrado dejaron de ser exclusivos del flujo de secciones,
             // porque la linea Cantilever tambien se construye sobre el catalogo neutral. La respuesta fue EXTRAER
             // el duenno —StructuralSectionCatalogAccess— y RE-APUNTAR la guarda, no debilitarla: sigue habiendo
             // exactamente un sitio por pieza, y copiar la carga en un segundo archivo seguiria fallando aqui.
-            var files = PluginFilesMentioning(symbol);
+            //
+            // T7 per (revision I-1): la guarda mira tambien la UI, donde la pagina «Perfil estructural» es la segunda superficie del
+            // inspector. En la UI, el inspector, el peso y la fidelidad viven solo en el inspector clasico (su ventana y su estado, que la
+            // pagina usa tal cual). La carga y su fallo cerrado salieron del Plugin y de la UI a UN sitio de Application,
+            // StructuralSectionCatalogSource, que usan StructuralSectionCatalogAccess, la pagina, «Larguero», Cantilever y el editor clasico de
+            // Cantilever: ningun archivo del Plugin ni de la UI lee el catalogo ni decide su fallo (StructuralSectionDoorTests vigila el sitio
+            // de Application).
+            var files = ProductFilesMentioning(symbol);
 
-            Assert.Equal(new[] { owner }, files);
+            Assert.Equal(owners.Split(';', StringSplitOptions.RemoveEmptyEntries), files);
         }
 
         [Theory]
@@ -156,10 +173,12 @@ namespace RackCad.Tests
         public void TheCommandIsNowAThinEntryPoint()
         {
             // RACKSECCION sigue existiendo y sigue siendo el camino directo; lo que ya no tiene es el flujo.
+            // T7 per (el Owner: «Abren la ventana»): el camino directo lleva a la pagina «Perfil estructural» de la ventana RackCad, por el
+            // patron de sus atajos; sigue sin modal y sin flujo propio.
             var command = CodeOnly(Command);
 
-            Assert.Contains("[CommandMethod(\"RACKSECCION\")]", command, StringComparison.Ordinal);
-            Assert.Contains("StructuralSectionCommandFlow.Run(AcApplication.DocumentManager.MdiActiveDocument)",
+            Assert.Contains("[CommandMethod(\"RACKSECCION\", RackCadWindowShortcuts.WindowFlags)]", command, StringComparison.Ordinal);
+            Assert.Contains("RackCadWindowShortcuts.Open(document, new RackCadShortcutAsk(RackCadShortcutTarget.StructuralSection, null, null))",
                 command, StringComparison.Ordinal);
             Assert.DoesNotContain("ShowModalWindow", command, StringComparison.Ordinal);
         }
@@ -180,14 +199,20 @@ namespace RackCad.Tests
             // Y falla cerrada ANTES de abrir nada: no se enseña un inspector sobre datos que no validaron.
             Assert.True(guard < flow.IndexOf("new StructuralSectionInspectorWindow", StringComparison.Ordinal));
 
-            var access = ReadPlugin("StructuralSectionCatalogAccess.cs");
-            var handler = access.IndexOf("catch (StructuralSectionCatalogException", StringComparison.Ordinal);
+            // T7 per (revision I-1): la CAPTURA y sus palabras se mudaron al sitio unico de Application (StructuralSectionCatalogSource), que
+            // usan el Plugin y la ventana. Reapuntada, no debilitada: el sitio unico captura el catalogo invalido con las palabras de siempre,
+            // y el duenno del Plugin devuelve false con ellas.
+            var source = File.ReadAllText(Path.Combine(RepoRoot().FullName, "src", "RackCad.Application", "StructuralSections", "StructuralSectionCatalogSource.cs"));
+            var handler = source.IndexOf("catch (StructuralSectionCatalogException", StringComparison.Ordinal);
 
-            Assert.True(handler > 0, "El duenno de la carga debe capturar StructuralSectionCatalogException.");
-            Assert.Contains(
-                "no es valido",
-                access.Substring(handler, Math.Min(400, access.Length - handler)),
-                StringComparison.Ordinal);
+            Assert.True(handler > 0, "El sitio unico de la carga debe capturar StructuralSectionCatalogException.");
+            Assert.Contains("StructuralSectionCatalogFailure.Invalid", source.Substring(handler, Math.Min(400, source.Length - handler)), StringComparison.Ordinal);
+            Assert.Contains("no es valido, asi que no se dibujara nada", source, StringComparison.Ordinal);
+
+            var access = CodeOnly(ReadPlugin("StructuralSectionCatalogAccess.cs"));
+            Assert.Contains("StructuralSectionCatalogSource.TryLoad()", access, StringComparison.Ordinal);
+            Assert.Contains("editor?.WriteMessage(\"\\n\" + load.CommandLineText);", access, StringComparison.Ordinal);
+            Assert.Contains("return false;", access, StringComparison.Ordinal);
         }
 
         [Fact]
@@ -235,7 +260,8 @@ namespace RackCad.Tests
             var menu = CodeOnly(Menu);
             var action = menu.IndexOf("if (menu.RequestedAction == MainMenuAction.GenerateStructuralSection)",
                 StringComparison.Ordinal);
-            var rackSwitch = menu.IndexOf("switch (menu.InsertionRequest)", StringComparison.Ordinal);
+            // I-64 A-14: the rack switch of the menu lives in DispatchInsertion, called after this branch.
+            var rackSwitch = menu.IndexOf("DispatchInsertion(document, menu.InsertionRequest)", StringComparison.Ordinal);
 
             Assert.True(action > 0, "Falta el despacho de la accion tipada.");
             Assert.True(rackSwitch > 0);

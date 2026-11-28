@@ -230,6 +230,9 @@ namespace RackCad.Plugin
                 {
                     using (var transaction = document.Database.TransactionManager.StartTransaction())
                     {
+                        // T6 at (review of c4985a2e, I-1): counted here and returned only once the transaction is confirmed, so a failure
+                        // half-way (rolled back) never reports erasures that did not happen.
+                        var erasing = 0;
                         foreach (var definitionId in definitionIds)
                         {
                             if (definitionId.IsNull || definitionId.IsErased)
@@ -263,10 +266,11 @@ namespace RackCad.Plugin
 
                             definition.UpgradeOpen();
                             definition.Erase();
-                            erased++;
+                            erasing++;
                         }
 
                         transaction.Commit();
+                        erased = erasing;
                     }
 
                     // Post-commit: the owner defs are gone, so their nested ARRAY defs are unreferenced — purge them.

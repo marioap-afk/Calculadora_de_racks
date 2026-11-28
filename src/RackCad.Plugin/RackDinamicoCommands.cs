@@ -9,6 +9,7 @@ using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Shared;
+using RackCad.Application.Views.Placement; // T6 ui (O-3): RackJigPrompt
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
@@ -32,6 +33,7 @@ namespace RackCad.Plugin
         [CommandMethod("RACKSISTEMADINAMICO")]
         public void RackSistemaDinamico()
         {
+            using var jigPrompt = RackJigPrompt.Scope(RackJigPrompt.DynamicView); // T6 ui (O-3): the jig names the view of the Dinámico
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
             if (document == null)
@@ -177,6 +179,19 @@ namespace RackCad.Plugin
                 return;
             }
 
+            ApplyDynamicEdit(document, blockId, embed, project, window);
+        }
+
+        /// <summary>
+        /// The drawing half of RACKEDITAR on a dynamic system (I-64 A-14, line D): everything EditDynamic did after its window closed, with
+        /// the result of the editor as arguments instead of the window, unchanged. RACKEDITAR passes what its window produced; the RackCad
+        /// window passes its draft (update only), so a rack is redrawn the same way whatever editor produced the design. It answers how many
+        /// views it redrew and how many it erased (zero and zero when it stopped before touching any geometry); RACKEDITAR ignores the answer,
+        /// the window uses it so «written» means written (I-08 of the third review).
+        /// </summary>
+        internal static (int Redrawn, int Erased) ApplyDynamicEdit(Document document, ObjectId blockId, RackEmbedDocument embed, RackProject project, IDynamicEditOutcome window)
+        {
+            var editor = document.Editor;
             var design = window.DesignToInsert;
             var system = window.SystemToInsert;
             var id = string.IsNullOrWhiteSpace(embed.Id) ? window.RackId : embed.Id;
@@ -186,7 +201,7 @@ namespace RackCad.Plugin
             RackAuthorizedSiblingBatch authorized = null;
             if (!window.UpdateOnly)
             {
-                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return;
+                if (!RackUnsupportedSiblingInsert.TryAuthorize(document, blockId, embed, id, out authorized)) return (0, 0);
             }
             var blocks = !window.UpdateOnly ? authorized.Blocks.ToList() : RackCommandSupport.FindRackBlocks(document, id);
             if (blocks.Count == 0)
@@ -200,7 +215,7 @@ namespace RackCad.Plugin
             if (preflight.Aborted)
             {
                 editor.WriteMessage("\nRackCad: " + preflight.ErrorMessage);
-                return;
+                return (0, 0);
             }
 
             // I-05: a NEW linked view will be inserted below (see the "!UpdateOnly" branch); warn once if the drawing is
@@ -222,7 +237,7 @@ namespace RackCad.Plugin
                 if (!batchProducts.PrepareAll(batchRequest, out var batchDiagnostic))
                 {
                     editor.WriteMessage("\nRackCad: no se preparo la cola ID18; no se modifico ningun bloque. " + batchDiagnostic);
-                    return;
+                    return (0, 0);
                 }
             }
 
@@ -316,9 +331,19 @@ namespace RackCad.Plugin
 
             if (!window.UpdateOnly)
             {
-                RackViewBatchExecution.Run(document, batchProducts, batchRequest,
-                    _ => RackCad.Application.Views.Batch.RackViewBatchRedrawResult.Applied());
-                return;
+                // T6 b1 (I-02 of the review of B-1): the queue places the new views only when every view that remains was redrawn; the
+                // obsolete views of a rack with no survivor wait for the first new view (RackInsertRedrawOutcome).
+                var batch = RackViewBatchExecution.Run(document, batchProducts, batchRequest,
+                    _ => RackCad.Application.Views.Batch.RackInsertRedrawOutcome.Of(
+                        blocks.Count, staleViewBlocks.Count, updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms));
+                if (RackCad.Application.Views.Batch.RackInsertRedrawOutcome.ErasesStaleAfterPlacement(blocks.Count, staleViewBlocks.Count))
+                {
+                    erasedPhantoms = batch.Report.PlacedCount > 0 ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks) : 0;
+                    editor.WriteMessage("\nRackCad: " + RackCad.Application.Views.Batch.RackInsertRedrawOutcome.StaleAfterPlacementText(
+                        staleViewBlocks.Count, erasedPhantoms, batch.Report.PlacedCount));
+                }
+
+                return (updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms);
             }
 
             editor.WriteMessage(updatedLateral + updatedFrontal + updatedPlanta > 0
@@ -327,6 +352,7 @@ namespace RackCad.Plugin
                     + updatedFrontal.ToString(CultureInfo.InvariantCulture) + ", planta x"
                     + updatedPlanta.ToString(CultureInfo.InvariantCulture) + ")."
                 : "\nRackCad: no se pudo actualizar el sistema.");
+            return (updatedLateral + updatedFrontal + updatedPlanta, erasedPhantoms);
         }
 
         /// <summary>Prompts for one transverse post and inserts its linked lateral section.</summary>

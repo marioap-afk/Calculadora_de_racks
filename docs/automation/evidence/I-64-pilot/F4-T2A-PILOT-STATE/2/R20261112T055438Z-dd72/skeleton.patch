@@ -1,0 +1,44 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+index 74f7bb33..8291989f 100644
+--- a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+@@ -109,6 +109,12 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+ 
+         public const string CatalogRequiredDiagnostic = "Se necesita el catálogo para materializar el diseño.";
+ 
++        public const string NonPilotContentReason = "El borrador cambia contenido que el piloto no edita: no se compone.";
++
++        public const string MaterializeFailurePrefix = "No se pudo materializar el diseño: ";
++
++        public const string ComposeFailurePrefix = "No se pudo componer el diseño: ";
++
+         /// <summary>
+         /// Materializes the state of the pilot from the raw authored envelope text. It never throws: the outcome is a typed
+         /// result, and a failure of the existing reader or of the resolver becomes Failed with its message.
+@@ -164,7 +170,7 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+             }
+             catch (Exception ex)
+             {
+-                return PushBackPilotMaterialization.Failed("No se pudo materializar el diseño: " + ex.Message);
++                return PushBackPilotMaterialization.Failed(MaterializeFailurePrefix + ex.Message);
+             }
+         }
+ 
+@@ -194,8 +200,16 @@ namespace RackCad.Application.Systems.PushBack.Pilot
+             }
+             catch (Exception ex)
+             {
+-                return PushBackPilotComposition.Rejected("No se pudo componer el diseño: " + ex.Message);
++                return PushBackPilotComposition.Rejected(ComposeFailurePrefix + ex.Message);
+             }
+         }
++
++        /// <summary>
++        /// Skeleton: the new base with the scale of the draft, for the surface to set as the current state after KeepMine.
++        /// </summary>
++        public static PushBackPilotDraftState KeepPilotEditsOn(PushBackPilotDraftState newInitial, PushBackPilotDraftState current)
++        {
++            return PushBackPilotStateComparer.Copy(newInitial);
++        }
+     }
+ }

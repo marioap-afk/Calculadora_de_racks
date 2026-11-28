@@ -1,0 +1,49 @@
+{
+  "Fuente": "05beabfdd9efa5bb530860dc156f5832e4e452c2:docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt2/pbt2c-anchors-out.txt (Parte 1) y 05beabfdd9efa5bb530860dc156f5832e4e452c2:docs/initiatives/I-64-f4b-pbt2-gate-contract-package.md (section 5.4)",
+  "Mutantes": [
+    {
+      "Id": "MU-T2C-01",
+      "Alias": "W",
+      "Path": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "Line": 3713,
+      "Member": "Keep",
+      "Decl": "private static double Keep(NumericField field, double current)",
+      "Old": "=> !field.Value.HasValue || SameShown(field.Value.Value, current) ? current : field.Value.Value;",
+      "New": "=> !field.Value.HasValue ? current : field.Value.Value;",
+      "CT": "CT-PBT2C-01",
+      "Metodo": "CT_PBT2C_01_InWorkspaceTheDraftKeepsTheExactValuesAndTheNamedStyle",
+      "RunRef": "m1"
+    },
+    {
+      "Id": "MU-T2C-02",
+      "Alias": "WC",
+      "Path": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "Line": 95,
+      "Member": "UpdateSideBEmptyNotice",
+      "Decl": "private void UpdateSideBEmptyNotice()",
+      "Old": "SideBEmptyNoticeText.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;",
+      "New": "SideBEmptyNoticeText.Visibility = Visibility.Collapsed;",
+      "CT": "CT-PBT2C-02",
+      "Metodo": "CT_PBT2C_02_InWorkspaceTheSideBNoticeShowsExactlyAsInRackeditar",
+      "RunRef": "m2"
+    },
+    {
+      "Id": "MU-T2C-03",
+      "Alias": "W",
+      "Path": "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "Line": 3273,
+      "Member": "ApplyToDraft",
+      "Decl": "private void ApplyToDraft()",
+      "Old": "var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(editable));",
+      "New": "var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(appliedState));",
+      "CT": "CT-PBT2C-03",
+      "Metodo": "CT_PBT2C_03_InWorkspaceNoControlIsTheSourceOfTruthOnTheWayToTheDraft",
+      "RunRef": "m3"
+    }
+  ],
+  "TRX": {
+    "m1": "mut/m1/m1.trx",
+    "m2": "mut/m2/m2.trx",
+    "m3": "mut/m3/m3.trx"
+  }
+}

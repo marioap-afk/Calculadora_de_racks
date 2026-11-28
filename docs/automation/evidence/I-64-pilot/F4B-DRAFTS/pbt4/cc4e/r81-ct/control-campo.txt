@@ -1,0 +1,45 @@
+@@@@ # control de PB-T4e: solo los bloques de src/RackCad.UI/ de la pieza pbt4e-green-v56.txt
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        private const string ReloadedText = "Borrador recargado desde el dibujo.";
+@@@@ NEW
+        private const string ReloadedText = "Borrador recargado desde el dibujo.";
+        private const string NotReloadedText = "No se recargó: el borrador se conserva tal como estaba.";
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+                        if (stale) _noticeText = "No se recargó: el borrador se conserva tal como estaba.";
+@@@@ NEW
+                        if (stale) _noticeText = NotReloadedText;
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none and holds the panel while the editor is open. When it closes, the field and the strip are shown again from the port.
+@@@@ NEW
+        /// port is asked to open the full editor over the work of the rack, with no reference and no witness: the port begins the work if there
+        /// is none, reloads first a clean work that may be stale (I-64 F4B PB-T4e) and holds the panel while the editor is open. When it closes,
+        /// the field and the strip are shown again from the port; a reload that did not reload the work is shown as "Editar" shows it.
+@@@@ END
+
+@@@@ EDIT src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@@@ OLD
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+                }
+@@@@ NEW
+                if (outcome.Status == EditAllStatus.NotBegun && outcome.Begin.Status == EditIntentStatus.NotAdmitted)
+                {
+                    _diagnostic = outcome.Begin.Diagnostic ?? string.Empty;
+                    _hint = outcome.Begin.ClassicEditorHint ?? string.Empty;
+
+                    // I-64 F4B PB-T4e (D-PBT4-22): over a work that already existed the port does not begin it, so this is the reload of a
+                    // clean work that may be stale, and the field shows what "Editar" shows for a reload that is not admitted.
+                    if (view.Exists) _noticeText = NotReloadedText;
+                }
+@@@@ END

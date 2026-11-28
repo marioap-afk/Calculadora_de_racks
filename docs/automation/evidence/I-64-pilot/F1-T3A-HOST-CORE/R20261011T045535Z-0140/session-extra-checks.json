@@ -1,0 +1,60 @@
+{
+  "ExactCopy.Authorities": true,
+  "ExactCopy.AllowedWriteScope": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "NonAsciiBytes": 0,
+  "BackslashU": 0,
+  "ControlCharsInStrings": 0,
+  "CorrectionOfNull": true,
+  "TaskClass": "Implementacion transversal a capas (corta)",
+  "TaskClassExact": true,
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "PromptProfileExact": true,
+  "Effort": {
+    "Semantic": "Deep",
+    "Provider": "high"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "claude-sonnet-5-5|subagent"
+  },
+  "Model": "claude-sonnet-5-5",
+  "EffortExact": true,
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Medium",
+    "ArchitecturalSensitivity": "High",
+    "Breadth": "High",
+    "ToolUse": "High",
+    "FailureCost": "High",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "ee6766684f560c5128f0cc6af9c5d091de6e8353",
+  "AuthorityRevision": "ee6766684f560c5128f0cc6af9c5d091de6e8353",
+  "MainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+  "ChainFields": {
+    "ChainBaseSha": "ee6766684f560c5128f0cc6af9c5d091de6e8353",
+    "ChainRedSha": null,
+    "ChainRedFiles": []
+  },
+  "AttemptFields": {
+    "Attempt": 3,
+    "AttemptsRemaining": 0,
+    "MaxReworkLoops": 3
+  },
+  "ExpectedHandoffPath": "artifacts/orchestration/I-64/F1-T3A-HOST-CORE/3/{WorkRunId}/worker-handoff.json",
+  "Owner": {
+    "Kind": "subagent",
+    "Id": "subagent:R20261011T045535Z-0140"
+  },
+  "AcceptanceCriteriaCount": 10,
+  "IssuedBy": "Controller Codex (planificacion de reemplazo F1-T3A-HOST-CORE, primera delegacion de la cadena, CONTROLLER_PLANNING)"
+}

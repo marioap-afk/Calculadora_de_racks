@@ -1,0 +1,38 @@
+keys v4.8: ['CopySha', 'Cost', 'MinSelected', 'PartitionSha256', 'R_C', 'R_UI', 'Revision', 'Schema']
+keys v4.9: ['CopySha', 'Cost', 'MinSelected', 'PartitionSha256', 'R_C', 'R_UI', 'Revision', 'Schema']
+CopySha: 21 and 21 copies; different: ['tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs']
+   tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs: 5c5461f69ba3 -> f82806835c6d
+Cost: DIFFERENT {'Result': '2 de 3; la decisión, del Owner', 'RuleSha256': '85f32a422cd42b42bc8947567e5d8a48f5b25a1bb4bb9364fd42b8459a957262', 'Runs': [{'Name': 'cost-run1', 'TrxSha256': '6487a1c3862d8b76a5cda928260a99faeaa384908eb4217c30412241159759f1', 'Result': 'NO CUMPLE'}, {'Name': 'cost-run2', 'TrxSha256': 'ca1bea9caa79691fe73b753a04e454f4c687895cbe9e0be4a02609321ec28420', 'Result': 'CUMPLE'}, {'Name': 'cost-run3', 'TrxSha256': '67a2bc8e0da4535a8887304bb4ca20de8507b0bbf0c599fad5fcac62714550f1', 'Result': 'CUMPLE'}]} -> {'Result': 'Dado por cumplido por el Owner (owner-pbt4b-cost-decision.md, la septima tanda): 2 de 3 corridas de la v4.8', 'DecisionSha256': 'd0f4ca259f26fbf91676538d0895eca7acf921b76d5c56eb47885965213f5576', 'RuleSha256': '85f32a422cd42b42bc8947567e5d8a48f5b25a1bb4bb9364fd42b8459a957262', 'FromPackage': 'v4.8', 'FromPrecondition6JsonSha256': '4bdde2e746cf9db23e3021fe0937725eb1a3dacf37f3806da157f445a8c4afad', 'Runs': [{'Name': 'cost-run1', 'TrxSha256': '6487a1c3862d8b76a5cda928260a99faeaa384908eb4217c30412241159759f1', 'Result': 'NO CUMPLE'}, {'Name': 'cost-run2', 'TrxSha256': 'ca1bea9caa79691fe73b753a04e454f4c687895cbe9e0be4a02609321ec28420', 'Result': 'CUMPLE'}, {'Name': 'cost-run3', 'TrxSha256': '67a2bc8e0da4535a8887304bb4ca20de8507b0bbf0c599fad5fcac62714550f1', 'Result': 'CUMPLE'}], 'Step7InputsUnchanged': True, 'Step7InputsCheckSha256': '9097ce5541df4e743526756962636faf443b3e9d383e6c90e3bfda1ccb1b5c87'}
+MinSelected: 42 and 42 classes (with tests: 31 and 31); different: []
+PartitionSha256: same
+R_C: same
+R_UI: same
+Revision: same
+Schema: same
+Cost of the v4.9:
+{
+  "Result": "Dado por cumplido por el Owner (owner-pbt4b-cost-decision.md, la septima tanda): 2 de 3 corridas de la v4.8",
+  "DecisionSha256": "d0f4ca259f26fbf91676538d0895eca7acf921b76d5c56eb47885965213f5576",
+  "RuleSha256": "85f32a422cd42b42bc8947567e5d8a48f5b25a1bb4bb9364fd42b8459a957262",
+  "FromPackage": "v4.8",
+  "FromPrecondition6JsonSha256": "4bdde2e746cf9db23e3021fe0937725eb1a3dacf37f3806da157f445a8c4afad",
+  "Runs": [
+    {
+      "Name": "cost-run1",
+      "TrxSha256": "6487a1c3862d8b76a5cda928260a99faeaa384908eb4217c30412241159759f1",
+      "Result": "NO CUMPLE"
+    },
+    {
+      "Name": "cost-run2",
+      "TrxSha256": "ca1bea9caa79691fe73b753a04e454f4c687895cbe9e0be4a02609321ec28420",
+      "Result": "CUMPLE"
+    },
+    {
+      "Name": "cost-run3",
+      "TrxSha256": "67a2bc8e0da4535a8887304bb4ca20de8507b0bbf0c599fad5fcac62714550f1",
+      "Result": "CUMPLE"
+    }
+  ],
+  "Step7InputsUnchanged": true,
+  "Step7InputsCheckSha256": "9097ce5541df4e743526756962636faf443b3e9d383e6c90e3bfda1ccb1b5c87"
+}

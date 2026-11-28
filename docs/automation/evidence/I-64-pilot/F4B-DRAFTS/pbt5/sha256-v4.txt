@@ -1,0 +1,31 @@
+6bb02ca2af29c42fb71c5cd629dc2cdc98958d83c822e98e722540bef7d049b7  I-64-f4b-pbt5-package-v2.4.md  bytes=87297 lines=748 cr=0 nul=0 hits=0 admitidos=11
+11bcaf105e6c74b9f28c4695fae614814cafced259620dc6b2b7ecb6c3d60d59  smoke-run-v2.md  bytes=96467 lines=1344 cr=0 nul=0 hits=0 admitidos=38
+    LISP: 23 lineas; OK
+cebfe9fe166bcef13e3dc4894fbed6710d57650403a207ed85fa0cdafdd9661d  handoff-pbt5-v4.md  bytes=10554 lines=70 cr=0 nul=0 hits=0 admitidos=1
+940d6ddae79eb962f0bb80571de72aef9c2351e1657333f83982ecc4eb617f7e  _tools/emit_pbt5.py  bytes=29298 lines=511 cr=0 nul=0 hits=0 admitidos=0
+654dd7283ae7a9fc30fa6b385e4d822e1e448c2c196debf2aac85e700a25ca33  _tools/emit_pbt5-v1.py  bytes=21146 lines=386 cr=0 nul=0 hits=0 admitidos=0
+f18aa99c5816c94a5069cc7afe4e4c78f718cc4146593268df51b671a0b6e294  _tools/test_emit_pure.py  bytes=7533 lines=135 cr=0 nul=0 hits=0 admitidos=2
+625dc66e4d92d456a8f93ee45bf70b5fabe3462cafac02de203dc8f01ecef0bd  _tools/harness_sr2.ps1  bytes=5287 lines=72 cr=0 nul=0 hits=0 admitidos=2
+fe1f10ece8c48ebd57075659178fa4be304d8873ad82b9d27afb47dafa7d2046  _tools/scan_custody.py  bytes=2193 lines=55 cr=0 nul=0 hits=0 admitidos=0
+6f2ade9787f5d0b42b66e0b9b29cb9786ecd08bd7eb80dfdff3d7838677b1907  _tools/probe_selection_shape.py  bytes=858 lines=18 cr=0 nul=0 hits=0 admitidos=0
+ca57156ad787681478365d5a5f861180710423aa41e02ebe5e28498305c61bf6  _tools/probe_selection_vs_s2.py  bytes=756 lines=13 cr=0 nul=0 hits=0 admitidos=0
+0282024935b1e846f2954d4fdfbc1d49ef5d108a5d2bdd654be3d60524b46db6  I-64-f4b-pbt5-package-v2.3.md  bytes=71894 lines=689 cr=0 nul=0 hits=0 admitidos=10
+2448959830d88c1d5cef7f08ceca06044cbdaab9c259d9df5982d14de03c7ced  smoke-run-v1.md  bytes=69334 lines=1072 cr=0 nul=0 hits=0 admitidos=28
+2671b6333ebcd2898b51defbc849c14519eca1e5c8383e9d7646c52f4ab5c4ff  handoff-pbt5-v3.md  bytes=5599 lines=60 cr=0 nul=0 hits=0 admitidos=0
+cbc9d69d292823979a09cc1c92a815285a999b23902fabbfd0486c3524ebc6af  _tools/make_pkg_v23.py  bytes=9733 lines=83 cr=0 nul=0 hits=0 admitidos=0
+55f15282b395cb1a5ba81106eba16d78be7c3bc54a449429df5457dd04237366  _tools/fill_t4e_pkg_v23.py  bytes=4271 lines=63 cr=0 nul=0 hits=0 admitidos=0
+97980730bf489073f2748822dcbc18ae894afd895c778be7b00940e4eb4c2769  _tools/pkg_v23_head.md  bytes=12409 lines=157 cr=0 nul=0 hits=0 admitidos=3
+e596b3ccd7bd659a69a8bff05587c3665940c1cd0827c15dac720da357b1661b  _tools/pkg_v23_tail.md  bytes=18011 lines=272 cr=0 nul=0 hits=0 admitidos=6
+33944d9a5d45527a64cd7ddb66b489304926cccc01fbbd37fc8a93a19f3a3f18  _tools/sr_head.md  bytes=4496 lines=68 cr=0 nul=0 hits=0 admitidos=6
+6a63b60f1b8e11fc37b92a60a424dae7c3fe5dcc9742ee8c185615ac78585083  _tools/sr_new4.md  bytes=14937 lines=235 cr=0 nul=0 hits=0 admitidos=5
+94b7517b3642e9af3e83c954fd501cad43ce928557dd6f575de0a3dbe909fa85  _tools/sr_56.md  bytes=3984 lines=61 cr=0 nul=0 hits=0 admitidos=0
+1d9ae47c6610014610b4ec7c5dd3561b1523a6160ecc445ce5c048ad58383174  _tools/make_smoke_run_v1.py  bytes=7986 lines=127 cr=0 nul=0 hits=4 admitidos=0 (informativo)
+    HIT _tools/make_smoke_run_v1.py:106
+    HIT _tools/make_smoke_run_v1.py:107
+    HIT _tools/make_smoke_run_v1.py:110
+    HIT _tools/make_smoke_run_v1.py:111
+3f71228914866782b0006bb18107c80ecd96bd97cf2a50a7f1a2acf3aa95d21d  _tools/list_ui_filters.py  bytes=821 lines=19 cr=0 nul=0 hits=0 admitidos=0
+43469d8d2b5a2a9f14651f98765a5f64e2c417633a0ef1abb4ed66fa16880930  _tools/syntax_check.py  bytes=437 lines=15 cr=0 nul=0 hits=0 admitidos=0
+9c6f1ffce5219942674abe32c010fcb2b2fdd37bb085c1fc0b44ac1f09121cf9  _tools/ps_parse_any.ps1  bytes=2405 lines=30 cr=0 nul=0 hits=0 admitidos=0
+791b56715c4b8590bb21f8354563f684a961af2142920fcf4e53aeac3002b351  _tools/control_patterns.py  bytes=1267 lines=35 cr=0 nul=0 hits=0 admitidos=0
+4c047794169af66f569da321d9db7297848a8f695f80eb2c00d74cf19cdd66d2  _tools/check_pbt5.py  bytes=4492 lines=132 cr=0 nul=0 hits=0 admitidos=0

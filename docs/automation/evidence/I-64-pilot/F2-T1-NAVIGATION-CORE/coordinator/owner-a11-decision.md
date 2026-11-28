@@ -1,0 +1,1 @@
+SATISFIED — authorize I-64-A-11 / I64-TESTFILTER-BRIDGE-01 as the corrected I-64-only substitute evidence path for the exhausted nc3 Tests-filter protocol defect, superseding A-8, A-9 and A-10 for activation, without changing product semantics or global protocol.

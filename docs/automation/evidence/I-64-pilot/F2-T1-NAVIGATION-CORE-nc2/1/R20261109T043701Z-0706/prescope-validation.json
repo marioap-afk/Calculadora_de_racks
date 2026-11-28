@@ -1,0 +1,75 @@
+{
+  "RunId": "R20261109T043701Z-0706",
+  "MutatedCheck": "Scope",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T18:46:05Z",
+          "Utc": "2026-11-08T18:46:05+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession ended 2026-11-08T18:46:05Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T12:45:41.225211-06:00",
+          "Utc": "2026-11-08T18:45:41+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        },
+        {
+          "Quoted": "2026-11-08T18:28:11Z",
+          "Utc": "2026-11-08T18:28:11+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [
+        {
+          "Quoted": "R20261108T182756Z-ec7e",
+          "Sources": [
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        }
+      ],
+      "Evidence": "worker-handoff.json at the supplied inputs path has TaskId F2-T1-NAVIGATION-CORE, Attempt 1, RunId R20261108T182756Z-ec7e, BaseSha 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb and CurrentSha c726410f3ac764f4a80a08a2b810b5fdda276ecc. OutputWrittenUtc in relay-record-work.json is 2026-11-08T12:45:41.225211-06:00, after Cession.StartUtc 2026-11-08T18:28:11Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Read the declared sections from AuthorityRevision 90f5872e89660655a93606e16d50f4bc19aa3c9c and other authorities from MainSha a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60. git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha showed only docs/automation paths; no declared EXTERNAL authority path or UNIT_CHANGE section changed."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Compared delegation.json with gate-contract.json and contract-equivalence.json. The mechanical reissue records unchanged invariants, stop-condition IDs, test requirements and authority paths; delegation scope is within contract scope and required test/filter settings agree."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git branch --show-current returned architecture/workspace-persistente-rackcad. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both returned c726410f3ac764f4a80a08a2b810b5fdda276ecc. git merge-base --is-ancestor 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb CurrentSha and --is-ancestor f2761979b89e784ed16220815e250d21bc476aa1 CurrentSha exited 0. Handoff branch and worktree match the delegation."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json RemoteFacts records origin/main=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60 and LsRemoteSha=CurrentSha c726410f3ac764f4a80a08a2b810b5fdda276ecc. Direct git ls-remote could not reach GitHub in this environment; relay facts provide the recorded remote values."
+    }
+  },
+  "Findings": [],
+  "Pass": true
+}

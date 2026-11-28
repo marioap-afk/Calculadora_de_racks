@@ -1,0 +1,440 @@
+{
+  "Schema": "rackcad-gate-contract/v1",
+  "Unit": "I-64",
+  "Gate": "F4",
+  "TaskId": "F4-T2B2B-LIFECYCLE",
+  "Objective": "Implementar el ciclo de vida de los borradores del piloto en el host (D-T2B2-09 a D-T2B2-15 del paquete v8 de F4-T2B2): asesor de cierre y destruccion en el puente con veto de cierre segun la distincion del Owner (F4-E29), retirada sincrona con las operaciones explicitas y aditivas de DraftRegistry (descarte del usuario y retiradas conocida segura y conservadora) y el conocimiento limpio conocido (marca del host y secuencia de cierre observada), marcado de obsolescencia (IC-08), recarga perezosa, registro de la perdida y descarte explicito por el host para RACKPANELDESCARTAR, con sus pruebas y guardas, y N-1 y N-4 de F4-T2B2A. Sin escritura en el DWG, sin UI, sin AutoCAD y sin cambiar la semantica ordinaria de DraftRegistry ni ninguna prueba de F4-T1.",
+  "AuthorityRevision": "06ef19150ea4401d622d135ebc439e112d75eadf",
+  "MainSha": "812baf879612320653094a8aaf46aca0bac81383",
+  "Authorities": [
+    {
+      "Path": "docs/initiatives/I-64-f4-t2b2-gate-contract-package.md",
+      "Section": "archivo completo (v8); su section 3, su section 5 (D-T2B2-09 a D-T2B2-15), su section 6 y su section 11 fijan esta tarea",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Section": "D-04, D-10, D-11, D-12, D-13 y D-17; INV-14, INV-20, INV-22 e INV-28; section 11 F4",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-implementation-clarifications.md",
+      "Section": "IC-04 e IC-08",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/initiatives/I-64-f4-gate-contract-package.md",
+      "Section": "archivo completo; obligaciones 5, 14, 15 y 18; C-F4-03",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/state/I-64.yml",
+      "Section": "estado vigente completo",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-evidence.md",
+      "Section": "section 147 y siguientes",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/f4-dispositions.md",
+      "Section": "archivo completo, en particular F4-E09, F4-E16, F4-E21, F4-E29, F4-E31, F4-E32, F4-E33 y F4-E34",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b1-t2b2-disposition.md",
+      "Section": "archivo completo: orden del Owner con la distincion de D-T2B2-10 y la emision de F4-T2B2B",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b2a-close-decision.md",
+      "Section": "archivo completo: N-1 de F4-T2B2A como cambio declarado de esta tarea",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b2a-replanning.md",
+      "Section": "archivo completo: regla de replanificacion de F4 (F4-E31)",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T1-DRAFT-CORE/coordinator/gate-contract-attempt3.json",
+      "Section": "INV-F4T1-12, INV-F4T1-19 e INV-F4T1-23: el nucleo cerrado que esta tarea no debilita",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T2B2A-INTENT-WIRING/coordinator/gate-contract-attempt2.json",
+      "Section": "INV-F4T2B2A-01 a INV-F4T2B2A-13: el cableado de la intencion que esta tarea extiende",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T2B2A-INTENT-WIRING/task-close-package.md",
+      "Section": "section 5: N-1 y N-4",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "docs/automation/evidence/I-64-pilot/F4-T2B2B-LIFECYCLE/coordinator/gate-contract.json",
+      "Section": "este contrato",
+      "Class": "UNIT_DOC"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "Section": "IsDirty, HasPendingText, Status, MarkPossiblyStale, NeedsLazyReload, DiscardAndReload y CheckNow; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs",
+      "Section": "EvaluateClose; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs",
+      "Section": "solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+      "Section": "solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/BridgeSource.cs",
+      "Section": "las fuentes y la regla del cierre que sobrevive a la degradacion; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+      "Section": "CloseDecision; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+      "Section": "MarkDraftsPossiblyStale y la agrupacion de pistas; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+      "Section": "Authorize y Destroy; solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "Section": "lector anidado de la intencion (F4-T2B2A); solo lectura",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport.cs",
+      "Section": "rig de pruebas del host; no cambia",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+      "Section": "pruebas de F4-T1, incluida la de atomicidad :363-389; no cambian",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+      "Section": "guardas de F4-T2B2A que atan a esta tarea; no cambian",
+      "Class": "UNIT_CHANGE"
+    },
+    {
+      "Path": "docs/AUTOMATION_PLAN.md",
+      "Section": "section 16.1 a section 16.10",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/README.md",
+      "Section": "section 4 (A1-A8) y section 10 (nc1..nc4)",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/routing.md",
+      "Section": "archivo completo",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/automation/agent-execution/model-catalog.md",
+      "Section": "celdas medidas y vigentes para Controller y Worker",
+      "Class": "EXTERNAL"
+    },
+    {
+      "Path": "docs/WORKFLOW.md",
+      "Section": "relevo, Git e integracion",
+      "Class": "EXTERNAL"
+    }
+  ],
+  "AllowedWriteScope": [
+    "src/RackCad.Application/Workspace/EventBridgeCore.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs",
+    "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+    "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs",
+    "src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs",
+    "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeFacadeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryContainmentTests.cs"
+  ],
+  "ForbiddenWriteScope": [
+    "src/RackCad.Application/Bom/",
+    "src/RackCad.Application/Catalogs/",
+    "src/RackCad.Application/ComputedParameters/",
+    "src/RackCad.Application/CustomProperties/",
+    "src/RackCad.Application/Diagnostics/",
+    "src/RackCad.Application/Drawing/",
+    "src/RackCad.Application/Expressions/",
+    "src/RackCad.Application/Formatting/",
+    "src/RackCad.Application/Geometry/",
+    "src/RackCad.Application/Layout/",
+    "src/RackCad.Application/Persistence/",
+    "src/RackCad.Application/ProjectVariables/",
+    "src/RackCad.Application/RackFrames/",
+    "src/RackCad.Application/Settings/",
+    "src/RackCad.Application/StructuralAnalysis/",
+    "src/RackCad.Application/StructuralSections/",
+    "src/RackCad.Application/Systems/",
+    "src/RackCad.Application/Units/",
+    "src/RackCad.Application/Views/",
+    "src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftClosePolicy.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+    "src/RackCad.Application/Workspace/Drafts/DraftStaleBase.cs",
+    "src/RackCad.Application/BlockNaming.cs",
+    "src/RackCad.Application/RackCad.Application.csproj",
+    "src/RackCad.Domain/",
+    "src/RackCad.UI/",
+    "src/RackCad.Plugin/Drawing/",
+    "src/RackCad.Plugin/KindHandlers/",
+    "src/RackCad.Plugin/Systems/",
+    "src/RackCad.Plugin/Views/",
+    "src/RackCad.Application/Workspace/IWorkspaceHostPort.cs",
+    "src/RackCad.Application/Workspace/IWorkspaceEditIntentReader.cs",
+    "src/RackCad.Application/Workspace/NavigationTargets.cs",
+    "src/RackCad.Application/Workspace/BridgeSource.cs",
+    "src/RackCad.Application/Workspace/BridgeOutcomes.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSession.cs",
+    "src/RackCad.Application/Workspace/WorkspaceSessionRegistry.cs",
+    "src/RackCad.Plugin/RackCad.Plugin.csproj",
+    "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostPortGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBrowserBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftRegistryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftSessionTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceBridgeHintAndDrainTests.cs",
+    "tests/RackCad.Tests/RackCad.Tests.csproj",
+    "tests/RackCad.UI.Tests/",
+    "tests/RackCad.Tests/BomExcel/",
+    "tests/RackCad.Tests/ComputedParameters/",
+    "tests/RackCad.Tests/Fixtures/",
+    "tests/RackCad.Tests/Golden/",
+    "tests/RackCad.Tests/StructuralAnalysis/",
+    "docs/",
+    ".github/",
+    "eng/",
+    "tools/",
+    "assets/",
+    "deploy/",
+    "RackCad.sln",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "global.json",
+    "NuGet.Config",
+    "README.md"
+  ],
+  "Invariants": [
+    "INV-F4T2B2B-01 (asesor y puente, D-T2B2-09): src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs declara CloseDecision AdviseClose(SessionId) y void SessionDestroyed(SessionId session, bool closeSequenceIntact). EventBridgeCore gana un unico miembro publico, SetLifecycleAdvisor(IWorkspaceLifecycleAdvisor) (con null lanza ArgumentNullException; una segunda llamada sustituye al asesor), y su constructor no cambia. OnBeginDocumentClose: sin asesor da Allow; con asesor, su decision; cualquier excepcion del asesor da Veto, registrada con Log, sin Fault y sin degradar la sesion. OnDocumentToBeDestroyed llama a SessionDestroyed(id, closeSequenceIntact) de forma sincrona y solo en memoria para toda sesion destruida, despues de _registry.Destroy(id) y de limpiar _active, en su propio try/catch registrado; una excepcion del asesor no impide la destruccion, ni la limpieza de la sesion activa, ni la sincronizacion siguiente, y el asesor no vuelve a llamar al puente. AutoCadEventBridge gana un metodo internal que reenvia al core y el controlador lo llama con el host al crearlo, sin += nuevos; el manejador de cierre conserva en la misma linea handler = (, ContainSession( y el literal _core.OnBeginDocumentClose(a.Session), y llama a e.Veto() si y solo si la decision es Veto; se mantienen 16 +=, 16 -= y 16 manejadores. WorkspaceHostCore implementa el asesor de forma explicita (IWorkspaceLifecycleAdvisor.AdviseClose y .SessionDestroyed).",
+    "INV-F4T2B2B-02 (operaciones explicitas, D-T2B2-10): DraftRegistry gana, de forma aditiva y en DraftRegistry.cs, DiscardByUser(SessionId, string rackId) (Removed y HadPendingText; sobre un borrador inexistente, false y false), DiscardAllByUser(SessionId) (RemovedRackIds y PendingTextRackIds), RetireKnownSafe(SessionId) (LostRackIds = los que tienen texto pendiente) y RetireConservative(SessionId) (contencion borrador a borrador: primero HasPendingText, despues el comparador; LostRackIds = con texto pendiente, sucios conocidos y desconocidos; UncertainRackIds = los desconocidos; UncertainReasons = diccionario de solo lectura ordinal de RackId desconocido al mensaje de su excepcion). DiscardByUser, DiscardAllByUser y RetireKnownSafe no llaman al comparador; ninguna de las cuatro lanza por el comparador; la validacion de argumentos es la de las ordinarias; las cuatro quitan y desacoplan lo que tocan; las dos retiradas marcan la sesion como retirada; ninguna libera el hueco de Aplicando; las listas estan en orden ordinal, nunca son nulas y UncertainRackIds esta contenido en LostRackIds. DraftLossNotice gana UncertainRackIds y UncertainReasons de forma aditiva y conserva su constructor. Discard, DiscardAll, RetireSession y DraftClosePolicy.EvaluateClose conservan su semantica de F4-T1 (INV-F4T1-12 e INV-F4T1-23) y ninguna prueba de F4-T1 cambia. Drafts/ mantiene sus cinco archivos.",
+    "INV-F4T2B2B-03 (distincion del Owner y veto, D-T2B2-10, F4-E29): la tabla de veto del Owner se cumple: sucio conocido, texto pendiente y sucio desconocido por fallo del comparador dan Veto; limpio conocido permite el cierre normal; descartado explicitamente permite quitar y cerrar. AdviseClose = EvaluateClose, con la excepcion del comparador contenida como Veto y registrada con Report; nada automatico infiere limpio; el fallo del comparador no impide completar un descarte explicito ni una retirada. El cuerpo explicito de AdviseClose del host no lee, no autoriza, no descarta y no retira.",
+    "INV-F4T2B2B-04 (limpio conocido, D-T2B2-10): una sesion se retira con RetireKnownSafe solo si se cumplen a la vez la marca del host y closeSequenceIntact; si no, con RetireConservative. La marca del host es por sesion y solo en memoria: AdviseClose la quita al entrar y la pone como ultima accion antes de devolver Allow, solo si EvaluateClose funciono; la quitan un Veto o una excepcion de AdviseClose, TryBeginPilotEdit con Admitted, TryCheckPilotEdit con Conflict o Recovered, TryReloadPilotEdit con Reloaded, DiscardPilotEdits, todo drenaje de esa sesion en OnDrained (dentro del try, antes de PurgeDead) y la operacion publica void NotePilotEdit(SessionId) (sin compuerta, nunca lanza, no lee); SessionDestroyed la consume. La secuencia de cierre la observa EventBridgeCore con un unico campo SessionId? del core: OnBeginDocumentClose primero olvida y despues recuerda la sesion si la decision es Allow; toda otra entrada publica que muta estado del core (todas salvo las consultas Authorize, TryGetSession, IsDegraded y las propiedades, y SetLifecycleAdvisor) olvida al entrar, justo despues de if (!_started) return; donde exista y antes de cualquier otro retorno, switch o case, tambien OnDocumentToBeDestroyed con un id nativo desconocido; olvidar es asignar null y no se recorre _states. En OnDocumentToBeDestroyed, closeSequenceIntact es cierto solo si la sesion destruida es la recordada y no esta degradada, leyendo la degradacion antes de _states.Remove(id). Lectura declarada de limpio conocido: establecido por una evaluacion que funciono y todavia vigente en la destruccion.",
+    "INV-F4T2B2B-05 (marcado, D-T2B2-11, IC-08): cuando el drenaje de una sesion produce MarkDraftsPossiblyStale, el host marca todos los borradores del piloto de esa sesion, antes de los retornos tempranos de OnDrained, dentro del try y antes de PurgeDead; es solo una pista: sin Conflicto y sin lectura.",
+    "INV-F4T2B2B-06 (recarga, D-T2B2-12): EditIntentOutcome TryReloadPilotEdit(EditIntentRequest) es un metodo propio con PassGate y los pasos 1 a 8 de la tabla de D-T2B2-06 (borrador ausente da NotFound; sin NeedsLazyReload, NotNeeded, sin lectura); si NeedsLazyReload, llama a DiscardAndReload(result.Read) y traduce: Reloaded da Reloaded con el estado del testigo; NotAdmitted da NotAdmitted con el diagnostico de DraftReloadResult.Admission y el detalle y la indicacion de la lectura; NotAllowed da Waiting; NotConfirmed da Failed. EditIntentStatus gana NotFound, NotNeeded y Reloaded al final, despues de Failed: los siete estados de T2B2A quedan como prefijo ordenado y default sigue siendo Unavailable. Solo por accion del usuario y nunca desde el drenaje; toda excepcion da Failed sin degradar la sesion.",
+    "INV-F4T2B2B-07 (perdida, D-T2B2-13): SessionDestroyed siempre retira (RetireKnownSafe o RetireConservative segun INV-F4T2B2B-04); despues, solo si HasLoss, encola el DraftLossNotice en una cola internal del host y lo registra en el acto con su logFault, con el contexto \"WorkspaceHostCore.DraftLoss\" y una InvalidOperationException cuyo mensaje lista los RackIds perdidos y, aparte, los inciertos con su motivo. La retirada y la cola con el registro se contienen por separado. Sin perdida no se encola nada.",
+    "INV-F4T2B2B-08 (descarte del host, D-T2B2-15): WorkspaceHostCore expone EditDiscardOutcome DiscardPilotEdits(SessionId session), que solo exige Authorize(new WorkspaceRequest(session)) == RequestDecision.Accepted (no exige lector, reposo, ausencia de comando ni de modal y no usa PassGate); si la autorizacion falla da Rejected sin efectos; si no, DiscardAllByUser y quita la marca de la sesion. EditDiscardOutcome es un valor de WorkspaceEditIntent.cs con un estado Rejected, Discarded y Failed, en ese orden (default Rejected, inerte, declarado), y RemovedRackIds y PendingTextRackIds nunca nulas, tampoco en default; sin borradores da Discarded con listas vacias; toda excepcion da Failed sin degradar la sesion; nada la llama desde el drenaje.",
+    "INV-F4T2B2B-09 (N-4 de F4-T2B2A): la documentacion de EditIntentStatus.Rejected en WorkspaceEditIntent.cs nombra las tres vias: INV-22 antes de cualquier lectura, la respuesta Rejected del lector y la rama SessionRetired del paso 8, estas dos despues de la compuerta.",
+    "INV-F4T2B2B-10 (pruebas, D-T2B2-10, 14 y 15): en archivos nuevos y con Record.Exception para que fallen por asercion en el RED: la tabla de veto completa del Owner; intentos sucesivos vetados; Allow sin borradores; asesor que lanza da Veto; comparador que lanza da Veto, despues DiscardAllByUser o DiscardPilotEdits y despues Allow; DiscardByUser y DiscardAllByUser sin llamar al comparador; RetireKnownSafe sin llamar al comparador; RetireConservative con un comparador que lanza en un borrador y no en otro; la marca y la secuencia (Allow seguido de la destruccion da RetireKnownSafe; Allow seguido de una entrada del puente, de un drenaje, de NotePilotEdit, de una operacion del host o de un Veto da RetireConservative; destruccion sin cierre previo y sesion degradada antes del Allow, sin entrada entre el Allow y la destruccion, dan RetireConservative); la degradacion y el cierre que sobrevive a ella; retirada y aviso de una sesion destruida activa y de una no activa; asesor que lanza en la destruccion con id reciclado; marcado de todos los borradores de la sesion y ninguno de otra; recarga solo con NeedsLazyReload; DiscardPilotEdits Discarded con la sonda fuera de reposo, con un modal y sin lector, y Rejected con otra sesion activa y sin documento activo; obligaciones 5, 14, 15 y 18.",
+    "INV-F4T2B2B-11 (guardas nuevas, regla de I-1, F4-E32 y F4-E33): ninguna prueba ni guarda nueva prohibe de forma permanente lo que corresponde a F4-T3 o F4-T4: el gancho o vaciado del texto vivo antes del consejo de cierre (que puede envolver el asesor), la exposicion de TryReloadPilotEdit, DiscardPilotEdits y NotePilotEdit por el puerto o la UI, el consumo de la cola de avisos, el descarte de un solo borrador por el host, las llamadas a NotePilotEdit en Actualizar y estados nuevos. Los enums nuevos o ampliados se fijan como prefijo ordenado y las guardas fijan solo lo que esta tarea necesita. Se respetan las trampas de la section 6 del paquete.",
+    "INV-F4T2B2B-12 (guardas y pruebas existentes): ninguna guarda ni prueba existente cambia ni se debilita, salvo (1) la lista de miembros publicos de EventBridgeCore y el comentario de esa prueba en WorkspaceBridgeFacadeSourceGuardTests.cs, con su nombre conservado, y (3) la prueba de los nombres de EditIntentStatus en WorkspaceEditIntentHostTests.cs, que pasa a prefijo ordenado de siete con default Unavailable. Ninguna prueba de F4-T1 cambia. src/RackCad.Plugin/Workspace sigue con 9 archivos; WorkspaceHostSourceGuardTests.cs sigue con 45 pruebas; el puerto IWorkspaceHostPort no cambia.",
+    "INV-F4T2B2B-13 (cobertura RED/GREEN): RED de comportamiento real que compila y falla por asercion, con lo nuevo como esqueleto inerte que no lanza y devuelve valores no nulos, sin pruebas artificiales; cubre como minimo INV-F4T2B2B-01 a INV-F4T2B2B-12. Los cambios declarados (1) y (3) van en el RED. El GREEN no toca ningun archivo de tests/."
+  ],
+  "RequiredTests": [
+    {
+      "Project": "tests/RackCad.Tests/RackCad.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.Tests.Workspace",
+      "MinSelected": 1754,
+      "ExpectRed": true
+    },
+    {
+      "Project": "tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+      "Filter": "FullyQualifiedName~RackCad.UI.Tests.Workspace",
+      "MinSelected": 248,
+      "ExpectRed": false
+    }
+  ],
+  "ExpectedEvidence": [
+    "gate-contract valido; delegacion del Controller valida; comparacion byte a byte y aceptacion A1-A8, y nc4 (primera delegacion de la cadena F4-T2B2B), antes del Worker.",
+    "AllowedWriteScope de la delegacion = exactamente el AllowedWriteScope del contrato.",
+    "Commit RED y push propios antes del GREEN: pruebas que compilan y fallan por asercion; ChainRedSha y ChainRedFiles acreditados.",
+    "Commit GREEN y push con cambios solo dentro del AllowedWriteScope; ningun archivo de tests/ del RED cambia.",
+    "Filtros FullyQualifiedName~RackCad.Tests.Workspace y FullyQualifiedName~RackCad.UI.Tests.Workspace en verde sobre el GREEN; suites completas de los dos proyectos en verde; build Release de la solucion, Plugin incluido, sin avisos nuevos.",
+    "CI push del SHA exacto GREEN con los cuatro jobs en success.",
+    "worker-handoff.json conforme a su esquema con RED, GREEN, alcance real, trailer, conteos de los filtros, mapa evidencia-por-invariante y OpenQuestions vacia salvo ambiguedad material real.",
+    "Controller verification valida; nc1..nc3 segun README section 10, con su oraculo ordinario; revision directa de la sesion y revision adversarial independiente del diff (F4-E02 y F4-E29).",
+    "Sin AutoCAD: la logica se prueba en Core con dobles y el Plugin con guardas de texto y el build Release de la CI; el comportamiento real del host queda para Smoke-2."
+  ],
+  "StopConditions": [
+    {
+      "Id": "S-02",
+      "Text": "architecture outside Freeze"
+    },
+    {
+      "Id": "S-03",
+      "Text": "material ambiguity"
+    },
+    {
+      "Id": "S-04",
+      "Text": "contradictory evidence"
+    },
+    {
+      "Id": "S-05",
+      "Text": "destructive or irreversible action not authorized"
+    },
+    {
+      "Id": "S-07",
+      "Text": "conflict with another active owner"
+    },
+    {
+      "Id": "S-08",
+      "Text": "branch or worktree ownership conflict"
+    },
+    {
+      "Id": "S-12",
+      "Text": "Worker loses context or cannot verify AuthorityRevision"
+    },
+    {
+      "Id": "S-13",
+      "Text": "origin/main movement invalidates exact-SHA assumptions; apply AUTOMATION_PLAN 16.7"
+    },
+    {
+      "Id": "S-14",
+      "Text": "I-64 Freeze or contract explicitly says STOP"
+    },
+    {
+      "Id": "P-01",
+      "Text": "config.toml no longer matches accepted Snapshot A, B, C or D"
+    },
+    {
+      "Id": "P-02",
+      "Text": "foreign live participant, unattributable process or more than one open delegation"
+    },
+    {
+      "Id": "P-03",
+      "Text": "delegation outside gate contract"
+    },
+    {
+      "Id": "P-04",
+      "Text": "BLOCKED cap reached"
+    },
+    {
+      "Id": "P-05",
+      "Text": "invocation differs from accepted delegation package"
+    },
+    {
+      "Id": "P-06",
+      "Text": "usage or credit-limit warning"
+    },
+    {
+      "Id": "P-07",
+      "Text": "another invocation would exceed the invocation budget"
+    },
+    {
+      "Id": "P-08",
+      "Text": "responsible session operates the worktree during cession"
+    },
+    {
+      "Id": "F4T2B2B-C01",
+      "Text": "a new file in src/RackCad.Plugin/Workspace or in Workspace/Drafts/ would be needed, or DraftSession, DraftStaleBase, DraftClosePolicy or DraftApplyOutcome would have to change"
+    },
+    {
+      "Id": "F4T2B2B-C02",
+      "Text": "an existing guard or test would have to change other than the declared changes (1) and (3); in a correction attempt, files created by this task in an earlier attempt are not existing guards or tests"
+    },
+    {
+      "Id": "F4T2B2B-C03",
+      "Text": "the semantics of an ordinary DraftRegistry operation or a F4-T1 test would have to change, or the Owner distinction of D-T2B2-10 (F4-E29) cannot be honored as written"
+    },
+    {
+      "Id": "F4T2B2B-C04",
+      "Text": "the veto would require changing the EventBridgeCore constructor, a public member other than SetLifecycleAdvisor, a new subscription or a new += in the bridge or the controller"
+    },
+    {
+      "Id": "F4T2B2B-C05",
+      "Text": "a read of the drawing would have to happen in the drain, the Idle, the close handler or the destruction handler"
+    },
+    {
+      "Id": "F4T2B2B-C06",
+      "Text": "the frozen semantics of D-04, D-10, D-11, D-12, D-13, D-17, INV-20 or INV-28 would have to change, a test needs AutoCAD, or the UI, a csproj or the CI workflow would have to change"
+    },
+    {
+      "Id": "F4T2B2B-C07",
+      "Text": "the task evaluates Long-horizon"
+    },
+    {
+      "Id": "F4T2B2B-C08",
+      "Text": "a planning output rejected by the byte-fidelity comparison before the Worker allows ONE replanning with a reinforced prompt; a second rejection returns to the Owner (F4-E31)"
+    }
+  ],
+  "EligibleCells": [
+    {
+      "Cell": "anthropic/subagent/claude-sonnet-5-5",
+      "Provider": "Anthropic",
+      "Model": "claude-sonnet-5-5",
+      "Transport": "subagent",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "write-commit-push",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "docs/automation/agent-execution/model-catalog.md: celda write-commit-push medida por U-04; effort high medido y usada como Worker real",
+      "VerifiedOn": "2026-09-30"
+    },
+    {
+      "Cell": "openai/process/gpt-6-luna",
+      "Provider": "OpenAI",
+      "Model": "gpt-6-luna",
+      "Transport": "process",
+      "Capabilities": [
+        "read",
+        "tool-use",
+        "effort-applied"
+      ],
+      "TestedEfforts": [
+        "high"
+      ],
+      "Source": "sonda neutra de F4 R20261111T180028Z-32f7 (PASS; gpt-6-luna/high efectivos; read-only; oraculo Git exacto; sin aviso de uso; config.toml SNAPSHOT G 7C1516A9135D59FA38F6004D56B71C7E1313502D6C6BFEA6FB5D8F97A62DD723 antes y despues; F4-E13) sobre codex-cli 0.167.0-alpha.3.2, bin 5449c1f0f26f1f98, codex.exe SHA-256 4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17; acreditacion del binario: sonda R20261110T034758Z-6a68",
+      "VerifiedOn": "2026-11-11"
+    }
+  ],
+  "RoutingEnforcement": "required",
+  "CorrectionsAuthorized": true,
+  "IssuedBy": "Sesion principal de I-64 (Claude) por la orden del Owner F4-T2B1 / F4-T2B2 OWNER + COORDINATOR DISPOSITION (docs/automation/evidence/I-64-pilot/F4-DRAFTS/coordinator/owner-f4t2b1-t2b2-disposition.md: emitir F4-T2B2B tras el cierre de F4-T2B2A) y la orden de cierre de F4-T2B2A (owner-f4t2b2a-close-decision.md); F4-E29, F4-E33 y F4-E34",
+  "IssuedUtc": "2026-11-12T18:32:04Z"
+}

@@ -1,0 +1,55 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261110T195720Z-a3f0",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Ci"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "Worktree branch is architecture/workspace-persistente-rackcad and cwd matches ExpectedWorktree. git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 09955667481f5d5be9521ade7628310a87a189a4. BaseSha and RedSha are ancestors of that commit (merge-base checks returned 0). However, worker-handoff.json declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, which is not the observed HEAD or remote ref and is not a valid commit object."
+  },
+  "OutputSha256": "4A6CC608926ECB6C7F76D41253A0894AFD8B3E6666548F52AA9FF1B4968AAAA3",
+  "ManualFreeText1610": []
+}

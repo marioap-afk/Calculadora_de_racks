@@ -1,0 +1,32 @@
+# retirada del piloto, variante B, sobre 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+static\s+PushBackPilotComposition\s+ComposeForWrite\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+static\s+PushBackPilotDraftState\s+KeepPilotEditsOn\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+static\s+PushBackPilotPrepareResult\s+Prepare\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs private\s+static\s+PushBackPilotPrepareResult\s+Build\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+static\s+PushBackPilotPrepareInput\s+From\s*\(
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+PushBackPilotPrecheck\s+Precheck\s*\(\s*DraftSession
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+DraftApplyOutcome<PushBackPilotDraftState>\s+Execute
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs public\s+sealed\s+class\s+PushBackPilotPrepareInput\b
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs public\s+sealed\s+class\s+PushBackPilotComposition\b
+src src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs public\s+static\s+string\?\s+ComparePost\s*\(
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs: 1 miembros (1 tramos)
+tests tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs: 1 miembros (1 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs: 2 miembros (2 tramos)
+tests tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs: 2 miembros (2 tramos)
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+borrado src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+escrito cffdef1bff24a4212a6d26fefdc855659f1d52dcea955ff40831907152367d07 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+escrito 085bf86d387f6a471fb4aa296669e41730ca3eb55af9effbc2fa5d39850f7534 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs
+escrito 86ffeef60c3c2ad5aa6a597cc7590a31a913d18beea4947cf9276311c4c0d674 src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs
+escrito c30c97c43903277a3db5eeae38f4019ec8a64241bb2eb0612c848912b0cb70f0 tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs
+escrito 3d50f10e32b04661791eb61ddd781065d74680c614dabc988b2b1d64877a607f tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs
+escrito d74cf9df854e104ed1cd8298528379cde2b2443032591ddbd8df3704a35bee56 tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs
+escrito c4d2cb6db39b69e862aa5a111523dd34aeba5d262ba2abf1e8e58cb2862d5a98 tests/RackCad.UI.Tests/PushBackDeclaredCorrectionSupport.cs
+escrito 97566789b33962880b56e3dc8e2dd8726b3096323f9e2d8eafea64498147b734 tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs
+escrito b7ce4e8da2f50eadd5a8421d4132253054a4f362539316af5e57c65d7a886525 tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotCanonicalLineEndingTests.cs
+escrito 1f0540d386bb706b9c5c70f9945537708bfa475e4a0163b4999e527b85fa6ffc tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs
+escrito bb01ae667a3ca9e167ae1c4917bcf89a71eb7f77126c0b74aed90da2dfcb3065 tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs

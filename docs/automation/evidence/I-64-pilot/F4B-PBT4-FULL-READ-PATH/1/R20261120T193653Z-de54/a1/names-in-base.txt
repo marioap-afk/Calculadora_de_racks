@@ -1,0 +1,11 @@
+FromReads: 0
+FullRead: 0
+IWorkspaceEditIntentOriginReader: 0
+ReadIntentAtOrigin: 0
+PushBackOriginByText: 0
+AtKey: 0
+ReadAt: 0
+AtOrigin: 0
+PushBackFullReadPathTests: 0
+PushBackFullReadGuardTests: 0
+PushBackFullReadSupport: 0

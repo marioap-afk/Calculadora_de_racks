@@ -167,6 +167,8 @@ namespace RackCad.Plugin.Drawing
             foreach (ObjectId referenceId in systemDef.GetBlockReferenceIds(directOnly: true, forceValidity: true))
             {
                 var reference = (BlockReference)tr.GetObject(referenceId, OpenMode.ForWrite);
+                // Opening for write records no undo; this no-op assignment does, so U and REDO repaint every reference of the redefined block (F4-S2-03).
+                reference.Position = reference.Position;
                 reference.RecordGraphicsModified(true);
             }
 
@@ -194,6 +196,14 @@ namespace RackCad.Plugin.Drawing
         {
             if (db == null || candidates == null || candidates.Count == 0)
             {
+                return;
+            }
+
+            // T6 at (review of c4985a2e, I-2): inside the one transaction of «Actualizar todo» the drawing is not committed yet; the purge
+            // waits for the outer commit (RACKACTUALIZARTODO runs it once, in the same command).
+            if (RackCad.Plugin.Systems.Shared.RackUpdateAllScope.IsActive)
+            {
+                RackCad.Plugin.Systems.Shared.RackUpdateAllScope.DeferPurge(candidates);
                 return;
             }
 

@@ -1,0 +1,52 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F3-T2-BROWSER-UI-nc1-bridge/2",
+  "SourceRoot": "artifacts/orchestration/I-64/F3-T2-BROWSER-UI-nc1-bridge/2",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 4,
+    "EXCLUDED": 2
+  },
+  "Files": [
+    {
+      "Path": "application-record.json",
+      "Bytes": 1765,
+      "Sha256": "64bcab31e53dba52118ca4c95b7f109327b356ee78ced92c6e9f3a0351278bad",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "bridge-output.json",
+      "Bytes": 5542,
+      "Sha256": "208d392c0f1ed3a58c2270b8e61ac490ad2a4cdf3a056f4946d6d70890cd9a60",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "bridge-stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F1-SMOKE-1/R20261107T171052Z-6862/process/watch-stop.flag, ya custodiado"
+    },
+    {
+      "Path": "config-before.json",
+      "Bytes": 3434,
+      "Sha256": "6c3217ab5403cdcd30194c7d2adf37cfaefab70976a859e5367c635310db7ad0",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "processes-before.json",
+      "Bytes": 1285,
+      "Sha256": "131b00ca3040a92c263cfabf2c9ef84dc1f71f38f907140745628154a252aab3",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "2bf2f4c7aa4ac9ef462ca8efd2551e877ef669174e1f458a5b069400c476a339",
+      "Normalization": "CRLF->LF (finales mixtos; el SHA-256 original identifica el archivo)"
+    },
+    {
+      "Path": "selftest.json",
+      "Bytes": 56799,
+      "Sha256": "79c77dd576043206425ff90a50fefa20d6a1ce83b677ad896c06d53044cf9ee1",
+      "Disposition": "EXCLUDED",
+      "Reason": "identico (mismo SHA-256) a F2-T2B-NAVIGATION-UI-nc1-bridge/3/selftest.json, ya custodiado"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "RunId": "R20261119T154313Z-2a9a",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1f47a-226b-76d1-979d-f8c99e2d7967",
+  "Usage": {
+    "input_tokens": 45433,
+    "cached_input_tokens": 21632,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 541,
+    "reasoning_output_tokens": 177
+  },
+  "Commands": [
+    {
+      "Command": ".cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -Command 'git rev-parse HEAD'",
+      "Exit": 0,
+      "Output": "t the '.' operator. 59839c7148fa101c2f95e1f59b36e6b052216680"
+    },
+    {
+      "Command": "\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -Command 'git rev-parse origin/main'",
+      "Exit": 0,
+      "Output": "t the '.' operator. 812baf879612320653094a8aaf46aca0bac81383"
+    },
+    {
+      "Command": "rimary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -Command 'git rev-parse HEAD:docs/automation/state/I-64.yml'",
+      "Exit": 0,
+      "Output": "t the '.' operator. d44225de631246d92d9081f44b79c6bf5e95ad06"
+    }
+  ],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OracleMatch": {
+    "HeadSha": true,
+    "OriginMainSha": true,
+    "StateBlob": true
+  },
+  "OutputSha256": "161D6675340FCF7F489E2884282833068BAFD8A7237DE5B8A428619C6D64BCBB",
+  "Oracle": {
+    "HeadSha": "59839c7148fa101c2f95e1f59b36e6b052216680",
+    "OriginMainSha": "812baf879612320653094a8aaf46aca0bac81383",
+    "StateBlob": "d44225de631246d92d9081f44b79c6bf5e95ad06"
+  },
+  "CliVersion": "0.167.0-alpha.3.2",
+  "Effective": [
+    "gpt-6-luna",
+    "high"
+  ],
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "PermissionProfile": {
+    "type": "managed",
+    "file_system": {
+      "type": "restricted",
+      "entries": [
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "root"
+            }
+          },
+          "access": "read"
+        }
+      ]
+    },
+    "network": "restricted"
+  },
+  "ApprovalPolicy": "never",
+  "EffectiveSource": "rollout-2026-11-19T09-43-28-01a1f47a-226b-76d1-979d-f8c99e2d7967.jsonl",
+  "EffectiveSourceSha256": "85E9308ACEABDC0CBCD10F8E1DCB03BF5AA2C951D65E82D477E53E740B42C1FB",
+  "TurnContextVsReference": {
+    "ReferenceRun": "R20261119T065628Z-7de7 (planificacion de la correccion de PB-T2a bajo la Snapshot J, mismo binario)",
+    "FieldsCompared": [
+      "approval_policy",
+      "approvals_reviewer",
+      "collaboration_mode",
+      "comp_hash",
+      "cyber_access_program",
+      "disabled_plugin_ids",
+      "effort",
+      "model",
+      "permission_profile",
+      "realtime_active",
+      "root_turn_id",
+      "sandbox_policy",
+      "summary"
+    ],
+    "Differences": {
+      "root_turn_id": {
+        "Reference": "01a1f297-e6ba-7420-9701-5bf7124bf795",
+        "Probe": "01a1f47a-2674-7112-8095-cb02791d0d6d"
+      }
+    }
+  },
+  "SessionMetaKeysDiffer": [],
+  "LimitPatternContexts": {},
+  "EventsSha256": "C9DE0CCDE967D1A4B2AA3B3F5C82C08669892422564A9583D1620B541F48C1D0",
+  "StderrBytes": 39,
+  "StderrText": "Reading additional input from stdin...\n",
+  "BinaryAndState": {
+    "BinarySha256Exit": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+    "BinarySha256Entry": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+    "IsNewBinary": true,
+    "CodexExesUnchanged": true,
+    "RealUnchanged": true,
+    "ConfigUnchanged": true,
+    "ConfigSha256": "E1F69847610FD810D5286B82C86E00FE85D9F497F89E9FD9645E0EEA113322FE"
+  },
+  "Pass": true
+}

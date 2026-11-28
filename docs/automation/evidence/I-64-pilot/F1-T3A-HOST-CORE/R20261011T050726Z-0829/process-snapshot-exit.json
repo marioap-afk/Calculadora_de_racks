@@ -1,0 +1,2294 @@
+[
+  {
+    "ProcessId": 0,
+    "ParentProcessId": 0,
+    "Name": "System Idle Process",
+    "CreationDate": "2026-10-02T21:29:15.832814-06:00"
+  },
+  {
+    "ProcessId": 4,
+    "ParentProcessId": 0,
+    "Name": "System",
+    "CreationDate": "2026-10-02T21:29:15.832814-06:00"
+  },
+  {
+    "ProcessId": 140,
+    "ParentProcessId": 4,
+    "Name": "Secure System",
+    "CreationDate": "2026-10-02T21:29:06.537684-06:00"
+  },
+  {
+    "ProcessId": 184,
+    "ParentProcessId": 4,
+    "Name": "Registry",
+    "CreationDate": "2026-10-02T21:29:06.545797-06:00"
+  },
+  {
+    "ProcessId": 768,
+    "ParentProcessId": 4,
+    "Name": "smss.exe",
+    "CreationDate": "2026-10-02T21:29:15.836873-06:00"
+  },
+  {
+    "ProcessId": 1056,
+    "ParentProcessId": 1048,
+    "Name": "csrss.exe",
+    "CreationDate": "2026-10-02T21:29:23.14753-06:00"
+  },
+  {
+    "ProcessId": 1144,
+    "ParentProcessId": 1048,
+    "Name": "wininit.exe",
+    "CreationDate": "2026-10-02T21:29:23.422105-06:00"
+  },
+  {
+    "ProcessId": 1256,
+    "ParentProcessId": 1144,
+    "Name": "services.exe",
+    "CreationDate": "2026-10-02T21:29:23.497875-06:00"
+  },
+  {
+    "ProcessId": 1300,
+    "ParentProcessId": 1144,
+    "Name": "LsaIso.exe",
+    "CreationDate": "2026-10-02T21:29:23.547234-06:00"
+  },
+  {
+    "ProcessId": 1332,
+    "ParentProcessId": 1144,
+    "Name": "lsass.exe",
+    "CreationDate": "2026-10-02T21:29:23.560533-06:00"
+  },
+  {
+    "ProcessId": 1476,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:24.25381-06:00"
+  },
+  {
+    "ProcessId": 1516,
+    "ParentProcessId": 1256,
+    "Name": "WUDFHost.exe",
+    "CreationDate": "2026-10-02T21:29:24.277104-06:00"
+  },
+  {
+    "ProcessId": 1564,
+    "ParentProcessId": 1144,
+    "Name": "fontdrvhost.exe",
+    "CreationDate": "2026-10-02T21:29:24.286413-06:00"
+  },
+  {
+    "ProcessId": 1692,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:24.352861-06:00"
+  },
+  {
+    "ProcessId": 1760,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:24.393422-06:00"
+  },
+  {
+    "ProcessId": 1804,
+    "ParentProcessId": 1256,
+    "Name": "WUDFHost.exe",
+    "CreationDate": "2026-10-02T21:29:24.410167-06:00"
+  },
+  {
+    "ProcessId": 1876,
+    "ParentProcessId": 1256,
+    "Name": "WUDFHost.exe",
+    "CreationDate": "2026-10-02T21:29:24.523814-06:00"
+  },
+  {
+    "ProcessId": 992,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.028494-06:00"
+  },
+  {
+    "ProcessId": 988,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.028518-06:00"
+  },
+  {
+    "ProcessId": 1156,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.029916-06:00"
+  },
+  {
+    "ProcessId": 1272,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.029977-06:00"
+  },
+  {
+    "ProcessId": 716,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.033634-06:00"
+  },
+  {
+    "ProcessId": 748,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.034074-06:00"
+  },
+  {
+    "ProcessId": 1040,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.035608-06:00"
+  },
+  {
+    "ProcessId": 2196,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.066211-06:00"
+  },
+  {
+    "ProcessId": 2204,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.066824-06:00"
+  },
+  {
+    "ProcessId": 2212,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.067449-06:00"
+  },
+  {
+    "ProcessId": 2220,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.067561-06:00"
+  },
+  {
+    "ProcessId": 2432,
+    "ParentProcessId": 1256,
+    "Name": "IntelCpHDCPSvc.exe",
+    "CreationDate": "2026-10-02T21:29:25.113222-06:00"
+  },
+  {
+    "ProcessId": 2464,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.123781-06:00"
+  },
+  {
+    "ProcessId": 2528,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.139027-06:00"
+  },
+  {
+    "ProcessId": 2536,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.141007-06:00"
+  },
+  {
+    "ProcessId": 2552,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.156294-06:00"
+  },
+  {
+    "ProcessId": 2564,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.160115-06:00"
+  },
+  {
+    "ProcessId": 2592,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.163668-06:00"
+  },
+  {
+    "ProcessId": 2876,
+    "ParentProcessId": 1256,
+    "Name": "SEDService.exe",
+    "CreationDate": "2026-10-02T21:29:25.257268-06:00"
+  },
+  {
+    "ProcessId": 2928,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.277966-06:00"
+  },
+  {
+    "ProcessId": 2980,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.284125-06:00"
+  },
+  {
+    "ProcessId": 3056,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.32034-06:00"
+  },
+  {
+    "ProcessId": 2100,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.320899-06:00"
+  },
+  {
+    "ProcessId": 2752,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.365053-06:00"
+  },
+  {
+    "ProcessId": 3348,
+    "ParentProcessId": 1256,
+    "Name": "igfxCUIServiceN.exe",
+    "CreationDate": "2026-10-02T21:29:25.46698-06:00"
+  },
+  {
+    "ProcessId": 3552,
+    "ParentProcessId": 1256,
+    "Name": "hmpalert.exe",
+    "CreationDate": "2026-10-02T21:29:25.604984-06:00"
+  },
+  {
+    "ProcessId": 3656,
+    "ParentProcessId": 2876,
+    "Name": "SSPService.exe",
+    "CreationDate": "2026-10-02T21:29:25.697186-06:00"
+  },
+  {
+    "ProcessId": 3716,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.735317-06:00"
+  },
+  {
+    "ProcessId": 3772,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.784849-06:00"
+  },
+  {
+    "ProcessId": 3856,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.827976-06:00"
+  },
+  {
+    "ProcessId": 3868,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.837997-06:00"
+  },
+  {
+    "ProcessId": 4080,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.9358-06:00"
+  },
+  {
+    "ProcessId": 4088,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.936406-06:00"
+  },
+  {
+    "ProcessId": 3152,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:25.946829-06:00"
+  },
+  {
+    "ProcessId": 3344,
+    "ParentProcessId": 4,
+    "Name": "Memory Compression",
+    "CreationDate": "2026-10-02T21:29:25.970002-06:00"
+  },
+  {
+    "ProcessId": 4392,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:26.145432-06:00"
+  },
+  {
+    "ProcessId": 4548,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:26.203958-06:00"
+  },
+  {
+    "ProcessId": 4680,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:26.378133-06:00"
+  },
+  {
+    "ProcessId": 4852,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:26.564576-06:00"
+  },
+  {
+    "ProcessId": 5080,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:26.755493-06:00"
+  },
+  {
+    "ProcessId": 5096,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:26.758191-06:00"
+  },
+  {
+    "ProcessId": 4076,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:26.822786-06:00"
+  },
+  {
+    "ProcessId": 4836,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:26.95169-06:00"
+  },
+  {
+    "ProcessId": 5220,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:27.046296-06:00"
+  },
+  {
+    "ProcessId": 5228,
+    "ParentProcessId": 2752,
+    "Name": "dasHost.exe",
+    "CreationDate": "2026-10-02T21:29:27.048236-06:00"
+  },
+  {
+    "ProcessId": 5412,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:27.275553-06:00"
+  },
+  {
+    "ProcessId": 5424,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:27.292643-06:00"
+  },
+  {
+    "ProcessId": 5796,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:27.509899-06:00"
+  },
+  {
+    "ProcessId": 5948,
+    "ParentProcessId": 1256,
+    "Name": "spoolsv.exe",
+    "CreationDate": "2026-10-02T21:29:27.70222-06:00"
+  },
+  {
+    "ProcessId": 5964,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:27.737734-06:00"
+  },
+  {
+    "ProcessId": 6016,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:27.79286-06:00"
+  },
+  {
+    "ProcessId": 6132,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:27.891725-06:00"
+  },
+  {
+    "ProcessId": 6240,
+    "ParentProcessId": 1256,
+    "Name": "armsvc.exe",
+    "CreationDate": "2026-10-02T21:29:28.181994-06:00"
+  },
+  {
+    "ProcessId": 6252,
+    "ParentProcessId": 1256,
+    "Name": "AdskLicensingService.exe",
+    "CreationDate": "2026-10-02T21:29:28.199073-06:00"
+  },
+  {
+    "ProcessId": 6284,
+    "ParentProcessId": 1256,
+    "Name": "Bentley.Structural.PropertyCatalog.Server.exe",
+    "CreationDate": "2026-10-02T21:29:28.220057-06:00"
+  },
+  {
+    "ProcessId": 6300,
+    "ParentProcessId": 1256,
+    "Name": "cer_service.exe",
+    "CreationDate": "2026-10-02T21:29:28.228316-06:00"
+  },
+  {
+    "ProcessId": 6344,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:28.262138-06:00"
+  },
+  {
+    "ProcessId": 6356,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:28.264623-06:00"
+  },
+  {
+    "ProcessId": 6400,
+    "ParentProcessId": 1256,
+    "Name": "EPCP.exe",
+    "CreationDate": "2026-10-02T21:29:28.297477-06:00"
+  },
+  {
+    "ProcessId": 6408,
+    "ParentProcessId": 1256,
+    "Name": "esif_uf.exe",
+    "CreationDate": "2026-10-02T21:29:28.300236-06:00"
+  },
+  {
+    "ProcessId": 6448,
+    "ParentProcessId": 1256,
+    "Name": "IntelAudioService.exe",
+    "CreationDate": "2026-10-02T21:29:28.31855-06:00"
+  },
+  {
+    "ProcessId": 6488,
+    "ParentProcessId": 1256,
+    "Name": "AdskAccessServiceHost.exe",
+    "CreationDate": "2026-10-02T21:29:28.335283-06:00"
+  },
+  {
+    "ProcessId": 6496,
+    "ParentProcessId": 1256,
+    "Name": "FNPLicensingService.exe",
+    "CreationDate": "2026-10-02T21:29:28.340583-06:00"
+  },
+  {
+    "ProcessId": 6524,
+    "ParentProcessId": 1256,
+    "Name": "FNPLicensingService64.exe",
+    "CreationDate": "2026-10-02T21:29:28.354464-06:00"
+  },
+  {
+    "ProcessId": 6656,
+    "ParentProcessId": 1256,
+    "Name": "OfficeClickToRun.exe",
+    "CreationDate": "2026-10-02T21:29:28.448127-06:00"
+  },
+  {
+    "ProcessId": 6664,
+    "ParentProcessId": 1256,
+    "Name": "MpDefenderCoreService.exe",
+    "CreationDate": "2026-10-02T21:29:28.450552-06:00"
+  },
+  {
+    "ProcessId": 6796,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:28.549283-06:00"
+  },
+  {
+    "ProcessId": 6848,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:28.561082-06:00"
+  },
+  {
+    "ProcessId": 6856,
+    "ParentProcessId": 1256,
+    "Name": "RstMwService.exe",
+    "CreationDate": "2026-10-02T21:29:28.568567-06:00"
+  },
+  {
+    "ProcessId": 6892,
+    "ParentProcessId": 1256,
+    "Name": "jhi_service.exe",
+    "CreationDate": "2026-10-02T21:29:28.583174-06:00"
+  },
+  {
+    "ProcessId": 6904,
+    "ParentProcessId": 1256,
+    "Name": "RtkAudUService64.exe",
+    "CreationDate": "2026-10-02T21:29:28.586262-06:00"
+  },
+  {
+    "ProcessId": 7068,
+    "ParentProcessId": 1256,
+    "Name": "SophosNtpService.exe",
+    "CreationDate": "2026-10-02T21:29:28.756438-06:00"
+  },
+  {
+    "ProcessId": 7160,
+    "ParentProcessId": 1256,
+    "Name": "TeamViewer_Service.exe",
+    "CreationDate": "2026-10-02T21:29:28.810858-06:00"
+  },
+  {
+    "ProcessId": 6200,
+    "ParentProcessId": 1256,
+    "Name": "scvpn.exe",
+    "CreationDate": "2026-10-02T21:29:28.815685-06:00"
+  },
+  {
+    "ProcessId": 6840,
+    "ParentProcessId": 1256,
+    "Name": "WavesAudioService.exe",
+    "CreationDate": "2026-10-02T21:29:28.841883-06:00"
+  },
+  {
+    "ProcessId": 7176,
+    "ParentProcessId": 1256,
+    "Name": "WavesSysSvc64.exe",
+    "CreationDate": "2026-10-02T21:29:28.8451-06:00"
+  },
+  {
+    "ProcessId": 7232,
+    "ParentProcessId": 1256,
+    "Name": "TbtP2pShortcutService.exe",
+    "CreationDate": "2026-10-02T21:29:28.913568-06:00"
+  },
+  {
+    "ProcessId": 7272,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:28.962084-06:00"
+  },
+  {
+    "ProcessId": 7296,
+    "ParentProcessId": 1256,
+    "Name": "WMIRegistrationService.exe",
+    "CreationDate": "2026-10-02T21:29:28.966367-06:00"
+  },
+  {
+    "ProcessId": 7332,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:28.989137-06:00"
+  },
+  {
+    "ProcessId": 7448,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:29.070939-06:00"
+  },
+  {
+    "ProcessId": 7632,
+    "ParentProcessId": 1256,
+    "Name": "escsvc64.exe",
+    "CreationDate": "2026-10-02T21:29:29.202378-06:00"
+  },
+  {
+    "ProcessId": 8516,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:30.644546-06:00"
+  },
+  {
+    "ProcessId": 8560,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:30.688141-06:00"
+  },
+  {
+    "ProcessId": 8792,
+    "ParentProcessId": 6356,
+    "Name": "AggregatorHost.exe",
+    "CreationDate": "2026-10-02T21:29:31.138332-06:00"
+  },
+  {
+    "ProcessId": 9340,
+    "ParentProcessId": 1476,
+    "Name": "WmiPrvSE.exe",
+    "CreationDate": "2026-10-02T21:29:33.503689-06:00"
+  },
+  {
+    "ProcessId": 10604,
+    "ParentProcessId": 9516,
+    "Name": "AdskAccessService.exe",
+    "CreationDate": "2026-10-02T21:29:34.927276-06:00"
+  },
+  {
+    "ProcessId": 10440,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:42.946631-06:00"
+  },
+  {
+    "ProcessId": 8816,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:43.656573-06:00"
+  },
+  {
+    "ProcessId": 9384,
+    "ParentProcessId": 1256,
+    "Name": "MSPCManagerService.exe",
+    "CreationDate": "2026-10-02T21:29:44.296319-06:00"
+  },
+  {
+    "ProcessId": 9716,
+    "ParentProcessId": 1256,
+    "Name": "IntelGraphicsSoftware.Service.exe",
+    "CreationDate": "2026-10-02T21:29:44.298915-06:00"
+  },
+  {
+    "ProcessId": 12136,
+    "ParentProcessId": 5412,
+    "Name": "wlanext.exe",
+    "CreationDate": "2026-10-02T21:29:45.456297-06:00"
+  },
+  {
+    "ProcessId": 11016,
+    "ParentProcessId": 7068,
+    "Name": "SophosNetFilter.exe",
+    "CreationDate": "2026-10-02T21:29:49.252823-06:00"
+  },
+  {
+    "ProcessId": 11568,
+    "ParentProcessId": 9716,
+    "Name": "PresentMonService.exe",
+    "CreationDate": "2026-10-02T21:29:50.870236-06:00"
+  },
+  {
+    "ProcessId": 11460,
+    "ParentProcessId": 11568,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-02T21:29:50.926514-06:00"
+  },
+  {
+    "ProcessId": 12500,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:56.068636-06:00"
+  },
+  {
+    "ProcessId": 13004,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:29:56.552886-06:00"
+  },
+  {
+    "ProcessId": 12956,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:30:01.363779-06:00"
+  },
+  {
+    "ProcessId": 12796,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:30:02.435887-06:00"
+  },
+  {
+    "ProcessId": 13380,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:30:02.712683-06:00"
+  },
+  {
+    "ProcessId": 13516,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:30:02.788758-06:00"
+  },
+  {
+    "ProcessId": 12972,
+    "ParentProcessId": 1256,
+    "Name": "SearchIndexer.exe",
+    "CreationDate": "2026-10-02T21:30:04.53377-06:00"
+  },
+  {
+    "ProcessId": 13872,
+    "ParentProcessId": 1256,
+    "Name": "PresentationFontCache.exe",
+    "CreationDate": "2026-10-02T21:30:04.994602-06:00"
+  },
+  {
+    "ProcessId": 19060,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:30:18.801928-06:00"
+  },
+  {
+    "ProcessId": 19108,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:30:18.912362-06:00"
+  },
+  {
+    "ProcessId": 4624,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:31:50.8792-06:00"
+  },
+  {
+    "ProcessId": 8976,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:31:51.373216-06:00"
+  },
+  {
+    "ProcessId": 13472,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:31:52.089338-06:00"
+  },
+  {
+    "ProcessId": 18036,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:31:52.258023-06:00"
+  },
+  {
+    "ProcessId": 13504,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:31:52.673233-06:00"
+  },
+  {
+    "ProcessId": 2416,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:31:52.846104-06:00"
+  },
+  {
+    "ProcessId": 10248,
+    "ParentProcessId": 1256,
+    "Name": "SophosFS.exe",
+    "CreationDate": "2026-10-02T21:34:43.40061-06:00"
+  },
+  {
+    "ProcessId": 10360,
+    "ParentProcessId": 2876,
+    "Name": "SophosHealth.exe",
+    "CreationDate": "2026-10-02T21:34:45.133969-06:00"
+  },
+  {
+    "ProcessId": 536,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:45:08.926069-06:00"
+  },
+  {
+    "ProcessId": 10784,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T21:46:35.063441-06:00"
+  },
+  {
+    "ProcessId": 13540,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-02T23:30:03.210122-06:00"
+  },
+  {
+    "ProcessId": 21784,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-03T10:52:18.893474-06:00"
+  },
+  {
+    "ProcessId": 26368,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-03T12:44:21.262321-06:00"
+  },
+  {
+    "ProcessId": 26904,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-04T15:39:18.997843-06:00"
+  },
+  {
+    "ProcessId": 14156,
+    "ParentProcessId": 22448,
+    "Name": "csrss.exe",
+    "CreationDate": "2026-10-06T20:15:25.872907-06:00"
+  },
+  {
+    "ProcessId": 8400,
+    "ParentProcessId": 22448,
+    "Name": "winlogon.exe",
+    "CreationDate": "2026-10-06T20:15:26.075893-06:00"
+  },
+  {
+    "ProcessId": 33724,
+    "ParentProcessId": 8400,
+    "Name": "fontdrvhost.exe",
+    "CreationDate": "2026-10-06T20:15:26.251307-06:00"
+  },
+  {
+    "ProcessId": 32404,
+    "ParentProcessId": 8400,
+    "Name": "dwm.exe",
+    "CreationDate": "2026-10-06T20:15:26.559123-06:00"
+  },
+  {
+    "ProcessId": 36240,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:17:29.28396-06:00"
+  },
+  {
+    "ProcessId": 9264,
+    "ParentProcessId": 1256,
+    "Name": "charon-svc.exe",
+    "CreationDate": "2026-10-06T20:17:30.620374-06:00"
+  },
+  {
+    "ProcessId": 37864,
+    "ParentProcessId": 1256,
+    "Name": "openvpnserv.exe",
+    "CreationDate": "2026-10-06T20:17:40.766541-06:00"
+  },
+  {
+    "ProcessId": 19168,
+    "ParentProcessId": 6408,
+    "Name": "dptf_helper.exe",
+    "CreationDate": "2026-10-06T20:17:43.893279-06:00"
+  },
+  {
+    "ProcessId": 29504,
+    "ParentProcessId": 2928,
+    "Name": "sihost.exe",
+    "CreationDate": "2026-10-06T20:17:44.429209-06:00"
+  },
+  {
+    "ProcessId": 11796,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:17:44.712095-06:00"
+  },
+  {
+    "ProcessId": 32732,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:17:44.719382-06:00"
+  },
+  {
+    "ProcessId": 34584,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:17:44.79311-06:00"
+  },
+  {
+    "ProcessId": 24676,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:17:44.851458-06:00"
+  },
+  {
+    "ProcessId": 30824,
+    "ParentProcessId": 3772,
+    "Name": "taskhostw.exe",
+    "CreationDate": "2026-10-06T20:17:44.921429-06:00"
+  },
+  {
+    "ProcessId": 16332,
+    "ParentProcessId": 6904,
+    "Name": "RtkAudUService64.exe",
+    "CreationDate": "2026-10-06T20:17:46.919487-06:00"
+  },
+  {
+    "ProcessId": 30768,
+    "ParentProcessId": 3348,
+    "Name": "igfxEMN.exe",
+    "CreationDate": "2026-10-06T20:17:47.54286-06:00"
+  },
+  {
+    "ProcessId": 30696,
+    "ParentProcessId": 37556,
+    "Name": "explorer.exe",
+    "CreationDate": "2026-10-06T20:17:47.785285-06:00"
+  },
+  {
+    "ProcessId": 36564,
+    "ParentProcessId": 29504,
+    "Name": "CrossDeviceResume.exe",
+    "CreationDate": "2026-10-06T20:17:48.377861-06:00"
+  },
+  {
+    "ProcessId": 12804,
+    "ParentProcessId": 1476,
+    "Name": "CrossDeviceService.exe",
+    "CreationDate": "2026-10-06T20:17:50.260699-06:00"
+  },
+  {
+    "ProcessId": 22140,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:17:51.416286-06:00"
+  },
+  {
+    "ProcessId": 7948,
+    "ParentProcessId": 1476,
+    "Name": "unsecapp.exe",
+    "CreationDate": "2026-10-06T20:17:52.997251-06:00"
+  },
+  {
+    "ProcessId": 22300,
+    "ParentProcessId": 1476,
+    "Name": "StartMenuExperienceHost.exe",
+    "CreationDate": "2026-10-06T20:17:53.405264-06:00"
+  },
+  {
+    "ProcessId": 348,
+    "ParentProcessId": 1476,
+    "Name": "SearchHost.exe",
+    "CreationDate": "2026-10-06T20:17:53.479292-06:00"
+  },
+  {
+    "ProcessId": 32272,
+    "ParentProcessId": 1476,
+    "Name": "Widgets.exe",
+    "CreationDate": "2026-10-06T20:17:53.56186-06:00"
+  },
+  {
+    "ProcessId": 37848,
+    "ParentProcessId": 1476,
+    "Name": "RuntimeBroker.exe",
+    "CreationDate": "2026-10-06T20:17:55.339429-06:00"
+  },
+  {
+    "ProcessId": 32928,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:17:55.482952-06:00"
+  },
+  {
+    "ProcessId": 10164,
+    "ParentProcessId": 1476,
+    "Name": "WidgetService.exe",
+    "CreationDate": "2026-10-06T20:17:55.530867-06:00"
+  },
+  {
+    "ProcessId": 36472,
+    "ParentProcessId": 348,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-06T20:17:57.66697-06:00"
+  },
+  {
+    "ProcessId": 36016,
+    "ParentProcessId": 36472,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-06T20:17:57.828369-06:00"
+  },
+  {
+    "ProcessId": 35892,
+    "ParentProcessId": 36472,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-06T20:17:58.823667-06:00"
+  },
+  {
+    "ProcessId": 31832,
+    "ParentProcessId": 36472,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-06T20:17:58.894466-06:00"
+  },
+  {
+    "ProcessId": 20456,
+    "ParentProcessId": 36472,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-06T20:17:59.310038-06:00"
+  },
+  {
+    "ProcessId": 19688,
+    "ParentProcessId": 36472,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-06T20:17:59.891129-06:00"
+  },
+  {
+    "ProcessId": 2060,
+    "ParentProcessId": 1476,
+    "Name": "TextInputHost.exe",
+    "CreationDate": "2026-10-06T20:18:03.032399-06:00"
+  },
+  {
+    "ProcessId": 18024,
+    "ParentProcessId": 5096,
+    "Name": "ctfmon.exe",
+    "CreationDate": "2026-10-06T20:18:03.374137-06:00"
+  },
+  {
+    "ProcessId": 5108,
+    "ParentProcessId": 1476,
+    "Name": "UserOOBEBroker.exe",
+    "CreationDate": "2026-10-06T20:18:05.245003-06:00"
+  },
+  {
+    "ProcessId": 28248,
+    "ParentProcessId": 1476,
+    "Name": "RuntimeBroker.exe",
+    "CreationDate": "2026-10-06T20:18:07.517293-06:00"
+  },
+  {
+    "ProcessId": 18748,
+    "ParentProcessId": 1476,
+    "Name": "PhoneExperienceHost.exe",
+    "CreationDate": "2026-10-06T20:18:12.113718-06:00"
+  },
+  {
+    "ProcessId": 15716,
+    "ParentProcessId": 30696,
+    "Name": "AdskAccessService.exe",
+    "CreationDate": "2026-10-06T20:18:17.806872-06:00"
+  },
+  {
+    "ProcessId": 16396,
+    "ParentProcessId": 30696,
+    "Name": "Sophos UI.exe",
+    "CreationDate": "2026-10-06T20:18:19.614455-06:00"
+  },
+  {
+    "ProcessId": 17372,
+    "ParentProcessId": 30696,
+    "Name": "Bentley.Licensing.Service.exe",
+    "CreationDate": "2026-10-06T20:18:20.313426-06:00"
+  },
+  {
+    "ProcessId": 17340,
+    "ParentProcessId": 30696,
+    "Name": "E_YATIYIE.EXE",
+    "CreationDate": "2026-10-06T20:18:21.783706-06:00"
+  },
+  {
+    "ProcessId": 1180,
+    "ParentProcessId": 30696,
+    "Name": "sldworks_fs.exe",
+    "CreationDate": "2026-10-06T20:18:34.972763-06:00"
+  },
+  {
+    "ProcessId": 4980,
+    "ParentProcessId": 1268,
+    "Name": "scgui.exe",
+    "CreationDate": "2026-10-06T20:18:35.401522-06:00"
+  },
+  {
+    "ProcessId": 33892,
+    "ParentProcessId": 1476,
+    "Name": "ApplicationFrameHost.exe",
+    "CreationDate": "2026-10-06T20:24:23.826984-06:00"
+  },
+  {
+    "ProcessId": 33284,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:24:25.368272-06:00"
+  },
+  {
+    "ProcessId": 24864,
+    "ParentProcessId": 1476,
+    "Name": "AppActions.exe",
+    "CreationDate": "2026-10-06T20:27:46.83847-06:00"
+  },
+  {
+    "ProcessId": 13784,
+    "ParentProcessId": 1476,
+    "Name": "IGCC.exe",
+    "CreationDate": "2026-10-06T20:45:08.939775-06:00"
+  },
+  {
+    "ProcessId": 30412,
+    "ParentProcessId": 1476,
+    "Name": "WhatsApp.Root.exe",
+    "CreationDate": "2026-10-06T20:46:59.883225-06:00"
+  },
+  {
+    "ProcessId": 27516,
+    "ParentProcessId": 1476,
+    "Name": "RuntimeBroker.exe",
+    "CreationDate": "2026-10-06T20:47:07.967751-06:00"
+  },
+  {
+    "ProcessId": 22904,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T20:57:08.352702-06:00"
+  },
+  {
+    "ProcessId": 25388,
+    "ParentProcessId": 1476,
+    "Name": "ShellExperienceHost.exe",
+    "CreationDate": "2026-10-06T22:08:30.842737-06:00"
+  },
+  {
+    "ProcessId": 14332,
+    "ParentProcessId": 1476,
+    "Name": "RuntimeBroker.exe",
+    "CreationDate": "2026-10-06T22:08:31.530251-06:00"
+  },
+  {
+    "ProcessId": 19308,
+    "ParentProcessId": 25100,
+    "Name": "AdobeCollabSync.exe",
+    "CreationDate": "2026-10-06T22:34:05.201121-06:00"
+  },
+  {
+    "ProcessId": 37516,
+    "ParentProcessId": 19308,
+    "Name": "AdobeCollabSync.exe",
+    "CreationDate": "2026-10-06T22:34:05.324489-06:00"
+  },
+  {
+    "ProcessId": 6272,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-06T22:57:05.766733-06:00"
+  },
+  {
+    "ProcessId": 28684,
+    "ParentProcessId": 30696,
+    "Name": "ms-teams.exe",
+    "CreationDate": "2026-10-07T08:26:25.098457-06:00"
+  },
+  {
+    "ProcessId": 16860,
+    "ParentProcessId": 1476,
+    "Name": "RuntimeBroker.exe",
+    "CreationDate": "2026-10-07T08:26:27.114895-06:00"
+  },
+  {
+    "ProcessId": 13260,
+    "ParentProcessId": 30412,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-07T08:26:44.237305-06:00"
+  },
+  {
+    "ProcessId": 17100,
+    "ParentProcessId": 13260,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-07T08:26:44.655793-06:00"
+  },
+  {
+    "ProcessId": 24136,
+    "ParentProcessId": 13260,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-07T08:26:46.425762-06:00"
+  },
+  {
+    "ProcessId": 27364,
+    "ParentProcessId": 13260,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-07T08:26:46.445758-06:00"
+  },
+  {
+    "ProcessId": 21064,
+    "ParentProcessId": 13260,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-07T08:26:46.783716-06:00"
+  },
+  {
+    "ProcessId": 27752,
+    "ParentProcessId": 13260,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-07T08:26:50.852537-06:00"
+  },
+  {
+    "ProcessId": 30908,
+    "ParentProcessId": 1476,
+    "Name": "DataExchangeHost.exe",
+    "CreationDate": "2026-10-07T08:27:32.620241-06:00"
+  },
+  {
+    "ProcessId": 35104,
+    "ParentProcessId": 13260,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-07T08:27:36.539213-06:00"
+  },
+  {
+    "ProcessId": 8648,
+    "ParentProcessId": 1256,
+    "Name": "McsAgent.exe",
+    "CreationDate": "2026-10-07T09:38:02.608693-06:00"
+  },
+  {
+    "ProcessId": 20044,
+    "ParentProcessId": 1256,
+    "Name": "McsClient.exe",
+    "CreationDate": "2026-10-07T09:38:03.868702-06:00"
+  },
+  {
+    "ProcessId": 37620,
+    "ParentProcessId": 28684,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T06:05:13.602564-06:00"
+  },
+  {
+    "ProcessId": 23792,
+    "ParentProcessId": 37620,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T06:05:13.687986-06:00"
+  },
+  {
+    "ProcessId": 30232,
+    "ParentProcessId": 37620,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T06:05:14.321766-06:00"
+  },
+  {
+    "ProcessId": 34864,
+    "ParentProcessId": 37620,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T06:05:14.323035-06:00"
+  },
+  {
+    "ProcessId": 16704,
+    "ParentProcessId": 37620,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T06:05:14.344803-06:00"
+  },
+  {
+    "ProcessId": 33888,
+    "ParentProcessId": 37620,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T06:05:14.893815-06:00"
+  },
+  {
+    "ProcessId": 31880,
+    "ParentProcessId": 28684,
+    "Name": "ms-teams.exe",
+    "CreationDate": "2026-10-08T06:05:15.354345-06:00"
+  },
+  {
+    "ProcessId": 15420,
+    "ParentProcessId": 37620,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T06:05:23.60869-06:00"
+  },
+  {
+    "ProcessId": 15060,
+    "ParentProcessId": 30696,
+    "Name": "olk.exe",
+    "CreationDate": "2026-10-08T12:02:39.628431-06:00"
+  },
+  {
+    "ProcessId": 17232,
+    "ParentProcessId": 15060,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T12:02:40.584039-06:00"
+  },
+  {
+    "ProcessId": 37664,
+    "ParentProcessId": 17232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T12:02:40.655711-06:00"
+  },
+  {
+    "ProcessId": 30928,
+    "ParentProcessId": 1476,
+    "Name": "RuntimeBroker.exe",
+    "CreationDate": "2026-10-08T12:02:41.185797-06:00"
+  },
+  {
+    "ProcessId": 22460,
+    "ParentProcessId": 17232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T12:02:41.279204-06:00"
+  },
+  {
+    "ProcessId": 36720,
+    "ParentProcessId": 17232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T12:02:41.279583-06:00"
+  },
+  {
+    "ProcessId": 17780,
+    "ParentProcessId": 17232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T12:02:41.396266-06:00"
+  },
+  {
+    "ProcessId": 33520,
+    "ParentProcessId": 17232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T12:02:41.602942-06:00"
+  },
+  {
+    "ProcessId": 19828,
+    "ParentProcessId": 17232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-08T12:02:41.893989-06:00"
+  },
+  {
+    "ProcessId": 24320,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-08T13:29:27.793926-06:00"
+  },
+  {
+    "ProcessId": 33040,
+    "ParentProcessId": 1476,
+    "Name": "RuntimeBroker.exe",
+    "CreationDate": "2026-10-08T15:30:24.007346-06:00"
+  },
+  {
+    "ProcessId": 35308,
+    "ParentProcessId": 29504,
+    "Name": "SpotifyLauncher.exe",
+    "CreationDate": "2026-10-08T17:29:39.433101-06:00"
+  },
+  {
+    "ProcessId": 10228,
+    "ParentProcessId": 35308,
+    "Name": "crashpad_handler.exe",
+    "CreationDate": "2026-10-08T17:29:39.760094-06:00"
+  },
+  {
+    "ProcessId": 24644,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-08T18:18:59.72341-06:00"
+  },
+  {
+    "ProcessId": 21236,
+    "ParentProcessId": 1476,
+    "Name": "dllhost.exe",
+    "CreationDate": "2026-10-08T19:52:46.947996-06:00"
+  },
+  {
+    "ProcessId": 19640,
+    "ParentProcessId": 1476,
+    "Name": "dllhost.exe",
+    "CreationDate": "2026-10-08T19:52:47.492978-06:00"
+  },
+  {
+    "ProcessId": 14636,
+    "ParentProcessId": 1476,
+    "Name": "dllhost.exe",
+    "CreationDate": "2026-10-08T19:52:47.676328-06:00"
+  },
+  {
+    "ProcessId": 25688,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-09T13:23:47.999438-06:00"
+  },
+  {
+    "ProcessId": 10244,
+    "ParentProcessId": 30660,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:41.64996-06:00"
+  },
+  {
+    "ProcessId": 27764,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:42.139212-06:00"
+  },
+  {
+    "ProcessId": 22580,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:42.714233-06:00"
+  },
+  {
+    "ProcessId": 31240,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:42.798628-06:00"
+  },
+  {
+    "ProcessId": 34120,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:43.19505-06:00"
+  },
+  {
+    "ProcessId": 20316,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:44.169354-06:00"
+  },
+  {
+    "ProcessId": 33384,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:49.634595-06:00"
+  },
+  {
+    "ProcessId": 16188,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:50.402734-06:00"
+  },
+  {
+    "ProcessId": 37512,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:37:59.678341-06:00"
+  },
+  {
+    "ProcessId": 20716,
+    "ParentProcessId": 37512,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-09T16:38:00.610515-06:00"
+  },
+  {
+    "ProcessId": 26968,
+    "ParentProcessId": 37512,
+    "Name": "pwsh.exe",
+    "CreationDate": "2026-10-09T16:38:01.087184-06:00"
+  },
+  {
+    "ProcessId": 38340,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:38:04.129307-06:00"
+  },
+  {
+    "ProcessId": 26484,
+    "ParentProcessId": 38340,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-09T16:38:04.161402-06:00"
+  },
+  {
+    "ProcessId": 37052,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:38:04.84903-06:00"
+  },
+  {
+    "ProcessId": 37552,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T16:38:04.933923-06:00"
+  },
+  {
+    "ProcessId": 15488,
+    "ParentProcessId": 29504,
+    "Name": "ShellHost.exe",
+    "CreationDate": "2026-10-09T16:43:06.817325-06:00"
+  },
+  {
+    "ProcessId": 18312,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T19:10:46.345867-06:00"
+  },
+  {
+    "ProcessId": 24884,
+    "ParentProcessId": 37512,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-09T19:10:46.78204-06:00"
+  },
+  {
+    "ProcessId": 22536,
+    "ParentProcessId": 18312,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-09T19:10:46.851828-06:00"
+  },
+  {
+    "ProcessId": 28920,
+    "ParentProcessId": 37512,
+    "Name": "pwsh.exe",
+    "CreationDate": "2026-10-09T19:10:47.798097-06:00"
+  },
+  {
+    "ProcessId": 9088,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-09T19:10:54.387048-06:00"
+  },
+  {
+    "ProcessId": 26444,
+    "ParentProcessId": 9088,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-09T19:10:54.544739-06:00"
+  },
+  {
+    "ProcessId": 34156,
+    "ParentProcessId": 37512,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-09T19:10:55.296998-06:00"
+  },
+  {
+    "ProcessId": 21588,
+    "ParentProcessId": 37512,
+    "Name": "pwsh.exe",
+    "CreationDate": "2026-10-09T19:10:56.181745-06:00"
+  },
+  {
+    "ProcessId": 35524,
+    "ParentProcessId": 37620,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-09T19:12:17.784685-06:00"
+  },
+  {
+    "ProcessId": 29184,
+    "ParentProcessId": 29112,
+    "Name": "OneDrive.exe",
+    "CreationDate": "2026-10-09T23:41:00.951386-06:00"
+  },
+  {
+    "ProcessId": 33444,
+    "ParentProcessId": 29184,
+    "Name": "OneDrive.exe",
+    "CreationDate": "2026-10-09T23:41:03.50068-06:00"
+  },
+  {
+    "ProcessId": 37588,
+    "ParentProcessId": 29112,
+    "Name": "OneDrive.Sync.Service.exe",
+    "CreationDate": "2026-10-09T23:41:06.830438-06:00"
+  },
+  {
+    "ProcessId": 21308,
+    "ParentProcessId": 1256,
+    "Name": "FileSyncHelper.exe",
+    "CreationDate": "2026-10-09T23:41:23.803401-06:00"
+  },
+  {
+    "ProcessId": 23188,
+    "ParentProcessId": 29184,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-09T23:41:32.119534-06:00"
+  },
+  {
+    "ProcessId": 37444,
+    "ParentProcessId": 23188,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-09T23:41:32.652192-06:00"
+  },
+  {
+    "ProcessId": 27284,
+    "ParentProcessId": 23188,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-09T23:41:35.996849-06:00"
+  },
+  {
+    "ProcessId": 23920,
+    "ParentProcessId": 23188,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-09T23:41:36.005678-06:00"
+  },
+  {
+    "ProcessId": 32916,
+    "ParentProcessId": 23188,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-09T23:41:36.34347-06:00"
+  },
+  {
+    "ProcessId": 24808,
+    "ParentProcessId": 23188,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-09T23:41:37.088102-06:00"
+  },
+  {
+    "ProcessId": 21608,
+    "ParentProcessId": 23188,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-09T23:41:37.433506-06:00"
+  },
+  {
+    "ProcessId": 21628,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-10T02:07:50.977186-06:00"
+  },
+  {
+    "ProcessId": 24108,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-10T14:39:07.357072-06:00"
+  },
+  {
+    "ProcessId": 24872,
+    "ParentProcessId": 24108,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T14:39:07.45652-06:00"
+  },
+  {
+    "ProcessId": 37348,
+    "ParentProcessId": 37512,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T14:39:09.01321-06:00"
+  },
+  {
+    "ProcessId": 34208,
+    "ParentProcessId": 37512,
+    "Name": "pwsh.exe",
+    "CreationDate": "2026-10-10T14:39:09.506713-06:00"
+  },
+  {
+    "ProcessId": 21024,
+    "ParentProcessId": 10248,
+    "Name": "SophosFileScanner.exe",
+    "CreationDate": "2026-10-10T17:39:17.637967-06:00"
+  },
+  {
+    "ProcessId": 26108,
+    "ParentProcessId": 21024,
+    "Name": "SophosFileScanner.exe",
+    "CreationDate": "2026-10-10T17:39:17.693864-06:00"
+  },
+  {
+    "ProcessId": 28524,
+    "ParentProcessId": 11904,
+    "Name": "splwow64.exe",
+    "CreationDate": "2026-10-10T20:08:03.043725-06:00"
+  },
+  {
+    "ProcessId": 14072,
+    "ParentProcessId": 1476,
+    "Name": "EXCEL.EXE",
+    "CreationDate": "2026-10-10T20:11:42.394982-06:00"
+  },
+  {
+    "ProcessId": 16004,
+    "ParentProcessId": 10244,
+    "Name": "claude.exe",
+    "CreationDate": "2026-10-10T20:28:46.561684-06:00"
+  },
+  {
+    "ProcessId": 32192,
+    "ParentProcessId": 17372,
+    "Name": "Bentley.Connect.Client.exe",
+    "CreationDate": "2026-10-10T20:28:52.628349-06:00"
+  },
+  {
+    "ProcessId": 40232,
+    "ParentProcessId": 32192,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-10T20:29:06.820852-06:00"
+  },
+  {
+    "ProcessId": 10396,
+    "ParentProcessId": 40232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-10T20:29:06.931753-06:00"
+  },
+  {
+    "ProcessId": 40184,
+    "ParentProcessId": 40232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-10T20:29:07.42433-06:00"
+  },
+  {
+    "ProcessId": 27976,
+    "ParentProcessId": 40232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-10T20:29:07.485661-06:00"
+  },
+  {
+    "ProcessId": 40252,
+    "ParentProcessId": 40232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-10T20:29:07.740308-06:00"
+  },
+  {
+    "ProcessId": 20672,
+    "ParentProcessId": 40232,
+    "Name": "msedgewebview2.exe",
+    "CreationDate": "2026-10-10T20:48:17.09522-06:00"
+  },
+  {
+    "ProcessId": 14540,
+    "ParentProcessId": 29504,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:51:26.142509-06:00"
+  },
+  {
+    "ProcessId": 27556,
+    "ParentProcessId": 1256,
+    "Name": "codex-windows-sandbox-service.exe",
+    "CreationDate": "2026-10-10T20:51:26.274749-06:00"
+  },
+  {
+    "ProcessId": 10924,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:51:26.409853-06:00"
+  },
+  {
+    "ProcessId": 28860,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:51:28.089293-06:00"
+  },
+  {
+    "ProcessId": 35880,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:51:28.128277-06:00"
+  },
+  {
+    "ProcessId": 35784,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:51:28.248437-06:00"
+  },
+  {
+    "ProcessId": 28940,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:52:02.132799-06:00"
+  },
+  {
+    "ProcessId": 17280,
+    "ParentProcessId": 14540,
+    "Name": "codex.exe",
+    "CreationDate": "2026-10-10T20:52:02.550087-06:00"
+  },
+  {
+    "ProcessId": 40368,
+    "ParentProcessId": 17280,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T20:52:02.571335-06:00"
+  },
+  {
+    "ProcessId": 27928,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:52:06.027127-06:00"
+  },
+  {
+    "ProcessId": 5348,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:52:12.111741-06:00"
+  },
+  {
+    "ProcessId": 23836,
+    "ParentProcessId": 14540,
+    "Name": "codex-computer-use-swift.exe",
+    "CreationDate": "2026-10-10T20:52:13.06244-06:00"
+  },
+  {
+    "ProcessId": 34920,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:52:13.216466-06:00"
+  },
+  {
+    "ProcessId": 35476,
+    "ParentProcessId": 23836,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T20:52:13.225995-06:00"
+  },
+  {
+    "ProcessId": 22240,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T20:54:28.136915-06:00"
+  },
+  {
+    "ProcessId": 8456,
+    "ParentProcessId": 17280,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T20:54:41.175252-06:00"
+  },
+  {
+    "ProcessId": 12828,
+    "ParentProcessId": 8456,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T20:54:41.200687-06:00"
+  },
+  {
+    "ProcessId": 28112,
+    "ParentProcessId": 17280,
+    "Name": "node_repl.exe",
+    "CreationDate": "2026-10-10T20:54:41.470432-06:00"
+  },
+  {
+    "ProcessId": 8644,
+    "ParentProcessId": 8456,
+    "Name": "node_repl.exe",
+    "CreationDate": "2026-10-10T20:54:41.482548-06:00"
+  },
+  {
+    "ProcessId": 32808,
+    "ParentProcessId": 17280,
+    "Name": "cmd.exe",
+    "CreationDate": "2026-10-10T20:54:41.494389-06:00"
+  },
+  {
+    "ProcessId": 14212,
+    "ParentProcessId": 17280,
+    "Name": "cmd.exe",
+    "CreationDate": "2026-10-10T20:54:41.505835-06:00"
+  },
+  {
+    "ProcessId": 27000,
+    "ParentProcessId": 28112,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T20:54:41.507689-06:00"
+  },
+  {
+    "ProcessId": 33120,
+    "ParentProcessId": 32808,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T20:54:41.517174-06:00"
+  },
+  {
+    "ProcessId": 37768,
+    "ParentProcessId": 14212,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T20:54:41.52434-06:00"
+  },
+  {
+    "ProcessId": 17096,
+    "ParentProcessId": 32808,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T20:54:41.631741-06:00"
+  },
+  {
+    "ProcessId": 28928,
+    "ParentProcessId": 14212,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T20:54:41.64312-06:00"
+  },
+  {
+    "ProcessId": 16456,
+    "ParentProcessId": 17280,
+    "Name": "codex-code-mode-host.exe",
+    "CreationDate": "2026-10-10T20:55:13.345238-06:00"
+  },
+  {
+    "ProcessId": 39148,
+    "ParentProcessId": 16456,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T20:55:13.366288-06:00"
+  },
+  {
+    "ProcessId": 20980,
+    "ParentProcessId": 1476,
+    "Name": "SystemSettings.exe",
+    "CreationDate": "2026-10-10T20:59:20.738931-06:00"
+  },
+  {
+    "ProcessId": 30240,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:29:44.50989-06:00"
+  },
+  {
+    "ProcessId": 27664,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:29:44.519367-06:00"
+  },
+  {
+    "ProcessId": 37216,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:30:11.294923-06:00"
+  },
+  {
+    "ProcessId": 16768,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:30:11.529028-06:00"
+  },
+  {
+    "ProcessId": 22672,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:30:12.446357-06:00"
+  },
+  {
+    "ProcessId": 15960,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:30:15.005764-06:00"
+  },
+  {
+    "ProcessId": 40308,
+    "ParentProcessId": 14540,
+    "Name": "codex.exe",
+    "CreationDate": "2026-10-10T22:30:17.171792-06:00"
+  },
+  {
+    "ProcessId": 35768,
+    "ParentProcessId": 40308,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T22:30:17.207344-06:00"
+  },
+  {
+    "ProcessId": 2860,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:30:19.361136-06:00"
+  },
+  {
+    "ProcessId": 32876,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:30:26.661873-06:00"
+  },
+  {
+    "ProcessId": 4232,
+    "ParentProcessId": 14540,
+    "Name": "ChatGPT.exe",
+    "CreationDate": "2026-10-10T22:30:26.776826-06:00"
+  },
+  {
+    "ProcessId": 37976,
+    "ParentProcessId": 3772,
+    "Name": "taskhostw.exe",
+    "CreationDate": "2026-10-10T22:37:31.288099-06:00"
+  },
+  {
+    "ProcessId": 27652,
+    "ParentProcessId": 17280,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T22:52:24.899647-06:00"
+  },
+  {
+    "ProcessId": 28716,
+    "ParentProcessId": 17280,
+    "Name": "node_repl.exe",
+    "CreationDate": "2026-10-10T22:52:24.906991-06:00"
+  },
+  {
+    "ProcessId": 21028,
+    "ParentProcessId": 17280,
+    "Name": "cmd.exe",
+    "CreationDate": "2026-10-10T22:52:24.915879-06:00"
+  },
+  {
+    "ProcessId": 30368,
+    "ParentProcessId": 27652,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T22:52:24.919992-06:00"
+  },
+  {
+    "ProcessId": 14568,
+    "ParentProcessId": 17280,
+    "Name": "cmd.exe",
+    "CreationDate": "2026-10-10T22:52:24.927162-06:00"
+  },
+  {
+    "ProcessId": 6280,
+    "ParentProcessId": 28716,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T22:52:24.928911-06:00"
+  },
+  {
+    "ProcessId": 37844,
+    "ParentProcessId": 21028,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T22:52:24.931675-06:00"
+  },
+  {
+    "ProcessId": 34776,
+    "ParentProcessId": 14568,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T22:52:24.941268-06:00"
+  },
+  {
+    "ProcessId": 29148,
+    "ParentProcessId": 21028,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T22:52:25.035451-06:00"
+  },
+  {
+    "ProcessId": 4608,
+    "ParentProcessId": 14568,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T22:52:25.057143-06:00"
+  },
+  {
+    "ProcessId": 24056,
+    "ParentProcessId": 27652,
+    "Name": "node_repl.exe",
+    "CreationDate": "2026-10-10T22:52:25.231403-06:00"
+  },
+  {
+    "ProcessId": 33852,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-10T22:57:02.927425-06:00"
+  },
+  {
+    "ProcessId": 38048,
+    "ParentProcessId": 16664,
+    "Name": "dotnet.exe",
+    "CreationDate": "2026-10-10T22:59:39.686796-06:00"
+  },
+  {
+    "ProcessId": 31796,
+    "ParentProcessId": 38048,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T22:59:39.709112-06:00"
+  },
+  {
+    "ProcessId": 28664,
+    "ParentProcessId": 1256,
+    "Name": "svchost.exe",
+    "CreationDate": "2026-10-10T23:02:43.784683-06:00"
+  },
+  {
+    "ProcessId": 33268,
+    "ParentProcessId": 12972,
+    "Name": "SearchFilterHost.exe",
+    "CreationDate": "2026-10-10T23:05:28.932034-06:00"
+  },
+  {
+    "ProcessId": 29084,
+    "ParentProcessId": 12972,
+    "Name": "SearchFilterHost.exe",
+    "CreationDate": "2026-10-10T23:05:29.819732-06:00"
+  },
+  {
+    "ProcessId": 13392,
+    "ParentProcessId": 36676,
+    "Name": "dotnet.exe",
+    "CreationDate": "2026-10-10T23:07:31.249996-06:00"
+  },
+  {
+    "ProcessId": 20900,
+    "ParentProcessId": 36676,
+    "Name": "dotnet.exe",
+    "CreationDate": "2026-10-10T23:07:31.251316-06:00"
+  },
+  {
+    "ProcessId": 35236,
+    "ParentProcessId": 13392,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:07:31.303327-06:00"
+  },
+  {
+    "ProcessId": 20952,
+    "ParentProcessId": 20900,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:07:31.304345-06:00"
+  },
+  {
+    "ProcessId": 40328,
+    "ParentProcessId": 17280,
+    "Name": "node_repl.exe",
+    "CreationDate": "2026-10-10T23:08:08.006251-06:00"
+  },
+  {
+    "ProcessId": 29060,
+    "ParentProcessId": 40328,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:08:08.08507-06:00"
+  },
+  {
+    "ProcessId": 38352,
+    "ParentProcessId": 17280,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T23:08:11.118685-06:00"
+  },
+  {
+    "ProcessId": 24804,
+    "ParentProcessId": 17280,
+    "Name": "cmd.exe",
+    "CreationDate": "2026-10-10T23:08:11.150422-06:00"
+  },
+  {
+    "ProcessId": 20288,
+    "ParentProcessId": 17280,
+    "Name": "cmd.exe",
+    "CreationDate": "2026-10-10T23:08:11.178265-06:00"
+  },
+  {
+    "ProcessId": 14556,
+    "ParentProcessId": 38352,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:08:11.229707-06:00"
+  },
+  {
+    "ProcessId": 22972,
+    "ParentProcessId": 24804,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:08:11.435319-06:00"
+  },
+  {
+    "ProcessId": 32936,
+    "ParentProcessId": 20288,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:08:11.450747-06:00"
+  },
+  {
+    "ProcessId": 29616,
+    "ParentProcessId": 24804,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T23:08:11.865276-06:00"
+  },
+  {
+    "ProcessId": 39908,
+    "ParentProcessId": 20288,
+    "Name": "node.exe",
+    "CreationDate": "2026-10-10T23:08:11.937406-06:00"
+  },
+  {
+    "ProcessId": 31416,
+    "ParentProcessId": 38352,
+    "Name": "node_repl.exe",
+    "CreationDate": "2026-10-10T23:08:12.643916-06:00"
+  },
+  {
+    "ProcessId": 12208,
+    "ParentProcessId": 38340,
+    "Name": "bash.exe",
+    "CreationDate": "2026-10-10T23:08:42.551443-06:00"
+  },
+  {
+    "ProcessId": 21348,
+    "ParentProcessId": 12208,
+    "Name": "bash.exe",
+    "CreationDate": "2026-10-10T23:08:42.700209-06:00"
+  },
+  {
+    "ProcessId": 18776,
+    "ParentProcessId": 21348,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:08:42.757218-06:00"
+  },
+  {
+    "ProcessId": 8388,
+    "ParentProcessId": 12972,
+    "Name": "SearchProtocolHost.exe",
+    "CreationDate": "2026-10-10T23:10:39.763736-06:00"
+  },
+  {
+    "ProcessId": 13936,
+    "ParentProcessId": 28044,
+    "Name": "sleep.exe",
+    "CreationDate": "2026-10-10T23:11:40.732356-06:00"
+  },
+  {
+    "ProcessId": 31544,
+    "ParentProcessId": 17280,
+    "Name": "pwsh.exe",
+    "CreationDate": "2026-10-10T23:11:43.632219-06:00"
+  },
+  {
+    "ProcessId": 31444,
+    "ParentProcessId": 31544,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:11:43.660558-06:00"
+  },
+  {
+    "ProcessId": 29580,
+    "ParentProcessId": 1476,
+    "Name": "WmiPrvSE.exe",
+    "CreationDate": "2026-10-10T23:11:45.096969-06:00"
+  },
+  {
+    "ProcessId": 9456,
+    "ParentProcessId": 1476,
+    "Name": "RuntimeBroker.exe",
+    "CreationDate": "2026-10-10T23:11:46.307186-06:00"
+  },
+  {
+    "ProcessId": 38100,
+    "ParentProcessId": 24108,
+    "Name": "bash.exe",
+    "CreationDate": "2026-10-10T23:11:57.471224-06:00"
+  },
+  {
+    "ProcessId": 20564,
+    "ParentProcessId": 38100,
+    "Name": "bash.exe",
+    "CreationDate": "2026-10-10T23:11:57.54386-06:00"
+  },
+  {
+    "ProcessId": 13852,
+    "ParentProcessId": 20564,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:11:57.571641-06:00"
+  },
+  {
+    "ProcessId": 40944,
+    "ParentProcessId": 1476,
+    "Name": "EXCEL.EXE",
+    "CreationDate": "2026-10-10T23:11:59.600005-06:00"
+  },
+  {
+    "ProcessId": 19328,
+    "ParentProcessId": 1476,
+    "Name": "dllhost.exe",
+    "CreationDate": "2026-10-10T23:12:01.902621-06:00"
+  },
+  {
+    "ProcessId": 15792,
+    "ParentProcessId": 20564,
+    "Name": "bash.exe",
+    "CreationDate": "2026-10-10T23:12:02.480108-06:00"
+  },
+  {
+    "ProcessId": 14756,
+    "ParentProcessId": 15792,
+    "Name": "git.exe",
+    "CreationDate": "2026-10-10T23:12:02.603957-06:00"
+  },
+  {
+    "ProcessId": 25364,
+    "ParentProcessId": 18816,
+    "Name": "tail.exe",
+    "CreationDate": "2026-10-10T23:12:02.72549-06:00"
+  },
+  {
+    "ProcessId": 11652,
+    "ParentProcessId": 14756,
+    "Name": "git.exe",
+    "CreationDate": "2026-10-10T23:12:03.067288-06:00"
+  },
+  {
+    "ProcessId": 38556,
+    "ParentProcessId": 11652,
+    "Name": "git-remote-https.exe",
+    "CreationDate": "2026-10-10T23:12:03.167506-06:00"
+  },
+  {
+    "ProcessId": 23688,
+    "ParentProcessId": 1476,
+    "Name": "sldShellExtServer.exe",
+    "CreationDate": "2026-10-10T23:12:06.584778-06:00"
+  },
+  {
+    "ProcessId": 16964,
+    "ParentProcessId": 18312,
+    "Name": "cmd.exe",
+    "CreationDate": "2026-10-10T23:12:06.620592-06:00"
+  },
+  {
+    "ProcessId": 20148,
+    "ParentProcessId": 16964,
+    "Name": "conhost.exe",
+    "CreationDate": "2026-10-10T23:12:06.735871-06:00"
+  },
+  {
+    "ProcessId": 21900,
+    "ParentProcessId": 16964,
+    "Name": "pwsh.exe",
+    "CreationDate": "2026-10-10T23:12:07.015032-06:00"
+  },
+  {
+    "ProcessId": 39600,
+    "ParentProcessId": 38556,
+    "Name": "git.exe",
+    "CreationDate": "2026-10-10T23:12:07.354402-06:00"
+  },
+  {
+    "ProcessId": 34660,
+    "ParentProcessId": 1476,
+    "Name": "sldShellExtServer.exe",
+    "CreationDate": "2026-10-10T23:12:07.701083-06:00"
+  },
+  {
+    "ProcessId": 6352,
+    "ParentProcessId": 39600,
+    "Name": "git.exe",
+    "CreationDate": "2026-10-10T23:12:07.927234-06:00"
+  }
+]

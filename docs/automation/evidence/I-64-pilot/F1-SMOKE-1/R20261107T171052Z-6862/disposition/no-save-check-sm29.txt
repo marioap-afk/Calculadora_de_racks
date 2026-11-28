@@ -1,0 +1,8 @@
+Comprobacion de no guardado (pausa de SM-29), solo lectura, UTC 2026-11-07T18:47:06.6612732Z; PID 67260, inicio 2026-11-07T18:05:46.9023864Z
+  A | LastWriteUtc 2026-10-13T01:13:38.0000000Z | anterior al inicio de la PID = True | size 117252
+  B | LastWriteUtc 2026-10-13T01:12:51.0000000Z | anterior al inicio de la PID = True | size 262840
+  C | LastWriteUtc 2026-10-13T01:13:28.0000000Z | anterior al inicio de la PID = True | size 118033
+  D | LastWriteUtc 2026-10-12T07:14:24.8992503Z | anterior al inicio de la PID = True | size 21375
+  Carpeta de A, B y C: archivos escritos desde el inicio de la PID = 0
+  Carpeta de D: archivos escritos desde el inicio de la PID = 0
+  autoguardado temporal de esta PID: Dibujo C .sv$ | LastWriteUtc 2026-11-07T18:45:44.0000000Z

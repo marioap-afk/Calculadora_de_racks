@@ -1,0 +1,54 @@
+{
+  "Schema": "rackcad-i64-contract-rev2-check/v1",
+  "TaskId": "F4-T2A-PILOT-STATE",
+  "SourceRevision": "26c80eb4a13e9fdbc8a93074500de2606fde3800",
+  "Contract": "docs/automation/evidence/I-64-pilot/F4-T2A-PILOT-STATE/coordinator/gate-contract-rev2.json",
+  "ContractSha256": "263d3b969c41b44734ff42ed1308097227177eafb7134d35fdf15a7a9abd8c47",
+  "Check": {
+    "ForbiddenEqualsRetained": true,
+    "AllowedUnchanged": true,
+    "UnchangedFields": {
+      "Schema": true,
+      "Unit": true,
+      "Gate": true,
+      "TaskId": true,
+      "Objective": true,
+      "MainSha": true,
+      "AllowedWriteScope": true,
+      "Invariants": true,
+      "RequiredTests": true,
+      "ExpectedEvidence": true,
+      "StopConditions": true,
+      "EligibleCells": true,
+      "RoutingEnforcement": true,
+      "CorrectionsAuthorized": true,
+      "IssuedBy": true
+    },
+    "ChangedFields": [
+      "Authorities",
+      "AuthorityRevision",
+      "ForbiddenWriteScope",
+      "IssuedUtc"
+    ],
+    "Pass": true
+  },
+  "ReductionProofsPass": 82,
+  "AllowedSimulationsPass": 15,
+  "EffectiveWriteBoundaryDifferences": [],
+  "Omitted61f3": {
+    "Path": "src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs",
+    "InRemovedSet": true,
+    "ExplicitlyForbiddenAfter": false,
+    "OutsideAllowed": true,
+    "ScopeAfter": {
+      "Result": "fail",
+      "OutsideAllowed": [
+        "src/RackCad.Application/Systems/PushBack/PushBackHighEndBeamGeometry.cs"
+      ],
+      "IntersectsForbidden": []
+    },
+    "Mechanism": "b) outside AllowedWriteScope (exact whitelist)",
+    "Protected": true
+  },
+  "Result": "PASS"
+}

@@ -1,0 +1,184 @@
+## 1. Las 17 clases candidatas
+- WorkspacePilotEditHostTests.cs: 59 metodos (6 Theory)
+- WorkspaceEditIntentHostTests.cs: 62 metodos (7 Theory)
+- WorkspacePilotReconciliationHostTests.cs: 28 metodos (0 Theory)
+- WorkspacePilotUpdateHostTests.cs: 35 metodos (3 Theory)
+- WorkspacePilotUpdateHostRunTests.cs: 27 metodos (0 Theory)
+- WorkspacePilotUpdateRequestTests.cs: 44 metodos (2 Theory)
+- WorkspaceLifecycleHostTests.cs: 69 metodos (3 Theory)
+- WorkspaceAssociativeBookkeepingTests.cs: 10 metodos (3 Theory)
+- WorkspaceCommandAdvisorTests.cs: 54 metodos (6 Theory)
+- WorkspaceEditIntentGuardTests.cs: 66 metodos (20 Theory)
+- WorkspaceLifecycleGuardTests.cs: 44 metodos (5 Theory)
+- WorkspacePilotUpdateIntegrationGuardTests.cs: 43 metodos (7 Theory)
+- WorkspacePilotUpdateGuardTests.cs: 42 metodos (9 Theory)
+- WorkspacePilotEditGuardTests.cs: 39 metodos (17 Theory)
+- WorkspacePilotPrepareGuardTests.cs: 17 metodos (3 Theory)
+- PushBackWritePathGuardTests.cs: 2 metodos (0 Theory)
+- PushBackDraftWriteGuardTests.cs: 3 metodos (0 Theory)
+- total: 644 metodos, 91 Theory
+
+## 2. Archivos de pruebas fuera de las 17 que nombran lo que PB-T4a cambia (token -> archivos)
+- `RequestKeepMine`: 2 archivos, 2 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs
+- `AskChoice`: 1 archivos, 1 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+- `ConfirmChoice`: 2 archivos, 2 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs
+- `KeepMineResponder`: 3 archivos, 3 fuera de las 17
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs
+    tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs
+- `\bPilotRead\b`: 6 archivos, 1 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs
+- `FromPilot\s*\(`: 2 archivos, 0 fuera de las 17
+- `EditIntentReadResult`: 7 archivos, 3 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+- `RackPilotIntentAdapter`: 3 archivos, 1 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs
+- `WorkspaceNavigationHost`: 12 archivos, 9 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulerTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs
+- `PushBackPilotFieldAdapter`: 5 archivos, 3 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs
+    tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs
+    tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs
+- `KeepPilotEditsOn`: 4 archivos, 3 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs
+    tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs
+- `typeof\(IWorkspacePilotEditPort\)`: 2 archivos, 0 fuera de las 17
+- `IWorkspacePilotEditPort\.cs`: 4 archivos, 2 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs
+- `WorkspacePilotFieldViewModel\.cs`: 5 archivos, 4 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs
+- `WorkspacePanelView\.xaml`: 6 archivos, 6 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs
+- `WorkspaceController\.cs`: 16 archivos, 11 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs
+- `WorkspaceHostCore\.cs`: 15 archivos, 6 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs
+- `Find<PushBackPilotDraftState>`: 12 archivos, 1 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs
+- `PushBackPilotStateComparer`: 10 archivos, 6 fuera de las 17
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs
+    tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs
+    tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs
+    tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs
+
+### Union de archivos fuera de las 17, con sus metodos
+- tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs: 21 metodos; tokens: WorkspaceNavigationHost
+- tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs: 19 metodos; tokens: WorkspaceNavigationHost, WorkspacePanelView\.xaml, WorkspaceController\.cs
+- tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs: 32 metodos; tokens: EditIntentReadResult, RackPilotIntentAdapter, WorkspaceNavigationHost, WorkspaceController\.cs
+- tests/RackCad.Tests/Workspace/WorkspaceDraftPilotIntentStaleBaseTests.cs: 22 metodos; tokens: PushBackPilotStateComparer
+- tests/RackCad.Tests/Workspace/WorkspaceDraftPilotMaterializationTests.cs: 41 metodos; tokens: KeepPilotEditsOn, PushBackPilotStateComparer
+- tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs: 16 metodos; tokens: PushBackPilotStateComparer
+- tests/RackCad.Tests/Workspace/WorkspaceDraftPilotStateTests.cs: 27 metodos; tokens: PushBackPilotFieldAdapter, PushBackPilotStateComparer
+- tests/RackCad.Tests/Workspace/WorkspaceHostC2SourceGuardTests.cs: 15 metodos; tokens: WorkspaceController\.cs
+- tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs: 34 metodos; tokens: IWorkspacePilotEditPort\.cs, WorkspacePilotFieldViewModel\.cs, WorkspaceHostCore\.cs
+- tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs: 45 metodos; tokens: WorkspaceController\.cs, WorkspaceHostCore\.cs
+- tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulerTests.cs: 37 metodos; tokens: WorkspaceNavigationHost
+- tests/RackCad.Tests/Workspace/WorkspaceIdleSchedulingGuardTests.cs: 42 metodos; tokens: WorkspaceController\.cs
+- tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs: 10 metodos; tokens: WorkspaceNavigationHost, WorkspaceController\.cs, WorkspaceHostCore\.cs
+- tests/RackCad.Tests/Workspace/WorkspaceNavigationEchoTests.cs: 18 metodos; tokens: WorkspaceController\.cs, WorkspaceHostCore\.cs
+- tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs: 56 metodos; tokens: WorkspaceNavigationHost, WorkspacePanelView\.xaml, WorkspaceController\.cs
+- tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs: 45 metodos; tokens: WorkspaceNavigationHost, WorkspacePanelView\.xaml, WorkspaceController\.cs
+- tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs: 40 metodos; tokens: IWorkspacePilotEditPort\.cs, WorkspacePilotFieldViewModel\.cs, WorkspacePanelView\.xaml, WorkspaceController\.cs, WorkspaceHostCore\.cs
+- tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs: 67 metodos; tokens: \bPilotRead\b, EditIntentReadResult, KeepPilotEditsOn, Find<PushBackPilotDraftState>, PushBackPilotStateComparer
+- tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardTests.cs: 26 metodos; tokens: RequestKeepMine, AskChoice, ConfirmChoice, EditIntentReadResult, WorkspaceNavigationHost, WorkspacePilotFieldViewModel\.cs, WorkspacePanelView\.xaml, WorkspaceHostCore\.cs
+- tests/RackCad.Tests/Workspace/WorkspacePilotSurfaceGuardTests.cs: 19 metodos; tokens: WorkspacePilotFieldViewModel\.cs, WorkspacePanelView\.xaml
+- tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs: 21 metodos; tokens: WorkspaceNavigationHost, WorkspaceController\.cs
+- tests/RackCad.UI.Tests/PushBackFieldValidationConcordanceTests.cs: 1 metodos; tokens: PushBackPilotFieldAdapter
+- tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotValidationParityTests.cs: 3 metodos; tokens: PushBackPilotFieldAdapter
+- tests/RackCad.UI.Tests/Workspace/WorkspaceDraftPilotWindowLoadCharacterizationTests.cs: 4 metodos; tokens: KeepPilotEditsOn, PushBackPilotStateComparer
+- tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs: 0 metodos; tokens: KeepMineResponder
+- tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationTests.cs: 69 metodos; tokens: RequestKeepMine, ConfirmChoice, KeepMineResponder
+- tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewTests.cs: 9 metodos; tokens: KeepMineResponder
+- total de metodos en esos archivos: 739
+
+## 3. UI: metodos de WorkspacePilotReconciliationTests que llaman RequestKeepMine (y ConfirmChoice)
+- AChoiceWhoseMemoryCannotBeReadAgainAfterTheOperationIsNeverPresentedAsDone: RequestKeepMine + ConfirmChoice
+- ASurfaceThatChangesDuringTheReadOfAnUnknownDraftAndDuringAChoiceShowsTheSameNotice: RequestKeepMine + ConfirmChoice
+- KeepIsNotOfferedWithAPendingTextWhetherItIsValidOrNotAndTheLineSaysWhy: RequestKeepMine
+- TheOptionsAreNotOfferedOnAPreviewTabWithAFailureWithAPersistentDiagnosticOrWithAChoiceThatWaits: RequestKeepMine
+- TheTextOfEachConfirmationIsTheOneOfTheTableForTheStateTheOwnWorkAndThePendingText: RequestKeepMine
+- AskingForAnOptionCallsNoOperationOfThePortAndOnlyReadsItsMemory: RequestKeepMine
+- AnOptionThatIsNotOfferedDoesNothingWhenItIsAsked: RequestKeepMine
+- YesOnKeepCallsThatOperationOnceWithTheSessionAndTheRackAndNeverTheDiscard: RequestKeepMine + ConfirmChoice
+- NoCallsNothingChangesNothingAndSaysSoForEachOfTheTwoChoices: RequestKeepMine
+- AChoiceThatWaitsMakesTheBoxReadOnlyAndOffersOnlyYesAndNo: RequestKeepMine
+- IfTheViewChangedAfterAskingForKeepYesCallsNeitherOperation: RequestKeepMine + ConfirmChoice
+- TheChoiceIsWithdrawnInSilenceByAChangeOfSurfaceByClearAndByAFailure: RequestKeepMine
+- TheChoiceIsWithdrawnByAnyNewGestureOfTheField: RequestKeepMine
+- TheChoiceIsWithdrawnWithTheSituationNoticeWhenThePresentationFindsThatTheViewNoLongerOffersIt: RequestKeepMine
+- ADiscardFromTheBrowserOfTheDraftThatTheChoiceWasAboutWithdrawsTheChoiceToo: RequestKeepMine
+- AnAnswerThatDoesNotMatchTheChoiceIsNeverPresentedAsDone: RequestKeepMine + ConfirmChoice
+- AnAnswerOfTheChoiceThatDidNothingHasItsPrefixItsReasonAndTheTextOfNothingDone: RequestKeepMine + ConfirmChoice
+- AnExceptionOfTheChosenOperationIsTheErrorOfTheFieldAndTheChoiceIsGone: RequestKeepMine + ConfirmChoice
+- ARefusalOfTheChoiceForANotAdmittedReadIsAPersistentDiagnosticAndTheDraftIsKeptAsItWas: RequestKeepMine + ConfirmChoice
+- APreviewTabOffersNeitherTheCheckNorTheOptionsAndCallsNothing: RequestKeepMine
+- AFieldWithoutThePortOffersNothingAndDoesNothing: RequestKeepMine + ConfirmChoice
+- metodos con RequestKeepMine: 21; con ConfirmChoice tambien: 9
+
+## 4. WorkspacePilotEditPortDouble: cabecera y operaciones
+    internal sealed class WorkspacePilotEditPortDouble : IWorkspacePilotEditPort
+    public const string KeepMineOp = "TryKeepMine";
+    public EditIntentOutcome TryBeginEdit(EditIntentRequest request)
+    public EditIntentOutcome TryKeepMine(EditIntentRequest request)
+    public PilotFieldView GetField(WorkspaceRequest origin, string rackId)
+
+## 5. ExpectedEvidence[0]: el paquete frente a F4B_EXACT_EVIDENCES
+- literales en la lista: 2
+- el del paquete: 'antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte sobre la delegacion final, A1-A8 y nc4;'
+- igual byte a byte a alguno: True
+- ExpectedEvidence[0] de PB-T3c: 'antes del Worker: el contrato, la salida del Controller (output.json, con las ocho colecciones opacas vacias), la delegacion final con esas colecciones puestas por la sesion (delegation.json; F4B-E21), la comparacion byte a byte sobre la delegacion final, A1-A8 y nc4;'
+- igual al del paquete: True
+
+## 6. Anclas
+- WorkspacePilotEditGuardTests.cs: 156, 161, 280, 392
+- WorkspacePilotReconciliationGuardTests.cs: 116
+- WorkspaceEditIntentGuardTests.cs: 735, 736
+- WorkspaceEditIntentHostTests.cs: 1088, 1091, 1104
+- WorkspaceHostCore.cs: 83, 123, 165, 240, 996, 1122, 1126, 1150, 1154, 1206, 1242, 1269, 1594, 1940, 1987
+- WorkspaceEditIntent.cs: 32, 41, 49, 51
+- WorkspaceNavigationHost.cs: 228, 240, 242, 250
+- RackPilotIntentAdapter.cs: 120, 121
+- IWorkspaceEditIntentReader.cs: 20
+- IWorkspacePilotEditPort.cs: 143, 146, 148, 151, 154, 157, 177

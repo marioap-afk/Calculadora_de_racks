@@ -108,9 +108,15 @@ namespace RackCad.Tests
         [InlineData("RackSelectivoCommands.cs", 2)]   // RACKSELECTIVO (new) + EditSelective (insert-new-view)
         [InlineData("RackDinamicoCommands.cs", 2)]    // RACKSISTEMADINAMICO (new) + EditDynamic (insert-new-view)
         [InlineData("RackCamaCommands.cs", 1)]        // QUICKCAMA (new); EditCama never inserts -> no guard
-        [InlineData("RackCabeceraCommands.cs", 3)]    // RACKCABECERA + QUICKCABECERA (new) + EditCabecera (insert-new-view)
+        // T7 cab (review of 258c16b1, I-1 and M-2): RackCabeceraClassic, the old body of RACKCABECERA, keeps its call, but it is not registered
+        // and NOTHING calls it (RACKCABECERA opens the RackCad window; RACKMENU › «Diseñar cabecera» reaches the configurator through
+        // HeaderEditorModule and DispatchInsertion, which warns in RackMenuCommands.cs). The «Insertar» of EditCabecera moved, as it was, to
+        // ApplyCabeceraInsert (RackCabeceraCommands.Door.cs), the one drawing half of RACKEDITAR «Insertar» and of RACKCABECERAINSERTAR.
+        [InlineData("RackCabeceraCommands.cs", 2)]    // RackCabeceraClassic (no caller, T7cab-S8) + QUICKCABECERA (new)
+        [InlineData("RackCabeceraCommands.Door.cs", 1)] // ApplyCabeceraInsert (RACKEDITAR «Insertar» and RACKCABECERAINSERTAR), once; ApplyCabeceraUpdate never warns
         [InlineData("RackLayoutCommands.cs", 1)]      // RACKLAYOUT
         [InlineData("RackLayoutCommands.Fill.cs", 1)] // RACKRELLENAR
+        [InlineData("RackLayoutCommands.Ventana.cs", 1)] // T5 al: RACKALMACENCOLOCAR, once, before it places (RACKALMACENLEER only reads)
         [InlineData("Views/RackProjectionCommandPort.cs", 1)] // RACKPROYECTAR / RPY: una vez, tras los puntos y antes de importar o escribir
         public void EachInsertionPath_CallsTheGuard_OncePerOperation_NoAliasDoubleWarn(string file, int expectedCalls)
         {
@@ -124,7 +130,6 @@ namespace RackCad.Tests
         [Theory]
         [InlineData("RackSelectivoCommands.cs", "void EditSelective")]
         [InlineData("RackDinamicoCommands.cs", "void EditDynamic")]
-        [InlineData("RackCabeceraCommands.cs", "void EditCabecera")]
         public void EditInsert_IsGatedByUpdateOnly_AndWarnsBeforeTheFirstRedraw(string file, string editSignature)
         {
             var src = ReadPluginSource(file);
@@ -136,6 +141,28 @@ namespace RackCad.Tests
 
             Assert.True(gate < guard, "the guard must sit inside the !window.UpdateOnly branch (a pure update stays quiet).");
             Assert.True(guard < redraw, "the guard must warn BEFORE the first in-place redraw (before any DWG modification).");
+        }
+
+        // T7 cab (review of 258c16b1, I-1): the case of EditCabecera above, with its «Insertar» extracted to ApplyCabeceraInsert. The same
+        // three facts: the insert is gated by !window.UpdateOnly (the call is the branch), the pure update is quiet (EditCabecera has no call
+        // of the guard), and the half warns BEFORE its first in-place redraw.
+        [Fact]
+        public void EditCabeceraInsert_IsGatedByUpdateOnly_AndItsHalfWarnsBeforeTheFirstRedraw()
+        {
+            var src = ReadPluginSource("RackCabeceraCommands.cs");
+            var method = IndexFrom(src, "void EditCabecera", 0, "RackCabeceraCommands must define EditCabecera.");
+            var gate = IndexFrom(src, "if (!window.UpdateOnly)", method, "the insert of EditCabecera must be gated by !window.UpdateOnly.");
+            var call = IndexFrom(src, "ApplyCabeceraInsert(document, blockId, embed, project, config, id, name, window.InsertViews);", method,
+                "the insert of EditCabecera must be ApplyCabeceraInsert.");
+            Assert.True(gate < call && src.IndexOf(";", gate, StringComparison.Ordinal) > call - 2, "the call must be the branch of !window.UpdateOnly.");
+            Assert.Equal(-1, src.IndexOf(GuardCall, method, StringComparison.Ordinal)); // nothing after EditCabecera starts warns: «Actualizar» is quiet
+
+            var half = ReadPluginSource("RackCabeceraCommands.Door.cs");
+            var insert = IndexFrom(half, "ApplyCabeceraInsert(", 0, "RackCabeceraCommands.Door.cs must define ApplyCabeceraInsert.");
+            var guard = IndexFrom(half, GuardCall, insert, "ApplyCabeceraInsert must call the units guard.");
+            var redraw = IndexFrom(half, ".RedrawInPlace(", insert, "ApplyCabeceraInsert must redraw views in place.");
+            Assert.True(guard < redraw, "the guard must warn BEFORE the first in-place redraw (before any DWG modification).");
+            Assert.True(half.IndexOf(GuardCall, StringComparison.Ordinal) > insert, "ApplyCabeceraUpdate (before it in the file) never warns.");
         }
 
         [Fact]
@@ -167,9 +194,10 @@ namespace RackCad.Tests
         public void Menu_Warns_BeforeDispatchingTheInsertion()
         {
             var src = ReadPluginSource("RackMenuCommands.cs");
-            var menu = IndexFrom(src, "void RackCad()", 0, "RackMenuCommands must define RackCad().");
+            // I-64 A-14: the dispatch of the menu, RACKNUEVO and RACKBIBLIOTECA is DispatchInsertion.
+            var menu = IndexFrom(src, "static void DispatchInsertion(", 0, "RackMenuCommands must define DispatchInsertion().");
             var guard = IndexFrom(src, GuardCall, menu, "the menu must call the units guard.");
-            var dispatch = IndexFrom(src, "switch (menu.InsertionRequest)", menu, "the menu dispatches by InsertionRequest.");
+            var dispatch = IndexFrom(src, "switch (request)", menu, "the menu dispatches by InsertionRequest.");
             Assert.True(guard < dispatch, "the menu must warn BEFORE dispatching the insertion (before the first DWG modification).");
         }
     }

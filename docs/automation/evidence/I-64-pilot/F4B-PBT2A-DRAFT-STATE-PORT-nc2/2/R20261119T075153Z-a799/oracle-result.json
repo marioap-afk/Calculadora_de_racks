@@ -1,0 +1,55 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261119T075153Z-a799",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Contract",
+    "Scope"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04",
+    "PBT2A-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "Script de igualdad exacta sobre AllowedWriteScope de delegation.json (3 entradas): en git diff --name-only BaseSha CurrentSha, PushBackDraftEditorLaunch.cs=false y las otras dos rutas=true. En BaseSha..RedSha, PushBackDraftStatePortTests.cs=true. En ChainBaseSha..CurrentSha -- src tests, PushBackDraftEditorLaunch.cs=false y las otras tres rutas=true. Ruta fuera de lista blanca; activa PBT2A-C01."
+  },
+  "OutputSha256": "4D768716EACFD3CD146424BF296B140F4525171C3D5F8828EA0E757BF599DF36",
+  "ManualFreeText1610": []
+}

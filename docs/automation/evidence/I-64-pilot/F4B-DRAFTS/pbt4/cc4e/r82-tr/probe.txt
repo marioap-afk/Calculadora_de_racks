@@ -1,0 +1,2 @@
+sonda tests/RackCad.Tests/SondaPushBackEditAllReloadTests.cs
+sonda tests/RackCad.UI.Tests/SondaPushBackEditAllReloadFieldTests.cs

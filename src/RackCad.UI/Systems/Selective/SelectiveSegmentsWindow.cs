@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Application.VentanaRackCad;
 using RackCad.Domain.Systems.Selective;
 using RackCad.UI.Controls;
 
@@ -21,6 +22,11 @@ namespace RackCad.UI.Systems.Selective
     {
         private readonly List<SelectiveSegment> working;
         private readonly double fullWidth; // resolved full bay length (in); 0 = unknown (no live "resto" hint)
+
+        // T6 bom (dolor 13, DG-10): whether the tramos fit the front as the resolver draws them, intermediate posts included, in the fondos the
+        // dialog writes (the tightest of them), from the lengths of every tramo but the last and the number of tramos. Null = not known.
+        private readonly Func<IReadOnlyList<double>, int, SelectiveSegmentFitResult> fit;
+        private readonly bool severalFondos;
         private readonly StackPanel rowsPanel;
         private readonly TextBlock hint;
         private readonly List<TextBox> lengthBoxes = new List<TextBox>();
@@ -29,9 +35,15 @@ namespace RackCad.UI.Systems.Selective
         /// <summary>The edited tramos once the dialog closes with OK. Fewer than 2 = the bay is NOT split (full bay).</summary>
         public IReadOnlyList<SelectiveSegment> Result { get; private set; } = new List<SelectiveSegment>();
 
-        public SelectiveSegmentsWindow(int frenteNumber, IEnumerable<SelectiveSegment> initial, double fullWidth)
+        /// <param name="fit">T6 bom: how the tramos fit the front with its intermediate posts (<see cref="SelectiveSegmentFit.Of"/> over the fondos
+        /// the dialog writes); null keeps the old check, which only refuses a sum that reaches the whole front.</param>
+        /// <param name="severalFondos">The rack has more than one fondo: a refusal names the fondo where the tramos do not fit.</param>
+        public SelectiveSegmentsWindow(int frenteNumber, IEnumerable<SelectiveSegment> initial, double fullWidth,
+            Func<IReadOnlyList<double>, int, SelectiveSegmentFitResult> fit = null, bool severalFondos = false)
         {
             this.fullWidth = fullWidth > 0.0 ? fullWidth : 0.0;
+            this.fit = fit;
+            this.severalFondos = severalFondos;
             working = (initial ?? Enumerable.Empty<SelectiveSegment>())
                 .Select(s => new SelectiveSegment { Length = s.Length, Loaded = s.Loaded })
                 .ToList();
@@ -227,6 +239,21 @@ namespace RackCad.UI.Systems.Selective
                 if (UiSupport.TryNum(lengthBoxes[i].Text, out var v) && v > 0.0) sum += v;
             }
 
+            // T6 bom (dolor 13, DG-10): the resto discounts what every intermediate post takes, as the resolver draws it; with no room left,
+            // the line says it in red (a length not written yet counts 0, as before).
+            var live = FitOf(lengthBoxes.Take(Math.Max(0, lengthBoxes.Count - 1))
+                .Select(box => UiSupport.TryNum(box.Text, out var v) && v > 0.0 ? v : 0.0).ToList());
+            if (live != null && live.IsKnown)
+            {
+                var refusal = SelectiveSegmentFit.RefusalOf(live, severalFondos);
+                hint.Text = refusal ?? string.Format(CultureInfo.InvariantCulture,
+                    "Último tramo (calculado) ≈ {0:0.#} in del frente de {1:0.#} in; {2} ≈ {3:0.#} in.", live.Remainder, live.Width,
+                    live.IntermediatePosts == 1 ? "el poste intermedio ocupa" : "los " + live.IntermediatePosts.ToString(CultureInfo.InvariantCulture) + " postes intermedios ocupan",
+                    live.PostsTotal);
+                hint.Foreground = refusal != null ? Brushes.Firebrick : Brushes.Gray;
+                return;
+            }
+
             if (fullWidth <= 0.0)
             {
                 hint.Text = "El último tramo se calcula (lo que sobra del frente).";
@@ -282,8 +309,21 @@ namespace RackCad.UI.Systems.Selective
                 }
             }
 
+            // T6 bom (dolor 13, DG-10): the intermediate posts take their part of the front too; a split the resolver would draw as the whole
+            // front, with no notice, is not accepted (the check of the RackCad window, SelectiveDraftEditor.SetSegments).
+            var refused = SelectiveSegmentFit.RefusalOf(FitOf(working.Take(working.Count - 1).Select(s => s.Length).ToList()), severalFondos);
+            if (refused != null)
+            {
+                hint.Text = refused;
+                hint.Foreground = Brushes.Firebrick;
+                return;
+            }
+
             Result = working.Select(s => new SelectiveSegment { Length = s.Length, Loaded = s.Loaded }).ToList();
             DialogResult = true;
         }
+
+        // T6 bom: the fit of the tramos with these lengths (every tramo but the last) and the tramos of the dialog; null when not known.
+        private SelectiveSegmentFitResult FitOf(IReadOnlyList<double> specified) => fit?.Invoke(specified, working.Count);
     }
 }

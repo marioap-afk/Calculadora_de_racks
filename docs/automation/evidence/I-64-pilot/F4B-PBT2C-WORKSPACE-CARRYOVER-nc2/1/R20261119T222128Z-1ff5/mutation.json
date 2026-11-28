@@ -1,0 +1,64 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261119T222128Z-1ff5",
+  "SourceVerification": "R20261119T220812Z-e59c",
+  "SourceInputs": "artifacts/orchestration/I-64/F4B-PBT2C-WORKSPACE-CARRYOVER/1/R20261119T220812Z-e59c/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs"
+    ],
+    "FirstLexicographic": "tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs",
+    "CoveringEntries": [
+      "tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs",
+      "tests/RackCad.UI.Tests/PushBackWorkspaceCarryoverTests.cs"
+    ],
+    "New": [
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+      "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.Composite.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "13F9D2EC0B07792D0DAB01D1CFF8A6A76D97233F52ADD66A9AE48363F933A5B4",
+    "New": "5923AFFE02F713D436E630C74D6C1A9C33B8E4A0780B35A4EDD25273E6E77256",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "F2BF9D34393C3C9DC05124166C7F49FD224EDAB5B46A3E55DA94738E16FBF66F",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "346BE6458425E5D97A222CC75746EDCA00C9F285A5169D13960502C4BF1A34ED",
+    "delegation.json": "5923AFFE02F713D436E630C74D6C1A9C33B8E4A0780B35A4EDD25273E6E77256",
+    "gate-contract.json": "CB83AE8F74C2F6565BE02F23C48B372527106F1994F40B7A99308031E8E38A90",
+    "mutants.json": "3551A97E8FD336674D5B6FF1C4BCC15A4489B9C21F9529855C4937F7C4A602DA",
+    "relay-record-planning.json": "127C66FE7F44B6BCEE1871DDEE5FC5B25A8697E91010A4459F10EAE0F7B2CB95",
+    "relay-record-work.json": "CCD68055701F8FB2C4E07B6B768EF1F592F307ECCF1A3AB64670DC5F33A0B6C8",
+    "worker-handoff.json": "35748FEA8196295E46AD37B6A3F5FB2E96D71FA958534DF439D3441D4EC6132E",
+    "ci-core/44619492077/core.trx": "12EACDE781211A543BAE1A404886EFD2D8508F96BD018B3DC2213C4802DE0169",
+    "ci-core-red/44618262418/core.trx": "5F201A2ACC0822C57D923EB7A89DA6762C73CC5E7BDC870C00EB750A44BBA4F0",
+    "ci-ui/44619492077/ui.trx": "80676D9CC41AB98081564076D6AE1D53AB0C765FDD191161E0D50B9E8A7AE677",
+    "ci-ui-red/44618262418/ui.trx": "BB015380CA882DA789B6841C41DA2FF4D7B7D492AFBF3D6460E89F1316DA5EF1",
+    "mut/m1/m1.trx": "955C1995CCB5B1FF5E69229949652EA60EFB9335C2905F9F4BE602D6767C22B2",
+    "mut/m2/m2.trx": "179ED3183AE603D07414A88E6432CC12BDE84354FF9C2DAE059B13B7CE4A42E2",
+    "mut/m3/m3.trx": "55733E93B2E1C1C3A6646879DC0C7432B77D1C889C03C1BFB8FA4C6C4F39CBD3"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

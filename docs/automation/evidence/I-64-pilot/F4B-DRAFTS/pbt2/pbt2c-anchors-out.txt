@@ -1,0 +1,79 @@
+# measure_pbt2c.py: la remedicion de PB-T2c sobre el cierre de PB-T2b (paquete de PB-T2 v2.9, section 6.0; v2.6, V26-02; CA-T2c M-01)
+# Parte 1: las anclas de PB-T2c, los textos de los tres mutantes [T2b] sobre el cierre (mu_check de make_pbt2c_contract.py en seco).
+# Parte 2: la tabla de CT-PBT2C-03, de una corrida temporal de UI de los 49 gestos en WORKSPACE, fuera de todo commit y con TRX (INV-10).
+# El Worker copia las 49 filas, en su orden y sin las lineas "  porque:" (v2.6, V26-04).
+
+## Parte 1
+== cierre de PB-T2b 56cb026f8a6fd87467a6400e2f3bca015c4abda3 | desciende de 5a8366c1 (F4B-E31) y de 0dc623ca (F4B-E32); src desde 161a0dad: PushBackDraftEditorLaunch.cs, PushBackDraftStatePort.cs, PushBackEditorMode.cs, RackPushBackSystemWindow.xaml.cs; WC y WX == 161a0dad | src == cierre de PB-T2b (56cb026f, F4B-E38) | f4b-dispositions hasta F4B-E38 | F4B-E06, E09, E23 y E28 custodiadas
+== blobs del cierre: W da66eba0d80a, WC 1a3300b42ea4, WX fb094bef9611
+MU-T2C-01 W:3713 en Keep (declarado en W:3712)
+  declaracion: private static double Keep(NumericField field, double current)
+  linea:       => !field.Value.HasValue || SameShown(field.Value.Value, current) ? current : field.Value.Value;
+  mutante:     => !field.Value.HasValue ? current : field.Value.Value;
+MU-T2C-02 WC:95 en UpdateSideBEmptyNotice (declarado en WC:85)
+  declaracion: private void UpdateSideBEmptyNotice()
+  linea:       SideBEmptyNoticeText.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
+  mutante:     SideBEmptyNoticeText.Visibility = Visibility.Collapsed;
+MU-T2C-03 W:3273 en ApplyToDraft (declarado en W:3264), por contenido
+  declaracion: private void ApplyToDraft()
+  linea:       var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(editable));
+  mutante:     var result = draftPort.ApplyToDraft(PushBackEditableStateComparer.Copy(appliedState));
+
+## Parte 2
+# la tabla de CT-PBT2C-03
+DepthBox=54 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+ToleranceBox=4 aplicado=False igual-a-la-ventana=True diseno-igual=True descartes=0
+PostPeralteBox=+0.5 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+BeamDepthBox=+1 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+AnnotationScaleBox=2 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+WeightUnitBox=lb aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+PalletsDeepBox=9 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+PostBox=otro aplicado=False igual-a-la-ventana=True diseno-igual=True descartes=0
+  porque: el catalogo solo ofrece una opcion
+NumberFrontsCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+NumberLevelsCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DrawRackNameCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DimensionsBox=3 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DimensionsFrontalCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DimensionsLateralCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DimensionsPlantaCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+NameBox aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+FondosBox=4 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DepthStartBox=2 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+PositionsBox=2 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+LevelsBox=2 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+FirstLevelHeightBox=5 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellPalletFrontBox=40 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellPalletHeightBox=61.5 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellPalletWeightBox=900 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellClearBox=7 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellInOutBeamBox=otro aplicado=False igual-a-la-ventana=True diseno-igual=True descartes=0
+  porque: el catalogo solo ofrece una opcion
+CellInOutPeralteBox=otro aplicado=False igual-a-la-ventana=True diseno-igual=True descartes=0
+  porque: el catalogo solo ofrece una opcion
+CellIntermediateBeamBox=otro aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellIntermediatePeralteBox=otro aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellFondoOverrideBox=6 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellDrawPalletCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CellBeamLengthOverrideBox=100 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+RearPeralteBox=4.5 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+GapBox=60 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+CentralSeparatorCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+StructureOverrideBox=6 aplicado=False igual-a-la-ventana=False diseno-igual=False descartes=1
+  porque: boton-habilitado=False aviso=[Corrige el diagnóstico bloqueante: el rack no puede pasar al borrador así.] estado=[Lado A, frente 1, nivel 1: la cama necesita 396" y la estructura efectiva solo ofrece 300". Aumenta la estructura de ese lado, el gap o reduce el fondo de la celda.]
+CellTopologyBox+RunDirectionBox+TopologyScopeBox aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+FrontCountBox=3 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+SideBPresentCheck aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+SideSelectorBox=1 aplicado=False igual-a-la-ventana=True diseno-igual=True descartes=0
+FrontalSideBox=1 aplicado=False igual-a-la-ventana=True diseno-igual=True descartes=0
+RackHeaderHeightBox=155 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DerivedPostHeightBox=140 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DerivedPostReinforcedCheck+DerivedPostReinforcementHeightBox=50 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+RackSeparatorCountBox=4 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+RackSeparatorSpacingBox=20 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+ModuleLengthBox=+8 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+DerivedPostLineHeightBox=137 aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+Restaurar aplicado=True igual-a-la-ventana=True diseno-igual=True descartes=0
+
+== TRX pbt2c-ct03.trx, sha256 A311C66187E4FB285D0B2661F8FAB82991CF273110F7FB6FFC35168E27D511A6 | PushBackPbt2cCt03ProbeTests.PBT2C_CT03_Probe_MeasuresTheTableOfTheRemediation Passed | 2026-11-19T19:08:05Z a 2026-11-19T19:08:05Z
+== filas: 49 | aplica 42, nada 6, se niega 1 | inertes porque el catalogo solo ofrece una opcion (CA-T2c M-13): PostBox=otro, CellInOutBeamBox=otro, CellInOutPeralteBox=otro

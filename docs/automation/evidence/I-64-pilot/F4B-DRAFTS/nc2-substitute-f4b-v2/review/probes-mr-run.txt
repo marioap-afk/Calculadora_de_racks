@@ -1,0 +1,7 @@
+MR0-control                exp=PASS  got=PASS                                                                   exit=0 false=[] bytesEq=True emptyExact=True
+MR-N1-int-as-float         exp=FAIL  got=FAIL                                                                   exit=1 false=['5_DerivedHashesConsistent'] bytesEq=False emptyExact=True
+MR-N2-bool-for-int         exp=FAIL  got=FAIL                                                                   exit=1 false=['5_DerivedHashesConsistent'] bytesEq=False emptyExact=True
+MR-N3-duplicate-key        exp=FAIL  got=FAIL (entrada ausente o mal formada: ValueError: clave duplicada en un exit=1 false=[] bytesEq=None emptyExact=None
+MR-N5-absent-collection    exp=FAIL  got=FAIL                                                                   exit=1 false=['5_DerivedHashesConsistent'] bytesEq=False emptyExact=False
+MR-N6-runid-absent         exp=FAIL  got=FAIL                                                                   exit=1 false=['5_DerivedHashesConsistent'] bytesEq=True emptyExact=True
+MR-N8-fidelity-substring   exp=FAIL  got=FAIL                                                                   exit=1 false=['5_DerivedHashesConsistent'] bytesEq=True emptyExact=True

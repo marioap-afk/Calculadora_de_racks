@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs b/src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs
+index 449c1a46..e815c09e 100644
+--- a/src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs
++++ b/src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs
+@@ -37,7 +37,7 @@ namespace RackCad.Plugin.Systems.PushBack
+             ObjectId blockId,
+             PushBackSystem system,
+             string payloadJson,
+-            bool regen = true)
++            bool regen = (true))
+             => ViewBlockDraw.RedrawInPlace(
+                 document,
+                 blockId,

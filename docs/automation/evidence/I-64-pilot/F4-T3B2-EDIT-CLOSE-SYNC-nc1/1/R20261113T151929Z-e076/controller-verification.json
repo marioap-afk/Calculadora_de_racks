@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T3B2-EDIT-CLOSE-SYNC",
+  "RunId": "R20261113T151929Z-e076",
+  "DelegationRunId": "R20261113T124237Z-05fc",
+  "WorkRunId": "R20261113T124709Z-b033",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json reports Kind COMPLETED and DeathConfirmed true; Cession.EndUtc is 2026-11-13T14:15:31Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches the recorded OutputSha256 B932887AB3B20FACBE102C7424B82E9EFB20CEB6387A6798CC82ABC4B566892B; TaskId, Attempt, RunId and DelegationRunId match. OutputWrittenUtc 2026-11-13T14:15:10Z is after Cession.StartUtc 2026-11-13T12:47:15Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha returned 34 paths, all under docs/ and none outside docs/. External authorities were read from MainSha."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Planning relay records A1-A8 as pass and nc4 with only A3 failing. byte-fidelity-check.json reports PASS and byte equality for all eight collections. Delegation and contract each contain 15 invariants and two RequiredTests."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "Branch is architecture/workspace-persistente-rackcad and worktree matches. BaseSha is an ancestor of HEAD; RedSha is an ancestor of HEAD and not of BaseSha. However, handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef: git rev-parse --verify and git show both failed with exit 128. HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad are 23f67f56b8319d77448e989c0949e4ccd81383."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work Entry records HeadSha and LsRemoteSha as 23f67f56b8319d77448e989c0949e4ccd8139c1, while handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. OriginMainSha is 812baf879612320653094a8aaf46aca0bac81383, matching delegation MainSha. Current branch remote facts therefore conflict with the handoff SHA."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef failed with bad object, so the declared delivery range cannot be evaluated. For comparison only, BaseSha..HEAD lists 13 paths and all are exact entries in delegation AllowedWriteScope; none is in ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 returned empty. git check-ignore -v on the inputs path matched .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun is a completed successful push on refs/heads/architecture/workspace-persistente-rackcad with HeadSha 23f67f56b8319d77448e989c0949e4ccd8139c1; all four required jobs are success. It does not match handoff CurrentSha. RedRun is a push for RedSha c3de61163e856632e98275b6c9bff988978a373c and its Core job failed as required."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "TRX counts for the actual recorded CurrentRun SHA 23f67f56b8319d77448e989c0949e4ccd8139c1: Core selected/passed/failed 2331/2331/0; UI 431/431/0. Red TRXs: Core 2331/2320/11; UI 431/367/64. Counts meet minima 2300 and 352, and failures occur on the RedSha. RT from git diff --name-only BaseSha RedSha -- tests/ contains tests/RackCad.Tests/Workspace/WorkspaceBrowserSessionTests.cs, tests/RackCad.Tests/Workspace/WorkspacePilotCloseSyncGuardTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncViewTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspacePilotEditPortDouble.cs, tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewModelTests.cs, tests/RackCad.UI.Tests/Workspace/WorkspacePilotFieldViewTests.cs. git diff --name-only RedSha HEAD -- tests/ returned empty. The TRXs do not accredit the nonexistent handoff CurrentSha."
+    },
+    "Trailer": {
+      "Result": "fail",
+      "Evidence": "git log --format=%B BaseSha..deadbeefdeadbeefdeadbeefdeadbeefdeadbeef failed with invalid revision range, so trailers cannot be verified for the declared CurrentSha. Both commits in BaseSha..HEAD contain Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching the handoff trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with provider effort high. Work relay records launch alias sonnet, effective model claude-sonnet-5-5 and effective effort high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Checked WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against the AUTOMATION_PLAN 16.10 term list; no match found."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report zero permission denials, five tool errors with none pending, and no usage-limit warning."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "The handoff CurrentSha is a nonexistent Git object, while HEAD, the branch remote fact and the successful CurrentRun all identify 23f67f56b8319d77448e989c0949e4ccd8139c1.",
+    "This conflicts with the recorded remote and CI evidence and triggers S-04. The 13 paths in BaseSha..HEAD are within the exact allowed scope, but cannot be attributed to the handoff SHA."
+  ],
+  "RecommendedNextAction": "Reconcile the handoff SHA with the recorded Git and CI facts, then repeat verification against the resulting exact commit."
+}

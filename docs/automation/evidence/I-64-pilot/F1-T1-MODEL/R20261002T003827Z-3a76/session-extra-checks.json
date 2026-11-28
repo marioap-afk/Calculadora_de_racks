@@ -1,0 +1,43 @@
+{
+  "ExactCopy.Authorities": true,
+  "ExactCopy.AllowedWriteScope": true,
+  "ExactCopy.ForbiddenWriteScope": true,
+  "ExactCopy.Invariants": true,
+  "ExactCopy.RequiredTests": true,
+  "ExactCopy.ExpectedEvidence": true,
+  "ExactCopy.StopConditions": true,
+  "ExactCopy.Objective": true,
+  "TaskClass": "Implementación de pruebas",
+  "TaskClassIsRoutingClass": true,
+  "TaskClassNotController": true,
+  "RoutingRow": [
+    "ROUTINE_IMPLEMENTATION",
+    "Balanced"
+  ],
+  "PromptProfile": "ROUTINE_IMPLEMENTATION",
+  "Effort": {
+    "Semantic": "Balanced",
+    "Provider": "medium"
+  },
+  "Executor": {
+    "Provider": "Anthropic",
+    "Transport": "subagent",
+    "Role": "Worker",
+    "Cell": "claude-sonnet-5-5|subagent"
+  },
+  "Model": "claude-sonnet-5-5",
+  "ModelEscalationReason": null,
+  "Dimensions": {
+    "Ambiguity": "Low",
+    "ArchitecturalSensitivity": "Medium",
+    "Breadth": "Medium",
+    "ToolUse": "High",
+    "FailureCost": "Medium",
+    "MechanicalRepetition": "Low",
+    "Horizon": "Medium"
+  },
+  "BaseSha": "e0587355b0e84d98807057a56dfc50591da87489",
+  "AuthorityRevision": "e0587355b0e84d98807057a56dfc50591da87489",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "AcceptanceCriteriaCount": 9
+}

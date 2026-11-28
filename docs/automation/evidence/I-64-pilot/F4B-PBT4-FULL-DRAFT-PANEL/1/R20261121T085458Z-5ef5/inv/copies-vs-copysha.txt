@@ -1,0 +1,22 @@
+OK  ee09002b03cc3231 tests/RackCad.Tests/PushBackFullReadGuardFull.cs
+OK  8d4cfb2eebdbcfc0 tests/RackCad.Tests/PushBackFullReadPathFull.cs
+OK  38cb158d8464ff30 tests/RackCad.Tests/PushBackWritePathGuardFull.cs
+OK  5d54905f0a3f76ba tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingFull.cs
+OK  af0929f95082d0bd tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs
+OK  a6c90caec73f6f44 tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs
+OK  c269eac4774b6f5b tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs
+OK  f82806835c6da858 tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs
+OK  f4523b11a73c223e tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs
+OK  91aa5c15a095ddcd tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs
+OK  cfa15cd304f3167b tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs
+OK  7fed50bac4d5bc4b tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs
+OK  31554def2b2fbb04 tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs
+OK  b07cf90219fa1827 tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs
+OK  83980964cfd66ae8 tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs
+OK  30a47920ea337b66 tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs
+OK  4ba5042576e0ca28 tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs
+OK  889f5d86a7097db0 tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs
+OK  e81cc9d319544140 tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs
+OK  985f9b1ff90da56e tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationFull.cs
+OK  54953f62130a7dc3 tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewFull.cs
+copias 21 mal 0

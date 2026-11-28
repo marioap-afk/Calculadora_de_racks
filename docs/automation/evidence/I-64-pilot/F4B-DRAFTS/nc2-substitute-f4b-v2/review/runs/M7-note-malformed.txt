@@ -1,0 +1,18 @@
+> **Redaccion para el repo publico:** las rutas locales y las variables de entorno de carpetas del usuario se sustituyen por marcadores (`<scratchpad>`, `<worktree-de-I-64>`, `<checkout-principal>`, `<datos-locales-del-usuario>`, `<datos-de-aplicacion-del-usuario>`). El resto no cambia.
+
+exit=1
+--- stdout
+
+--- stderr
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt2acc2\nc2-substitute-f4b\nc2_exact_whitelist_substitute_f4b.py", line 337, in <module>
+    sys.exit(main(*sys.argv[1:7]))
+             ~~~~^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt2acc2\nc2-substitute-f4b\nc2_exact_whitelist_substitute_f4b.py", line 316, in main
+    P, N, ok = evaluate(bd)
+               ~~~~~~~~^^^^
+  File "<scratchpad>\hs65\pbt2acc2\nc2-substitute-f4b\nc2_exact_whitelist_substitute_f4b.py", line 126, in evaluate
+    real_rule = (rr0['Outcome']['OutputSha256'].upper() == str(note.get('OutputSha256', '')).upper()
+                                                               ^^^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+

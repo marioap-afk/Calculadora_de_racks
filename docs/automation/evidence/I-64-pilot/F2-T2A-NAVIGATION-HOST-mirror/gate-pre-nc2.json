@@ -1,0 +1,76 @@
+{
+  "Schema": "rackcad-i64-historical-control-gate/v1",
+  "Label": "pre-nc2",
+  "Results": {
+    "01.HEAD": true,
+    "02.origin/main": true,
+    "03.origin/product-branch": true,
+    "04.BranchShowCurrent": true,
+    "05.ShowToplevelIsExpectedWorktree": true,
+    "06.StatusClean": true,
+    "07.BaseShaAncestry": true,
+    "08.RedShaAncestry": true,
+    "09.TreeAndFilesIdentical": true,
+    "10.ConfigSnapshotE": true,
+    "12.CodexBinaryExact": true,
+    "P.CurrentShaObjectBytes": true,
+    "P.BaseShaObjectBytes": true,
+    "P.RedShaObjectBytes": true,
+    "P.BranchExpectedByController": true,
+    "P.HistoricalMainEqualsRecorded": true,
+    "P.LiveRepositoryClean": true,
+    "11.RealRefsUnchanged": true
+  },
+  "Failing": [],
+  "Pass": true,
+  "FilesCompared": 5851,
+  "FilesDiffering": [],
+  "ConfigSha256": "2EEDDAAB28C1147A5D927B4EF1E4C69229197E04CB6B114161FFFF04A16588C8",
+  "ConfigAccepted": true,
+  "ConfigSnapshot": "E",
+  "ConfigNameCount": 104,
+  "VerificationInputsSha256": {
+    "inputs/analysis.md": "bc1f83b261aa58f04e1d43b568c12ff6c2ba1a9d92c79ac44cab6187cdccec32",
+    "inputs/coordinator-disposition.md": "1e3975e2c560a0d945407375616dc1d48df91e74b19d09184447c54f83e3b2e9",
+    "inputs/delegation.json": "175f26c11f6bb837dd3999a6bb7c503e9ccf8dda8efc41a640aba6dbd4514cdb",
+    "inputs/equivalence-check.json": "6a86f822a2dd1dfe29b0626bed2d37f114472333f17251cc9d6a3de18a0a09c0",
+    "inputs/gate-contract.json": "42b00a247970fb7086f3d9250b1a46e904357f493225b59fddd1e66178c6d2f5",
+    "inputs/relay-record-planning.json": "96bc01a47bbd1882c1a17012ad2fed0ae2a184e65289f0c1db8d5fdc8c79d731",
+    "inputs/relay-record-work.json": "82340decbc34f2648e39ca89083f7bb10a28182841438cedca7606647114656e",
+    "inputs/worker-handoff.json": "80fb4cf60b20ea60282bd9a35493e550d4c073f59fcf240be39219d37f87aef0",
+    "inputs/ci-core/42687835409/core.trx": "27d177cc1f0e5de817a471dc50aaa8cc69b463fb9bbb71074a3b6f9921cc4b62",
+    "inputs/ci-core-red/42687231210/core.trx": "0a26ad13ade172376e8c63e25fc8744ebfb08085b3014a39e3fcf5a0f0df313d",
+    "inputs/ci-ui/42687835409/ui.trx": "be02f30cd5dbf96798202d75db18719b1ceb0e751395e271639d18a3be746f84"
+  },
+  "CodexExes": [
+    "5449c1f0f26f1f98/codex.exe"
+  ],
+  "CodexBinarySha256": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17",
+  "RealBefore": {
+    "ForEachRefSha256": "5512474b3b226fbdb951f8d6c81568045a97e144783e8272133fd2727da2e3dc",
+    "Head": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "TrackingMain": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "TrackingBranch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "StatusPorcelain": "",
+    "Files": {
+      "packed-refs": "eec99b0cd30d9a17762eea714e4d49c4df9f8d4aaae0446c10ef251751b31db7",
+      "worktree-HEAD": "151bd1a723664b51bba2799a134cbd64e9d96700ae415d3fd237f879cc4a9206",
+      "worktree-index": "e13eb7c0bcb2964d9f4f1280f186d446fe2180a915dd9a8e87501b4cfacbef16",
+      "config": "a42bb2f8b1fa581e34a8aba6ddbd9fcb4f0286433e28db35dde4df79a0cf4dc6"
+    }
+  },
+  "RealAfter": {
+    "ForEachRefSha256": "5512474b3b226fbdb951f8d6c81568045a97e144783e8272133fd2727da2e3dc",
+    "Head": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "TrackingMain": "04a7041492d760170ce3f3ba5fceeb29146107cc",
+    "TrackingBranch": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+    "StatusPorcelain": "",
+    "Files": {
+      "packed-refs": "eec99b0cd30d9a17762eea714e4d49c4df9f8d4aaae0446c10ef251751b31db7",
+      "worktree-HEAD": "151bd1a723664b51bba2799a134cbd64e9d96700ae415d3fd237f879cc4a9206",
+      "worktree-index": "e13eb7c0bcb2964d9f4f1280f186d446fe2180a915dd9a8e87501b4cfacbef16",
+      "config": "a42bb2f8b1fa581e34a8aba6ddbd9fcb4f0286433e28db35dde4df79a0cf4dc6"
+    }
+  },
+  "ShowToplevel": "<product-worktree>"
+}

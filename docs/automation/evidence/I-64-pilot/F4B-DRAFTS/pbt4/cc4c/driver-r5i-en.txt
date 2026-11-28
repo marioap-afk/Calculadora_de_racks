@@ -1,0 +1,41 @@
+fase ensayo; copia /d/r5i; salida r5i-en; revision 6adff90d856026a7a51067c1e9d7248f3d81641c
+  pieza a8a3afa2a0a71674ccd7eafc1f4e52eea183fef7cbf8bc5fd319be9dfb639215 green_pbt4c_v51.py
+  pieza 081ef77e66a390cf3637f15851b5fe05a5cdf07f6e0065928fc5c841b250dc16 pbt4c-green-v51.txt
+  pieza f8840c67fd41c3bbdabf125d9b80941e3f3aedf5e610681c8ce15f111e7b392e pbt4c-skeleton-v51.txt
+  pieza a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f pbt4c_skips_v50.py
+  pieza d81fcb41bed684b8ac35949841e3a7fba2277120bdf3e882d0267f8176e4a896 make_equivalents_pbt4c_v50.py
+  pieza 03dbb6a76d1e50c7c1935926727e4a5172f44c30a3cc6bc11ddac51197bd5102 apply_red_pbt4c_v51.py
+  pieza 8b9445455b60521598a113e14e870fe5218d3b1b4b142308fbac934016d9bd49 apply_green_pbt4c_v51.py
+  pieza 71521e52abdd7f371fb4b067d2b4400bb508c2d1d6a246ca83df4bb39127ee22 check_skips_pbt4c_v50.py
+  pieza 9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de pbt4c-substitution-list-4.tsv
+  pieza ede5d822d30e8d5dc022f124a2a42f4e7cb562f53de7862be11b2d7b0b0e13ba pbt4c-rehearsal-textct.cs
+  pieza 0d668ed9b58d9f0d933cfdbda1e06bf7a7a9d5ad78fed661a88c7e1a9ac5285b pbt4c-probe-editall.cs
+  pieza bc9a0fb348b63aa9f639d66ccf301210af3bb2b63f799348e8808d58290649b5 pbt4c-probe-close-ui.cs
+  pieza bb2c983b53121020df80e63655743e2cee943c318f25653362bcb8561f8d9486 p6_check_pbt4c_v50b.py
+  pieza 772f35eebc2589bfdd3d64adef7183b6109044c4d3ac8bf7f1cadc2054b20428 rehearsal_check_v51.py
+  pieza d5ebc82f7cba6754872f5a24d0237b2d3010bf2f3b05dec2c52f0ec856265306 filter_overlap_pbt4c_v50b.py
+  pieza 48e093c372ba5f98899327986020727ee164b901d87348e523787a97072edf74 classes_v51.py
+  pieza 6faf8fc9052c1a7185e1c5f431f40272883f66f678830a25645cb6c3f1fc646e trx_message_v50.py
+  pieza 19182fbc10012c160453df237ad2657568affdc586e2f7ce9cad8feccdef7815 ui_filters_pbt4c_v50b.txt
+  pieza 8feddf4f40505fe740dd6cd410d6b00d38d66b10145e7c6126224c9f8e5db449 pbt4b-contract-dump-v50.txt
+  pieza 83477d65dcf3f9461494025d950462f15308ceb9538f571222f9a2527d3d753b p6_pbt4c_v51.sh
+copia exportada: 13895 archivos
+RED de PB-T4c escrito: 16 archivos (esqueleto 8, Skip 4, equivalentes 4), sin las CT
+ensayo ede5d822d30e8d5dc022f124a2a42f4e7cb562f53de7862be11b2d7b0b0e13ba -> tests/RackCad.Tests
+en-red-core rc=0 errores=0 avisos-CS=0
+test en-red.trx rc=1 segundos=9 trx-sha256=de055654caddb39d4f674480836b15ffb3a0e12945e825c75924ee7dd26864ce :: filas 5 {'Failed': 3, 'Passed': 2}; inicio 2026-11-21T12:24:06.2008699-06:00; fin 2026-11-21T12:24:06.2754507-06:00
+ensayo red: PASA
+GREEN de PB-T4c escrito: 13 archivos de src/
+sondas 0d668ed9b58d9f0d933cfdbda1e06bf7a7a9d5ad78fed661a88c7e1a9ac5285b y bc9a0fb348b63aa9f639d66ccf301210af3bb2b63f799348e8808d58290649b5
+en-green-core rc=0 errores=0 avisos-CS=0
+en-green-ui rc=0 errores=0 avisos-CS=0
+test en-green.trx rc=0 segundos=10 trx-sha256=d8ba0a0db1f192a7ba5545780cafc45031c2984a1bc64e876d8b15c369da00ce :: filas 5 {'Passed': 5}; inicio 2026-11-21T12:25:56.7857285-06:00; fin 2026-11-21T12:25:56.8727798-06:00
+ensayo green: PASA
+test sonda-core.trx rc=1 segundos=8 trx-sha256=236a6a8ae4d3b0dbb3f157a46f3ed7abd7b0d3bfe5a4f8ef2bc851b5c8a3ca59 :: filas 1 {'Failed': 1}; inicio 2026-11-21T12:26:06.4665016-06:00; fin 2026-11-21T12:26:06.4665225-06:00
+test sonda-ui.trx rc=1 segundos=7 trx-sha256=9be9f7ef93f7b1481b2be97d224500ea9671b360b8409725402c8d763d56ae4d :: filas 1 {'Failed': 1}; inicio 2026-11-21T12:26:14.5566350-06:00; fin 2026-11-21T12:26:14.5566552-06:00
+resultados=1 lineas=35
+resultados=1 lineas=9
+clases=12 filas=12
+build-server shutdown rc=0
+procesos: 0
+MAINCO []

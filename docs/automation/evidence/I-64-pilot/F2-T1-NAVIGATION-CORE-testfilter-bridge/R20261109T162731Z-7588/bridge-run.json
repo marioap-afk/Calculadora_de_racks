@@ -1,0 +1,240 @@
+{
+  "Schema": "rackcad-i64-testfilter-bridge-run/v1",
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "RunId": "R20261109T162731Z-7588",
+  "Amendment": "docs/initiatives/I-64-A-11.md",
+  "Authorization": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a11-final-agreed-activation.md (A-11 ACTIVE; exactly ONE real execution)",
+  "ExecutionsAllowed": "1 / 1",
+  "StartedUtc": "2026-11-09T16:27:36.955293+00:00",
+  "Pre": {
+    "Repository": {
+      "TopLevelIsWorktree": true,
+      "Branch": "architecture/workspace-persistente-rackcad",
+      "HeadSha": "c2ef7ee564f269fc277a24a25f3eed516da19f66",
+      "LsRemoteSha": "c2ef7ee564f269fc277a24a25f3eed516da19f66",
+      "Clean": true,
+      "Ok": true
+    },
+    "GitShas": {
+      "BaseSha": true,
+      "RedSha": true,
+      "CurrentSha": true,
+      "Ok": true
+    },
+    "Inputs": {
+      "GreenTrx": {
+        "Path": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/ci-core/42511528392/core.trx",
+        "BoundSha256": "832ac146610e270ac38e72fc03747006e0379e384e9744e7fee093200c5f2de7",
+        "ActualSha256": "832ac146610e270ac38e72fc03747006e0379e384e9744e7fee093200c5f2de7",
+        "Match": true
+      },
+      "RedTrx": {
+        "Path": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/ci-core-red/42511103159/core.trx",
+        "BoundSha256": "39fd76e341c71cd06d98e0d88bc6314483d4e295928dd0af10944d407a4e4a3c",
+        "ActualSha256": "39fd76e341c71cd06d98e0d88bc6314483d4e295928dd0af10944d407a4e4a3c",
+        "Match": true
+      },
+      "RealHandoff": {
+        "Path": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T182756Z-ec7e/worker-handoff.json",
+        "BoundSha256": "7f9f7e7484f62c8b4561d03e654faac4d91d90957919c346add79b3333a7b5f7",
+        "ActualSha256": "7f9f7e7484f62c8b4561d03e654faac4d91d90957919c346add79b3333a7b5f7",
+        "Match": true
+      },
+      "MutatedHandoff": {
+        "Path": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-nc3/1/R20261109T054710Z-53af/inputs/worker-handoff.json",
+        "BoundSha256": "4b281947709f9947b2817f4549a1309e52382c43891bd78806d970cbe91abc9e",
+        "ActualSha256": "4b281947709f9947b2817f4549a1309e52382c43891bd78806d970cbe91abc9e",
+        "Match": true
+      }
+    },
+    "InputsOk": true,
+    "TermSet": {
+      "Blob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+      "AuthorityRef": "a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60:docs/AUTOMATION_PLAN.md",
+      "AuthorityBlob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+      "WrittenBlob": "07b97bd3eef3a36bae3180bd7eb24b176b8049f0",
+      "Sha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+      "Ok": true
+    },
+    "ExpectedChainRedFiles": {
+      "Source": "HEAD:docs/initiatives/I-64-A-11.md Sec.6 (--expected-chain-red-files)",
+      "Files": [
+        "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+        "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+        "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+        "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+        "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+        "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+      ],
+      "Ok": true
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py",
+      "HeadBlob": "f9780f2f30c067243c93b6ab7175cc4b3179ca39",
+      "ExecutedBlob": "f9780f2f30c067243c93b6ab7175cc4b3179ca39",
+      "ExecutedSha256": "91a18eb05b15a52782283ca5f79fde8d2de7aa169170ff2e9017ac1143cfc787",
+      "AuthorizedBlob": "f9780f2f30c067243c93b6ab7175cc4b3179ca39",
+      "AuthorizedSha256": "91a18eb05b15a52782283ca5f79fde8d2de7aa169170ff2e9017ac1143cfc787",
+      "Note": "se ejecutan los bytes exactos del blob autorizado extraidos de Git (git cat-file blob), no la copia del arbol de trabajo",
+      "Ok": true
+    },
+    "Config": {
+      "Accepted": true,
+      "Snapshot": "D",
+      "Ok": true
+    },
+    "Processes": {
+      "Participants": 0,
+      "ParticipantsForeign": 0,
+      "UnattributablePersistent": 0,
+      "Ok": true
+    },
+    "AllOk": true
+  },
+  "Execution": {
+    "Command": "python -I <bytes del blob f9780f2f extraidos de Git> --repo <worktree> --task-id F2-T1-NAVIGATION-CORE --base-sha 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb --chain-base-sha 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb --red-sha f2761979b89e784ed16220815e250d21bc476aa1 --current-sha c726410f3ac764f4a80a08a2b810b5fdda276ecc --filter FullyQualifiedName~Workspace --min-selected 645 --green-trx artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/ci-core/42511528392/core.trx --red-trx artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/ci-core-red/42511103159/core.trx --green-runref green-filter --red-runref red-filter --expect-green 724/724/0 --expect-red 724/673/51 --expect-red-composition System.NullReferenceException=1,xunit-assertion=50 --expected-chain-red-files artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-testfilter-bridge/R20261109T162731Z-7588/expected-chain-red-files.json --real-handoff artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T182756Z-ec7e/worker-handoff.json --mutated-handoff artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-nc3/1/R20261109T054710Z-53af/inputs/worker-handoff.json --term-set artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-testfilter-bridge/R20261109T162731Z-7588/term-set.md",
+    "ExitCode": 0,
+    "OutputSha256": "1d003f8dd101fdac4ac9664e30e6ad6d2007bef848dcd87a9297aabe644447ce",
+    "StderrBytes": 0
+  },
+  "Result": {
+    "Result": "PASS",
+    "Reasons": [],
+    "FailedChecks": [],
+    "CheckCount": 61,
+    "Green": {
+      "Selected": 724,
+      "Passed": 724,
+      "Failed": 0,
+      "NotExecuted": 0,
+      "TrxSha256": "832ac146610e270ac38e72fc03747006e0379e384e9744e7fee093200c5f2de7",
+      "Handoff": {
+        "Selected": 724,
+        "Passed": 724,
+        "Failed": 0,
+        "Skipped": 0
+      },
+      "Counters": {
+        "total": 15048,
+        "executed": 15048,
+        "passed": 15048,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "inconclusive": 0,
+        "passedButRunAborted": 0,
+        "notRunnable": 0,
+        "notExecuted": 0,
+        "disconnected": 0,
+        "warning": 0,
+        "completed": 0,
+        "inProgress": 0,
+        "pending": 0
+      },
+      "NonAsciiFqn": {
+        "Rows": 1,
+        "SELECTED": 0,
+        "NOT_SELECTED": 1,
+        "UNKNOWN_POTENTIAL_MATCH": 0,
+        "Undecidable": []
+      },
+      "SelectedKeysSha256": "ac3db3fc3efa5efc93ac06e2cf717f626a397a492055b16d0a654046be2ed6c3"
+    },
+    "Red": {
+      "Selected": 724,
+      "Passed": 673,
+      "Failed": 51,
+      "NotExecuted": 0,
+      "FailureComposition": {
+        "System.NullReferenceException": 1,
+        "xunit-assertion": 50
+      },
+      "FailedOutsideSelection": 0,
+      "TrxSha256": "39fd76e341c71cd06d98e0d88bc6314483d4e295928dd0af10944d407a4e4a3c",
+      "Handoff": {
+        "Selected": 724,
+        "Passed": 673,
+        "Failed": 51,
+        "Skipped": 0
+      },
+      "Counters": {
+        "total": 15048,
+        "executed": 15048,
+        "passed": 14997,
+        "failed": 51,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "inconclusive": 0,
+        "passedButRunAborted": 0,
+        "notRunnable": 0,
+        "notExecuted": 0,
+        "disconnected": 0,
+        "warning": 0,
+        "completed": 0,
+        "inProgress": 0,
+        "pending": 0
+      },
+      "NonAsciiFqn": {
+        "Rows": 1,
+        "SELECTED": 0,
+        "NOT_SELECTED": 1,
+        "UNKNOWN_POTENTIAL_MATCH": 0,
+        "Undecidable": []
+      },
+      "SelectedKeysSha256": "ac3db3fc3efa5efc93ac06e2cf717f626a397a492055b16d0a654046be2ed6c3"
+    },
+    "ChainRedFiles": [
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+    ],
+    "RedToCurrentTouchesChainRedFiles": [],
+    "Mutation": {
+      "AuthorizedAppend": " GATE PASS.",
+      "RealHandoffSha256": "7f9f7e7484f62c8b4561d03e654faac4d91d90957919c346add79b3333a7b5f7",
+      "MutatedHandoffSha256": "4b281947709f9947b2817f4549a1309e52382c43891bd78806d970cbe91abc9e",
+      "TermSetSourceSha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+      "TermSetSectionSha256": "767662276555c2fafffad3450fe9e264ad691e58e0ddb870e8b739c5dbf76864",
+      "ChangedFields": [
+        "WorkCompleted"
+      ],
+      "IntroducedTerms": [
+        "GATE PASS"
+      ],
+      "IntroducedOccurrences": 1
+    },
+    "Diagnostics": {
+      "Green": {
+        "DisplayNameCaseInsensitive": 727,
+        "ClassNameOnly": 723,
+        "CaseSensitiveFqn": 723,
+        "MethodNameOnly": 21
+      },
+      "Red": {
+        "DisplayNameCaseInsensitive": 727,
+        "ClassNameOnly": 723,
+        "CaseSensitiveFqn": 723,
+        "MethodNameOnly": 21
+      },
+      "Note": "counts under rejected selection methods; informational only, never decide the result"
+    }
+  },
+  "Oracle": {
+    "ResultPass": true,
+    "Green": true,
+    "Red": true,
+    "Composition": true,
+    "MinSelected": true,
+    "ChainRedFiles": true,
+    "MutationExact": true,
+    "InputHashesInOutput": true,
+    "Ok": true
+  },
+  "Outcome": "A-11 REAL APPLICATION = PASS",
+  "FinishedUtc": "2026-11-09T16:27:46.525906+00:00"
+}

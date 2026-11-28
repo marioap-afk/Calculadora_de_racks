@@ -1,0 +1,955 @@
+{
+  "Schema": "rackcad-i64-testfilter-bridge-regression/v3",
+  "VerifierSha256": "c7adba0d9eded766a8d4ae61d7f8ce19e8081bcbba1ea35a27ab00f75eaa6452",
+  "SelftestSha256": "99a453bc07ea02d88d11644bf2c3deb05cd8202b8d1c1dd434bceb2bcf5974e6",
+  "Verifier": {
+    "Result": "PASS",
+    "Passed": 92,
+    "Total": 92,
+    "ExitCode": 0,
+    "FailedCases": []
+  },
+  "Mutants": {
+    "DisplayName": {
+      "Result": "FAIL",
+      "Passed": 70,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T02",
+        "T03",
+        "T06",
+        "T07",
+        "T08",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62",
+        "T65",
+        "T69",
+        "T70",
+        "T74",
+        "T88"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(x[2])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "ClassNameOnly": {
+      "Result": "FAIL",
+      "Passed": 72,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T06",
+        "T07",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62",
+        "T65",
+        "T69",
+        "T70",
+        "T74",
+        "T88"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(definitions[x[0]][0])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "CaseSensitiveFqn": {
+      "Result": "FAIL",
+      "Passed": 71,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T04",
+        "T06",
+        "T07",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62",
+        "T65",
+        "T69",
+        "T70",
+        "T74",
+        "T88"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if substring in definitions[x[0]][0] + '.' + definitions[x[0]][1]]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "MethodNameOnly": {
+      "Result": "FAIL",
+      "Passed": 68,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T05",
+        "T06",
+        "T07",
+        "T09",
+        "T28",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62",
+        "T65",
+        "T69",
+        "T70",
+        "T74",
+        "T83",
+        "T88"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(definitions[x[0]][1])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "CodePointPositions": {
+      "Result": "FAIL",
+      "Passed": 90,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T61",
+        "T62"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "fqn = [ord(ch) for ch in class_name + '.' + method_name]",
+      "MustFail": [
+        "T61",
+        "T62"
+      ],
+      "MustFailOk": true
+    },
+    "GlobalNonAsciiReject": {
+      "Result": "FAIL",
+      "Passed": 88,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "fqn = utf16_units(class_name + '.' + method_name)\n    if any(u > 0x7F for u in fqn):\n        return UNKNOWN",
+      "MustFail": [
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "MustFailOk": true
+    },
+    "NonAsciiAsMismatch": {
+      "Result": "FAIL",
+      "Passed": 89,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "Replaces": "if u > 0x7F:\n                state = UNKNOWN",
+      "With": "if u > 0x7F:\n                state = NOT_SELECTED\n                break",
+      "MustFail": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "MustFailOk": true
+    },
+    "UnknownOverridesAsciiMatch": {
+      "Result": "FAIL",
+      "Passed": 91,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T60"
+      ],
+      "Replaces": "if SELECTED in windows:\n        return SELECTED\n    return UNKNOWN if UNKNOWN in windows else NOT_SELECTED",
+      "With": "if UNKNOWN in windows:\n        return UNKNOWN\n    return SELECTED if SELECTED in windows else NOT_SELECTED",
+      "MustFail": [
+        "T60"
+      ],
+      "MustFailOk": true
+    },
+    "PythonCasefold": {
+      "Result": "FAIL",
+      "Passed": 89,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "return SELECTED if substring.casefold() in (class_name + '.' + method_name).casefold() else NOT_SELECTED",
+      "MustFail": [
+        "T36",
+        "T37"
+      ],
+      "MustFailOk": true
+    },
+    "RawStringTestId": {
+      "Result": "FAIL",
+      "Passed": 88,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T63",
+        "T64",
+        "T65",
+        "T70"
+      ],
+      "Replaces": "return fold(value)",
+      "With": "return value",
+      "MustFail": [
+        "T63",
+        "T64",
+        "T65",
+        "T70"
+      ],
+      "MustFailOk": true
+    },
+    "FirstMessageWins": {
+      "Result": "FAIL",
+      "Passed": 79,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T75",
+        "T76",
+        "T77",
+        "T78",
+        "T79",
+        "T80",
+        "T81",
+        "T82",
+        "T84",
+        "T85",
+        "T86",
+        "T87",
+        "T89"
+      ],
+      "Replaces": "msg = failure_message(r, outcome == 'Failed')",
+      "With": "node = r.find('%s/%s/%s' % (q('Output'), q('ErrorInfo'), q('Message')))\n        msg = node.text if node is not None and node.text else ''",
+      "MustFail": [
+        "T75",
+        "T76",
+        "T77",
+        "T78",
+        "T79",
+        "T80",
+        "T81",
+        "T82",
+        "T84",
+        "T85",
+        "T86",
+        "T87",
+        "T89"
+      ],
+      "MustFailOk": true
+    },
+    "QualifiedNameCount": {
+      "Result": "FAIL",
+      "Passed": 91,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T86"
+      ],
+      "Replaces": "return [e for e in node.iter() if e is not node and local_name(e.tag) == name]",
+      "With": "return [e for e in node.iter() if e is not node and e.tag == q(name)]",
+      "MustFail": [
+        "T86"
+      ],
+      "MustFailOk": true
+    },
+    "MessageChildrenIgnored": {
+      "Result": "FAIL",
+      "Passed": 91,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T84"
+      ],
+      "Replaces": "if messages and len(messages[0]):\n        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', 'Message has child elements')",
+      "With": "",
+      "MustFail": [
+        "T84"
+      ],
+      "MustFailOk": true
+    },
+    "FailedRowsOnly": {
+      "Result": "FAIL",
+      "Passed": 91,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T82"
+      ],
+      "Replaces": "msg = failure_message(r, outcome == 'Failed')",
+      "With": "msg = failure_message(r, True) if outcome == 'Failed' else ''",
+      "MustFail": [
+        "T82"
+      ],
+      "MustFailOk": true
+    },
+    "StrayMessageIgnored": {
+      "Result": "FAIL",
+      "Passed": 91,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T89"
+      ],
+      "Replaces": "if stray:\n        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', '%d Message element(s) outside %s and UnitTestResult/Output/TextMessages' % (len(stray), FAILURE_PATH))",
+      "With": "",
+      "MustFail": [
+        "T89"
+      ],
+      "MustFailOk": true
+    },
+    "StructureUnchecked": {
+      "Result": "FAIL",
+      "Passed": 89,
+      "Total": 92,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T90",
+        "T91",
+        "T92"
+      ],
+      "Replaces": "check_structure(root)",
+      "With": "",
+      "MustFail": [
+        "T90",
+        "T91",
+        "T92"
+      ],
+      "MustFailOk": true
+    }
+  },
+  "HistoricalA9": {
+    "Result": "FAIL",
+    "Passed": 64,
+    "Total": 92,
+    "ExitCode": 1,
+    "FailedCases": [
+      "T16",
+      "T17",
+      "T63",
+      "T64",
+      "T65",
+      "T66",
+      "T67",
+      "T68",
+      "T70",
+      "T71",
+      "T72",
+      "T73",
+      "T75",
+      "T76",
+      "T77",
+      "T78",
+      "T79",
+      "T80",
+      "T81",
+      "T82",
+      "T84",
+      "T85",
+      "T86",
+      "T87",
+      "T89",
+      "T90",
+      "T91",
+      "T92"
+    ],
+    "Blob": "39d30be33cda7c947ab4ec509ee30501ca89db49",
+    "ExtractedBlob": "39d30be33cda7c947ab4ec509ee30501ca89db49",
+    "ExtractedSha256": "4f7d94e615abc08a9e33c9cf3771d296feb9c2be93804dad02731bd290c0a7b4",
+    "SignatureCases": {
+      "I64-A9-TESTID-GUID-ALIAS": [
+        {
+          "Case": "T63",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_TEST_ID_DUPLICATE"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T64",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_TEST_ID_DUPLICATE"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T66",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_TEST_ID_MALFORMED"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        }
+      ],
+      "I64-A9-FAILURE-MESSAGE-AMBIGUITY": [
+        {
+          "Case": "T75",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T76",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T77",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T78",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T80",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T81",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T82",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T84",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T86",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        },
+        {
+          "Case": "T89",
+          "A9Got": "PASS",
+          "A9ExitCode": 0,
+          "A10Got": "FAIL",
+          "A10ReasonCodes": [
+            "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+          ],
+          "A9AcceptedBadFixture": true,
+          "A10Rejected": true
+        }
+      ]
+    },
+    "FailedCaseDetails": [
+      {
+        "Case": "T16",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_UNKNOWN",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_UNKNOWN"
+        ]
+      },
+      {
+        "Case": "T17",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_DUPLICATE",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_DUPLICATE"
+        ]
+      },
+      {
+        "Case": "T63",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_DUPLICATE",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_DUPLICATE"
+        ]
+      },
+      {
+        "Case": "T64",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_DUPLICATE",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_DUPLICATE"
+        ]
+      },
+      {
+        "Case": "T65",
+        "Expected": "PASS",
+        "ExpectedCode": null,
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A9FailedAsserts": [
+          "Resolved"
+        ],
+        "A10Got": "PASS",
+        "A10ReasonCodes": []
+      },
+      {
+        "Case": "T66",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_MALFORMED",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_MALFORMED"
+        ]
+      },
+      {
+        "Case": "T67",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_MALFORMED",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_MALFORMED"
+        ]
+      },
+      {
+        "Case": "T68",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_UNKNOWN",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_UNKNOWN"
+        ]
+      },
+      {
+        "Case": "T70",
+        "Expected": "PASS",
+        "ExpectedCode": null,
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A9FailedAsserts": [
+          "Counted7"
+        ],
+        "A10Got": "PASS",
+        "A10ReasonCodes": []
+      },
+      {
+        "Case": "T71",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_MISSING",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_MISSING"
+        ]
+      },
+      {
+        "Case": "T72",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_MISSING",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_MISSING"
+        ]
+      },
+      {
+        "Case": "T73",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_TEST_ID_MALFORMED",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_TEST_ID_MALFORMED"
+        ]
+      },
+      {
+        "Case": "T75",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T76",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T77",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T78",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T79",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_MISSING",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "RED_COMPOSITION_MISMATCH"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_MISSING"
+        ]
+      },
+      {
+        "Case": "T80",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T81",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T82",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T84",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T85",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "RED_COMPOSITION_MISMATCH"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T86",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T87",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "FAIL",
+        "A9ExitCode": 1,
+        "A9ReasonCodes": [
+          "RED_COMPOSITION_MISMATCH"
+        ],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T89",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_FAILURE_MESSAGE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_FAILURE_MESSAGE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T90",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T91",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T92",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_AMBIGUOUS",
+        "A9Got": "PASS",
+        "A9ExitCode": 0,
+        "A9ReasonCodes": [],
+        "A9FailedAsserts": [],
+        "A10Got": "FAIL",
+        "A10ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ]
+      }
+    ]
+  },
+  "Result": "PASS"
+}

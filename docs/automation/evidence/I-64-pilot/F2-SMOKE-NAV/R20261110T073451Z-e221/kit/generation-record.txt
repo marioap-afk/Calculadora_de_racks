@@ -1,0 +1,30 @@
+generacion del kit de R20261110T073451Z-e221, desde R20261107T171052Z-6862
+Test-AcadProcessGuard.ps1 copia identica 736463BD3EF607A5C61530ACCBE385E9C799BD9A1FDF72107CEF1B76CB76E3A4
+Inspect-LoadedRackCad.ps1 copia identica 86985EC90F4591806391F70257DE2B2CCBD0CFC096EB34B33117DF63E413E5AB
+Save-ScreenRegion.ps1 copia identica 61983D32CE96DFFE54BF26629E63511BEC4A3C93E507B895AC9BB38AEB576CDF
+Test-CapturePrecheck.ps1 copia identica 122D634F84CDA509A8D968D4F6862346524AC2CEF3C7A73A7C7D14731FD08380
+Read-AcadWindowPosition.ps1 copia identica 5CC96E9022A787158BE2E04CFE55F5CB5AC143C64B3E89D475E5FA08A353008F
+List-TopWindows.ps1 copia identica 5C709C4690B0EE485327519C95AD6258B66D5CE42A93A62048F96B2C7D3EA4E7
+  Capture-HostExtras.ps1 : 2 x sustitucion [R20261107T171052Z-6862]
+  Capture-HostExtras.ps1 : 1 x sustitucion [I-64 Smoke-1]
+  Capture-HostExtras.ps1 : 1 x sustitucion [COORDINATOR FULL SMOKE-1 AUTHORIZATION, 6862]
+Capture-HostExtras.ps1 origen DDB3FF4D7D2AFA096BC900F9EB28268F47655C31135C9F28C5AA715F70F3D25D -> destino 16DB4084860734356987BEB6FDA89B8141AE5F4ADE99EDA315DC9A7526C1AD40
+  compare_host_extras.py : 1 x sustitucion [R20261107T171052Z-6862]
+  compare_host_extras.py : 1 x sustitucion [I-64 Smoke-1]
+compare_host_extras.py origen F0DC909D1513DCA9196342AD36534C9B5D1A219D46140753B626ADFF0737978C -> destino 30EC4F5358E3DBCEDF27614E777F011CBD6527EFABA8773B83C99FC8BBE2F8BD
+  owner-post.ps1 : 2 x sustitucion [R20261107T171052Z-6862]
+  owner-post.ps1 : 1 x sustitucion [I-64 Smoke-1]
+  owner-post.ps1 : 1 x sustitucion [F1-SMOKE-1\$RunId]
+owner-post.ps1 origen 31481683B5E3B3C6E103EFFEB1BA6F42FFFE025A1300A8ECB2DC52A8567DA94A -> destino FC38819B328055A9A82E514E306DECA489F0582EB2915B9BACBB49DFDD3DDCE4
+  owner-preflight-baseline.ps1 : 2 x sustitucion [R20261107T171052Z-6862]
+  owner-preflight-baseline.ps1 : 1 x sustitucion [I-64 Smoke-1]
+  owner-preflight-baseline.ps1 : 1 x sustitucion [$Candidate = 'cc7503e3e4e56bff3a2fc9de7ca30a5322b57ea6']
+  owner-preflight-baseline.ps1 : 1 x sustitucion [$DllSha = '3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9]
+  owner-preflight-baseline.ps1 : 1 x sustitucion [$HeadExpected = '1917bc19e11e0fa09f4484956794825ba960098a']
+  owner-preflight-baseline.ps1 : 1 x sustitucion [$FixtureSha = '03e5606c1e311f700640125b892fe09bf408dd5642115]
+  owner-preflight-baseline.ps1 : 1 x sustitucion [F1-SMOKE-1\$RunId]
+  owner-preflight-baseline.ps1 : 1 x sustitucion [Candidato cc7503e3 reutilizado sin recompilar, producto C2 0]
+  owner-preflight-baseline.ps1 : 1 x sustitucion [arbol limpio; HEAD = custodia 1917bc19 (NO se exige HEAD = C]
+  owner-preflight-baseline.ps1 : 1 x sustitucion [desde cc7503e3; identidad cc7503e3 estampada]
+owner-preflight-baseline.ps1 origen A26B3D2308CBD5675254EAA70E7043CF65F90A301C1AB63D33259499157E432F -> destino 8CCF36FEB51CE801588E38D42DE3C8ED85C6CBC60FA0819940E7DD801CD53698
+Inspect-LoadedRackCad.ps1: tabla Expected con los SHA del candidato

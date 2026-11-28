@@ -1,0 +1,5 @@
+v1-on-pbt3a.json | FAIL | falsas: ['8_ContractFailsOnlyByExactWhitelist'] | binding: None | record: NOT SATISFIED | id: PBT2A-NC2-EXACT-WHITELIST-F4B-01
+v2-notask.json | FAIL (--task es obligatorio: PBT2A, PBT3A, PBT3B, PBT3C, PBT4, PBT5 o VALIDATION) | falsas: [] | binding: None | record: None | id: PBTx-NC2-EXACT-WHITELIST-F4B-01
+v2-pbt4.json | FAIL | falsas: [] | binding: False | record: NOT SATISFIED | id: PBT4-NC2-EXACT-WHITELIST-F4B-01
+v2-validation.json | PASS | falsas: [] | binding: True | record: VALIDATION_ONLY_NO_RECORD | id: PBTx-NC2-EXACT-WHITELIST-F4B-01
+v2-wrongtask.json | FAIL | falsas: [] | binding: False | record: NOT SATISFIED | id: PBT3B-NC2-EXACT-WHITELIST-F4B-01

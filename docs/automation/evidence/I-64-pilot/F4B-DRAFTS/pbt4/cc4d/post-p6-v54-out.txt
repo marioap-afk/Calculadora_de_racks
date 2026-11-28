@@ -1,0 +1,23 @@
+archivos de src/ instrumentados 775; lineas ejecutadas en la base que se quedan 69842 (ramas cubiertas 28818); retiradas por el GREEN 419; texto cambiado 4; lineas sin ejecutar en el GREEN 0; lineas con ramas perdidas 0
+cobertura PASA
+conjunto vigilado de la v5.2: 537 lineas de WPUR, 433 se quedan, 0 sin cubrir en el GREEN; bajan (informativo) 16801, de ellas PERDIDA 0
+heredados 83 de 85 (salen 2) + nuevos 5 = 88
+solapamientos: 0 []
+totales RED core: 19418 {'Failed': 1, 'NotExecuted': 403, 'Passed': 19014}
+totales RED ui_all: 899 {'NotExecuted': 30, 'Passed': 869}
+totales GREEN core: 19418 {'NotExecuted': 403, 'Passed': 19015}
+totales GREEN ui_all: 899 {'NotExecuted': 30, 'Passed': 869}
+filtros: base 921 resultados en 1 TRX; rama 899 en 18 TRX
+quitados 22 {'Passed': 21, 'NotExecuted': 1}; anadidos 0 {}; cambian de resultado 0 {}
+UI red: 2464 = 2416 + 0 + 48 (Passed + Failed + Skipped)
+filtros: base 921 resultados en 1 TRX; rama 899 en 18 TRX
+quitados 22 {'Passed': 21, 'NotExecuted': 1}; anadidos 0 {}; cambian de resultado 0 {}
+UI green: 2464 = 2416 + 0 + 48 (Passed + Failed + Skipped)
+json 52e03e061cd62c79597f51b8eaf144a27d68b3bf5db876406a804be2fa978989 todo previsto True {'red-only-ct01': True, 'green-0-failed': True, 'ui-0-failed': True, 'cs-0': True, 'same-totals': True, 'alone': True, 'coverage': True, 'census': True, 'rehearsal': True, 'control': True, 'no-overlap': True, 'base-is-ci-baseline': True, 'base-alone': True, 'red-deleted-3': True, 'bajan-sin-perdida': True, 'reapply-cs-0': True, 'reapply-code-equal': True}
+9c1bde530cf68467dbdc1e410d6443d50ea56378bcf1ce3faa284fe24bcfbd34 *cov-p6-v54.txt
+0b7f55937722defa36067166d77a111ca9abfac5df5c4c4ce7c025d3e26d5d72 *required-pbt4d.tsv
+a9aca5123628edd40e3baffd078247e34d3326e15e7a71b5b32be0be3a2d47d8 *required-pbt4d.txt
+b7072dae42384bebbb8e99efb358c7c751fef41e5e48b487a311babbc6dbe816 *ui-totals-red.txt
+01ff0529167b43fbbfb5d5c0d50193060116c3c2a78187609b8ab34eec8a4550 *ui-totals-green.txt
+52e03e061cd62c79597f51b8eaf144a27d68b3bf5db876406a804be2fa978989 *pbt4d-precondition6.json
+d13afdb02216d385c32ade81b5cf9508c648a970337cf92b9d964b936933de42 *compile-check.md

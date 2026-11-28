@@ -1,0 +1,433 @@
+diff --git a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+index 5f40cafc..e94c9bfe 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@ -285,11 +285,11 @@ namespace RackCad.Application.Workspace
+         public static EditCheckOutcome Conflict(IReadOnlyList<string> differences, string? admissionDiagnostic = null, string? classicEditorHint = null)
+         {
+             if (differences == null) throw new ArgumentNullException(nameof(differences));
+-            return new EditCheckOutcome(EditCheckStatus.Conflict, null, differences, null, null);
++            return new EditCheckOutcome(EditCheckStatus.Conflict, null, differences, admissionDiagnostic, classicEditorHint);
+         }
+ 
+         public static EditCheckOutcome Recovered(string? admissionDiagnostic = null, string? classicEditorHint = null) =>
+-            new(EditCheckStatus.Recovered, null, Array.Empty<string>(), null, null);
++            new(EditCheckStatus.Recovered, null, Array.Empty<string>(), admissionDiagnostic, classicEditorHint);
+ 
+         public static EditCheckOutcome Failed(string reason) => Without(EditCheckStatus.Failed, reason);
+ 
+diff --git a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+index d09b6574..c4132aa6 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@ -423,16 +423,32 @@ namespace RackCad.Application.Workspace
+                 var pilot = read.PilotRead;
+                 if (pilot == null) return EditCheckOutcome.Failed("La relectura no trajo resultado.");
+ 
++                // 7, continued (I-64 F4-T4C2, D-T4C-12): the diagnostic of the admission comes from the SAME reread, before its base goes to CheckNow, and in its
++                // own try. A failure of it gives null and never changes the answer: Recovered and Conflict only come from the comparison of the bases.
++                string? admission = null;
++                string? hint = null;
++                try
++                {
++                    admission = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;
++                    hint = admission == null ? null : pilot.ClassicEditorHint;
++                }
++                catch (Exception diagnosticFailure)
++                {
++                    Report("WorkspaceHostCore.TryCheckPilotEdit.Diagnostic", diagnosticFailure);
++                    admission = null;
++                    hint = null;
++                }
++
+                 // 8: the base of the reread only goes to CheckNow.
+                 var check = draft.CheckNow(pilot.StaleBase);
+                 switch (check.Status)
+                 {
+                     case DraftCheckStatus.Recovered:
+                         _knownClean.Remove(request.Session);
+-                        return EditCheckOutcome.Recovered();
++                        return EditCheckOutcome.Recovered(admission, hint);
+                     case DraftCheckStatus.Conflict:
+                         _knownClean.Remove(request.Session);
+-                        return EditCheckOutcome.Conflict(DescribeDifferences(check.Differences));
++                        return EditCheckOutcome.Conflict(DescribeDifferences(check.Differences), admission, hint);
+                     default:
+                         return EditCheckOutcome.NotApplicable("El borrador no quedó desconocido tras una aplicación fallida.");
+                 }
+diff --git a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+index 8ac55c2b..31f9c260 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@ -1,4 +1,5 @@
+ using System;
++using System.Collections.Generic;
+ using RackCad.Application.Workspace;
+ 
+ namespace RackCad.UI.Workspace
+@@ -74,6 +75,46 @@ namespace RackCad.UI.Workspace
+ 
+         private const string SurfaceChangedText = "La superficie cambió durante la lectura; el resultado no se mostró.";
+ 
++        // The texts of the update (I-64 F4-T4C2, D-T4C-11), every one a constant of the view-model. The two of an outcome that is not known (a close that
++        // threw, a write whose reread failed) are A2-11 and A2-12 above: they already exist and are not repeated.
++        private const string ApplyingText = "Aplicando";
++        private const string UpdateAppliedText = "Actualizado: el cambio se aplicó al dibujo.";
++        private const string UpdateAppliedWithWarningsPrefix = "Actualizado con avisos: ";
++        private const string UpdateConflictPrefix = "No se aplicó: el dibujo cambió fuera del panel. Diferencias: ";
++        private const string UpdateNotAppliedPrefix = "No se aplicó: ";
++        private const string UpdateClosedInErrorPrefix = "El borrador quedó en error al cerrar la actualización. Clasificación: ";
++        private const string UpdateClosedDetachedText = "El borrador se descartó o su sesión terminó durante la actualización.";
++        private const string UpdateAnotherInProgressText = "Ya hay una actualización en curso.";
++        private const string UpdateUnrecognizedText = "Resultado de la actualización no reconocido.";
++        private const string UpdateNotStartedSuffix = " No se actualizó.";
++        private const string UpdateNotStartedPrefix = "No se pudo actualizar: ";
++        private const string UpdateAbortedPrefix = "No se actualizó: ";
++        private const string UpdateKeptText = "No se actualizó: el borrador no se puede actualizar ahora.";
++        private const string UpdateRefusedPrefix = "El borrador no admitió la actualización: ";
++        private const string UpdateNothingToApplyPrefix = "Nada que aplicar: ";
++        private const string UpdatePendingTextPrefix = "Hay texto pendiente: ";
++        private const string UpdateRejectedPrefix = "Rechazado: ";
++        private const string UpdateNoDraftPrefix = "Sin borrador: ";
++        private const string UpdateNotApplicablePrefix = "No aplicable: ";
++        private const string UpdateFailedPrefix = "Fallo: ";
++        private const string UpdateUnavailablePrefix = "No disponible: ";
++        private const string UpdateWaitingPrefix = "En espera: ";
++        private const string UpdateBusyPrefix = "Ocupado: ";
++        private const string DifferencesPrefix = " Diferencias: ";
++        private const string WarningsPrefix = " Avisos: ";
++        private const string ListSeparator = "; ";
++
++        // The classification that a closed-in-error update kept (M-03), in words: it is what the update was before the draft failed to take its close.
++        private const string ClassifiedAppliedName = "aplicada";
++        private const string ClassifiedAppliedWithWarningsName = "aplicada con avisos";
++        private const string ClassifiedConflictName = "no aplicada por conflicto";
++        private const string ClassifiedAdmissionName = "no aplicada por la admisión";
++        private const string ClassifiedPreflightName = "no aplicada por la comprobación previa";
++        private const string ClassifiedFailureName = "no aplicada por un fallo";
++        private const string ClassifiedCommitThrewName = "desconocida (el cierre falló)";
++        private const string ClassifiedPostRereadName = "aplicada con la relectura fallida";
++        private const string ClassifiedNoneName = "sin clasificar";
++
+         private readonly IWorkspacePilotEditPort _port;
+         private readonly Action _changed;
+ 
+@@ -97,6 +138,10 @@ namespace RackCad.UI.Workspace
+         private bool _readyNote;
+         private string _failure;
+ 
++        // What the port said last about the update of this rack: whether its run has not ended. It is the Applying indicator (D-T4C-03, rule 2) and
++        // belongs to the surface: a change of surface forgets it, and the next repaint asks the port again.
++        private bool _inFlight;
++
+         // What belongs to the surface and a new gesture does NOT end (D-T4A2-06): the diagnostic of a read that was not admitted, with the hint of
+         // the classic editor. Only a result that reread the drawing replaces it; a change of surface, the end of the draft, a reload or a keep remove it.
+         private string _persistDiagnostic;
+@@ -193,8 +238,12 @@ namespace RackCad.UI.Workspace
+         /// </summary>
+         public bool ShowCheckButton => OffersCheck(_view);
+ 
+-        /// <summary>The Update button (I-64 F4-T4C2, D-T4C-11). Inert until the gesture exists.</summary>
+-        public bool ShowUpdateButton => false;
++        /// <summary>
++        /// The Update button (I-64 F4-T4C2, D-T4C-11): on a pinned tab with a draft that is dirty, also when it is possibly stale and also with a persistent
++        /// diagnostic (the run decides), without a failure of the field and without a choice that waits, with no update in flight and outside the
++        /// state Applying. Never for a clean, conflicting, unknown or failed draft and never for a preview.
++        /// </summary>
++        public bool ShowUpdateButton => OffersUpdate(_view);
+ 
+         /// <summary>
+         /// The option to discard the work and reload the draft (D-T4A2-02): for a draft in conflict, and for an unknown one that was applied and
+@@ -251,6 +300,20 @@ namespace RackCad.UI.Workspace
+ 
+             _isPreview = isPreview;
+             Render();
++
++            // I-64 F4-T4C2 (D-T4C-03, F-1): a repaint of the live surface takes what the port knows about the update of ITS rack and shows its outcome once. It is
++            // memory only and it reads no drawing. A preview, or a field that is in Error, takes nothing: the outcome stays in the store until the pinned surface of
++            // its rack is shown again.
++            if (_isPreview || _failure != null) return;
++
++            try
++            {
++                PresentProgress(_port.TakeUpdateProgress(Origin(), _rack), false);
++            }
++            catch (Exception ex)
++            {
++                EnterFailure(ex);
++            }
+         }
+ 
+         /// <summary>There is no surface: the field goes back to its initial state.</summary>
+@@ -445,9 +508,72 @@ namespace RackCad.UI.Workspace
+             }
+         }
+ 
+-        /// <summary>The Update button (I-64 F4-T4C2, D-T4C-11). Inert until the gesture exists.</summary>
++        /// <summary>
++        /// The Update button (I-64 F4-T4C2, D-T4C-11): one explicit gesture that asks for at most ONE run of the update. It is synchronous and in this
++        /// order: 0, it checks its own button first, so a click that was queued behind a run asks for nothing; 1, it takes what is pending and, if an outcome
++        /// that nobody showed is there, it shows it and asks nothing; 2, it crosses the boundary of the update (only a proceed goes on); 3, it asks once; 5, any
++        /// start value that is not Accepted is shown here with its cause; 4, after an Accepted it takes the progress at once and shows the outcome if it
++        /// arrived or Applying if the update is in flight. It never decides stale, a conflict, a value or the order of a write: it shows what the port says.
++        /// </summary>
+         public void Update()
+         {
++            if (!ShowUpdateButton) return;
++
++            var session = _session.Value;
++            var rack = _rack;
++            try
++            {
++                ClearNotices();
++
++                // 1: what is pending first. An outcome that nobody showed is shown and nothing is asked (D-T4C-03, rule 5).
++                var pending = _port.TakeUpdateProgress(new WorkspaceRequest(session), rack);
++                if (pending.Outcome.Status != EditUpdateStatus.Unavailable)
++                {
++                    PresentProgress(pending, true);
++                    _changed?.Invoke();
++                    return;
++                }
++
++                // 2: the boundary of the update (H-27). Only Proceeded goes on; the other three say why and ask nothing.
++                var crossed = _port.CrossBoundary(new WorkspaceRequest(session), rack, PilotBoundaryKind.Update);
++                if (!IsMine(session, rack))
++                {
++                    PresentSurfaceChange();
++                    return;
++                }
++
++                if (crossed.Decision != PilotBoundaryDecision.Proceeded)
++                {
++                    PresentStopped(crossed);
++                    _changed?.Invoke();
++                    return;
++                }
++
++                // 3: the request, once. If the surface changed meanwhile the result stays in the store and is not taken here (rule 3).
++                var request = new EditIntentRequest(session, rack, null, null);
++                var start = _port.RequestUpdate(request);
++                if (!IsMine(session, rack))
++                {
++                    PresentSurfaceChange();
++                    return;
++                }
++
++                // 5: a start value that is not Accepted is shown in the gesture and left nothing in the store (rule 4).
++                if (start.Status != EditUpdateStartStatus.Accepted)
++                {
++                    PresentStart(start);
++                    _changed?.Invoke();
++                    return;
++                }
++
++                // 4: the progress at once. A nested repaint may have taken the outcome already: then there is no flight and no outcome, and nothing is touched.
++                PresentProgress(_port.TakeUpdateProgress(new WorkspaceRequest(session), rack), true);
++                _changed?.Invoke();
++            }
++            catch (Exception ex)
++            {
++                EnterFailure(ex);
++            }
+         }
+ 
+         /// <summary>The option to discard the work and reload the draft: it asks for the confirmation and calls nothing of the port but the memory.</summary>
+@@ -535,6 +661,7 @@ namespace RackCad.UI.Workspace
+             _persistHint = null;
+             _readyNote = false;
+             _failure = null;
++            _inFlight = false;
+             RemoveChoice();
+         }
+ 
+@@ -719,10 +846,12 @@ namespace RackCad.UI.Workspace
+         // The answer of the check of an unknown draft after a commit that threw: a recovery or a conflict reread the drawing and retire the diagnostic.
+         private void PresentCheck(EditCheckOutcome outcome)
+         {
++            // I-64 F4-T4C2 (D-T4C-12, D-T4A2-06): a reread that was not admitted keeps its diagnostic and its hint as the persistent ones; one that was
++            // admitted retires them. The text of the answer is the same: only the status of the host decides it.
+             if (outcome.Status == EditCheckStatus.Recovered || outcome.Status == EditCheckStatus.Conflict)
+             {
+-                _persistDiagnostic = null;
+-                _persistHint = null;
++                _persistDiagnostic = outcome.AdmissionDiagnostic;
++                _persistHint = outcome.AdmissionDiagnostic == null ? null : outcome.ClassicEditorHint ?? string.Empty;
+             }
+ 
+             Render();
+@@ -782,6 +911,156 @@ namespace RackCad.UI.Workspace
+             _changed?.Invoke();
+         }
+ 
++        // ------------------------------------------------------------------ the update of the rack (I-64 F4-T4C2, D-T4C-11 and D-T4C-03)
++
++        // The button: a dirty draft on a pinned surface, with no update in flight. Applying is a state of its own, so it is outside by construction.
++        private bool OffersUpdate(PilotFieldView view) =>
++            OnPinnedSurface(view) && !HasChoice && !_inFlight && view.State == PilotFieldState.Dirty;
++
++        // What the port knows about the update of the rack. The flight comes from the port and is the one source of Applying besides the state of the draft;
++        // an outcome is shown once, as it is, with no classification of its own. With no outcome and the same flight (a nested repaint took it already, or
++        // the update never started) nothing is touched: the last notice stays and the field is painted from its own state. The gesture always paints
++        // the field from the memory of the port afterwards (K = 1); a repaint of the surface has just done it.
++        private void PresentProgress(EditUpdateProgress progress, bool paint)
++        {
++            var hasOutcome = progress.Outcome.Status != EditUpdateStatus.Unavailable;
++            var flightChanged = _inFlight != progress.InFlight;
++            _inFlight = progress.InFlight;
++            if (!paint && !hasOutcome && !flightChanged) return;
++
++            Render();
++            if (hasOutcome) _noticeText = UpdateNoticeOf(progress.Outcome);
++            RaiseAll();
++        }
++
++        // A start value that is not Accepted, in the gesture, with its cause. It left nothing in the store, so nothing is taken after it.
++        private void PresentStart(EditUpdateStart start)
++        {
++            var notice = UpdateStartPrefixOf(start.Status) + DetailOf(start.Reason) + UpdateNotStartedSuffix;
++            Render();
++            _noticeText = notice;
++            RaiseAll();
++        }
++
++        // The boundary did not proceed: nothing is asked. A text that is not valid says its message, a busy read says its reason, and a draft that cannot be
++        // edited now (or a decision that no enumerator names) says that it was not updated.
++        private void PresentStopped(PilotBoundaryResult crossed)
++        {
++            string notice;
++            switch (crossed.Decision)
++            {
++                case PilotBoundaryDecision.Aborted:
++                    notice = UpdateAbortedPrefix + AbortReasonOf(crossed);
++                    break;
++                case PilotBoundaryDecision.Busy:
++                    notice = UpdateBusyPrefix + DetailOf(crossed.Reason) + UpdateNotStartedSuffix;
++                    break;
++                default:
++                    notice = UpdateKeptText;
++                    break;
++            }
++
++            Render();
++            _noticeText = notice;
++            RaiseAll();
++        }
++
++        private static string AbortReasonOf(PilotBoundaryResult crossed)
++        {
++            if (crossed.InvalidFields.Count == 0) return DetailOf(crossed.Reason);
++            var messages = new string[crossed.InvalidFields.Count];
++            for (var i = 0; i < messages.Length; i++)
++                messages[i] = string.IsNullOrWhiteSpace(crossed.InvalidFields[i].Message) ? crossed.InvalidFields[i].FieldKey : crossed.InvalidFields[i].Message;
++            return string.Join(" ", messages);
++        }
++
++        private static string UpdateStartPrefixOf(EditUpdateStartStatus status)
++        {
++            switch (status)
++            {
++                case EditUpdateStartStatus.Unavailable: return UpdateUnavailablePrefix;
++                case EditUpdateStartStatus.Waiting: return UpdateWaitingPrefix;
++                case EditUpdateStartStatus.Rejected: return UpdateRejectedPrefix;
++                case EditUpdateStartStatus.Busy: return UpdateBusyPrefix;
++                case EditUpdateStartStatus.Failed: return UpdateFailedPrefix;
++                default: return UpdateNotStartedPrefix;
++            }
++        }
++
++        // The text of an outcome, by its own class and never by one of the field: Applied is the only one that says it was applied without a warning, and
++        // an outcome that is not known (the close threw, the reread failed) says that it is not known. A closed-in-error update is never a success.
++        private static string UpdateNoticeOf(EditUpdateOutcome outcome)
++        {
++            switch (outcome.Status)
++            {
++                case EditUpdateStatus.Applied:
++                    return UpdateAppliedText;
++                case EditUpdateStatus.AppliedWithWarnings:
++                    return UpdateAppliedWithWarningsPrefix + JoinOrNoDetail(outcome.Warnings);
++                case EditUpdateStatus.NotAppliedConflict:
++                    return UpdateConflictPrefix + JoinOrNoDetail(outcome.Differences);
++                case EditUpdateStatus.NotAppliedAdmission:
++                case EditUpdateStatus.NotAppliedPreflight:
++                case EditUpdateStatus.NotAppliedFailure:
++                    return UpdateNotAppliedPrefix + DetailOf(outcome.Reason);
++                case EditUpdateStatus.CommitThrew:
++                    return UnknownCheckText;
++                case EditUpdateStatus.AppliedPostRereadFailed:
++                    return UnknownAppliedText;
++                case EditUpdateStatus.ClosedInError:
++                    return ClosedInErrorTextOf(outcome);
++                case EditUpdateStatus.ClosedDetached:
++                    return UpdateClosedDetachedText;
++                case EditUpdateStatus.Rejected:
++                    return UpdateRejectedPrefix + DetailOf(outcome.Reason);
++                case EditUpdateStatus.NoDraft:
++                    return UpdateNoDraftPrefix + DetailOf(outcome.Reason);
++                case EditUpdateStatus.NothingToApply:
++                    return UpdateNothingToApplyPrefix + DetailOf(outcome.Reason);
++                case EditUpdateStatus.PendingText:
++                    return UpdatePendingTextPrefix + DetailOf(outcome.Reason);
++                case EditUpdateStatus.NotApplicable:
++                    return UpdateNotApplicablePrefix + DetailOf(outcome.Reason);
++                case EditUpdateStatus.AnotherUpdateInProgress:
++                    return UpdateAnotherInProgressText;
++                case EditUpdateStatus.Refused:
++                    return UpdateRefusedPrefix + DetailOf(outcome.Reason);
++                case EditUpdateStatus.Failed:
++                    return UpdateFailedPrefix + DetailOf(outcome.Reason);
++                default:
++                    return UpdateUnrecognizedText;
++            }
++        }
++
++        private static string ClosedInErrorTextOf(EditUpdateOutcome outcome)
++        {
++            var text = UpdateClosedInErrorPrefix + ClassificationNameOf(outcome.Classification) + ".";
++            if (!string.IsNullOrWhiteSpace(outcome.Reason)) text = text + " " + outcome.Reason;
++            if (!string.IsNullOrWhiteSpace(outcome.Cause)) text = text + CausePrefix + outcome.Cause;
++            if (outcome.Differences.Count > 0) text = text + DifferencesPrefix + string.Join(ListSeparator, outcome.Differences);
++            if (outcome.Warnings.Count > 0) text = text + WarningsPrefix + string.Join(ListSeparator, outcome.Warnings);
++            return text;
++        }
++
++        private static string ClassificationNameOf(EditUpdateStatus classification)
++        {
++            switch (classification)
++            {
++                case EditUpdateStatus.Applied: return ClassifiedAppliedName;
++                case EditUpdateStatus.AppliedWithWarnings: return ClassifiedAppliedWithWarningsName;
++                case EditUpdateStatus.NotAppliedConflict: return ClassifiedConflictName;
++                case EditUpdateStatus.NotAppliedAdmission: return ClassifiedAdmissionName;
++                case EditUpdateStatus.NotAppliedPreflight: return ClassifiedPreflightName;
++                case EditUpdateStatus.NotAppliedFailure: return ClassifiedFailureName;
++                case EditUpdateStatus.CommitThrew: return ClassifiedCommitThrewName;
++                case EditUpdateStatus.AppliedPostRereadFailed: return ClassifiedPostRereadName;
++                default: return ClassifiedNoneName;
++            }
++        }
++
++        private static string JoinOrNoDetail(IReadOnlyList<string> lines) =>
++            lines.Count == 0 ? NoDetailText : string.Join(ListSeparator, lines);
++
+         private string ReconcileTextOf(PilotFieldView view)
+         {
+             if (_failure != null || !view.Exists) return string.Empty;
+@@ -843,6 +1122,9 @@ namespace RackCad.UI.Workspace
+             if (_readyNote && _editable && view.State == PilotFieldState.Clean && view.PendingText == null) state = "Listo para editar";
+             else state = NameOf(view.State);
+ 
++            // The update of the rack is in flight: the draft still says what it was, but the port says that the run has not ended (D-T4C-03, rule 2).
++            if (_inFlight) state = ApplyingText;
++
+             if (view.IsPossiblyStale) state = state + " (posiblemente obsoleto)";
+             if (view.CommittedText == null && !string.IsNullOrWhiteSpace(view.CommittedTextReason)) state = state + ": " + view.CommittedTextReason;
+             return state;
+@@ -894,6 +1176,7 @@ namespace RackCad.UI.Workspace
+             OnPropertyChanged(nameof(ShowReloadButton));
+             OnPropertyChanged(nameof(ShowDiscardButton));
+             OnPropertyChanged(nameof(ShowCheckButton));
++            OnPropertyChanged(nameof(ShowUpdateButton));
+             OnPropertyChanged(nameof(ShowDiscardAndReloadButton));
+             OnPropertyChanged(nameof(ShowKeepMineButton));
+             OnPropertyChanged(nameof(HasChoice));

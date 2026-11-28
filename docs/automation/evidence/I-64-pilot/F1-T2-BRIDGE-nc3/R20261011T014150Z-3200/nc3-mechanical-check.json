@@ -1,0 +1,8 @@
+{
+  "OnlyFreeTextDiffers": true,
+  "FailureClassFreeText": true,
+  "ClassDispMatch": false,
+  "NoC15S11Transform": false,
+  "DeniesSameAsReal": true,
+  "EvidenceSound": true
+}

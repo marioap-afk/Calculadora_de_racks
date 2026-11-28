@@ -1,0 +1,22 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..c2cfa2fe 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -2423,7 +2423,7 @@ namespace RackCad.UI.Systems.PushBack
+         /// </summary>
+         private RackFrameConfiguration ShowHeaderConfigurator(RackFrameConfiguration copy, bool alreadyCustom)
+         {
+-            var window = new RackFrameConfiguratorWindow(copy) { Owner = this };
++            var window = new RackFrameConfiguratorWindow(copy) { Owner = (Window)this };
+ 
+             // REGRESION I-40 (ronda 2 del Owner): una cabecera YA personalizada se abre en el editor AVANZADO.
+             // El configurador siempre arranca en «Configuracion rapida», y en ese modo la unica forma de cambiar el
+@@ -2443,7 +2443,7 @@ namespace RackCad.UI.Systems.PushBack
+                 window.ShowDialog();
+             }
+ 
+-            return window.Configuration ?? copy;
++            return (window.Configuration) ?? copy;
+         }
+ 
+         private RackFrameConfiguration HeaderConfigurationFromLastComputation(string moduleId)

@@ -1,0 +1,29 @@
+{
+  "Schema": "rackcad-i64-pre-invocation-stop/v1",
+  "TaskId": "F1-T2-BRIDGE",
+  "RunId": "R20261010T225551Z-41fd",
+  "Phase": "VERIFICATION",
+  "Outcome": "REJECTED_BEFORE_INVOCATION",
+  "Disposition": "STOP",
+  "StopCondition": "P-01",
+  "RequiredConfigSha256": "64BEEBC7401225A910A80EC166BFD852A8AC9E9E06EC1CCEFB6663DC72AF397A",
+  "ObservedConfigSha256": "73890CA3319206B85B68A42E23E8D323C45361CFC29E06B3E116EFFF5DAD0FBF",
+  "ObservedEqualsPreviousBaseline73890CA3": true,
+  "NamesEqual": true,
+  "NameCount": 105,
+  "ConfigLastWriteUtc": "2026-10-10T22:53:11.432187+00:00",
+  "CheckedUtc": "2026-10-10T22:56:10.209255+00:00",
+  "Git": {
+    "HeadSha": "e2f642b86197441eea0838c8055c1db666606f11",
+    "LsRemoteSha": "e2f642b86197441eea0838c8055c1db666606f11",
+    "OriginMainSha": "bb0d5522e8411f66a51fdfb3f1f0d0514b737453",
+    "CleanTree": true
+  },
+  "Processes": "sin participantes ni procesos no atribuibles (processes-exit.json)",
+  "PromptSha256": "0F0B25CE36251E836BA13EA599E6433408AEF9556116200EED113A677A935AE6",
+  "Notes": [
+    "Comprobacion previa exigida por la disposicion del Owner/Coordinator sobre P-01: config.toml distinto del hash aceptado 64BEEBC7...; igual al de la linea base anterior 73890CA3...; mismos 105 nombres en el mismo orden; no se leyeron ni registraron valores.",
+    "Escritura de config.toml a las 22:53:11Z, tras actividad de la aplicacion Codex del Owner (procesos nuevos 22:44:51Z-22:46:01Z). Primera alternancia observada: 73890CA3 -> 64BEEBC7 a las 20:48:48Z; segunda: 64BEEBC7 -> 73890CA3 a las 22:53:11Z.",
+    "Ninguna invocacion de Codex; la verificacion valida unica sigue sin consumir; sin escrituras Git."
+  ]
+}

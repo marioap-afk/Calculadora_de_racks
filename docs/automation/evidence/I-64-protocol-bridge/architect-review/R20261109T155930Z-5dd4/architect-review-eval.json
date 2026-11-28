@@ -1,0 +1,157 @@
+{
+  "RunId": "R20261109T155930Z-5dd4",
+  "ExitCode": 0,
+  "TerminalEvent": "turn.completed",
+  "ThreadId": "01a1c109-8230-7c31-9bc8-a7a160c24b30",
+  "Usage": {
+    "input_tokens": 3574049,
+    "cached_input_tokens": 3358080,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 13282,
+    "reasoning_output_tokens": 3452
+  },
+  "CommandCount": 48,
+  "NoProfileCommands": 48,
+  "NonZeroCommands": [],
+  "ExecutedBridgeTools": [
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show f9e82be854c6:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show f9e82be854c6:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py | Select-Object -First 350'",
+    "dex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$n=350; git show f9e82be854c6:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py | Select-Object -Skip 350 -First 355 | ForEach-Object { $n++; '\"'{0}: {1}' -f \"'$n,$_ }'",
+    "\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$n=705; git show f9e82be854c6:docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py | Select-Object -Skip 705 | ForEach-Object { $n++; '\"'{0}: {1}' -f \"'$n,$_ }'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git diff 3175bcb9cf382b78aa751c762dcfaf7be4a2787c f9e82be854c6 -- docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show f9e82be854c6:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | Select-Object -First 245'",
+    "cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command '$n=490; git show f9e82be854c6:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | Select-Object -Skip 490 | ForEach-Object { $n++; '\"'{0}: {1}' -f \"'$n,$_ }'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show f9e82be854c6:docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py'",
+    "\"<runtime-de-codex>\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell\\\\pwsh.exe\" -NoProfile -Command 'git show f9e82be854c6:docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py | Select-Object -Skip 245 -First 245'",
+    "int(subprocess.check_output(['git','rev-parse','9b43dafbe3b8874aa0ba5a85d62cbf953dbdd311:'+p]).decode()) for rev,p in [('3175bcb9',paths[1]),('1a2fd4e9',paths[2]),('d4a97950',paths[3])]: print('HISTORICAL',rev,subprocess.check_output(['git','rev-parse',rev+':'+p]).decode().strip()) '@ | python -B -\"",
+    "y not in ('asserts','observe','fixture') and a.get(key)\"'!=b.get(key): inputs_differ.append([a['\"'Id'],key]) print(json.dumps({'CopiedA6SourceUnits':len(units),'AllVerbatim':all(units),'HistoricalA10Cases':len(oldcases),'PreservedInputDifferences':inputs_differ},ensure_ascii=True)) '@ | python -B -\"",
+    "age','git_env','git','git_paths','verify','main']: n=next(n for n in nast.body if isinstance(n,ast.FunctionDef) and n.name==name); o=next(n for n in oast.body if isinstance(n,ast.FunctionDef) and n.name==name) print(name,ast.get_source_segment(new,n)==ast.get_source_segment(old,o)) '@ | python -B -\""
+  ],
+  "RealF2T1BridgeExecution": [],
+  "OutputPresent": true,
+  "SchemaValid": true,
+  "OutputSha256": "1BDE36D837424029C9092117D9D6E80B84AB723AE5614B5AF11D5045712D1088",
+  "NonAsciiBytes": 0,
+  "Verdict": "AGREED",
+  "RequiredCount": 0,
+  "OptionalCount": 0,
+  "PriorFindings": {
+    "I64-A10-TESTRUN-ROOT-ANCHOR": "CLOSED",
+    "I64-A10-SHADOW-RUN-PASS": "CLOSED"
+  },
+  "ClosedA9Findings": {
+    "I64-A9-TESTID-GUID-ALIAS": "REMAINS CLOSED",
+    "I64-A9-FAILURE-MESSAGE-AMBIGUITY": "REMAINS CLOSED"
+  },
+  "ClosedA8Findings": {
+    "I64-A8-ORDINAL-FILTER-MISMATCH": "REMAINS CLOSED",
+    "I64-A8-COUNTER-COHERENCE": "REMAINS CLOSED",
+    "I64-A8-DUPLICATE-RESULT-FAIL-OPEN": "REMAINS CLOSED"
+  },
+  "RequiredFindings": [],
+  "OptionalFindings": [],
+  "Answers": {
+    "Q01": [
+      "YES",
+      true
+    ],
+    "Q02": [
+      "YES",
+      true
+    ],
+    "Q03": [
+      "YES",
+      true
+    ],
+    "Q04": [
+      "YES",
+      true
+    ],
+    "Q05": [
+      "YES",
+      true
+    ],
+    "Q06": [
+      "YES",
+      true
+    ],
+    "Q07": [
+      "YES",
+      true
+    ],
+    "Q08": [
+      "YES",
+      true
+    ],
+    "Q09": [
+      "YES",
+      true
+    ],
+    "Q10": [
+      "YES",
+      true
+    ],
+    "Q11": [
+      "YES",
+      true
+    ],
+    "Q12": [
+      "YES",
+      true
+    ],
+    "Q13": [
+      "NO",
+      true
+    ],
+    "Q14": [
+      "NO",
+      true
+    ]
+  },
+  "PolarityAsExpected": {
+    "Q01": true,
+    "Q02": true,
+    "Q03": true,
+    "Q04": true,
+    "Q05": true,
+    "Q06": true,
+    "Q07": true,
+    "Q08": true,
+    "Q09": true,
+    "Q10": true,
+    "Q11": true,
+    "Q12": true,
+    "Q13": true,
+    "Q14": true
+  },
+  "Coherent": true,
+  "SubjectMatches": true,
+  "SubjectMismatches": [],
+  "GateTerms1610": [],
+  "Limitations": [
+    "Independent separate-session review of the pinned object; the reviewer did not author it and used no author memory or transcript.",
+    "Filesystem-writing self-test and regression CLIs were not rerun under the read-only restriction. All 109 case oracles, 18 mutants and historical A-10 behavior were exercised in memory with synthetic read/Git responses and temporary-directory, cleanup and output substitutes. This does not reproduce filesystem or subprocess integration.",
+    "No real F2-T1 TRX or handoff was processed by the bridge. Real occurrence counts and composition were checked as recorded bindings, without recomputing real selection. Historical non-execution claims are supported by the supplied versioned records.",
+    "No product builds or dotnet test suites were run. No files were written, no commit or push was performed, and the working tree remained clean at the reviewed HEAD.",
+    "This architectural agreement does not activate A-11, supply the pending Owner decision or grant Coordinator activation."
+  ],
+  "CliVersion": "0.167.0-alpha.3.2",
+  "Sandbox": {
+    "type": "read-only"
+  },
+  "Effective": [
+    "gpt-6.1-sol",
+    "high"
+  ],
+  "EffectiveSource": "rollout-2026-11-09T09-59-48-01a1c109-8230-7c31-9bc8-a7a160c24b30.jsonl",
+  "EffectiveSourceSha256": "83A86BDAC032F712C06AF8268211D329AD2AB64F0C3788A88E9C82373F6B1F7A",
+  "LimitPatternContexts": {
+    "action | frontera |\\r   | S-11 | repeated rework limit reached | STOP |\\": 1,
+    " frontera |\\\\\\\\r    675: | S-11 | repeated rework limit reached | STOP |\\": 1,
+    " | frontera |\\\\\\\\r  675: | S-11 | repeated rework limit reached | STOP |\\": 1,
+    "era |\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\r   | S-11 | repeated rework limit reached | STOP |\\": 1,
+    "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\r 675: | S-11 | repeated rework limit reached | STOP |\\": 1,
+    "la fila S-11 del AUTOMATION_PLAN (repeated rework limit reached), leida 4": 1
+  },
+  "EventsSha256": "069C471DE1D47A620B375471138B11C22A186A5CA6CDDC504C64FBE12FFCA744"
+}

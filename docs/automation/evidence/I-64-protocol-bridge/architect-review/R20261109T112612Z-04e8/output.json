@@ -1,0 +1,171 @@
+{
+  "Schema": "rackcad-i64-architect-review/v1",
+  "RunId": "R20261109T112612Z-04e8",
+  "Mode": "SEPARATE SESSION",
+  "ReviewSubject": {
+    "Commit": "1a2fd4e92c38a2b5bcc17b7f09b86342fa7ef2e2",
+    "AmendmentId": "A-9",
+    "Freeze": {
+      "Path": "docs/initiatives/I-64-proposal-v5.md",
+      "Blob": "dc1924ff5a73a4e529fbc5f995621d29351a091b"
+    },
+    "Amendment": {
+      "Path": "docs/initiatives/I-64-A-9.md",
+      "Blob": "40ec7a07a274c50f581a35965f9b06702f7f157c"
+    },
+    "HistoricalAmendment": {
+      "Path": "docs/initiatives/I-64-A-8.md",
+      "Blob": "65da02628f8fc88e87b925b1604324a15a17bf90"
+    },
+    "Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py",
+      "Blob": "39d30be33cda7c947ab4ec509ee30501ca89db49"
+    },
+    "SelfTest": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/selftest_testfilter_bridge.py",
+      "Blob": "436c923427811b81c558deb73441a3d4440f1863"
+    },
+    "SelfTestResult": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/selftest-testfilter-result-a9.json",
+      "Blob": "75d20c515cf1619297712d7e8587339cc7c4a406"
+    },
+    "RegressionTool": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/regression_demo_testfilter_bridge.py",
+      "Blob": "c1c852a02d681f56a7e8c0d168f95a5c8292a031"
+    },
+    "RegressionDemo": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/regression-demo-a9-testfilter.json",
+      "Blob": "49102398ccd0380316ba0a9c2c4021de23dda616"
+    },
+    "A6Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_freetext_bridge.py",
+      "Blob": "3bc7869e9f4c9c5eed0d64d7b8fee6f7002b9169"
+    },
+    "A4Verifier": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+      "Blob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1"
+    },
+    "CoordinatorOrder": {
+      "Path": "docs/automation/evidence/I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a9-correction-order.md",
+      "Blob": "93eaf98e1e4c2d3b65dc88e51abb972f48c5a7c4"
+    },
+    "CoordinatorDisposition": {
+      "Path": "docs/automation/evidence/I-64-pilot/F2-T1-NAVIGATION-CORE/coordinator/coordinator-a9-preversioning-disposition.md",
+      "Blob": "fe1277e4e2d33bdf704956935e95e37c56b1278c"
+    },
+    "PriorReview": {
+      "Path": "docs/automation/evidence/I-64-protocol-bridge/architect-review/R20261109T062937Z-e1d0/output.json",
+      "Blob": "428cf4353bfc8c50b2d40ab3303684470883013a"
+    }
+  },
+  "PriorFindings": {
+    "I64-A8-ORDINAL-FILTER-MISMATCH": {
+      "Status": "CLOSED",
+      "Evidence": "Verifier:356-387 implements UTF-16 windows with ASCII-only folding and three states; lines 634-643 reject UNKNOWN before tallying. T36/T37 reject the U+017F/U+0131 potential matches; T58-T62 protect deterministic non-match, known ASCII match precedence and surrogate-pair positions. These oracles also passed in independent synthetic in-memory checks."
+    },
+    "I64-A8-COUNTER-COHERENCE": {
+      "Status": "CLOSED",
+      "Evidence": "Verifier:488-509 rejects unknown Counters attributes, requires the five derived counters, validates non-negative integers, requires other supported categories to be zero and compares declared values against top-level rows, including executed = passed + failed. T39-T48 passed their independent in-memory oracles."
+    },
+    "I64-A8-DUPLICATE-RESULT-FAIL-OPEN": {
+      "Status": "CLOSED",
+      "Evidence": "Verifier:461-474 requires GUID-form executionId values and rejects case-insensitive duplicates before tallying. T49/T50/T55 reject duplicate executions, while T51/T52 preserve distinct executions sharing testId. The independent synthetic checks confirmed these outcomes. The new definition-identity finding concerns UnitTest ids, not retention of this executionId defect."
+    }
+  },
+  "Answers": {
+    "Q01": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-9 changes the I-64 substitute evidence failure path, activating LIFECYCLE Sec.3 M-04. It changes no product authority, persistence, shared contract, reusable extension point or accepted ADR. Its classification matches both Coordinator orders."
+    },
+    "Q02": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-9 limits applicability to the I-64 F2-T1 nc3 Tests-filter occurrence. It preserves product semantics, RequiredTests, global AUTOMATION_PLAN authority, historical classifications and exhausted budgets."
+    },
+    "Q03": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:356-387 and 634-643 implement the Coordinator's conservative potential-match procedure without Unicode case mapping. An all-ASCII matching window establishes inclusion; otherwise a possible window involving non-ASCII units fails closed, and absence of any possible window establishes non-selection. T36-T38 and T56-T62 cover these decisions, including two UTF-16 units for U+10400."
+    },
+    "Q04": {
+      "Answer": "NO",
+      "Conforming": false,
+      "Evidence": "The Counters requirements are satisfied at verifier:488-509. However, definition identity remains ambiguous: lines 450-459 and 475-477 compare TRX GUID ids as case-sensitive strings. Two conflicting UnitTest definitions whose ids represent the same GUID with different hex capitalization are accepted. A synthetic fixture retained all 61 verification checks in pass. See I64-A9-TESTID-GUID-ALIAS."
+    },
+    "Q05": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:597-599 and 719-739 enforce positive MinSelected, all selected GREEN rows passing, selected RED failures, failure composition and handoff count equality. A-9 Sec.6 binds 724/724/0 and 724/673/51 to the later occurrence; synthetic fixtures use independent smaller counts. Parser defects are reported separately."
+    },
+    "Q06": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:546-568 and 683-705 retain A-4 Git hardening, independently derive ChainRedFiles, require equality with the accredited list and reject RED-to-GREEN intersection. Read-only Git diffs independently confirmed the six WorkspaceNavigation test files and that RED-to-GREEN changes only three Application source files."
+    },
+    "Q07": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "Verifier:667-676 validates both handoffs against the embedded schema. Lines 750-773 enforce exact equality outside WorkCompleted, unchanged key order, the exact authorized append, an initially clean governed text set, no compensating disappearance and exactly one newly introduced prohibited occurrence."
+    },
+    "Q08": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "All 27 source units in the marked reuse block occur verbatim in the pinned A-6 blob. A-6 is neither imported nor executed. Git execution hardening matches A-4. A-9 is distinct and supersedes A-8 only for activation; A-8 bytes are identical to those at d4a97950."
+    },
+    "Q09": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "The suite preserves T01-T35 with the documented fixture adjustments and adds the requested ordinal, counter and executionId cases through T62. The pinned regression records nine failing mutants and historical A-8 accepting T36/T37, T39 and T49/T50, demonstrating all three prior findings. Artifact hashes match A-9. The additional ambiguities found in this review are outside that coverage."
+    },
+    "Q10": {
+      "Answer": "YES",
+      "Conforming": true,
+      "Evidence": "A-9, both Coordinator orders, evidence Sec.80 and the specified state fields consistently retain PROPOSED / NOT ACTIVE and require all three activation decisions. Versioned results identify synthetic inputs. This review processed no real F2-T1 TRX or handoff through any bridge function."
+    },
+    "Q11": {
+      "Answer": "YES",
+      "Conforming": false,
+      "Evidence": "Duplicate executionId records now fail closed, but another open path exists. Verifier:481 selects only the first Output/ErrorInfo/Message. Adding a contradictory second Message, or a second Output containing another failure, leaves all 61 verification checks passing and preserves the expected composition by silently ignoring the contradiction. See I64-A9-FAILURE-MESSAGE-AMBIGUITY."
+    },
+    "Q12": {
+      "Answer": "NO",
+      "Conforming": true,
+      "Evidence": "The new findings require local corrections to the already promised unambiguous, fail-closed TRX reader. They require no global I-61 change, I-62 authority or additional Owner decision beyond the explicit A-9 activation decision already requested."
+    }
+  },
+  "Findings": [
+    {
+      "Id": "I64-A9-TESTID-GUID-ALIAS",
+      "Severity": "REQUIRED",
+      "Question": "Q04",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:450",
+      "Defect": "UnitTest@id uniqueness and UnitTestResult@testId resolution use case-sensitive strings rather than GUID identity. In the synthetic T01 universe, replacing the ids of one selected definition and one unselected definition with abcdef02-0000-4000-8000-000000000000 and ABCDEF02-0000-4000-8000-000000000000, respectively, preserves nine accepted definitions and all 61 passing verify() checks. Those ids represent the same GUID but bind conflicting TestMethod identities, so selection is not unambiguously reconstructed.",
+      "Authority": "A-8 Sec.3, retained by A-9 Sec.3, requires rejection of duplicate UnitTest ids. The reader explicitly promises rejection of anything ambiguous. AUTOMATION_PLAN Sec.16.9 Tests requires coherent TRX selection evidence; LIFECYCLE Sec.5 rejects unverifiable guarantees.",
+      "Correction": "In the next append-only amendment, validate and canonicalize definition and reference GUID identities before duplicate detection and lookup. Reject duplicate definitions under GUID equality while preserving legitimate distinct executionIds sharing one testId. Add a synthetic regression with conflicting definitions whose GUID ids differ only in hex capitalization.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    },
+    {
+      "Id": "I64-A9-FAILURE-MESSAGE-AMBIGUITY",
+      "Severity": "REQUIRED",
+      "Question": "Q11",
+      "Location": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_testfilter_bridge.py:481",
+      "Defect": "Element.find() silently selects the first failure-message path without validating cardinality. Adding a second Message containing System.InvalidOperationException after the original assertion message in one synthetic RED row leaves all 61 verify() checks passing; the reported composition remains one NullReferenceException and two assertion failures. A second Output with contradictory ErrorInfo is likewise accepted. The required failure composition is therefore accepted from ambiguous evidence.",
+      "Authority": "The Coordinator's A-9 correction order preserves fail-closed TRX parsing. A-8 Sec.3, retained by A-9, requires verified RED failure composition. AUTOMATION_PLAN Sec.16.9 Tests requires coherent source evidence and Sec.16.11 S-04 requires stopping on contradictory evidence; LIFECYCLE Sec.5 rejects open failure paths.",
+      "Correction": "In the next append-only amendment, validate the cardinality of Output, ErrorInfo and Message along the consumed failure path and reject duplicate or contradictory structures before classifying failures. Add synthetic regressions for duplicate Message and duplicate Output structures with unchanged rows, Counters and expected composition.",
+      "RequiresGlobalI61Change": false,
+      "RequiresOwnerDecision": false
+    }
+  ],
+  "RequiredCount": 2,
+  "OptionalCount": 0,
+  "Verdict": "CHANGES REQUIRED",
+  "Limitations": [
+    "Independent read-only review; the reviewer did not author the object and used no author memory or transcript.",
+    "The tempfile-based CLI self-test and regression demonstration were not rerun because they write files. Their pinned artifacts and hashes were inspected. All 62 case oracles were independently exercised through the pinned functions in memory with synthetic read/Git stubs; this does not reproduce subprocess or filesystem integration.",
+    "The new adversarial probes used unmodified verify() with synthetic input/Git stubs and evaluated the verifier's final PASS predicate. main() was not invoked.",
+    "Real F2-T1 TRX and handoffs were not processed by the bridge. Historical occurrence bindings were checked against versioned records without recomputing the real selection.",
+    "No files were written and no commit or push was performed; the working tree remained clean. This verdict does not activate A-9 or grant any Owner decision."
+  ]
+}

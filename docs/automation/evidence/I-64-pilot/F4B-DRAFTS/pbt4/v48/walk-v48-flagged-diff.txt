@@ -1,0 +1,5 @@
+marcadas fuera de la lista, sin copias ni kit: v4.5 (lista de 477) 131; v4.8 (lista de 478, copias de la v4.8) 133
+nuevas en la v4.8:
+  tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs	TheCatalogBodyDoesNotNameTheDocumentTypeAndNoSpanishReasonUsesAWordThatTheNeighbouringGuardsForbid
+  tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardTests.cs	TheGuardOfTheLiteralsTripsOnAnEnglishLiteralAMissingSpanishTextAndALostIdentifier
+las de la v4.5 que ya no salen marcadas fuera de la lista:

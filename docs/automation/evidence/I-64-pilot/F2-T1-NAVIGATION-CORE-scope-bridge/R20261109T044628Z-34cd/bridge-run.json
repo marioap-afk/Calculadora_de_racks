@@ -1,0 +1,122 @@
+{
+  "Schema": "rackcad-i64-scope-bridge-run/v1",
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "RunId": "R20261109T044628Z-34cd",
+  "Amendment": "docs/initiatives/I-64-A-4.md",
+  "Authorization": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/coordinator/coordinator-f2t1-nc2-0706-a4-disposition.md (I-64 F2-T1 FINAL nc2 RETRY / A-4 DISPOSITION: I64-SCOPE-BRIDGE-01 ONCE for F2-T1)",
+  "HeadSha": "c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+  "StartedUtc": "2026-11-09T04:46:29.410944+00:00",
+  "Nc2RunId": "R20261109T043701Z-0706",
+  "OracleMapping": "A-2 Sec. 2 / A-4 (accepted semantics, unchanged): REAL = accepted delegation + delivery -> PASS; ADVERSARIAL = same delivery and SHAs with the nc2-mutated AllowedWriteScope -> FAIL whose only reason is OUTSIDE_ALLOWED_WRITE_SCOPE and OutsideAllowed = [excluded file]. The disposition's \"expected REAL result: FAIL / OUTSIDE MUTATED SCOPE\" is the A-4 ADVERSARIAL run over the mutated delegation.",
+  "Verifier": {
+    "Path": "docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py",
+    "HeadBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "WorktreeBytesSha256": "14e3dc3e47e176bb88e6f3c30db11ab15e98ccb8a821615d7c957573adca0557",
+    "ExecutedPath": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-scope-bridge/R20261109T044628Z-34cd/verifier/verify_scope_bridge.py",
+    "ExecutedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "Sha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "AuthorizedBlob": "cf381ab96a3d945a9569d56bb3aaf546e3f2fce1",
+    "AuthorizedSha256": "a3d4ed8a25e99ea6b8bc0af945e6e688c13f472a7e0745752c79e04ee79f7d65",
+    "Note": "se ejecutan los bytes exactos del blob autorizado extraidos de HEAD (git cat-file blob); la copia del arbol de trabajo puede tener CRLF por core.autocrlf (mismo blob)",
+    "IdentityOk": true
+  },
+  "Inputs": {
+    "RealDelegation": {
+      "Path": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/delegation.json",
+      "Sha256": "3e2ff2bb55b442cbc59fcea86430d2de4b78ab43c82ee961a4b8762dfe11eaa6"
+    },
+    "AdversarialDelegation": {
+      "Path": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-nc2/1/R20261109T043701Z-0706/inputs/delegation.json",
+      "Sha256": "f1eaf1e6e703fe5a4a32b8261703306bb20bd0c2d4139c88c8615c572578d1c3"
+    },
+    "Handoff": {
+      "Path": "artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/worker-handoff.json",
+      "Sha256": "7f9f7e7484f62c8b4561d03e654faac4d91d90957919c346add79b3333a7b5f7"
+    },
+    "RealDelegationEqualsAccepted": true,
+    "HandoffEqualsWorkerDelivery": true,
+    "AdversarialEqualsNc2InputAsCustodiedInMutation": true,
+    "AdversarialScopeEqualsDisposition": true,
+    "AdversarialDiffersOnlyInAllowedWriteScope": true,
+    "Excluded": "src/RackCad.Application/Workspace/NavigationActions.cs",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/NavigationActions.cs",
+      "src/RackCad.Application/Workspace/NavigationFacts.cs",
+      "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+      "src/RackCad.Application/Workspace/NavigationTargets.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+    ],
+    "UnderRemovedPrefix": [
+      "src/RackCad.Application/Workspace/NavigationActions.cs",
+      "src/RackCad.Application/Workspace/NavigationFacts.cs",
+      "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+      "src/RackCad.Application/Workspace/NavigationTargets.cs"
+    ]
+  },
+  "Real": {
+    "Command": "python <bytes del blob cf381ab9 extraidos de HEAD:docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py> --repo <worktree> --delegation artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/delegation.json --handoff artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/worker-handoff.json --expected-base 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb --expected-current c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+    "ExitCode": 0,
+    "OutputSha256": "729f2098e17acea679deac9cc44efc6693cdd32b3511fd1ced6b1d5192ae6462",
+    "Stderr": "",
+    "Result": "PASS",
+    "Reasons": [],
+    "ChangedPaths": [
+      "src/RackCad.Application/Workspace/NavigationActions.cs",
+      "src/RackCad.Application/Workspace/NavigationFacts.cs",
+      "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+      "src/RackCad.Application/Workspace/NavigationTargets.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+    ],
+    "OutsideAllowed": [],
+    "ForbiddenHits": []
+  },
+  "Adversarial": {
+    "Command": "python <bytes del blob cf381ab9 extraidos de HEAD:docs/automation/evidence/I-64-protocol-bridge/tools/verify_scope_bridge.py> --repo <worktree> --delegation artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE-nc2/1/R20261109T043701Z-0706/inputs/delegation.json --handoff artifacts/orchestration/I-64/F2-T1-NAVIGATION-CORE/1/R20261108T221347Z-ebfc/inputs/worker-handoff.json --expected-base 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb --expected-current c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+    "ExitCode": 1,
+    "OutputSha256": "c5c7b266941c2e014fccc80492419e79080e5c4079cf887471534d3988220166",
+    "Stderr": "",
+    "Result": "FAIL",
+    "Reasons": [
+      {
+        "Code": "OUTSIDE_ALLOWED_WRITE_SCOPE",
+        "Detail": "changed paths not covered by AllowedWriteScope: [\"src/RackCad.Application/Workspace/NavigationActions.cs\"]"
+      }
+    ],
+    "ChangedPaths": [
+      "src/RackCad.Application/Workspace/NavigationActions.cs",
+      "src/RackCad.Application/Workspace/NavigationFacts.cs",
+      "src/RackCad.Application/Workspace/NavigationTargetSet.cs",
+      "src/RackCad.Application/Workspace/NavigationTargets.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+    ],
+    "OutsideAllowed": [
+      "src/RackCad.Application/Workspace/NavigationActions.cs"
+    ],
+    "ForbiddenHits": []
+  },
+  "Oracle": {
+    "RealPass": true,
+    "AdversarialExpectedFail": true,
+    "SameChangedPaths": true,
+    "SameIdentityHashes": true,
+    "NoUnexpectedFileUnderRemovedPrefix": true,
+    "Ok": true
+  },
+  "FinishedUtc": "2026-11-09T04:46:30.670595+00:00"
+}

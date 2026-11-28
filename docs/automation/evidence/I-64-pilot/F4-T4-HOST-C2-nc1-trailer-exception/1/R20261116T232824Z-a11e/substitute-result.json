@@ -1,0 +1,235 @@
+{
+  "Id": "F4C2-NC1-TRAILER-EXCEPTION-01",
+  "NotA4": true,
+  "Scope": "solo F4-T4-HOST-C2, intento 1; local, no global y no reutilizable automaticamente; no modifica el sustituto general ratificado",
+  "Authority": "F4-DRAFTS/coordinator/owner-f4-c2-nc1-decision.md (A - SOLO C2)",
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "la corrida real de C2: consumidores del CurrentSha y Trailer en fail",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "A2",
+      "Description": "sin la excepcion: solo los consumidores en fail",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "A3",
+      "Description": "el oraculo ordinario: solo Identity en fail",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "B",
+      "Description": "C01: la verificacion real no es 14/14",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "B2",
+      "Description": "C01: la verificacion real no es VERIFIED",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C",
+      "Description": "C02: la mutacion cambia un segundo campo",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C2",
+      "Description": "C02: el SHA sustituido existe en el repositorio",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C3",
+      "Description": "C02: hash derivado incoherente",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C4",
+      "Description": "C02: cambia otra entrada",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D",
+      "Description": "C03: la Evidence de Identity no nombra el SHA falso",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D2",
+      "Description": "C03: FailureClass que no es la primera en fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "E",
+      "Description": "C04/C07: la mutacion altera Trailer",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "F",
+      "Description": "C05: el esquema admite Trailer en la raiz",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "G",
+      "Description": "C06: la verificacion real dio Trailer en fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H",
+      "Description": "C08: difiere una comprobacion ajena (Scope)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H2",
+      "Description": "C08: difiere otra comprobacion ajena (Routing) ademas de Trailer",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "I",
+      "Description": "C09: resultado VERIFIED",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "J",
+      "Description": "C10: el Controller dio Identity en pass",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    }
+  ],
+  "SelfTestPass": true,
+  "SelfTestDeterministic": true,
+  "RealVerification": "artifacts/orchestration/I-64/F4-T4-HOST-C2/1/R20261116T232445Z-5006",
+  "Nc1Run": "artifacts/orchestration/I-64/F4-T4-HOST-C2-nc1/1/R20261116T232824Z-a11e",
+  "Head": "9abc1320743d5e4d472c4db6f5fdf4a96b835a46",
+  "Nc1ControllerEvidence": {
+    "Handoff": "worker-handoff.json has matching TaskId, Attempt, DelegationRunId, RunId and later output time, but declares CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Git rev-parse HEAD and relay-record-work Entry.HeadSha both return 9abc1320743d5e4d472c4db6f5fdf4a96b835a46. Contradictory delivery identity triggers S-04.",
+    "Identity": "Git reports branch architecture/workspace-persistente-rackcad and HEAD 9abc1320743d5e4d472c4db6f5fdf4a96b835a46. The BaseSha dcf3396f7c0850c6389e9826a1ca3e544f130cc9 is an ancestor; RedSha fe165a63fd7707d315418cdb086591f1aaf34493 is between BaseSha and HEAD. However worker-handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, so the required HEAD=CurrentSha identity does not hold.",
+    "Trailer": "git log --format=%B for both commits in BaseSha..HEAD shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. worker-handoff.json Trailer is null, so the declared trailer cannot be confirmed against the effective model claude-sonnet-5-5."
+  },
+  "Measured": {
+    "RealCurrentSha": "9abc1320743d5e4d472c4db6f5fdf4a96b835a46",
+    "MutatedCurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "Head": "9abc1320743d5e4d472c4db6f5fdf4a96b835a46",
+    "RealChecks": {
+      "Termination": "pass",
+      "Handoff": "pass",
+      "Authority": "pass",
+      "Contract": "pass",
+      "Identity": "pass",
+      "Remote": "pass",
+      "Scope": "pass",
+      "CleanTree": "pass",
+      "Ci": "pass",
+      "Tests": "pass",
+      "Trailer": "pass",
+      "Routing": "pass",
+      "FreeText": "pass",
+      "Denials": "pass"
+    },
+    "HandoffFieldsChanged": [
+      ".CurrentSha"
+    ],
+    "ChangedInputs": [
+      "relay-record-work.json",
+      "worker-handoff.json"
+    ],
+    "RelayRecordWorkFieldsChanged": [
+      ".Outcome.OutputSha256"
+    ],
+    "Controller": {
+      "Classification": "EXECUTION_BLOCKED",
+      "Disposition": "STOP",
+      "FailureClass": "Handoff",
+      "TriggeredStopConditions": [
+        "S-04"
+      ],
+      "VerifiedSha": null,
+      "Results": {
+        "Termination": "pass",
+        "Handoff": "fail",
+        "Authority": "pass",
+        "Contract": "pass",
+        "Identity": "fail",
+        "Remote": "fail",
+        "Scope": "pass",
+        "CleanTree": "pass",
+        "Ci": "fail",
+        "Tests": "fail",
+        "Trailer": "fail",
+        "Routing": "pass",
+        "FreeText": "pass",
+        "Denials": "pass"
+      }
+    },
+    "FirstNotPass": "Handoff",
+    "TrailerReal": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>",
+    "TrailerMutated": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>",
+    "DiffersFromReal": [
+      "Handoff",
+      "Identity",
+      "Remote",
+      "Ci",
+      "Tests",
+      "Trailer"
+    ],
+    "DiffersOutsideRatifiedConsumers": [
+      "Trailer"
+    ],
+    "TrailerExceptionUsed": true,
+    "FakeShaExistsInRepo": false,
+    "SchemaSha256": "28303289D1DF080955A1249F5EFD669C3FE0370308688B3368C2EB8565FB73E6"
+  },
+  "Properties": {
+    "C01_RealVerification14of14": true,
+    "C02_MutationOnlyFalseCurrentShaPlusDerived": true,
+    "C03_ControllerDetectsAndRejectsFalseCurrentSha": true,
+    "C04_TrailerEquivalentToRealDelivery": true,
+    "C05_TrailerUnderWorkerPerSchema": true,
+    "C06_RealVerificationTrailerPass": true,
+    "C07_MutationDoesNotAlterTrailer": true,
+    "C08_NoOtherUnrelatedCheckDiffers": true,
+    "C09_OutcomeBlockedNotVerified": true,
+    "C10_IdentitySignalFailsForFalseSha": true
+  },
+  "SubstituteResult": "PASS",
+  "Record": {
+    "Nc1OrdinaryRun": "CONTROL NOT PASSED (se conserva tal cual)",
+    "nc1": "SATISFIED_UNDER_F4C2_NC1_TRAILER_EXCEPTION",
+    "ProtocolDebt": "PD-F4-08: el Controller puede buscar Trailer en la raiz de la entrega en lugar de bajo Worker durante una corrida de control negativo"
+  }
+}

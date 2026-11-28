@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT2A-DRAFT-STATE-PORT",
+  "RunId": "R20261119T075153Z-a799",
+  "DelegationRunId": "R20261119T065628Z-7de7",
+  "WorkRunId": "R20261119T065932Z-3b39",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-19T06:59:37Z; OutputWrittenUtc=2026-11-19T01:42:57.441081-06:00 (07:42:57Z), posterior al inicio."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide en TaskId, RunId, DelegationRunId y Attempt; OutputPath corresponde a R20261119T065932Z-3b39; su fecha UTC 07:42:57Z es posterior al inicio de cesion 06:59:37Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha: exit 0. git diff --name-only AuthorityRevision BaseSha: 10 rutas; ninguna es EXTERNAL ni tiene seccion UNIT_CHANGE. Las cinco rutas EXTERNAL tienen blobs identicos en MainSha y AuthorityRevision; merge-base=MainSha 812baf87. git log AuthorityRevision..BaseSha por cada una de las cuatro rutas src/tests devuelve solo c33ac6ac. worker-handoff-intento1.json las lista como cambiadas y delegation-intento1.json las incluye en AllowedWriteScope."
+    },
+    "Contract": {
+      "Result": "fail",
+      "Evidence": "A3: las 3 entradas de delegation.json son subconjunto de las 4 del contrato; A4 coincide en 192 entradas. Pero delegation.json omite src/RackCad.Application/Systems/PushBack/PushBackDraftEditorLaunch.cs; byte-fidelity-check.json declara igualdad de AllowedWriteScope en orden y por bytes con el contrato, cuyo hash es 7bcc7a99..., mientras la lista real de delegacion tiene 3 entradas. Discrepancia comprobada: S-04."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Entrega CurrentSha=5ddeb3b4ed99cb17d05142c67d47a26e89e238f9; git rev-parse HEAD=5ddeb3b4ed99cb17d05142c67d47a26e89e238f9; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=5ddeb3b4ed99cb17d05142c67d47a26e89e238f9. Rama y worktree coinciden con delegation.json. merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha: ambos exit 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry: LsRemoteSha=5ddeb3b4ed99cb17d05142c67d47a26e89e238f9 y OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, iguales a CurrentSha y MainSha. RemoteFacts.CurrentRun: push, ref exacta refs/heads/architecture/workspace-persistente-rackcad, HeadSha exacto."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "Script de igualdad exacta sobre AllowedWriteScope de delegation.json (3 entradas): en git diff --name-only BaseSha CurrentSha, PushBackDraftEditorLaunch.cs=false y las otras dos rutas=true. En BaseSha..RedSha, PushBackDraftStatePortTests.cs=true. En ChainBaseSha..CurrentSha -- src tests, PushBackDraftEditorLaunch.cs=false y las otras tres rutas=true. Ruta fuera de lista blanca; activa PBT2A-C01."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain: vacio. git check-ignore artifacts/orchestration/I-64/F4B-PBT2A-DRAFT-STATE-PORT-nc2/2/R20261119T075153Z-a799/inputs/gate-contract.json devuelve esa ruta ignorada."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun 44480898605: push de CurrentSha en la ref exacta, status completed/conclusion success; los cuatro jobs requeridos estan en success. RedPart: run 44478438623, push de RedSha en la misma ref; Tests (Domain + Application)=failure, UI Tests y Build UI=success, Build Plugin=skipped conforme a ExpectedEvidence. TRX asociados: core 19092/19092 pass; ui 2439, 2418 pass, 0 failed."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX de CurrentSha y RedSha cotejados por className.name contra los 18 filtros del contrato y los conteos de TestResults. Core, ambos: port 3; guard 1; EditableState 13; EditorOutputGate 1; SharedReferenceGuard 2; WindowOnStateSourceGuard 1; WindowSharedReferenceGuard 1; Workspace 3482 (min 3271); NamespaceFolderGuard 7; ClassicCharacterization 10; FullEditorCharacterization 3. Todos los filtros pasan en CurrentSha; en RedSha solo port falla 3/3 y los otros pasan. UI, ambos: WindowOnState 2; EditableStateParity 1; StateNet 14; ClassicCharacterization 55; FullEditorCharacterization 18 seleccionadas (16 pass, 2 NotExecuted; min 16); DeclaredCorrection 14; Cantilever 67; sin fallos. Red port: tres Failed por Assert.Equal; ninguno omitido; primera linea de cada StackTrace esta bajo tests/. git diff BaseSha RedSha solo toca PushBackDraftStatePortTests.cs; BaseSha..RedSha -- src vacio. RT desde ChainBaseSha contiene las dos clases de prueba; RedSha..CurrentSha cambia solo los dos archivos src y no toca tests. ChainRedFiles acreditado: esas dos rutas de tests."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha muestra los commits fb90c823 y 5ddeb3b4; ambos incluyen Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, igual al Worker.Trailer declarado y coherente con el modelo efectivo."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json solicita claude-sonnet-5-5 y effort Provider=high; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high. ModelRequested=sonnet es el alias de lanzamiento del transporte subagent, segun la semantica indicada."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Script sobre el texto completo serializado de los siete campos: WorkCompleted 5312, Evidence 2103, UnexpectedFindings 890, KnownLimitations 823, Deviations 575, OpenQuestions 2 y RecommendedNextAction 148 caracteres. Coincidencias de los terminos de AUTOMATION_PLAN 16.10: 0."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes: 0 denegaciones de permisos; 2 errores de herramienta, ninguno pendiente; sin aviso de limite."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "TriggeredStopConditions": [
+    "S-04",
+    "PBT2A-C01"
+  ],
+  "Findings": [
+    "La lista AllowedWriteScope de la delegacion efectiva difiere del contrato y de la comparacion byte-fidelity-check.json: falta PushBackDraftEditorLaunch.cs.",
+    "Ese archivo cambio entre BaseSha y CurrentSha y no esta en las 3 entradas exactas de AllowedWriteScope de delegation.json."
+  ],
+  "RecommendedNextAction": "Concilia la lista blanca de la delegacion con el registro byte-fidelity y solicita una nueva verificacion."
+}

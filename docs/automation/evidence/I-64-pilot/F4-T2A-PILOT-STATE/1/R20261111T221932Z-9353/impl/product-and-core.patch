@@ -1,0 +1,818 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+new file mode 100644
+index 00000000..e2c7335c
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotDraftState.cs
+@@ -0,0 +1,34 @@
++#nullable enable
++using System;
++
++namespace RackCad.Application.Systems.PushBack.Pilot
++{
++    /// <summary>
++    /// I-64 F4-T2A (D-T2-03) — the editable state of the bounded Push Back pilot (F4-PILOT-PUSHBACK-01). It GROUPS the
++    /// state that already exists and defines no parallel model: ONE <see cref="PushBackCompositeEditorState"/>, ONE
++    /// <see cref="PushBackEditorInputs"/> and the immutable <see cref="Origin"/>. It persists nothing and exposes no
++    /// operation that assembles a design: a design is only ever assembled from a composition made by
++    /// <see cref="PushBackPilotMaterializer.ComposeForWrite"/>, never directly over the state of a draft.
++    /// </summary>
++    public sealed class PushBackPilotDraftState
++    {
++        public PushBackPilotDraftState(PushBackCompositeEditorState editor, PushBackEditorInputs inputs, string origin)
++        {
++            Editor = editor ?? throw new ArgumentNullException(nameof(editor));
++            Inputs = inputs ?? throw new ArgumentNullException(nameof(inputs));
++            Origin = origin ?? throw new ArgumentNullException(nameof(origin));
++        }
++
++        /// <summary>The composite editor state the classic window edits. A single-sided rack uses side A only.</summary>
++        public PushBackCompositeEditorState Editor { get; }
++
++        /// <summary>The rack-wide inputs the classic window reads from its controls (annotations included).</summary>
++        public PushBackEditorInputs Inputs { get; }
++
++        /// <summary>
++        /// The raw authored envelope text this state was materialized from: an immutable string. In the initial state of
++        /// a draft it is always the CURRENT base, because every read that rebases the draft replaces it.
++        /// </summary>
++        public string Origin { get; }
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+new file mode 100644
+index 00000000..3679764f
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotFieldAdapter.cs
+@@ -0,0 +1,73 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++using RackCad.Application.Formatting;
++using RackCad.Application.Systems.Dynamic;
++using RackCad.Application.Workspace.Drafts;
++
++namespace RackCad.Application.Systems.PushBack.Pilot
++{
++    /// <summary>
++    /// I-64 F4-T2A (D-T2-01, ADR-0032 D6) — the pending-text adapter of the bounded Push Back pilot. It serves ONE field,
++    /// <see cref="AnnotationScaleKey"/>, with the rule of the classic AnnotationScaleBox: a required number, greater than
++    /// zero, parsed with <see cref="LocalizedNumberParser.TryDouble(string, out double)"/> in the current culture.
++    ///
++    /// <para>
++    /// It keeps NO reference to any state: it has no instance field of a state type, so a single adapter can serve every
++    /// draft. <see cref="Validate"/> mutates nothing, and <see cref="Apply"/> hands back the SAME object it received, edited
++    /// in place, which is what the draft core expects of an adapter (the result is not copied).
++    /// </para>
++    /// </summary>
++    public sealed class PushBackPilotFieldAdapter : IDraftPendingTextAdapter<PushBackPilotDraftState>
++    {
++        /// <summary>The only field key of the pilot, compared ordinally. Any other key is invalid.</summary>
++        public const string AnnotationScaleKey = "AnnotationScale";
++
++        /// <summary>Same wording as the classic control, so the two surfaces tell the user the same thing.</summary>
++        public const string EmptyMessage = "Escribe un valor.";
++
++        public const string NotANumberMessage = "Valor no numérico.";
++
++        public const string NotPositiveMessage = "El valor debe ser > 0.";
++
++        public const string UnknownFieldMessage = "Campo desconocido para el piloto.";
++
++        public DraftFieldValidation Validate(string fieldKey, string text)
++        {
++            if (!string.Equals(fieldKey, AnnotationScaleKey, StringComparison.Ordinal))
++            {
++                return DraftFieldValidation.Invalid(UnknownFieldMessage);
++            }
++
++            if (string.IsNullOrWhiteSpace(text))
++            {
++                return DraftFieldValidation.Invalid(EmptyMessage);
++            }
++
++            if (!LocalizedNumberParser.TryDouble(text, out var value))
++            {
++                return DraftFieldValidation.Invalid(NotANumberMessage);
++            }
++
++            return value <= 0.0 ? DraftFieldValidation.Invalid(NotPositiveMessage) : DraftFieldValidation.Valid;
++        }
++
++        public PushBackPilotDraftState Apply(PushBackPilotDraftState current, IReadOnlyDictionary<string, string> pendingText)
++        {
++            if (current == null) throw new ArgumentNullException(nameof(current));
++            if (pendingText == null) throw new ArgumentNullException(nameof(pendingText));
++
++            // The core only calls Apply with text that already passed Validate; a value that does not, or a key that is not
++            // the one field of the pilot, is left alone instead of being half applied.
++            if (pendingText.TryGetValue(AnnotationScaleKey, out var text)
++                && Validate(AnnotationScaleKey, text).IsValid
++                && LocalizedNumberParser.TryDouble(text, out var scale))
++            {
++                current.Inputs.Annotations ??= new DynamicAnnotationOptions();
++                current.Inputs.Annotations.AnnotationScale = scale;
++            }
++
++            return current;
++        }
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+new file mode 100644
+index 00000000..74f7bb33
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs
+@@ -0,0 +1,201 @@
++#nullable enable
++using System;
++using System.Linq;
++using RackCad.Application.Catalogs;
++using RackCad.Application.Persistence;
++using RackCad.Domain.Systems.PushBack;
++
++namespace RackCad.Application.Systems.PushBack.Pilot
++{
++    public enum PushBackPilotMaterializationKind
++    {
++        /// <summary>The envelope is a single-sided Push Back the pilot can edit: <see cref="PushBackPilotMaterialization.State"/> is set.</summary>
++        Admitted,
++
++        /// <summary>A readable Push Back the pilot does not serve (an A/B rack, or one that parks a dormant tail): it is read-only here.</summary>
++        OutOfPilot,
++
++        /// <summary>The text could not be read or resolved: <see cref="PushBackPilotMaterialization.Reason"/> says why.</summary>
++        Failed,
++    }
++
++    /// <summary>
++    /// The typed result of <see cref="PushBackPilotMaterializer.Materialize"/>: Admitted(state), OutOfPilot(reason) or
++    /// Failed(reason). Nothing is ever thrown to the caller.
++    /// </summary>
++    public sealed class PushBackPilotMaterialization
++    {
++        private PushBackPilotMaterialization(PushBackPilotMaterializationKind kind, PushBackPilotDraftState? state, string? reason)
++        {
++            Kind = kind;
++            State = state;
++            Reason = reason;
++        }
++
++        public PushBackPilotMaterializationKind Kind { get; }
++
++        public bool IsAdmitted => Kind == PushBackPilotMaterializationKind.Admitted;
++
++        /// <summary>The materialized state; null unless the result is Admitted.</summary>
++        public PushBackPilotDraftState? State { get; }
++
++        /// <summary>Why the result is not Admitted; null for Admitted.</summary>
++        public string? Reason { get; }
++
++        public static PushBackPilotMaterialization Admitted(PushBackPilotDraftState state)
++            => new PushBackPilotMaterialization(PushBackPilotMaterializationKind.Admitted, state ?? throw new ArgumentNullException(nameof(state)), null);
++
++        public static PushBackPilotMaterialization OutOfPilot(string reason)
++            => new PushBackPilotMaterialization(PushBackPilotMaterializationKind.OutOfPilot, null, reason);
++
++        public static PushBackPilotMaterialization Failed(string reason)
++            => new PushBackPilotMaterialization(PushBackPilotMaterializationKind.Failed, null, reason);
++    }
++
++    /// <summary>
++    /// The pair <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes, or the reason the base cannot be
++    /// composed. The state and the inputs of a composition belong to the caller: they are fresh objects, never one of the
++    /// states of a draft.
++    /// </summary>
++    public sealed class PushBackPilotComposition
++    {
++        private PushBackPilotComposition(PushBackCompositeEditorState? editor, PushBackEditorInputs? inputs, string? reason)
++        {
++            Editor = editor;
++            Inputs = inputs;
++            Reason = reason;
++        }
++
++        public bool IsComposed => Editor != null && Inputs != null;
++
++        /// <summary>The composite state to hand to the assembler; null when the composition was rejected.</summary>
++        public PushBackCompositeEditorState? Editor { get; }
++
++        /// <summary>The rack-wide inputs to hand to the assembler; null when the composition was rejected.</summary>
++        public PushBackEditorInputs? Inputs { get; }
++
++        /// <summary>Why the composition was rejected; null when it was composed.</summary>
++        public string? Reason { get; }
++
++        public static PushBackPilotComposition Composed(PushBackCompositeEditorState editor, PushBackEditorInputs inputs)
++            => new PushBackPilotComposition(
++                editor ?? throw new ArgumentNullException(nameof(editor)),
++                inputs ?? throw new ArgumentNullException(nameof(inputs)),
++                null);
++
++        public static PushBackPilotComposition Rejected(string reason)
++            => new PushBackPilotComposition(null, null, reason);
++    }
++
++    /// <summary>
++    /// I-64 F4-T2A (D-T2-03, D-T2-04) — materializes the pilot state from the authored envelope text and composes the
++    /// state to write. It owns NO parser: it reads through the existing RACKEDITAR path (<see cref="RackEmbedStore"/>, the
++    /// kind check and <see cref="RackProjectStore"/>) and reproduces the Application part of what the classic window does
++    /// to load a design, in the same order. It does not reproduce what only the controls do: LoadFromModel and the first
++    /// recompute.
++    /// </summary>
++    public static class PushBackPilotMaterializer
++    {
++        /// <summary>The single diagnostic of INV-17: an unreadable envelope, or one written by a future version.</summary>
++        public const string UnreadableOrFutureDiagnostic = "Ilegible o de versión futura.";
++
++        public const string KindDivergentDiagnostic = "El sobre no es un sistema Push Back.";
++
++        public const string NoDesignDiagnostic = "El sobre no trae un diseño Push Back legible.";
++
++        public const string CompositeOutOfPilotReason = "Rack de dos lados (A/B): fuera del piloto.";
++
++        public const string DormantTailOutOfPilotReason = "El diseño aparca una cola compuesta: fuera del piloto.";
++
++        public const string CatalogRequiredDiagnostic = "Se necesita el catálogo para materializar el diseño.";
++
++        /// <summary>
++        /// Materializes the state of the pilot from the raw authored envelope text. It never throws: the outcome is a typed
++        /// result, and a failure of the existing reader or of the resolver becomes Failed with its message.
++        /// </summary>
++        public static PushBackPilotMaterialization Materialize(string originText, RackCatalog catalog)
++        {
++            try
++            {
++                if (string.IsNullOrWhiteSpace(originText)) return PushBackPilotMaterialization.Failed(UnreadableOrFutureDiagnostic);
++                if (catalog == null) return PushBackPilotMaterialization.Failed(CatalogRequiredDiagnostic);
++
++                // 1. The existing reading path of RACKEDITAR, without a parser of its own.
++                var embed = new RackEmbedStore().Deserialize(originText);
++                if (embed == null) return PushBackPilotMaterialization.Failed(UnreadableOrFutureDiagnostic);
++                if (!string.Equals(embed.Kind, RackEmbedDocument.KindPushBack, StringComparison.Ordinal))
++                    return PushBackPilotMaterialization.Failed(KindDivergentDiagnostic);
++
++                if (!new RackProjectStore().TryDeserialize(embed.Design, out var project, out var incompatibleMajor))
++                    return PushBackPilotMaterialization.Failed(incompatibleMajor ? UnreadableOrFutureDiagnostic : NoDesignDiagnostic);
++
++                var design = project?.PushBackDesign;
++                if (design == null) return PushBackPilotMaterialization.Failed(NoDesignDiagnostic);
++
++                // A single-sided design is `!IsComposite` (the composite assembler always writes a Composite block).
++                if (design.IsComposite) return PushBackPilotMaterialization.OutOfPilot(CompositeOutOfPilotReason);
++
++                // 2. The Application part of RackPushBackSystemWindow.LoadExisting, in the same order.
++                var resolver = new PushBackResolver(catalog);
++                var editor = new PushBackCompositeEditorState();
++                editor.SetActiveSide(PushBackSide.A);
++                editor.SetSideBPresent(false);
++                var inputs = editor.SideA.LoadFromDesign(design, resolver);
++
++                editor.SetSideBPresent(false);
++                editor.LoadComposite(design.Composite);
++
++                editor.ClearDormantTail();
++                var structure = design.Structure;
++                if (structure != null)
++                {
++                    editor.ParkDormantTail(
++                        structure.Modules.Where(module => module != null && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId)),
++                        structure.HeaderLineOverrides.Where(line => line != null && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId)));
++                }
++
++                if (editor.DormantCompositeTail.Count > 0 || editor.DormantTailLineOverrides.Count > 0)
++                    return PushBackPilotMaterialization.OutOfPilot(DormantTailOutOfPilotReason);
++
++                editor.AlignSlotGrid();
++
++                // 3. LoadFromModel and the first Recompute are NOT reproduced: they belong to the controls.
++                return PushBackPilotMaterialization.Admitted(new PushBackPilotDraftState(editor, inputs, originText));
++            }
++            catch (Exception ex)
++            {
++                return PushBackPilotMaterialization.Failed("No se pudo materializar el diseño: " + ex.Message);
++            }
++        }
++
++        /// <summary>
++        /// The composition to write (IC-07 point 2): it materializes AGAIN from <c>initial.Origin</c> — the current base, which
++        /// gives a fresh module authority — and transfers to it the editable content of <paramref name="current"/>. It returns
++        /// the pair <see cref="PushBackCompositeEditorAssembler.BuildDesign"/> consumes. Pure and total: it mutates neither
++        /// state, it ignores <c>current.Origin</c> and it never throws; a base that no longer materializes gives a typed
++        /// rejection.
++        /// </summary>
++        public static PushBackPilotComposition ComposeForWrite(
++            PushBackPilotDraftState initial, PushBackPilotDraftState current, RackCatalog catalog)
++        {
++            try
++            {
++                if (initial == null || current == null) return PushBackPilotComposition.Rejected("Falta el estado inicial o el actual.");
++
++                var fresh = Materialize(initial.Origin, catalog);
++                if (!fresh.IsAdmitted || fresh.State == null)
++                    return PushBackPilotComposition.Rejected(fresh.Reason ?? UnreadableOrFutureDiagnostic);
++
++                // Restore() carries the editable content and leaves the authority of the fresh state (baseline, modules,
++                // tail) untouched: what the pilot does not edit stays what the current base says.
++                fresh.State.Editor.Restore(current.Editor.Snapshot());
++                var inputs = PushBackPilotStateComparer.Copy(current).Inputs;
++                return PushBackPilotComposition.Composed(fresh.State.Editor, inputs);
++            }
++            catch (Exception ex)
++            {
++                return PushBackPilotComposition.Rejected("No se pudo componer el diseño: " + ex.Message);
++            }
++        }
++    }
++}
+diff --git a/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+new file mode 100644
+index 00000000..e1db1c39
+--- /dev/null
++++ b/src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotStateComparer.cs
+@@ -0,0 +1,352 @@
++#nullable enable
++using System;
++using System.Collections;
++using System.Collections.Generic;
++using System.Reflection;
++using RackCad.Application.Systems.Dynamic;
++using RackCad.Domain.Systems.PushBack;
++using RackCad.Domain.Systems.Selective;
++using RackCad.Domain.Systems.Shared;
++
++namespace RackCad.Application.Systems.PushBack.Pilot
++{
++    /// <summary>
++    /// I-64 F4-T2A (D-10, INV-26, D-T2-03) — the comparator and the deep copier of the pilot state, injected into the draft
++    /// core. Dirty is NEVER decided from raw JSON: it is decided here, over the EDITABLE content of the state.
++    ///
++    /// <para>
++    /// The classification of every instance field of the graph is closed by a reflection census in the tests:
++    /// <b>Editable</b> content (what <c>Snapshot()</c> carries, the shape topology and every rack-wide input) is compared
++    /// exactly (a double by value) and copied deeply; the <b>selection</b> (selected cell, active side) is ignored by the
++    /// comparator and carried by the copier; the <b>module and tail authority</b> (working baseline, module session and
++    /// commit, module signature, last reconciliation, dormant tail) is ignored and NOT copied — the pilot does not edit
++    /// it and it always comes from the base; the <b>origin</b> is ignored and shared because it is an immutable string.
++    /// </para>
++    /// </summary>
++    public sealed class PushBackPilotStateComparer : IEqualityComparer<PushBackPilotDraftState>
++    {
++        public static PushBackPilotStateComparer Instance { get; } = new PushBackPilotStateComparer();
++
++        public bool Equals(PushBackPilotDraftState? x, PushBackPilotDraftState? y)
++        {
++            if (ReferenceEquals(x, y)) return true;
++            if (x == null || y == null) return false;
++            return EditorsEqual(x.Editor, y.Editor) && InputsEqual(x.Inputs, y.Inputs);
++        }
++
++        public int GetHashCode(PushBackPilotDraftState obj)
++        {
++            if (obj == null) throw new ArgumentNullException(nameof(obj));
++            var hash = new HashCode();
++            hash.Add(obj.Editor.SideBPresent);
++            hash.Add(obj.Editor.Gap);
++            hash.Add(obj.Editor.SideA.Structure.Count);
++            hash.Add(obj.Editor.SideB.Structure.Count);
++            hash.Add(obj.Inputs.PalletsDeep);
++            hash.Add(obj.Inputs.Annotations?.AnnotationScale ?? 0.0);
++            hash.Add(obj.Inputs.SafetySelections.Count);
++            return hash.ToHashCode();
++        }
++
++        // ------------------------------------------------------------------------------------------------ the copier
++
++        /// <summary>
++        /// A deep copy equal for this comparer, with the same selection, that shares no mutable object with the original
++        /// and does NOT copy the module and tail authority: the copy is born without baseline, without modules and without
++        /// tail. The origin is shared because it is an immutable string.
++        /// </summary>
++        public static PushBackPilotDraftState Copy(PushBackPilotDraftState state)
++        {
++            if (state == null) throw new ArgumentNullException(nameof(state));
++            return new PushBackPilotDraftState(CopyEditor(state.Editor), CopyInputs(state.Inputs), state.Origin);
++        }
++
++        private static PushBackCompositeEditorState CopyEditor(PushBackCompositeEditorState source)
++        {
++            // Snapshot() and Restore() are the deep copies the editor already owns for its own rollback. A fresh state is
++            // used as the target, so nothing of the authority of the source (baseline, module session, tail) is carried.
++            var snapshot = source.Snapshot();
++            var copy = new PushBackCompositeEditorState();
++            copy.Restore(snapshot);
++
++            // Restore() does not carry the multi-side selection: put it back, then put each side's own selection back
++            // because changing the selection mirrors the primary cell onto the other side.
++            if (copy.ActiveSelection != source.ActiveSelection)
++            {
++                copy.SetActiveSelection(source.ActiveSelection);
++                copy.SideA.Restore(snapshot.SideA);
++                copy.SideB.Restore(snapshot.SideB);
++            }
++
++            copy.SetActiveSide(source.ActiveSide);
++            return copy;
++        }
++
++        private static PushBackEditorInputs CopyInputs(PushBackEditorInputs source)
++        {
++            var copy = new PushBackEditorInputs
++            {
++                Pallet = CopyPallet(source.Pallet),
++                PalletsDeep = source.PalletsDeep,
++                PostCatalogId = source.PostCatalogId,
++                PostPeralte = source.PostPeralte,
++                PalletTolerance = source.PalletTolerance,
++                FirstLevelDatum = source.FirstLevelDatum,
++                BeamDepth = source.BeamDepth,
++                Annotations = CopyAnnotations(source.Annotations),
++                ManualHeaderHeightOverride = source.ManualHeaderHeightOverride,
++                DerivedPostReinforced = source.DerivedPostReinforced,
++                DerivedPostReinforcementHeight = source.DerivedPostReinforcementHeight,
++                DerivedPostHeight = source.DerivedPostHeight,
++                SeparatorCountOverride = source.SeparatorCountOverride,
++                SeparatorSpacingOverride = source.SeparatorSpacingOverride,
++            };
++
++            foreach (var safety in source.SafetySelections)
++            {
++                copy.SafetySelections.Add(safety?.DeepCopy()!);
++            }
++
++            return copy;
++        }
++
++        private static PalletSpecification CopyPallet(PalletSpecification pallet)
++            => pallet == null
++                ? null!
++                : new PalletSpecification(pallet.Front, pallet.Depth, pallet.Height, pallet.Weight, pallet.WeightUnit);
++
++        private static DynamicAnnotationOptions CopyAnnotations(DynamicAnnotationOptions options)
++            => options == null
++                ? null!
++                : new DynamicAnnotationOptions
++                {
++                    NumberFronts = options.NumberFronts,
++                    NumberLevels = options.NumberLevels,
++                    DrawRackName = options.DrawRackName,
++                    AnnotationScale = options.AnnotationScale,
++                    Dimensions = options.Dimensions,
++                    DimensionViews = options.DimensionViews,
++                    DimensionStyle = options.DimensionStyle,
++                };
++
++        // ------------------------------------------------------------------------------------------ editable content
++
++        private static bool EditorsEqual(PushBackCompositeEditorState x, PushBackCompositeEditorState y)
++        {
++            var a = x.Snapshot();
++            var b = y.Snapshot();
++            return a.SideBPresent == b.SideBPresent
++                   && a.Gap.Equals(b.Gap)
++                   && a.CentralSeparator == b.CentralSeparator
++                   && a.StructureOverrideA == b.StructureOverrideA
++                   && a.StructureOverrideB == b.StructureOverrideB
++                   && a.DefaultTopology == b.DefaultTopology
++                   && a.DefaultDirection == b.DefaultDirection
++                   && a.SideBEverDeclared == b.SideBEverDeclared
++                   && TopologiesEqual(a.Topologies, b.Topologies)
++                   && SidesEqual(a.SideA, b.SideA)
++                   && SidesEqual(a.SideB, b.SideB);
++        }
++
++        private static bool TopologiesEqual(IReadOnlyList<PushBackTopologyCell> a, IReadOnlyList<PushBackTopologyCell> b)
++        {
++            if (a.Count != b.Count) return false;
++            for (var index = 0; index < a.Count; index++)
++            {
++                var left = a[index];
++                var right = b[index];
++                if (left.Frente != right.Frente
++                    || left.Level != right.Level
++                    || left.Topology != right.Topology
++                    || left.Direction != right.Direction
++                    || left.CorridaDepth != right.CorridaDepth)
++                {
++                    return false;
++                }
++            }
++
++            return true;
++        }
++
++        // The selection of the snapshot (primary cell and selected cells) is deliberately not read.
++        private static bool SidesEqual(PushBackEditorSnapshot a, PushBackEditorSnapshot b)
++            => a.RearTopeSaque.Equals(b.RearTopeSaque)
++               && string.Equals(a.RearTopePieceId, b.RearTopePieceId, StringComparison.Ordinal)
++               && string.Equals(a.DefensePieceId, b.DefensePieceId, StringComparison.Ordinal)
++               && FrontsEqual(a.Structure, b.Structure)
++               && PushFrontsEqual(a.PushFronts, b.PushFronts);
++
++        private static bool FrontsEqual(IReadOnlyList<DynamicEditorFront> a, IReadOnlyList<DynamicEditorFront> b)
++        {
++            if (a.Count != b.Count) return false;
++            for (var index = 0; index < a.Count; index++)
++            {
++                var left = a[index];
++                var right = b[index];
++                if (left.Index != right.Index
++                    || left.IsActive != right.IsActive
++                    || left.PalletCount != right.PalletCount
++                    || left.LoadLevels != right.LoadLevels
++                    || left.PalletsDeep != right.PalletsDeep
++                    || left.DepthStartPosition != right.DepthStartPosition
++                    || !left.FirstLevelHeight.Equals(right.FirstLevelHeight)
++                    || !left.Bfr.Equals(right.Bfr)
++                    || !left.BeamLength.Equals(right.BeamLength)
++                    || !CellsEqual(left.Cells, right.Cells))
++                {
++                    return false;
++                }
++            }
++
++            return true;
++        }
++
++        private static bool CellsEqual(IReadOnlyList<DynamicEditorCell> a, IReadOnlyList<DynamicEditorCell> b)
++        {
++            if (a.Count != b.Count) return false;
++            for (var index = 0; index < a.Count; index++)
++            {
++                var left = a[index];
++                var right = b[index];
++                if (!left.PalletFront.Equals(right.PalletFront)
++                    || !left.PalletHeight.Equals(right.PalletHeight)
++                    || !left.PalletWeight.Equals(right.PalletWeight)
++                    || !left.ClearHeight.Equals(right.ClearHeight)
++                    || !string.Equals(left.InOutBeamCatalogId, right.InOutBeamCatalogId, StringComparison.Ordinal)
++                    || !left.InOutBeamDepth.Equals(right.InOutBeamDepth)
++                    || !left.BeamLengthOverride.Equals(right.BeamLengthOverride)
++                    || !string.Equals(left.IntermediateBeamCatalogId, right.IntermediateBeamCatalogId, StringComparison.Ordinal)
++                    || !left.IntermediateBeamDepth.Equals(right.IntermediateBeamDepth))
++                {
++                    return false;
++                }
++            }
++
++            return true;
++        }
++
++        private static bool PushFrontsEqual(IReadOnlyList<PushBackEditorFront> a, IReadOnlyList<PushBackEditorFront> b)
++        {
++            if (a.Count != b.Count) return false;
++            for (var front = 0; front < a.Count; front++)
++            {
++                var left = a[front].Cells;
++                var right = b[front].Cells;
++                if (left.Count != right.Count) return false;
++                for (var index = 0; index < left.Count; index++)
++                {
++                    if (!left[index].HighEndBeamPeralte.Equals(right[index].HighEndBeamPeralte)
++                        || left[index].RearTopeEnabled != right[index].RearTopeEnabled
++                        || left[index].PalletsDeepOverride != right[index].PalletsDeepOverride
++                        || left[index].DrawPallet != right[index].DrawPallet)
++                    {
++                        return false;
++                    }
++                }
++            }
++
++            return true;
++        }
++
++        private static bool InputsEqual(PushBackEditorInputs x, PushBackEditorInputs y)
++        {
++            if (!PalletsEqual(x.Pallet, y.Pallet)
++                || x.PalletsDeep != y.PalletsDeep
++                || !string.Equals(x.PostCatalogId, y.PostCatalogId, StringComparison.Ordinal)
++                || !x.PostPeralte.Equals(y.PostPeralte)
++                || !x.PalletTolerance.Equals(y.PalletTolerance)
++                || x.FirstLevelDatum != y.FirstLevelDatum
++                || !x.BeamDepth.Equals(y.BeamDepth)
++                || !AnnotationsEqual(x.Annotations, y.Annotations)
++                || !x.ManualHeaderHeightOverride.Equals(y.ManualHeaderHeightOverride)
++                || x.DerivedPostReinforced != y.DerivedPostReinforced
++                || !x.DerivedPostReinforcementHeight.Equals(y.DerivedPostReinforcementHeight)
++                || !x.DerivedPostHeight.Equals(y.DerivedPostHeight)
++                || x.SeparatorCountOverride != y.SeparatorCountOverride
++                || !x.SeparatorSpacingOverride.Equals(y.SeparatorSpacingOverride))
++            {
++                return false;
++            }
++
++            if (x.SafetySelections.Count != y.SafetySelections.Count) return false;
++            for (var index = 0; index < x.SafetySelections.Count; index++)
++            {
++                if (!StructuralEquality.Equal(x.SafetySelections[index], y.SafetySelections[index])) return false;
++            }
++
++            return true;
++        }
++
++        private static bool PalletsEqual(PalletSpecification? a, PalletSpecification? b)
++        {
++            if (ReferenceEquals(a, b)) return true;
++            if (a == null || b == null) return false;
++            return a.Front.Equals(b.Front)
++                   && a.Depth.Equals(b.Depth)
++                   && a.Height.Equals(b.Height)
++                   && a.Weight.Equals(b.Weight)
++                   && string.Equals(a.WeightUnit, b.WeightUnit, StringComparison.Ordinal);
++        }
++
++        private static bool AnnotationsEqual(DynamicAnnotationOptions? a, DynamicAnnotationOptions? b)
++        {
++            if (ReferenceEquals(a, b)) return true;
++            if (a == null || b == null) return false;
++            return a.NumberFronts == b.NumberFronts
++                   && a.NumberLevels == b.NumberLevels
++                   && a.DrawRackName == b.DrawRackName
++                   && a.AnnotationScale.Equals(b.AnnotationScale)
++                   && a.Dimensions == b.Dimensions
++                   && a.DimensionViews == b.DimensionViews
++                   && string.Equals(a.DimensionStyle, b.DimensionStyle, StringComparison.Ordinal);
++        }
++
++        /// <summary>
++        /// Exact structural equality of the safety selections, over EVERY instance field (public, private and backing) of the
++        /// graph, so a field added to a safety family is compared without anyone having to remember it. A double compares by
++        /// value, a string ordinally, and a list element by element in order.
++        /// </summary>
++        private static class StructuralEquality
++        {
++            private const int MaxDepth = 64;
++
++            public static bool Equal(object? a, object? b) => Equal(a, b, 0);
++
++            private static bool Equal(object? a, object? b, int depth)
++            {
++                if (ReferenceEquals(a, b)) return true;
++                if (a == null || b == null) return false;
++                if (depth > MaxDepth) return false;
++
++                var type = a.GetType();
++                if (type != b.GetType()) return false;
++                if (type.IsPrimitive || type.IsEnum || a is string || a is decimal) return a.Equals(b);
++
++                if (a is IEnumerable left && b is IEnumerable right)
++                {
++                    var leftItems = left.GetEnumerator();
++                    var rightItems = right.GetEnumerator();
++                    while (true)
++                    {
++                        var moreLeft = leftItems.MoveNext();
++                        var moreRight = rightItems.MoveNext();
++                        if (moreLeft != moreRight) return false;
++                        if (!moreLeft) return true;
++                        if (!Equal(leftItems.Current, rightItems.Current, depth + 1)) return false;
++                    }
++                }
++
++                for (var current = type; current != null && current != typeof(object); current = current.BaseType)
++                {
++                    foreach (var field in current.GetFields(
++                                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
++                    {
++                        if (!Equal(field.GetValue(a), field.GetValue(b), depth + 1)) return false;
++                    }
++                }
++
++                return true;
++            }
++        }
++    }
++}
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs b/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
+index 20fd1472..af68d2fc 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
+@@ -86,8 +86,11 @@ namespace RackCad.Application.Workspace.Drafts
+         /// stale base, the admission and the initial state together. A read that is not admitted creates nothing.
+         /// </summary>
+         /// <remarks>
+-        /// <paramref name="copy"/> is injected next to the comparer: the current state of the draft is always a copy of the
+-        /// initial one, so an in-place edit of the current state can never change the initial state (INV-F4T1-19).
++        /// <paramref name="copy"/> is injected next to the comparer. The draft copies every state that enters it, the initial
++        /// state of this read included, so the object the read carries is never shared with the draft: mutating it after
++        /// <c>Begin</c> changes neither the initial state nor dirty, and two drafts born from the same object are
++        /// independent (N-2). The current state is a copy of the initial one, so an in-place edit of the current state can
++        /// never change the initial state (INV-F4T1-19).
+         /// </remarks>
+         public DraftBeginResult<TState> Begin<TState>(SessionId session, string rackId, DraftIntentRead<TState> read, IEqualityComparer<TState> comparer, Func<TState, TState> copy)
+         {
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftSession.cs b/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+index 56dd28de..8e4fb461 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+@@ -227,6 +227,12 @@ namespace RackCad.Application.Workspace.Drafts
+         private readonly IEqualityComparer<TState> _comparer;
+         private readonly Func<TState, TState> _copy;
+         private readonly SortedDictionary<string, string> _pending = new(StringComparer.Ordinal);
++
++        // The two states of the draft. Both fields are private and nothing outside this class ever holds either object:
++        // every state that enters is copied with the injected copier, and the initial state only leaves as a copy
++        // (N-2). The current state leaves by reference because it is edited in place (INV-F4T1-19).
++        private TState _initial;
++        private TState _current;
+         private bool _registered;
+         private bool _holdsApplySlot;
+         private string? _deferredErrorReason;
+@@ -249,8 +255,8 @@ namespace RackCad.Application.Workspace.Drafts
+             StaleBase = staleBase;
+             _comparer = comparer;
+             _copy = copy;
+-            InitialDraftState = initialState;
+-            CurrentDraftState = _copy(initialState);
++            _initial = _copy(initialState);
++            _current = _copy(initialState);
+         }
+ 
+         public SessionId Session { get; }
+@@ -259,9 +265,11 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         public DraftStaleBase StaleBase { get; private set; }
+ 
+-        public TState InitialDraftState { get; private set; }
++        /// <summary>A COPY of the initial state: the caller can do anything to it without changing the draft (N-2).</summary>
++        public TState InitialDraftState => _copy(_initial);
+ 
+-        public TState CurrentDraftState { get; private set; }
++        /// <summary>The current state by reference: it is the object the surface edits in place (INV-F4T1-19).</summary>
++        public TState CurrentDraftState => _current;
+ 
+         /// <summary>
+         /// The pending text by field key, kept exactly as given. A snapshot whose enumeration is ordered by key (ordinal):
+@@ -272,7 +280,7 @@ namespace RackCad.Application.Workspace.Drafts
+         public bool HasPendingText => _pending.Count > 0;
+ 
+         /// <summary>True when the comparator says the current state differs from the initial one, or there is pending text (INV-26).</summary>
+-        public bool IsDirty => _pending.Count > 0 || !_comparer.Equals(CurrentDraftState, InitialDraftState);
++        public bool IsDirty => _pending.Count > 0 || !_comparer.Equals(_current, _initial);
+ 
+         public DraftStatus Status => _explicitStatus ?? (IsDirty ? DraftStatus.Dirty : DraftStatus.Clean);
+ 
+@@ -310,9 +318,6 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         // ---------------------------------------------------------------- the two states never share an object
+ 
+-        private TState SeparatedFromInitial(TState state) =>
+-            ReferenceEquals(state, InitialDraftState) ? _copy(state) : state;
+-
+         private IReadOnlyDictionary<string, string> PendingSnapshot() =>
+             new ReadOnlyDictionary<string, string>(new SortedDictionary<string, string>(_pending, StringComparer.Ordinal));
+ 
+@@ -321,7 +326,7 @@ namespace RackCad.Application.Workspace.Drafts
+         public DraftEditResult SetCurrentDraftState(TState state)
+         {
+             if (!CanEdit) return new DraftEditResult(DraftEditStatus.NotEditable, IsDirty);
+-            CurrentDraftState = SeparatedFromInitial(state);
++            _current = _copy(state);
+             return new DraftEditResult(DraftEditStatus.Updated, IsDirty);
+         }
+ 
+@@ -372,8 +377,9 @@ namespace RackCad.Application.Workspace.Drafts
+             if (invalid.Count > 0)
+                 return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Aborted, false, invalid.ToArray());
+ 
+-            var next = adapter.Apply(CurrentDraftState, snapshot);
+-            CurrentDraftState = SeparatedFromInitial(next);
++            // The result of Apply is NOT copied: the adapter contract is to hand back the same current object, edited in
++            // place, and copying it would break the identity of the current state.
++            _current = adapter.Apply(_current, snapshot);
+             _pending.Clear();
+             return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Proceeded, true, none);
+         }
+@@ -403,7 +409,7 @@ namespace RackCad.Application.Workspace.Drafts
+                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+ 
+             Rebase(read);
+-            CurrentDraftState = _copy(InitialDraftState);
++            _current = _copy(read.InitialState!);
+             _pending.Clear();
+             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
+         }
+@@ -424,14 +430,13 @@ namespace RackCad.Application.Workspace.Drafts
+                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+ 
+             Rebase(read);
+-            CurrentDraftState = SeparatedFromInitial(CurrentDraftState);
+             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
+         }
+ 
+         private void Rebase(DraftIntentRead<TState> read)
+         {
+             StaleBase = read.StaleBase!;
+-            InitialDraftState = read.InitialState!;
++            _initial = _copy(read.InitialState!);
+             IsPossiblyStale = false;
+             _explicitStatus = null;
+             UnknownOrigin = null;
+@@ -533,7 +538,7 @@ namespace RackCad.Application.Workspace.Drafts
+                     }
+ 
+                     Rebase(read);
+-                    CurrentDraftState = _copy(InitialDraftState);
++                    _current = _copy(read.InitialState!);
+                     _pending.Clear();
+                     if (outcome.Kind == DraftApplyOutcomeKind.AppliedWithWarnings) Warnings = outcome.Warnings;
+                     return DraftApplyResult.Closed(outcome.Kind, Status, true);

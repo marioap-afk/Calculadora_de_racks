@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT3C-FULL-WRITE-ERASE",
+  "RunId": "R20261120T151911Z-670e",
+  "DelegationRunId": "R20261120T134718Z-68e5",
+  "WorkRunId": "R20261120T135026Z-80e5",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.StartUtc=2026-11-20T13:50:34Z; OutputWrittenUtc=2026-11-20T09:02:23.245821-06:00, later than start."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists at the resolved ExpectedHandoffPath; TaskId, Attempt=1, DelegationRunId and WorkRunId match; CurrentSha=938a35f0f1636b4306d844eb9e34000e8967c05e; Branch and Worktree match the delegation."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor e3c293b173a9d0914803bb344595f0e48dde0390 7dfc7c21a0b30f5e04d691768b1717778e5c4ad7 returned 0. git diff --name-only AuthorityRevision BaseSha returned four docs paths: docs/automation/evidence/I-64-evidence.md; docs/automation/evidence/I-64-pilot/F4B-PBT3C-FULL-WRITE-ERASE/coordinator/gate-contract.json; docs/automation/evidence/I-64-pilot/F4B-PBT3C-FULL-WRITE-ERASE/coordinator/make_pbt3c_contract.py; docs/automation/state/I-64.yml. Comparing delegation Authorities classifications and normalized sections, none is EXTERNAL or UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "A3-A5: delegated AllowedWriteScope has three entries, each included in the four-entry contract scope; ForbiddenWriteScope has 181 entries; the byte-fidelity record reports matching values for the other seven collections, and the required tests, invariants, stop-condition IDs and authorities agree. The AllowedWriteScope record inconsistency is documented under Scope."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=938a35f0f1636b4306d844eb9e34000e8967c05e; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=938a35f0f1636b4306d844eb9e34000e8967c05e; handoff CurrentSha=938a35f0f1636b4306d844eb9e34000e8967c05e. Branch matches. BaseSha is an ancestor of RedSha and RedSha is an ancestor of CurrentSha; both merge-base --is-ancestor commands returned 0."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Exit: LsRemoteSha=7dfc7c21a0b30f5e04d691768b1717778e5c4ad7 equals BaseSha; OriginMainSha=812baf879612320653094a8aaf46aca0bac81383 equals MainSha. Entry and RemoteFacts CurrentRun report CurrentSha at origin branch and origin/main unchanged at MainSha."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "Read-only scope script printed delegation AllowedWriteScope count=3: RackViewBlockEraser.cs and the two new test files. Exact membership against git diff --name-only BaseSha CurrentSha, BaseSha RedSha, and ChainBaseSha CurrentSha -- src tests: RackPilotUpdateWriter.cs=false; each other changed route=true. The RED changes only the facade and two new test files; RedSha..CurrentSha changes WR and the facade. Contract AllowedWriteScope has four entries and includes WR, while delegation omits WR. byte-fidelity-check.json says AllowedWriteScope Utf8BytesEqual=true with matching SHA-256 values, contradicted by the actual arrays. This is an out-of-scope write and conflicting record evidence."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore on the input worker-handoff.json returned that path, confirming the orchestration package is ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun and ci-core/44757675821/core.trx plus ci-ui/44757675821/ui.trx: event=push, exact branch ref and CurrentSha; Tests, UI Tests, Build UI and Build Plugin all success. RedRun 44754080713 is push on the same ref and RedSha; Core tests failure, UI tests and Build UI success, Build Plugin skipped by dependency. Current TRX totals: Core 19129 = 19123 passed + 0 failed + 6 skipped; UI 2451 = 2430 passed + 0 failed + 21 skipped."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed all four supplied TRX files and matched all 36 RequiredTests filters to their minimums: zero count or outcome issues. RED Core totals 19129=19119 passed+4 failed+6 skipped; the four failures are CT-PBT3C-01..04, each Assert.Equal with its stack in tests/; CT-PBT3C-05 and other required filters pass. RED UI totals 2451=2430 passed+0 failed+21 skipped. Current Core totals 19129=19123 passed+0 failed+6 skipped; Current UI totals 2451=2430 passed+0 failed+21 skipped. Workspace has only the six declared D-1 skips in both Core TRX files. RED evidence verified; ChainRedFiles=tests/RackCad.Tests/PushBackViewEraseGuardTests.cs and tests/RackCad.Tests/PushBackWritePathPluginGuardTests.cs; git diff --name-only RedSha CurrentSha -- src tests does not touch either."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows the RED and GREEN commit messages, each with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. This matches worker-handoff Worker.Trailer and relay-record-work Participant.ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation Model=claude-sonnet-5-5 and Provider effort=high. Relay Participant.ModelRequested=sonnet is the subagent launch family alias; ModelEffective=claude-sonnet-5-5, EffectiveSource records 213 assistant turns with that model, and EffortEffective=high."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only full-field scan of worker-handoff WorkCompleted (9341 chars), Evidence (2311), UnexpectedFindings (924), KnownLimitations (1026), Deviations (0), OpenQuestions (0) and RecommendedNextAction (287): zero matches for all AUTOMATION_PLAN 16.10 terms."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes report zero permission denials, three tool errors with none pending, no usage-limit notice, and zero persistent participants or unattributable processes after reread."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Scope",
+  "TriggeredStopConditions": [
+    "S-04",
+    "PBT3C-C01"
+  ],
+  "Findings": [
+    "The GREEN commit changed src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs, which is absent from the delegation's exact three-entry AllowedWriteScope.",
+    "The byte-fidelity record claims AllowedWriteScope byte equality, but the delegation omits WR while the contract includes it; the arrays disagree."
+  ],
+  "RecommendedNextAction": "Detener el flujo y remitir la discrepancia de alcance y del registro al Coordinator para decision."
+}

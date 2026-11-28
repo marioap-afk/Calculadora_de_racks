@@ -1,0 +1,1385 @@
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs b/src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs
+index b9f3dc39..339af624 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackEditableState.cs
+@@ -1,8 +1,5 @@
+-using System;
+ using System.Collections.Generic;
+-using System.Linq;
+ using RackCad.Application.Catalogs;
+-using RackCad.Application.Persistence;
+ using RackCad.Application.Systems.Dynamic;
+ using RackCad.Application.Systems.Shared;
+ using RackCad.Domain.Systems.Dynamic;
+@@ -27,13 +24,7 @@ namespace RackCad.Application.Systems.PushBack
+     /// The editable state of a Push Back rack outside any window: a GROUPING of the state that already exists, never a
+     /// parallel model. It holds the composite editor state (both sides, the composite intent, the parked tail and the
+     /// module authority of each side) plus the rack-wide values the editor window used to keep in its own fields and
+-    /// controls — the general pallet and its unit, the fondos, the post, the tolerance, the beam depth, the annotation
+-    /// options, the dimension policy, the six advanced scopes, the safety selections and the name.
+-    /// <para>
+-    /// It loads from a design the way the editor loads, produces the inputs of a recompute (<see cref="BuildInputs"/>),
+-    /// and is copied and compared by <see cref="PushBackEditableStateComparer"/>. It is a pure Application type: no
+-    /// window, no drawing host, no catalog IO.
+-    /// </para>
++    /// controls. SKELETON (I-64 F4B PB-T1b, the RED): every member has its initial value and every method is inert.
+     /// </summary>
+     public sealed class PushBackEditableState
+     {
+@@ -54,8 +45,7 @@ namespace RackCad.Application.Systems.PushBack
+         /// <summary>The composite editor state: both sides, the composite intent, the parked tail and the selection.</summary>
+         public PushBackCompositeEditorState Editor { get; }
+ 
+-        /// <summary>The general pallet. It also carries the weight unit the editor SHOWS, which is the one every recompute
+-        /// uses (see <see cref="ResolveWeightUnit"/>).</summary>
++        /// <summary>The general pallet; it also carries the weight unit the editor shows.</summary>
+         public PalletSpecification Pallet { get; set; }
+ 
+         public int PalletsDeep { get; set; }
+@@ -73,7 +63,7 @@ namespace RackCad.Application.Systems.PushBack
+         public bool DrawRackName { get; set; }
+         public DimensionDetail Dimensions { get; set; }
+ 
+-        /// <summary>The named dimension style the loaded design carried; it travels in every recompute.</summary>
++        /// <summary>The named dimension style the loaded design carried.</summary>
+         public string DimensionStyle { get; set; }
+ 
+         /// <summary>The per-view dimension policy the loaded design carried; <c>null</c> is the legacy one.</summary>
+@@ -94,374 +84,53 @@ namespace RackCad.Application.Systems.PushBack
+         /// <summary>The logical name of the rack (the identity is the GUID, which lives elsewhere).</summary>
+         public string Name { get; set; }
+ 
+-        // ---- Loads ---------------------------------------------------------------------------------------------------
++        // ---- Loads (skeleton) ----------------------------------------------------------------------------------------
+ 
+-        /// <summary>The editor half of a new rack: one-way, with the first side active. Returns the inputs of the new design.</summary>
+-        public PushBackEditorInputs LoadNewEditor()
+-        {
+-            Editor.SetActiveSide(PushBackSide.A);
+-            Editor.SetSideBPresent(false);
+-            Editor.LoadComposite(null);
+-            return Editor.Active.LoadNew();
+-        }
++        /// <summary>The editor half of a new rack. Skeleton: inert.</summary>
++        public PushBackEditorInputs LoadNewEditor() => PushBackEditorInputs.NewDesign();
+ 
+-        /// <summary>The editor half of loading a design: side A against its own design, then the composite part.</summary>
+-        public PushBackEditorInputs LoadDesignEditor(PushBackDesign design, PushBackResolver resolver)
+-        {
+-            Editor.SetActiveSide(PushBackSide.A);
+-            Editor.SetSideBPresent(false);
+-            var inputs = Editor.Active.LoadFromDesign(SideAOnly(design), resolver);
+-            LoadComposite(design, false, resolver);
+-            return inputs;
+-        }
++        /// <summary>The editor half of loading a design. Skeleton: inert.</summary>
++        public PushBackEditorInputs LoadDesignEditor(PushBackDesign design, PushBackResolver resolver) => PushBackEditorInputs.NewDesign();
+ 
+-        /// <summary>The editor half of «Restaurar»: like a load, but a parked tail and the blank slots of side B survive.</summary>
+-        public PushBackEditorInputs RestoreEditor(PushBackDesign lastValidDesign, PushBackResolver resolver)
+-        {
+-            Editor.SetActiveSide(PushBackSide.A);
+-            Editor.SetSideBPresent(false);
+-            var inputs = Editor.Active.LoadFromDesign(SideAOnly(lastValidDesign), resolver);
+-            LoadComposite(lastValidDesign, true, resolver);
+-            return inputs;
+-        }
++        /// <summary>The editor half of «Restaurar». Skeleton: inert.</summary>
++        public PushBackEditorInputs RestoreEditor(PushBackDesign lastValidDesign, PushBackResolver resolver) => PushBackEditorInputs.NewDesign();
+ 
+-        /// <summary>Adopt the rack-wide values a load recovered, with the normalizations the editor applies when it seeds
+-        /// its controls. Call it after the editor half, once any recompute that load triggers has run.</summary>
++        /// <summary>Adopt the rack-wide values a load recovered. Skeleton: does nothing.</summary>
+         public void AdoptCarriers(PushBackEditorInputs inputs, RackCatalog catalog)
+         {
+-            FirstLevelDatum = inputs.FirstLevelDatum;
+-            var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
+-            Pallet = new PalletSpecification(
+-                pallet.Front, pallet.Depth, pallet.Height, pallet.Weight, ResolveWeightUnit(Pallet?.WeightUnit, pallet.WeightUnit));
+-            PalletsDeep = Math.Max(2, inputs.PalletsDeep);
+-            PalletTolerance = inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPalletTolerance;
+-            PostCatalogId = ResolvePostCatalogId(catalog, inputs.PostCatalogId);
+-            PostPeralte = inputs.PostPeralte;
+-            BeamDepth = inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth;
+-
+-            Advanced.ManualHeaderHeightOverride = inputs.ManualHeaderHeightOverride;
+-            Advanced.DerivedPostReinforced = inputs.DerivedPostReinforced;
+-            Advanced.DerivedPostReinforcementHeight = inputs.DerivedPostReinforcementHeight;
+-            Advanced.DerivedPostHeight = inputs.DerivedPostHeight;
+-            Advanced.SeparatorCountOverride = inputs.SeparatorCountOverride;
+-            Advanced.SeparatorSpacingOverride = inputs.SeparatorSpacingOverride;
+-
+-            var options = inputs.Annotations ?? new DynamicAnnotationOptions();
+-            DimensionStyle = options.DimensionStyle;
+-            NumberFronts = options.NumberFronts;
+-            NumberLevels = options.NumberLevels;
+-            DrawRackName = options.DrawRackName;
+-            AnnotationScale = options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0;
+-            Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));
+-            LoadedDimensionViews = options.DimensionViews;
+-            DimensionViewsTouched = false;
+-            bool ShowsCotas(DimensionViewKind kind)
+-                => DimensionViewPolicy.EffectiveDetail(DimensionDetail.Minimal, options.DimensionViews, kind) != DimensionDetail.None;
+-            DimensionsFrontal = ShowsCotas(DimensionViewKind.Frontal);
+-            DimensionsLateral = ShowsCotas(DimensionViewKind.Lateral);
+-            DimensionsPlanta = ShowsCotas(DimensionViewKind.Planta);
+-
+-            SafetySelections.Clear();
+-            foreach (var safety in inputs.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())
+-            {
+-                if (safety != null) SafetySelections.Add(safety.DeepCopy());
+-            }
+         }
+ 
+-        /// <summary>Seed the safety selections a new rack opens with: the catalog defaults, through the one authority that
+-        /// filters, deep-copies and restricts them.</summary>
++        /// <summary>Seed the safety selections a new rack opens with. Skeleton: does nothing.</summary>
+         public void SeedDefaultSafety(RackCatalog catalog)
+         {
+-            SafetySelections.Clear();
+-            SafetySelections.AddRange(new PushBackSafetyAuthority(catalog).Defaults());
+-        }
+-
+-        /// <summary>A new rack, for a host that is not the editor window: the editor half, the carriers and no name.</summary>
+-        public PushBackEditorInputs LoadNew(RackCatalog catalog)
+-        {
+-            var inputs = LoadNewEditor();
+-            AdoptCarriers(inputs, catalog);
+-            Name = null;
+-            return inputs;
+-        }
+-
+-        /// <summary>A design, for a host that is not the editor window: the editor half, the carriers and the name.</summary>
+-        public PushBackEditorInputs LoadDesign(PushBackDesign design, string rackName, PushBackResolver resolver)
+-        {
+-            var inputs = LoadDesignEditor(design, resolver);
+-            AdoptCarriers(inputs, resolver.Catalog);
+-            Name = rackName;
+-            return inputs;
+-        }
+-
+-        /// <summary>«Restaurar» from the last valid design, for a host that is not the editor window; the name stays.</summary>
+-        public PushBackEditorInputs Restore(PushBackDesign lastValidDesign, PushBackResolver resolver)
+-        {
+-            var inputs = RestoreEditor(lastValidDesign, resolver);
+-            AdoptCarriers(inputs, resolver.Catalog);
+-            return inputs;
+-        }
+-
+-        /// <summary>
+-        /// The design of side A ALONE, without the composite part. The editor state is rebuilt from the RESOLVED system and
+-        /// that of a composite rack is the shared structure — A + gap + B — so side A is loaded against its own design,
+-        /// exactly as side B is. A design that is not composite returns the SAME object. The copy shares the references of
+-        /// the design: only SideB and Composite are dropped, and nothing that is shared is mutated on this path.
+-        /// </summary>
+-        public static PushBackDesign SideAOnly(PushBackDesign design)
+-        {
+-            if (design == null || !design.IsComposite)
+-            {
+-                return design;
+-            }
+-
+-            var copy = new PushBackDesign
+-            {
+-                Structure = PushBackCompositeStructure.SideAStructure(design.Structure),
+-                LegacyHighEndBeamPeralte = design.LegacyHighEndBeamPeralte,
+-                RearTope = design.RearTope,
+-                DefensePieceId = design.DefensePieceId,
+-            };
+-
+-            foreach (var front in design.Fronts)
+-            {
+-                copy.Fronts.Add(front);
+-            }
+-
+-            return copy;
+-        }
+-
+-        /// <summary>
+-        /// Recover the composite intent of a loaded design (save/load, RACKEDITAR, library). Loading another rack erases
+-        /// what slept; restoring the open one does not (<paramref name="preserveDormantIntent"/>).
+-        /// </summary>
+-        private void LoadComposite(PushBackDesign design, bool preserveDormantIntent, PushBackResolver resolver)
+-        {
+-            // The tail that is parked from a design is copied field by field and LITERALLY (the same eight fields a
+-            // wake-up copies), so the state shares nothing mutable with the design it was loaded from. The store is local
+-            // to this method on purpose: a field would enter the census of the state.
+-            var store = new RackFrameProjectStore();
+-            DynamicRackModuleDesign CopyModuleOf(DynamicRackModuleDesign module) => new DynamicRackModuleDesign
+-            {
+-                ModuleId = module.ModuleId,
+-                Kind = module.Kind,
+-                Length = module.Length,
+-                IsCalculated = module.IsCalculated,
+-                IsManualOverride = module.IsManualOverride,
+-                UseCalculatedHeaderConfiguration = module.UseCalculatedHeaderConfiguration,
+-                HeaderConfiguration = store.DeepCopy(module.HeaderConfiguration),
+-                Notes = module.Notes,
+-            };
+-
+-            DynamicHeaderLineOverride CopyLineOf(DynamicHeaderLineOverride line) => new DynamicHeaderLineOverride
+-            {
+-                PostIndex = line.PostIndex,
+-                ModuleId = line.ModuleId,
+-                Header = store.DeepCopy(line.Header),
+-            };
+-
+-            var dormantTail = preserveDormantIntent ? Editor.DormantCompositeTail.ToList() : null;
+-            var dormantLines = preserveDormantIntent ? Editor.DormantTailLineOverrides.ToList() : null;
+-            var dormantSlots = preserveDormantIntent
+-                ? Enumerable.Range(0, Editor.Of(PushBackSide.B).Structure.Count)
+-                    .Select(slot => Editor.Of(PushBackSide.B).Structure.IsActive(slot))
+-                    .ToList()
+-                : null;
+-
+-            Editor.SetSideBPresent(design != null && design.IsComposite);
+-            Editor.LoadComposite(design?.Composite);
+-
+-            // Loading a rack is an EXPLICIT erase of what slept; a park with an empty source erases nothing.
+-            Editor.ClearDormantTail();
+-            if (preserveDormantIntent)
+-            {
+-                // The sleeping intent comes back whole: its modules, its per-line configurations and the presence of its
+-                // slots, which an effective one-way design cannot declare.
+-                Editor.ParkDormantTail(dormantTail, dormantLines);
+-                var matrix = Editor.Of(PushBackSide.B).Structure;
+-                for (var slot = 0; slot < dormantSlots.Count && slot < matrix.Count; slot++)
+-                {
+-                    matrix.Fronts[slot].IsActive = dormantSlots[slot];
+-                }
+-            }
+-
+-            var structure = design?.Structure;
+-            if (structure != null)
+-            {
+-                Editor.ParkDormantTail(
+-                    structure.Modules
+-                        .Where(module => module != null && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId))
+-                        .Select(CopyModuleOf)
+-                        .ToList(),
+-                    structure.HeaderLineOverrides
+-                        .Where(line => line != null && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId))
+-                        .Select(CopyLineOf)
+-                        .ToList());
+-            }
+-
+-            if (design?.SideB != null && design.SideB.IsPresent)
+-            {
+-                // Side B is recovered in its own state, by the SAME load path as side A.
+-                var sideDesign = new PushBackDesign
+-                {
+-                    Structure = new DynamicRackDesign
+-                    {
+-                        Pallet = design.Structure?.Pallet,
+-                        PalletsDeep = design.Structure?.PalletsDeep ?? 2,
+-                        LoadLevels = design.SideB.LoadLevels,
+-                        FirstLevelHeight = design.SideB.FirstLevelHeight,
+-                        BeamDepth = design.Structure?.BeamDepth ?? 6.0,
+-                        HeaderPostCatalogId = design.Structure?.HeaderPostCatalogId,
+-                        PostPeralte = design.Structure?.PostPeralte ?? 0.0,
+-                        // Side B is rebuilt with the SAME datum as the document.
+-                        FirstLevelDatum = design.Structure?.FirstLevelDatum
+-                    },
+-                    LegacyHighEndBeamPeralte = design.SideB.LegacyHighEndBeamPeralte,
+-                    RearTope = design.SideB.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig(),
+-                    DefensePieceId = design.SideB.DefensePieceId
+-                };
+-
+-                // The fronts of side B travel as they come; only an OLDER document brings a null entry, and only for that
+-                // one is the filler kept, inventing nothing that was not saved.
+-                var blank = new List<int>();
+-                for (var slot = 0; slot < design.SideB.Fronts.Count; slot++)
+-                {
+-                    var front = design.SideB.Fronts[slot];
+-                    if (front == null || design.Composite != null && design.Composite.IsSlotAbsentInB(slot))
+-                    {
+-                        blank.Add(slot);
+-                    }
+-
+-                    sideDesign.Structure.Fronts.Add(front ?? new DynamicRackFrontDesign
+-                    {
+-                        PalletCount = 1,
+-                        LoadLevels = design.SideB.LoadLevels,
+-                        PalletsDeep = 2,
+-                        DepthStartPosition = 1,
+-                        IsActive = false
+-                    });
+-                    sideDesign.Fronts.Add(design.SideB.FrontConfig(slot) ?? new PushBackFrontConfig());
+-                }
+-
+-                Editor.SideB.LoadFromDesign(sideDesign, resolver);
+-
+-                // Presence is applied AFTER the matrix is rebuilt: before it, a reopened rack would resurrect side B in
+-                // the slots the user left blank.
+-                foreach (var slot in blank)
+-                {
+-                    Editor.SetSlotPresent(PushBackSide.B, slot, false);
+-                }
+-            }
+-
+-            // The transverse grid belongs to the RACK also when it comes back from a file: it grows to the larger side,
+-            // never trimming one and never inventing presence.
+-            Editor.AlignSlotGrid();
+         }
+ 
+-        // ---- Output --------------------------------------------------------------------------------------------------
+-
+-        /// <summary>
+-        /// The inputs of a recompute, field by field the ones the editor window reads from its carriers and controls. A NEW
+-        /// object on every call: the assembler mutates the inputs it receives, so none may be reused.
+-        /// </summary>
+-        public PushBackEditorInputs BuildInputs(PushBackEditorDesignAssembler assembler)
+-        {
+-            var inputs = new PushBackEditorInputs
+-            {
+-                Pallet = new PalletSpecification(
+-                    Pallet.Front, Pallet.Depth, Pallet.Height, Pallet.Weight, Pallet.WeightUnit ?? "kg"),
+-                PalletsDeep = PalletsDeep,
+-                FirstLevelDatum = FirstLevelDatum,
+-                ManualHeaderHeightOverride = Advanced.ManualHeaderHeightOverride,
+-                DerivedPostReinforced = Advanced.DerivedPostReinforced,
+-                DerivedPostReinforcementHeight = Advanced.DerivedPostReinforcementHeight,
+-                DerivedPostHeight = Advanced.DerivedPostHeight,
+-                SeparatorCountOverride = Advanced.SeparatorCountOverride,
+-                SeparatorSpacingOverride = Advanced.SeparatorSpacingOverride,
+-                PostCatalogId = PostCatalogId,
+-                PostPeralte = PostPeralte,
+-                PalletTolerance = PalletTolerance,
+-                BeamDepth = BeamDepth,
+-                Annotations = new DynamicAnnotationOptions
+-                {
+-                    NumberFronts = NumberFronts,
+-                    NumberLevels = NumberLevels,
+-                    DrawRackName = DrawRackName,
+-                    AnnotationScale = AnnotationScale,
+-                    Dimensions = Dimensions,
+-                    DimensionStyle = DimensionStyle,
+-                    DimensionViews = DimensionViewPolicy.FromEditor(
+-                        LoadedDimensionViews, DimensionViewsTouched, DimensionsFrontal, DimensionsLateral, DimensionsPlanta),
+-                },
+-            };
+-
+-            // Only the authorized (entrance-guide-free) safety reaches the design; the assembler filters again.
+-            foreach (var safety in assembler.AuthorizedSafety(SafetySelections))
+-            {
+-                inputs.SafetySelections.Add(safety);
+-            }
++        /// <summary>A new rack, for a host that is not the editor window. Skeleton: inert.</summary>
++        public PushBackEditorInputs LoadNew(RackCatalog catalog) => PushBackEditorInputs.NewDesign();
+ 
+-            return inputs;
+-        }
++        /// <summary>A design, for a host that is not the editor window. Skeleton: inert.</summary>
++        public PushBackEditorInputs LoadDesign(PushBackDesign design, string rackName, PushBackResolver resolver) => PushBackEditorInputs.NewDesign();
+ 
+-        // ---- Explicit rules ------------------------------------------------------------------------------------------
++        /// <summary>«Restaurar» from the last valid design, for a host that is not the editor window. Skeleton: inert.</summary>
++        public PushBackEditorInputs Restore(PushBackDesign lastValidDesign, PushBackResolver resolver) => PushBackEditorInputs.NewDesign();
+ 
+-        /// <summary>
+-        /// The post the editor shows for a loaded id. Blank or only spaces is the catalog default; an id the post combo
+-        /// offers is kept as it is (compared ORDINALLY, as the combo does); an id it does not offer falls back to the
+-        /// catalog default. The ids offered are the distinct non-blank ones, by trimmed id ignoring case, first of each
+-        /// group.
+-        /// </summary>
+-        public static string ResolvePostCatalogId(RackCatalog catalog, string requested)
+-        {
+-            var fallback = catalog?.Defaults?.Post;
+-            if (string.IsNullOrWhiteSpace(requested))
+-            {
+-                return fallback;
+-            }
++        /// <summary>The design of side A alone. Skeleton: the same design.</summary>
++        public static PushBackDesign SideAOnly(PushBackDesign design) => design;
+ 
+-            var offered = (catalog?.PostProfiles ?? Enumerable.Empty<ProfileCatalogEntry>())
+-                .Where(entry => entry != null && !string.IsNullOrWhiteSpace(entry.Id))
+-                .GroupBy(entry => entry.Id.Trim(), StringComparer.OrdinalIgnoreCase)
+-                .Select(group => group.First().Id.Trim());
+-            return offered.Any(id => string.Equals(id, requested, StringComparison.Ordinal)) ? requested : fallback;
+-        }
++        // ---- Output (skeleton) ---------------------------------------------------------------------------------------
+ 
+-        /// <summary>
+-        /// The weight unit the editor shows after seeding. The box offers only «kg» and «lb»: a blank unit is «kg», one of
+-        /// the two is kept, and anything else (a unit the box does not offer) leaves the box on its previous selection —
+-        /// <paramref name="current"/> when that is «kg» or «lb», else the initial «kg».
+-        /// </summary>
+-        public static string ResolveWeightUnit(string current, string requested)
+-        {
+-            if (string.IsNullOrWhiteSpace(requested))
+-            {
+-                return "kg";
+-            }
++        /// <summary>The inputs of a recompute. Skeleton: the inputs of a new design.</summary>
++        public PushBackEditorInputs BuildInputs(PushBackEditorDesignAssembler assembler) => PushBackEditorInputs.NewDesign();
+ 
+-            if (string.Equals(requested, "kg", StringComparison.Ordinal) || string.Equals(requested, "lb", StringComparison.Ordinal))
+-            {
+-                return requested;
+-            }
++        // ---- Explicit rules (skeleton) -------------------------------------------------------------------------------
+ 
+-            return string.Equals(current, "kg", StringComparison.Ordinal) || string.Equals(current, "lb", StringComparison.Ordinal)
+-                ? current
+-                : "kg";
+-        }
++        /// <summary>The post the editor shows for a loaded id. Skeleton: the requested id.</summary>
++        public static string ResolvePostCatalogId(RackCatalog catalog, string requested) => requested;
+ 
+-        /// <summary>Whether the design is inside the lossless guarantee: a one-way rack whose structure keeps modules or
+-        /// lines with the ids of a parked composite tail is not.</summary>
+-        public static PushBackEditableSupport SupportOf(PushBackDesign design)
+-        {
+-            var structure = design?.Structure;
+-            if (design == null || design.IsComposite || structure == null)
+-            {
+-                return PushBackEditableSupport.Supported;
+-            }
++        /// <summary>The weight unit the editor shows after seeding. Skeleton: the requested unit.</summary>
++        public static string ResolveWeightUnit(string current, string requested) => requested;
+ 
+-            var hasTail = structure.Modules.Any(module => module != null && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId))
+-                          || structure.HeaderLineOverrides.Any(line => line != null && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId));
+-            return hasTail ? PushBackEditableSupport.DormantCompositeTail : PushBackEditableSupport.Supported;
+-        }
++        /// <summary>Whether the design is inside the lossless guarantee. Skeleton: always supported.</summary>
++        public static PushBackEditableSupport SupportOf(PushBackDesign design) => PushBackEditableSupport.Supported;
+     }
+ }
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs b/src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs
+index df61d99c..098fbebc 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackEditableStateComparer.cs
+@@ -1,502 +1,20 @@
+-using System;
+-using System.Collections;
+ using System.Collections.Generic;
+-using System.Linq;
+-using System.Reflection;
+-using RackCad.Application.Persistence;
+-using RackCad.Application.Systems.Dynamic;
+-using RackCad.Application.Systems.Shared;
+-using RackCad.Domain.RackFrames;
+-using RackCad.Domain.Systems.Dynamic;
+-using RackCad.Domain.Systems.PushBack;
+-using RackCad.Domain.Systems.Selective;
+-using RackCad.Domain.Systems.Shared;
+ 
+ namespace RackCad.Application.Systems.PushBack
+ {
+     /// <summary>
+-    /// The comparer and the deep copier of <see cref="PushBackEditableState"/>. Equality is exact over the EDITABLE content
+-    /// (a double by value, a string ordinally): the content of both sides, the parked tail, the module authority of each
+-    /// side and every rack-wide carrier. The selection, the baseline as an object, the reconciliation report and the tail
+-    /// consumption mark are not compared.
+-    /// <para>
+-    /// The copy keeps what the editor holds — modules (staged edit, accepted edit and baseline), parked tail and the
+-    /// presence of side B — and shares NO mutable object with the original, with exactly one exception decided by the
+-    /// Owner: the resolved baseline and the last reconciliation report of each side are shared by reference. That is NOT
+-    /// general shallow copying: nothing else is shared, and nobody may mutate those two objects while the state lives.
+-    /// </para>
++    /// The comparer and the deep copier of <see cref="PushBackEditableState"/>. SKELETON (I-64 F4B PB-T1b, the RED): equality
++    /// is reference equality, the hash is zero and the copy is an empty state.
+     /// </summary>
+     public sealed class PushBackEditableStateComparer : IEqualityComparer<PushBackEditableState>
+     {
+         public static PushBackEditableStateComparer Instance { get; } = new PushBackEditableStateComparer();
+ 
+-        public bool Equals(PushBackEditableState x, PushBackEditableState y)
+-        {
+-            if (ReferenceEquals(x, y)) return true;
+-            if (x == null || y == null) return false;
+-            var store = new RackFrameProjectStore();
+-            return EditorsEqual(x.Editor, y.Editor)
+-                   && TailsEqual(x.Editor, y.Editor, store)
+-                   && AuthorityEqual(x.Editor.SideA, y.Editor.SideA, store)
+-                   && AuthorityEqual(x.Editor.SideB, y.Editor.SideB, store)
+-                   && CarriersEqual(x, y);
+-        }
++        public bool Equals(PushBackEditableState x, PushBackEditableState y) => ReferenceEquals(x, y);
+ 
+-        public int GetHashCode(PushBackEditableState obj)
+-        {
+-            if (obj == null) throw new ArgumentNullException(nameof(obj));
+-            var hash = new HashCode();
+-            hash.Add(obj.Editor.SideBPresent);
+-            hash.Add(obj.Editor.Gap);
+-            hash.Add(obj.Editor.SideA.Structure.Count);
+-            hash.Add(obj.Editor.SideB.Structure.Count);
+-            hash.Add(obj.PalletsDeep);
+-            hash.Add(obj.AnnotationScale);
+-            hash.Add(obj.SafetySelections.Count);
+-            return hash.ToHashCode();
+-        }
++        public int GetHashCode(PushBackEditableState obj) => 0;
+ 
+-        // ------------------------------------------------------------------------------------------------ the copier
+-
+-        /// <summary>A deep copy equal for this comparer, with the same selection, that shares no mutable object with the
+-        /// original except the two declared references of each side (the resolved baseline and the module report).</summary>
+-        public static PushBackEditableState Copy(PushBackEditableState state)
+-        {
+-            if (state == null) throw new ArgumentNullException(nameof(state));
+-            var copy = new PushBackEditableState();
+-
+-            // 1. The editable content and the selection.
+-            CopyEditor(state.Editor, copy.Editor);
+-
+-            // 2. The parked tail, copied field by field and literally; and the consumption mark, if it was pending.
+-            var store = new RackFrameProjectStore();
+-            DynamicRackModuleDesign CopyModuleOf(DynamicRackModuleDesign module) => new DynamicRackModuleDesign
+-            {
+-                ModuleId = module.ModuleId,
+-                Kind = module.Kind,
+-                Length = module.Length,
+-                IsCalculated = module.IsCalculated,
+-                IsManualOverride = module.IsManualOverride,
+-                UseCalculatedHeaderConfiguration = module.UseCalculatedHeaderConfiguration,
+-                HeaderConfiguration = store.DeepCopy(module.HeaderConfiguration),
+-                Notes = module.Notes,
+-            };
+-
+-            DynamicHeaderLineOverride CopyLineOf(DynamicHeaderLineOverride line) => new DynamicHeaderLineOverride
+-            {
+-                PostIndex = line.PostIndex,
+-                ModuleId = line.ModuleId,
+-                Header = store.DeepCopy(line.Header),
+-            };
+-
+-            copy.Editor.ParkDormantTail(
+-                state.Editor.DormantCompositeTail.Select(CopyModuleOf).ToList(),
+-                state.Editor.DormantTailLineOverrides.Select(CopyLineOf).ToList());
+-            if (state.Editor.DormantTailConsumptionPending)
+-            {
+-                copy.Editor.MarkDormantTailConsumed();
+-            }
+-
+-            // 3. The module authority of each side, on the side already restored.
+-            copy.Editor.SideA.CopyAuthorityFrom(state.Editor.SideA);
+-            copy.Editor.SideB.CopyAuthorityFrom(state.Editor.SideB);
+-
+-            // 4. The carriers.
+-            copy.Pallet = CopyPallet(state.Pallet);
+-            copy.PalletsDeep = state.PalletsDeep;
+-            copy.PostCatalogId = state.PostCatalogId;
+-            copy.PostPeralte = state.PostPeralte;
+-            copy.PalletTolerance = state.PalletTolerance;
+-            copy.BeamDepth = state.BeamDepth;
+-            copy.AnnotationScale = state.AnnotationScale;
+-            copy.FirstLevelDatum = state.FirstLevelDatum;
+-            copy.NumberFronts = state.NumberFronts;
+-            copy.NumberLevels = state.NumberLevels;
+-            copy.DrawRackName = state.DrawRackName;
+-            copy.Dimensions = state.Dimensions;
+-            copy.DimensionStyle = state.DimensionStyle;
+-            copy.LoadedDimensionViews = state.LoadedDimensionViews;
+-            copy.DimensionViewsTouched = state.DimensionViewsTouched;
+-            copy.DimensionsFrontal = state.DimensionsFrontal;
+-            copy.DimensionsLateral = state.DimensionsLateral;
+-            copy.DimensionsPlanta = state.DimensionsPlanta;
+-            copy.Advanced.ManualHeaderHeightOverride = state.Advanced.ManualHeaderHeightOverride;
+-            copy.Advanced.DerivedPostReinforced = state.Advanced.DerivedPostReinforced;
+-            copy.Advanced.DerivedPostReinforcementHeight = state.Advanced.DerivedPostReinforcementHeight;
+-            copy.Advanced.DerivedPostHeight = state.Advanced.DerivedPostHeight;
+-            copy.Advanced.SeparatorCountOverride = state.Advanced.SeparatorCountOverride;
+-            copy.Advanced.SeparatorSpacingOverride = state.Advanced.SeparatorSpacingOverride;
+-            foreach (var safety in state.SafetySelections)
+-            {
+-                copy.SafetySelections.Add(safety?.DeepCopy());
+-            }
+-
+-            copy.Name = state.Name;
+-            return copy;
+-        }
+-
+-        private static void CopyEditor(PushBackCompositeEditorState source, PushBackCompositeEditorState copy)
+-        {
+-            // Snapshot() and Restore() are the deep copies the editor already owns for its own rollback. The target is a
+-            // fresh state, so nothing of the authority of the source is carried by them.
+-            var snapshot = source.Snapshot();
+-            copy.Restore(snapshot);
+-
+-            // Restore() does not carry the multi-side selection: put it back, then put each side's own selection back
+-            // because changing the selection mirrors the primary cell onto the other side.
+-            if (copy.ActiveSelection != source.ActiveSelection)
+-            {
+-                copy.SetActiveSelection(source.ActiveSelection);
+-                copy.SideA.Restore(snapshot.SideA);
+-                copy.SideB.Restore(snapshot.SideB);
+-            }
+-
+-            copy.SetActiveSide(source.ActiveSide);
+-        }
+-
+-        private static PalletSpecification CopyPallet(PalletSpecification pallet)
+-            => pallet == null
+-                ? null
+-                : new PalletSpecification(pallet.Front, pallet.Depth, pallet.Height, pallet.Weight, pallet.WeightUnit);
+-
+-        // ----------------------------------------------------------------------------------- tail and module authority
+-
+-        private static string Persisted(RackFrameProjectStore store, RackFrameConfiguration configuration)
+-            => configuration == null ? string.Empty : store.Serialize(configuration);
+-
+-        private static bool TailsEqual(PushBackCompositeEditorState x, PushBackCompositeEditorState y, RackFrameProjectStore store)
+-        {
+-            var modulesX = x.DormantCompositeTail;
+-            var modulesY = y.DormantCompositeTail;
+-            if (modulesX.Count != modulesY.Count) return false;
+-            for (var index = 0; index < modulesX.Count; index++)
+-            {
+-                if (!ModulesEqual(modulesX[index], modulesY[index], store)) return false;
+-            }
+-
+-            var linesX = x.DormantTailLineOverrides;
+-            var linesY = y.DormantTailLineOverrides;
+-            if (linesX.Count != linesY.Count) return false;
+-            for (var index = 0; index < linesX.Count; index++)
+-            {
+-                if (!LinesEqual(linesX[index], linesY[index], store)) return false;
+-            }
+-
+-            return true;
+-        }
+-
+-        private static bool ModulesEqual(DynamicRackModuleDesign a, DynamicRackModuleDesign b, RackFrameProjectStore store)
+-        {
+-            if (ReferenceEquals(a, b)) return true;
+-            if (a == null || b == null) return false;
+-            return string.Equals(a.ModuleId, b.ModuleId, StringComparison.Ordinal)
+-                   && a.Kind == b.Kind
+-                   && a.Length.Equals(b.Length)
+-                   && a.IsCalculated == b.IsCalculated
+-                   && a.IsManualOverride == b.IsManualOverride
+-                   && a.UseCalculatedHeaderConfiguration == b.UseCalculatedHeaderConfiguration
+-                   && string.Equals(a.Notes, b.Notes, StringComparison.Ordinal)
+-                   && string.Equals(Persisted(store, a.HeaderConfiguration), Persisted(store, b.HeaderConfiguration), StringComparison.Ordinal);
+-        }
+-
+-        private static bool LinesEqual(DynamicHeaderLineOverride a, DynamicHeaderLineOverride b, RackFrameProjectStore store)
+-        {
+-            if (ReferenceEquals(a, b)) return true;
+-            if (a == null || b == null) return false;
+-            return a.PostIndex == b.PostIndex
+-                   && string.Equals(a.ModuleId, b.ModuleId, StringComparison.Ordinal)
+-                   && string.Equals(Persisted(store, a.Header), Persisted(store, b.Header), StringComparison.Ordinal);
+-        }
+-
+-        private static bool AuthorityEqual(PushBackEditorState x, PushBackEditorState y, RackFrameProjectStore store)
+-        {
+-            // Throwaway states carry the authority, so reading a session that was never opened opens it on the throwaway
+-            // and never on the state being compared.
+-            var a = new PushBackEditorState();
+-            a.CopyAuthorityFrom(x);
+-            var b = new PushBackEditorState();
+-            b.CopyAuthorityFrom(y);
+-
+-            // Always: the module intent of the baseline, with structural equality.
+-            if (!BaselineIntentEqual(a.WorkingBaseline, b.WorkingBaseline, store)) return false;
+-
+-            // Always: the accepted edit, or both null.
+-            if (a.ModuleCommit == null || b.ModuleCommit == null)
+-            {
+-                if (a.ModuleCommit != null || b.ModuleCommit != null) return false;
+-            }
+-            else if (!a.ModuleCommit.SameAs(b.ModuleCommit))
+-            {
+-                return false;
+-            }
+-
+-            // The staged edit: a session without changes is one with nothing pending whose confirmed list is equivalent to
+-            // a fresh one over its baseline. Two sessions without changes are equal; if one has changes, both must be the
+-            // same edit.
+-            var sessionA = a.ModuleSession;
+-            var sessionB = b.ModuleSession;
+-            return (Unchanged(sessionA, a.WorkingBaseline) && Unchanged(sessionB, b.WorkingBaseline))
+-                   || sessionA.SameEditAs(sessionB);
+-        }
+-
+-        private static bool Unchanged(RackModuleEditSession session, PushBackSystem baseline)
+-            => !session.HasPendingChanges && session.SameEditAs(OpenOver(baseline));
+-
+-        private static RackModuleEditSession OpenOver(PushBackSystem baseline)
+-            => baseline?.Structure == null
+-                ? RackModuleEditSession.Begin(Array.Empty<DynamicRackModuleDesign>())
+-                : RackModuleEditSession.Begin(baseline.Structure);
+-
+-        private static bool BaselineIntentEqual(PushBackSystem x, PushBackSystem y, RackFrameProjectStore store)
+-        {
+-            // The module intents, the per-line configurations and the derived-post heights a baseline already carries.
+-            if (!OpenOver(x).Commit().SameAs(OpenOver(y).Commit())) return false;
+-
+-            var linesX = x?.Structure?.HeaderLineOverrides;
+-            var linesY = y?.Structure?.HeaderLineOverrides;
+-            var countX = linesX?.Count ?? 0;
+-            var countY = linesY?.Count ?? 0;
+-            if (countX != countY) return false;
+-            for (var index = 0; index < countX; index++)
+-            {
+-                if (!LinesEqual(linesX[index], linesY[index], store)) return false;
+-            }
+-
+-            var derivedX = x?.Structure?.DerivedPostLineOverrides;
+-            var derivedY = y?.Structure?.DerivedPostLineOverrides;
+-            var derivedCountX = derivedX?.Count ?? 0;
+-            var derivedCountY = derivedY?.Count ?? 0;
+-            if (derivedCountX != derivedCountY) return false;
+-            for (var index = 0; index < derivedCountX; index++)
+-            {
+-                if (derivedX[index]?.PostIndex != derivedY[index]?.PostIndex
+-                    || !(derivedX[index]?.Height).Equals(derivedY[index]?.Height))
+-                {
+-                    return false;
+-                }
+-            }
+-
+-            return true;
+-        }
+-
+-        // ------------------------------------------------------------------------------------------ editable content
+-
+-        private static bool EditorsEqual(PushBackCompositeEditorState x, PushBackCompositeEditorState y)
+-        {
+-            var a = x.Snapshot();
+-            var b = y.Snapshot();
+-            return a.SideBPresent == b.SideBPresent
+-                   && a.Gap.Equals(b.Gap)
+-                   && a.CentralSeparator == b.CentralSeparator
+-                   && a.StructureOverrideA == b.StructureOverrideA
+-                   && a.StructureOverrideB == b.StructureOverrideB
+-                   && a.DefaultTopology == b.DefaultTopology
+-                   && a.DefaultDirection == b.DefaultDirection
+-                   && a.SideBEverDeclared == b.SideBEverDeclared
+-                   && TopologiesEqual(a.Topologies, b.Topologies)
+-                   && SidesEqual(a.SideA, b.SideA)
+-                   && SidesEqual(a.SideB, b.SideB);
+-        }
+-
+-        private static bool TopologiesEqual(IReadOnlyList<PushBackTopologyCell> a, IReadOnlyList<PushBackTopologyCell> b)
+-        {
+-            if (a.Count != b.Count) return false;
+-            for (var index = 0; index < a.Count; index++)
+-            {
+-                var left = a[index];
+-                var right = b[index];
+-                if (left.Frente != right.Frente
+-                    || left.Level != right.Level
+-                    || left.Topology != right.Topology
+-                    || left.Direction != right.Direction
+-                    || left.CorridaDepth != right.CorridaDepth)
+-                {
+-                    return false;
+-                }
+-            }
+-
+-            return true;
+-        }
+-
+-        // The selection of the snapshot (primary cell and selected cells) is deliberately not read.
+-        private static bool SidesEqual(PushBackEditorSnapshot a, PushBackEditorSnapshot b)
+-            => a.RearTopeSaque.Equals(b.RearTopeSaque)
+-               && string.Equals(a.RearTopePieceId, b.RearTopePieceId, StringComparison.Ordinal)
+-               && string.Equals(a.DefensePieceId, b.DefensePieceId, StringComparison.Ordinal)
+-               && FrontsEqual(a.Structure, b.Structure)
+-               && PushFrontsEqual(a.PushFronts, b.PushFronts);
+-
+-        private static bool FrontsEqual(IReadOnlyList<DynamicEditorFront> a, IReadOnlyList<DynamicEditorFront> b)
+-        {
+-            if (a.Count != b.Count) return false;
+-            for (var index = 0; index < a.Count; index++)
+-            {
+-                var left = a[index];
+-                var right = b[index];
+-                if (left.Index != right.Index
+-                    || left.IsActive != right.IsActive
+-                    || left.PalletCount != right.PalletCount
+-                    || left.LoadLevels != right.LoadLevels
+-                    || left.PalletsDeep != right.PalletsDeep
+-                    || left.DepthStartPosition != right.DepthStartPosition
+-                    || !left.FirstLevelHeight.Equals(right.FirstLevelHeight)
+-                    || !left.Bfr.Equals(right.Bfr)
+-                    || !left.BeamLength.Equals(right.BeamLength)
+-                    || !CellsEqual(left.Cells, right.Cells))
+-                {
+-                    return false;
+-                }
+-            }
+-
+-            return true;
+-        }
+-
+-        private static bool CellsEqual(IReadOnlyList<DynamicEditorCell> a, IReadOnlyList<DynamicEditorCell> b)
+-        {
+-            if (a.Count != b.Count) return false;
+-            for (var index = 0; index < a.Count; index++)
+-            {
+-                var left = a[index];
+-                var right = b[index];
+-                if (!left.PalletFront.Equals(right.PalletFront)
+-                    || !left.PalletHeight.Equals(right.PalletHeight)
+-                    || !left.PalletWeight.Equals(right.PalletWeight)
+-                    || !left.ClearHeight.Equals(right.ClearHeight)
+-                    || !string.Equals(left.InOutBeamCatalogId, right.InOutBeamCatalogId, StringComparison.Ordinal)
+-                    || !left.InOutBeamDepth.Equals(right.InOutBeamDepth)
+-                    || !left.BeamLengthOverride.Equals(right.BeamLengthOverride)
+-                    || !string.Equals(left.IntermediateBeamCatalogId, right.IntermediateBeamCatalogId, StringComparison.Ordinal)
+-                    || !left.IntermediateBeamDepth.Equals(right.IntermediateBeamDepth))
+-                {
+-                    return false;
+-                }
+-            }
+-
+-            return true;
+-        }
+-
+-        private static bool PushFrontsEqual(IReadOnlyList<PushBackEditorFront> a, IReadOnlyList<PushBackEditorFront> b)
+-        {
+-            if (a.Count != b.Count) return false;
+-            for (var front = 0; front < a.Count; front++)
+-            {
+-                var left = a[front].Cells;
+-                var right = b[front].Cells;
+-                if (left.Count != right.Count) return false;
+-                for (var index = 0; index < left.Count; index++)
+-                {
+-                    if (!left[index].HighEndBeamPeralte.Equals(right[index].HighEndBeamPeralte)
+-                        || left[index].RearTopeEnabled != right[index].RearTopeEnabled
+-                        || left[index].PalletsDeepOverride != right[index].PalletsDeepOverride
+-                        || left[index].DrawPallet != right[index].DrawPallet)
+-                    {
+-                        return false;
+-                    }
+-                }
+-            }
+-
+-            return true;
+-        }
+-
+-        // ---------------------------------------------------------------------------------------------------- carriers
+-
+-        private static bool CarriersEqual(PushBackEditableState x, PushBackEditableState y)
+-        {
+-            if (!PalletsEqual(x.Pallet, y.Pallet)
+-                || x.PalletsDeep != y.PalletsDeep
+-                || !string.Equals(x.PostCatalogId, y.PostCatalogId, StringComparison.Ordinal)
+-                || !x.PostPeralte.Equals(y.PostPeralte)
+-                || !x.PalletTolerance.Equals(y.PalletTolerance)
+-                || !x.BeamDepth.Equals(y.BeamDepth)
+-                || !x.AnnotationScale.Equals(y.AnnotationScale)
+-                || x.FirstLevelDatum != y.FirstLevelDatum
+-                || x.NumberFronts != y.NumberFronts
+-                || x.NumberLevels != y.NumberLevels
+-                || x.DrawRackName != y.DrawRackName
+-                || x.Dimensions != y.Dimensions
+-                || !string.Equals(x.DimensionStyle, y.DimensionStyle, StringComparison.Ordinal)
+-                || x.LoadedDimensionViews != y.LoadedDimensionViews
+-                || x.DimensionViewsTouched != y.DimensionViewsTouched
+-                || x.DimensionsFrontal != y.DimensionsFrontal
+-                || x.DimensionsLateral != y.DimensionsLateral
+-                || x.DimensionsPlanta != y.DimensionsPlanta
+-                || !x.Advanced.ManualHeaderHeightOverride.Equals(y.Advanced.ManualHeaderHeightOverride)
+-                || x.Advanced.DerivedPostReinforced != y.Advanced.DerivedPostReinforced
+-                || !x.Advanced.DerivedPostReinforcementHeight.Equals(y.Advanced.DerivedPostReinforcementHeight)
+-                || !x.Advanced.DerivedPostHeight.Equals(y.Advanced.DerivedPostHeight)
+-                || x.Advanced.SeparatorCountOverride != y.Advanced.SeparatorCountOverride
+-                || !x.Advanced.SeparatorSpacingOverride.Equals(y.Advanced.SeparatorSpacingOverride)
+-                || !string.Equals(x.Name, y.Name, StringComparison.Ordinal))
+-            {
+-                return false;
+-            }
+-
+-            if (x.SafetySelections.Count != y.SafetySelections.Count) return false;
+-            for (var index = 0; index < x.SafetySelections.Count; index++)
+-            {
+-                if (!StructuralEquality.Equal(x.SafetySelections[index], y.SafetySelections[index])) return false;
+-            }
+-
+-            return true;
+-        }
+-
+-        private static bool PalletsEqual(PalletSpecification a, PalletSpecification b)
+-        {
+-            if (ReferenceEquals(a, b)) return true;
+-            if (a == null || b == null) return false;
+-            return a.Front.Equals(b.Front)
+-                   && a.Depth.Equals(b.Depth)
+-                   && a.Height.Equals(b.Height)
+-                   && a.Weight.Equals(b.Weight)
+-                   && string.Equals(a.WeightUnit, b.WeightUnit, StringComparison.Ordinal);
+-        }
+-
+-        /// <summary>
+-        /// Exact structural equality of the safety selections, over EVERY instance field (public, private and backing) of the
+-        /// graph, so a field added to a safety family is compared without anyone having to remember it. A double compares by
+-        /// value, a string ordinally, and a list element by element in order.
+-        /// </summary>
+-        private static class StructuralEquality
+-        {
+-            private const int MaxDepth = 64;
+-
+-            public static bool Equal(object a, object b) => Equal(a, b, 0);
+-
+-            private static bool Equal(object a, object b, int depth)
+-            {
+-                if (ReferenceEquals(a, b)) return true;
+-                if (a == null || b == null) return false;
+-                if (depth > MaxDepth) return false;
+-
+-                var type = a.GetType();
+-                if (type != b.GetType()) return false;
+-                if (type.IsPrimitive || type.IsEnum || a is string || a is decimal) return a.Equals(b);
+-
+-                if (a is IEnumerable left && b is IEnumerable right)
+-                {
+-                    var leftItems = left.GetEnumerator();
+-                    var rightItems = right.GetEnumerator();
+-                    while (true)
+-                    {
+-                        var moreLeft = leftItems.MoveNext();
+-                        var moreRight = rightItems.MoveNext();
+-                        if (moreLeft != moreRight) return false;
+-                        if (!moreLeft) return true;
+-                        if (!Equal(leftItems.Current, rightItems.Current, depth + 1)) return false;
+-                    }
+-                }
+-
+-                for (var current = type; current != null && current != typeof(object); current = current.BaseType)
+-                {
+-                    foreach (var field in current.GetFields(
+-                                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
+-                    {
+-                        if (!Equal(field.GetValue(a), field.GetValue(b), depth + 1)) return false;
+-                    }
+-                }
+-
+-                return true;
+-            }
+-        }
++        /// <summary>A copy of the state. Skeleton: a new empty state.</summary>
++        public static PushBackEditableState Copy(PushBackEditableState state) => new PushBackEditableState();
+     }
+ }
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs b/src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs
+index 060ee692..10408dc2 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackEditableStateOwnership.cs
+@@ -1,7 +1,4 @@
+-using System;
+ using System.Collections.Generic;
+-using System.Linq;
+-using System.Text.RegularExpressions;
+ 
+ namespace RackCad.Application.Systems.PushBack
+ {
+@@ -52,126 +49,16 @@ namespace RackCad.Application.Systems.PushBack
+     }
+ 
+     /// <summary>
+-    /// The ownership map of the persisted fields of a Push Back rack: a TABLE of data, with no composition logic. The
+-    /// editor owns everything the design carries; the envelope, the project and the draft session own the rest.
++    /// The ownership map of the persisted fields of a Push Back rack: a TABLE of data, with no composition logic. SKELETON
++    /// (I-64 F4B PB-T1b, the RED): the table is empty, <see cref="Normalize"/> returns its argument and every path is
++    /// unclassified.
+     /// </summary>
+     public static class PushBackEditableStateOwnership
+     {
+-        private const string EmbedDocument = "RackEmbedDocument.cs, RackEmbedDocument";
+-        private const string ProjectDocument = "RackProjectDocument.cs, RackProjectDocument";
+-        private const string PayloadDocument = "PushBackDesignDocument.cs, PushBackDesignDocument";
+-        private const string EditorSource = "RackPushBackSystemWindow.xaml.cs, Name_Changed";
+-        private const string DesignAssemblers =
+-            "PushBackEditorDesignAssembler.cs, BuildDesign; PushBackCompositeEditorAssembler.cs, BuildDesign; "
+-            + "DynamicEditorDesignAssembler.cs, BuildDesign";
++        public static IReadOnlyList<PushBackOwnershipRow> Table { get; } = new List<PushBackOwnershipRow>();
+ 
+-        private static readonly Regex IndexPattern = new Regex(@"\[\d+\]", RegexOptions.CultureInvariant);
++        public static string Normalize(string jsonPath) => jsonPath;
+ 
+-        public static IReadOnlyList<PushBackOwnershipRow> Table { get; } = BuildTable();
+-
+-        /// <summary>The path with every index <c>[n]</c> replaced by <c>[*]</c>.</summary>
+-        public static string Normalize(string jsonPath)
+-            => jsonPath == null ? null : IndexPattern.Replace(jsonPath, "[*]");
+-
+-        /// <summary>
+-        /// The owner of a path: the row of its level that covers it with the LONGEST prefix. A row <c>Q</c> covers
+-        /// <c>P</c> when <c>P == Q</c> or <c>P</c> starts with <c>Q.</c> or <c>Q[</c>. With no row, a path whose first
+-        /// property is not declared by the document of its level belongs to the extension data, which the envelope
+-        /// owns; anything else is unclassified.
+-        /// </summary>
+-        public static PushBackFieldOwner Of(PushBackDocumentLevel level, string jsonPath)
+-        {
+-            var path = Normalize(jsonPath);
+-            if (string.IsNullOrEmpty(path))
+-            {
+-                return PushBackFieldOwner.Unclassified;
+-            }
+-
+-            PushBackOwnershipRow best = null;
+-            foreach (var row in Table)
+-            {
+-                if (row.Level != level || !Covers(row.Path, path))
+-                {
+-                    continue;
+-                }
+-
+-                if (best == null || row.Path.Length > best.Path.Length)
+-                {
+-                    best = row;
+-                }
+-            }
+-
+-            if (best != null)
+-            {
+-                return best.Owner;
+-            }
+-
+-            var first = FirstProperty(path);
+-            var declared = Table.Any(row => row.Level == level
+-                && string.Equals(FirstProperty(row.Path), first, StringComparison.Ordinal));
+-            return !declared && first.Length > 0 ? PushBackFieldOwner.Envelope : PushBackFieldOwner.Unclassified;
+-        }
+-
+-        private static bool Covers(string rowPath, string path)
+-            => string.Equals(path, rowPath, StringComparison.Ordinal)
+-               || path.StartsWith(rowPath + ".", StringComparison.Ordinal)
+-               || path.StartsWith(rowPath + "[", StringComparison.Ordinal);
+-
+-        /// <summary>The first property name of a path <c>$.A.B[3].C</c>, which is <c>A</c>.</summary>
+-        private static string FirstProperty(string path)
+-        {
+-            if (!path.StartsWith("$.", StringComparison.Ordinal))
+-            {
+-                return string.Empty;
+-            }
+-
+-            var rest = path.Substring(2);
+-            var end = rest.IndexOfAny(new[] { '.', '[' });
+-            return end < 0 ? rest : rest.Substring(0, end);
+-        }
+-
+-        private static IReadOnlyList<PushBackOwnershipRow> BuildTable()
+-        {
+-            var rows = new List<PushBackOwnershipRow>();
+-
+-            foreach (var path in new[] { "$.SchemaVersion", "$.Kind", "$.View", "$.Section", "$.Id", "$.CustomProperties" })
+-            {
+-                rows.Add(new PushBackOwnershipRow(PushBackDocumentLevel.Envelope, path, PushBackFieldOwner.Envelope, EmbedDocument));
+-            }
+-
+-            rows.Add(new PushBackOwnershipRow(PushBackDocumentLevel.Envelope, "$.Name", PushBackFieldOwner.Editor, EditorSource));
+-            rows.Add(new PushBackOwnershipRow(
+-                PushBackDocumentLevel.Envelope, "$.Design", PushBackFieldOwner.Container,
+-                "RackEmbedDocument.cs, RackEmbedDocument.Design"));
+-
+-            foreach (var path in new[]
+-                     {
+-                         "$.SchemaVersion", "$.Kind", "$.Header", "$.DynamicSystem", "$.SelectiveRack", "$.FlowBed",
+-                         "$.Larguero", "$.Cantilever",
+-                     })
+-            {
+-                rows.Add(new PushBackOwnershipRow(
+-                    PushBackDocumentLevel.Project, path, PushBackFieldOwner.Envelope,
+-                    ProjectDocument + "; RackPushBackSystemWindow.xaml.cs, SaveLibrary_Click (WithSourceMetadataFrom)"));
+-            }
+-
+-            rows.Add(new PushBackOwnershipRow(
+-                PushBackDocumentLevel.Project, "$.PushBack", PushBackFieldOwner.Container,
+-                "RackProjectDocument.cs, RackProjectDocument.PushBack"));
+-
+-            rows.Add(new PushBackOwnershipRow(
+-                PushBackDocumentLevel.Payload, "$.SchemaVersion", PushBackFieldOwner.Envelope, PayloadDocument));
+-
+-            foreach (var path in new[]
+-                     {
+-                         "$.Structure", "$.Fronts", "$.LegacyHighEndBeamPeralte", "$.RearTopeSaque", "$.RearTopePieceId",
+-                         "$.DefensePieceId", "$.RearTopeOffCells", "$.SideB", "$.Composite",
+-                     })
+-            {
+-                rows.Add(new PushBackOwnershipRow(PushBackDocumentLevel.Payload, path, PushBackFieldOwner.Editor, DesignAssemblers));
+-            }
+-
+-            return rows;
+-        }
++        public static PushBackFieldOwner Of(PushBackDocumentLevel level, string jsonPath) => PushBackFieldOwner.Unclassified;
+     }
+ }
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs b/src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs
+index a454313a..4f6821bc 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackEditorOutputGate.cs
+@@ -1,42 +1,20 @@
+ using System.Collections.Generic;
+-using System.Linq;
+ using RackCad.Domain.Systems.PushBack;
+ 
+ namespace RackCad.Application.Systems.PushBack
+ {
+     /// <summary>
+-    /// The criterion that blocks the OUTPUT of the Push Back editor (insert, update, library save), taken out of the
+-    /// window so every host applies the same one: the diagnostics of the declared INTENT plus those of the resolved
+-    /// system, as ONE list with its severity. It is not the bill-of-materials gate: that one answers a different question.
++    /// The criterion that blocks the OUTPUT of the Push Back editor. SKELETON (I-64 F4B PB-T1b, the RED): no diagnostics,
++    /// never blocked, and the status is always the fallback.
+     /// </summary>
+     public static class PushBackEditorOutputGate
+     {
+-        /// <summary>The diagnostics in force: those of the intent (invalid inputs, kept and declared without turning into
+-        /// another value) followed by those of the resolved system.</summary>
+         public static IReadOnlyList<PushBackCompositeDiagnostic> Diagnostics(
+             PushBackCompositeEditorState composite, PushBackSystem system)
+-            => composite.IntentDiagnostics()
+-                .Concat(PushBackCompositeDiagnostics.Evaluate(system))
+-                .ToList();
++            => new List<PushBackCompositeDiagnostic>();
+ 
+-        /// <summary>True when any diagnostic in force blocks the output.</summary>
+-        public static bool IsBlocked(PushBackCompositeEditorState composite, PushBackSystem system)
+-            => Diagnostics(composite, system).Any(diagnostic => diagnostic.IsBlocking);
++        public static bool IsBlocked(PushBackCompositeEditorState composite, PushBackSystem system) => false;
+ 
+-        /// <summary>The status message: the first diagnostic that blocks, else the first warning, else
+-        /// <paramref name="fallback"/>.</summary>
+-        public static string StatusOr(PushBackCompositeEditorState composite, PushBackSystem system, string fallback)
+-        {
+-            var diagnostics = Diagnostics(composite, system);
+-            var blocking = diagnostics.FirstOrDefault(diagnostic => diagnostic.IsBlocking);
+-            if (blocking != null)
+-            {
+-                return blocking.Message;
+-            }
+-
+-            var warning = diagnostics.FirstOrDefault(
+-                diagnostic => diagnostic.Severity == PushBackCompositeSeverity.Warning);
+-            return warning != null ? warning.Message : fallback;
+-        }
++        public static string StatusOr(PushBackCompositeEditorState composite, PushBackSystem system, string fallback) => fallback;
+     }
+ }
+diff --git a/src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs b/src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs
+index 7b9ce869..5e243f09 100644
+--- a/src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs
++++ b/src/RackCad.Application/Systems/PushBack/PushBackEditorState.cs
+@@ -165,19 +165,11 @@ namespace RackCad.Application.Systems.PushBack
+         public void ClearModuleCommit() => moduleCommit = null;
+ 
+         /// <summary>
+-        /// Copy the module authority of <paramref name="source"/> into this state: the staged edit and the accepted edit
+-        /// are copied (this state shares nothing mutable with them) and the signature travels. The resolved baseline
+-        /// and the last reconciliation report are the two references declared as shared (decision D2 of the Owner): they
+-        /// are adopted, never mutated and never copied.
++        /// Copy the module authority of <paramref name="source"/> into this state (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
++        /// it does nothing yet.
+         /// </summary>
+         public void CopyAuthorityFrom(PushBackEditorState source)
+         {
+-            if (source == null) throw new ArgumentNullException(nameof(source));
+-            workingBaseline = source.workingBaseline;
+-            moduleSession = source.moduleSession?.Copy();
+-            moduleCommit = source.moduleCommit?.Copy();
+-            moduleSignature = source.moduleSignature;
+-            LastModuleReconciliation = source.LastModuleReconciliation;
+         }
+ 
+         private RackModuleEditSession OpenModuleSession()
+diff --git a/src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs b/src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs
+index bfa98b3a..6ba3bb11 100644
+--- a/src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs
++++ b/src/RackCad.Application/Systems/Shared/RackModuleEditSession.cs
+@@ -45,115 +45,13 @@ namespace RackCad.Application.Systems.Shared
+         /// <summary>I-40: the accepted per-LINE derived-post heights.</summary>
+         public IReadOnlyList<DynamicDerivedPostLineOverride> DerivedPostOverrides { get; }
+ 
+-        /// <summary>A faithful copy of this commit that shares no mutable object with it. LITERAL: each intent is copied
+-        /// field by field, without normalizing its provenance, and each cabecera with the canonical deep copy.</summary>
+-        public RackModuleCommit Copy()
+-        {
+-            var store = new RackFrameProjectStore();
+-            return new RackModuleCommit(
+-                Modules.Select(module => CopyModule(module, store)).ToList(),
+-                RestoredModuleIds.ToList(),
+-                StandardRestoreRequested,
+-                LineOverrides
+-                    .Select(line => new DynamicHeaderLineOverride
+-                    {
+-                        PostIndex = line.PostIndex,
+-                        ModuleId = line.ModuleId,
+-                        Header = store.DeepCopy(line.Header)
+-                    })
+-                    .ToList(),
+-                DerivedPostOverrides
+-                    .Select(derived => new DynamicDerivedPostLineOverride
+-                    {
+-                        PostIndex = derived.PostIndex,
+-                        Height = derived.Height
+-                    })
+-                    .ToList());
+-        }
+-
+-        /// <summary>Whether another commit holds exactly the same accepted edit, comparing every cabecera through its
+-        /// persisted shape.</summary>
+-        public bool SameAs(RackModuleCommit other)
+-        {
+-            if (other == null)
+-            {
+-                return false;
+-            }
+-
+-            var store = new RackFrameProjectStore();
+-            string Persisted(RackFrameConfiguration configuration)
+-                => configuration == null ? string.Empty : store.Serialize(configuration);
+-
+-            if (Modules.Count != other.Modules.Count
+-                || RestoredModuleIds.Count != other.RestoredModuleIds.Count
+-                || LineOverrides.Count != other.LineOverrides.Count
+-                || DerivedPostOverrides.Count != other.DerivedPostOverrides.Count
+-                || StandardRestoreRequested != other.StandardRestoreRequested)
+-            {
+-                return false;
+-            }
+-
+-            for (var index = 0; index < Modules.Count; index++)
+-            {
+-                var a = Modules[index];
+-                var b = other.Modules[index];
+-                if (!string.Equals(a.ModuleId, b.ModuleId, StringComparison.Ordinal)
+-                    || a.Kind != b.Kind
+-                    || a.Length != b.Length
+-                    || a.IsCalculated != b.IsCalculated
+-                    || a.IsManualOverride != b.IsManualOverride
+-                    || a.UseCalculatedHeaderConfiguration != b.UseCalculatedHeaderConfiguration
+-                    || !string.Equals(a.Notes, b.Notes, StringComparison.Ordinal)
+-                    || !string.Equals(Persisted(a.HeaderConfiguration), Persisted(b.HeaderConfiguration), StringComparison.Ordinal))
+-                {
+-                    return false;
+-                }
+-            }
+-
+-            for (var index = 0; index < RestoredModuleIds.Count; index++)
+-            {
+-                if (!string.Equals(RestoredModuleIds[index], other.RestoredModuleIds[index], StringComparison.Ordinal))
+-                {
+-                    return false;
+-                }
+-            }
+-
+-            for (var index = 0; index < LineOverrides.Count; index++)
+-            {
+-                var a = LineOverrides[index];
+-                var b = other.LineOverrides[index];
+-                if (a.PostIndex != b.PostIndex
+-                    || !string.Equals(a.ModuleId, b.ModuleId, StringComparison.Ordinal)
+-                    || !string.Equals(Persisted(a.Header), Persisted(b.Header), StringComparison.Ordinal))
+-                {
+-                    return false;
+-                }
+-            }
++        /// <summary>A faithful copy of this commit that shares no mutable object with it (I-64 F4B PB-T1b, D-PBT1-07).
++        /// Skeleton: it returns this commit.</summary>
++        public RackModuleCommit Copy() => this;
+ 
+-            for (var index = 0; index < DerivedPostOverrides.Count; index++)
+-            {
+-                if (DerivedPostOverrides[index].PostIndex != other.DerivedPostOverrides[index].PostIndex
+-                    || DerivedPostOverrides[index].Height != other.DerivedPostOverrides[index].Height)
+-                {
+-                    return false;
+-                }
+-            }
+-
+-            return true;
+-        }
+-
+-        private static DynamicRackModuleDesign CopyModule(DynamicRackModuleDesign source, RackFrameProjectStore store)
+-            => new DynamicRackModuleDesign
+-            {
+-                ModuleId = source.ModuleId,
+-                Kind = source.Kind,
+-                Length = source.Length,
+-                IsCalculated = source.IsCalculated,
+-                IsManualOverride = source.IsManualOverride,
+-                UseCalculatedHeaderConfiguration = source.UseCalculatedHeaderConfiguration,
+-                HeaderConfiguration = store.DeepCopy(source.HeaderConfiguration),
+-                Notes = source.Notes
+-            };
++        /// <summary>Whether another commit holds exactly the same accepted edit (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
++        /// it is never the same.</summary>
++        public bool SameAs(RackModuleCommit other) => false;
+     }
+ 
+     /// <summary>
+@@ -260,6 +158,14 @@ namespace RackCad.Application.Systems.Shared
+             return new RackModuleEditSession(designs.Where(design => design != null));
+         }
+ 
++        /// <summary>A copy of this session that shares no mutable object with it (I-64 F4B PB-T1b, D-PBT1-07). Skeleton:
++        /// an empty session.</summary>
++        public RackModuleEditSession Copy() => RackModuleEditSession.Begin(Array.Empty<DynamicRackModuleDesign>());
++
++        /// <summary>Whether another session holds exactly the same edit (I-64 F4B PB-T1b, D-PBT1-07). Skeleton: it is
++        /// never the same.</summary>
++        public bool SameEditAs(RackModuleEditSession other) => false;
++
+         /// <summary>The staged state, as read-only descriptors. This is what an editor renders.</summary>
+         public IReadOnlyList<RackModuleDescriptor> Modules => RackModuleDescriptor.Describe(working);
+ 
+@@ -839,58 +745,6 @@ namespace RackCad.Application.Systems.Shared
+             return result;
+         }
+ 
+-        /// <summary>
+-        /// A faithful copy of this session — what is staged, what is committed, the restores and every per-line table —
+-        /// that shares no mutable object with it. LITERAL: each intent is copied field by field, WITHOUT the provenance
+-        /// normalization of <see cref="Begin(IEnumerable{DynamicRackModuleDesign})"/>, so a copy is exactly what the
+-        /// original holds.
+-        /// </summary>
+-        public RackModuleEditSession Copy()
+-        {
+-            var copy = new RackModuleEditSession(Array.Empty<DynamicRackModuleDesign>());
+-            copy.restored.AddRange(restored);
+-            copy.committed = committed.Select(CopyLiteral).ToList();
+-            copy.working = working.Select(CopyLiteral).ToList();
+-            copy.standardRestoreRequested = standardRestoreRequested;
+-            copy.committedLines = CopyLines(committedLines);
+-            copy.workingLines = CopyLines(workingLines);
+-            copy.committedDerivedPosts = new Dictionary<int, double>(committedDerivedPosts);
+-            copy.workingDerivedPosts = new Dictionary<int, double>(workingDerivedPosts);
+-            return copy;
+-        }
+-
+-        /// <summary>Whether another session holds exactly the same EDIT: the committed and staged intents, the per-line
+-        /// configurations, the derived-post heights, the restores (in order) and the standard-restore request.</summary>
+-        public bool SameEditAs(RackModuleEditSession other)
+-        {
+-            if (other == null)
+-            {
+-                return false;
+-            }
+-
+-            return AreEquivalent(committed, other.committed)
+-                   && AreEquivalent(working, other.working)
+-                   && AreEquivalentLines(committedLines, other.committedLines)
+-                   && AreEquivalentLines(workingLines, other.workingLines)
+-                   && AreEquivalentDerivedPosts(committedDerivedPosts, other.committedDerivedPosts)
+-                   && AreEquivalentDerivedPosts(workingDerivedPosts, other.workingDerivedPosts)
+-                   && restored.SequenceEqual(other.restored, StringComparer.Ordinal)
+-                   && standardRestoreRequested == other.standardRestoreRequested;
+-        }
+-
+-        private DynamicRackModuleDesign CopyLiteral(DynamicRackModuleDesign source)
+-            => new DynamicRackModuleDesign
+-            {
+-                ModuleId = source.ModuleId,
+-                Kind = source.Kind,
+-                Length = source.Length,
+-                IsCalculated = source.IsCalculated,
+-                IsManualOverride = source.IsManualOverride,
+-                UseCalculatedHeaderConfiguration = source.UseCalculatedHeaderConfiguration,
+-                HeaderConfiguration = clone.DeepCopy(source.HeaderConfiguration),
+-                Notes = source.Notes
+-            };
+-
+         private Dictionary<LineKey, RackFrameConfiguration> CopyLines(
+             Dictionary<LineKey, RackFrameConfiguration> source)
+         {

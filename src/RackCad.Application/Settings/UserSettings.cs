@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 
@@ -25,6 +27,27 @@ namespace RackCad.Application.Settings
         /// </para>
         /// </summary>
         public string SelectiveTargetFondos { get; set; }
+
+        /// <summary>
+        /// «Abrir RackCad al iniciar AutoCAD» (I-64 A-14, fourth batch, part «ut», UT-01; Q-08 of the Owner, decided with the design of
+        /// «Configuración»): when true, the plugin opens the RackCad window with the first drawing of the session. Off by default; a file
+        /// without the field (every one written before) reads false.
+        /// </summary>
+        public bool OpenRackCadOnStartup { get; set; }
+
+        /// <summary>
+        /// T5 al: the last values of the page «Almacén» of the RackCad window (question 6); null = never saved. Read leniently (correction
+        /// 6 of the review): a section that cannot be read is null (the values of the classic windows) and never quarantines the file.
+        /// </summary>
+        [JsonConverter(typeof(LenientWarehouseLayoutConverter))]
+        public WarehouseLayoutPreferences WarehouseLayout { get; set; } // T5 al
+
+        /// <summary>
+        /// T5 al (correction 6 of the review): the fields this build does not know (another version of RackCad wrote them), kept verbatim
+        /// across a load and a save, as the documents of I-11 keep theirs.
+        /// </summary>
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement> ExtensionData { get; set; } // T5 al
     }
 
     /// <summary>

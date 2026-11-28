@@ -1,0 +1,902 @@
+{
+ "SyntheticCount": 57,
+ "Cases": {
+  "A": {
+   "Global": "PASS",
+   "Expected": "PASS",
+   "FalseProps": [],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "B": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "10_NoAlternativeOneFieldMutation",
+    "2_RealChangedPathInsideAcceptedScope",
+    "3_Nc2RemovesExactlyThatPath",
+    "4_NoOtherDelegationFieldChanges",
+    "5_DerivedHashesConsistent",
+    "6_ChangedPathNotInMutatedScope",
+    "7_ScopeMustFail",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "C": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "D": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "E": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "1_AcceptedRealDelegationMatchesContract"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "F": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "G": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "9_ControllerReportedScopeFail"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "H": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": null,
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "I": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "3_Nc2RemovesExactlyThatPath",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "J": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "K": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "L": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "4_NoOtherDelegationFieldChanges",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "M": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "10_NoAlternativeOneFieldMutation",
+    "2_RealChangedPathInsideAcceptedScope",
+    "3_Nc2RemovesExactlyThatPath",
+    "6_ChangedPathNotInMutatedScope",
+    "7_ScopeMustFail"
+   ],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "N": {
+   "Global": "PASS",
+   "Expected": "PASS",
+   "FalseProps": [],
+   "ExpectFailed": null,
+   "Matched": null,
+   "By": "EXACT_CLAUSE",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "O": {
+   "Global": "PASS",
+   "Expected": "PASS",
+   "FalseProps": [],
+   "ExpectFailed": [],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "P": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "Q": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "R": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "S": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "T": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "U": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": "PB-T2",
+   "By": null,
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "V": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": "PB-T2",
+   "By": null,
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "W": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "1_AcceptedRealDelegationMatchesContract",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "1_AcceptedRealDelegationMatchesContract",
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": "PB-T2",
+   "By": null,
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "X": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "Y": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "Z": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AA": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AB": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AC": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AD": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AE": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AF": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AG": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AH": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AI": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AJ": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AK": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AL": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AO": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AP": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AQ": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AR": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AS": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AT": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AU": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AV": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AW": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AX": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AM": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AN": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "5_DerivedHashesConsistent"
+   ],
+   "ExpectFailed": [
+    "5_DerivedHashesConsistent"
+   ],
+   "Matched": "PB-T2",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "SameBundleAsV1": true,
+   "SameVectorAsV1": true
+  },
+  "AY": {
+   "Global": "PASS",
+   "Expected": "PASS",
+   "FalseProps": [],
+   "ExpectFailed": [],
+   "Matched": "PB-T3",
+   "By": "F4B_EXACT_EVIDENCES+BFC",
+   "EntryEqualsT3": true,
+   "EntryEqualsT2": false,
+   "DiffVsT3": [],
+   "RealDelegationEqualsContractEE": true
+  },
+  "AZ": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "EntryEqualsT3": false,
+   "EntryEqualsT2": false,
+   "DiffVsT3": [
+    [
+     "delete",
+     " ocho",
+     ""
+    ]
+   ],
+   "RealDelegationEqualsContractEE": true
+  },
+  "BA": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "EntryEqualsT3": false,
+   "EntryEqualsT2": false,
+   "DiffVsT3": [
+    [
+     "insert",
+     "",
+     " "
+    ]
+   ],
+   "RealDelegationEqualsContractEE": true
+  },
+  "BB": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "EntryEqualsT3": false,
+   "EntryEqualsT2": false,
+   "DiffVsT3": [
+    [
+     "insert",
+     "",
+     " "
+    ]
+   ],
+   "RealDelegationEqualsContractEE": true
+  },
+  "BC": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "EntryEqualsT3": false,
+   "EntryEqualsT2": false,
+   "DiffVsT3": [
+    [
+     "replace",
+     ";",
+     "."
+    ]
+   ],
+   "RealDelegationEqualsContractEE": true
+  },
+  "BD": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "EntryEqualsT3": false,
+   "EntryEqualsT2": false,
+   "DiffVsT3": [
+    [
+     "replace",
+     "a",
+     "A"
+    ]
+   ],
+   "RealDelegationEqualsContractEE": true
+  },
+  "BE": {
+   "Global": "FAIL",
+   "Expected": "FAIL",
+   "FalseProps": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "ExpectFailed": [
+    "8_ContractFailsOnlyByExactWhitelist"
+   ],
+   "Matched": null,
+   "By": null,
+   "EntryEqualsT3": false,
+   "EntryEqualsT2": false,
+   "DiffVsT3": [
+    [
+     "replace",
+     "a",
+     "A"
+    ],
+    [
+     "delete",
+     "; F4B-E21",
+     ""
+    ],
+    [
+     "delete",
+     " sobre la delegacion final",
+     ""
+    ],
+    [
+     "replace",
+     ";",
+     "."
+    ]
+   ],
+   "RealDelegationEqualsContractEE": true
+  }
+ },
+ "Mismatches": [],
+ "SelfTestCount": 63,
+ "SelfTestOk": 63,
+ "SelfTestDeterministic": true,
+ "TaskCases": [
+  [
+   "T1",
+   "--task PBT3A con el TaskId de PB-T3a",
+   "PASS",
+   "PASS",
+   true
+  ],
+  [
+   "T2",
+   "--task PBT3B sobre datos de PB-T3a",
+   "FAIL",
+   "FAIL",
+   true
+  ],
+  [
+   "T3",
+   "--task PBT3 (prefijo parcial) sobre datos de PB-T3a",
+   "FAIL",
+   "FAIL",
+   true
+  ],
+  [
+   "T4",
+   "--task VALIDATION con un TaskId de F4B",
+   "PASS",
+   "PASS",
+   true
+  ],
+  [
+   "T5",
+   "--task VALIDATION con un TaskId que no es de F4B",
+   "FAIL",
+   "FAIL",
+   true
+  ],
+  [
+   "T6",
+   "TaskId ausente",
+   "FAIL",
+   "FAIL",
+   true
+  ]
+ ],
+ "CheckTaskEdges": {
+  "PBT3A sobre F4B-PBT3A (sin sufijo)": false,
+  "PBT3A sobre F4B-PBT3A-": true,
+  "PBT3A sobre f4b-pbt3a-x (minusculas)": false,
+  "VALIDATION sobre F4B-": false,
+  "VALIDATION sobre F4B-X": true,
+  "PBT2A sobre F4B-PBT2A-X": true,
+  "None como task": false
+ },
+ "A_AX_Count": 50
+}

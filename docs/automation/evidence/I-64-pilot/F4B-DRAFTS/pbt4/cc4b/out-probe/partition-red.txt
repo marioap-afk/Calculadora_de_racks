@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4\partition_pbt4b_v45.py", line 150, in <module>
+    main()
+    ~~~~^^
+  File "<scratchpad>\hs65\pbt4\partition_pbt4b_v45.py", line 105, in main
+    per = collect([core, ui])
+  File "<scratchpad>\hs65\pbt4\partition_pbt4b_v45.py", line 72, in collect
+    for cls, method, outcome, stack, msg in results(p):
+                                            ~~~~~~~^^^
+  File "<scratchpad>\hs65\pbt4\partition_pbt4b_v45.py", line 52, in results
+    root = ET.parse(trx).getroot()
+           ~~~~~~~~^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 1223, in parse
+    tree.parse(source, parser)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "<programas>\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\xml\etree\ElementTree.py", line 566, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '<copia>/_trx/core-probe.trx'

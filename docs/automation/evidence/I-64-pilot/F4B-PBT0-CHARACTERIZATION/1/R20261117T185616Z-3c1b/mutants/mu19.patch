@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..99ea2f7d 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -816,7 +816,7 @@ namespace RackCad.UI.Systems.PushBack
+                 // PB-013: only Fondo and Unidad come from this panel. Frente/Alto/Peso keep the rack-wide values the
+                 // design was loaded with — the boxes showing them are a mirror of the cell, not an input.
+                 Pallet = new PalletSpecification(
+-                    generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
++                    generalPallet.Front, Val(DepthBox, generalPallet.Depth), Math.Round(generalPallet.Height, 3),
+                     generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
+                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+ 

@@ -1,0 +1,55 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261121T235550Z-2fc5",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "MutatedCheck": {
+    "Scope": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "fail",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Contract",
+    "Scope"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [
+    "S-04",
+    "PBT4C-C01"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Scope",
+    "FailureClass": "Scope",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Scope": "Read delegation.json AllowedWriteScope: 25 exact paths. Read-only comparison script checked git diff --name-only BaseSha CurrentSha (26 paths), BaseSha RedSha (21 src/tests paths), and ChainBaseSha CurrentSha -- src tests (26 paths); each has one path outside the exact list: src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs. No changed path intersects ForbiddenWriteScope. This triggers PBT4C-C01."
+  },
+  "OutputSha256": "B766471F64965C92D9614E4B9F0231E66E4E88B86A27C67CBD150EFE8B0605DA",
+  "ManualFreeText1610": []
+}

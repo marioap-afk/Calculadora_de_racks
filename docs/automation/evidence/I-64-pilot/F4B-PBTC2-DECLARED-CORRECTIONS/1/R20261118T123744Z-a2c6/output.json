@@ -1,0 +1,75 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBTC2-DECLARED-CORRECTIONS",
+  "RunId": "R20261118T123744Z-a2c6",
+  "DelegationRunId": "R20261118T055036Z-c73e",
+  "WorkRunId": "R20261118T113927Z-037c",
+  "Attempt": 1,
+  "VerifiedSha": "b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, TerminalEvent=resultado final del subagente, DeathConfirmed=true; Cession.SessionOperated=false. Notes report 0 persistent participants and 0 persistent unattributable processes."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json exists and matches TaskId, Attempt=1, DelegationRunId, WorkRunId, BaseSha, RedSha, CurrentSha, branch and worktree. Outcome.OutputWrittenUtc is later than Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha succeeded. git diff --name-only AuthorityRevision BaseSha listed four paths, all docs/ for this unit; none are EXTERNAL or UNIT_CHANGE. Authority sections were checked against AUTOMATION_PLAN 16.3, agent-execution README section 8 and AGENTS.md."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json reports PASS, decoded and UTF-8 byte equality for all eight collections; AllowedWriteScope order matches and ForbiddenWriteScope count is 129 in both. Planning relay reports A1-A8=pass and nc4; PBTC2-C14's measured T2-3 effect is covered by coordinator-disposition.md D1."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git branch --show-current returned architecture/workspace-persistente-rackcad; git rev-parse HEAD and the remote branch both returned b5c09f0bd741f67b7dd8311dce65c26e3d4cf3c4. BaseSha is the parent of RedSha; BaseSha is an ancestor of HEAD and RedSha is an ancestor of HEAD."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: CurrentRun is push to refs/heads/architecture/workspace-persistente-rackcad at CurrentSha, completed success; recorded LsRemoteSha equals CurrentSha and OriginMainSha equals MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..HEAD listed exactly the four AllowedWriteScope paths: W, WC and the two new UI test files. No other path changed; the two product paths are W and WC. RedSha..HEAD changes only W and WC, with no tests path."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore on the attempt input worker-handoff.json returned the ignored path."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 44300874797 is push at exact CurrentSha and branch; all four required jobs are success. Current TRX: Core 19070 passed, 0 failed; UI 2422 total, 2401 passed, 0 failed, 21 not executed. RedRun 44298811020 is push at exact RedSha and branch; UI job failure, other three required jobs success, no timeout or blame-hang reported."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current Core/UI TRX selections meet all RequiredTests minima and pass; no selected test failed. Red TRX: only PushBackDeclaredCorrection2 (4 selected) failed, all four by Assert.Equal with first stack frames under tests/; no NotExecuted or Skipped among them. The other required filters pass on Red and Current; Core Red is 19070 passed, 0 failed. ChainRedFiles from git diff --name-only ChainBaseSha RedSha -- tests/: the two new declared correction test files; git diff --name-only RedSha CurrentSha does not touch them."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD shows both commits have Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching Worker.Trailer and the effective model claude-sonnet-5-5 in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort and required routing. Work relay records ModelRequested=sonnet (the permitted subagent launch alias), ModelEffective=claude-sonnet-5-5, EffortEffective=high and effective-source metadata."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction in worker-handoff.json against the AUTOMATION_PLAN 16.10 terms; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials and one tool error with none pending; no unresolved failed command or credential issue is reported."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [],
+  "RecommendedNextAction": "Registrar esta verificacion junto con los registros del relevo."
+}

@@ -1,0 +1,209 @@
+{
+  "Schema": "rackcad-i64-rebase-revalidation/v1",
+  "RunId": "R20261107T192919Z-21f9",
+  "Kind": "REVALIDATION_AFTER_REBASE (checkpoint de integracion posterior a I-65; no es un Smoke ni declara un Candidato)",
+  "EvaluatedSha": "3f5c7014351d1dc59de4eee86a7d1319fbeccc07",
+  "TreeUnchanged": true,
+  "TreeNote": "mismo SHA y arbol limpio antes y despues de cada fase; acad = 0 en todas las comprobaciones",
+  "Commands": [
+    "<dotnet-de-usuario> test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~Workspace\"",
+    "<dotnet-de-usuario> test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj --filter \"FullyQualifiedName~Workspace\"",
+    "<dotnet-de-usuario> test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~StructuralAnalysis\"",
+    "<dotnet-de-usuario> test tests/RackCad.Tests/RackCad.Tests.csproj --filter \"FullyQualifiedName~CustomPropertiesCommandGuardTests|FullyQualifiedName~GUARDA_EL_CENSO_DE_COMANDOS_NO_CAMBIA\"",
+    "<dotnet-de-usuario> test tests/RackCad.Tests/RackCad.Tests.csproj",
+    "<dotnet-de-usuario> test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+    "<dotnet-de-usuario> build src/RackCad.UI/RackCad.UI.csproj -c Debug --no-incremental",
+    "<dotnet-de-usuario> build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug --no-incremental",
+    "<dotnet-de-usuario> build -c Release --no-incremental tests/RackCad.Tests/RackCad.Tests.csproj",
+    "<dotnet-de-usuario> build -c Release --no-incremental tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj",
+    "pwsh deploy/build-bundle.ps1 -Configuration Release -Output <directorio-del-RunId>/bundle -DotNet <dotnet-de-usuario> -InventoryOutPath <directorio-del-RunId>/bundle-inventory.txt",
+    "pwsh deploy/test-verify-bundle.ps1 -SourceBundle <directorio-del-RunId>/bundle/RackCad.bundle -PublishDir <directorio-del-RunId>/bundle"
+  ],
+  "FocalWorkspaceCore": {
+    "ExitCode": 0,
+    "Counters": {
+      "total": 645,
+      "executed": 645,
+      "passed": 645,
+      "failed": 0,
+      "error": 0,
+      "notExecuted": 0
+    },
+    "TrxSha256": "04EA6FC97FB2337A0E6004D8BCC81B2C8D4AB329D93DF554C60A2011C228AC21",
+    "LogSha256": "541CA0F92BF50F0BC2EBC5CDDA4FF3111BC9873C7400F3D3714D71DE204A8526"
+  },
+  "FocalWorkspaceUi": {
+    "ExitCode": 0,
+    "Counters": {
+      "total": 66,
+      "executed": 66,
+      "passed": 66,
+      "failed": 0,
+      "error": 0,
+      "notExecuted": 0
+    },
+    "TrxSha256": "BD155BCA315F06B71B25EFEBB0F19F0013A2D7E8CA2E7D8AE013EC3D5F2E253E",
+    "LogSha256": "5B49465C53F51A9DECC73C8A8DA32C8AB45FEE253C2066102E2390D71BA524F1"
+  },
+  "FocalStructuralAnalysis": {
+    "ExitCode": 0,
+    "Counters": {
+      "total": 1797,
+      "executed": 1797,
+      "passed": 1797,
+      "failed": 0,
+      "error": 0,
+      "notExecuted": 0
+    },
+    "TrxSha256": "8D8A9FAF195F75B9F1E1FC8C0DF5183F674D3A3C02D49A871C91182628F34E01",
+    "LogSha256": "29C9099F0AC83C92C231DB38F74CB4B9F5AB489CD53929BA50CC63B89087397D"
+  },
+  "FocalCensus": {
+    "ExitCode": 0,
+    "Counters": {
+      "total": 49,
+      "executed": 49,
+      "passed": 49,
+      "failed": 0,
+      "error": 0,
+      "notExecuted": 0
+    },
+    "TrxSha256": "31F1A0D5F8D17AFDB055DC3158835AA8012ABBCA89BBFEA6C6FDFFF32CB827B8",
+    "LogSha256": "700F51C744C277F05B703B18D9823574D83B7E01B33B0F9B6302C25240D3DEC8"
+  },
+  "FilterNotes": {
+    "WorkspaceCore": "645 = 577 pruebas de I-64 + 68 anteriores que coinciden por nombre (CustomPropertiesWorkspaceTests 21, ProjectVariablesWorkspaceTests 46, G8PersistenceIntegrationContractTests 1)",
+    "WorkspaceUi": "66 = 64 pruebas de I-64 + 2 de CustomPropertiesWindowTests que coinciden por nombre",
+    "StructuralAnalysis": "1797 = todo lo que I-65 anadio al Core (14392 - 12595)"
+  },
+  "Core": {
+    "ExitCode": 0,
+    "Counters": {
+      "total": 14969,
+      "executed": 14969,
+      "passed": 14969,
+      "failed": 0,
+      "error": 0,
+      "notExecuted": 0
+    },
+    "TrxSha256": "BDD3F84EBD7DBFF7966DA3667755C15BF473E405A8EDF2242A95CC06F147C26B",
+    "LogSha256": "9E1880867D7DE959A6C9E6D393C3CC722EB73928CE3928CB23F19D7BD28EB2EC"
+  },
+  "Ui": {
+    "ExitCode": 0,
+    "Counters": {
+      "total": 1718,
+      "executed": 1701,
+      "passed": 1701,
+      "failed": 0,
+      "error": 0,
+      "notExecuted": 0
+    },
+    "TrxSha256": "3FC17213E193EE9D4DD06943A6E36B1F499660F4ED3F109219E25DB59CDDD432",
+    "LogSha256": "88F6ECA3F07AFB14260F8768A5F9098BA9523A9D9330D63A9969AB70BDA3671B",
+    "Skipped": 17,
+    "SkipNote": "los 17 Skip estan en main y en la base; el delta de I-64 no anade ninguno"
+  },
+  "CountArithmetic": {
+    "Source": "CI push: base bb0d5522 (37263954467), main a140eb3a (41674439012), punta anterior 05084ca7 (42406078309), punta nueva (42407236088)",
+    "Core": {
+      "Base": 12595,
+      "AddedByI65": 1797,
+      "AddedByI64": 577,
+      "Expected": 14969,
+      "Measured": 14969
+    },
+    "UiTotal": {
+      "Base": 1654,
+      "AddedByI65": 0,
+      "AddedByI64": 64,
+      "Expected": 1718,
+      "Measured": 1718
+    }
+  },
+  "DebugBuildUi": {
+    "ExitCode": 0,
+    "LogSha256": "E481E2C2FB5A957318B961E1DE0F58CDA960D426A6ACF1BDA8CCD5CB4DAF9FFF",
+    "WarningCodes": {},
+    "CompilerCsWarnings": 0,
+    "WarningsInWorkspaceFiles": []
+  },
+  "DebugBuildPlugin": {
+    "ExitCode": 0,
+    "LogSha256": "C16495A003B6F71C72090901853FA11CD0C984F06260674E28E4044767534FE6",
+    "WarningCodes": {
+      "MSB3277": 29
+    },
+    "CompilerCsWarnings": 0,
+    "WarningsInWorkspaceFiles": [],
+    "Note": "MSB3277 de las referencias de AutoCAD; aparece tambien en builds anteriores del Plugin de I-64"
+  },
+  "DebugDllSha256": {
+    "RackCad.Plugin.dll": "0C0F2FDE0987C489BABAF2ACB9A46936117D044EAF45C706A303E6B5B1C56C0B",
+    "RackCad.Application.dll": "12A7C29A851105F0A2CC067EC899CDB4BC98325FA1DC57845D89ED974BBE7558",
+    "RackCad.Domain.dll": "24EA6643CAD865D6F99043AD13F7BAA11CD5257CD9EE27DCB83D9DE46CD79507",
+    "RackCad.UI.dll": "E49AC0A6C4336A7E73EF7C5EC649DDCAC278FF10778C6861D9BF85C5C02D9826"
+  },
+  "DebugProductVersionSuffix": "3f5c7014351d1dc59de4eee86a7d1319fbeccc07",
+  "ReleaseBuildTests": {
+    "ExitCode": 0,
+    "LogSha256": "5436C0CAFC3126345543E24FFFFBE0121FBB32A9BFD473472F1749CCDC2A392D",
+    "WarningCodes": {
+      "xUnit1026": 10,
+      "xUnit2000": 3,
+      "xUnit2013": 12,
+      "xUnit2017": 1,
+      "xUnit2029": 13,
+      "xUnit2031": 16
+    },
+    "CompilerCsWarnings": 0,
+    "WarningsInWorkspaceFiles": [
+      {
+        "File": "WorkspaceBridgeSourceGuardTests.cs",
+        "Line": 158,
+        "Code": "xUnit2031"
+      }
+    ]
+  },
+  "ReleaseBuildUiTests": {
+    "ExitCode": 0,
+    "LogSha256": "BD03EE8BB68665B456A0F4550C012D44F64DC6260BB3AFEA76542A83DB68C153",
+    "WarningCodes": {
+      "xUnit1026": 1,
+      "xUnit2013": 2,
+      "xUnit2029": 1,
+      "xUnit2030": 1,
+      "xUnit2031": 3
+    },
+    "CompilerCsWarnings": 0,
+    "WarningsInWorkspaceFiles": [
+      {
+        "File": "WorkspacePanelInstrumentationTests.cs",
+        "Line": 163,
+        "Code": "xUnit2030"
+      }
+    ]
+  },
+  "Bundle": {
+    "BuildBundleExitCode": 0,
+    "BuildBundleLogSha256": "FFD25622D636D8EAB4C2CF1F81C050D9D464F774374A78773B75B330ACBC2A2A",
+    "VerifierChecks": 158,
+    "HarnessExitCode": 0,
+    "HarnessLogSha256": "C9BCE55F056B2DFF9E4D6A35074D13B2898B0EF37FA0B86C6E52415611E753A1",
+    "HarnessCases": 14,
+    "InventoryFiles": 25,
+    "InventorySha256": "23C9976DEAD8588DAC21545F1F36303313AD1555A162EAF075F353B0D745CD7B",
+    "SectionMaterialMap": {
+      "BlobTipAndMain": "d088e2a94c83358e340d4d1b3a6ebdfc7b4dd6c2",
+      "BundleEqualsWorkingCopySha256": "B22F7D9DC45C6F59A37D29477E5D9A21FA0B61062D780B57805D93366DBB2E7D",
+      "Note": "mismo blob que main; este worktree lo extrae con CRLF (el SHA coincide con el del bundle de la CI, RD11-OBS-01 de I-65); el SHA con LF sigue siendo FC3D9146...B619"
+    },
+    "PluginDllContains": {
+      "RACKPANEL": true,
+      "RACKRAMPAQUETE": true
+    },
+    "Installed": false
+  },
+  "Note": "Los TRX y logs no se versionan: SHA-256 y campos extraidos.",
+  "Pass": true
+}

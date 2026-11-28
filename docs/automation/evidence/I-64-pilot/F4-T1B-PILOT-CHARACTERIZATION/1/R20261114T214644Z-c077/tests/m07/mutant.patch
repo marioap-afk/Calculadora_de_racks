@@ -1,0 +1,35 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+index 205d3889..9c3f9010 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs
+@@ -3211,7 +3211,7 @@ namespace RackCad.UI.Systems.PushBack
+         // PB-VAL-01: the four linked views are FIRST-CLASS buttons in the action bar (the dynamic editor offers the same
+         // flow), not one hidden combo. Each selects its view — so the preview follows along and the embed View/Section
+         // contract stays the single source — and then inserts through the very same path as "Insertar vista actual".
+-        private void InsertLateral_Click(object sender, RoutedEventArgs e) => InsertViewAt(0);
++        private void InsertLateral_Click(object sender, RoutedEventArgs e) => InsertViewAt(1);
+ 
+         /// <summary>
+         /// I-42 — el lado que el CORTE FRONTAL muestra. Es una eleccion del boton que se pulsa, no el «lado activo»
+@@ -3224,10 +3224,10 @@ namespace RackCad.UI.Systems.PushBack
+         internal PushBackSide FrontalSideForTest => frontalSide;
+ 
+         private void InsertFrontalEntrada_Click(object sender, RoutedEventArgs e)
+-            => InsertViewAt(1);
++            => InsertViewAt(2);
+ 
+         private void InsertFrontalPosterior_Click(object sender, RoutedEventArgs e)
+-            => InsertViewAt(2);
++            => InsertViewAt(3);
+ 
+         /// <summary>
+         /// El lado de los CORTES FRONTALES lo declara su propio selector, no el lado que se este editando: el usuario
+@@ -3248,7 +3248,7 @@ namespace RackCad.UI.Systems.PushBack
+             RenderPreview();
+         }
+ 
+-        private void InsertPlanta_Click(object sender, RoutedEventArgs e) => InsertViewAt(3);
++        private void InsertPlanta_Click(object sender, RoutedEventArgs e) => InsertViewAt(0);
+ 
+         private void InsertViewAt(int viewIndex)
+         {

@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261119T075831Z-6b19",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "The read-only deterministic script searched all seven complete fields with the AUTOMATION_PLAN 16.10 terms and whole-term boundaries. Lengths: WorkCompleted=5323, Evidence=2061, UnexpectedFindings=884, KnownLimitations=809, Deviations=571, OpenQuestions=0, RecommendedNextAction=148. It reported one match in WorkCompleted at index 5313; context was `... por eso TreeSha es null en cada una. [REDACTED].` The matched text is redacted here."
+  },
+  "OutputSha256": "EAD35C8E9731926F3902097299F20D13E81062F8D0A2020D5E30C1FF991B0F9D",
+  "ManualFreeText1610": []
+}

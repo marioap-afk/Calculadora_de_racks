@@ -1,0 +1,21 @@
+{
+ "Id": "PBT4-NC1-CASCADE-SIGNAL-01",
+ "Task": "PBT4",
+ "SubstituteResult": "FAIL",
+ "Reason": null,
+ "FailingAtoms": [
+  "e2.OtherFailEvidenceCitesFake"
+ ],
+ "FailingProperties": [
+  "e2_OtherFailCitesFakeSha"
+ ],
+ "FailSet": [
+  "Handoff",
+  "Identity",
+  "Remote",
+  "Scope",
+  "Ci",
+  "Tests"
+ ],
+ "SelfTestOk": true
+}

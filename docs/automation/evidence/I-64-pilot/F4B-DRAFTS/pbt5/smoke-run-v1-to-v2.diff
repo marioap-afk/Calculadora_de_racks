@@ -1,0 +1,785 @@
+--- smoke-run-v1.md	2026-11-23 03:35:08.323968900 -0600
++++ smoke-run-v2.md	2026-11-23 04:27:04.834513700 -0600
+@@ -1,12 +1,14 @@
+-# I-64 F4B PB-T5 — Guía operativa del Smoke-PB contratado (smoke-run v1)
++# I-64 F4B PB-T5 — Guía operativa del Smoke-PB contratado (smoke-run v2)
+ 
+ > **Redacción para el repo público:** las rutas locales van como marcadores, salvo la carpeta de trabajo, `<raiz-de-trabajo>\`, que fijó la sesión principal. Al custodiar, `<carpeta-del-Smoke-PB>` pasa a `<carpeta-del-Smoke-PB>` y `<carpeta-de-respaldo>` a `<carpeta-de-respaldo>`, como las copias exportadas `r71…` pasaron a `<copia>` (F4B-E60). Ningún nombre personal ni de cliente. La hora del Owner, en UTC.
+ 
+ **Qué es:** la guía con las órdenes exactas del Smoke-PB **contratado** de PB-T5, el intento 1 de 3, después de la emisión (F4B-E62).
+-- Los pasos, sus orígenes y sus criterios están en `I-64-f4b-pbt5-package-v2.3.md` ([P]).
++- Los pasos, sus orígenes y sus criterios están en `I-64-f4b-pbt5-package-v2.4.md` ([P]).
+ - Las decisiones del Owner, en `owner-pbt5-decisions.md` ([OD5]).
++- La comprobación acotada de la v1 de esta guía y de la v2.3 del paquete, en `review-v23/bounded-check-pbt5-v23.md` ([CA5]).
+ 
+ **De dónde sale:**
++- de `smoke-run-v1.md`, con las correcciones de [CA5] (abajo, «Cambios v1 → v2»);
+ - de la guía de la corrida previa, `pre-run-tonight-v2.4.md`, con todas sus correcciones: I-07 a I-09 y M-18 a M-35 de [IR1] y sus recomprobaciones;
+ - más lo que añaden las decisiones del Owner:
+   - las inyecciones (§4.11);
+@@ -23,10 +25,11 @@
+ |---|---|
+ | `<carpeta-del-Smoke-PB>` | `<carpeta-del-Smoke-PB>` (en LISP, `<carpeta-del-Smoke-PB-con-/>`) |
+ | `<carpeta-de-respaldo>` | `<carpeta-de-respaldo>` |
+-| `<worktree>`, `<checkout-principal>`, `<dotnet-del-usuario>`, `<python-del-usuario>`, `<acad.exe>` (la ruta larga y completa), `<dir-del-acceso-directo>`, `<original-D1>`, `<carpeta-de-registros-de-RackCad>`, `<lista-local-de-la-seleccion>` (un archivo local, nunca custodiado, con una ruta de original por línea) | Los pone la sesión en cada bloque. Cada bloque para si alguno se queda sin rellenar |
++| `<worktree>`, `<checkout-principal>`, `<dotnet-del-usuario>`, `<python-del-usuario>`, `<acad.exe>` (la ruta larga y completa), `<dir-del-acceso-directo>`, `<original-D1>`, `<carpeta-de-registros-de-RackCad>` | Los pone la sesión en cada bloque. Cada bloque para si alguno se queda sin rellenar |
++| `<lista-local-de-la-seleccion>` | La ruta de `s2-selection.local.json`, el archivo de la sesión con la selección de Smoke-2 (I-01, M-10). **Vive fuera de la carpeta del paquete** (la que barre la emisión) y **nunca se custodia:** lleva rutas y nombres de clientes. Es un JSON con `D1` (`Source`, `Sha256`, `Exists`) y `Selection`: siete entradas con `Source`, `Sha256`, `Roles` y `Exists`. Los bloques 10, 13 y 13b la leen por su ruta y comprueban antes su SHA-256, `DD3613CB94CD4E19712D0FE2687CBDBDED2500C2AA8C4AD450D8556A26D3F2C1`. Nada de su contenido pasa a un archivo que se custodie: los manifiestos y el registro nombran cada dibujo por su `eNN` y sus papeles de Smoke-2 |
+ | `<Candidato>` | `ebd304a3773495fa9071de6611936c4c01a7b06c`, la punta del cierre de PB-T4e (F4B-E61, §291) |
+ | `<producto>` | `0eac7911a025a59628b446db8b768035175f96de`, el GREEN de PB-T4e; `src/` y `tests/` del Candidato son iguales a los suyos |
+-| `<run>` | `45147867500`, la CI de push del Candidato (en curso al escribir esto: tiene que terminar 4/4) |
++| `<run>` | `45147867500`, la CI de push del Candidato: 4/4 en `success`, con los totales del cierre de PB-T4e ([CA5]) |
+ | Los 19 filtros de UI | Literales en el bloque B2 |
+ 
+ **La regla de los bloques de PowerShell** (I-08, M-33 y la medida de la v2.3):
+@@ -37,6 +40,25 @@
+ - nunca escribe en la raíz de una unidad;
+ - y termina con `exit 0` después de su última línea.
+ - Los bloques largos (B1 y B2) corren en segundo plano.
++- **Sus mensajes de STOP no nombran la ruta de un original** (M-09): dicen de qué dibujo se trata (`D1`, `eNN`).
++
++**Cambios v1 → v2** (los hallazgos de [CA5]; I-03 e I-04, por el lado estrecho):
++
++| Hallazgo | Dónde |
++|---|---|
++| **I-01** | El bloque 13 lee la lista local en JSON, por su ruta y con su SHA-256 comprobado, y compara cada original con su SHA-256 de Smoke-2 sin parar. El bloque 13b, nuevo, hace `s01` y `s02`. El bloque 8 vale para cualquier paso entre `cNN`, `eNN` y `sNN`. El bloque 10 mide al final `estilo.json`, `s-copias.json`, los respaldos `eNN-respaldo.dwg` y los originales de la lista. Los bloques 5 y 9 aceptan las tres clases de copia |
++| **I-02** | El contrato es el §6 de [P], con las 17 paradas enteras. El bloque 10 ya aplicaba la regla de HEAD de después de la emisión, que ahora está en PBT5-C01 y en SPB-51 |
++| **I-03** | §2, §6 y §7: la sesión opera sola solo si la emisión y P-01 a P-08 están hechas antes de las 12:00 UTC |
++| **I-04** | §1 y §6: solo la adenda que pida el Owner no cuenta. Una discrepancia de la revisión de la evidencia solo deja corregir transcripciones; si cambia un resultado o exige repetir un paso en AutoCAD, al Owner |
++| M-04 | Bloque 14: `hash-object --no-filters`, y `dimkeys.py` desde el Candidato. Medido: los bytes y el id salen iguales |
++| M-05 | c01 lleva «P-09 (D1)», no «SPB-07 (a)» (§4.3 y §5) |
++| M-06 | §4.11: «Comprobar ahora» en SPB-60 y SPB-61, sin «Actualizar»; en SPB-61, «Descartar y recargar» → «Sí», como el paso 84 de [S2] |
++| M-07 | Bloque 15, nuevo: las líneas `ERROR` del registro de RackCad, los eventos de error de acad y el SHA-256 de `settings.json` frente a P-05 (bloque 4) |
++| M-08 | Bloque B4, nuevo: la biblioteca de bloques, entero, con su comprobación y `exit 0` |
++| M-09 | §7: el registro no copia órdenes con rutas, y antes de custodiar pasa `_tools/scan_custody.py` con los patrones locales |
++| M-10 | La lista local, fuera de la carpeta del paquete (arriba) |
++| M-11 | §4.12: la regla de las respuestas nativas, el estado esperado de cada contexto y la aclaración de «variable de sistema» |
++| M-14 | §4.10: el mismo orden que [P] §6.7 (`--dry`, el build, `--commit`) |
+ 
+ ---
+ 
+@@ -45,6 +67,7 @@
+ - **Es el Smoke-PB de PB-T5,** emitido por la autorización condicional del Owner (Q-PBT5-7), con el contrato de la forma B (Q-PBT5-8).
+   - Un intento es esta corrida sobre este Candidato (Q-PBT5-9).
+   - No cuentan las repeticiones por error del operador (dos como máximo), una parada del entorno antes de abrir AutoCAD ni una adenda que pida el Owner.
++  - **Solo la adenda que pida el Owner no cuenta** (I-04). Si la revisión de la evidencia encuentra una discrepancia, la sesión solo corrige transcripciones (el registro frente a la captura o al inventario) y vuelve a la revisión. Si la discrepancia cambia un resultado o exige repetir un paso en AutoCAD, vuelve al Owner, que puede pedir una adenda (PBT5-C16). Un paso repetido por otra causa cuenta según la definición de intento.
+ - **Los resultados que registra la sesión son propuestas.**
+   - Los juicios S+O, los OBSERVADO, SPB-07 si ningún dibujo guarda un estilo, la disposición y la firma son del Owner (§6).
+   - Antes de su firma, una revisión independiente de solo lectura comprueba que el registro, las capturas y los inventarios coinciden (Q-PBT5-8).
+@@ -59,9 +82,11 @@
+ 
+ > «En caso de que se complete antes de las 6 am y quieras ejecutar el smoke, ejecutalo tú ya que estaré dormido, a menos que sean después de las 7 am de `<zona-horaria-del-Owner>`»
+ 
+-**La lectura de la sesión principal** (Q-PBT5-5 no se le preguntó):
+-- **La sesión opera solo si puede empezar antes de las 13:00 UTC del 2026-11-23,** es decir, si a esa hora tiene cumplidas P-01 a P-08 y hecha la emisión.
+-- **A las 13:00 UTC,** se para en el siguiente límite de paso y se espera al Owner:
++**La lectura estrecha** (I-03 de [CA5]; vale en las dos interpretaciones de «se complete» y no necesita una decisión nueva; Q-PBT5-5 no se preguntó):
++- **La sesión opera sola solo si, antes de las 12:00 UTC del 2026-11-23** (las 6 am del Owner), **están hechas la emisión de PB-T5 y P-01 a P-08.** La hora a la que quedan hechas va al registro.
++- **Si no lo están a las 12:00 UTC,** la sesión termina lo que no necesita AutoCAD (P-01 a P-08 y la emisión, si se cumplen sus condiciones) y espera al Owner. No abre AutoCAD sola.
++- **La franja de 12:00 a 13:00 UTC** solo la usa una corrida que ya empezó, lista antes de las 12:00 UTC. Empezar en ella sin el Owner sería la lectura amplia, que exige preguntar Q-PBT5-5.
++- **A las 13:00 UTC** (las 7 am del Owner), se para en el siguiente límite de paso y se espera al Owner:
+   - no se empieza otro paso con AutoCAD;
+   - AutoCAD y la copia abierta se quedan como estén, sin guardar;
+   - se registra el punto exacto;
+@@ -77,14 +102,16 @@
+ | P-02 | **Solo** Core Full local y los 19 filtros de UI de los `RequiredTests` del contrato de PB-T4e, cada uno en su proceso (§4.2). **Ninguna suite completa de UI en local** (F4-E59). El archivo de disposición, medido antes y después | Totales iguales a los de la CI. Sin la UI completa en local: la dispensa de Smoke-2, extendida por el Owner (Q-PBT5-1) |
+ | P-03 | Los builds Debug de UI y del Plugin, con AutoCAD cerrado (§4.2, bloque B3) | 0 errores y ningún `warning CS`; la `ProductVersion` termina en `+<Candidato>`; los SHA-256. **Si hay un AutoCAD abierto, no se toca y no se compila** (PBT5-C08) |
+ | P-04 | `catalogs` frente a `assets/catalogs` (§4.2) | Iguales byte a byte |
+-| P-05 | Variables, bundles, el perfil, `PICKFIRST`, la biblioteca de bloques, la carpeta de diseños, el registro de RackCad, el archivo de disposición y keep-awake (§4.1, bloques 2 a 4) | Ninguna `RACKCAD_DEBUG_*`; ningún bundle; nada de RackCad en `Applications`, `Loaded` ni `AssemblyMap`. Las `Dialogs\RackCad.*`, solo contadas. `PICKFIRST` = 1; si vale 0, los pasos con selección por expresión no se hacen, y la variable no se cambia |
++| P-05 | Variables, bundles, el perfil, `PICKFIRST`, la carpeta de diseños, el registro de RackCad, el archivo de disposición, el SHA-256 de `settings.json` y keep-awake (§4.1, bloques 2 a 4); la biblioteca de bloques, después de B3 (§4.2, bloque B4) | Ninguna `RACKCAD_DEBUG_*`; ningún bundle; nada de RackCad en `Applications`, `Loaded` ni `AssemblyMap`. Las `Dialogs\RackCad.*`, solo contadas. `PICKFIRST` = 1; si vale 0, los pasos con selección por expresión no se hacen, y la variable no se cambia |
+ | P-06 | `<raiz-de-trabajo>\` nueva y fuera de todo repositorio; el SHA-256 de D1 frente al registrado; el respaldo; las 44 copias (§4.3, un solo bloque) | El bloque termina en «OK». Cualquier STOP para la corrida |
+ | P-07 | Ningún Worker ni otra sesión en el worktree; PB-T4e cerrada | Sin delegaciones abiertas |
+ | P-08 | La guía del operador: los pasos de §5, con los literales copiados del `src/` del Candidato por objetos git, los A/B rotulados y las reglas de las capturas del §8 | Hecha antes de abrir AutoCAD, y su sha256 en el registro |
+-| P-09 | El recuento del estilo de cotas en los demás originales de la selección de Smoke-2 (Q-PBT5-2, «Contar antes en otros»): el bloque 13, sus copias abiertas solo para `RCDUMP estilo`, y el bloque 14 (§4.13). Va antes de SPB-07 | Respaldos y copias iguales a su original; los originales, iguales antes y después; el recuento por dibujo, sin nombres |
++| P-09 | El recuento del estilo de cotas en los demás originales de la selección de Smoke-2 (Q-PBT5-2, «Contar antes en otros»): el bloque 13, que lee la lista local con su SHA-256 comprobado; sus copias `eNN`, abiertas solo para `RCDUMP estilo` y cerradas con el bloque 8; y el bloque 14 (§4.13). P-09 (D1) es el `RCDUMP pre` de c01. Va antes de SPB-07 | La lista, con su SHA-256; respaldos y copias iguales a su original; los originales, iguales antes y después (y otra vez en el bloque 10); el recuento por dibujo, sin nombres. Si un original no coincide con su SHA-256 de Smoke-2, se registra y se sigue |
+ 
+ **Si no se cumple una de las tres condiciones de la emisión (PBT5-C17),** no se emite y no se opera.
+ 
++**La frontera (§2):** la sesión abre AutoCAD sola solo si la emisión y P-01 a P-08 están hechas antes de las 12:00 UTC.
++
+ ## 4. Las órdenes exactas de la sesión, en orden
+ 
+ **Cada bloque es una orden de PowerShell entera:** se copia y se ejecuta tal cual, después de poner sus valores en las líneas de arriba. No depende de nada que haya definido otro bloque. Lo tecleado en AutoCAD va en §4.5 a §4.7.
+@@ -191,11 +218,14 @@
+ "Carpeta de disenos existe: " + (Test-Path -LiteralPath $d)
+ $lay = Join-Path $env:LOCALAPPDATA 'RackCad\RackFrameConfigurator.layout'
+ if (Test-Path -LiteralPath $lay) { "Disposicion " + (Get-FileHash -LiteralPath $lay -Algorithm SHA256).Hash + " " + (Get-Item -LiteralPath $lay).LastWriteTimeUtc.ToString('o') } else { "Disposicion: no existe" }
+-if (Test-Path -LiteralPath $logs) { Get-ChildItem -LiteralPath $logs -Filter ("rackcad-{0:yyyyMMdd}.log" -f (Get-Date).ToUniversalTime()) | Select-Object Name, Length } else { "Carpeta de registros: no existe" }
++if (Test-Path -LiteralPath $s) { "settings.json " + (Get-FileHash -LiteralPath $s -Algorithm SHA256).Hash } else { "settings.json NO-EXISTE" }
++if (Test-Path -LiteralPath $logs) { Get-ChildItem -LiteralPath $logs -Filter 'rackcad-*.log' | Sort-Object LastWriteTimeUtc | Select-Object -Last 3 Name, Length, LastWriteTimeUtc } else { "Carpeta de registros: no existe" }
+ exit 0
+ ```
+ 
+-**La biblioteca de bloques:** el fragmento de [G] §7.1, tal cual, como bloque propio. Va con `Set-StrictMode` y `$ErrorActionPreference` al principio, y `<catalogs>` = `<worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\catalogs`, después de P-03.
++El valor de `settings.json` (un SHA-256 o `NO-EXISTE`) va al registro: el bloque 15 lo compara al final (SPB-52).
++
++**La biblioteca de bloques** va en el bloque B4, después de B3 (§4.2), porque necesita `catalogs` junto al DLL.
+ 
+ ### 4.2 El build (P-02 a P-04), con AutoCAD cerrado: tres bloques (M-31)
+ 
+@@ -309,6 +339,31 @@
+ - **Si la `ProductVersion` no identifica el Candidato,** se vuelve a compilar el Plugin con `--no-incremental` en un bloque como B3, y se mide otra vez.
+ - **Los `warning CS`** se leen en la salida de B3.
+ 
++**Bloque B4. La biblioteca de bloques (P-05; [G] §7.1; M-08),** en primer plano, cuando B3 haya terminado. Resuelve la ruta como el producto: el override `BlockLibraryPath` de `settings.json` si está definido; si no, `blocks-library.dwg` junto a los catálogos. Solo lee:
++
++```powershell
++Set-StrictMode -Version Latest
++$ErrorActionPreference = 'Stop'
++$wt = '<worktree>'
++if ([string]::IsNullOrWhiteSpace($wt) -or $wt -match '[<>]') { throw "STOP: un valor sin rellenar" }
++if (-not (Test-Path -LiteralPath $wt -PathType Container)) { throw "STOP: no existe el worktree" }
++$catalogs = Join-Path $wt 'src\RackCad.Plugin\bin\Debug\net8.0-windows\catalogs'
++if (-not (Test-Path -LiteralPath $catalogs -PathType Container)) { throw "STOP: no existe catalogs junto al DLL (antes, B3)" }
++$s = Join-Path $env:APPDATA 'RackCad\settings.json'
++$over = $null
++if (Test-Path -LiteralPath $s) {
++  $cfg = Get-Content -LiteralPath $s -Raw | ConvertFrom-Json
++  if ($cfg -and ($cfg.PSObject.Properties.Name -contains 'BlockLibraryPath')) { $over = [string]$cfg.BlockLibraryPath }
++}
++if ([string]::IsNullOrWhiteSpace($over)) { $lib = Join-Path $catalogs 'blocks-library.dwg'; $origen = 'blocks-library.dwg junto a los catalogos' } else { $lib = $over; $origen = 'override BlockLibraryPath de settings.json' }
++if (-not (Test-Path -LiteralPath $lib -PathType Leaf)) { throw "STOP: no existe la biblioteca de bloques ($origen)" }
++"Biblioteca de bloques: $origen; archivo $([IO.Path]::GetFileName($lib)); SHA-256 $((Get-FileHash -LiteralPath $lib -Algorithm SHA256).Hash)"
++"Ruta resuelta (solo para el registro local, no se custodia): $lib"
++exit 0
++```
++
++Al registro custodiado van el origen, el nombre del archivo y el SHA-256; la ruta resuelta, solo al registro local.
++
+ ### 4.3 La carpeta, el respaldo y las copias (P-06): un solo bloque
+ 
+ **El criterio es la línea «OK» y el código de salida 0** (M-33). Los `git rev-parse` que se esperan fallidos guardan su código en `$rc`, y el bloque termina con `exit 0`.
+@@ -378,7 +433,7 @@
+ 
+ | Copia | Pasos |
+ |---|---|
+-| c01 | SPB-01 a 05, 07 (a) y 08; el `RCDUMP pre`, que sirve a SPB-47, 48 y 56; los controles de `rcblk`, `rcnest` y `rcdyn` |
++| c01 | SPB-01 a 05 y 08; el `RCDUMP pre`, que sirve a SPB-47, 48 y 56, y es el recuento P-09 (D1); los controles de `rcblk`, `rcnest` y `rcdyn` |
+ | c02 | SPB-06 |
+ | c03 | SPB-09 |
+ | c04 | SPB-10 |
+@@ -409,6 +464,8 @@
+ | c38 y c39 | SPB-57, **CONSTRUCTED** |
+ | c40 y c41 | SPB-58, **CONSTRUCTED** |
+ | c42, c43 y c44 | SPB-59, 60 y 61, cada una en su AutoCAD (§4.11) |
++| e01 a eNN (en `<carpeta-del-Smoke-PB>\estilo\`) | P-09: el `RCDUMP estilo` de cada una (bloque 13; §4.13) |
++| s01 y s02 (en `<carpeta-del-Smoke-PB>\spb07\`) | SPB-07 (a) y (b), solo si algún dibujo guarda un estilo (bloque 13b; §4.13) |
+ 
+ **Los handles** salen del `RCDUMP pre` de c01, y valen en todas las copias. Para SPB-63 hace falta el rack de D1 con dos laterales enlazadas, una con el sufijo `_1`.
+ 
+@@ -432,17 +489,18 @@
+ exit 0
+ ```
+ 
+-**Bloque 5. El lanzamiento.** Con `$n = 1` y `c01.dwg`; al relanzar por §4.8, con el número siguiente y la copia que toque. El registro se escribe justo al lanzar (M-32), con la hora en `Ticks` (I-09):
++**Bloque 5. El lanzamiento.** Con `$n = 1` y `c01.dwg`; al relanzar por §4.8, con el número siguiente y la copia que toque, que puede ser una `cNN` (en `r1\`), una `eNN` (en `estilo\`) o una `sNN` (en `spb07\`). El registro se escribe justo al lanzar (M-32), con la hora en `Ticks` (I-09):
+ 
+ ```powershell
+ Set-StrictMode -Version Latest
+ $ErrorActionPreference = 'Stop'
+ $work = '<carpeta-del-Smoke-PB>'; $acad = '<acad.exe>'; $dir = '<dir-del-acceso-directo>'; $copyName = 'c01.dwg'; $n = 1
+ foreach ($v in $work, $acad, $dir, $copyName) { if ([string]::IsNullOrWhiteSpace($v) -or $v -match '[<>]') { throw "STOP: un valor sin rellenar" } }
+-if ($copyName -notmatch '^c\d\d\.dwg$' -or $n -lt 1) { throw "STOP: la copia o el numero no son validos" }
++if ($copyName -notmatch '^[ces]\d\d\.dwg$' -or $n -lt 1) { throw "STOP: la copia o el numero no son validos" }
+ if ($acad -match '~') { throw "STOP: la ruta de acad.exe es una ruta corta 8.3" }
+ if (-not [IO.Path]::IsPathFullyQualified($acad) -or [IO.Path]::GetFullPath($acad) -cne $acad) { throw "STOP: la ruta de acad.exe no es la ruta completa canonica" }
+-$copy = Join-Path $work "r1\$copyName"
++$sub = @{ c = 'r1'; e = 'estilo'; s = 'spb07' }[$copyName.Substring(0, 1)]
++$copy = Join-Path $work "$sub\$copyName"
+ foreach ($p in $work, $acad, $dir, $copy) { if (-not (Test-Path -LiteralPath $p)) { throw "STOP: no existe $p" } }
+ $rec = Join-Path $work ("acad-session-{0}.json" -f $n)
+ if (Test-Path -LiteralPath $rec) { throw "STOP: $rec ya existe" }
+@@ -569,12 +627,14 @@
+ 
+ ### 4.7 El paso de una copia a la siguiente (I-07)
+ 
+-**Con la copia `cNN` activa y `cMM` como la siguiente:**
++**Vale para las tres clases de copia** (I-01): las `cNN` en `<carpeta-del-Smoke-PB>\r1\`, las `eNN` del recuento en `<carpeta-del-Smoke-PB>\estilo\` y las `sNN` de SPB-07 en `<carpeta-del-Smoke-PB>\spb07\`. Abajo, `<sub>` es `r1`, `estilo` o `spb07`, según la clase de la siguiente. Los pasos de la corrida entre clases son c01 → e01, eNN → eNN+1, la última `eNN` → s01 (o → c02, si no hay estilo), s01 → s02 y s02 → c02.
++
++**Con la copia `cNN` (o `eNN`, o `sNN`) activa y `cMM` (o `eMM`, o `sMM`) como la siguiente:**
+ 1. **El panel:** «Descartar borradores de este documento» → «Descartar». Si no hay borradores en riesgo, se registra el mensaje.
+ 2. **Tecleado:**
+ 
+    ```lisp
+-   (vla-activate (vla-open (vla-get-documents (vlax-get-acad-object)) "<carpeta-del-Smoke-PB-con-/>/r1/cMM.dwg"))
++   (vla-activate (vla-open (vla-get-documents (vlax-get-acad-object)) "<carpeta-del-Smoke-PB-con-/>/<sub>/cMM.dwg"))
+    ```
+ 
+ 3. **En `cMM`,** antes de cualquier captura que se vaya a custodiar:
+@@ -591,38 +651,55 @@
+    (vla-close (vla-item (vla-get-documents (vlax-get-acad-object)) "cNN.dwg") :vlax-false)
+    ```
+ 
+-7. **Bloque 8**, con `cNN` y `cMM` rellenados:
++7. **Bloque 8**, con la anterior y la siguiente rellenadas (`cNN`, `eNN` o `sNN`). Cada copia se compara con su original: una `cNN`, con D1; una `eNN`, con su fila de `estilo.json`; una `sNN`, con `s-copias.json`:
+ 
+    ```powershell
+    Set-StrictMode -Version Latest
+    $ErrorActionPreference = 'Stop'
+-   $work = '<carpeta-del-Smoke-PB>'; $prev = 'cNN'; $next = 'cMM'
+-   foreach ($v in $prev, $next) { if ($v -notmatch '^c\d\d$') { throw "STOP: nombre de copia sin rellenar" } }
++   $work = '<carpeta-del-Smoke-PB>'; $prev = '<anterior>'; $next = '<siguiente>'
++   foreach ($v in $prev, $next) { if ($v -notmatch '^[ces]\d\d$') { throw "STOP: nombre de copia sin rellenar o no valido" } }
++   if ($prev -eq $next) { throw "STOP: la anterior y la siguiente son la misma" }
+    $known = '7A868624226EE956CC411CAAA54EA2DE6B95849EEE946995917CFF70FB9F47A5'
+-   $r1 = Join-Path $work 'r1'
+-   foreach ($p in $work, $r1, (Join-Path $r1 "$prev.dwg"), (Join-Path $r1 "$next.dwg")) { if (-not (Test-Path -LiteralPath $p)) { throw "STOP: no existe $p" } }
++   $subs = @{ c = 'r1'; e = 'estilo'; s = 'spb07' }
++   $mans = @{ e = 'estilo\estilo.json'; s = 'spb07\s-copias.json' }
++   if (-not (Test-Path -LiteralPath $work -PathType Container)) { throw "STOP: no existe $work" }
++   $info = @{}
++   foreach ($nm in $prev, $next) {
++     $k = $nm.Substring(0, 1)
++     $dwg = Join-Path $work ($subs[$k] + '\' + $nm + '.dwg')
++     if (-not (Test-Path -LiteralPath $dwg -PathType Leaf)) { throw "STOP: no existe $nm.dwg" }
++     if ($k -eq 'c') { $want = $known } else {
++       $mf = Join-Path $work $mans[$k]
++       if (-not (Test-Path -LiteralPath $mf -PathType Leaf)) { throw "STOP: no existe el manifiesto de $nm" }
++       $rows = @((Get-Content -LiteralPath $mf -Raw | ConvertFrom-Json).copias | Where-Object { $_.copia -eq "$nm.dwg" })
++       if ($rows.Count -ne 1) { throw "STOP: $nm no aparece una vez en su manifiesto" }
++       $want = [string]$rows[0].sha256
++     }
++     if ($want -notmatch '^[0-9A-F]{64}$') { throw "STOP: sin SHA-256 esperado para $nm" }
++     $info[$nm] = [pscustomobject]@{ Dwg = $dwg; Dwl = [IO.Path]::ChangeExtension($dwg, '.dwl'); Want = $want }
++   }
+    $recFile = Get-ChildItem -LiteralPath $work -Filter 'acad-session-*.json' | Sort-Object { [int]($_.BaseName -replace '\D', '') } | Select-Object -Last 1
+    if (-not $recFile) { throw "STOP: no hay registro de la instancia" }
+    $rec = Get-Content -LiteralPath $recFile.FullName -Raw | ConvertFrom-Json
+    $q = Get-Process -Id ([int]$rec.Id)
+    if ($q.ProcessName -ne 'acad' -or $q.Path -ne $rec.Path -or [long]$rec.StartTicksUtc -ne $q.StartTime.ToUniversalTime().Ticks) { throw "STOP: el PID ya no es la instancia de la sesion" }
+    $chk = [pscustomobject]@{
+-     dwlAnteriorExiste  = Test-Path -LiteralPath (Join-Path $r1 "$prev.dwl")
+-     anteriorIgualD1    = (Get-FileHash -LiteralPath (Join-Path $r1 "$prev.dwg") -Algorithm SHA256).Hash -eq $known
+-     dwlSiguienteExiste = Test-Path -LiteralPath (Join-Path $r1 "$next.dwl")
+-     titulo             = $q.MainWindowTitle
++     dwlAnteriorExiste        = Test-Path -LiteralPath $info[$prev].Dwl
++     anteriorIgualASuOriginal = (Get-FileHash -LiteralPath $info[$prev].Dwg -Algorithm SHA256).Hash -eq $info[$prev].Want
++     dwlSiguienteExiste       = Test-Path -LiteralPath $info[$next].Dwl
++     titulo                   = $q.MainWindowTitle
+    }
+    $chk
+    $fail = @()
+    if ($chk.dwlAnteriorExiste) { $fail += "la copia anterior $prev sigue abierta (.dwl)" }
+-   if (-not $chk.anteriorIgualD1) { $fail += "la copia anterior $prev ya no es igual a D1" }
++   if (-not $chk.anteriorIgualASuOriginal) { $fail += "la copia anterior $prev ya no es igual a su original" }
+    if (-not $chk.dwlSiguienteExiste) { $fail += "la copia siguiente $next no esta abierta (.dwl)" }
+    if ($chk.titulo -notmatch [regex]::Escape("$next.dwg")) { $fail += "el titulo no nombra $next.dwg" }
+    if ($fail.Count) { throw ("STOP: " + ($fail -join '; ')) }
+    exit 0
+    ```
+ 
+-   Lo esperado: `False`, `True`, `True`, y el título con `cMM.dwg`.
++   Lo esperado: `False`, `True`, `True`, y el título con el nombre de la siguiente.
+ 
+ **Si el paso 6 falla:**
+ - **un veto de RackCad:** `(vla-activate (vla-item (vla-get-documents (vlax-get-acad-object)) "cNN.dwg"))` → «Descartar» → volver a `cMM` con la misma orden y su nombre → repetir el paso 6;
+@@ -649,7 +726,7 @@
+ if ([long]$rec.StartTicksUtc -ne $q.StartTime.ToUniversalTime().Ticks) { throw "STOP: la hora de inicio no es la registrada (PID reutilizado)" }
+ $t = $q.MainWindowTitle
+ if ($t -match '\.dwg') {
+-  if ($t -match 'c\d\d\.dwg') { throw "STOP: sigue abierta una copia de la sesion ($t): se vuelve a 4.7" }
++  if ($t -match '[ces]\d\d\.dwg') { throw "STOP: sigue abierta una copia de la sesion ($t): se vuelve a 4.7" }
+   throw "STOP: el titulo nombra un documento que no es de la sesion"
+ }
+ [void]$q.CloseMainWindow()
+@@ -674,24 +751,26 @@
+ 3. la última, con `CLOSE` → «No»;
+ 4. la instancia, con el bloque 9.
+ 
+-**Bloque 10. SPB-51, la integridad.** Solo lee, y se hace siempre, también en la parada de la frontera. Si una copia está abierta en AutoCAD y no se puede leer, lo registra como «no legible (abierta)» y sigue con las demás:
++**Bloque 10. SPB-51, la integridad.** Solo lee, y se hace siempre, también en la parada de la frontera. Si una copia está abierta en AutoCAD y no se puede leer, lo registra como «no legible (abierta)» y sigue con las demás. Mide D1, su respaldo y las `cNN`; y, si existen, `estilo.json` (los originales de P-09, leídos de la lista local con su SHA-256 comprobado, sus respaldos `eNN-respaldo.dwg` y sus copias) y `s-copias.json` (`s01` y `s02`). No imprime ninguna ruta de original:
+ 
+ ```powershell
+ Set-StrictMode -Version Latest
+ $ErrorActionPreference = 'Stop'
+ $root = '<raiz-de-trabajo>'; $o = '<original-D1>'; $wt = '<worktree>'; $cand = 'ebd304a3773495fa9071de6611936c4c01a7b06c'
++$list = '<lista-local-de-la-seleccion>'; $listSha = 'DD3613CB94CD4E19712D0FE2687CBDBDED2500C2AA8C4AD450D8556A26D3F2C1'
+ foreach ($v in $o, $wt, $cand) { if ([string]::IsNullOrWhiteSpace($v) -or $v -match '[<>]') { throw "STOP: un valor sin rellenar" } }
+ if ($cand -notmatch '^[0-9a-f]{40}$') { throw "STOP: el Candidato no es un SHA completo" }
+ $work = Join-Path $root 'smoke'; $manifest = Join-Path $work 'copias.json'; $bakFile = Join-Path $root 'respaldo\D1-respaldo.dwg'
+-foreach ($p in $o, $manifest, $bakFile) { if (-not (Test-Path -LiteralPath $p -PathType Leaf)) { throw "STOP: no existe $p" } }
++if (-not (Test-Path -LiteralPath $o -PathType Leaf)) { throw "STOP: no existe el original de D1" }
++foreach ($p in $manifest, $bakFile) { if (-not (Test-Path -LiteralPath $p -PathType Leaf)) { throw "STOP: no existe $p" } }
+ $man = Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
+ $h0 = [string]$man.original_sha256
+ if ($h0 -notmatch '^[0-9A-F]{64}$') { throw "STOP: el manifiesto no trae el SHA-256 del original" }
+ $fail = @()
+ $origEq = (Get-FileHash -LiteralPath $o -Algorithm SHA256).Hash -eq $h0
+-"Original igual: $origEq"; if (-not $origEq) { $fail += "el original cambio (PBT5-C02)" }
++"D1 original igual: $origEq"; if (-not $origEq) { $fail += "el original de D1 cambio (PBT5-C02)" }
+ $bakEq = (Get-FileHash -LiteralPath $bakFile -Algorithm SHA256).Hash -eq $h0
+-"Respaldo igual: $bakEq"; if (-not $bakEq) { $fail += "el respaldo cambio" }
++"D1 respaldo igual: $bakEq"; if (-not $bakEq) { $fail += "el respaldo de D1 cambio" }
+ foreach ($c in $man.copias) {
+   $f = Join-Path $work ("r1\" + $c.copia); $dwl = [IO.Path]::ChangeExtension($f, '.dwl')
+   if (-not (Test-Path -LiteralPath $f -PathType Leaf)) { $fail += "falta $($c.copia)"; continue }
+@@ -699,8 +778,47 @@
+   "{0} igual={1} dwl={2}" -f $c.copia, $eq, (Test-Path -LiteralPath $dwl)
+   if ($eq -is [bool] -and -not $eq) { $fail += "$($c.copia) ya no es igual a D1" }
+ }
+-Get-ChildItem -LiteralPath (Join-Path $work 'r1') -File | Where-Object { $_.Extension -notin '.dwg', '.dwl', '.dwl2' } | Select-Object Name, Length
+-Get-ChildItem -LiteralPath $env:TEMP -Filter 'c*.sv$' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^c\d\d.*\.sv\$$' } | Select-Object Name, LastWriteTimeUtc
++# P-09: los originales de la lista local, sus respaldos y sus copias, frente a estilo.json
++$estJson = Join-Path $work 'estilo\estilo.json'
++if (Test-Path -LiteralPath $estJson -PathType Leaf) {
++  if ([string]::IsNullOrWhiteSpace($list) -or $list -match '[<>]') { throw "STOP: existe estilo.json y falta la ruta de la lista local" }
++  if (-not (Test-Path -LiteralPath $list -PathType Leaf)) { throw "STOP: no existe la lista local" }
++  if ((Get-FileHash -LiteralPath $list -Algorithm SHA256).Hash -ne $listSha) { throw "STOP: la lista local no es la esperada (su SHA-256 no coincide)" }
++  $sel = @((Get-Content -LiteralPath $list -Raw | ConvertFrom-Json).Selection)
++  $est = Get-Content -LiteralPath $estJson -Raw | ConvertFrom-Json
++  if ([string]$est.lista_sha256 -ne $listSha) { $fail += "estilo.json no se hizo con esta lista" }
++  foreach ($r in @($est.copias)) {
++    $tag = [IO.Path]::GetFileNameWithoutExtension([string]$r.copia); $want = [string]$r.sha256; $ix = [int]$r.indice
++    if ($ix -lt 0 -or $ix -ge $sel.Count) { $fail += "$tag sin entrada en la lista"; continue }
++    $src = [string]$sel[$ix].Source
++    $oe = if (Test-Path -LiteralPath $src -PathType Leaf) { (Get-FileHash -LiteralPath $src -Algorithm SHA256).Hash -eq $want } else { 'no existe' }
++    $bf = Join-Path $root "respaldo\$tag-respaldo.dwg"
++    $be = if (Test-Path -LiteralPath $bf -PathType Leaf) { (Get-FileHash -LiteralPath $bf -Algorithm SHA256).Hash -eq $want } else { 'no existe' }
++    $cf = Join-Path $work "estilo\$tag.dwg"
++    if (Test-Path -LiteralPath $cf -PathType Leaf) { try { $ce = (Get-FileHash -LiteralPath $cf -Algorithm SHA256).Hash -eq $want } catch { $ce = 'no legible (abierta)' } } else { $ce = 'no existe' }
++    "{0} ({1}) original igual={2} respaldo igual={3} copia igual={4} dwl={5}" -f $tag, $r.papeles, $oe, $be, $ce, (Test-Path -LiteralPath ([IO.Path]::ChangeExtension($cf, '.dwl')))
++    if ($oe -isnot [bool] -or -not $oe) { $fail += "el original de $tag cambio o no existe (PBT5-C02)" }
++    if ($be -isnot [bool] -or -not $be) { $fail += "el respaldo de $tag cambio o no existe" }
++    if ($ce -is [bool] -and -not $ce) { $fail += "$tag ya no es igual a su original" }
++    if ($ce -is [string] -and $ce -eq 'no existe') { $fail += "falta $tag.dwg" }
++  }
++} else { "estilo.json: no existe (P-09 no llego a hacerse)" }
++# SPB-07: s01 y s02, frente a s-copias.json
++$sJson = Join-Path $work 'spb07\s-copias.json'
++if (Test-Path -LiteralPath $sJson -PathType Leaf) {
++  foreach ($r in @((Get-Content -LiteralPath $sJson -Raw | ConvertFrom-Json).copias)) {
++    $sf = Join-Path $work ("spb07\" + [string]$r.copia)
++    if (-not (Test-Path -LiteralPath $sf -PathType Leaf)) { $fail += "falta $($r.copia)"; continue }
++    try { $se = (Get-FileHash -LiteralPath $sf -Algorithm SHA256).Hash -eq [string]$r.sha256 } catch { $se = 'no legible (abierta)' }
++    "{0} (de {1}) igual={2}" -f $r.copia, $r.origen, $se
++    if ($se -is [bool] -and -not $se) { $fail += "$($r.copia) ya no es igual a su original" }
++  }
++} else { "s-copias.json: no existe (ningun dibujo con estilo, o no se llego)" }
++foreach ($sub in 'r1', 'estilo', 'spb07') {
++  $d = Join-Path $work $sub
++  if (Test-Path -LiteralPath $d -PathType Container) { Get-ChildItem -LiteralPath $d -File | Where-Object { $_.Extension -notin '.dwg', '.dwl', '.dwl2', '.json' } | Select-Object Name, Length }
++}
++Get-ChildItem -LiteralPath $env:TEMP -Filter '*.sv$' -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^[ces]\d\d.*\.sv\$$' } | Select-Object Name, LastWriteTimeUtc
+ $st = & git -C $wt status --porcelain; if ($LASTEXITCODE -ne 0) { throw "STOP: git status" }
+ $clean = -not $st
+ "Worktree limpio: $clean"; if (-not $clean) { $fail += "el worktree no esta limpio" }
+@@ -712,27 +830,73 @@
+ exit 0
+ ```
+ 
+-**SPB-52, el entorno:** los bloques 2 a 4 del §4.1, otra vez, cada uno en su orden. Solo leen, y se hacen siempre.
++**SPB-52, el entorno:** los bloques 2 a 4 del §4.1, otra vez, cada uno en su orden, y después el bloque 15 (M-07). Solo leen, y se hacen siempre.
++
++**Bloque 15. Las líneas `ERROR` del registro de RackCad, los eventos de error de acad y `settings.json` (SPB-52).** El inicio de la corrida es la hora del primer `acad-session-<n>.json`; si no hay ninguno, la de creación de `<raiz-de-trabajo>`. `$settingsPre` es el valor que dio el bloque 4 en P-05 (un SHA-256 o `NO-EXISTE`):
++
++```powershell
++Set-StrictMode -Version Latest
++$ErrorActionPreference = 'Stop'
++$root = '<raiz-de-trabajo>'; $logs = '<carpeta-de-registros-de-RackCad>'; $settingsPre = '<settings-de-P-05>'
++foreach ($v in $logs, $settingsPre) { if ([string]::IsNullOrWhiteSpace($v) -or $v -match '[<>]') { throw "STOP: un valor sin rellenar" } }
++if ($settingsPre -ne 'NO-EXISTE' -and $settingsPre -notmatch '^[0-9A-F]{64}$') { throw "STOP: el valor de settings.json de P-05 no es un SHA-256 ni NO-EXISTE" }
++if (-not (Test-Path -LiteralPath $root -PathType Container)) { throw "STOP: no existe $root" }
++$work = Join-Path $root 'smoke'
++$ticks = @(Get-ChildItem -LiteralPath $work -Filter 'acad-session-*.json' -ErrorAction SilentlyContinue | ForEach-Object { [long](Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json).StartTicksUtc })
++$sinceUtc = if ($ticks.Count) { [DateTime]::new([long]($ticks | Sort-Object | Select-Object -First 1), [DateTimeKind]::Utc) } else { (Get-Item -LiteralPath $root).CreationTimeUtc }
++"Desde (UTC): $($sinceUtc.ToString('o'))"
++# Las lineas ERROR de los registros de RackCad escritos desde el inicio
++if (Test-Path -LiteralPath $logs -PathType Container) {
++  $files = @(Get-ChildItem -LiteralPath $logs -Filter 'rackcad-*.log' | Where-Object { $_.LastWriteTimeUtc -ge $sinceUtc })
++  "Registros de RackCad desde el inicio: $($files.Count)"
++  foreach ($f in $files) {
++    $err = @(Select-String -LiteralPath $f.FullName -Pattern 'ERROR' -SimpleMatch)
++    "{0}: {1} lineas ERROR" -f $f.Name, $err.Count
++    $err | ForEach-Object { "  linea {0}: {1}" -f $_.LineNumber, $_.Line }
++  }
++} else { "Carpeta de registros: no existe" }
++# Los eventos de error de acad desde el inicio
++try {
++  $ev = @(Get-WinEvent -FilterHashtable @{ LogName = 'Application'; ProviderName = 'Application Error', '.NET Runtime', 'Application Hang'; StartTime = $sinceUtc.ToLocalTime() } -ErrorAction Stop)
++} catch {
++  if ($_.FullyQualifiedErrorId -match 'NoMatchingEventsFound') { $ev = @() } else { throw }
++}
++$acadEv = @($ev | Where-Object { "$($_.Message)" -match 'acad' })
++"Eventos Application Error, .NET Runtime o Application Hang desde el inicio: $($ev.Count); de acad: $($acadEv.Count)"
++$acadEv | ForEach-Object { "{0} {1} {2}" -f $_.TimeCreated.ToUniversalTime().ToString('o'), $_.ProviderName, $_.Id }
++# settings.json, frente a P-05
++$s = Join-Path $env:APPDATA 'RackCad\settings.json'
++$settingsPost = if (Test-Path -LiteralPath $s) { (Get-FileHash -LiteralPath $s -Algorithm SHA256).Hash } else { 'NO-EXISTE' }
++"settings.json antes $settingsPre despues $settingsPost igual=$($settingsPre -eq $settingsPost)"
++exit 0
++```
++
++- **Las líneas `ERROR`** van enteras al registro local. Al registro custodiado van su número y un resumen redactado (§7).
++- **El criterio de SPB-52** está en [P]: PASS si no queda configuración de RackCad ni errores sin explicar. Un `settings.json` distinto se registra y se explica; no se toca.
+ 
+ ### 4.10 El orden de la corrida
+ 
++Es el mismo orden que [P] §6.7 (M-14): el `--dry` antes del build, y el `--commit` después.
++
+ 1. **La preparación, sin AutoCAD:**
+-   - el bloque 1 (P-01), con HEAD = Candidato;
+-   - B1 y B2, en segundo plano, y después B3 (P-02 a P-04);
++   - P-07 (ningún Worker ni otra sesión en el worktree) y el bloque 1 (P-01), con HEAD = Candidato;
++   - `emit_pbt5.py --dry`, que solo lee y comprueba las condiciones de la emisión;
++   - B1 y B2, en segundo plano, y después B3 y B4 (P-02 a P-04, y la biblioteca de P-05);
+    - los bloques 2, 3 y 4 (P-05) y el 4b;
+-   - `emit_pbt5.py --dry` y después `--commit` (la emisión, F4B-E62), que solo añade un commit documental: el DLL de B3 no se vuelve a compilar;
++   - `emit_pbt5.py --commit` (la emisión, F4B-E62), que solo añade un commit documental: el DLL de B3 no se vuelve a compilar;
+    - el bloque de §4.3 (P-06);
+    - el bloque 13 (P-09, las copias para el estilo);
+-   - P-07 y P-08.
++   - P-08.
++   - **La hora a la que quedan hechas la emisión y P-01 a P-08** va al registro, frente a las 12:00 UTC (§2). Si es después, no se abre AutoCAD sin el Owner. El bloque 13 (P-09) no cuenta para esa hora.
+ 2. **La instancia principal de AutoCAD,** con el bloque 5 y `c01`:
+-   - c01, con SPB-01 a 05, 07 (a) y 08, el `RCDUMP pre` y los controles;
+-   - **las copias `eNN` del estilo,** abiertas una a una con el paso de §4.7, solo para el `RCDUMP estilo`;
++   - c01, con SPB-01 a 05 y 08, el `RCDUMP pre` (P-09 (D1)) y los controles;
++   - **las copias `eNN` del estilo,** abiertas una a una con el paso de §4.7 y el bloque 8, solo para el `RCDUMP estilo`;
+    - el bloque 14, el recuento;
+-   - si algún dibujo guarda un estilo, `s01` y `s02` para SPB-07 (a) y (b) (§4.13);
++   - si algún dibujo guarda un estilo, el bloque 13b, y `s01` y `s02` para SPB-07 (a) y (b), con el paso de §4.7 (§4.13);
+    - c02 a c41, por la tabla de §4.3. Los contextos construidos son c34 a c41 (§4.12);
+    - el cierre de la instancia (SPB-50 y el bloque 9).
+ 3. **Las tres inyecciones,** cada una en su AutoCAD propio (§4.11): c42, c43 y c44.
+-4. **El cierre:** el bloque 10 (SPB-51) y los bloques 2, 3 y 4 (SPB-52).
++4. **El cierre:** el bloque 10 (SPB-51), y los bloques 2, 3, 4 y 15 (SPB-52).
+ 
+ ### 4.11 Las inyecciones (SPB-59 a SPB-61; Q-PBT5-10, «Hacerlas como en Smoke-2»)
+ 
+@@ -795,7 +959,10 @@
+ 3. `EXTERNALREFERENCESCLOSE`, `(vl-load-com)`, el `NETLOAD` por expresión con «Load Once», `RACKPANEL` y el bloque 7;
+ 4. el inventario (§4.6);
+ 5. **la preparación:** RACKEDITAR → «Insertar lateral» del último poste → el punto `9000,-1642` (el de [BM] M-6a) → `RCDUMP ins`;
+-6. **el paso:** seleccionar el rack → «Editar» → «Editar todo» → un frente menos → «Aplicar al borrador» → «Actualizar» → `RCDUMP post`. Se registra el texto literal y la lista de Deshacer;
++6. **el paso:** seleccionar el rack → «Editar» → «Editar todo» → un frente menos → «Aplicar al borrador» → «Actualizar» → `RCDUMP post`. Se registran el texto literal, el estado del borrador, los botones que se ofrecen y la lista de Deshacer;
++   - **SPB-59** (`UNIT=2`): nada más. «Actualizar» no se vuelve a pulsar;
++   - **SPB-60** (`SEAL=before`, como el paso 82 de [S2]; M-06): «Comprobar ahora» → el texto literal, el estado y lo que se ofrece → `RCDUMP check`. **«Actualizar» no se pulsa,** aunque se ofrezca;
++   - **SPB-61** (`SEAL=after`, como el paso 84 de [S2]; M-06): «Comprobar ahora» → el texto literal, el estado y lo que se ofrece (en [S2]: «Comprobar ahora», «Descartar y recargar» y «Conservar mi borrador») → `RCDUMP check`. **Sin «Actualizar».** Después, «Descartar y recargar» → el texto de la pregunta → «Sí» → el texto literal y el estado;
+ 7. **el cierre:** «Descartar borradores de este documento» → «Descartar» → `QUIT` → «No»;
+ 8. el bloque 12.
+ 
+@@ -828,6 +995,12 @@
+ - `<h…>` son handles y `<…>` nombres, tomados del `RCDUMP ins` de esa copia;
+ - **la preparación**, igual en las cuatro: RACKEDITAR sobre el rack → «Insertar lateral» del último poste → el punto `9000,-1642` → `RCDUMP CONSTRUCTED-ins`. Es un gesto del producto.
+ 
++**La regla de las respuestas nativas** (M-11; [P] §5.6). Las órdenes de abajo suponen unas respuestas de AutoCAD que no se han visto en estas copias: que `-INSERT` pida el punto, la escala X, la Y y el giro, sin atributos; que `-LAYOUT _S` acepte el nombre de la primera presentación; que `-PURGE` acepte el patrón y no pregunte por cada nombre con `_N`.
++- **Antes de teclear la orden siguiente,** se lee la línea de órdenes.
++- **Si una orden pide algo distinto de lo previsto, da un error o un aviso, o si `RCDUMP CONSTRUCTED-construido` no muestra el estado esperado** (abajo, en cada contexto): **STOP del paso y LIMITATION** (NO VERIFICABLE FÍSICAMENTE), con el literal en el registro. Se cancela con `Esc` lo que quede a medias, la copia se cierra sin guardar y su gemela no se construye.
++- **No se improvisan órdenes** ni respuestas: ni otra forma de `-INSERT`, ni otra orden, ni otro patrón.
++- **Estas órdenes cambian el estado del dibujo de la copia** (`CTAB` y `TILEMODE`, una capa bloqueada, un bloque nuevo). Eso no es una variable de sistema de la configuración (§9): la copia se cierra sin guardar.
++
+ **SPB-45, la referencia en una presentación** (c34, el panel; c35, la gemela):
+ 
+ ```lisp
+@@ -837,7 +1010,7 @@
+ (command "_.MODEL")
+ ```
+ 
+-Después, `RCDUMP CONSTRUCTED-construido`. Las líneas `REF` cuentan las referencias de modelo y de papel, porque `ssget "_X"` las lee todas.
++Después, `RCDUMP CONSTRUCTED-construido`. Las líneas `REF` cuentan las referencias de modelo y de papel, porque `ssget "_X"` las lee todas. **El estado esperado:** la definición del lateral tiene una línea `REF` más que en `CONSTRUCTED-ins`, con un handle nuevo, y `(getvar "TILEMODE")` vuelve a dar `1`.
+ 
+ **SPB-46, la referencia dentro de un bloque del usuario** (c36 y c37):
+ 
+@@ -846,7 +1019,7 @@
+ (command "_.-INSERT" "ZZ-CONSTRUCTED-SPB46" "0,0" "1" "1" "0")
+ ```
+ 
+-Después, `RCDUMP CONSTRUCTED-construido`: una línea `NEST` con `ZZ-CONSTRUCTED-SPB46` como contenedor.
++Después, `RCDUMP CONSTRUCTED-construido`. **El estado esperado:** una línea `BLK` de `ZZ-CONSTRUCTED-SPB46`; una línea `NEST` con `ZZ-CONSTRUCTED-SPB46` como contenedor y la definición del lateral; y una línea `REF` menos de esa definición en el nivel superior, porque `-BLOCK` retira la referencia que mete en el bloque.
+ 
+ **SPB-57, la capa bloqueada** (c38 y c39):
+ 
+@@ -854,17 +1027,24 @@
+ (command "_.-LAYER" "_LO" "<capa-de-la-referencia-del-lateral>" "")
+ ```
+ 
+-La capa sale de la línea `REF` del lateral en `RCDUMP CONSTRUCTED-ins`. Después, `RCDUMP CONSTRUCTED-construido`.
++La capa sale de la línea `REF` del lateral en `RCDUMP CONSTRUCTED-ins`. Después, `RCDUMP CONSTRUCTED-construido` y, de solo lectura, el bloqueo de la capa:
++
++```lisp
++(logand 4 (cdr (assoc 70 (tblsearch "LAYER" "<capa-de-la-referencia-del-lateral>"))))
++```
++
++**El estado esperado:** `4` (la capa bloqueada), y las líneas `REF` iguales que en `CONSTRUCTED-ins`.
+ 
+ **SPB-58, el último vínculo** (c40 y c41), sobre un rack sin referencias anidadas (el que [BM] llamó PB E):
+ 
+ ```lisp
+ (command "_.ERASE" (handent "<h-de-otra-referencia-del-rack>") "")
+-(command "_.-PURGE" "_B" "<nombre-de-esa-definicion>" "_N")
++(command "_.-PURGE" "_B" "<patron-de-esa-definicion>" "_N")
+ ```
+ 
++- **El patrón** es el nombre de la definición con cada espacio cambiado por `?`, como hizo [BM] M-2b («PB?G?-?lateral?1»).
+ - Se repiten las dos órdenes por cada referencia y cada definición del rack que no sea el lateral.
+-- Después, `RCDUMP CONSTRUCTED-construido`: el rack solo tiene la definición y la referencia del lateral.
++- Después, `RCDUMP CONSTRUCTED-construido`. **El estado esperado:** el rack solo tiene la línea `REF` y la línea `DEF` del lateral; y, frente a `CONSTRUCTED-ins`, las únicas líneas `BLK` que faltan son las de las definiciones purgadas. Si falta otra, el patrón casó de más: es el STOP de la regla de arriba.
+ - La selección del paso es el propio lateral.
+ 
+ **El paso, en las cuatro:**
+@@ -874,49 +1054,80 @@
+ 
+ ### 4.13 El recuento del estilo de cotas (P-09 y SPB-07; Q-PBT5-2, «Contar antes en otros»)
+ 
+-**Bloque 13. Respaldos y copias de los demás originales de la selección de Smoke-2.** Va después del bloque de §4.3. La lista es local y no lleva D1 ni D2: D1 se cuenta en c01, y D2 ya está contado en [BM].
++**Bloque 13. Respaldos y copias de los demás originales de la selección de Smoke-2** (I-01). Va después del bloque de §4.3.
++- **Lee la lista local por su ruta,** después de comprobar su SHA-256. No copia su contenido a nada que se custodie: `estilo.json` lleva, por cada `eNN`, su posición en la lista, sus papeles de Smoke-2 y su SHA-256, pero no su ruta ni su nombre.
++- **Salta D1 y D2:** D1 se cuenta en c01 (P-09 (D1)), y D2 ya está contado en [BM] M-7.
++- **Compara cada original con su SHA-256 de Smoke-2** (`F4-SMOKE-2/run/integrity.md`, O1 a O7) y con el de la lista, y lo registra **sin parar** (P-09).
++- **Comprueba todo antes de escribir nada:** que existan todos los originales y ningún destino.
+ 
+ ```powershell
+ Set-StrictMode -Version Latest
+ $ErrorActionPreference = 'Stop'
+ $root = '<raiz-de-trabajo>'; $list = '<lista-local-de-la-seleccion>'
++$listSha = 'DD3613CB94CD4E19712D0FE2687CBDBDED2500C2AA8C4AD450D8556A26D3F2C1'
++# Los SHA-256 de los siete originales de la seleccion, en F4-SMOKE-2/run/integrity.md (O1 a O7)
++$s2 = @{
++  'C496D070F5E2331D560BC3BE07239F3CADFCA4E056A69CDED2AF9E936BD9174C' = 'O1'; '895DE2EDA1C00D7660EB572C9E62A9CCA3BF934B61A0093738B5C4939CE182CC' = 'O2'
++  'F865183291263C6AC5578682566743E543E59410C875FB76110833E190B4AF10' = 'O3'; 'A411969066F85236CDAEBAB678470090A8EC3034A75D20A1DD86EE63AF25B8C3' = 'O4'
++  '9F65934E7BD8014CBC477C4BC2FA9822561B2E4B988D14CEF5650DFB2081D4BE' = 'O5'; '31AEB8010076040C7971164505312F76FC02ABC5D2B848CAA20972409C238FB4' = 'O6'
++  '7A868624226EE956CC411CAAA54EA2DE6B95849EEE946995917CFF70FB9F47A5' = 'O7'
++}
+ if ([string]::IsNullOrWhiteSpace($list) -or $list -match '[<>]') { throw "STOP: un valor sin rellenar" }
+ $work = Join-Path $root 'smoke'; $bak = Join-Path $root 'respaldo'; $est = Join-Path $work 'estilo'
+ foreach ($p in $work, $bak) { if (-not (Test-Path -LiteralPath $p -PathType Container)) { throw "STOP: no existe $p (primero el bloque de 4.3)" } }
+-if (-not (Test-Path -LiteralPath $list -PathType Leaf)) { throw "STOP: no existe la lista" }
++if (-not (Test-Path -LiteralPath $list -PathType Leaf)) { throw "STOP: no existe la lista local" }
++if ((Get-FileHash -LiteralPath $list -Algorithm SHA256).Hash -ne $listSha) { throw "STOP: la lista local no es la esperada (su SHA-256 no coincide)" }
+ if (Test-Path -LiteralPath $est) { throw "STOP: $est ya existe" }
+-$orig = @(Get-Content -LiteralPath $list | Where-Object { $_.Trim() })
+-if ($orig.Count -eq 0 -or $orig.Count -gt 99) { throw "STOP: la lista esta vacia o es demasiado larga" }
++$sel = Get-Content -LiteralPath $list -Raw | ConvertFrom-Json
++if (-not ($sel.PSObject.Properties.Name -contains 'Selection')) { throw "STOP: la lista no trae Selection" }
++$entries = @($sel.Selection)
++if ($entries.Count -ne 7) { throw "STOP: la lista no trae siete entradas" }
++# Primero, todas las comprobaciones; nada se escribe todavia
++$todo = @()
++for ($i = 0; $i -lt $entries.Count; $i++) {
++  $e = $entries[$i]
++  foreach ($k in 'Source', 'Sha256', 'Roles', 'Exists') { if (-not ($e.PSObject.Properties.Name -contains $k)) { throw "STOP: la entrada $i de la lista no trae $k" } }
++  $roles = @($e.Roles | ForEach-Object { [string]$_ })
++  if ($roles -contains 'D1' -or $roles -contains 'D2') { continue }
++  $todo += [pscustomobject]@{ Indice = $i; Papeles = ($roles -join ' '); Src = [string]$e.Source; Lista = ([string]$e.Sha256).ToUpperInvariant() }
++}
++if ($todo.Count -eq 0 -or $todo.Count -gt 99) { throw "STOP: no queda ningun original que contar, o son demasiados" }
++for ($j = 0; $j -lt $todo.Count; $j++) {
++  $tag = 'e{0:d2}' -f ($j + 1)
++  if (-not (Test-Path -LiteralPath $todo[$j].Src -PathType Leaf)) { throw "STOP: no existe el original de $tag ($($todo[$j].Papeles)): P-09 no se cumple; al Owner" }
++  foreach ($d in (Join-Path $bak "$tag-respaldo.dwg"), (Join-Path $est "$tag.dwg")) { if (Test-Path -LiteralPath $d) { throw "STOP: ya existe $d" } }
++}
++# Despues, los respaldos y las copias, cada uno desde su original y con el hash comprobado
+ New-Item -ItemType Directory -Path $est | Out-Null
+-$rows = @(); $hs = @{}
+-for ($i = 0; $i -lt $orig.Count; $i++) {
+-  $o = $orig[$i].Trim(); $tag = 'e{0:d2}' -f ($i + 1)
+-  if (-not (Test-Path -LiteralPath $o -PathType Leaf)) { throw "STOP: no existe el original de $tag" }
+-  $h = (Get-FileHash -LiteralPath $o -Algorithm SHA256).Hash; $hs[$tag] = $h
++$rows = @()
++for ($j = 0; $j -lt $todo.Count; $j++) {
++  $t = $todo[$j]; $tag = 'e{0:d2}' -f ($j + 1)
++  $h = (Get-FileHash -LiteralPath $t.Src -Algorithm SHA256).Hash
+   $b = Join-Path $bak "$tag-respaldo.dwg"; $c = Join-Path $est "$tag.dwg"
+-  foreach ($d in $b, $c) { if (Test-Path -LiteralPath $d) { throw "STOP: ya existe $d" } }
+-  Copy-Item -LiteralPath $o -Destination $b
++  Copy-Item -LiteralPath $t.Src -Destination $b
+   if ((Get-FileHash -LiteralPath $b -Algorithm SHA256).Hash -ne $h) { throw "STOP: el respaldo de $tag no es igual a su original" }
+-  Copy-Item -LiteralPath $o -Destination $c
++  Copy-Item -LiteralPath $t.Src -Destination $c
+   if ((Get-FileHash -LiteralPath $c -Algorithm SHA256).Hash -ne $h) { throw "STOP: la copia de $tag no es igual a su original" }
+-  $rows += [pscustomobject]@{ copia = "$tag.dwg"; sha256 = $h }
++  $o2 = if ($s2.ContainsKey($h)) { $s2[$h] } else { 'ninguno' }
++  $rows += [pscustomobject]@{ copia = "$tag.dwg"; indice = $t.Indice; papeles = $t.Papeles; sha256 = $h; igual_a_la_lista = ($h -eq $t.Lista); original_de_smoke2 = $o2 }
++  "{0} ({1}): igual al SHA-256 de la lista={2}; original de Smoke-2={3}" -f $tag, $t.Papeles, ($h -eq $t.Lista), $o2
+ }
+-for ($i = 0; $i -lt $orig.Count; $i++) {
+-  $tag = 'e{0:d2}' -f ($i + 1)
+-  if ((Get-FileHash -LiteralPath $orig[$i].Trim() -Algorithm SHA256).Hash -ne $hs[$tag]) { throw "STOP PBT5-C02: cambio el original de $tag" }
++for ($j = 0; $j -lt $todo.Count; $j++) {
++  if ((Get-FileHash -LiteralPath $todo[$j].Src -Algorithm SHA256).Hash -ne $rows[$j].sha256) { throw "STOP PBT5-C02: cambio el original de $($rows[$j].copia)" }
+ }
+-$rows | ConvertTo-Json | Out-File -LiteralPath (Join-Path $est 'estilo.json') -Encoding utf8 -NoClobber
+-"OK: $($rows.Count) respaldos y copias para el recuento del estilo"
++ConvertTo-Json -InputObject ([pscustomobject]@{ lista_sha256 = $listSha; copias = @($rows) }) -Depth 4 | Out-File -LiteralPath (Join-Path $est 'estilo.json') -Encoding utf8 -NoClobber
++"OK: $($rows.Count) respaldos y copias para el recuento del estilo; los que no coinciden con Smoke-2 se registran y se cuentan igual"
+ exit 0
+ ```
+ 
+-**En la instancia principal,** después de c01: cada `eNN` se abre con el paso de §4.7, y la ruta va con `/estilo/eNN.dwg` en lugar de `/r1/cNN.dwg`. En cada una:
++**En la instancia principal,** después de c01: cada `eNN` se abre con el paso de §4.7, con `<sub>` = `estilo` (la ruta `<carpeta-del-Smoke-PB-con-/>/estilo/eNN.dwg`). En cada una:
+ 1. `EXTERNALREFERENCESCLOSE`;
+-2. el inventario;
++2. `(getvar "DWGNAME")` y el inventario;
+ 3. `RCDUMP estilo`;
+-4. y al pasar a la siguiente, `vla-close … :vlax-false`.
++4. el cierre de la anterior, `vla-close … :vlax-false`;
++5. el bloque 8, con la anterior y la siguiente: c01 → e01, e01 → e02, y así.
+ 
+-En las `eNN` no se hace nada más. El bloque 8 no aplica, porque compara con D1; en su lugar, `Test-Path` del `.dwl` y el hash frente a `estilo.json`.
++En las `eNN` no se hace nada más. La última `eNN` se cierra al pasar a `s01`, o a c02 si no hay estilo, otra vez con el bloque 8.
+ 
+ **Bloque 14. El recuento,** fuera de AutoCAD, con `dimkeys.py` de [BM], sacado byte a byte de los objetos git:
+ 
+@@ -926,13 +1137,14 @@
+ $work = '<carpeta-del-Smoke-PB>'; $main = '<checkout-principal>'; $py = '<python-del-usuario>'
+ foreach ($v in $main, $py) { if ([string]::IsNullOrWhiteSpace($v) -or $v -match '[<>]') { throw "STOP: un valor sin rellenar" } }
+ foreach ($p in $work, $main, $py) { if (-not (Test-Path -LiteralPath $p)) { throw "STOP: no existe $p" } }
+-$rev = '7da361eb:docs/automation/evidence/I-64-pilot/F4B-PBT0-CHARACTERIZATION/block-m/tools/dimkeys.py'
++$rev = 'ebd304a3773495fa9071de6611936c4c01a7b06c:docs/automation/evidence/I-64-pilot/F4B-PBT0-CHARACTERIZATION/block-m/tools/dimkeys.py'
+ $tools = Join-Path $work 'tools'; $dk = Join-Path $tools 'dimkeys.py'
+ if (-not (Test-Path -LiteralPath $tools)) { New-Item -ItemType Directory -Path $tools | Out-Null }
+ if (Test-Path -LiteralPath $dk) { throw "STOP: $dk ya existe" }
+ & git -C $main show $rev > $dk; if ($LASTEXITCODE -ne 0) { throw "STOP: git show" }
+-$want = & git -C $main rev-parse $rev; $got = & git -C $main hash-object $dk
+-if ($LASTEXITCODE -ne 0 -or $want -ne $got) { throw "STOP: dimkeys.py no es byte a byte el del repositorio" }
++$want = & git -C $main rev-parse $rev; if ($LASTEXITCODE -ne 0) { throw "STOP: git rev-parse" }
++$got = & git -C $main hash-object --no-filters $dk; if ($LASTEXITCODE -ne 0) { throw "STOP: git hash-object" }
++if ($want -ne $got) { throw "STOP: dimkeys.py no es byte a byte el del repositorio" }
+ $inv = @(Get-ChildItem -LiteralPath (Join-Path $work 'inv') -File | Where-Object { $_.Name -eq 'c01-pre.txt' -or $_.Name -match '^e\d\d-estilo\.txt$' } | Sort-Object Name)
+ if ($inv.Count -lt 2) { throw "STOP: faltan inventarios (c01-pre y los eNN-estilo)" }
+ foreach ($f in $inv) {
+@@ -943,21 +1155,64 @@
+ exit 0
+ ```
+ 
++`dimkeys.py` sale del Candidato; su blob es el mismo en `7da361eb` (`57decb54…`). **Medido** (M-04): en PowerShell 7.7, la redirección `>` deja los bytes de `git show` tal cual (0 CR), y `hash-object --no-filters` da el id de `rev-parse`.
++
+ **Después del recuento:**
+-- **Si algún sobre Push Back guarda un `DimensionStyle` no nulo:** dos copias nuevas de ese original, `s01.dwg` y `s02.dwg`, en `<carpeta-del-Smoke-PB>\r1\`, con un bloque como el 13 (sin sobrescribir, con el hash comprobado).
++- **Si algún sobre Push Back de una `eNN` guarda un `DimensionStyle` no nulo:** el bloque 13b, con la primera `eNN` que lo guarde, por orden. Hace dos copias nuevas de su original, `s01.dwg` y `s02.dwg`, en `<carpeta-del-Smoke-PB>\spb07\`, y su manifiesto `s-copias.json`.
+   - **SPB-07 (a)** va en `s01`: RACKEDITAR → «Actualizar» → el estilo de las cotas.
+   - **SPB-07 (b)** va en `s02`: «Editar todo» → «Actualizar».
++  - Se abren con el paso de §4.7, con `<sub>` = `spb07`, y el bloque 8.
++- **Si `c01-pre` (D1) diera un sobre con estilo:** no se espera, porque [BM] M-7 midió en D1 los 14 sobres con el estilo nulo. Sería un OBSERVADO: SPB-07 vuelve al Owner con esa evidencia, y no se hacen copias sin un bloque exacto.
+ - **Si ninguno:** SPB-07 queda **PENDIENTE DEL OWNER**, para que decida si acepta el criterio 3 cumplido en parte. No se fabrica nada.
+ 
++**Bloque 13b. `s01` y `s02` para SPB-07,** desde el original de la `eNN` que guarda el estilo. Sin sobrescribir, desde el original, con el hash comprobado y frente a `estilo.json`:
++
++```powershell
++Set-StrictMode -Version Latest
++$ErrorActionPreference = 'Stop'
++$root = '<raiz-de-trabajo>'; $list = '<lista-local-de-la-seleccion>'; $tag = '<eNN-con-estilo>'
++$listSha = 'DD3613CB94CD4E19712D0FE2687CBDBDED2500C2AA8C4AD450D8556A26D3F2C1'
++if ([string]::IsNullOrWhiteSpace($list) -or $list -match '[<>]') { throw "STOP: un valor sin rellenar" }
++if ($tag -notmatch '^e\d\d$') { throw "STOP: la eNN sin rellenar o no valida" }
++$work = Join-Path $root 'smoke'; $estJson = Join-Path $work 'estilo\estilo.json'; $sp = Join-Path $work 'spb07'
++if (-not (Test-Path -LiteralPath $estJson -PathType Leaf)) { throw "STOP: no existe estilo.json (primero el bloque 13)" }
++if (Test-Path -LiteralPath $sp) { throw "STOP: $sp ya existe" }
++if (-not (Test-Path -LiteralPath $list -PathType Leaf)) { throw "STOP: no existe la lista local" }
++if ((Get-FileHash -LiteralPath $list -Algorithm SHA256).Hash -ne $listSha) { throw "STOP: la lista local no es la esperada (su SHA-256 no coincide)" }
++$est = Get-Content -LiteralPath $estJson -Raw | ConvertFrom-Json
++if ([string]$est.lista_sha256 -ne $listSha) { throw "STOP: estilo.json no se hizo con esta lista" }
++$row = @(@($est.copias) | Where-Object { $_.copia -eq "$tag.dwg" })
++if ($row.Count -ne 1) { throw "STOP: $tag no aparece una vez en estilo.json" }
++$h = [string]$row[0].sha256
++$sel = @((Get-Content -LiteralPath $list -Raw | ConvertFrom-Json).Selection)
++$ix = [int]$row[0].indice
++if ($ix -lt 0 -or $ix -ge $sel.Count) { throw "STOP: $tag no tiene entrada en la lista" }
++$src = [string]$sel[$ix].Source
++if (-not (Test-Path -LiteralPath $src -PathType Leaf)) { throw "STOP: no existe el original de $tag" }
++if ((Get-FileHash -LiteralPath $src -Algorithm SHA256).Hash -ne $h) { throw "STOP PBT5-C02: el original de $tag cambio desde el bloque 13" }
++New-Item -ItemType Directory -Path $sp | Out-Null
++$rows = @(foreach ($s in 's01.dwg', 's02.dwg') {
++  $dst = Join-Path $sp $s
++  if (Test-Path -LiteralPath $dst) { throw "STOP: $s ya existe" }
++  Copy-Item -LiteralPath $src -Destination $dst
++  if ((Get-FileHash -LiteralPath $dst -Algorithm SHA256).Hash -ne $h) { throw "STOP: $s no es igual al original de $tag" }
++  [pscustomobject]@{ copia = $s; origen = $tag; papeles = [string]$row[0].papeles; sha256 = $h }
++})
++if ((Get-FileHash -LiteralPath $src -Algorithm SHA256).Hash -ne $h) { throw "STOP PBT5-C02: cambio el original de $tag" }
++ConvertTo-Json -InputObject ([pscustomobject]@{ lista_sha256 = $listSha; copias = @($rows) }) -Depth 4 | Out-File -LiteralPath (Join-Path $sp 's-copias.json') -Encoding utf8 -NoClobber
++"OK: s01 y s02 iguales al original de $tag ($($row[0].papeles))"
++exit 0
++```
++
+ ## 5. Los pasos, por copia y en orden
+ 
+ Es el detalle de [P] §4.2: los 65 pasos, con los bloques I y J, las inyecciones y los contextos construidos.
+ 
+ | Orden | Copia | Pasos | Notas |
+ |---|---|---|---|
+-| 1 | c01 | SPB-01 a 05; `RCDUMP pre` y los controles de `rcblk`, `rcnest` y `rcdyn`; SPB-07 (a), el recuento en D1; SPB-08 | La línea de base de M-20 |
+-| 2 | e01 a eNN | P-09: el `RCDUMP estilo` de cada una (§4.13) | Solo lectura; después, el bloque 14 |
+-| 3 | s01 y s02 | SPB-07 (a) y (b), si algún dibujo guarda un estilo | Si ninguno: SPB-07 PENDIENTE DEL OWNER |
++| 1 | c01 | SPB-01 a 05; `RCDUMP pre` y los controles de `rcblk`, `rcnest` y `rcdyn`; P-09 (D1), el recuento en D1; SPB-08 | La línea de base de M-20 |
++| 2 | e01 a eNN | P-09: el `RCDUMP estilo` de cada una (§4.13), con el paso de §4.7 y el bloque 8 | Solo lectura; después, el bloque 14 |
++| 3 | s01 y s02 | SPB-07 (a) y (b), si algún dibujo guarda un estilo: el bloque 13b, y el paso de §4.7 con el bloque 8 | Si ninguno: SPB-07 PENDIENTE DEL OWNER |
+ | 4 | c02 a c04 | SPB-06, 09 (con la geometría) y 10 | |
+ | 5 | c05 | SPB-15 primero; después SPB-11 a 14, 16 y 49 | SPB-12 y 13, con las coordenadas y la captura de después |
+ | 6 | c06 | SPB-17 | Solo si existe la carpeta de diseños |
+@@ -972,7 +1227,7 @@
+ | 15 | c34 a c41 | SPB-45, 46, 57 y 58, cada uno en su copia y en su gemela, **CONSTRUCTED** (§4.12) | |
+ | 16 | — | SPB-50, la instancia principal: «Descartar», `CLOSE` → «No» y el bloque 9 | |
+ | 17 | c42 a c44 | SPB-59, 60 y 61, cada una en su AutoCAD (§4.11) | Los bloques 11 y 12 |
+-| 18 | — | SPB-51 (el bloque 10) y SPB-52 (los bloques 2, 3 y 4) | Siempre |
++| 18 | — | SPB-51 (el bloque 10) y SPB-52 (los bloques 2, 3, 4 y 15) | Siempre |
+ 
+ **Recuento:**
+ 
+@@ -984,7 +1239,7 @@
+ | Solo registrados | 3: SPB-22, SPB-43 y SPB-65 |
+ | Precondiciones | 9: P-01 a P-09 |
+ 
+-**Si la frontera de las 13:00 UTC llega a mitad:** se para en el límite de paso. Lo que falte, se sigue con el Owner, en el mismo orden.
++**Si la frontera de las 13:00 UTC llega a mitad:** se para en el límite de paso. Lo que falte, se sigue con el Owner, en el mismo orden. **Si la preparación no quedó hecha antes de las 12:00 UTC,** el orden 1 en adelante espera al Owner (§2).
+ 
+ ## 6. Lo que la sesión no hace, y lo que se deja al Owner
+ 
+@@ -994,13 +1249,16 @@
+ - **fabricar el estilo de cotas,** ni dar SPB-07 por NOT AVAILABLE. Si ningún dibujo lo guarda, vuelve al Owner;
+ - **la UI completa en local** (Q-PBT5-1);
+ - **la revisión independiente de la evidencia.** La hace un revisor aparte, en solo lectura (Q-PBT5-8);
++- **repetir un paso como adenda** por una discrepancia de esa revisión: solo corrige transcripciones; si cambia un resultado o hace falta AutoCAD, al Owner (PBT5-C16);
+ - **la disposición, la firma ni el gate-close;**
++- **abrir AutoCAD sola** si la emisión y P-01 a P-08 no estaban hechas antes de las 12:00 UTC;
+ - **operar AutoCAD pasadas las 13:00 UTC** sin el Owner;
+ - **guardar una copia,** abrir un original, sobrescribir un archivo, escribir en la raíz de una unidad o tocar un AutoCAD que no abrió la sesión;
+ - **usar COM** o `Stop-Process`;
+ - **poner `RACKCAD_DEBUG_*`** fuera del entorno de los AutoCAD de SPB-59 a SPB-61;
+-- **cambiar la configuración de AutoCAD,** el registro o una variable de sistema;
+-- **custodiar** la paleta de referencias externas, el aviso de NETLOAD, un diálogo de archivos o una captura sin redactar (§8).
++- **cambiar la configuración de AutoCAD,** el registro o una variable de sistema (las de la configuración; el estado del dibujo de una copia, como `CTAB`, no lo es: §4.12);
++- **custodiar** la paleta de referencias externas, el aviso de NETLOAD, un diálogo de archivos o una captura sin redactar (§8);
++- **custodiar la lista local de la selección,** o copiar su contenido a algo que se custodie.
+ 
+ **Lo que se deja al Owner,** en `owner-summary.md`:
+ - **«Para tu revisión»:** los 9 S+O, cada uno con su captura recortada y la medida de la sesión;
+@@ -1019,7 +1277,8 @@
+ - el sha256 de este documento, el del paquete y el de la guía redactada;
+ - el Candidato y el producto; la versión de AutoCAD; el SHA-256 de la biblioteca de bloques;
+ - los PID de la sesión, de los `acad-session-<n>.json`;
+-- la hora de inicio frente a las 13:00 UTC.
++- la hora a la que quedaron hechas la emisión y P-01 a P-08, frente a las 12:00 UTC, y la de inicio, frente a las 13:00 UTC;
++- el sha256 de la lista local de la selección (no su contenido).
+ 
+ **Por cada paso:**
+ - la hora UTC;
+@@ -1036,7 +1295,20 @@
+ - `integrity.md` (la salida del bloque 10), `environment-pre.md` y `environment-post.md`;
+ - `owner-summary.md`.
+ 
+-**La custodia:** un commit documental de la sesión, con `<raiz-de-trabajo>\…` redactado. No cambia el Candidato. Después va la revisión independiente de la evidencia (Q-PBT5-8).
++**Lo que el registro no copia** (M-09):
++- **órdenes con rutas:** el eco de `NETLOAD`, de `vla-open`, de los `defun` o de un STOP que nombre una ruta. Se escribe la orden con sus marcadores (`<worktree>`, `<raiz-de-trabajo-con-/>/…`) y el resultado;
++- **la ruta resuelta de la biblioteca de bloques** (bloque B4) ni las líneas `ERROR` enteras (bloque 15): al registro custodiado van el origen, el nombre y el SHA-256, y el número de líneas con un resumen redactado;
++- **nada de la lista local de la selección:** cada dibujo se nombra por su `eNN` y sus papeles de Smoke-2.
++
++**La custodia:** un commit documental de la sesión, con `<raiz-de-trabajo>\…` redactado. No cambia el Candidato. **Antes del commit,** los patrones locales de privacidad pasan por todo lo que se va a custodiar:
++
++```text
++python -I <carpeta-del-paquete>/_tools/scan_custody.py --patterns <carpeta-del-paquete>/_tools/patterns.local.txt --dir <carpeta-preparada-para-custodiar>
++```
++
++- Sale con 0 si nada casa. Si algo casa, lista el archivo, cuántas coincidencias tiene y su sha256, nunca el texto que casa.
++- **Lo que case va solo por su sha256,** como en la emisión y en F4B-E60: no se copia.
++- Después va la revisión independiente de la evidencia (Q-PBT5-8).
+ 
+ ## 8. Las capturas: dónde van y cómo se redactan antes de custodiarlas
+ 
+@@ -1067,6 +1339,6 @@
+ | Nunca se cierra ni se toca un AutoCAD que no abrió la sesión. Si hay uno abierto al compilar, no se compila. Sin COM y sin `Stop-Process`. El PID se comprueba por su ruta y su hora de inicio | PBT5-C08; I-07; M-27 |
+ | La `ProductVersion` y el SHA-256, antes de NETLOAD | [G] §7.2 |
+ | NETLOAD del DLL exacto, por expresión, y «Load Once» | [G] §3; [F] §6.3; [BM] |
+-| Sin tocar Trusted Locations, SECURELOAD, «Always Load», `FILEDIA`, `PICKFIRST` ni ninguna otra variable; sin «Always ignore» | [F] §6.3; [S2] |
++| Sin tocar Trusted Locations, SECURELOAD, «Always Load», `FILEDIA`, `PICKFIRST` ni ninguna otra variable de la configuración; sin «Always ignore». El estado del dibujo de una copia que se cierra sin guardar (`CTAB`, `TILEMODE`) no es configuración | [F] §6.3; [S2]; M-11 |
+ | `RACKCAD` y la biblioteca; `RACKPANEL` | [G] §3, pasos 4 y 5 |
+ | Al final, nada de RackCad en `Applications`, `Loaded` ni `AssemblyMap` | SPB-52 |

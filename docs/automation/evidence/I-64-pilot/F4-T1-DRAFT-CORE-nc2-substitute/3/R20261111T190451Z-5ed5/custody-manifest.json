@@ -1,0 +1,24 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4-T1-DRAFT-CORE-nc2-substitute/3/R20261111T190451Z-5ed5",
+  "SourceRoot": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE-nc2-substitute/3/R20261111T190451Z-5ed5",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 2,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "nc2_single_path_substitute.py",
+      "Bytes": 8088,
+      "Sha256": "2f65762411c366f273a015688f30ebdede60e86a81e83b3020acdfc1b63c568c",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "substitute-result.json",
+      "Bytes": 3299,
+      "Sha256": "1402f57820c6aeb62677189b440d82328f23a593e830e638c917603f401d0279",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

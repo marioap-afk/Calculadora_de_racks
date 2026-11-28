@@ -1,0 +1,165 @@
+{
+  "Id": "F4T2B2B-NC1-IDENTITY-SIGNAL-01",
+  "NotA4": true,
+  "Scope": "solo F4-T2B2B-LIFECYCLE, intento 1; no reemplaza al Controller ni a nc1 en otras tareas",
+  "SelfTest": [
+    {
+      "Case": "A",
+      "Description": "CurrentSha falso detectado; Handoff primera en fail y cascada de consumidores (la corrida real)",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "A2",
+      "Description": "CurrentSha falso detectado; solo Identity en fail (el oraculo ordinario)",
+      "Result": "PASS",
+      "Expected": "PASS",
+      "Ok": true
+    },
+    {
+      "Case": "B",
+      "Description": "la mutacion cambia un segundo campo de la entrega",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "C",
+      "Description": "el SHA sustituido existe en el repositorio",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "D",
+      "Description": "hash derivado incoherente",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "E",
+      "Description": "cambia otra entrada ademas de las derivadas",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "F",
+      "Description": "el Controller dio Identity = pass",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "G",
+      "Description": "clasificacion REWORK en lugar de BLOCKED/STOP",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "H",
+      "Description": "falla tambien una comprobacion ajena al CurrentSha (Scope)",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "I",
+      "Description": "la Evidence de Identity no nombra el SHA falso",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "J",
+      "Description": "FailureClass que no es la primera en fail",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    },
+    {
+      "Case": "K",
+      "Description": "FailureClass Handoff sin nombrar el SHA falso en su Evidence",
+      "Result": "FAIL",
+      "Expected": "FAIL",
+      "Ok": true
+    }
+  ],
+  "SelfTestPass": true,
+  "SelfTestDeterministic": true,
+  "RealVerification": "artifacts/orchestration/I-64/F4-T2B2B-LIFECYCLE/1/R20261112T201718Z-060d",
+  "Nc1Run": "artifacts/orchestration/I-64/F4-T2B2B-LIFECYCLE-nc1/1/R20261112T202615Z-e92e",
+  "Head": "8f249e3a9d886348a18ca8eef35f7ab014a8b167",
+  "RealVerificationClassification": "EXECUTION_VERIFIED",
+  "Nc1ControllerEvidence": {
+    "Handoff": "worker-handoff.json matches TaskId, Attempt, DelegationRunId, assigned RunId, branch and worktree; its output time is after cession start. Its CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, which does not resolve in Git and contradicts relay-record-work.json Entry.HeadSha and Entry.LsRemoteSha at 8f249e3a9d886348a18ca8eef35f7ab014a8b167.",
+    "Identity": "git rev-parse confirms BaseSha 32369c7b24d393931c26daab33f53ca450bdcf2e, RedSha a2e0ec13c17dd5152498971ec42e3163e3acee13 and actual HEAD 8f249e3a9d886348a18ca8eef35f7ab014a8b167. Branch is architecture/workspace-persistente-rackcad; remote branch ref and HEAD both resolve to 8f249e3a9d886348a18ca8eef35f7ab014a8b167. Both BaseSha and RedSha pass merge-base --is-ancestor against actual HEAD. Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, so HEAD != handoff CurrentSha."
+  },
+  "Measured": {
+    "RealCurrentSha": "8f249e3a9d886348a18ca8eef35f7ab014a8b167",
+    "MutatedCurrentSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    "Head": "8f249e3a9d886348a18ca8eef35f7ab014a8b167",
+    "HandoffFieldsChanged": [
+      ".CurrentSha"
+    ],
+    "ChangedInputs": [
+      "relay-record-work.json",
+      "worker-handoff.json"
+    ],
+    "Controller": {
+      "Classification": "EXECUTION_BLOCKED",
+      "Disposition": "STOP",
+      "FailureClass": "Handoff",
+      "TriggeredStopConditions": [
+        "S-04"
+      ],
+      "Results": {
+        "Termination": "pass",
+        "Handoff": "fail",
+        "Authority": "pass",
+        "Contract": "pass",
+        "Identity": "fail",
+        "Remote": "fail",
+        "Scope": "pass",
+        "CleanTree": "pass",
+        "Ci": "fail",
+        "Tests": "fail",
+        "Trailer": "pass",
+        "Routing": "pass",
+        "FreeText": "pass",
+        "Denials": "pass"
+      }
+    },
+    "DiffersFromReal": [
+      "Handoff",
+      "Identity",
+      "Remote",
+      "Ci",
+      "Tests"
+    ],
+    "FirstNotPass": "Handoff",
+    "FakeShaExistsInRepo": false
+  },
+  "Properties": {
+    "1_MutationIsExactlyCurrentShaToANonexistentSha": true,
+    "2_DerivedHashesConsistent": true,
+    "3_IdentityMustFail": true,
+    "4_ControllerReportedIdentityFailBlockedStop": true,
+    "5_IdentityEvidenceNamesFakeShaAndHead": true,
+    "6_OnlyCurrentShaConsumersDiffer": true,
+    "7_FailureClassFirstNotPassHandoffOrIdentity": true
+  },
+  "SubstituteResult": "PASS",
+  "Notes": {
+    "SignalDemonstrated": "el Controller detecto la mutacion: su Evidence de Identity nombra el CurrentSha falso y el HEAD real, y la de Handoff dice que el SHA falso no resuelve en Git y contradice el relevo de entrada",
+    "OrdinaryOracleNotMet": "la primera comprobacion en fail es Handoff (AUTOMATION_PLAN 16.9: Salida conforme pero vacia o falsa -> Handoff), no Identity como fija README section 10; Remote, Ci y Tests fallan en cascada porque consumen CurrentSha",
+    "ProtocolDebt": "PD-F4-04: README section 10 (nc1 -> Identity) y AUTOMATION_PLAN 16.9 (salida falsa -> Handoff) admiten dos primeras comprobaciones para un CurrentSha inexistente; deuda de protocolo, sin solucion global dentro de I-64"
+  },
+  "Record": {
+    "Nc1OrdinaryRun": "ORACULO NO CUMPLIDO / SENAL DEMOSTRADA (se conserva tal cual)",
+    "nc1": "SATISFIED_UNDER_F4T2B2B_NC1_IDENTITY_SIGNAL_SUBSTITUTE"
+  }
+}

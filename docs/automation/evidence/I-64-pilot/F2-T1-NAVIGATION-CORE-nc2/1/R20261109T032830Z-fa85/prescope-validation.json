@@ -1,0 +1,77 @@
+{
+  "RunId": "R20261109T032830Z-fa85",
+  "MutatedCheck": "Scope",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json registra Outcome.Kind=COMPLETED, DeathConfirmed=true y salida final del subagente. Cession.SessionOperated=false; la transcripcion duro menos de 60 minutos."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T18:45:41Z",
+          "Utc": "2026-11-08T18:45:41+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        },
+        {
+          "Quoted": "2026-11-08T18:28:11Z",
+          "Utc": "2026-11-08T18:28:11+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [
+        {
+          "Quoted": "R20261108T181429Z-adae",
+          "Sources": [
+            "contract-equivalence.json",
+            "delegation.json",
+            "relay-record-planning.json",
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        },
+        {
+          "Quoted": "R20261108T182756Z-ec7e",
+          "Sources": [
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        }
+      ],
+      "Evidence": "worker-handoff.json esta presente y contiene Schema=rackcad-worker-handoff/v1, TaskId=F2-T1-NAVIGATION-CORE, Attempt=1, DelegationRunId=R20261108T181429Z-adae y RunId=R20261108T182756Z-ec7e. OutputWrittenUtc=2026-11-08T18:45:41Z es posterior a Cession.StartUtc=2026-11-08T18:28:11Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha devolvio 0. git diff --name-only 90f5872e89660655a93606e16d50f4bc19aa3c9c 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb muestra solo docs/automation/evidence e docs/automation/state/I-64.yml, rutas UNIT_DOC de I-64; no incluye rutas EXTERNAL ni UNIT_CHANGE. Las autoridades EXTERNAL se leyeron en MainSha a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Comparacion de gate-contract.json y delegation.json: identicos Unit, Gate, TaskId, AuthorityRevision y MainSha; AllowedWriteScope de la delegacion esta contenido en los dos prefijos permitidos del contrato; ForbiddenWriteScope coincide. A3-A5 pasan."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git rev-parse HEAD y git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad devuelven c726410f3ac764f4a80a08b5fdda276ecc. Rama y worktree coinciden con la delegacion y entrega. git merge-base --is-ancestor BaseSha RedSha y RedSha HEAD devolvio 0 para ambos."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json registra Entry.LsRemoteSha=c726410f3ac764f4a80a08b5fdda276ecc igual a CurrentSha y Exit.LsRemoteSha=BaseSha antes de la cesion. RemoteFacts registra OriginMainSha=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60 igual a MainSha. El cambio de BaseSha a CurrentSha entre Exit y Entry corresponde a los commits y push del Worker."
+    }
+  },
+  "Findings": [],
+  "Pass": true
+}

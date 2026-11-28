@@ -1,0 +1,13 @@
+Recuento de M-7 (dimkeys.py: claves con Dimension en cada sobre, recursivo y dentro de Design).
+
+## D1 (M1-pre)
+sobres por Kind: {'pushback': 14, 'selective': 2, 'cabecera': 1}
+   2  .Design<json>.Dimensions = 0
+  14  .Design<json>.PushBack.Structure.DimensionStyle = None
+  14  .Design<json>.PushBack.Structure.Dimensions = 0
+
+## D2 (M7-D2-pre)
+sobres por Kind: {'pushback': 8}
+   8  .Design<json>.PushBack.Structure.DimensionStyle = None
+   8  .Design<json>.PushBack.Structure.Dimensions = 0
+

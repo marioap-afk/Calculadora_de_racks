@@ -1,0 +1,58 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261111T181415Z-c4f7",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad dan 61d83788e7fa8decd861626b7e3ca89c8f23b9b4; session-remote-facts.json da esa misma punta remota. La entrega recibida declara CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; merge-base --is-ancestor de ese SHA a HEAD falla porque no existe como commit. git merge-base --is-ancestor BaseSha ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 y RedSha ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 devuelven 0; CurrentSha recibido no permite validar esa cadena. Branch y worktree coinciden con lo esperado. El diff ce73ceb7..61d83788 contiene solo rutas docs/; no permite sustituir el CurrentSha incorrecto de la entrega."
+  },
+  "OutputSha256": "6D8EFAC143F219C3D7C1A545F067F11AF4A194433E1A4F78706260DD1001FFC1",
+  "ManualFreeText1610": []
+}

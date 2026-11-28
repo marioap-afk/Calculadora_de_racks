@@ -88,7 +88,7 @@ namespace RackCad.Application.Views.Placement
                 case RackProjectionFailureCode.PropertiesUnreadable:
                     return Remedy(
                         RackProjectionRemedyKind.UnifyProperties,
-                        "Unifica las propiedades con RACKPROPIEDADES; si las muestra en solo lectura, resuelve antes la causa que indica.");
+                        "Unifica las propiedades con RACKPROPIEDADES (la pestana Propiedades del rack en la ventana RackCad) o, si su editor no se abre, con Propiedades personalizadas (ventana clasica) del menu clasico RACKMENU; si las muestra en solo lectura, resuelve antes la causa que indica."); // T6 rl
 
                 case RackProjectionFailureCode.ResolveOutputBlocking:
                     return Remedy(
@@ -98,7 +98,7 @@ namespace RackCad.Application.Views.Placement
                 case RackProjectionFailureCode.ResolveBrokenReference:
                     return Remedy(
                         RackProjectionRemedyKind.RepairVariable,
-                        Append("Repara la variable de proyecto con RACKVARIABLES", detail));
+                        Append("Repara la variable de proyecto con RACKVARIABLES (Referencias rotas, Reparar, en la ventana RackCad) o con Variables de proyecto (ventana clasica) del menu clasico RACKMENU", detail)); // T6 rl
 
                 case RackProjectionFailureCode.ResolveDependencyUnavailable:
                     return Remedy(

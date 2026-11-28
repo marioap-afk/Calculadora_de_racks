@@ -1,0 +1,323 @@
+<UserControl x:Class="RackCad.UI.VentanaRackCad.CamaEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RackCad.UI.VentanaRackCad"
+             AutomationProperties.Name="Editor de la cama de rodamiento"
+             FontFamily="Segoe UI"
+             FontSize="12"
+             Background="{DynamicResource WindowBackgroundBrush}">
+    <!-- T5 cm (I-64, quinta tanda; prototype «camas», every question accepted): the editor of ONE cama de rodamiento in the RackCad window.
+         One page (question 1): «Lo esencial», «Calculado», «Esquema de la cama» (question 2) and «Avanzado» folded, and the tab «Propiedades»
+         at the end (VA-07). What is written in a field goes to the draft when the field is left or with Enter; a list, at once. Nothing here
+         writes the drawing: «Actualizar» (or «Insertar en el dibujo…» of a new cama) hands the draft to the window. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="FlagToVisibility" />
+            <Style x:Key="OptionalText" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <!-- An empty line keeps its height (O-8 of the smoke of Dinámico): the content below does not move. -->
+            <Style x:Key="ReservedText" TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Hidden" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="GroupTitle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Margin" Value="0,10,0,4" />
+                <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+            </Style>
+            <!-- A value written in a box: label, box with its unit, the line under it and its error (the box is marked too). -->
+            <DataTemplate DataType="{x:Type local:CamaFieldItem}">
+                <StackPanel Width="230" Margin="0,0,14,10">
+                    <TextBlock Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <DockPanel Margin="0,2,0,0">
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding Unit}" Margin="6,0,0,0" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBox Padding="4,3" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="{Binding IsReadOnly}" AutomationProperties.Name="{Binding Label}"
+                                 AutomationProperties.HelpText="{Binding Error}"
+                                 KeyDown="OnFieldKeyDown" LostFocus="OnFieldLostFocus">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasError}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                            <Setter Property="BorderThickness" Value="2" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsReadOnly}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </DockPanel>
+                    <TextBlock Text="{Binding Error}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
+                               Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                    <TextBlock Text="{Binding Hint}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </StackPanel>
+            </DataTemplate>
+            <!-- A value chosen from a list: a choice goes to the draft at once. -->
+            <DataTemplate DataType="{x:Type local:CamaChoiceItem}">
+                <StackPanel Width="230" Margin="0,0,14,10">
+                    <TextBlock Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <ComboBox Margin="0,2,0,0" ItemsSource="{Binding Options}" DisplayMemberPath="Label" SelectedValuePath="Value"
+                              SelectedValue="{Binding SelectedValue, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}"
+                              AutomationProperties.Name="{Binding Label}" />
+                    <TextBlock Text="{Binding Error}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
+                               Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                    <TextBlock Text="{Binding Hint}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                </StackPanel>
+            </DataTemplate>
+            <!-- One value of «Calculado»: the value keeps a gap from its label and a manual one says so (dolor 7). -->
+            <DataTemplate DataType="{x:Type local:CamaCalcItem}">
+                <Border Width="170" Margin="0,0,10,10" Padding="10,6" BorderThickness="1" CornerRadius="6"
+                        BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                        AutomationProperties.Name="{Binding Label}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Label}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBlock Text="{Binding Value}" FontSize="16" FontWeight="SemiBold" Margin="0,2,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsManual}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Hint}" TextWrapping="Wrap" Margin="0,2,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+            <ItemsPanelTemplate x:Key="WrapItems">
+                <WrapPanel />
+            </ItemsPanelTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel LastChildFill="True">
+        <!-- The head: the name, the state, the one primary action, «Descartar», «Restaurar layout…», «Cerrar el editor» and «Más». -->
+        <Border DockPanel.Dock="Top" Padding="12,8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource ShellBorderBrush}"
+                Background="{DynamicResource ShellSurfaceBrush}">
+            <StackPanel>
+                <WrapPanel>
+                    <StackPanel Margin="0,0,12,4" MaxWidth="260">
+                        <TextBlock Text="Nombre de la cama" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <TextBox x:Name="NameBox" Width="220" HorizontalAlignment="Left" Padding="4,3" AutomationProperties.Name="Nombre de la cama"
+                                 IsReadOnly="{Binding IsNameReadOnly}"
+                                 Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock x:Name="NameHintText" Text="{Binding NameHint}" Style="{StaticResource OptionalText}" Margin="0,2,0,0"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                    <Border Margin="0,14,8,4" Padding="8,2" CornerRadius="8" BorderThickness="1" VerticalAlignment="Top">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusSuccessBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDirty}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusWarningBrush}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsWriting}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ShellStatusInfoBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock x:Name="StatusText" Text="{Binding StatusText}" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                    </Border>
+                    <TextBlock x:Name="DiffText" Text="{Binding DiffText}" Margin="0,16,12,4" VerticalAlignment="Top"
+                               Style="{StaticResource OptionalText}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    <!-- T6 ui (point 9): the buttons are ONE group, beside the name while they fit, or together on the next line (at about
+                         950 px «Más» went alone to a second line). -->
+                    <WrapPanel x:Name="HeadButtons">
+                    <Button x:Name="PrimaryButton" Content="{Binding PrimaryLabel}" Margin="0,12,8,4" Padding="14,4" VerticalAlignment="Top"
+                            Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding CanPrimary}"
+                            AutomationProperties.Name="{Binding PrimaryAutomationName}" Click="OnPrimaryClick" />
+                    <Button x:Name="DiscardButton" Content="Descartar" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanDiscard}"
+                            AutomationProperties.Name="Descartar el borrador de la cama" Click="OnDiscardClick" />
+                    <Button x:Name="RestoreButton" Content="Restaurar layout…" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}"
+                            AutomationProperties.Name="Restaurar el layout de la cama" Click="OnRestoreClick" />
+                    <Button x:Name="CloseEditorButton" Content="Cerrar el editor" Margin="0,12,8,4" Padding="12,4" VerticalAlignment="Top"
+                            Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanEdit}"
+                            AutomationProperties.Name="Cerrar el editor de esta cama" Click="OnCloseEditorClick" />
+                    <!-- «Más» (UT-04): its entries open inline (no popup, O-D of the smoke), in a row under the head (T6 ui). -->
+                    <StackPanel x:Name="MoreBlock" Margin="0,12,8,4" VerticalAlignment="Top">
+                        <Button x:Name="MoreButton" Content="Más" Padding="12,4" HorizontalAlignment="Left" Style="{StaticResource SecondaryButtonStyle}"
+                                AutomationProperties.Name="Más acciones de la cama" AutomationProperties.ItemStatus="{Binding MoreItemStatus}"
+                                Click="OnMoreClick" />
+                    </StackPanel>
+                    </WrapPanel>
+                </WrapPanel>
+                <!-- T6 ui (correction 2 of the review): the entries of «Más» are a row of their own under the head, as the question of
+                     «Cerrar el editor»: open, they no longer move the group of the buttons to another line. -->
+                <Border x:Name="MorePanel" HorizontalAlignment="Left" Margin="0,4,0,0" Padding="6" BorderThickness="1" CornerRadius="4" MaxWidth="280"
+                        BorderBrush="{DynamicResource ShellBorderBrush}" Background="{DynamicResource ShellSurfaceBrush}"
+                        Visibility="{Binding IsMoreOpen, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <Button x:Name="SaveToLibraryButton" Content="Guardar en biblioteca…" HorizontalContentAlignment="Left" Padding="10,3"
+                                Style="{StaticResource SecondaryButtonStyle}" AutomationProperties.Name="Guardar la cama en la biblioteca de diseños"
+                                Click="OnSaveToLibraryClick" />
+                        <TextBlock x:Name="SaveToLibraryBlockedText" Text="{Binding SaveToLibraryBlockedText}" Style="{StaticResource OptionalText}"
+                                   Margin="0,4,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+                </Border>
+                <TextBlock x:Name="SubLineText" Text="{Binding SubLine}" TextWrapping="Wrap" Margin="0,2,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                <!-- «Cerrar el editor» with changes: the inline question, with what is lost. -->
+                <Border x:Name="CloseConfirmPanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"
+                        BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                        Visibility="{Binding IsConfirmingClose, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                   Text="El borrador tiene cambios que no están en el dibujo. Si cierras el editor, se pierden. ¿Descartarlos y cerrar?" />
+                        <WrapPanel Margin="0,6,0,0">
+                            <Button x:Name="CloseYesButton" Content="Descartar y cerrar" Margin="0,0,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}" Foreground="{DynamicResource ShellStatusErrorBrush}" Click="OnCloseYesClick" />
+                            <Button x:Name="CloseNoButton" Content="Cancelar" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}" Click="OnCloseNoClick" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+                <!-- T6 st (O-5, M-16): «El dibujo cambió desde que se leyó», «Volver a leer del dibujo» and the question of «Actualizar». -->
+                <local:RackEditorDrawingChangePanel x:Name="DrawingChangePanel" DataContext="{Binding DrawingChange}" />
+                <!-- «Restaurar layout…» (question 6): the two boxes, marked, of what was written by hand. -->
+                <Border x:Name="RestorePanel" Margin="0,6,0,0" Padding="8" BorderThickness="1"
+                        BorderBrush="{DynamicResource ShellStatusWarningBrush}"
+                        Visibility="{Binding IsRestoreOpen, Converter={StaticResource FlagToVisibility}}">
+                    <StackPanel>
+                        <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" Text="¿Restaurar el layout?" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,2,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                   Text="Vuelve al paso del rodillo y a los frenos por la profundidad de tarima. Marca lo que quieres restaurar:" />
+                        <CheckBox x:Name="RestorePitchBox" Content="{Binding RestorePitchLabel}" Margin="0,2" IsChecked="{Binding RestorePitch, Mode=TwoWay}"
+                                  IsEnabled="{Binding CanRestorePitch}" AutomationProperties.Name="Restaurar el paso de rodillos manual" />
+                        <CheckBox x:Name="RestoreBrakesBox" Content="{Binding RestoreBrakesLabel}" Margin="0,2" IsChecked="{Binding RestoreBrakes, Mode=TwoWay}"
+                                  IsEnabled="{Binding CanRestoreBrakes}" AutomationProperties.Name="Restaurar el freno cada N rodillos" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="Va al borrador: el dibujo no cambia hasta que lo escribas." />
+                        <WrapPanel Margin="0,6,0,0">
+                            <Button x:Name="RestoreYesButton" Content="Restaurar lo marcado" Margin="0,0,6,0" Padding="10,3"
+                                    Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding CanConfirmRestore}"
+                                    Foreground="{DynamicResource ShellStatusErrorBrush}" Click="OnRestoreYesClick" />
+                            <Button x:Name="RestoreNoButton" Content="Cancelar" Padding="10,3" Style="{StaticResource SecondaryButtonStyle}" Click="OnRestoreNoClick" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+                <TextBlock x:Name="PrimaryBlockedText" Text="{Binding PrimaryBlockedText}" Style="{StaticResource ReservedText}" Margin="0,4,0,0"
+                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                <TextBlock x:Name="MessageText" Text="{Binding Message}" Margin="0,4,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource OptionalText}">
+                            <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding MessageIsError}" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource ShellStatusErrorBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <TabControl x:Name="Tabs" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}" Margin="8,6,8,8">
+            <!-- The one page of the cama (question 1): no matrix and no ends. -->
+            <TabItem x:Name="CamaTab" Header="Cama">
+                <ScrollViewer x:Name="PageScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Lo esencial" Style="{StaticResource GroupTitle}" Margin="0,0,0,2" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                   Text="Lo escrito va al borrador al salir del campo o con Enter; una lista, al elegir. Solo el botón de arriba lo lleva al dibujo." />
+                        <ItemsControl x:Name="EssentialsList" ItemsSource="{Binding Essentials}" ItemsPanel="{StaticResource WrapItems}" Focusable="False" />
+
+                        <TextBlock Text="Calculado" Style="{StaticResource GroupTitle}" />
+                        <TextBlock x:Name="CalculatedNoteText" Text="{Binding CalculatedNote}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                        <ItemsControl x:Name="CalculatedList" ItemsSource="{Binding Calculated}" ItemsPanel="{StaticResource WrapItems}" Focusable="False" />
+
+                        <!-- Question 2: a scheme of one line, at scale and foldable, with the list of the positions; not a view of the drawing. -->
+                        <Expander x:Name="SchemaExpander" Margin="0,10,0,0" IsExpanded="{Binding IsSchemaOpen, Mode=TwoWay}"
+                                  AutomationProperties.Name="Esquema de la cama">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Esquema de la cama" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <TextBlock x:Name="SchemaSummaryText" Text="{Binding SchemaSummary}" Margin="12,2,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </StackPanel>
+                            </Expander.Header>
+                            <StackPanel Margin="0,8,0,0">
+                                <StackPanel Visibility="{Binding HasLayout, Converter={StaticResource FlagToVisibility}}">
+                                    <TextBlock x:Name="SchemaEndsText" Text="{Binding SchemaEnds}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    <local:CamaSchemaStrip x:Name="SchemaStrip" Margin="0,4,0,0" Layout="{Binding Layout}" TickStep="{Binding SchemaTickStep}"
+                                                           AutomationProperties.Name="{Binding SchemaText}" />
+                                    <WrapPanel Margin="0,4,0,0">
+                                        <Border Width="10" Height="10" Margin="0,0,4,0" Background="{DynamicResource ShellStatusErrorBrush}" Opacity="0.5" />
+                                        <TextBlock Text="tope" Margin="0,0,12,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <Ellipse Width="10" Height="10" Margin="0,0,4,0" Stroke="{DynamicResource ShellStatusSuccessBrush}" StrokeThickness="1.5" />
+                                        <TextBlock Text="rodillo" Margin="0,0,12,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <Ellipse Width="10" Height="10" Margin="0,0,4,0" Fill="{DynamicResource ShellStatusInfoBrush}" />
+                                        <TextBlock Text="freno" Margin="0,0,12,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <Border Width="14" Height="3" Margin="0,0,4,0" Background="{DynamicResource ShellTextSecondaryBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="riel" Margin="0,0,12,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                        <TextBlock x:Name="SchemaScaleText" Text="{Binding SchemaScaleText}" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                    </WrapPanel>
+                                    <ItemsControl x:Name="PositionList" ItemsSource="{Binding PositionLines}" Margin="0,6,0,0" Focusable="False"
+                                                  AutomationProperties.Name="Posiciones de la cama">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock x:Name="SchemaNoteText" Text="{Binding SchemaNote}" TextWrapping="Wrap" Margin="0,6,0,0"
+                                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </StackPanel>
+                                <TextBlock x:Name="SchemaEmptyText" Text="Corrige los valores marcados para ver el esquema." TextWrapping="Wrap"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                           Visibility="{Binding NoLayout, Converter={StaticResource FlagToVisibility}}" />
+                            </StackPanel>
+                        </Expander>
+
+                        <!-- «Avanzado»: its summary says what is written by hand, also folded (dolor 7), and a mark when a value is marked. -->
+                        <Expander x:Name="AdvancedExpander" Margin="0,10,0,0" IsExpanded="{Binding IsAdvancedOpen, Mode=TwoWay}"
+                                  AutomationProperties.Name="Avanzado">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Avanzado" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                    <TextBlock x:Name="AdvancedMark" Text="●" Margin="6,2,0,0" Foreground="{DynamicResource ShellStatusErrorBrush}" ToolTip="Con valores marcados"
+                                               Visibility="{Binding AdvancedHasProblem, Converter={StaticResource FlagToVisibility}}" />
+                                    <TextBlock x:Name="AdvancedSummaryText" Text="{Binding AdvancedSummary}" Margin="12,2,0,0" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                </StackPanel>
+                            </Expander.Header>
+                            <ItemsControl x:Name="AdvancedList" ItemsSource="{Binding AdvancedFields}" ItemsPanel="{StaticResource WrapItems}" Margin="0,8,0,0"
+                                          Focusable="False" />
+                        </Expander>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <!-- VA-07: the tab «Propiedades» at the end of the editor: the custom properties of the cama, written by «Actualizar». -->
+            <TabItem x:Name="RackPropertiesTabItem" Header="{Binding PropertiesTab.TabHeader}" AutomationProperties.Name="Propiedades">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <local:RackPropertiesTabView x:Name="RackPropertiesView" DataContext="{Binding PropertiesTab}" />
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>

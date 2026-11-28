@@ -1,0 +1,96 @@
+{
+  "Status": "COORDINATOR_ACCEPTANCE_REQUIRED",
+  "PlanningRunId": "R20261002T140200Z-3886",
+  "DelegationPath": "artifacts/orchestration/I-64/F1-T1-MODEL/2/R20261002T140200Z-3886/delegation.json",
+  "DelegationSha256": "C3384842342745C5168205EAFEE4A426CAB5CA55E1160C777BFDB85CFBD9DF62",
+  "GateContractSha256": "A4D3681828117B640B6FCFC04F2646CBA2A3AD78929DAE589F060230991999D2",
+  "PromptSha256": "E9F809B250E6DBFE560AF144DB590D7D0F0D24F3012BD2A7F7DA1E268E2226CD",
+  "CorrectionOf": {
+    "RunId": "R20261002T063546Z-0cd7",
+    "FailureClass": "Ci",
+    "AnalysisSha256": null
+  },
+  "Attempt": 2,
+  "AttemptsRemaining": 1,
+  "BaseSha": "1504c938dc8ac050a8e0d61c5db6c9977b638600",
+  "AuthorityRevision": "e0587355b0e84d98807057a56dfc50591da87489",
+  "MainSha": "819955d61a6da4c811a11fbd11b5dca13f634b7c",
+  "ChainBaseSha": "e0587355b0e84d98807057a56dfc50591da87489",
+  "ChainRedSha": "189353f8df954b05cbbcdc0f15dca0cb3bf21002",
+  "ChainRedFiles": [
+    "tests/RackCad.Tests/Workspace/SelectionContextTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceHintDrainTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceModelBoundaryTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceSessionTests.cs"
+  ],
+  "TaskClass": "Depuración",
+  "PromptProfile": "DEBUGGING",
+  "Worker": {
+    "Cell": "claude-sonnet-5-5|subagent",
+    "Model": "claude-sonnet-5-5",
+    "Effort": {
+      "Semantic": "Balanced",
+      "Provider": "medium"
+    }
+  },
+  "ModelEscalationReason": null,
+  "AcceptanceCriteria": [
+    "En tests/RackCad.Tests/Workspace/WorkspaceSelectionContextTests.cs, habilitar localmente solo el contexto de anotaciones nullable mediante `#nullable enable annotations` o la forma local mínima equivalente aceptada por el compilador, y conservar la semántica de `string?`.",
+    "No modificar NamespaceFolderGuardTests, scripts de CI, configuración nullable global, archivos .csproj ni RackCad.Plugin; no suprimir ni debilitar avisos con #pragma warning disable o NoWarn, ni quitar cobertura.",
+    "Entregar un commit RED nuevo con la corrección nullable aplicada y el comportamiento congelado desactivado en src/RackCad.Application/Workspace/; compila y falla por una aserción real con al menos una prueba seleccionada, sin fallo ni aviso artificial.",
+    "El commit GREEN restaura el comportamiento y no modifica archivos de RT ni de ChainRedFiles.",
+    "En GREEN, pasan el filtro del contrato y la suite Core completa.",
+    "La build Release no emite CS8632 ni avisos nuevos CS/MSB/NU/NETSDK. Antes del push final, ejecutar localmente eng/ci/verify-autocad-references.ps1 con rutas aisladas como en .github/workflows/ci.yml, sin requerir AutoCAD. Si causas de entorno ajenas al código impiden ejecutar el script, registrarlo en KnownLimitations y comprobar al menos la build Release del proyecto de pruebas sin avisos CS en los archivos de Workspace.",
+    "La ejecución de CI de push para el SHA exacto del Worker tiene en success los cuatro jobs requeridos: Tests (Domain + Application), UI Tests (WPF controls, net8.0-windows), Build UI (WPF, valida API de Application) y Build Plugin without AutoCAD.",
+    "docs/adr/0047-workspace-persistente-modeless-rackcad.md no cambia y todos los archivos modificados permanecen dentro de AllowedWriteScope."
+  ],
+  "Acceptance": {
+    "A1": "pass",
+    "A2": "pass",
+    "A3": "pass",
+    "A4": "pass",
+    "A5": "pass",
+    "A6": "pass",
+    "A7": "pass",
+    "A8": "pass"
+  },
+  "AcceptanceReasons": {
+    "A1": [],
+    "A2": [],
+    "A3": [],
+    "A4": [],
+    "A5": [],
+    "A6": [],
+    "A7": [],
+    "A8": []
+  },
+  "SessionExtraChecks": {
+    "ExactCopy.Authorities": true,
+    "ExactCopy.AllowedWriteScope": true,
+    "ExactCopy.ForbiddenWriteScope": true,
+    "ExactCopy.Invariants": true,
+    "ExactCopy.RequiredTests": true,
+    "ExactCopy.ExpectedEvidence": true,
+    "ExactCopy.StopConditions": true,
+    "ExactCopy.Objective": true,
+    "CorrectionOfOk": true,
+    "TaskClass": "Depuración",
+    "RoutingRow": [
+      "DEBUGGING",
+      "Balanced"
+    ],
+    "TaskClassNotController": true,
+    "PromptProfileMatchesRow": true
+  },
+  "RelayRecordSha256": "CDE62E0F92F0788C4629694F8652FE00E851B7D714E08F37442F60E3C086FB3A",
+  "Budget": {
+    "Planning": "4 de 4 consumidas",
+    "Work": "2 de 4 (2 restantes)",
+    "Verification": "2 de 4 (2 restantes)",
+    "Attempts": "2 de 3",
+    "MaxReworkLoops": 3,
+    "CiCounter": "2 al lanzar"
+  },
+  "NotCommitted": "AUTOMATION_PLAN 16.4 paso 3: aceptacion sin commit; custodia en el commit (7) tras la verificacion"
+}

@@ -1,0 +1,12 @@
+escenario: pb-20-ab x4 vistas +200 racks ajenos
+| Corrida | Caso | t4a mediana (p95) | t4b mediana (p95) | n | Limite | Cumple |
+|---|---|---|---|---|---|---|
+| 1 | Begin | 61.6 (81.0) | 65.8 (82.5) | 200 | 80.0 | si |
+| 1 | cae-al-Primary | 67.0 (92.3) | 67.5 (90.6) | 200 | 87.1 | si |
+| 1 | origen-es-Primary | 65.2 (88.1) | 98.2 (130.6) | 200 | 84.8 | NO |
+| 2 | Begin | 45.7 (52.6) | 47.1 (71.1) | 200 | 59.4 | si |
+| 2 | cae-al-Primary | 46.6 (63.3) | 48.8 (66.9) | 200 | 60.6 | si |
+| 2 | origen-es-Primary | 46.5 (62.8) | 47.2 (71.2) | 200 | 60.4 | si |
+| 3 | Begin | 61.2 (82.8) | 58.2 (71.6) | 200 | 79.5 | si |
+| 3 | cae-al-Primary | 61.3 (80.6) | 60.6 (83.2) | 200 | 79.6 | si |
+| 3 | origen-es-Primary | 65.4 (157.2) | 60.1 (83.3) | 200 | 85.0 | si |

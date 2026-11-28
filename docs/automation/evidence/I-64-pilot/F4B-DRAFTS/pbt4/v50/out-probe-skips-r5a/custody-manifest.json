@@ -1,0 +1,44 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4B-DRAFTS/pbt4/v50/out-probe-skips-r5a",
+  "SourceRoot": "la carpeta de la sesion (fuera del repositorio)",
+  "Counts": {
+    "CUSTODIED": 3,
+    "EXCLUDED": 2
+  },
+  "Files": [
+    {
+      "Path": "apply-skips.txt",
+      "Bytes": 351,
+      "Sha256": "ed70209a58ca728d6deeaff6ed471653446c8c850ce65749e09e8db5c3fa62d9",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "build-server-shutdown.txt",
+      "Bytes": 184,
+      "Sha256": "093d25d8a4ace0fbc3c6e7104d458956124132ed246c675f27e95bcb86fefcfa",
+      "Disposition": "CUSTODIED"
+    },
+    {
+      "Path": "core-skips-outcomes.txt",
+      "Bytes": 170093,
+      "Sha256": "e826f0702a72f29d3ad7c94d9473904a0f161a6eeadc55163f66e8411715964f",
+      "Disposition": "CUSTODIED",
+      "CustodiedSha256": "a10662bd0c4aa8c3b028686378d71447a21d21c63eecff8d3dab448f8a9885d5"
+    },
+    {
+      "Path": "core-skips.log",
+      "Bytes": 136240,
+      "Sha256": "b1eae4511eda8cd6c6c98ce7d73f185006729b3ae43fdc1ae27569cabc665c3a",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    },
+    {
+      "Path": "core-tests.log",
+      "Bytes": 44769,
+      "Sha256": "f228b3036ad1b77e1086c32488de59b110455a4291d2910049151f5af7f5179e",
+      "Disposition": "EXCLUDED",
+      "Reason": "TRX o registro de la corrida: solo por SHA-256 (decision de la sesion)"
+    }
+  ]
+}

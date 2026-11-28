@@ -1,0 +1,6 @@
+vuelta 0: bajas 0, errores 42 (distintos 20), miembros nuevos 11, sin resolver 4
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:232 CS0103 El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:233 CS0103 El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:234 CS0103 El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual
+  PARA sin miembro tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs:235 CS0103 El nombre 'PushBackPilotFieldAdapter' no existe en el contexto actual
+bajas por compilacion 0; de las 235 de B: necesarias 0, no necesarias 235; fuera de B 0

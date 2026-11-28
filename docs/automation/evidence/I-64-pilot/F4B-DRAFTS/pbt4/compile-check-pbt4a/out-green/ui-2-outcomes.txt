@@ -1,0 +1,3 @@
+filas 681 {'Passed': 680, 'NotExecuted': 1}
+  NotExecuted RackCad.UI.Tests.WorkspaceDraftPilotWindowLoadCharacterizationTests.TheWindowAndThePilotDifferOnlyInTheKnownClasses
+      SUSTITUIDA por PB-TC (D-PB-06), registro docs/automation/evidence/I-64-pilot/F4B-DRAFTS/superseding-characterization.md fila SUS-01: la ejecuta PushBackDeclaredCorrectionPilotParityTests.CT_PBTC_06_Th

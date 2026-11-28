@@ -1,0 +1,147 @@
+{
+  "Schema": "rackcad-worker-handoff/v1",
+  "TaskId": "F4-T1-DRAFT-CORE",
+  "RunId": "R20261111T132115Z-6453",
+  "DelegationRunId": "R20261110T224523Z-d088",
+  "Initiative": "I-64",
+  "Gate": "F4",
+  "Attempt": 3,
+  "BaseSha": "d737b4853b204d6b8cc6adcf2abe97d96d7ce88e",
+  "RedSha": "5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3",
+  "CurrentSha": "ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649",
+  "Branch": "architecture/workspace-persistente-rackcad",
+  "Worktree": "<worktree-de-I-64>",
+  "Pushed": true,
+  "FilesChanged": [
+    "tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs"
+  ],
+  "WorkCompleted": "Correccion del intento 3, solo N-1, bajo la excepcion acotada a 16.8 F4-E10. RED (5a27ac8b): inserta solo el bloque entre \"// BEGIN N-1 regression (F4-T1 attempt 3)\" y \"// END N-1 regression (F4-T1 attempt 3)\" justo antes de la llave que cierra la clase, con dos [Theory]: TheBomGuardDetectsTheWordInAnyCaseInRealCoreText (I63Concepts contra texto real del nucleo mas el texto inyectado; 15 casos: BOM.Build();, var BOMLines = 1;, var bomCount = 1;, Bom.Build();, var x = DraftBOM;, var y = GetBom();, var z = GetBOM();, var w = draftbom;, var v = DRAFTBOM;, BOM, Bom, bom y los tres conservados BomBuilder.Build();, var DraftBomLines = new object();, int _bomCount;) y TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName (ForbiddenMemberNames; 12 casos: BOM, Bom, bom, BOMLines, DraftBOM, GetBOM, DRAFTBOM, draftbom, GetBom y los conservados DraftBomLines, BomBuilder, _bomCount). Con la regla de BaseSha el filtro compila (1300 seleccionadas) y fallan por asercion 13 pruebas, todas del bloque; las otras 14 del bloque pasan y fijan lo que ya se detectaba. GREEN (ce73ceb7): cambia solo la region de la regla (comentario de tres lineas y la declaracion de BomInAnyIdentifier) a (?:(?i:\\bbom|bom\\b)|(?-i:Bom(?![a-z])|BOM(?![a-z])|_bom(?![a-z]))): sin distinguir mayusculas, BOM al inicio de palabra (\\bbom, que contiene \\bBom de 90a81104 y \\bbom(?![a-z]) de 09955667) y al final (bom\\b, que contiene Bom\\b de 90a81104); dentro de un identificador antes de mayuscula, digito o guion bajo, con distincion de mayusculas deliberada solo en los lookahead (Bom(?![a-z]), BOM(?![a-z]) y _bom(?![a-z]), que contienen la regla de 09955667), porque con IgnoreCase el lookahead (?![a-z]) rechazaria BomBuilder. La constante va envuelta en un grupo no capturante para que la alternancia de nivel superior no rompa la concatenacion en I63Concepts y ForbiddenMemberNames. Sin casos especiales de cadenas literales. Decisiones menores: nombres de las pruebas, forma de la regex y casos extra (var z = GetBOM();, var w = draftbom;, var v = DRAFTBOM;) en las pruebas del bloque. Antes del RED se comprobo sin commit que la regla corregida hace pasar el bloque y todas las guardas (precheck: 1300/1300; parche en precheck-rule-and-block.patch y copia de comparacion temporal usada durante la ejecucion del Worker; el archivo del GREEN es identico byte a byte a esa copia). Producto sin cambios; N-2 no se toca. GATE PASS.",
+  "TestsExecuted": [
+    {
+      "RunRef": "PRECHECK",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=precheck.trx\" --results-directory artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/PRECHECK",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/PRECHECK/precheck.trx"
+    },
+    {
+      "RunRef": "RED-1",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=red.trx\" --results-directory artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/RED-1",
+      "Phase": "RED",
+      "TreeSha": "5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/RED-1/red.trx"
+    },
+    {
+      "RunRef": "PRE-GREEN-FULL",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --logger \"trx;LogFileName=full.trx\" --results-directory artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/PRE-GREEN-FULL",
+      "Phase": "RELEVANT",
+      "TreeSha": null,
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/PRE-GREEN-FULL/full.trx"
+    },
+    {
+      "RunRef": "GREEN-1",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --filter \"FullyQualifiedName~RackCad.Tests.Workspace\" --logger \"trx;LogFileName=green.trx\" --results-directory artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/GREEN-1",
+      "Phase": "GREEN",
+      "TreeSha": "ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/GREEN-1/green.trx"
+    },
+    {
+      "RunRef": "GREEN-FULL",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe test tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-build --logger \"trx;LogFileName=full.trx\" --results-directory artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/GREEN-FULL",
+      "Phase": "RELEVANT",
+      "TreeSha": "ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/GREEN-FULL/full.trx"
+    },
+    {
+      "RunRef": "GREEN-BUILD",
+      "Command": "<perfil-de-usuario>\\AppData\\Local\\Microsoft\\dotnet\\dotnet.exe build tests/RackCad.Tests/RackCad.Tests.csproj -c Release --no-incremental",
+      "Phase": "RELEVANT",
+      "TreeSha": "ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649",
+      "ResultsFile": "artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/GREEN-BUILD/build.log"
+    }
+  ],
+  "TestResults": [
+    {
+      "RunRef": "PRECHECK",
+      "Selected": 1300,
+      "Passed": 1300,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "RED-1",
+      "Selected": 1300,
+      "Passed": 1287,
+      "Failed": 13,
+      "Skipped": 0,
+      "FailedTests": [
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName(injected: \"draftbom\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName(injected: \"BOM\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName(injected: \"DraftBOM\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName(injected: \"GetBOM\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName(injected: \"DRAFTBOM\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName(injected: \"BOMLines\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(injected: \"var z = GetBOM();\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(injected: \"var x = DraftBOM;\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(injected: \"var v = DRAFTBOM;\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(injected: \"var w = draftbom;\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(injected: \"var BOMLines = 1;\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(injected: \"BOM.Build();\")",
+        "RackCad.Tests.WorkspaceDraftBoundaryTests.TheBomGuardDetectsTheWordInAnyCaseInRealCoreText(injected: \"BOM\")"
+      ]
+    },
+    {
+      "RunRef": "PRE-GREEN-FULL",
+      "Selected": 16838,
+      "Passed": 16838,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-1",
+      "Selected": 1300,
+      "Passed": 1300,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    },
+    {
+      "RunRef": "GREEN-FULL",
+      "Selected": 16838,
+      "Passed": 16838,
+      "Failed": 0,
+      "Skipped": 0,
+      "FailedTests": []
+    }
+  ],
+  "Evidence": [
+    "n1_hashes.py d737b4853b204d6b8cc6adcf2abe97d96d7ce88e 5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3 ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 (Pass true), salida JSON completa: {\n  \"Path\": \"tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs\",\n  \"BaseSha\": \"d737b4853b204d6b8cc6adcf2abe97d96d7ce88e\",\n  \"RedSha\": \"5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3\",\n  \"CurrentSha\": \"ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649\",\n  \"BlockFoundInRed\": true,\n  \"BlockFoundInCurrent\": true,\n  \"RuleFoundInRed\": true,\n  \"RuleFoundInCurrent\": true,\n  \"BlockOverlapsRuleInRed\": false,\n  \"H1Red\": \"96A696F1D4AFD2C652EC81864CFC3C64399EB1181C34B57ACC81859508942E62\",\n  \"H1Current\": \"96A696F1D4AFD2C652EC81864CFC3C64399EB1181C34B57ACC81859508942E62\",\n  \"H2Red\": \"9BA25558762E4650CB400AB43F8F7DD67045F73F962F66F9FEB4E9794CAADF67\",\n  \"H2Current\": \"9BA25558762E4650CB400AB43F8F7DD67045F73F962F66F9FEB4E9794CAADF67\",\n  \"H3RedWithoutBlock\": \"843DD9F13FD31450371F88F77FD195689A8813CDFC131E81B4D51FA74B4E88C5\",\n  \"H3Base\": \"843DD9F13FD31450371F88F77FD195689A8813CDFC131E81B4D51FA74B4E88C5\",\n  \"RuleRegionRed\": \"    // Bom as part of ANY identifier (DraftBomLines, BomBuilder, _bomCount), case sensitive on purpose: Bomb or Combo are not Bom.\\n    private const string BomInAnyIdentifier = @\\\"(?-i:Bom(?![a-z])|\\\\bbom(?![a-z])|_bom(?![a-z]))\\\";\\n\",\n  \"RuleRegionCurrent\": \"    // Bom as part of ANY identifier, whatever its case: at the start of a word (BOM.Build, BOMLines, bomCount), at its end (DraftBOM, GetBom,\\n    // draftbom) or inside it before an uppercase letter, a digit or an underscore (DraftBomLines, BomBuilder, _bomCount). Words that merely\\n    // contain the letters in lowercase (Combo) are not Bom.\\n    private const string BomInAnyIdentifier = @\\\"(?:(?i:\\\\bbom|bom\\\\b)|(?-i:Bom(?![a-z])|BOM(?![a-z])|_bom(?![a-z])))\\\";\\n\",\n  \"Pass\": true\n}",
+    "Build Release --no-incremental de tests/RackCad.Tests sobre ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649: 0 errores, 0 avisos MSB/CS/NU/NETSDK (58 avisos xUnit preexistentes) ; log en artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/GREEN-BUILD/build.log y artifacts/orchestration/I-64/F4-T1-DRAFT-CORE/3/R20261111T132115Z-6453/tests/PRE-GREEN-BUILD/build.log.",
+    "git diff --name-only d737b4853b204d6b8cc6adcf2abe97d96d7ce88e..ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 = solo tests/RackCad.Tests/Workspace/WorkspaceDraftBoundaryTests.cs. git diff 5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3..ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 (mismo archivo) = 4 inserciones y 2 borrados, todos en la region de la regla.",
+    "INV-F4T1-25: la regla reparada, sin distinguir mayusculas, detecta BOM.Build, BOMLines, bomCount, Bom.Build (inicio), DraftBOM, GetBOM, draftbom, GetBom, DRAFTBOM (final) y DraftBomLines, BomBuilder, _bomCount (posiciones de 09955667); es superconjunto de \\bBom y Bom\\b de 90a81104 y de la regla de 09955667; sin cadenas literales especiales; el nucleo pasa todas las guardas (GREEN-1 1300/1300). Prueba: TheBomGuardDetectsTheWordInAnyCaseInRealCoreText y TheMemberNameGuardDetectsTheBomWordInAnyCaseAtTheStartTheEndAndInsideAName; RED-1 con 13 fallos por asercion que pasan a verde en GREEN-1.",
+    "INV-F4T1-26: RED 5a27ac8b172efe29aab4f9c15de0ba64dfa9adf3 cambia solo WorkspaceDraftBoundaryTests.cs, solo inserta el bloque BEGIN/END como lineas completas antes de la llave de cierre de la clase; compila; 13 fallos por asercion (Assert.Matches), todos en el bloque; H3 de n1_hashes.py igual (843DD9F1...88E88C5 en RedWithoutBlock y Base); BlockOverlapsRuleInRed false.",
+    "INV-F4T1-27: GREEN ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 cambia solo la region de la regla; H1 (96A696F1...942E62) y H2 (9BA25558...CAADF67) iguales en RedSha y CurrentSha; ninguna prueba, asercion, dato ni otra familia de guarda cambia.",
+    "Commits con el trailer Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>; RED y GREEN empujados cada uno al terminar; origin/architecture/workspace-persistente-rackcad = ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649."
+  ],
+  "UnexpectedFindings": [],
+  "KnownLimitations": [
+    "Sin demostrar por el Worker: la CI del SHA exacto con los cuatro jobs en success, la verificacion del Controller, las revisiones directa e independiente, nc1..nc3 y el Owner Validation.",
+    "La regla no detecta bom en minuscula en medio de un identificador sin guion bajo (por ejemplo draftbomlines), igual que las reglas de 90a81104 y de 09955667; no se exigia en INV-F4T1-25.",
+    "La regla sigue marcando palabras que empiezan por bom en cualquier caso (por ejemplo Bomb), como la regla de 90a81104; Combo no se marca.",
+    "N-2 queda fuera y es obligacion de F4-T2."
+  ],
+  "Deviations": [],
+  "OpenQuestions": [],
+  "WorkerStatus": "IMPLEMENTATION_COMPLETE",
+  "Disposition": "NONE",
+  "TriggeredStopConditions": [],
+  "RecommendedNextAction": "Ejecutar la CI del SHA exacto ce73ceb719cbc08ee4b1ee0f989ac2e5b4258649 y la verificacion del Controller con el oraculo estrecho de Tests de F4-E10.",
+  "Worker": {
+    "Provider": "Anthropic",
+    "ModelRequested": "claude-sonnet-5-5",
+    "EffortRequested": "high",
+    "Trailer": "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  }
+}

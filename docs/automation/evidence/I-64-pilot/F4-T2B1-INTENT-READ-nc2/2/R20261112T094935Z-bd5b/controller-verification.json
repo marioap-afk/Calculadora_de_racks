@@ -1,0 +1,82 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2B1-INTENT-READ",
+  "RunId": "R20261112T094935Z-bd5b",
+  "DelegationRunId": "R20261112T090925Z-614a",
+  "WorkRunId": "R20261112T091237Z-96a8",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession.SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId F4-T2B1-INTENT-READ, Attempt 2, RunId R20261112T091237Z-96a8 and DelegationRunId R20261112T090925Z-614a. OutputWrittenUtc 2026-11-12T03:31:28.907799-06:00 is after Cession.StartUtc 2026-11-12T09:12:42Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only e20a294c..b9707bc lists docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F4-T2B1-INTENT-READ/coordinator/gate-contract-attempt2.json and docs/automation/state/I-64.yml; all are listed Authorities as UNIT_DOC, with no EXTERNAL or UNIT_CHANGE paths."
+    },
+    "Contract": {
+      "Result": "fail",
+      "Evidence": "The input delegation AllowedWriteScope omits src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotIntentReader.cs, which is present in gate-contract.json. Thus the scopes do not match. byte-fidelity-check.json nevertheless reports AllowedWriteScope equality and PASS; its claim contradicts the actual input arrays."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse --show-toplevel identifies the expected worktree; git branch --show-current is architecture/workspace-persistente-rackcad. HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both resolve to fe7f136b09900880e1ebe2cb20491e2f84c85988. BaseSha is an ancestor of RedSha and CurrentSha; RedSha is an ancestor of CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry records LsRemoteSha=fe7f136b09900880e1ebe2cb20491e2f84c85988, equal to CurrentSha, and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, equal to MainSha."
+    },
+    "Scope": {
+      "Result": "fail",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists PushBackPilotIntentReader.cs, PushBackPilotIntentScan.cs and the three WorkspaceDraftPilotIntent test files. PushBackPilotIntentReader.cs is absent from the delegation AllowedWriteScope, so the changed paths are not all covered by its exact whitelist."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain was empty. git check-ignore -v on the input worker-handoff.json returned .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts records CurrentRun 43190415649 as push on refs/heads/architecture/workspace-persistente-rackcad at CurrentSha, completed success; all four required jobs succeeded. RedRun 43190225114 is a push at RedSha; Core failed and UI succeeded, satisfying the required RED CI signal."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX filters by className+'.'+name selected 1592 Core tests at CurrentSha (all passed; minimum 1468) and 248 UI tests (all passed; minimum 248). Red Core selected 1592 with 3 assertion failures matching M-3, M-5 and M-7; Red UI selected 248, all passed, as ExpectRed=false permits. git diff BaseSha..RedSha -- tests/ lists the three WorkspaceDraftPilotIntent test files; git diff RedSha..CurrentSha -- tests/ is empty. ChainRedFiles remains the previous three files union RT, which is those same three paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show --no-patch --format=%B for both commits in BaseSha..CurrentSha shows Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json and effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests model claude-sonnet-5-5 and effort high. relay-record-work records launch alias sonnet, effective model claude-sonnet-5-5, effective effort high, and source transcript evidence."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned worker-handoff.json WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions and RecommendedNextAction against the AUTOMATION_PLAN 16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work Notes record zero permission denials and one tool error with none pending."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Contract",
+  "TriggeredStopConditions": [
+    "S-04",
+    "P-03"
+  ],
+  "Findings": [
+    "The delegation and contract AllowedWriteScope arrays differ: the contract includes PushBackPilotIntentReader.cs and the delegation omits it.",
+    "The worker changed PushBackPilotIntentReader.cs, a path outside the delegation whitelist.",
+    "byte-fidelity-check.json reports equality for AllowedWriteScope despite the arrays differing, which is contradictory evidence."
+  ],
+  "RecommendedNextAction": "Detener y corregir el alcance de la delegacion y su comprobacion de fidelidad antes de emitir otra verificacion."
+}

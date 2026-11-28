@@ -1,0 +1,119 @@
+== INV-PBT4B-01: el alcance (BaseSha..CurrentSha)
+OK   59 rutas 59
+OK   todo lo cambiado esta dentro de las 59 []
+OK   se cambia cada una de las 59 faltan: []
+OK   sin cambios en src/RackCad.Domain []
+OK   sin cambios en src/RackCad.Application/Systems/PushBack/Pilot/ []
+OK   sin cambios en src/RackCad.Plugin/RackPushBackCommands.cs []
+OK   sin cambios en src/RackCad.Plugin/RackCommandSupport.cs []
+OK   sin cambios en src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs []
+   FilesChanged = 59
+== INV-PBT4B-02: RED y GREEN
+OK   el RED toca src/ solo con el esqueleto (6 archivos) 
+OK   despues del RED solo cambia src/ (ninguna prueba) []
+OK   despues del RED solo los 10 archivos del GREEN []
+OK   el GREEN toca WHC, PV, NumericFieldValidation.cs y RIA 
+OK   RedSha..RedRepairSha solo las seis clases de las CT ['tests/RackCad.Tests/PushBackFullPanelTests.cs']
+== INV-PBT4B-07: los Skip (check_skips_pbt4b_v48.py)
+OK   Skip sobre c1e4f458 archivos: 21; mal: 0; Skip leidos: 478
+OK   Skip sobre 9b2d1893 archivos: 21; mal: 0; Skip leidos: 478
+OK   Skip sobre c065080d archivos: 21; mal: 0; Skip leidos: 478
+== las copias y el kit
+OK   21 copias iguales a su CopySha y el kit (c1e4f458) []
+OK   21 copias iguales a su CopySha y el kit (9b2d1893) []
+OK   21 copias iguales a su CopySha y el kit (c065080d) []
+== esqueleto: sha256 de los seis archivos del RED
+OK   NumericTextRule.cs 
+OK   PushBackAnnotationScaleRule.cs 
+OK   PushBackFullFieldAdapter.cs 
+OK   PushBackKeepMinePresentation.cs 
+OK   WorkspaceEditIntent.cs 
+OK   WorkspacePilotFieldViewModel.cs 
+== INV-PBT4B-13 y PBT4B-C13: el censo de declaraciones
+== src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+   base   : 127 declaraciones
+   actual : 128 declaraciones
+   se anade: {'FullReadMissingReason': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+   base   : 195 declaraciones
+   actual : 201 declaraciones
+   se anade: {'EditIntentOutcome': 1, 'KeepWitness': 1, 'PresentationLines': 1, 'Presented': 2, '_presentationLines': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+   base   : 178 declaraciones
+   actual : 182 declaraciones
+   se anade: {'KeepMinePresentationText': 1, 'ShowKeepMinePresentation': 1, '_keepLines': 1, '_keepWitness': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+   base   : 58 declaraciones
+   actual : 59 declaraciones
+   se anade: {'x:Name=BrowserFieldKeepMinePresentationText': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.UI/Controls/NumericFieldValidation.cs
+   base   : 21 declaraciones
+   actual : 18 declaraciones
+   se anade: {}
+   se quita: {'Format': 1, 'MaximumMessage': 1, 'MinimumMessage': 1}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+   base   : 26 declaraciones
+   actual : 28 declaraciones
+   se anade: {'RackPilotIntentReadResult': 1, '_full': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.Application/Formatting/NumericTextRule.cs
+   base   : 0 declaraciones
+   actual : 20 declaraciones
+   se anade: {'AboveMaximum': 1, 'BelowMinimum': 1, 'Check': 1, 'EmptyOptional': 1, 'EmptyRequired': 1, 'EmptyRequiredMessage': 1, 'Format': 1, 'IsValid': 1, 'MaximumMessage': 1, 'Message': 1, 'MinimumMessage': 1, 'NotANumber': 1, 'NotANumberMessage': 1, 'NumericTextCheck': 2, 'NumericTextRule': 1, 'NumericTextStatus': 1, 'Status': 1, 'Valid': 1, 'Value': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs
+   base   : 0 declaraciones
+   actual : 4 declaraciones
+   se anade: {'Minimum': 1, 'MinimumInclusive': 1, 'PushBackAnnotationScaleRule': 1, 'Validate': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs
+   base   : 0 declaraciones
+   actual : 8 declaraciones
+   se anade: {'AnnotationScaleKey': 1, 'Apply': 1, 'EmptyMessage': 1, 'NotANumberMessage': 1, 'NotPositiveMessage': 1, 'PushBackFullFieldAdapter': 1, 'UnknownFieldMessage': 1, 'Validate': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+== src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs
+   base   : 0 declaraciones
+   actual : 12 declaraciones
+   se anade: {'AddGroups': 1, 'Diagnostic': 1, 'IsAdmitted': 1, 'IsEmpty': 1, 'Join': 1, 'Lines': 1, 'Of': 1, 'OriginText': 1, 'PushBackKeepMinePresentation': 2, 'Read': 1, 'TextOf': 1}
+   se quita: {}
+   igual a la lista cerrada de PBT4B-C13: True
+RESULTADO censo: IGUAL a la lista cerrada
+OK   el censo es la lista cerrada 
+== D2 (PBT4B-C17): lineas anadidas en src/ que nombran el rack resuelto o el informe de modulos
+OK   ninguna linea anadida nombra WorkingBaseline, LastModuleReconciliation ni PushBackSystem []
+== "warning CS<n>" en todos los registros de build de la corrida
+   tests/b0/build-core.log: 0
+   tests/b0/build-plugin.log: 0
+   tests/b0/build-ui.log: 0
+   tests/c1/build-core.log: 0
+   tests/c1/build-ui.log: 0
+   tests/c2/build-plugin.log: 0
+   tests/c2/build-Tests.log: 0
+   tests/c2/build-UI.Tests.log: 0
+   tests/gb/build-plugin.log: 0
+   tests/gb/build-Tests.log: 0
+   tests/gb/build-UI.Tests.log: 0
+   tests/gz/build-plugin.log: 0
+   tests/gz/build-Tests.log: 0
+   tests/gz/build-UI.Tests.log: 0
+   tests/rb/build-plugin.log: 0
+   tests/rb/build-Tests.log: 0
+   tests/rb/build-UI.Tests.log: 0
+   tests/sk/build-plugin.log: 0
+   tests/sk/build-Tests.log: 0
+   tests/sk/build-UI.Tests.log: 0
+OK   0 lineas "warning CS" 0
+RESULTADO: TODO OK

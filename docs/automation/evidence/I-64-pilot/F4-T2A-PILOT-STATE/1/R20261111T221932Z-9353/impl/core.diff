@@ -1,0 +1,134 @@
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs b/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
+index 20fd1472..af68d2fc 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftRegistry.cs
+@@ -86,8 +86,11 @@ namespace RackCad.Application.Workspace.Drafts
+         /// stale base, the admission and the initial state together. A read that is not admitted creates nothing.
+         /// </summary>
+         /// <remarks>
+-        /// <paramref name="copy"/> is injected next to the comparer: the current state of the draft is always a copy of the
+-        /// initial one, so an in-place edit of the current state can never change the initial state (INV-F4T1-19).
++        /// <paramref name="copy"/> is injected next to the comparer. The draft copies every state that enters it, the initial
++        /// state of this read included, so the object the read carries is never shared with the draft: mutating it after
++        /// <c>Begin</c> changes neither the initial state nor dirty, and two drafts born from the same object are
++        /// independent (N-2). The current state is a copy of the initial one, so an in-place edit of the current state can
++        /// never change the initial state (INV-F4T1-19).
+         /// </remarks>
+         public DraftBeginResult<TState> Begin<TState>(SessionId session, string rackId, DraftIntentRead<TState> read, IEqualityComparer<TState> comparer, Func<TState, TState> copy)
+         {
+diff --git a/src/RackCad.Application/Workspace/Drafts/DraftSession.cs b/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+index 56dd28de..8e4fb461 100644
+--- a/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
++++ b/src/RackCad.Application/Workspace/Drafts/DraftSession.cs
+@@ -227,6 +227,12 @@ namespace RackCad.Application.Workspace.Drafts
+         private readonly IEqualityComparer<TState> _comparer;
+         private readonly Func<TState, TState> _copy;
+         private readonly SortedDictionary<string, string> _pending = new(StringComparer.Ordinal);
++
++        // The two states of the draft. Both fields are private and nothing outside this class ever holds either object:
++        // every state that enters is copied with the injected copier, and the initial state only leaves as a copy
++        // (N-2). The current state leaves by reference because it is edited in place (INV-F4T1-19).
++        private TState _initial;
++        private TState _current;
+         private bool _registered;
+         private bool _holdsApplySlot;
+         private string? _deferredErrorReason;
+@@ -249,8 +255,8 @@ namespace RackCad.Application.Workspace.Drafts
+             StaleBase = staleBase;
+             _comparer = comparer;
+             _copy = copy;
+-            InitialDraftState = initialState;
+-            CurrentDraftState = _copy(initialState);
++            _initial = _copy(initialState);
++            _current = _copy(initialState);
+         }
+ 
+         public SessionId Session { get; }
+@@ -259,9 +265,11 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         public DraftStaleBase StaleBase { get; private set; }
+ 
+-        public TState InitialDraftState { get; private set; }
++        /// <summary>A COPY of the initial state: the caller can do anything to it without changing the draft (N-2).</summary>
++        public TState InitialDraftState => _copy(_initial);
+ 
+-        public TState CurrentDraftState { get; private set; }
++        /// <summary>The current state by reference: it is the object the surface edits in place (INV-F4T1-19).</summary>
++        public TState CurrentDraftState => _current;
+ 
+         /// <summary>
+         /// The pending text by field key, kept exactly as given. A snapshot whose enumeration is ordered by key (ordinal):
+@@ -272,7 +280,7 @@ namespace RackCad.Application.Workspace.Drafts
+         public bool HasPendingText => _pending.Count > 0;
+ 
+         /// <summary>True when the comparator says the current state differs from the initial one, or there is pending text (INV-26).</summary>
+-        public bool IsDirty => _pending.Count > 0 || !_comparer.Equals(CurrentDraftState, InitialDraftState);
++        public bool IsDirty => _pending.Count > 0 || !_comparer.Equals(_current, _initial);
+ 
+         public DraftStatus Status => _explicitStatus ?? (IsDirty ? DraftStatus.Dirty : DraftStatus.Clean);
+ 
+@@ -310,9 +318,6 @@ namespace RackCad.Application.Workspace.Drafts
+ 
+         // ---------------------------------------------------------------- the two states never share an object
+ 
+-        private TState SeparatedFromInitial(TState state) =>
+-            ReferenceEquals(state, InitialDraftState) ? _copy(state) : state;
+-
+         private IReadOnlyDictionary<string, string> PendingSnapshot() =>
+             new ReadOnlyDictionary<string, string>(new SortedDictionary<string, string>(_pending, StringComparer.Ordinal));
+ 
+@@ -321,7 +326,7 @@ namespace RackCad.Application.Workspace.Drafts
+         public DraftEditResult SetCurrentDraftState(TState state)
+         {
+             if (!CanEdit) return new DraftEditResult(DraftEditStatus.NotEditable, IsDirty);
+-            CurrentDraftState = SeparatedFromInitial(state);
++            _current = _copy(state);
+             return new DraftEditResult(DraftEditStatus.Updated, IsDirty);
+         }
+ 
+@@ -372,8 +377,9 @@ namespace RackCad.Application.Workspace.Drafts
+             if (invalid.Count > 0)
+                 return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Aborted, false, invalid.ToArray());
+ 
+-            var next = adapter.Apply(CurrentDraftState, snapshot);
+-            CurrentDraftState = SeparatedFromInitial(next);
++            // The result of Apply is NOT copied: the adapter contract is to hand back the same current object, edited in
++            // place, and copying it would break the identity of the current state.
++            _current = adapter.Apply(_current, snapshot);
+             _pending.Clear();
+             return new DraftBoundaryResult(boundary, DraftBoundaryDecision.Proceeded, true, none);
+         }
+@@ -403,7 +409,7 @@ namespace RackCad.Application.Workspace.Drafts
+                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+ 
+             Rebase(read);
+-            CurrentDraftState = _copy(InitialDraftState);
++            _current = _copy(read.InitialState!);
+             _pending.Clear();
+             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
+         }
+@@ -424,14 +430,13 @@ namespace RackCad.Application.Workspace.Drafts
+                 return new DraftReloadResult(DraftReloadStatus.NotAdmitted, read.Admission);
+ 
+             Rebase(read);
+-            CurrentDraftState = SeparatedFromInitial(CurrentDraftState);
+             return new DraftReloadResult(DraftReloadStatus.Reloaded, read.Admission);
+         }
+ 
+         private void Rebase(DraftIntentRead<TState> read)
+         {
+             StaleBase = read.StaleBase!;
+-            InitialDraftState = read.InitialState!;
++            _initial = _copy(read.InitialState!);
+             IsPossiblyStale = false;
+             _explicitStatus = null;
+             UnknownOrigin = null;
+@@ -533,7 +538,7 @@ namespace RackCad.Application.Workspace.Drafts
+                     }
+ 
+                     Rebase(read);
+-                    CurrentDraftState = _copy(InitialDraftState);
++                    _current = _copy(read.InitialState!);
+                     _pending.Clear();
+                     if (outcome.Kind == DraftApplyOutcomeKind.AppliedWithWarnings) Warnings = outcome.Warnings;
+                     return DraftApplyResult.Closed(outcome.Kind, Status, true);

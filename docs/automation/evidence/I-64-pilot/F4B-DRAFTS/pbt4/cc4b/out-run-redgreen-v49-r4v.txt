@@ -1,0 +1,88 @@
+fase redgreen; copia /d/r4v; salida /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/out-redgreen-v49-r4v; revision 78a7cef3e9260f0955addd48344fc5a44b9c9957
+paquete sha256 043f196d8452588530784eb04fd3cd3b63c3594d3e961df5e204f0109329c886 I-64-f4b-pbt4-gate-contract-package-v49.md
+particion sha256 e87e024c168dd81d05c1ba1ae9dfa0027da8724ee0d9fd219cce74fe1f613dec
+  guion 0d7adebbea411d2c15ea533c163cfadeeeddbb52d937d281900dca7e8882f01a apply_red_pbt4b_v49.py
+  guion d0bdf62e216518e90f8e9fc28e644467b2ec3333713a43fe9e340b1f91d9533f make_copies_pbt4b_v49.py
+  guion a10461f62041984a570168e01b5ab0997dabbfab21a58c810ebd979c28646190 pbt4b_hand_edits_v49.py
+  guion a1bfbc199cccb2cc8788be04b9d624aa59f47eaeeae35da32795f1571afc0fd9 pbt4b_skips_v48.py
+  guion bda79bb7fb6e1dfe885cdc5942b2af45dfac8861663ccc99dbb38a61b8844524 pbt4b-copy-map-v5.tsv
+  guion 8b0fcd0ca775ce3a5e46ef2059f4b06e7ec7319883daf3cb37b1fe91290e9e8b pbt4b-substitution-list-478.tsv
+  guion 2a96b2afb6ce84824047809101f0aed052d0f42717bc64382d917815667dd247 make_copies_pbt4b_v47.py
+  guion d2e4429dffda21640278f2c739e7a6dad8f7db0a08d0c58c6c23496fca88c000 pbt4b_hand_edits_v47.py
+  guion 96f75552b53aa1a0635cfc8b0e2fc1fff896f9ddebb8ab1a20c79496ca299e63 partition_pbt4b_v47.py
+  guion a2f0af751bda36d8d9b56bc451068142d958d20f97e3d102c69f6b388c06d6b0 partition_pbt4b_v48.py
+  guion 74f15dbd7686596ccd4d66e2989f3888f61adaa2fd8a37dc11cf92c81674317f make_copies_pbt4b_v48.py
+  guion 7d98d007d647f125596088ecf29eccec7352dc9682decb520d7e4369d3dde9fa pbt4b_hand_edits_v48.py
+  guion 3cc8e56cfc2609d567e69577a28f03ac5801c5b46f0bddba5c6692cc715ecdd6 make_copies_pbt4b_v46.py
+  guion 46167c571245148e597af36a6efe5c8b6d5811d0b457eefb0101f035fea7e93e pbt4b_hand_edits_v46.py
+  guion a77b0baa08fe36b752828fe6f15dc9ae369eae3cd1e6a450b6a48c0580a3e281 make_copies_pbt4b_v45.py
+  guion 7403c43f3589d17fe5bdb120bb6016dbacf440ab52de37a168f493eb4a8ce4e5 pbt4b_hand_edits_v45.py
+  guion 26e75ebd13330f1a0422974dfb0aa1988246acec5e9bd06f7441dd47e2ba2d98 pbt4b_skips_v45.py
+  guion 6d9ee13790f527216ce0f3ece7e2ec79fa8e573e320bd6c902fe8294947ce59b partition_pbt4b_v45.py
+  guion ae55163a7519cf35882aedaa96a4deb3bd3ac4185ad11d3d91bd2cd16ef80bd0 apply_green_pbt4b_v45.py
+  guion 47662f52b8008ce802a0dc52395c8995c462d21276236cf1cd34f39a288ae1c4 green_pbt4b_v45.py
+  guion b4ed29f92838e5761faf1afaba1f33e58ba82a56541900f52db8c5ecb6239b9a pbt4b-kit-WorkspaceFullReadKit-v45.cs
+  guion 643a3de9a827274a236ada9a7b6c80edbdc916c366366aec394e1383f2048af2 /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/p6_check_v48.py
+  guion 6e7b9026331fbd3020551ad6a6aa9b2313ba13e4206d703c0278a821c25dad1d /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/check_skips_copy_v48.py
+  guion 26b098a871364a742b586db7b461dd1f42a54fe9543c4c983f972cba363c3edb /tmp/claude/b491591bc47aa335/98cecaf8-117d-4d62-b418-bd3e08504b6f/scratchpad/hs65/pbt4bcc/compile/ui_filters_p6_v48.py
+  guion 654abcaf663213a3e954b9dc0e3bc9532f56876221f740f5ba938d09201a251a p6_pbt4b_v49.sh
+copia exportada: 12886 archivos
+ESCRITOS 49 archivos; conjunto b03d14a3c67d075a88261a0f2342de6801e9d0f460ec0c6bd81c81832b98974b
+check_skips (RED) rc=0 :: archivos: 21; mal: 0; Skip leidos: 478
+red-core-tests rc=0 errores=0 avisos-CS=0
+red-ui-tests rc=0 errores=0 avisos-CS=0
+red-plugin rc=0 errores=0 avisos-CS=0
+red: errores 0, avisos CS 0 (en total, hasta aqui)
+  binario 5ddd19158f4a2e14773120a7fc06e207186fe71dedb6fb496c11e880c5d35207 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Application.dll
+  binario fafad98fa8aa649ecf369712da1b61cefbb1e72f600a893e8af65251fb840d39 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Tests.dll
+  binario 1bd9921a106ee63b81e2b74799eaf3852087b0e2bcaf48fb5df5c4df3b7cac77 tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario 8e6ac54f64b9fdecd2e3f29fa60a95222575deea79df0640ca7f6d40b442603f _plugin-out-red/RackCad.Plugin.dll
+test core-red.trx rc=1 segundos=778 trx-sha256=366c4f43cb7229ee5cf916d0ece9b36a08b0f3d15b6d1dbcda768e119d306f51 :: filas 19587 {'Passed': 18838, 'Failed': 291, 'NotExecuted': 458}; inicio 2026-11-20T21:53:18.4347344-06:00; fin 2026-11-20T22:06:11.0465267-06:00
+test red-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.trx rc=0 segundos=13 trx-sha256=cdde82ca1471f9550aade306531c553d4aac53e8abe4ce9c8c0d2e24fc190aa6 :: filas 1 {'Passed': 1}; inicio 2026-11-20T22:06:18.1885218-06:00; fin 2026-11-20T22:06:28.8988868-06:00
+test red-ui-RackCad_UI_Tests_Workspace.trx rc=0 segundos=10 trx-sha256=df1d209f0ca92fbb18b818562c6df01c584f98b65f8d5d5c17a4c90a539771fa :: filas 672 {'Passed': 644, 'NotExecuted': 28}; inicio 2026-11-20T22:06:31.5749649-06:00; fin 2026-11-20T22:06:40.3164771-06:00
+test red-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.trx rc=0 segundos=27 trx-sha256=5afa79043f3cef1f96bb47d0f64b8923e2b0ddcadb7cdd8abb7153599977b9f2 :: filas 2 {'Passed': 2}; inicio 2026-11-20T22:06:43.0345612-06:00; fin 2026-11-20T22:07:07.9934501-06:00
+test red-ui-RackCad_UI_Tests_PushBackClassicCharacterization.trx rc=0 segundos=15 trx-sha256=4fa36f5e0426c2b6efb210f76be6560867de78885d149a8adbb100ce15d3bd0b :: filas 55 {'Passed': 55}; inicio 2026-11-20T22:07:10.6042153-06:00; fin 2026-11-20T22:07:23.8674664-06:00
+test red-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.trx rc=0 segundos=18 trx-sha256=b6a0dd61d005688b882658f513338d74da237a9007e0d1684d5e9a6108492177 :: filas 18 {'Passed': 16, 'NotExecuted': 2}; inicio 2026-11-20T22:07:26.7856481-06:00; fin 2026-11-20T22:07:42.9604545-06:00
+test red-ui-RackCad_UI_Tests_PushBackStateNet.trx rc=0 segundos=28 trx-sha256=3808b94947a51aef73d3f240c12e23f34c0e27fc7152c930c39745c6839a8d55 :: filas 14 {'Passed': 14}; inicio 2026-11-20T22:07:45.6015606-06:00; fin 2026-11-20T22:08:12.6638118-06:00
+test red-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.trx rc=0 segundos=17 trx-sha256=44e5fe843f643502b79cd19715c648fefc14a79b783e7e09cbeebf29850803fc :: filas 14 {'Passed': 14}; inicio 2026-11-20T22:08:15.2101252-06:00; fin 2026-11-20T22:08:30.2630405-06:00
+test red-ui-RackCad_UI_Tests_Cantilever.trx rc=0 segundos=6 trx-sha256=bf5a7cbb6ac57e0af247cc4283b9e2058815c59ccdbd3c2e3f8f11461f89b163 :: filas 67 {'Passed': 67}; inicio 2026-11-20T22:08:33.0241683-06:00; fin 2026-11-20T22:08:37.4173864-06:00
+test red-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.trx rc=0 segundos=13 trx-sha256=c67d2cf708c9c7d69566d00db1f7f8bb81d420895b3480f1f68f7536520adf63 :: filas 3 {'Passed': 3}; inicio 2026-11-20T22:08:39.8312296-06:00; fin 2026-11-20T22:08:50.9458519-06:00
+test red-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.trx rc=0 segundos=12 trx-sha256=43bb71994683992ee26d6dc3207c4f6e9705438ae70386964c6bd433af50991b :: filas 4 {'Passed': 4}; inicio 2026-11-20T22:08:53.6249597-06:00; fin 2026-11-20T22:09:04.7429148-06:00
+test red-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.trx rc=0 segundos=3 trx-sha256=fa64cf8693c0e6b223ef17209b6eb0538afcaa445300abb6decd1f47ff34478b :: filas 1 {'Passed': 1}; inicio 2026-11-20T22:09:07.1697617-06:00; fin 2026-11-20T22:09:08.5168880-06:00
+test red-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.trx rc=0 segundos=24 trx-sha256=8d11183ee4b2f30b849cb28e4fee4eac0ddbbf6f099e90ca43571dafa1c51b75 :: filas 3 {'Passed': 3}; inicio 2026-11-20T22:09:11.0128544-06:00; fin 2026-11-20T22:09:32.8670035-06:00
+test red-ui-RackCad_UI_Tests_NumericFieldValidationTests.trx rc=0 segundos=3 trx-sha256=92a9e7aae69ba396d086ca0f0572bd03026dc6101975ffa0e7901eb8cb66781e :: filas 13 {'Passed': 13}; inicio 2026-11-20T22:09:35.5051360-06:00; fin 2026-11-20T22:09:36.7642508-06:00
+test red-ui-RackCad_UI_Tests_NumericFieldTests.trx rc=0 segundos=4 trx-sha256=941455378055a1ab7ec9e7c9ee3e3df57cefa8fdef2b5e40f3607ef276db974a :: filas 10 {'Passed': 10}; inicio 2026-11-20T22:09:39.6023032-06:00; fin 2026-11-20T22:09:41.1289081-06:00
+test red-ui-RackCad_UI_Tests_FullPanelCopy.trx rc=0 segundos=4 trx-sha256=4a7bf470cf943c239b04a719df09011577f9495d86505ffec4762bee9ee1af39 :: filas 36 {'Passed': 36}; inicio 2026-11-20T22:09:43.7362193-06:00; fin 2026-11-20T22:09:46.0667291-06:00
+check red rc=0 :: RED: CUMPLE
+ESCRITOS 10 archivos; conjunto f93c726219cf566964003ca5638e79ce2731e3b3f7b830c83fd841203af34c45
+check_skips (GREEN) rc=0 :: archivos: 21; mal: 0; Skip leidos: 478
+green-core-tests rc=0 errores=0 avisos-CS=0
+green-ui-tests rc=0 errores=0 avisos-CS=0
+green-plugin rc=0 errores=0 avisos-CS=0
+green: errores 0, avisos CS 0 (en total, hasta aqui)
+  binario ca7ae8153746cc184f7bc73c29baac6cab1a7c3ce4a1c28f47a9ffbe86025e57 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Application.dll
+  binario 510f7e3aa1c5a0719f4bd36dc03c0703dfd566c51f0d368c5ed1eb4880e50ab1 tests/RackCad.Tests/bin/Debug/net8.0/RackCad.Tests.dll
+  binario 5b141abb2e8186bfda66348ca44dd3f34ba8775aa08c3f52f907e69637f287a0 tests/RackCad.UI.Tests/bin/Debug/net8.0-windows/RackCad.UI.Tests.dll
+  binario afe1ff3acf1deab031b65658dc5ff6d412cb25139f6380fc737a8f09d65d2758 _plugin-out-green/RackCad.Plugin.dll
+test core-green.trx rc=0 segundos=749 trx-sha256=9da003b797ac2b2d2ded56f09890f660a8995b5f53c720deee14f56aaf5f7e0e :: filas 19587 {'Passed': 19129, 'NotExecuted': 458}; inicio 2026-11-20T22:12:18.4465799-06:00; fin 2026-11-20T22:24:42.2226092-06:00
+test green-ui-RackCad_UI_Tests_PushBackFullDraftWindowParityTests.trx rc=0 segundos=19 trx-sha256=cf69b04ea2bc2428a939f9e1945e2c4135f10adb1b36eec52ee7bb6c921ab1c7 :: filas 1 {'Passed': 1}; inicio 2026-11-20T22:24:56.7364408-06:00; fin 2026-11-20T22:25:06.7129548-06:00
+test green-ui-RackCad_UI_Tests_Workspace.trx rc=0 segundos=11 trx-sha256=cf24968907d77e5095a9958a24c7f6f244340cbe8a6682f5684039a54990ae83 :: filas 672 {'Passed': 644, 'NotExecuted': 28}; inicio 2026-11-20T22:25:09.2055606-06:00; fin 2026-11-20T22:25:17.7396413-06:00
+test green-ui-RackCad_UI_Tests_PushBackWindowOnStateTests.trx rc=0 segundos=27 trx-sha256=a1f3c968760e6d7e68b39717f6bd640f94fa045ae474c126f1f7fab0ca54c974 :: filas 2 {'Passed': 2}; inicio 2026-11-20T22:25:20.5169235-06:00; fin 2026-11-20T22:25:45.2342454-06:00
+test green-ui-RackCad_UI_Tests_PushBackClassicCharacterization.trx rc=0 segundos=16 trx-sha256=cc2c9b2d9d7cc10b12e4f57f98ed5b283aa5a08c93500893aa69a98948349622 :: filas 55 {'Passed': 55}; inicio 2026-11-20T22:25:47.9393878-06:00; fin 2026-11-20T22:26:01.9574431-06:00
+test green-ui-RackCad_UI_Tests_PushBackFullEditorCharacterization.trx rc=0 segundos=17 trx-sha256=c61ec0c5021a150a3d7600c720b554e9f322cafd57086b8865c6dc3b33c505b8 :: filas 18 {'Passed': 16, 'NotExecuted': 2}; inicio 2026-11-20T22:26:04.5017233-06:00; fin 2026-11-20T22:26:19.0859188-06:00
+test green-ui-RackCad_UI_Tests_PushBackStateNet.trx rc=0 segundos=29 trx-sha256=7301c848f4aab7c991efc776b7d15b21ccc2128c2c020d14e625c66c5f19e591 :: filas 14 {'Passed': 14}; inicio 2026-11-20T22:26:21.6099090-06:00; fin 2026-11-20T22:26:48.8263403-06:00
+test green-ui-RackCad_UI_Tests_PushBackDeclaredCorrection.trx rc=0 segundos=18 trx-sha256=7db709d46378ee75419830afaf97d5a9dd4b7daba0f489aec6abf736036e3bba :: filas 14 {'Passed': 14}; inicio 2026-11-20T22:26:51.3727301-06:00; fin 2026-11-20T22:27:06.9506399-06:00
+test green-ui-RackCad_UI_Tests_Cantilever.trx rc=0 segundos=6 trx-sha256=283e246cdde91991da5115e50cf54cf05da6b90a74e3da6d91d3ac8b11ba6dea :: filas 67 {'Passed': 67}; inicio 2026-11-20T22:27:09.8309238-06:00; fin 2026-11-20T22:27:14.2775909-06:00
+test green-ui-RackCad_UI_Tests_PushBackWorkspaceModeTests.trx rc=0 segundos=14 trx-sha256=a5134882e9170883b4c719cb06b1a969b083958bcd3aff2d3d19dfae55d91962 :: filas 3 {'Passed': 3}; inicio 2026-11-20T22:27:16.8384708-06:00; fin 2026-11-20T22:27:28.9347283-06:00
+test green-ui-RackCad_UI_Tests_PushBackWorkspaceApplyCloseTests.trx rc=0 segundos=13 trx-sha256=7b196c848b8255d2a38800094af14783dce7c92a82be6f94d0a9d3b029e77592 :: filas 4 {'Passed': 4}; inicio 2026-11-20T22:27:31.8157703-06:00; fin 2026-11-20T22:27:43.1748026-06:00
+test green-ui-RackCad_UI_Tests_PushBackFieldValidationConcordanceTests.trx rc=0 segundos=3 trx-sha256=ac9680e452d171011cc78bc3cdd2632a51fb720c72e8a07109aecef8696c599e :: filas 1 {'Passed': 1}; inicio 2026-11-20T22:27:45.8145330-06:00; fin 2026-11-20T22:27:47.1690699-06:00
+test green-ui-RackCad_UI_Tests_PushBackWorkspaceCarryoverTests.trx rc=0 segundos=23 trx-sha256=273749f8dcc6202190f2edd10930dfe498b6f83527f232078a64a59e95b0a234 :: filas 3 {'Passed': 3}; inicio 2026-11-20T22:27:49.8096146-06:00; fin 2026-11-20T22:28:11.4376572-06:00
+test green-ui-RackCad_UI_Tests_NumericFieldValidationTests.trx rc=0 segundos=3 trx-sha256=0cf94e313a4660d4d2218e7014a87b496a7838a29d42ffa0b526672165f78066 :: filas 13 {'Passed': 13}; inicio 2026-11-20T22:28:14.0894873-06:00; fin 2026-11-20T22:28:15.3794540-06:00
+test green-ui-RackCad_UI_Tests_NumericFieldTests.trx rc=0 segundos=3 trx-sha256=da11d7280c2408344b6e5170420452f9ebe981fc8aed78f1b1be943dbd5ace4c :: filas 10 {'Passed': 10}; inicio 2026-11-20T22:28:17.9700515-06:00; fin 2026-11-20T22:28:19.4749179-06:00
+test green-ui-RackCad_UI_Tests_FullPanelCopy.trx rc=0 segundos=4 trx-sha256=c6cb52ec297b768af8cee5fef87791f4698cee18868e33932cdcabc74b460d5d :: filas 36 {'Passed': 36}; inicio 2026-11-20T22:28:21.9405325-06:00; fin 2026-11-20T22:28:24.0561697-06:00
+check green rc=0 :: GREEN: CUMPLE
+partition green rc=0 :: copias en las TRX del GREEN: 477 pruebas; no pasan: 0
+build-server shutdown rc=0
+procesos: 0
+MAINCO []
+rc=0

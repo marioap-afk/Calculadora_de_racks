@@ -1,0 +1,146 @@
+# Remedicion de PB-T4c (v5.0, fase 1), por objetos git
+# A=7f0d9aa3 (donde midio la v4.x)  B=78a7cef3 (base de PB-T4b)  C=6adff90d (cierre de PB-T4b, base de PB-T4c)
+
+## 1. Los anclajes
+id	cita de la v4.9	archivo	lineas en A	lineas en C	coincidencias en C	texto igual A=C	texto igual B=C
+G01	PEG:155-163 (17 nombres; la lista)	WorkspacePilotEditGuardTests.cs	155-163	155-163	1	True	True
+G02	CT-PBT1B-15, PushBackSharedReferenceGuardTests:306-403 (la lista)	PushBackSharedReferenceGuardTests.cs	306-403	306-403	1	True	True
+G02b	CT-PBT1B-15, «archivos=14» (:381 en D-PBT4-15)	PushBackSharedReferenceGuardTests.cs	384	384	1	True	True
+G03	WorkspaceHostSourceGuardTests:398-420	WorkspaceHostSourceGuardTests.cs	398-421	398-421	1	True	True
+G04	EIG:1011-1022 (9 archivos)	WorkspaceEditIntentGuardTests.cs	1011-1024	1011-1024	1	True	True
+G05	WorkspaceNavigationHostTests:714-723 (9 archivos)	WorkspaceNavigationHostTests.cs	713-723	713-723	1	True	True
+G06	WorkspaceBridgeSourceGuardTests:364-367	WorkspaceBridgeSourceGuardTests.cs	361-366	361-366	1	True	True
+G07	WorkspaceBridgeSourceGuardTests:139-142 (los nombres prohibidos)	WorkspaceBridgeSourceGuardTests.cs	139-142	139-142	1	True	True
+G08	G-9 (IG; las cuentas de NH y RIA)	WorkspacePilotUpdateIntegrationGuardTests.cs	593-595	593-595	1	True	True
+G09	EIG:1150-1190 (el cableado de SetPilotUpdateHost)	WorkspaceEditIntentGuardTests.cs	1155-1169	1155-1169	1	True	True
+G09b	EIG:1150-1190 (la prueba del cableado)	WorkspaceEditIntentGuardTests.cs	1171-1175	1171-1175	1	True	True
+G09c	EIG:1150-1190 (su autoprueba)	WorkspaceEditIntentGuardTests.cs	1177-1184	1177-1184	1	True	True
+G10	CT-PBT2B-08 (PushBackWorkspaceModeSourceGuardTests)	PushBackWorkspaceModeSourceGuardTests.cs	307-364	307-364	1	True	True
+G10b	CT-PBT2B-08, R10 (:271-274)	PushBackWorkspaceModeSourceGuardTests.cs	271	271	1	True	True
+G11	URT:1107-1109 (los 7 nombres de PilotBoundaryKind)	WorkspacePilotUpdateRequestTests.cs	1108-1109	1108-1109	1	True	True
+G12	EIH:1066 (los dos metodos con «Update»)	WorkspaceEditIntentHostTests.cs	1060	1060	1	True	True
+G13	PEG:380-385 (dos interfaces de WHC)	WorkspacePilotEditGuardTests.cs	379-386	379-386	1	False	False
+G14	EIH:1088 (un campo de Systems en WHC)	WorkspaceEditIntentHostTests.cs	1079	1079	1	True	True
+D01	PV:218-254 (el WrapPanel de los botones del campo)	WorkspacePanelView.xaml	218-254	218-254	1	True	True
+D01b	PV: BrowserFieldEditButton	WorkspacePanelView.xaml	219	219	1	True	True
+D02	WHC:1149 («the same two-phase step as a blocking boundary»)	WorkspaceHostCore.cs	1149	1187	1	True	True
+D03	WCo:52 (new PilotEditAdapter(new WorkspacePilotEditGate(_host, _noticeDepth)))	WorkspaceController.cs	52	52	1	True	True
+D04	WorkspacePilotSupport.cs:153- (la compuerta)	WorkspacePilotSupport.cs	153-209	153-209	1	True	True
+D05	WCo:283-327 (PilotEditAdapter)	WorkspaceController.cs	283-327	283-327	1	True	True
+D06	PEG:683-695 (ControllerViolations)	WorkspacePilotEditGuardTests.cs	659-707	659-707	1	True	True
+D07	WHC:1127 (SetPendingText mira la marca)	WorkspaceHostCore.cs	1122-1147	1160-1185	1	False	False
+D07b	WHC:1155 (CommitField mira la marca)	WorkspaceHostCore.cs	1150-1182	1188-1220	1	True	True
+D07c	WHC:1208 (CrossBoundary mira la marca)	WorkspaceHostCore.cs	1184-1235	1222-1273	1	True	True
+D07d	WHC:1243 (DiscardRack mira la marca)	WorkspaceHostCore.cs	1238-1263	1276-1301	1	True	True
+D07e	WHC:1270 (DiscardDocument mira la marca)	WorkspaceHostCore.cs	1265-1286	1303-1324	1	True	True
+D08	WHC:1022 (TryBeginEdit, la marca como envoltorio)	WorkspaceHostCore.cs	1020-1032	1058-1070	1	True	True
+D08b	WHC: TryKeepMine del puerto (el envoltorio de TryKeepPilotEdit)	WorkspaceHostCore.cs	1078-1090	1116-1128	1	True	True
+D08c	WHC: TryKeepPilotEdit (las reglas que copia TryEditAll, I-09)	WorkspaceHostCore.cs	636-717	652-751	1	False	False
+D09	WHC:1388 y :1392 (RequestUpdate: la marca y despues PassGate)	WorkspaceHostCore.cs	1376-1435	1414-1473	1	True	True
+D09b	WHC:1939 (PassGate)	WorkspaceHostCore.cs	1925-1959	1959-1993	1	True	True
+D09c	WHC:996 (UpdateGate)	WorkspaceHostCore.cs	985-1010	1023-1048	1	True	True
+D09d	WHC: UpdateInFlightForRequest	WorkspaceHostCore.cs	1487	1525	1	True	True
+D09e	WHC: NotePilotEdit	WorkspaceHostCore.cs	832	870	1	True	True
+D09f	WHC: SetPilotUpdateHost (WCo:110 lo llama)	WorkspaceHostCore.cs	289	292	1	True	True
+D09g	WHC: el campo _updateHost (EIH:1088)	WorkspaceHostCore.cs	77	80	1	True	True
+D10	PEG:778-781 (el modal, solo por EnterPanelModal)	WorkspacePilotEditGuardTests.cs	777-782	777-782	1	True	True
+D10b	WCo:141 (EnterPanelModal)	WorkspaceController.cs	141-145	141-145	1	True	True
+D10c	WCo:110 (SetPilotUpdateHost en el getter de la navegacion)	WorkspaceController.cs	110	110	1	True	True
+D11	EIH:1039-1046 (la excepcion de portador de TryUpdatePilot)	WorkspaceEditIntentHostTests.cs	1041	1041	1	True	True
+D12	W:3427 (PendingWork)	RackPushBackSystemWindow.xaml.cs	3427-3433	3427-3433	1	True	True
+D12b	W: WorkspaceUnappliedQuestion	RackPushBackSystemWindow.xaml.cs	3455	3455	1	True	True
+D12c	W: ForDraft (el abridor lo llama)	RackPushBackSystemWindow.xaml.cs	296-300	296-300	1	True	True
+D12d	W: HeaderConfiguratorPresenter (la costura de CT-09)	RackPushBackSystemWindow.xaml.cs	2373	2373	1	True	True
+D12e	W: HeaderConfiguratorDialog (la otra costura, sin construir el configurador)	RackPushBackSystemWindow.xaml.cs	1488	1488	1	True	True
+D13	PushBackHeaderAuthorityWindowTests.cs:99-106 (la costura en uso)	PushBackHeaderAuthorityWindowTests.cs	100	100	1	True	True
+D14	ci.yml:213-222 (el MessageBox real en el STA de la UI)	ci.yml	220	220	1	True	True
+D15	PushBackClassicCharacterizationPluginGuardTests.cs:196-209 (el abridor clasico, sin Owner)	PushBackClassicCharacterizationPluginGuardTests.cs	195-210	195-210	1	True	True
+D16	WorkspacePilotSurfaceGuardTests:341 (LimitViolations)	WorkspacePilotSurfaceGuardTests.cs	337-350	337-350	1	True	True
+D17	PEG:44-65 (la tabla de las 17 operaciones)	WorkspacePilotEditGuardTests.cs	44-65	44-65	1	True	True
+D17b	PEG:68 (las seis de lectura)	WorkspacePilotEditGuardTests.cs	68	68	1	True	True
+D18	IWorkspacePilotEditPort.cs:143-157 (PilotFieldStatus)	IWorkspacePilotEditPort.cs	143-158	143-158	1	True	True
+D18b	IWorkspacePilotEditPort.cs: la interfaz	IWorkspacePilotEditPort.cs	27-116	27-116	1	True	True
+D19	PushBackDraftEditorLaunch (lo que lleva el lanzamiento)	PushBackDraftEditorLaunch.cs	11-32	11-32	1	True	True
+D19b	IPushBackDraftStatePort (el puerto de la ventana)	PushBackDraftStatePort.cs	33-36	33-36	1	True	True
+
+## 2. Los archivos que toca PB-T4c (AllowedWriteScope de la v4.9, y los dos de la lista): cambiados de A a C y de B a C
+src/RackCad.Application/Workspace/WorkspaceHostCore.cs	cambia A->C=True	cambia B->C=True	lineas en C=2039
+src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs	cambia A->C=False	cambia B->C=False	lineas en C=436
+src/RackCad.Application/Workspace/WorkspacePilotSupport.cs	cambia A->C=False	cambia B->C=False	lineas en C=211
+src/RackCad.Application/Workspace/WorkspaceEditIntent.cs	cambia A->C=True	cambia B->C=True	lineas en C=764
+src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs	cambia A->C=True	cambia B->C=True	lineas en C=1300
+src/RackCad.UI/Workspace/WorkspacePanelView.xaml	cambia A->C=True	cambia B->C=True	lineas en C=360
+src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs	cambia A->C=False	cambia B->C=False	lineas en C=214
+src/RackCad.Plugin/Workspace/WorkspaceController.cs	cambia A->C=False	cambia B->C=False	lineas en C=393
+src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs	cambia A->C=False	cambia B->C=False	lineas en C=3730
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs	cambia A->C=True	cambia B->C=True	lineas en C=1184
+tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs	cambia A->C=False	cambia B->C=False	lineas en C=406
+
+## 3. Los simbolos de la v4.9: los archivos de src/ y tests/ que los nombran en C
+TryEditAll	0	
+EditAllOutcome	0	
+IWorkspaceFullEditorHost	0	
+SetFullEditorHost	0	
+FullEditorModal	0	
+RackWorkspaceEditorWindow	0	
+PushBackFullDraftLaunch	0	
+PushBackFullDraftStatePort	0	
+WorkspaceStagedAndUnappliedQuestion	0	
+BrowserFieldEditAllButton	0	
+OnBrowserFieldEditAllClick	0	
+ShowEditAllButton	0	
+EditAllPendingTextReason	0	
+PushBackEditAll	0	
+PushBackOpenerClassicPathGuardTests	0	
+PushBackDraftLaunchGuardTests	0	
+PushBackEditAllWindowTests	0	
+PushBackEditAllPortEquivalenceGuardTests	0	
+PushBackEditAllGuardTests	0	
+PushBackEditAllTests	0	
+HeaderConfiguratorPresenter	17	RackDynamicSystemWindow.xaml.cs; RackPushBackSystemWindow.xaml.cs; RackSelectiveWindow.xaml.cs; DynamicHeaderBatchRecomputeTests.cs; DynamicHeaderBatchSeamGuardTests.cs; DynamicHeaderConfiguratorL1Tests.cs; DynamicHeaderReuseWindowTests.cs; PushBackFullEditorCharacterizationSubdialogTests.cs ...
+HeaderConfiguratorDialog	4	RackPushBackSystemWindow.xaml.cs; PushBackFullEditorCharacterizationSubdialogTests.cs; PushBackModuleEditorWindowTests.cs; PushBackWorkspaceApplyCloseTests.cs
+ConfigureModuleHeaderButton	13	RackPushBackSystemWindow.xaml; RackPushBackSystemWindow.xaml.cs; PushBackModuleEditorCharacterizationTests.cs; PushBackClassicCharacterizationKeyboardTests.cs; PushBackFullEditorCharacterizationSubdialogTests.cs; PushBackHeaderAuthorityWindowTests.cs; PushBackHeaderCartesianTests.cs; PushBackHeaderLifecycleTests.cs ...
+PushBackDraftSessionPort	3	PushBackDraftStatePort.cs; PushBackDraftStatePortTests.cs; PushBackWorkspaceSupport.cs
+LaunchFor	2	PushBackDraftStatePort.cs; PushBackDraftStatePortTests.cs
+PilotEraseScopeDouble	4	PushBackFullPanelTests.cs; PushBackFullWritePrepareTests.cs; PushBackFullWriteRunTests.cs; PushBackFullWriteSupport.cs
+PilotUpdateScopeDouble	12	PushBackFullPanelTests.cs; PushBackFullWriteRunTests.cs; PushBackFullWriteSupport.cs; WorkspacePilotUpdateGuardTests.cs; WorkspacePilotUpdateHostDouble.cs; WorkspacePilotUpdateHostFull.cs; WorkspacePilotUpdateHostRunTests.cs; WorkspacePilotUpdateHostTests.cs ...
+WorkspacePilotEditPortDouble	10	PushBackFullPanelFieldTests.cs; WorkspacePilotCloseSyncTests.cs; WorkspacePilotCloseSyncViewTests.cs; WorkspacePilotEditPortDouble.cs; WorkspacePilotFieldViewModelTests.cs; WorkspacePilotFieldViewTests.cs; WorkspacePilotReconciliationFull.cs; WorkspacePilotReconciliationTests.cs ...
+PushBackDraftEditorLaunch	7	PushBackDraftEditorLaunch.cs; PushBackDraftStatePort.cs; RackPushBackSystemWindow.xaml.cs; PushBackDraftPortSharedReferenceGuardTests.cs; PushBackDraftStatePortTests.cs; PushBackWorkspaceModeSourceGuardTests.cs; PushBackWorkspaceSupport.cs
+IPushBackDraftStatePort	4	PushBackDraftEditorLaunch.cs; PushBackDraftStatePort.cs; RackPushBackSystemWindow.xaml.cs; PushBackWorkspaceSupport.cs
+RackPushBackSystemWindow.ForDraft(	2	PushBackWorkspaceModeTests.cs; PushBackWorkspaceSupport.cs
+
+## 4. Lo que PB-T4b anadio que fija archivos que PB-T4c cambia
+archivos de pruebas nuevos de PB-T4b: 28
+tests/RackCad.Tests/PushBackFullPanelCensusGuardTests.cs	nombra: WorkspaceHostCore, WorkspacePilotSupport, WorkspaceEditIntent
+tests/RackCad.Tests/PushBackFullPanelGuardTests.cs	nombra: WorkspaceHostCore, WorkspacePilotSupport, WorkspaceEditIntent, WorkspacePilotFieldViewModel, WorkspaceController
+tests/RackCad.Tests/PushBackFullPanelTests.cs	nombra: WorkspaceHostCore, IWorkspacePilotEditPort, WorkspaceEditIntent
+tests/RackCad.Tests/PushBackWritePathGuardFull.cs	nombra: WorkspaceHostCore, WorkspacePilotSupport
+tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorFull.cs	nombra: WorkspaceHostCore, IWorkspacePilotEditPort
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardFull.cs	nombra: WorkspaceHostCore, WorkspaceEditIntent
+tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostFull.cs	nombra: WorkspaceHostCore, IWorkspacePilotEditPort, WorkspaceEditIntent
+tests/RackCad.Tests/Workspace/WorkspaceFullReadKit.cs	nombra: WorkspaceHostCore, WorkspaceEditIntent
+tests/RackCad.Tests/Workspace/WorkspaceHostHardeningGuardFull.cs	nombra: WorkspaceHostCore, WorkspacePilotSupport
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardFull.cs	nombra: WorkspaceHostCore
+tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostFull.cs	nombra: WorkspaceHostCore
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardFull.cs	nombra: WorkspaceHostCore, IWorkspacePilotEditPort, WorkspacePilotSupport
+tests/RackCad.Tests/Workspace/WorkspacePilotEditHostFull.cs	nombra: WorkspaceHostCore, IWorkspacePilotEditPort, WorkspaceEditIntent, WorkspacePilotEditGuardTests
+tests/RackCad.Tests/Workspace/WorkspacePilotPrepareFull.cs	nombra: WorkspaceHostCore, IWorkspacePilotEditPort
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationGuardFull.cs	nombra: IWorkspacePilotEditPort, WorkspacePilotFieldViewModel
+tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostFull.cs	nombra: WorkspaceHostCore
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardFull.cs	nombra: WorkspaceHostCore
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostFull.cs	nombra: WorkspaceHostCore
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateIntegrationGuardFull.cs	nombra: WorkspaceHostCore, WorkspaceController
+tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestFull.cs	nombra: WorkspaceHostCore, IWorkspacePilotEditPort
+tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs	nombra: WorkspaceEditIntent, WorkspacePilotEditGuardTests
+tests/RackCad.UI.Tests/PushBackFullPanelFieldTests.cs	nombra: WorkspacePilotFieldViewModel, WorkspacePanelView
+tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationFull.cs	nombra: WorkspacePilotFieldViewModel
+tests/RackCad.UI.Tests/Workspace/WorkspacePilotReconciliationViewFull.cs	nombra: WorkspacePanelView
+
+## 5. CT-PBT4B-20: los 21 originales que fija por su BaseSha, y si PEG y PushBackSharedReferenceGuardTests estan entre ellos
+originales: 21
+tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs	BaseSha=1ef3b59be954177391a0a0c5df07d2daa65728bb90d6f4d20dd46e8531903d35	Skip=5
+PushBackSharedReferenceGuardTests entre ellos: False
+SkipLine (la expresion que devuelve un Skip a [Fact] o [Theory]): @"^([ \t]*)\[(Fact|Theory)\(Skip = ""I-64 F4B PB-T4b: [^""]*""\)\]"
+PEG en C, con sus Skip de PB-T4b devueltos, es su BaseSha: True
+PEG en C, con sus Skip de PB-T4b devueltos, es PEG en B: True
+Skip de PB-T4b en PEG en C: 5

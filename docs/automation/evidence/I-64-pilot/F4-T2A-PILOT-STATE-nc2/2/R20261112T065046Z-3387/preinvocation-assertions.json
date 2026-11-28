@@ -1,0 +1,21 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261112T065046Z-3387",
+  "Assertions": {
+    "SameInputFileSet": true,
+    "OnlyMutatedAndDerivedChanged": true,
+    "DelegationDiffersOnlyInScope": true,
+    "ScopeExcludesExactlyFirstDiffFile": true,
+    "HandoffCurrentShaExact": true,
+    "PromptEqualToVerifiedExceptPathAndRunId": true,
+    "All40HexTokensResolve": true,
+    "LauncherHasNoGitCommandOrDeliverySha": true
+  },
+  "ExcludedFile": "src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotMaterializer.cs",
+  "Unresolved40Hex": [],
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ],
+  "Pass": true
+}

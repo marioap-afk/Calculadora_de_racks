@@ -1,0 +1,80 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1A-LOSSLESS-STATE-NET",
+  "RunId": "R20261118T171929Z-3203",
+  "DelegationRunId": "R20261118T141628Z-d049",
+  "WorkRunId": "R20261118T142230Z-d31d",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true. OutputWrittenUtc=2026-11-18T16:06:40Z falls between Cession.StartUtc=14:22:36Z and EndUtc=16:06:53Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json has schema rackcad-worker-handoff/v1, matching TaskId, RunId=R20261118T142230Z-d31d, DelegationRunId and Attempt=1. Worktree and branch match; output time is after cession start."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN 16.3, 16.8-16.10, execution README section 8 and AGENTS.md at MainSha 812baf879612320653094a8aaf46aca0bac81383; unit authorities at AuthorityRevision 95c8126ba88c4e355cc09c51db972ff7f757251a. git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha listed five docs/ paths; none are EXTERNAL or UNIT_CHANGE."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json matches gate-contract.json for A3-A5: AllowedWriteScope 9 entries, ForbiddenWriteScope 131, Invariants 14, StopConditions 30, Authorities 39 and RequiredTests 19. byte-fidelity-check.json reports PASS for all eight collections; planning Notes report A1-A8 8/8 and nc4."
+    },
+    "Identity": {
+      "Result": "fail",
+      "Evidence": "Delivery CurrentSha is literally deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. git rev-parse HEAD=73d30982b0c0ce2b8c9213e626df0ab0d50b0475; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad gives the same 73d30982... Branch and worktree match. Base and Red are ancestors of measured HEAD, but HEAD and remote ref do not equal delivery CurrentSha."
+    },
+    "Remote": {
+      "Result": "fail",
+      "Evidence": "relay-record-work.json Entry.LsRemoteSha=73d30982b0c0ce2b8c9213e626df0ab0d50b0475 and RemoteFacts.CurrentRun.HeadSha has the same value, not the delivery CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Entry.OriginMainSha=812baf879612320653094a8aaf46aca0bac81383 matches MainSha. No network Git command was run."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read delegation.json AllowedWriteScope: 9 exact paths. Script compared git diff --name-only BaseSha HEAD and BaseSha RedSha to that list: the 7 net paths and all 9 RED paths are exact matches. git diff BaseSha HEAD -- src is empty; RED src changes are only W and WC. Forbidden prefixes have no intersection."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v on the inputs delegation.json matched .gitignore rule artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts run 44338475965 is push on the expected branch, completed success, with all four required jobs success and HeadSha=73d30982b0c0ce2b8c9213e626df0ab0d50b0475. It does not match delivery CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef. Red run 44333116533 has UI failure, Core and both builds success, no blame-hang or timeout; RedPart passes the task-specific rule."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed all four supplied TRX files. Current UI=2436 results, 2415 passed, 0 failed, 21 NotExecuted; Core=19070 passed. All 19 RequiredTests filters meet MinSelected and pass on Current TRX. RED ExpectRed filter selected 14, all 14 failed, 0 skipped or NotExecuted; each failure is an assertion and its first stack line is under tests/. The other RED filters meet minima; UI has 56 failures total, including 42 existing failures attributed in the handoff T-8. git diff BaseSha RedSha -- tests lists 7 paths; git diff RedSha HEAD -- tests is empty. The 15 RED substitutions are in the two permitted files; Base and Current blobs match, and RED blobs differ."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..HEAD shows both commits carry Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, matching worker-handoff.json Worker.Trailer and the effective model."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with high effort. relay-record-work.json Participant records requested alias sonnet, effective model claude-sonnet-5-5, requested and effective effort high; this matches the subagent transport rule."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Read-only Python scan of the full seven worker-handoff.json text fields against every 16.10 term, case-insensitive with whole-word/phrase boundaries: WorkCompleted 14792 chars, Evidence 15261, UnexpectedFindings 2692, KnownLimitations 1407, Deviations 2133, OpenQuestions 2, RecommendedNextAction 201. No matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report 0 permission denials and 3 tool errors, none pending. Notes report 0 participants and 0 persistent unattributable processes."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "Findings": [
+    "S-04: worker-handoff.json declares CurrentSha deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, while measured HEAD, origin branch ref, entry remote fact and CurrentRun HeadSha are 73d30982b0c0ce2b8c9213e626df0ab0d50b0475.",
+    "coordinator-disposition.md ratifies only the CT-PBT1A-02 adjustment; it does not address the SHA mismatch."
+  ],
+  "RecommendedNextAction": "Correct the declared CurrentSha and repeat verification against the corrected handoff."
+}

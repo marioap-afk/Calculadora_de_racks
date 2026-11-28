@@ -1,0 +1,67 @@
+{
+  "Regla": "Los Skip de la lista (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-substitution-list-4.tsv, sha256 9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de), medidos por la sesion con pbt4c_lib.skip_diff y skip_rule sobre git show BaseSha:<ruta> y git show RedSha:<ruta>: en cada archivo de la lista solo cambian lineas de atributo [Fact] o [Theory] que ganan Skip = \"...\" (SoloAtributosConSkip), lo saltado es la lista o una parte (ListaOParte; FueraDeLaLista vacio) y el motivo es el literal del modulo de motivos (MotivoMal vacio); IgualAlGenerador true: el archivo de RedSha es, con CRLF -> LF, el de BaseSha con el Skip literal de cada prueba de la lista y nada mas (el modulo de motivos, pbt4c_skips_v50.py, que carga el comprobador check_skips_pbt4c_v50.py que nombra la ExpectedEvidence; null si la cadena no lo tiene).",
+  "BaseSha": "d502601477c21972ca2109b0d5c25c6fddfe4989",
+  "RedSha": "280c79beac61d31b03f86488c03686eef4f694bc",
+  "PorArchivo": {
+    "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs": {
+      "SoloAtributosConSkip": true,
+      "Errores": [],
+      "ListaOParte": true,
+      "IgualAlGenerador": true,
+      "Detalle": {
+        "Saltadas": 1,
+        "EnLaLista": 1,
+        "FueraDeLaLista": [],
+        "MotivoMal": []
+      },
+      "Saltadas": [
+        "CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses"
+      ]
+    },
+    "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs": {
+      "SoloAtributosConSkip": true,
+      "Errores": [],
+      "ListaOParte": true,
+      "IgualAlGenerador": true,
+      "Detalle": {
+        "Saltadas": 1,
+        "EnLaLista": 1,
+        "FueraDeLaLista": [],
+        "MotivoMal": []
+      },
+      "Saltadas": [
+        "ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot"
+      ]
+    },
+    "tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs": {
+      "SoloAtributosConSkip": true,
+      "Errores": [],
+      "ListaOParte": true,
+      "IgualAlGenerador": true,
+      "Detalle": {
+        "Saltadas": 1,
+        "EnLaLista": 1,
+        "FueraDeLaLista": [],
+        "MotivoMal": []
+      },
+      "Saltadas": [
+        "CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList"
+      ]
+    },
+    "tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs": {
+      "SoloAtributosConSkip": true,
+      "Errores": [],
+      "ListaOParte": true,
+      "IgualAlGenerador": true,
+      "Detalle": {
+        "Saltadas": 1,
+        "EnLaLista": 1,
+        "FueraDeLaLista": [],
+        "MotivoMal": []
+      },
+      "Saltadas": [
+        "CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied"
+      ]
+    }
+  }
+}

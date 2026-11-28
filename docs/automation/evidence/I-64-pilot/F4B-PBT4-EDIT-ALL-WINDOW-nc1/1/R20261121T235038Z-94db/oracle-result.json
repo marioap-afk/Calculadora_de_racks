@@ -1,0 +1,57 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261121T235038Z-94db",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Identity",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "fail",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "fail",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Identity",
+    "Remote",
+    "Scope",
+    "Ci",
+    "Tests"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD = 7cc1076eae8159294a1498ab556851977223b64c; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad returned the same. worker-handoff.json CurrentSha=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef; git cat-file -e <CurrentSha>^{commit} failed. Branch and worktree match; BaseSha and RedSha are commits."
+  },
+  "OutputSha256": "0B7004D6B8C878B84BC57C3662FF7191F52D7090B7F6F441A23A3691D0AD5741",
+  "ManualFreeText1610": []
+}

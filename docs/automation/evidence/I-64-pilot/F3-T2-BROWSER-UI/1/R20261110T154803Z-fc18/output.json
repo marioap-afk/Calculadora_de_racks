@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F3-T2-BROWSER-UI",
+  "RunId": "R20261110T154803Z-fc18",
+  "DelegationRunId": "R20261110T145323Z-22d9",
+  "WorkRunId": "R20261110T145802Z-4c2a",
+  "Attempt": 1,
+  "VerifiedSha": "2c36b36bf32c600f00a317fd36e929ab2636f454",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; subagent completion notification recorded. Cession.StartUtc=2026-11-10T14:58:17Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json parses as rackcad-worker-handoff/v1; TaskId, Attempt, DelegationRunId and RunId match the delegation and work record. OutputWrittenUtc=2026-11-10T09:44:45.037192-06:00, after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha lists only docs/automation/evidence/I-64-evidence.md, docs/automation/evidence/I-64-pilot/F3-T2-BROWSER-UI/coordinator/gate-contract.json and docs/automation/state/I-64.yml; all are declared UNIT_DOC. Read external AUTOMATION_PLAN.md, agent-execution/README.md and AGENTS.md from MainSha 812baf879612320653094a8aaf46aca0bac81383 with git show."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Planning record reports A1-A8 pass; delegation scope, invariants, stop conditions, authorities and RequiredTests match the contract. nc4 record reports only A3 fail for the widened scope, with the other results unchanged. coordinator-disposition.md resolves criterion 23; the changed paths follow its stated requirements."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD, refs/remotes/origin/architecture/workspace-persistente-rackcad and origin/main returned CurrentSha, CurrentSha and MainSha respectively. Branch and worktree match the delegation. git merge-base --is-ancestor BaseSha CurrentSha and RedSha CurrentSha exited 0; git log shows RED 1c379a23 before GREEN 2c36b36b."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json records LsRemoteSha=CurrentSha and OriginMainSha=MainSha; CurrentRun is push to the exact branch with HeadSha=CurrentSha. The local origin/main rev-parse also equals MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha..CurrentSha lists 18 paths. Each is an exact AllowedWriteScope entry; none intersects ForbiddenWriteScope. The GREEN-to-current diff contains product paths only."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore -v for the handoff input reports .gitignore:3:artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "CurrentRun 42847080959 is a completed push for the exact branch and CurrentSha; all four required jobs are success. RedRun 42843728174 is a completed push for RedSha; its Core tests job is failure, as required for RED."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current CI TRX results match handoff TestResults: UI Workspace 203 selected, 203 passed; Core Workspace 891 selected, 891 passed, exceeding minima 155 and 855. Red TRX results: UI 203 selected with 42 failed; Core 891 selected with 30 failed. git diff --name-only ChainBaseSha RedSha -- tests/ gives ChainRedFiles: tests/RackCad.Tests/Workspace/WorkspaceBrowserHostGuardTests.cs; tests/RackCad.Tests/Workspace/WorkspaceBrowserSummaryTests.cs; tests/RackCad.Tests/Workspace/WorkspaceNavigationHostTests.cs; tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs; tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserScenarioHarnessTests.cs; tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserSummaryPortDouble.cs; tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewModelTests.cs; tests/RackCad.UI.Tests/Workspace/WorkspaceBrowserViewTests.cs. git diff --name-only RedSha CurrentSha has no tests/ paths."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha shows both RED and GREEN commits with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, consistent with the effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 and high effort. Work record records launch alias ModelRequested=sonnet, effective ModelEffective=claude-sonnet-5-5 and EffortEffective=high; the alias is the subagent launch parameter."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Searched the seven AUTOMATION_PLAN 16.10 handoff text fields for every listed term; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Work record Notes report zero permission denials, three tool errors with none pending, no usage warning, and no persistent unattributable processes. Config hash matches Snapshot F at exit and entry."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The 18 changed paths are within the delegated scope, and the GREEN commit changes no test files.",
+    "The handoff records a local full UI run with 2 failed and 17 skipped tests; the exact push jobs and required filtered TRX results have no failures. The two local failures are described in the handoff as pre-existing."
+  ],
+  "RecommendedNextAction": "Continue with the remaining chain controls and record this verification."
+}

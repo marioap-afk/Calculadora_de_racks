@@ -1,0 +1,287 @@
+{
+ "Copias": {
+  "Particion": {
+   "DelContrato": false,
+   "Medida": {},
+   "Sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "PorClase": {}
+ },
+ "CopySha": {
+  "Copias": 0,
+  "Mal": {}
+ },
+ "Equivalentes": {
+  "Equivalentes": 4,
+  "Mal": {},
+  "Sha256": {
+   "tests/RackCad.Tests/PushBackEditAllFullCopyGuardTests.cs": "4619b6d310340f9c97a7d9f31bda1db852d2fcda905b91bb857510f7e6b7e6ce",
+   "tests/RackCad.Tests/PushBackEditAllNameWritersGuardTests.cs": "3744992127be8b7e1d8d822a769b8eb2a6886789c73285c8436e5baec6bf7b6b",
+   "tests/RackCad.Tests/PushBackEditAllPortEquivalenceGuardTests.cs": "1a2607d3a35ae8f9737fffb0eb32a4acd8100318fe83e5b0098d30428f57d250",
+   "tests/RackCad.UI.Tests/PushBackEditAllApplyCloseTests.cs": "7c2458260ef301d7f05bfaff8e1e8c4a4a618f25fd7022705d55dee32dbe78d2"
+  }
+ },
+ "Firmas": {},
+ "Forma": "sin copias",
+ "GreenLiteral": {
+  "Archivos": [
+   "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftLaunch.cs",
+   "src/RackCad.Application/Systems/PushBack/Draft/PushBackFullDraftStatePort.cs",
+   "src/RackCad.Application/Workspace/IWorkspaceFullEditHost.cs",
+   "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+   "src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+   "src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+   "src/RackCad.Application/Workspace/WorkspacePilotSupport.cs",
+   "src/RackCad.Plugin/Views/RackWorkspaceEditorWindow.cs",
+   "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+   "src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs",
+   "src/RackCad.UI/Workspace/WorkspacePanelView.xaml",
+   "src/RackCad.UI/Workspace/WorkspacePanelView.xaml.cs",
+   "src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs"
+  ],
+  "Pieza": "pbt4c-green-v51.txt"
+ },
+ "Kit": {
+  "Custodiado": null,
+  "Ruta": null,
+  "Sha256DelRed": null
+ },
+ "Lista": {
+  "Filas": 4,
+  "Ruta": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-substitution-list-4.tsv",
+  "Sha256": "9bd4c17a0eda837c92a7a0b7b3562d4ab17f1608baf3ffa8efaf560d8b1f82de"
+ },
+ "MapaDeLaCopia": {
+  "Ruta": null,
+  "Sha256": null
+ },
+ "ModuloDeMotivos": {
+  "Checker": "check_skips_pbt4c_v50.py",
+  "Files": [
+   {
+    "Name": "check_skips_pbt4c_v50.py",
+    "Sha256": "71521e52abdd7f371fb4b067d2b4400bb508c2d1d6a246ca83df4bb39127ee22",
+    "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/check_skips_pbt4c_v50.py"
+   },
+   {
+    "Name": "pbt4c_skips_v50.py",
+    "Sha256": "a59a3aedc982bb15312a04eb5ddbe92afa2a868a1177e7c8b4c3f49332970f7f",
+    "Source": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c_skips_v50.py"
+   }
+  ],
+  "Module": "pbt4c_skips_v50.py"
+ },
+ "Precondicion6": {
+  "Claves": [
+   "Binaries",
+   "Builds",
+   "Census",
+   "CheckSkips",
+   "Checks",
+   "ClassResults",
+   "Control",
+   "CsWarnings",
+   "D",
+   "DriverPieces",
+   "E",
+   "EquivalentSha",
+   "FilterOverlap",
+   "Green",
+   "GreenFiles",
+   "History",
+   "InheritedCoreFiltersGreen",
+   "IsDirtyCost",
+   "List",
+   "Package",
+   "Pieces",
+   "Probes",
+   "Red",
+   "Rehearsal",
+   "Revision",
+   "Schema",
+   "Skeleton",
+   "SkipFiles",
+   "SuiteDurationSeconds"
+  ],
+  "Ruta": "docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4c-precondition6.json"
+ },
+ "SaltadasEnElRed": {
+  "Detalle": {
+   "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs": {
+    "EnLaLista": 1,
+    "ErroresDelDiff": [],
+    "FueraDeLaLista": [],
+    "MotivoMal": [],
+    "Saltadas": 1,
+    "SkipDelGenerador": 1
+   },
+   "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs": {
+    "EnLaLista": 1,
+    "ErroresDelDiff": [],
+    "FueraDeLaLista": [],
+    "MotivoMal": [],
+    "Saltadas": 1,
+    "SkipDelGenerador": 1
+   },
+   "tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs": {
+    "EnLaLista": 1,
+    "ErroresDelDiff": [],
+    "FueraDeLaLista": [],
+    "MotivoMal": [],
+    "Saltadas": 1,
+    "SkipDelGenerador": 1
+   },
+   "tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs": {
+    "EnLaLista": 1,
+    "ErroresDelDiff": [],
+    "FueraDeLaLista": [],
+    "MotivoMal": [],
+    "Saltadas": 1,
+    "SkipDelGenerador": 1
+   }
+  },
+  "PorArchivo": {
+   "tests/RackCad.Tests/PushBackSharedReferenceGuardTests.cs": [
+    "CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses"
+   ],
+   "tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs": [
+    "ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot"
+   ],
+   "tests/RackCad.Tests/WorkspaceFullCopyGuardTests.cs": [
+    "CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList"
+   ],
+   "tests/RackCad.UI.Tests/PushBackWorkspaceApplyCloseTests.cs": [
+    "CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied"
+   ]
+  },
+  "Sha256": "94544cdfd154d9064d94035076e03f765f1d9c30b3ba20b0e9555aedd4730930",
+  "Total": 4
+ },
+ "TrxSaltadasDeLaLista": {
+  "Green": [
+   "RackCad.Tests.PushBackSharedReferenceGuardTests.CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses",
+   "RackCad.Tests.WorkspaceFullCopyGuardTests.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList",
+   "RackCad.Tests.WorkspacePilotEditGuardTests.ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot",
+   "RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied"
+  ],
+  "Red": [
+   "RackCad.Tests.PushBackSharedReferenceGuardTests.CT_PBT1B_15_TheWritersOfNameInThePluginRunAfterTheWindowCloses",
+   "RackCad.Tests.WorkspaceFullCopyGuardTests.CT_PBT4B_20_TheScriptOfSkipAndDuplicateGivesTheCopiesTheKitAndTheSkipsOfTheClosedList",
+   "RackCad.Tests.WorkspacePilotEditGuardTests.ThePortDeclaresTheSeventeenOperationsWithTheEnumsAsOrderedPrefixesAndNamesNoTypeOfTheDraftsNorOfThePilot",
+   "RackCad.UI.Tests.PushBackWorkspaceApplyCloseTests.CT_PBT2B_06_ClosingAsksOnlyForWhatWasNotApplied"
+  ]
+ },
+ "WarningsCS": {
+  "ConWarning": {},
+  "RegistrosLeidos": [
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b0/build-core.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b0/build-plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b0/build-ui.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b1/core-rest.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b1/core-ws.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-1.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-10.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-11.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-12.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-13.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-14.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-15.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-16.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-17.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-2.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-3.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-4.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-5.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-6.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-7.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-8.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/b2/ui-9.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackDraftLaunchGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackEditAllApplyCloseTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackEditAllFullCopyGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackEditAllGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackEditAllNameWritersGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackEditAllPortEquivalenceGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackEditAllTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackEditAllWindowTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/d0/PushBackOpenerClassicPathGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e1/RackCad.Tests.PushBackEditAllGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e1/RackCad.Tests.PushBackEditAllTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e1/RackCad.UI.Tests.PushBackEditAllApplyCloseTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e1/RackCad.UI.Tests.PushBackEditAllWindowTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e2/RackCad.Tests.PushBackEditAllGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e2/RackCad.Tests.PushBackEditAllTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e2/RackCad.UI.Tests.PushBackEditAllApplyCloseTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e2/RackCad.UI.Tests.PushBackEditAllWindowTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e3/RackCad.Tests.PushBackEditAllGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e3/RackCad.Tests.PushBackEditAllTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e3/RackCad.UI.Tests.PushBackEditAllApplyCloseTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/e3/RackCad.UI.Tests.PushBackEditAllWindowTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackDraftLaunchGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackEditAllApplyCloseTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackEditAllFullCopyGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackEditAllGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackEditAllNameWritersGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackEditAllPortEquivalenceGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackEditAllTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackEditAllWindowTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g0/PushBackOpenerClassicPathGuardTests.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g1/build-core.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g1/build-plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g1/build-ui.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g2/core-prep.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g2/core-rest.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g2/core-ws.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-1.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-10.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-11.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-12.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-13.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-14.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-15.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-16.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-17.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-18.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-19.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-2.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-3.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-4.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-5.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-6.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-7.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-8.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/g3/ui-9.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r1/build-core.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r1/build-plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r1/build-ui.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r2/core-rest.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r2/core-ws.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r2b/core-rest.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r2c/prep-green.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r2d/core-rest2.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-1.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-10.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-11.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-12.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-13.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-14.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-15.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-16.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-17.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-18.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-19.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-2.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-3.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-4.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-5.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-6.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-7.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-8.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/r3/ui-9.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/s1/build-core.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/s1/build-plugin.log",
+   "artifacts/orchestration/I-64/F4B-PBT4-EDIT-ALL-WINDOW/1/R20261121T205731Z-41db/tests/s1/build-ui.log"
+  ],
+  "Sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+ }
+}

@@ -1,0 +1,18 @@
+{
+  "Schema": "rackcad-i64-custody-manifest/v1",
+  "Unit": "F4-ENVIRONMENT/snapshot-G",
+  "SourceRoot": "artifacts/orchestration/I-64/F4-ENVIRONMENT/snapshot-G",
+  "Rules": "rutas locales, usuario y maquina nunca se versionan; eventos, registros de sesion y salidas crudas de herramientas solo por SHA-256 (16.12); duplicados de archivos ya custodiados solo por SHA-256; CRLF se custodia en LF con el SHA-256 original",
+  "Counts": {
+    "CUSTODIED": 1,
+    "EXCLUDED": 0
+  },
+  "Files": [
+    {
+      "Path": "snapshot-g.json",
+      "Bytes": 9776,
+      "Sha256": "6eb1e7cfdedc99985c1b9193fb464f2840aec6a74da7ad6c3d02d888932dee63",
+      "Disposition": "CUSTODIED"
+    }
+  ]
+}

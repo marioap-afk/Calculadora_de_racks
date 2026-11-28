@@ -1,0 +1,5 @@
+inventario: c15-SPB-30-uia.txt
+sha256: 5cb486d720652efec03f34423a936e5de2572b0ed89a30ff53fa2f5106ccbe6a
+bytes: 282
+
+(no es un inventario RCDUMP: solo su SHA-256)

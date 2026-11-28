@@ -1,0 +1,505 @@
+{
+  "Head": "7c29a5e55ce623b52ac240665cdf4e795d817d9f",
+  "Checks": [
+    {
+      "Check": "1 producto identico a c3ae1c97",
+      "Result": "PASS",
+      "Detail": "[]"
+    },
+    {
+      "Check": "1 tests/ solo cambia en las 7 clases de T1B",
+      "Result": "PASS",
+      "Detail": "['tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs', 'tests/RackCad.UI.Tests/PushBackClassicCharacterizationCloseTests.cs', 'tests/RackCad.UI.Tests/PushBackClassicCharacterizationIntentTests.cs', 'tests/RackCad.UI.Tests/PushBackClassicCharacterizationKeyboardTests.cs', 'tests/RackCad.UI.Tests/PushBackClassicCharacterizationOwnerTests.cs', 'tests/RackCad.UI.Tests/PushBackClassicCharacterizationResourceTests.cs', 'tests/RackCad.UI.Tests/PushBackClassicCharacterizationSourceGuardTests.cs']"
+    },
+    {
+      "Check": "2 los archivos nuevos no existen",
+      "Result": "PASS",
+      "Detail": "[]"
+    },
+    {
+      "Check": "2 los archivos modificados existen",
+      "Result": "PASS",
+      "Detail": "[]"
+    },
+    {
+      "Check": "2 las rutas del prohibido citadas existen",
+      "Result": "PASS",
+      "Detail": "[]"
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdatePlan.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Application/Workspace/Drafts/DraftSession.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Application/Workspace/Drafts/DraftApplyOutcome.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Application/Workspace/WorkspaceHostCore.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Application/Workspace/WorkspaceEditIntent.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Plugin/Views/RackSiblingScan.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/CallerOwnedFacadeGuardTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspaceDraftPilotOwnershipTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspacePilotPrepareGuardTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspacePilotEditGuardTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspaceHostTestSupport.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Application/Systems/PushBack/Pilot/IPushBackPilotUpdatePort.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotUpdateRun.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Application/Systems/PushBack/Pilot/PushBackPilotSystemRebuild.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: src/RackCad.Plugin/Views/RackPilotUpdateWriter.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRunTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateGuardTests.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "2 la ruta aparece en el paquete: tests/RackCad.Tests/Workspace/WorkspacePilotUpdateScopeDouble.cs",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "3 la tabla de clases tiene 21 filas",
+      "Result": "PASS",
+      "Detail": "['CallerOwnedFacadeGuardTests', 'CallerOwnedTransactionGuardTests', 'CustomPropertiesEnvelopeGuardTests', 'DebugFaultInjectionGuardTests', 'G16FirstViewCorrectiveTests', 'I55G15Auth15ConsumerTests', 'NamespaceFolderGuardTests', 'PushBackClassicCharacterizationPluginGuardTests', 'PushBackPluginSourceGuardTests', 'PushBackRoundTripSourceGuardTests', 'RackEnvelopeIdProbeTests', 'RackProjectionCommandGuardTests', 'RackSiblingCustomPropertiesGateTests', 'RackSiblingMembershipTests', 'RackSiblingRedrawPlanTests', 'RackSiblingRedrawRunTests', 'RackSiblingRedrawUnitsTests', 'RackUnitsGuardSourceTests', 'RackViewBatchDriverGuardTests', 'SiblingRedrawSeamGuardTests', 'SingleScanInsertGuardTests']"
+    },
+    {
+      "Check": "3 CallerOwnedFacadeGuardTests: una clase y cuenta 48",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=48"
+    },
+    {
+      "Check": "3 CallerOwnedTransactionGuardTests: una clase y cuenta 15",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=15"
+    },
+    {
+      "Check": "3 CustomPropertiesEnvelopeGuardTests: una clase y cuenta 22",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=22"
+    },
+    {
+      "Check": "3 DebugFaultInjectionGuardTests: una clase y cuenta 1",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=1"
+    },
+    {
+      "Check": "3 G16FirstViewCorrectiveTests: una clase y cuenta 61",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=61"
+    },
+    {
+      "Check": "3 I55G15Auth15ConsumerTests: una clase y cuenta 5",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=5"
+    },
+    {
+      "Check": "3 NamespaceFolderGuardTests: una clase y cuenta 7",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=7"
+    },
+    {
+      "Check": "3 PushBackClassicCharacterizationPluginGuardTests: una clase y cuenta 10",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=10"
+    },
+    {
+      "Check": "3 PushBackPluginSourceGuardTests: una clase y cuenta 11",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=11"
+    },
+    {
+      "Check": "3 PushBackRoundTripSourceGuardTests: una clase y cuenta 24",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=24"
+    },
+    {
+      "Check": "3 RackEnvelopeIdProbeTests: una clase y cuenta 5",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=5"
+    },
+    {
+      "Check": "3 RackProjectionCommandGuardTests: una clase y cuenta 34",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=34"
+    },
+    {
+      "Check": "3 RackSiblingCustomPropertiesGateTests: una clase y cuenta 2",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=2"
+    },
+    {
+      "Check": "3 RackSiblingMembershipTests: una clase y cuenta 12",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=12"
+    },
+    {
+      "Check": "3 RackSiblingRedrawPlanTests: una clase y cuenta 2",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=2"
+    },
+    {
+      "Check": "3 RackSiblingRedrawRunTests: una clase y cuenta 6",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=6"
+    },
+    {
+      "Check": "3 RackSiblingRedrawUnitsTests: una clase y cuenta 2",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=2"
+    },
+    {
+      "Check": "3 RackUnitsGuardSourceTests: una clase y cuenta 18",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=18"
+    },
+    {
+      "Check": "3 RackViewBatchDriverGuardTests: una clase y cuenta 4",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=4"
+    },
+    {
+      "Check": "3 SiblingRedrawSeamGuardTests: una clase y cuenta 2",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=2"
+    },
+    {
+      "Check": "3 SingleScanInsertGuardTests: una clase y cuenta 5",
+      "Result": "PASS",
+      "Detail": "clases=1 cuenta_ci=5"
+    },
+    {
+      "Check": "3 Core Workspace 2923",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "3 UI Workspace 601",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "3 UI PushBackClassicCharacterization 55",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:112-112 contiene LockDocument",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:113-113 contiene StartTransaction",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:163-163 contiene .Commit(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:98-98 contiene Traverse(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:103-110 contiene StringComparer.Ordinal",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:166-169 contiene new RackSiblingDrawingScan(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:119-122 contiene IsLayout",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/RackSelectivoInsertIntegration.cs:81-81 contiene RackSiblingScan.Capture(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackUnsupportedSiblingInsert.cs:43-43 contiene RackSiblingScan.Capture(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackProjectionSnapshotReader.cs:127-127 contiene RackSiblingScan.CaptureDrawing(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs:116-116 contiene RackSiblingScan.CaptureDrawing(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:147-150 contiene PurgeAfterCommit",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:193-238 contiene PurgeUnreferenced",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:202-202 contiene StartTransaction",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:220-220 contiene Purge(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Drawing/LateralHeaderDrawer.cs:233-237 contiene catch",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:87-87 contiene Commit",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Systems/Shared/SystemBlockWriter.cs:91-91 contiene Purge",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Systems/PushBack/PushBackSystemDrawService.cs:64-66 contiene RedrawInTransaction",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Systems/PushBack/PushBackFrontalDrawService.cs:62-64 contiene RedrawInTransaction",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Systems/PushBack/PushBackPlantaDrawService.cs:56-58 contiene RedrawInTransaction",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 tests/RackCad.Tests/CallerOwnedTransactionGuardTests.cs:197-238 contiene Purge",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs:322-354 contiene PrepareRedraw(",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 tests/RackCad.Tests/PushBackClassicCharacterizationPluginGuardTests.cs:366-382 contiene Lacks(source, \"PrepareRedraw(\"",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 tests/RackCad.Tests/Workspace/WorkspaceEditIntentGuardTests.cs:88-128 contiene Traverse",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 tests/RackCad.Tests/G9bInsertWiringGuardTests.cs:7-35 contiene SingleScanInsertGuardTests",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:77-77 contiene internal static class RackSiblingScan",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:172-179 contiene AddLayer",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:115-115 contiene document.Database.BlockTableId",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:111-114 contiene StartTransaction",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Views/RackSiblingScan.cs:162-165 contiene transaction.Commit();",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Application/BlockNaming.cs:1-40 contiene SanitizeBlockName",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs:96-96 contiene _",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Drawing/BlockPlacement.cs:213-213 contiene PurgeUnreferenced",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/RackCommandSupport.cs:274-274 contiene PurgeUnreferenced",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/Systems/Shared/SiblingRedrawTransaction.cs:23-23 contiene Commit",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/RackSelectivoInsertIntegration.cs:253-253 contiene Purge",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 tests/RackCad.Tests/CustomPropertiesEnvelopeGuardTests.cs:24-34 contiene ConstructionsOutsideComposer",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 tests/RackCad.Tests/SelectiveEditorOpenTests.cs:565-572 contiene CommandMethod",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/RackPushBackCommands.cs:189-189 contiene name.Trim()",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/RackPushBackCommands.cs:282-282 contiene LinkedPlanta(baseName)",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/RackPushBackCommands.cs:300-309 contiene IsComposite",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Plugin/RackPushBackCommands.cs:339-342 contiene LinkedLateral(baseName, postIndex)",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 src/RackCad.Application/BlockNaming.cs:12-17 contiene Cabecera",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "4 tests/RackCad.Tests/RackUnitsGuardSourceTests.cs:87-101 contiene Insunits",
+      "Result": "PASS",
+      "Detail": ""
+    },
+    {
+      "Check": "5 rutas citadas existentes",
+      "Result": "PASS",
+      "Detail": "[]"
+    }
+  ],
+  "Summary": {
+    "Pass": 99,
+    "Fail": 0
+  },
+  "Result": "PASS"
+}

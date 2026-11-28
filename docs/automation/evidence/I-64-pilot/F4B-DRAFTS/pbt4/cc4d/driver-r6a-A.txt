@@ -1,0 +1,25 @@
+retirada, variante A; copia /d/r6a; salida r6a-A; revision 6c2820bab4d8b41e3e229e23f3a1638ccbb04735
+  pieza 0a4c3599b890b0596081410dc2dd477d3472daaa9c8e97621540e6b5135e00de retire_pbt4d_v52.py
+  pieza bc0cc4e563b7643f943c563562b5620b1ebac507a3eb7833cbb626ef90c75b0b measure_retire_v52.py
+  pieza 3d172421b24d6bd64655e349c52906463f8de779b42a30a319da6ad1d8fb82a1 lists_core.py
+  pieza d5467dc162e2cda8c539a829cc8f3a7c46260a119f70e840b34e6f78dde0387c pbt4d-retire-list-138.tsv
+  pieza 48a9404cea2a359fceb330d7efa65920bad9fed2b5a698a758a69709eb1bac23 pbt4d-probe-fullcopy.cs
+  pieza a41ceff37fc16baa51681bda6c77b9558ba9c3e865c0bf3089ca5c24161c05fb p6d_check_v52.py
+  pieza f7c7ada64a34c3a3fcba04553b5d3448ddafffa66adc69ae9c210f129f1f62b6 run_classes_v51.py
+  pieza 19182fbc10012c160453df237ad2657568affdc586e2f7ce9cad8feccdef7815 ui_filters_pbt4c_v50b.txt
+  pieza e6597f65b64ba685703cc12de6348998f54247d228633a721591351de6fee4c1 p6d_retire_v52.sh
+copia exportada: 14571 archivos
+PARA: retire_pbt4d_v52.py fallo en la vuelta 0
+ Traceback (most recent call last):
+  File "<scratchpad>\hs65\pbt4\v52\retire_pbt4d_v52.py", line 137, in <module>
+    files[path][0] = remove_by_regex(files[path][0], rx)
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4\v52\retire_pbt4d_v52.py", line 106, in remove_by_regex
+    spans = [lines_of_span(text, m.start(), body_end(masked, m.end())) for m in ms]
+                                            ~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "<scratchpad>\hs65\pbt4\v52\retire_pbt4d_v52.py", line 88, in body_end
+    raise AssertionError('sin final')
+AssertionError: sin final
+
+PARA: el bucle de compilacion no cerro (rc=5)
+MAINCO []

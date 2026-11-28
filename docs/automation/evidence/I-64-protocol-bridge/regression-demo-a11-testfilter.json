@@ -1,0 +1,705 @@
+{
+  "Schema": "rackcad-i64-testfilter-bridge-regression/v4",
+  "VerifierSha256": "91a18eb05b15a52782283ca5f79fde8d2de7aa169170ff2e9017ac1143cfc787",
+  "SelftestSha256": "a754e0cbdfdc0781bfebb4aaa02f52191fb544b38f507afc30ed5418014bd679",
+  "Verifier": {
+    "Result": "PASS",
+    "Passed": 109,
+    "Total": 109,
+    "ExitCode": 0,
+    "FailedCases": []
+  },
+  "Mutants": {
+    "DisplayName": {
+      "Result": "FAIL",
+      "Passed": 85,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T02",
+        "T03",
+        "T06",
+        "T07",
+        "T08",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62",
+        "T65",
+        "T69",
+        "T70",
+        "T74",
+        "T88",
+        "T93",
+        "T108"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(x[2])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "ClassNameOnly": {
+      "Result": "FAIL",
+      "Passed": 87,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T06",
+        "T07",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62",
+        "T65",
+        "T69",
+        "T70",
+        "T74",
+        "T88",
+        "T93",
+        "T108"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(definitions[x[0]][0])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "CaseSensitiveFqn": {
+      "Result": "FAIL",
+      "Passed": 86,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T04",
+        "T06",
+        "T07",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62",
+        "T65",
+        "T69",
+        "T70",
+        "T74",
+        "T88",
+        "T93",
+        "T108"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if substring in definitions[x[0]][0] + '.' + definitions[x[0]][1]]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "MethodNameOnly": {
+      "Result": "FAIL",
+      "Passed": 83,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T01",
+        "T03",
+        "T05",
+        "T06",
+        "T07",
+        "T09",
+        "T28",
+        "T34",
+        "T38",
+        "T46",
+        "T51",
+        "T52",
+        "T56",
+        "T57",
+        "T58",
+        "T59",
+        "T60",
+        "T62",
+        "T65",
+        "T69",
+        "T70",
+        "T74",
+        "T83",
+        "T88",
+        "T93",
+        "T108"
+      ],
+      "Replaces": "sel = [x for x in rows if fqn_decision(definitions[x[0]][0], definitions[x[0]][1], substring) == SELECTED]",
+      "With": "sel = [x for x in rows if fold(substring) in fold(definitions[x[0]][1])]",
+      "MustFail": [],
+      "MustFailOk": true
+    },
+    "CodePointPositions": {
+      "Result": "FAIL",
+      "Passed": 107,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T61",
+        "T62"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "fqn = [ord(ch) for ch in class_name + '.' + method_name]",
+      "MustFail": [
+        "T61",
+        "T62"
+      ],
+      "MustFailOk": true
+    },
+    "GlobalNonAsciiReject": {
+      "Result": "FAIL",
+      "Passed": 105,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "fqn = utf16_units(class_name + '.' + method_name)\n    if any(u > 0x7F for u in fqn):\n        return UNKNOWN",
+      "MustFail": [
+        "T58",
+        "T59",
+        "T60",
+        "T62"
+      ],
+      "MustFailOk": true
+    },
+    "NonAsciiAsMismatch": {
+      "Result": "FAIL",
+      "Passed": 106,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "Replaces": "if u > 0x7F:\n                state = UNKNOWN",
+      "With": "if u > 0x7F:\n                state = NOT_SELECTED\n                break",
+      "MustFail": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "MustFailOk": true
+    },
+    "UnknownOverridesAsciiMatch": {
+      "Result": "FAIL",
+      "Passed": 108,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T60"
+      ],
+      "Replaces": "if SELECTED in windows:\n        return SELECTED\n    return UNKNOWN if UNKNOWN in windows else NOT_SELECTED",
+      "With": "if UNKNOWN in windows:\n        return UNKNOWN\n    return SELECTED if SELECTED in windows else NOT_SELECTED",
+      "MustFail": [
+        "T60"
+      ],
+      "MustFailOk": true
+    },
+    "PythonCasefold": {
+      "Result": "FAIL",
+      "Passed": 106,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T36",
+        "T37",
+        "T61"
+      ],
+      "Replaces": "fqn = utf16_units(class_name + '.' + method_name)",
+      "With": "return SELECTED if substring.casefold() in (class_name + '.' + method_name).casefold() else NOT_SELECTED",
+      "MustFail": [
+        "T36",
+        "T37"
+      ],
+      "MustFailOk": true
+    },
+    "RawStringTestId": {
+      "Result": "FAIL",
+      "Passed": 105,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T63",
+        "T64",
+        "T65",
+        "T70"
+      ],
+      "Replaces": "return fold(value)",
+      "With": "return value",
+      "MustFail": [
+        "T63",
+        "T64",
+        "T65",
+        "T70"
+      ],
+      "MustFailOk": true
+    },
+    "FirstMessageWins": {
+      "Result": "FAIL",
+      "Passed": 101,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T75",
+        "T76",
+        "T77",
+        "T78",
+        "T79",
+        "T81",
+        "T82",
+        "T84"
+      ],
+      "Replaces": "msg = failure_message(r, outcome == 'Failed')",
+      "With": "node = r.find('%s/%s/%s' % (q('Output'), q('ErrorInfo'), q('Message')))\n        msg = node.text if node is not None and node.text else ''",
+      "MustFail": [
+        "T75",
+        "T76",
+        "T77",
+        "T78",
+        "T79",
+        "T81",
+        "T82",
+        "T84"
+      ],
+      "MustFailOk": true
+    },
+    "MessageChildrenIgnored": {
+      "Result": "FAIL",
+      "Passed": 108,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T84"
+      ],
+      "Replaces": "if messages and len(messages[0]):\n        raise TrxInvalid('TRX_FAILURE_MESSAGE_AMBIGUOUS', 'Message has child elements')",
+      "With": "",
+      "MustFail": [
+        "T84"
+      ],
+      "MustFailOk": true
+    },
+    "FailedRowsOnly": {
+      "Result": "FAIL",
+      "Passed": 108,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T82"
+      ],
+      "Replaces": "msg = failure_message(r, outcome == 'Failed')",
+      "With": "msg = failure_message(r, True) if outcome == 'Failed' else ''",
+      "MustFail": [
+        "T82"
+      ],
+      "MustFailOk": true
+    },
+    "NestedTestRunAllowed": {
+      "Result": "FAIL",
+      "Passed": 105,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T94",
+        "T95",
+        "T96",
+        "T105"
+      ],
+      "Replaces": "if any(local_name(e.tag) == 'TestRun' for e in root.iter() if e is not root):\n        raise TrxInvalid('TRX_NESTED_TESTRUN', 'a TestRun element below the document element; only the document element is read')",
+      "With": "",
+      "MustFail": [
+        "T94",
+        "T95",
+        "T96",
+        "T105"
+      ],
+      "MustFailOk": true
+    },
+    "RootUnchecked": {
+      "Result": "FAIL",
+      "Passed": 107,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T106",
+        "T107"
+      ],
+      "Replaces": "if root.tag != q('TestRun'):\n        raise TrxInvalid('TRX_ROOT_INVALID', 'the document element is not the VSTest 2010 TestRun in the TRX namespace')",
+      "With": "",
+      "MustFail": [
+        "T106",
+        "T107"
+      ],
+      "MustFailOk": true
+    },
+    "ImmediateParentOnly": {
+      "Result": "FAIL",
+      "Passed": 108,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T104"
+      ],
+      "Replaces": "if tags in ALLOWED[name]:",
+      "With": "if tags[-2:] in {a[-2:] for a in ALLOWED[name]}:",
+      "MustFail": [
+        "T104"
+      ],
+      "MustFailOk": true
+    },
+    "UniqueContainersUnchecked": {
+      "Result": "FAIL",
+      "Passed": 105,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T97",
+        "T98",
+        "T99",
+        "T109"
+      ],
+      "Replaces": "for name in UNIQUE_CONTAINERS:\n        n = len(located[name])\n        if n != 1:\n            raise TrxInvalid('TRX_STRUCTURE_MISSING' if n == 0 else 'TRX_STRUCTURE_AMBIGUOUS', '%d %s elements; exactly one is required' % (n, name))",
+      "With": "",
+      "MustFail": [
+        "T97",
+        "T98",
+        "T99",
+        "T109"
+      ],
+      "MustFailOk": true
+    },
+    "MisplacedFailureNodeAsStructure": {
+      "Result": "FAIL",
+      "Passed": 104,
+      "Total": 109,
+      "ExitCode": 1,
+      "FailedCases": [
+        "T80",
+        "T85",
+        "T86",
+        "T87",
+        "T89"
+      ],
+      "Replaces": "'TRX_FAILURE_MESSAGE_AMBIGUOUS' if inside_result else 'TRX_STRUCTURE_AMBIGUOUS'",
+      "With": "'TRX_STRUCTURE_AMBIGUOUS'",
+      "MustFail": [
+        "T80",
+        "T85",
+        "T86",
+        "T87",
+        "T89"
+      ],
+      "MustFailOk": true
+    }
+  },
+  "HistoricalA10": {
+    "Result": "FAIL",
+    "Passed": 97,
+    "Total": 109,
+    "ExitCode": 1,
+    "FailedCases": [
+      "T94",
+      "T95",
+      "T96",
+      "T97",
+      "T98",
+      "T99",
+      "T103",
+      "T104",
+      "T105",
+      "T106",
+      "T107",
+      "T109"
+    ],
+    "Blob": "b134ba653b6f47871c6fc3ae7e15357487c6c88a",
+    "ExtractedBlob": "b134ba653b6f47871c6fc3ae7e15357487c6c88a",
+    "ExtractedSha256": "c7adba0d9eded766a8d4ae61d7f8ce19e8081bcbba1ea35a27ab00f75eaa6452",
+    "SignatureCases": {
+      "I64-A10-TESTRUN-ROOT-ANCHOR": [
+        {
+          "Case": "T94",
+          "A10Got": "PASS",
+          "A10ExitCode": 0,
+          "A11Got": "FAIL",
+          "A11ReasonCodes": [
+            "TRX_NESTED_TESTRUN"
+          ],
+          "A10AcceptedBadFixture": true,
+          "A11Rejected": true
+        },
+        {
+          "Case": "T96",
+          "A10Got": "PASS",
+          "A10ExitCode": 0,
+          "A11Got": "FAIL",
+          "A11ReasonCodes": [
+            "TRX_NESTED_TESTRUN"
+          ],
+          "A10AcceptedBadFixture": true,
+          "A11Rejected": true
+        },
+        {
+          "Case": "T103",
+          "A10Got": "PASS",
+          "A10ExitCode": 0,
+          "A11Got": "FAIL",
+          "A11ReasonCodes": [
+            "TRX_STRUCTURE_AMBIGUOUS"
+          ],
+          "A10AcceptedBadFixture": true,
+          "A11Rejected": true
+        },
+        {
+          "Case": "T104",
+          "A10Got": "PASS",
+          "A10ExitCode": 0,
+          "A11Got": "FAIL",
+          "A11ReasonCodes": [
+            "TRX_STRUCTURE_AMBIGUOUS"
+          ],
+          "A10AcceptedBadFixture": true,
+          "A11Rejected": true
+        }
+      ],
+      "I64-A10-SHADOW-RUN-PASS": [
+        {
+          "Case": "T95",
+          "A10Got": "PASS",
+          "A10ExitCode": 0,
+          "A11Got": "FAIL",
+          "A11ReasonCodes": [
+            "TRX_NESTED_TESTRUN"
+          ],
+          "A10AcceptedBadFixture": true,
+          "A11Rejected": true
+        }
+      ]
+    },
+    "ShadowRunEscape": {
+      "Case": "T95",
+      "Fixture": {
+        "UnitTestResultElements": 10,
+        "OuterResultRows": 9,
+        "HiddenFailedRows": 1,
+        "HiddenFqn": "Synth.Tests.WorkspaceShadowTests.HiddenFailure",
+        "OuterCountersAsT01": true,
+        "OuterRowsAsT01": true
+      },
+      "A10Got": "PASS",
+      "A10ExitCode": 0,
+      "A10Observed": {
+        "Result": "PASS",
+        "GreenSelected": 6,
+        "GreenFailed": 0
+      },
+      "A11Got": "FAIL",
+      "A11ReasonCodes": [
+        "TRX_NESTED_TESTRUN"
+      ],
+      "HiddenFailureEscapedInA10": true,
+      "A11RejectedStructurally": true
+    },
+    "FailedCaseDetails": [
+      {
+        "Case": "T94",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_NESTED_TESTRUN",
+        "A10Got": "PASS",
+        "A10ExitCode": 0,
+        "A10ReasonCodes": [],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_NESTED_TESTRUN"
+        ]
+      },
+      {
+        "Case": "T95",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_NESTED_TESTRUN",
+        "A10Got": "PASS",
+        "A10ExitCode": 0,
+        "A10ReasonCodes": [],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_NESTED_TESTRUN"
+        ]
+      },
+      {
+        "Case": "T96",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_NESTED_TESTRUN",
+        "A10Got": "PASS",
+        "A10ExitCode": 0,
+        "A10ReasonCodes": [],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_NESTED_TESTRUN"
+        ]
+      },
+      {
+        "Case": "T97",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_AMBIGUOUS",
+        "A10Got": "FAIL",
+        "A10ExitCode": 1,
+        "A10ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T98",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_AMBIGUOUS",
+        "A10Got": "FAIL",
+        "A10ExitCode": 1,
+        "A10ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T99",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_AMBIGUOUS",
+        "A10Got": "FAIL",
+        "A10ExitCode": 1,
+        "A10ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T103",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_AMBIGUOUS",
+        "A10Got": "PASS",
+        "A10ExitCode": 0,
+        "A10ReasonCodes": [],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T104",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_AMBIGUOUS",
+        "A10Got": "PASS",
+        "A10ExitCode": 0,
+        "A10ReasonCodes": [],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ]
+      },
+      {
+        "Case": "T105",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_NESTED_TESTRUN",
+        "A10Got": "FAIL",
+        "A10ExitCode": 1,
+        "A10ReasonCodes": [
+          "TRX_STRUCTURE_AMBIGUOUS"
+        ],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_NESTED_TESTRUN"
+        ]
+      },
+      {
+        "Case": "T106",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_ROOT_INVALID",
+        "A10Got": "FAIL",
+        "A10ExitCode": 1,
+        "A10ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_ROOT_INVALID"
+        ]
+      },
+      {
+        "Case": "T107",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_ROOT_INVALID",
+        "A10Got": "FAIL",
+        "A10ExitCode": 1,
+        "A10ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_ROOT_INVALID"
+        ]
+      },
+      {
+        "Case": "T109",
+        "Expected": "FAIL",
+        "ExpectedCode": "TRX_STRUCTURE_MISSING",
+        "A10Got": "FAIL",
+        "A10ExitCode": 1,
+        "A10ReasonCodes": [
+          "TRX_UNREADABLE"
+        ],
+        "A10FailedAsserts": [],
+        "A11Got": "FAIL",
+        "A11ReasonCodes": [
+          "TRX_STRUCTURE_MISSING"
+        ]
+      }
+    ]
+  },
+  "Result": "PASS"
+}

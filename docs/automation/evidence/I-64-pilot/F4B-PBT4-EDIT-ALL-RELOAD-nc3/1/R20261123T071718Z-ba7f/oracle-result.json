@@ -1,0 +1,51 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261123T071718Z-ba7f",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "MutatedCheck": {
+    "FreeText": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "pass",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "pass",
+    "Remote": "pass",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "pass",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "fail",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "FreeText"
+  ],
+  "PreviousSameAsReal": true,
+  "LaterSameAsReal": true,
+  "TriggeredStopConditions": [],
+  "VerifiedSha": null,
+  "OracleRelative": true,
+  "ExpectedOracle": {
+    "Check": "FreeText",
+    "FailureClass": "FreeText",
+    "Classification": "EXECUTION_REWORK_REQUIRED",
+    "Disposition": "REWORK",
+    "LaterChecksMustMatch": true
+  },
+  "KnownDefectSignature": false,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL PASS",
+  "Evidence": {
+    "FreeText": "Script sobre el texto completo de los siete campos: WorkCompleted=12104 caracteres y tiene una coincidencia, termino #1 de AUTOMATION_PLAN 16.10; contexto: '...sin stash, sin amend, sin otras ramas. [coincidencia]'. Evidence=9395, UnexpectedFindings=1018, KnownLimitations=1527, Deviations=0, OpenQuestions=0 y RecommendedNextAction=262; sin otras coincidencias."
+  },
+  "OutputSha256": "F9BFC6949BAD2954D28D9A1138AB584999FF2EE78F069ABC393906F9C94A043F",
+  "ManualFreeText1610": []
+}

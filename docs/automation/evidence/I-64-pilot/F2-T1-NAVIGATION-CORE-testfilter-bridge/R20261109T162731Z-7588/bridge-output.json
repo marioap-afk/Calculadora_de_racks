@@ -1,0 +1,387 @@
+{
+  "Schema": "rackcad-i64-testfilter-bridge/v1",
+  "Result": "PASS",
+  "Reasons": [],
+  "Filter": {
+    "Expression": "FullyQualifiedName~Workspace",
+    "Substring": "Workspace",
+    "MatchKey": "TestMethod className + \".\" + name",
+    "Matching": "case-insensitive substring over UTF-16 code units with ASCII-only folding (A-Z <-> a-z); a non-ASCII unit is unknown: an FQN without an all-ASCII matching window that could match through such a unit fails closed (UNSUPPORTED_NON_ASCII_FQN); an FQN with no possible window is not selected",
+    "MinSelected": 645
+  },
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "BaseSha": "9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb",
+  "ChainBaseSha": "9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb",
+  "RedSha": "f2761979b89e784ed16220815e250d21bc476aa1",
+  "CurrentSha": "c726410f3ac764f4a80a08a2b810b5fdda276ecc",
+  "ExpectedChainRedFilesSha256": "05d35abb1a11443300dc1473a0991bfa7e7db8d2ef95bfb736878f34bb3498ae",
+  "ChainRedFiles": [
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationActionPolicyTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationAuthorityTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationCacheTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationPrivacyGuardTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationTargetsTests.cs",
+    "tests/RackCad.Tests/Workspace/WorkspaceNavigationTestSupport.cs"
+  ],
+  "RedToCurrentTouchesChainRedFiles": [],
+  "Green": {
+    "TrxSha256": "832ac146610e270ac38e72fc03747006e0379e384e9744e7fee093200c5f2de7",
+    "NonAsciiFqn": {
+      "Rows": 1,
+      "SELECTED": 0,
+      "NOT_SELECTED": 1,
+      "UNKNOWN_POTENTIAL_MATCH": 0,
+      "Undecidable": []
+    },
+    "Selected": 724,
+    "Passed": 724,
+    "Failed": 0,
+    "NotExecuted": 0,
+    "SelectedKeysSha256": "ac3db3fc3efa5efc93ac06e2cf717f626a397a492055b16d0a654046be2ed6c3",
+    "FailureComposition": {},
+    "FailedOutsideSelection": 0,
+    "Counters": {
+      "total": 15048,
+      "executed": 15048,
+      "passed": 15048,
+      "failed": 0,
+      "error": 0,
+      "timeout": 0,
+      "aborted": 0,
+      "inconclusive": 0,
+      "passedButRunAborted": 0,
+      "notRunnable": 0,
+      "notExecuted": 0,
+      "disconnected": 0,
+      "warning": 0,
+      "completed": 0,
+      "inProgress": 0,
+      "pending": 0
+    },
+    "Handoff": {
+      "Selected": 724,
+      "Passed": 724,
+      "Failed": 0,
+      "Skipped": 0
+    }
+  },
+  "Red": {
+    "TrxSha256": "39fd76e341c71cd06d98e0d88bc6314483d4e295928dd0af10944d407a4e4a3c",
+    "NonAsciiFqn": {
+      "Rows": 1,
+      "SELECTED": 0,
+      "NOT_SELECTED": 1,
+      "UNKNOWN_POTENTIAL_MATCH": 0,
+      "Undecidable": []
+    },
+    "Selected": 724,
+    "Passed": 673,
+    "Failed": 51,
+    "NotExecuted": 0,
+    "SelectedKeysSha256": "ac3db3fc3efa5efc93ac06e2cf717f626a397a492055b16d0a654046be2ed6c3",
+    "FailureComposition": {
+      "System.NullReferenceException": 1,
+      "xunit-assertion": 50
+    },
+    "FailedOutsideSelection": 0,
+    "Counters": {
+      "total": 15048,
+      "executed": 15048,
+      "passed": 14997,
+      "failed": 51,
+      "error": 0,
+      "timeout": 0,
+      "aborted": 0,
+      "inconclusive": 0,
+      "passedButRunAborted": 0,
+      "notRunnable": 0,
+      "notExecuted": 0,
+      "disconnected": 0,
+      "warning": 0,
+      "completed": 0,
+      "inProgress": 0,
+      "pending": 0
+    },
+    "Handoff": {
+      "Selected": 724,
+      "Passed": 673,
+      "Failed": 51,
+      "Skipped": 0
+    }
+  },
+  "Diagnostics": {
+    "Green": {
+      "DisplayNameCaseInsensitive": 727,
+      "ClassNameOnly": 723,
+      "CaseSensitiveFqn": 723,
+      "MethodNameOnly": 21
+    },
+    "Red": {
+      "DisplayNameCaseInsensitive": 727,
+      "ClassNameOnly": 723,
+      "CaseSensitiveFqn": 723,
+      "MethodNameOnly": 21
+    },
+    "Note": "counts under rejected selection methods; informational only, never decide the result"
+  },
+  "Mutation": {
+    "AuthorizedAppend": " GATE PASS.",
+    "RealHandoffSha256": "7f9f7e7484f62c8b4561d03e654faac4d91d90957919c346add79b3333a7b5f7",
+    "MutatedHandoffSha256": "4b281947709f9947b2817f4549a1309e52382c43891bd78806d970cbe91abc9e",
+    "TermSetSourceSha256": "b5ca72945f64462f33b5efd6cf024e35b4c86630289d9b363e7f3eab8fde198d",
+    "TermSetSectionSha256": "767662276555c2fafffad3450fe9e264ad691e58e0ddb870e8b739c5dbf76864",
+    "ChangedFields": [
+      "WorkCompleted"
+    ],
+    "IntroducedTerms": [
+      "GATE PASS"
+    ],
+    "IntroducedOccurrences": 1
+  },
+  "Checks": [
+    {
+      "Id": "Args.base_sha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Args.chain_base_sha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Args.red_sha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Args.current_sha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Filter.Supported",
+      "Result": "pass"
+    },
+    {
+      "Id": "Args.MinSelected",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.ExpectedChainRedFiles",
+      "Result": "pass"
+    },
+    {
+      "Id": "Trx.GreenReadable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Trx.RedReadable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Trx.GreenSelectionDecidable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Trx.RedSelectionDecidable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.RealHandoffReadable",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.MutatedHandoffReadable",
+      "Result": "pass"
+    },
+    {
+      "Id": "TermSet.Parsed",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.RealHandoffSchema",
+      "Result": "pass"
+    },
+    {
+      "Id": "Input.MutatedHandoffSchema",
+      "Result": "pass"
+    },
+    {
+      "Id": "Bind.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Bind.BaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Bind.RedSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Bind.CurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Repository",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.BaseSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.ChainBaseSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.RedSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.CurrentSha.Commit",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Ancestry.ChainBaseToRed",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Ancestry.BaseToRed",
+      "Result": "pass"
+    },
+    {
+      "Id": "Git.Ancestry.RedToCurrent",
+      "Result": "pass"
+    },
+    {
+      "Id": "ChainRedFiles.NonEmpty",
+      "Result": "pass"
+    },
+    {
+      "Id": "ChainRedFiles.EqualsAccredited",
+      "Result": "pass"
+    },
+    {
+      "Id": "ChainRedFiles.UntouchedByGreen",
+      "Result": "pass"
+    },
+    {
+      "Id": "Green.SelectedAtLeastMin",
+      "Result": "pass"
+    },
+    {
+      "Id": "Red.SelectedAtLeastMin",
+      "Result": "pass"
+    },
+    {
+      "Id": "Green.NoFailedSelected",
+      "Result": "pass"
+    },
+    {
+      "Id": "Red.HasFailedSelected",
+      "Result": "pass"
+    },
+    {
+      "Id": "Red.FailuresInsideSelection",
+      "Result": "pass"
+    },
+    {
+      "Id": "Selection.SameTestsGreenRed",
+      "Result": "pass"
+    },
+    {
+      "Id": "Green.MatchesExpected",
+      "Result": "pass"
+    },
+    {
+      "Id": "Red.MatchesExpected",
+      "Result": "pass"
+    },
+    {
+      "Id": "Red.CompositionMatchesExpected",
+      "Result": "pass"
+    },
+    {
+      "Id": "Green.MatchesHandoff",
+      "Result": "pass"
+    },
+    {
+      "Id": "Red.MatchesHandoff",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.Schema",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.TaskId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.RunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.DelegationRunId",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.Initiative",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.Gate",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.Attempt",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.BaseSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.RedSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.CurrentSha",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.Branch",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.Worktree",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.Identity.FilesChanged",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.KeyOrder",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.OnlyWorkCompletedChanged",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.ExactAuthorizedAppend",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.RealClean",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.NoCompensatingDisappearance",
+      "Result": "pass"
+    },
+    {
+      "Id": "Mutation.ExactlyOneProhibitedTermIntroduced",
+      "Result": "pass"
+    }
+  ]
+}

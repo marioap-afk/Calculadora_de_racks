@@ -42,6 +42,13 @@ namespace RackCad.UI.Systems.FlowBed
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
         private FlowBedConfiguration lastConfig;
 
+        /// <summary>
+        /// T5 cm (I-64, quinta tanda; question 3 of the prototype «camas»): «Freno cada N rodillos» of the bed it opened. This window does not
+        /// show it (the editor of the window does), but it keeps it when it writes or saves the bed, as the classic Dinámico keeps the bed of a
+        /// front it does not show; a new bed has none.
+        /// </summary>
+        private int? loadedBrakeEveryRollers;
+
         private double mapScale;
         private double mapOffsetX;
         private double mapBottomY;
@@ -237,7 +244,8 @@ namespace RackCad.UI.Systems.FlowBed
                 LaneDepth = laneDepth,
                 PalletDepth = palletDepth,
                 RollerId = rollerId,
-                RollerPitchOverride = pitch
+                RollerPitchOverride = pitch,
+                BrakeEveryRollers = loadedBrakeEveryRollers // T5 cm: kept, not shown
             };
         }
 
@@ -291,6 +299,7 @@ namespace RackCad.UI.Systems.FlowBed
             }
 
             this.sourceFlowBed = sourceFlowBed;
+            loadedBrakeEveryRollers = config.BrakeEveryRollers; // T5 cm
             session.Identity.Adopt(id, name); // keep the drawn bed's GUID + name (I-15)
             if (NameBox != null)
             {
@@ -333,6 +342,7 @@ namespace RackCad.UI.Systems.FlowBed
             }
 
             this.sourceProject = sourceProject;
+            loadedBrakeEveryRollers = config.BrakeEveryRollers; // T5 cm
             session.Identity.Adopt(null, name); // a library template inserts as a NEW bed: no id yet, fresh GUID on insert (I-15)
             if (NameBox != null)
             {

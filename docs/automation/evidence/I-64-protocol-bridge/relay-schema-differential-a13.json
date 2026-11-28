@@ -1,0 +1,116 @@
+{
+  "Schema": "rackcad-i64-relay-schema-differential/v1",
+  "OfficialSchemaBlob": "2deba19606d058fd82b389687934b0c3dfef8c06",
+  "Comparator": "PowerShell Test-Json",
+  "Result": "PASS",
+  "Rows": [
+    {
+      "Variant": "baseline",
+      "Precheck": "SCHEMA_VALID",
+      "TestJson": "SCHEMA_VALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T32-populated",
+      "Precheck": "SCHEMA_VALID",
+      "TestJson": "SCHEMA_VALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T33",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T34",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T35",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T36",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T37",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T38",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T39",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T40",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T41",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T42",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T43",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T44",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T45",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T46",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T47",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    },
+    {
+      "Variant": "T48",
+      "Precheck": "SCHEMA_INVALID",
+      "TestJson": "SCHEMA_INVALID",
+      "Agree": true
+    }
+  ]
+}

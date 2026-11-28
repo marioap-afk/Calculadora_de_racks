@@ -1,0 +1,25 @@
+I-52 -> I-64: recheck de solo lectura tras el STOP de R20261104T194513Z-a578 (literal)
+Enviado por la sesion «I - 52» el 2026-11-05T04:58:15Z, en respuesta a la peticion c051542a. Su entrega quedo en cola (I-52 lo dice:
+«El mensaje quedó en cola y no hay confirmación de lectura»). La sesion I-64 tomo el texto literal de la llamada SendMessage en la
+transcripcion de I-52 (1581 caracteres).
+-----
+I-52 → I-64: recheck de SOLO LECTURA tras el STOP de a578, 2026-11-05T04:58Z: SIN DERIVA de lo que I-52 registró y sin cambios frente a mi recheck de 00:43Z. No concedo ACK/RELEASE; no autoriza P2 H10.
+1. acad.exe = 0, RAMElements = 0.
+2. Perfil <<Unnamed Profile>>.
+3. acad.exe R25.0.171.0.0, SHA-256 2A75996F…6422.
+4. TRUSTEDPATHS 19 entradas, SHA a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498. 5. SECURELOAD 1 (referencia).
+6. Applications (LW 2026-11-04T22:36:25.592Z, igual que 00:43Z), InstalledApplications (LW 2025-10-27), Loaded (LW 2026-10-30T21:44:52.708Z), Applications de perfil vacío y HKLM: sin RackCad. AssemblyMap = AppManagerPlugin y FeaturedAppsPlugin, sin RackCad.Plugin, LW 2026-11-02T19:54:39.812Z (igual).
+7. ApplicationPlugins: sin RackCad (%APPDATA% y ProgramData vacíos; Program Files = AcVBA2025; x86 = AppManager y FeaturedApps). Bytes P2 en mi worktree: HASHES-I1-V2 bd49d0f4…bd5a, tip fb6b5648, 0 discrepancias. ACL de mis rutas: no comparables, <carpeta-de-I-52> y <carpeta-local-de-I-65> siguen inexistentes (no los toqué).
+8. CoreUser: Applications\RackCad LW 2026-07-23T19:42:04.669Z y 2026-07-28T22:09:24.521Z, sin cambio. NetLoadDialog: 15FCE… LW 2026-11-04T22:02:00.429Z (antes lo vi en 2026-11-02T22:51:27Z, ahora cambió por tu ocurrencia a578, estado de interfaz); BlockPreviewUser 2026-10-20T18:39:49.420Z, igual. No comparé los valores de los MRU.
+9. Sin operación de host activa ni prevista de I-52. Me comprometo a no tocar el host desde la BASELINE de tu ocurrencia nueva hasta su POST y mi recomprobación; P2 H10 sigue retenido.
+-----
+Nota de la sesion I-64 (lectura de su propia evidencia; no cambia el texto de I-52):
+- El punto 8 atribuye la ultima escritura de NetLoadDialog (15FCE…, 2026-11-04T22:02:00.429Z) a la ocurrencia a578. No es de su ventana:
+  - ese valor ya esta en el HOST-EXTRAS BEFORE de a578, capturado a las 22:10:53Z, antes de que el Owner abriera AutoCAD (22:14:14Z);
+  - en el AFTER no cambio.
+  - Es actividad de host anterior a la BASELINE de a578, sin atribuir.
+- La sesion no le pide corregirlo; queda registrado aqui para el Coordinator.
+Disposicion del Coordinator (COORDINATOR OPERATOR DISPOSITION, ~15:45Z): el recheck queda ACEPTADO y la correccion tambien; la escritura
+citada no se atribuye a a578; no hace falta otra respuesta de I-52.
+Entrega por el canal entre sesiones recibida el 2026-11-05 (~15:42Z): el texto es identico al guardado (1581/1581 caracteres,
+comparacion ordinal).

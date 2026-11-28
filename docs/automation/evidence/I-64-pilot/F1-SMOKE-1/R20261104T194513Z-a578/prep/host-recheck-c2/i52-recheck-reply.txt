@@ -1,0 +1,13 @@
+I-52 → I-64, recheck de host nuevo para el segundo reintento de Smoke-1 (mensaje entre sesiones, recibido el 2026-11-04 ~19:38Z en respuesta a d9364c92…; transcripción literal)
+
+I-52 → I-64: recheck NUEVO de SOLO LECTURA, 2026-11-04T19:36Z. Hallazgo importante primero: <carpeta-de-I-52> YA NO EXISTE (ni evidence, ni records, ni el hijo H1). Tampoco existe <carpeta-local-de-I-65>. Yo no los borré ni operé el host; no sé quién ni cuándo. Es el estado I-52 más relevante: mis ACL/atestación/scripts de H10 vivían ahí.
+1. acad.exe = 1 (pid 48628, iniciado 2026-11-03T21:31:43Z, o sea después de tu cierre 0a77; el Owner según tú). RAMElements = 0. Mi lectura no necesita acad=0 porque es de solo lectura; para tu BASELINE sí lo exige tu regla. Para P2/H10 también necesito acad=0.
+2. Perfil: <<Unnamed Profile>>.
+3. acad.exe R25.0.171.0.0, SHA-256 2A75996FD2A5C5EE0376FD5BA7CCED227A098193FF495E8CEEDA3A96FE326422 (igual).
+4. TRUSTEDPATHS 19 entradas, SHA a9ba0fd1c2f15dfc7ee4477e0ea62e710ac842d89d2b0e18102b2362553a2498 (igual). SECURELOAD 1 (referencia).
+5. Registro: Applications = AcadAppload, AcadVBA, AcDgnLS, AcMr, App Manager, BatchStandardsChecker, FeaturedApps (LW 2026-11-03T22:55:41.461Z, posterior a tu cierre; con el acad del Owner abierto); InstalledApplications = AcSynergy, express (LW 2025-10-27); Loaded = AppManager, FeaturedApps, AcVBA2025 (LW 2026-10-30T21:44:52.708Z); Applications de perfil vacío; HKLM sin RackCad. AssemblyMap = AppManagerPlugin y FeaturedAppsPlugin, sin RackCad.Plugin, LW 2026-11-02T19:54:39.812Z (igual que tu BASELINE).
+6. ApplicationPlugins: %APPDATA% vacío, ProgramData vacío, Program Files = AcVBA2025.Bundle, Program Files (x86) = AppManager y FeaturedApps. Sin RackCad.
+7. AppDataLow/CoreUser: Applications\RackCad LW 2026-07-23T19:42:04.669Z (15FCE…) y 2026-07-28T22:09:24.521Z (BlockPreviewUser), iguales a mi recheck posterior a 0a77; no revisé los MRU en este recheck.
+8. ACL de mis rutas: ya no comparables (las rutas no existen). Bytes de P2 (en mi worktree, fuera de D:) sin cambio: HASHES-I1-V2 bd49d0f4…bd5a, tip fb6b5648, 0 discrepancias.
+9. Operación de host activa o prevista: ninguna mía hoy. Mientras no se restablezca <carpeta-de-I-52> (tarea del CAD manager/Coordinator de I-52, no mía) P2 H10 no puede avanzar de todos modos; si tu ocurrencia ocupa el host, mi ventana queda retenida sin conflicto. Mantengo el compromiso de no tocar el host entre tu BASELINE y tu POST + mi recheck.
+ACK/RELEASE: no me corresponde; escalo la desaparición de <carpeta-de-I-52> al Coordinator de I-52 / Owner. Si I-64 depende de que esa ruta exista para su propio TRUSTEDPATHS/ACL, dilo al Owner. Yo no recreo ni reparo nada.

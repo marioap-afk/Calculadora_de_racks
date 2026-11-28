@@ -1,0 +1,38 @@
+{
+  "Schema": "rackcad-i64-a13-neutral-git-probe/v1",
+  "NeutralSha": "1cc75b6667ac81cd98563314b5e9714c9f6da95b",
+  "Derivation": "SHA-1 of the ASCII string I64-A13-NEUTRAL-GIT-OBJECT-QUERY-PROBE",
+  "EnumeratedObjects": 40229,
+  "NeutralInEnumeration": false,
+  "BoundIdCollisions": [],
+  "VerifierBlobReadAsText": "1c2510f71160804c6d42ae4da580641523c72a07",
+  "Form": [
+    "git",
+    "--no-replace-objects",
+    "-c",
+    "core.fsmonitor=false",
+    "-C",
+    "<product-worktree>",
+    "cat-file",
+    "--batch-check"
+  ],
+  "Stdin": "1cc75b6667ac81cd98563314b5e9714c9f6da95b + LF",
+  "InheritedGitVariablesRemoved": [
+    "GIT_EDITOR"
+  ],
+  "ExitCode": 0,
+  "StdoutHex": "31636337356236363637616338316364393835363333313462356539373134633966366461393562206d697373696e670a",
+  "StdoutText": "1cc75b6667ac81cd98563314b5e9714c9f6da95b missing\n",
+  "StderrBytes": 0,
+  "StderrText": "",
+  "HeadBefore": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+  "HeadAfter": "44a692a4ec386e559cc6d330b3d78b87dbad6581",
+  "Conditions": {
+    "ExitZero": true,
+    "StdoutExact": true,
+    "StderrEmpty": true,
+    "NoAdditionalLines": true,
+    "RepositoryUnchanged": true
+  },
+  "A13_GIT_OBJECT_QUERY_ENVIRONMENT": "PASS"
+}

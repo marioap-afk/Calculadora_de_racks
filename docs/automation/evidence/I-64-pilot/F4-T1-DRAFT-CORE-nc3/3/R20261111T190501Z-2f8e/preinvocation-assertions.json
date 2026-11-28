@@ -1,0 +1,23 @@
+{
+  "Control": "nc3",
+  "RunId": "R20261111T190501Z-2f8e",
+  "Assertions": {
+    "SameInputFileSet": true,
+    "OnlyMutatedAndDerivedChanged": true,
+    "ReissueRecordDiffersOnlyInDerivedHashes": true,
+    "ReissueHashesAuthenticateMutatedBytes": true,
+    "RelayDiffersOnlyInOutputSha256": true,
+    "HandoffDiffersOnlyInWorkCompleted": true,
+    "HandoffCurrentShaExact": true,
+    "PromptEqualToVerifiedExceptPathAndRunId": true,
+    "All40HexTokensResolve": true,
+    "LauncherHasNoGitCommandOrDeliverySha": true
+  },
+  "Unresolved40Hex": [],
+  "ChangedVsVerifiedInputs": [
+    "reissue-record.json",
+    "relay-record-work.json",
+    "worker-handoff.json"
+  ],
+  "Pass": true
+}

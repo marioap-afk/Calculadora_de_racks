@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1C-LOSSLESS-STATE-WINDOW",
+  "RunId": "R20261119T052958Z-f007",
+  "DelegationRunId": "R20261119T041233Z-cf1f",
+  "WorkRunId": "R20261119T041505Z-11b9",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, ExitCode=null for the subagent notification, DeathConfirmed=true; Cession.StartUtc=2026-11-19T04:15:11Z, EndUtc=2026-11-19T05:17:41Z, SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt=2, DelegationRunId, WorkRunId, BaseSha and branch; handoff path and hash are recorded in relay-record-work.json. OutputWrittenUtc=2026-11-18T23:17:25.612938-06:00, after Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor af46fcd5fc9ea79c9b1d5c187ac3c1f68c96fc8e d8ccbcb870f4d1804d7e7afd3855ac64b44693a8 exited 0. git diff --name-only AuthorityRevision BaseSha returned 12 paths: 8 documentation/evidence paths and four source/test paths; no EXTERNAL path. The sole UNIT_CHANGE path is W, src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml.cs. git log --format=%H AuthorityRevision..BaseSha -- W returned only e5a2198945b0a5e3db18c46b91c64dd83e88d69c. Attempt-1 worker-handoff.json identifies that as RedSha and CurrentSha in the same TaskId chain; its delegation AllowedWriteScope contains W; no session commit in the range touches W. This satisfies F4B-E25. The other three paths are not classified EXTERNAL or UNIT_CHANGE in the supplied authority classification."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "byte-fidelity-check.json Result=PASS; all eight collections have DecodedEqual=true and Utf8BytesEqual=true. relay-record-planning.json records A1-A8 pass and nc4. Delegation scope has five exact entries matching the contract."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "worker-handoff CurrentSha=161a0dadccaf5b71886344d834146737b90bb4f3; git rev-parse HEAD=161a0dadccaf5b71886344d834146737b90bb4f3; git rev-parse refs/remotes/origin/architecture/workspace-persistente-rackcad=161a0dadccaf5b71886344d834146737b90bb4f3. Branch and worktree match delegation. BaseSha is an ancestor; RedSha 2faae9da8e559278ebefba12325ccc0103f17208 is between BaseSha and CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha equals CurrentSha 161a0dadccaf5b71886344d834146737b90bb4f3; OriginMainSha equals MainSha 812baf879612320653094a8aaf46aca0bac81383. No network Git operation performed."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "Read-only scope script printed AllowedWriteScope count=5 and each entry. Exact-string membership was true for every path from git diff --name-only BaseSha CurrentSha (3 paths), BaseSha RedSha (1 path), and ChainBaseSha CurrentSha -- src tests (5 paths). No changed path matched a ForbiddenWriteScope exact entry or slash-terminated prefix."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore on the supplied worker-handoff.json input returned its path, confirming the orchestration package is ignored."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts.CurrentRun run 44463212627 is completed push on refs/heads/architecture/workspace-persistente-rackcad with exact CurrentSha; all four required jobs succeeded. RedRun 44459636816 is completed push on the same ref and exact RedSha; Core and UI test jobs failed, Build UI succeeded, Plugin job was skipped. The work record reports no hang or timeout."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Parsed all four supplied TRX files and matched UnitTestResult names to UnitTest className.name. All 19 RequiredTests filters selected at least their minimum. On CurrentSha all selected tests passed except expected skips: Core Workspace 3482/3482; UI PushBack 559 passed, 0 failed, 3 skipped; other filter counts meet minima. On RedSha both ExpectRed filters failed only by Assert.Equal assertions: Core 1/1 failed, UI 2/2 failed; stack first lines point into tests/. The D2 guard passed 1/1 on both SHAs; PB-T1b guard passed 2/2 on both. UI PushBack on RED had only the two specified new methods fail. RT=tests/RackCad.Tests/PushBackWindowOnStateSourceGuardTests.cs, tests/RackCad.Tests/PushBackWindowSharedReferenceGuardTests.cs, tests/RackCad.UI.Tests/PushBackWindowOnStateTests.cs; git diff --name-only RedSha CurrentSha contains only W and WC, so GREEN does not touch RT. git diff --name-only ChainBaseSha RedSha -- tests/ returned exactly RT. BaseSha..RedSha changed only the UI test class; src diff was empty. Both Core guard blobs match e5a21989. ChainBaseSha..RedSha -- src is one added inert seam line in W. ChainBaseSha..CurrentSha -- src tests is within the five exact allowed entries; the INV-PBT1C-01 named src diff is empty."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha returned RED and GREEN commit bodies; each contains the exact declared trailer Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>. The trailer matches relay-record-work.json effective model claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests model claude-sonnet-5-5 and high effort with required routing. relay-record-work.json records launch alias sonnet, effective model claude-sonnet-5-5 and effective effort high; both effective values match the delegation. No denials or usage warning recorded."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "Read-only script searched the full seven free-text fields against all AUTOMATION_PLAN 16.10 terms, case-insensitive with complete-token boundaries. Character counts: WorkCompleted=1921, Evidence=8954, UnexpectedFindings=183, KnownLimitations=1211, Deviations=0, OpenQuestions=0, RecommendedNextAction=170. One match occurred in WorkCompleted at its final sentence; no match occurred in the other six fields."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Notes report zero permission denials and no pending tool errors; the work record reports no usage-limit warning. No failed order remains pending."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "FreeText",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "FreeText failed: WorkCompleted contains one complete-token match to the prohibited term list in its final sentence.",
+    "AuthorityRevision is an ancestor of BaseSha. The UNIT_CHANGE path in that interval is covered by the same-chain Worker exception; the other changed paths are not classified EXTERNAL or UNIT_CHANGE.",
+    "All RequiredTests filters meet their minimum selections and the supplied CI TRX results agree with the recorded RED and GREEN counts."
+  ],
+  "RecommendedNextAction": "Correct the WorkCompleted text and submit a new handoff for verification."
+}

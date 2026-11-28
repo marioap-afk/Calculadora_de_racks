@@ -1,0 +1,113 @@
+{
+  "Control": "nc2",
+  "RunId": "R20261113T215958Z-9fe0",
+  "SourceVerification": "R20261113T215110Z-28eb",
+  "SourceInputs": "artifacts/orchestration/I-64/F4-T3C2-COMMAND-ADVISOR/1/R20261113T215110Z-28eb/inputs",
+  "Mutation": {
+    "File": "delegation.json",
+    "Field": "AllowedWriteScope",
+    "DiffBaseToCurrent": [
+      "src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs",
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "src/RackCad.Application/Workspace/WorkspaceCloseAdvisorRelay.cs",
+      "src/RackCad.Application/Workspace/WorkspaceDocumentDiscardCommand.cs",
+      "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs",
+      "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+      "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncTests.cs"
+    ],
+    "FirstLexicographic": "src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs",
+    "CoveringEntries": [
+      "src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs"
+    ],
+    "CoveredByPrefix": null,
+    "Old": [
+      "src/RackCad.Application/Workspace/WorkspaceDocumentDiscardCommand.cs",
+      "src/RackCad.Application/Workspace/WorkspaceCloseAdvisorRelay.cs",
+      "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs",
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "src/RackCad.Application/Workspace/IWorkspaceLifecycleAdvisor.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs",
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+      "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+      "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncTests.cs"
+    ],
+    "New": [
+      "src/RackCad.Application/Workspace/WorkspaceDocumentDiscardCommand.cs",
+      "src/RackCad.Application/Workspace/WorkspaceCloseAdvisorRelay.cs",
+      "src/RackCad.Application/Workspace/WorkspaceLazyInstance.cs",
+      "src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs",
+      "src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceController.cs",
+      "src/RackCad.Plugin/Workspace/WorkspaceNavigationHost.cs",
+      "src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs",
+      "src/RackCad.UI/Workspace/WorkspaceBrowserViewModel.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceLifecycleGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspacePaletteHostSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceBridgeSourceGuardTests.cs",
+      "tests/RackCad.Tests/Workspace/WorkspaceSourceGuardExceptionTests.cs",
+      "tests/RackCad.Tests/CustomPropertiesCommandGuardTests.cs",
+      "tests/RackCad.Tests/SelectiveEditorOpenTests.cs",
+      "tests/RackCad.UI.Tests/Workspace/WorkspacePilotCloseSyncTests.cs"
+    ],
+    "OtherDiffFilesStillCovered": true,
+    "Rule": "README 10: \"si una entrada de prefijo lo cubre, se sustituye por la enumeracion de los demas archivos del diff\": el prefijo que cubre el primer archivo se sustituye por los demas archivos del diff que ese prefijo cubria; las demas entradas no cambian; exactamente ese archivo queda fuera"
+  },
+  "DerivedRecompute": {
+    "File": "relay-record-planning.json",
+    "Field": "Outcome.OutputSha256",
+    "Old": "63754E3060CD1DF2AD6CAC0547B55AE09C223706176DAD35F9243C18F61C5545",
+    "New": "EEAECA2E4A35C36168616D69178EB310647C9A3EBA8B41A2576842857250A952",
+    "Reason": "hash derivado de delegation.json recalculado para que la copia sea internamente coherente con la entrega simulada; no es una mutacion del contenido de la entrega ni de la delegacion"
+  },
+  "PromptSha256": "20B19FC4B1D444BC219398552D517D7934599EE7E821FA545F00022C6C021510",
+  "PromptDiffVsVerified": "solo la ruta de entrada y el RunId de la invocacion (README 10)",
+  "SchemaValid": {
+    "worker-handoff.json": true,
+    "delegation.json": true,
+    "relay-record-work.json": true,
+    "relay-record-planning.json": true
+  },
+  "InputSha256": {
+    "byte-fidelity-check.json": "26C8C10F880476C29214320135A9FE31E3D520D26898F10AD4F0CDAF42890466",
+    "delegation.json": "EEAECA2E4A35C36168616D69178EB310647C9A3EBA8B41A2576842857250A952",
+    "gate-contract.json": "4D2DC2B61A57B9C64336C7BAF9CC47CFE7176FC9561D77FB20A941AE8484C412",
+    "relay-record-planning.json": "B8F0108C24A75501B88EC5F47C98E92A07CA24AD7D261DF68BFA3C3715B56B9D",
+    "relay-record-work.json": "C28FE357EF94999B0E1CBC1201D02C18AE40AC1D90D255F1476F1F81A2448602",
+    "worker-handoff.json": "37A11DEF5CF1755B1BCA2A2D2AA0D8267AAC52092CE4F85777F013D46EBC560A",
+    "ci-core/43510803096/core.trx": "B537F6815BB386161007902E564B425717F468C4DF156E175061A9D03A6C84F8",
+    "ci-core-red/43508172794/core.trx": "003192B1AB285097FB7386C46FC291AD2574BB15FBA2EF9B68B49C27E9F0ADE3",
+    "ci-ui/43510803096/ui.trx": "87526DB1B3AF9E5629FBD982442629DB9A2DB62D434A0E0CD71D798C31CB666F",
+    "ci-ui-red/43508172794/ui.trx": "5886C6F52EAB69636D327C9854273331BF5AB0FB1AF87D488F3AD9AFDCE51E6D"
+  },
+  "ChangedVsVerifiedInputs": [
+    "delegation.json",
+    "relay-record-planning.json"
+  ]
+}

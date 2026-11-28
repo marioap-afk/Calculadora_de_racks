@@ -71,6 +71,31 @@ namespace RackCad.UI.Systems.PushBack
         }
 
         /// <summary>
+        /// I-64 F4B PB-TC (D-PB-08) — el texto del aviso de solo lectura de la banda de estado, el que eligio el Owner, tal cual.
+        /// </summary>
+        private const string SideBEmptyNoticeMessage =
+            "Lado B declarado sin ningún frente activo: así no se guardará. Para conservarlo, elige «Lado B» y desmarca «En blanco» en al menos un frente.";
+
+        /// <summary>
+        /// I-64 F4B PB-TC (D-PB-08) — un aviso NO bloqueante, de solo texto, en la banda de estado: visible mientras el lado B esta
+        /// declarado y ninguna de sus ranuras esta activa (el diseño sale entonces sin lado B), y colapsado en cualquier otro caso.
+        /// Solo LEE la regla de capacidad sin presencia del estado compuesto: no cambia ningun boton, el estado, el diseño ni la
+        /// casilla, y no es un control ni se enfoca.
+        /// </summary>
+        private void UpdateSideBEmptyNotice()
+        {
+            if (SideBEmptyNoticeText == null)
+            {
+                return;
+            }
+
+            var empty = composite.SideBPresent
+                && !Enumerable.Range(0, composite.SideB.Structure.Count).Any(slot => composite.IsSlotPresent(PushBackSide.B, slot));
+            SideBEmptyNoticeText.Text = empty ? SideBEmptyNoticeMessage : string.Empty;
+            SideBEmptyNoticeText.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        /// <summary>
         /// Los CORTES FRONTALES de un rack compuesto son cuatro: entrada/salida y posterior de cada lado. Con el
         /// compuesto apagado hay dos y se llaman como siempre; al encenderlo, los dos de siempre pasan a decir «A» y
         /// aparecen los dos de B. Ni un boton ambiguo, ni seis botones donde bastan cuatro.
@@ -170,7 +195,7 @@ namespace RackCad.UI.Systems.PushBack
                 return;
             }
 
-            composite.SetGap(GapBox.Value.Value);
+            composite.SetGap(Keep(GapBox, composite.Gap));
             RequestRecompute();
         }
 
@@ -756,156 +781,19 @@ namespace RackCad.UI.Systems.PushBack
         /// convertirse en otro valor) y los del sistema ya resuelto. Una sola lista, con su severidad.
         /// </summary>
         private IReadOnlyList<PushBackCompositeDiagnostic> CompositeDiagnostics()
-            => composite.IntentDiagnostics()
-                .Concat(PushBackCompositeDiagnostics.Evaluate(lastCompositeSystem))
-                .ToList();
+            => PushBackEditorOutputGate.Diagnostics(composite, lastCompositeSystem);
 
         /// <summary>El mensaje de estado: el primer diagnostico que importe, o el texto normal del recalculo.</summary>
         private string CompositeStatusOr(string fallback)
-        {
-            var diagnostics = CompositeDiagnostics();
-            var blocking = diagnostics.FirstOrDefault(diagnostic => diagnostic.IsBlocking);
-            if (blocking != null)
-            {
-                return blocking.Message;
-            }
-
-            var warning = diagnostics.FirstOrDefault(
-                diagnostic => diagnostic.Severity == PushBackCompositeSeverity.Warning);
-            return warning != null ? warning.Message : fallback;
-        }
+            => PushBackEditorOutputGate.StatusOr(composite, lastCompositeSystem, fallback);
 
         private bool CompositeHasBlocking(PushBackSystem system)
         {
             lastCompositeSystem = system;
-            return CompositeDiagnostics().Any(diagnostic => diagnostic.IsBlocking);
+            return PushBackEditorOutputGate.IsBlocked(composite, system);
         }
 
         /// <summary>El ultimo sistema resuelto, para que el estado pueda releer sus diagnosticos sin recomputar.</summary>
         private PushBackSystem lastCompositeSystem;
-
-        /// <summary>Recupera la intencion compuesta de un diseno cargado (save/load, RACKEDITAR, biblioteca).</summary>
-        private void LoadCompositeFromDesign(PushBackDesign design)
-            => LoadCompositeFromDesign(design, preserveDormantIntent: false);
-
-        /// <summary>
-        /// I-42 (A7 / A6V-1, contrato del dueño) — CARGAR OTRO RACK Y RESTAURAR EL ACTUAL NO SON LO MISMO.
-        ///
-        /// <para>
-        /// Una CARGA trae otro rack: lo que hubiera dormido pertenece al anterior y se borra, o resucitaria la
-        /// mitad B de un rack distinto. «Restaurar valores» actua sobre el sistema EFECTIVO del rack que YA esta
-        /// abierto, y con el lado B dormido ese sistema es de un solo sentido: restaurarlo no puede llevarse por
-        /// delante una intencion que no forma parte de el. Medido, lo hacia: tras restaurar, la cola y sus lineas
-        /// quedaban vacias y al despertar el lado B volvia estandar —B:M2 de 40" a 48", override de linea perdido—.
-        /// </para>
-        /// </summary>
-        private void LoadCompositeFromDesign(PushBackDesign design, bool preserveDormantIntent)
-        {
-            var dormantTail = preserveDormantIntent ? composite.DormantCompositeTail.ToList() : null;
-            var dormantLines = preserveDormantIntent ? composite.DormantTailLineOverrides.ToList() : null;
-            var dormantSlots = preserveDormantIntent
-                ? Enumerable.Range(0, composite.Of(PushBackSide.B).Structure.Count)
-                    .Select(slot => composite.Of(PushBackSide.B).Structure.IsActive(slot))
-                    .ToList()
-                : null;
-
-            composite.SetSideBPresent(design != null && design.IsComposite);
-            composite.LoadComposite(design?.Composite);
-
-            // I-42 (A4-MOD-LIFECYCLE / N-1): la COLA persistida —el hueco y la mitad B con sus personalizaciones y
-            // sus configuraciones por linea— se aparca al cargar. El lado A se cargo con SU cabeza, y el primer
-            // recalculo compuesto devuelve la cola a su sitio: es el mismo mecanismo con el que un lado B dormido
-            // vuelve intacto, no un segundo camino de carga.
-            // I-42 (A6-TAIL-TX): CARGAR un rack es un borrado EXPLICITO de lo que hubiera dormido: la cola aparcada
-            // pertenece al rack que estaba abierto, y arrastrarla al siguiente resucitaria la mitad B de otro. Es la
-            // unica accion que borra; un aparcado con fuente vacia no borra nada.
-            composite.ClearDormantTail();
-            if (preserveDormantIntent)
-            {
-                // La intencion DORMIDA vuelve entera: sus modulos, sus configuraciones por linea y la presencia de
-                // sus ranuras, que un diseño efectivo de un solo sentido no puede declarar.
-                composite.ParkDormantTail(dormantTail, dormantLines);
-                var matrix = composite.Of(PushBackSide.B).Structure;
-                for (var slot = 0; slot < dormantSlots.Count && slot < matrix.Count; slot++)
-                {
-                    matrix.Fronts[slot].IsActive = dormantSlots[slot];
-                }
-            }
-
-            var structure = design?.Structure;
-            if (structure != null)
-            {
-                composite.ParkDormantTail(
-                    structure.Modules.Where(module => module != null
-                        && PushBackCompositeStructure.IsCompositeTailId(module.ModuleId)),
-                    structure.HeaderLineOverrides.Where(line => line != null
-                        && PushBackCompositeStructure.IsCompositeTailId(line.ModuleId)));
-            }
-
-            if (design?.SideB != null && design.SideB.IsPresent)
-            {
-                // El lado B se recupera en su propio estado, por el MISMO camino de carga que el lado A.
-                var sideDesign = new PushBackDesign
-                {
-                    Structure = new RackCad.Domain.Systems.Dynamic.DynamicRackDesign
-                    {
-                        Pallet = design.Structure?.Pallet,
-                        PalletsDeep = design.Structure?.PalletsDeep ?? 2,
-                        LoadLevels = design.SideB.LoadLevels,
-                        FirstLevelHeight = design.SideB.FirstLevelHeight,
-                        BeamDepth = design.Structure?.BeamDepth ?? 6.0,
-                        HeaderPostCatalogId = design.Structure?.HeaderPostCatalogId,
-                        PostPeralte = design.Structure?.PostPeralte ?? 0.0,
-                        // I-42: el lado B se reconstruye con el MISMO datum del documento. Sin el, su matriz volvia
-                        // con la semantica historica mientras la estructura compuesta usaba la del documento.
-                        FirstLevelDatum = design.Structure?.FirstLevelDatum
-                    },
-                    LegacyHighEndBeamPeralte = design.SideB.LegacyHighEndBeamPeralte,
-                    RearTope = design.SideB.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig(),
-                    // I-42 (ronda 7E): el TIPO de defensa del lado B vuelve con el lado B.
-                    DefensePieceId = design.SideB.DefensePieceId
-                };
-
-                // I-42 (correccion aislada 2B) — el diseno del lado B se arma con sus frentes TAL CUAL vienen: los
-                // de una ranura en blanco viajan completos desde que su ausencia se declara aparte, asi que aqui ya
-                // no hay que fabricar un relleno que borraba el ancho. Solo un documento ANTERIOR trae la entrada
-                // nula, y para ese —y solo para ese— se conserva el relleno, sin inventar nada que no guardara.
-                var blank = new List<int>();
-                for (var slot = 0; slot < design.SideB.Fronts.Count; slot++)
-                {
-                    var front = design.SideB.Fronts[slot];
-                    if (front == null || design.Composite != null && design.Composite.IsSlotAbsentInB(slot))
-                    {
-                        blank.Add(slot);
-                    }
-
-                    sideDesign.Structure.Fronts.Add(front ?? new RackCad.Domain.Systems.Dynamic.DynamicRackFrontDesign
-                    {
-                        PalletCount = 1,
-                        LoadLevels = design.SideB.LoadLevels,
-                        PalletsDeep = 2,
-                        DepthStartPosition = 1,
-                        IsActive = false
-                    });
-                    sideDesign.Fronts.Add(design.SideB.FrontConfig(slot) ?? new PushBackFrontConfig());
-                }
-
-                composite.SideB.LoadFromDesign(sideDesign, assembler.Resolver);
-
-                // La PRESENCIA se aplica DESPUES de reconstruir la matriz. Aplicarla antes no servia de nada:
-                // LoadFromDesign rehace la matriz entera desde el diseno resuelto, asi que al reabrir un rack
-                // guardado el lado B resucitaba en las ranuras que el usuario habia dejado en blanco.
-                foreach (var slot in blank)
-                {
-                    composite.SetSlotPresent(PushBackSide.B, slot, false);
-                }
-            }
-
-            // La retícula transversal es del RACK tambien al VOLVER de un archivo: un diseño cuyo lado B tenga mas o
-            // menos ranuras que el A se iguala creciendo, sin recortar ninguno y sin inventar presencia.
-            composite.AlignSlotGrid();
-
-            UpdateCompositeEnabled();
-        }
     }
 }

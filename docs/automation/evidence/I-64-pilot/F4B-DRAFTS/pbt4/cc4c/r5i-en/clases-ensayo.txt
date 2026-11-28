@@ -1,0 +1,14 @@
+| TRX | Clase | Passed | Failed | Skipped |
+|---|---|---|---|---|
+| `en-green.trx` | `RackCad.Tests.TmpPbt4cTextCt01` | 1 | 0 | 0 |
+| `en-green.trx` | `RackCad.Tests.TmpPbt4cTextCt07` | 1 | 0 | 0 |
+| `en-green.trx` | `RackCad.Tests.TmpPbt4cTextCt08` | 1 | 0 | 0 |
+| `en-green.trx` | `RackCad.Tests.TmpPbt4cTextCt13` | 1 | 0 | 0 |
+| `en-green.trx` | `RackCad.Tests.TmpPbt4cTextCt15` | 1 | 0 | 0 |
+| `en-red.trx` | `RackCad.Tests.TmpPbt4cTextCt01` | 0 | 1 | 0 |
+| `en-red.trx` | `RackCad.Tests.TmpPbt4cTextCt07` | 1 | 0 | 0 |
+| `en-red.trx` | `RackCad.Tests.TmpPbt4cTextCt08` | 0 | 1 | 0 |
+| `en-red.trx` | `RackCad.Tests.TmpPbt4cTextCt13` | 0 | 1 | 0 |
+| `en-red.trx` | `RackCad.Tests.TmpPbt4cTextCt15` | 1 | 0 | 0 |
+| `sonda-core.trx` | `RackCad.Tests.TmpPbt4cEditAllProbe` | 0 | 1 | 0 |
+| `sonda-ui.trx` | `RackCad.UI.Tests.TmpPbt4cCloseProbe` | 0 | 1 | 0 |

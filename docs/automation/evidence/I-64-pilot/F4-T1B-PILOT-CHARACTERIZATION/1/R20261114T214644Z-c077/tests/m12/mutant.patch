@@ -1,0 +1,13 @@
+diff --git a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+index 7d7e2aec..047fbeaa 100644
+--- a/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
++++ b/src/RackCad.UI/Systems/PushBack/RackPushBackSystemWindow.xaml
+@@ -3,7 +3,7 @@
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:controls="clr-namespace:RackCad.UI.Controls"
+         xmlns:shell="clr-namespace:RackCad.UI.Shell"
+-        Title="Sistema Push Back - editor"
++        Title="Sistema Push Back - editor (x)"
+         Style="{DynamicResource EditorShellWindowStyle}"
+         WindowStartupLocation="CenterOwner"
+         FocusManager.FocusedElement="{Binding ElementName=NameBox}">

@@ -1,0 +1,3 @@
+Reading additional input from stdin...
+2026-11-09T04:39:50.830081Z ERROR codex_core::session: failed to record rollout items: thread 01a1be98-b5df-7d93-b2c9-826b0712ffb5 not found
+2026-11-09T04:39:50.831151Z ERROR codex_core::session: failed to record rollout items: thread 01a1be98-b5df-7d93-b2c9-826b0712ffb5 not found

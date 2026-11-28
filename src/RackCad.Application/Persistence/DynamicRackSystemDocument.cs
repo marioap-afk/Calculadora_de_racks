@@ -456,6 +456,19 @@ namespace RackCad.Application.Persistence
         public List<double> IntermediateBeamDepths { get; set; }
         public List<DynamicRackLevelDocument> Levels { get; set; }
 
+        /// <summary>The bed and the slope of the front (step 3 of Dinámico); omitted when empty, so older racks serialize as before.</summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string RollerId { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public double? RollerPitch { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? BrakeEveryRollers { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public double? SlopePerFoot { get; set; }
+
         public static DynamicRackFrontDocument From(DynamicRackFrontDesign front)
             => new DynamicRackFrontDocument
             {
@@ -466,6 +479,10 @@ namespace RackCad.Application.Persistence
                 DepthStartPosition = front.DepthStartPosition,
                 BeamLengthOverride = front.BeamLengthOverride,
                 FirstLevelHeight = front.FirstLevelHeight,
+                RollerId = string.IsNullOrWhiteSpace(front.RollerId) ? null : front.RollerId,
+                RollerPitch = front.RollerPitch,
+                BrakeEveryRollers = front.BrakeEveryRollers,
+                SlopePerFoot = front.SlopePerFoot,
                 IntermediateBeamDepths = front.IntermediateBeamDepths.Where(value => value > 0.0).ToList(),
                 Levels = front.Levels.Where(level => level != null).Select(DynamicRackLevelDocument.From).ToList()
             };
@@ -480,6 +497,10 @@ namespace RackCad.Application.Persistence
                 DepthStartPosition = front.DepthStartPosition,
                 BeamLengthOverride = front.BeamLengthOverride,
                 FirstLevelHeight = front.FirstLevelHeight,
+                RollerId = string.IsNullOrWhiteSpace(front.RollerId) ? null : front.RollerId,
+                RollerPitch = front.RollerPitch,
+                BrakeEveryRollers = front.BrakeEveryRollers,
+                SlopePerFoot = front.SlopePerFoot,
                 Bfr = front.Bfr > 0.0 ? front.Bfr : (double?)null,
                 IntermediateBeamDepths = front.IntermediateBeamDepths.Where(value => value > 0.0).ToList(),
                 Levels = front.Levels.Where(level => level != null).Select(DynamicRackLevelDocument.From).ToList()
@@ -501,6 +522,10 @@ namespace RackCad.Application.Persistence
                     ? DepthStartPosition.Value
                     : 1,
                 BeamLengthOverride = BeamLengthOverride,
+                RollerId = string.IsNullOrWhiteSpace(RollerId) ? null : RollerId,
+                RollerPitch = RollerPitch.HasValue && RollerPitch.Value > 0.0 ? RollerPitch : null,
+                BrakeEveryRollers = BrakeEveryRollers.HasValue && BrakeEveryRollers.Value > 0 ? BrakeEveryRollers : null,
+                SlopePerFoot = SlopePerFoot.HasValue && SlopePerFoot.Value >= 0.0 ? SlopePerFoot : null,
                 FirstLevelHeight = FirstLevelHeight
             };
             foreach (var peralte in IntermediateBeamDepths ?? Enumerable.Empty<double>())
@@ -551,6 +576,10 @@ namespace RackCad.Application.Persistence
                     : 1,
                 BeamLengthOverride = BeamLengthOverride,
                 FirstLevelHeight = FirstLevelHeight ?? defaultFirstLevelHeight,
+                RollerId = string.IsNullOrWhiteSpace(RollerId) ? null : RollerId,
+                RollerPitch = RollerPitch.HasValue && RollerPitch.Value > 0.0 ? RollerPitch : null,
+                BrakeEveryRollers = BrakeEveryRollers.HasValue && BrakeEveryRollers.Value > 0 ? BrakeEveryRollers : null,
+                SlopePerFoot = SlopePerFoot.HasValue && SlopePerFoot.Value >= 0.0 ? SlopePerFoot : null,
                 Bfr = Bfr.HasValue && Bfr.Value > 0.0 ? Bfr.Value : DynamicFrontGeometry.Bfr(palletFront),
                 BeamLength = BeamLengthOverride.HasValue && BeamLengthOverride.Value > 0.0
                     ? BeamLengthOverride.Value

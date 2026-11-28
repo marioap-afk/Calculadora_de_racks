@@ -1,0 +1,110 @@
+== src/RackCad.UI/Controls/NumericFieldValidation.cs: 6 lines added, 54 removed
+  usings added: []
+  names added (system types, windows, async, events): []
+    -using System.Globalization;
+    -        public const string EmptyRequiredMessage = "Escribe un valor.";
+    -        public const string NotANumberMessage = "Valor no numérico.";
+    +        public const string EmptyRequiredMessage = NumericTextRule.EmptyRequiredMessage;
+    +        public const string NotANumberMessage = NumericTextRule.NotANumberMessage;
+    -            if (string.IsNullOrWhiteSpace(text))
+    -            {
+    -                return isOptional
+    -                    ? new NumericFieldValidationResult(NumericFieldStatus.EmptyOptional, null, null)
+    -                    : new NumericFieldValidationResult(NumericFieldStatus.EmptyRequired, null, EmptyRequiredMessage);
+    -            }
+    -
+    -            double parsed;
+    -            if (integerOnly)
+    -            {
+    -                if (!LocalizedNumberParser.TryInteger(text, out var integer))
+    -                {
+    -                    return new NumericFieldValidationResult(NumericFieldStatus.NotANumber, null, NotANumberMessage);
+    -                }
+    -
+    -                parsed = integer;
+    -            }
+    -            else if (!LocalizedNumberParser.TryDouble(text, out parsed))
+    -            {
+    -                return new NumericFieldValidationResult(NumericFieldStatus.NotANumber, null, NotANumberMessage);
+    -            }
+    -
+    -            if (minimum.HasValue)
+    -            {
+    -                var below = minimumInclusive ? parsed < minimum.Value : parsed <= minimum.Value;
+    -                if (below)
+    -                {
+    -                    return new NumericFieldValidationResult(
+    -                        NumericFieldStatus.BelowMinimum, parsed, MinimumMessage(minimum.Value, minimumInclusive));
+    -                }
+    -            }
+    -
+    -            if (maximum.HasValue)
+    -            {
+    -                var above = maximumInclusive ? parsed > maximum.Value : parsed >= maximum.Value;
+    -                if (above)
+    -                {
+    -                    return new NumericFieldValidationResult(
+    -                        NumericFieldStatus.AboveMaximum, parsed, MaximumMessage(maximum.Value, maximumInclusive));
+    -                }
+    -            }
+    -
+    -            return new NumericFieldValidationResult(NumericFieldStatus.Valid, parsed, null);
+    +            // I-64 F4B PB-T4b (D-PBT4-06): the one rule lives in Application (NumericTextRule); this keeps its public surface and only
+    +            // translates the result. The two enumerations have the same members in the same order.
+    +            var check = NumericTextRule.Check(text, isOptional, integerOnly, minimum, maximum, minimumInclusive, maximumInclusive);
+    +            return new NumericFieldValidationResult((NumericFieldStatus)(int)check.Status, check.Value, check.Message);
+    -
+    -        private static string MinimumMessage(double minimum, bool inclusive)
+    -            => $"El valor debe ser {(inclusive ? "≥" : ">")} {Format(minimum)}.";
+    -
+    -        private static string MaximumMessage(double maximum, bool inclusive)
+    -            => $"El valor debe ser {(inclusive ? "≤" : "<")} {Format(maximum)}.";
+    -
+    -        private static string Format(double value) => value.ToString("0.###", CultureInfo.CurrentCulture);
+== src/RackCad.UI/Workspace/WorkspacePanelView.xaml: 4 lines added, 0 removed
+  usings added: []
+  names added (system types, windows, async, events): ['DynamicResource']
+  XAML elements added: ['TextBlock']
+  resources: Static ['FlagToVisibility']; Dynamic ['ShellTextPrimaryBrush']; literal colours []
+    +                                <!-- I-64 F4B PB-T4b (D-PBT4-08, D-PBT4-09): what changed, by groups, above Si and No, after the first Si of "keep my draft". -->
+    +                                <TextBlock x:Name="BrowserFieldKeepMinePresentationText" Text="{Binding Browser.Field.KeepMinePresentationText}"
+    +                                           TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+    +                                           Visibility="{Binding Browser.Field.ShowKeepMinePresentation, Converter={StaticResource FlagToVisibility}}" />
+== src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs: 34 lines added, 1 removed
+  usings added: []
+  names added (system types, windows, async, events): []
+    +        // I-64 F4B PB-T4b (D-PBT4-08, D-PBT4-09; D-S2): what the first "Si" of "keep my draft" presented, by groups, and the witness of that
+    +        // read, which the second "Si" hands back. They belong to the choice and go away with it.
+    +        private EditIntentWitness _keepWitness;
+    +        private IReadOnlyList<string> _keepLines = Array.Empty<string>();
+    +
+    +
+    +        /// <summary>The lines of the presentation of "keep my draft", one per line, while its choice waits for the second Yes; empty otherwise.</summary>
+    +        public string KeepMinePresentationText => HasChoice && _choice == ChoiceKind.KeepMine ? string.Join("\n", _keepLines) : string.Empty;
+    +
+    +        /// <summary>Whether the presentation of "keep my draft" is shown above Yes and No.</summary>
+    +        public bool ShowKeepMinePresentation => KeepMinePresentationText.Length > 0;
+    +            var keepWitness = _keepWitness;
+    -                var request = new EditIntentRequest(session, rack, null, null);
+    +                // The first "Si" of "keep my draft" carries no witness and only gets the presentation; the second carries the witness of that read.
+    +                var request = new EditIntentRequest(session, rack, null, kind == ChoiceKind.KeepMine ? keepWitness : null);
+    +            _keepWitness = null;
+    +            _keepLines = Array.Empty<string>();
+    +                case EditIntentStatus.Presented when kind == ChoiceKind.KeepMine:
+    +                    // The first "Si", or a second one whose witness no longer held: the choice is asked again, with the lines and the witness of
+    +                    // the read that the host classified. Nothing was kept and the draft did not change.
+    +                    AskChoice(ChoiceKind.KeepMine);
+    +                    if (_choice != ChoiceKind.KeepMine)
+    +                    {
+    +                        if (_failure != null) return;
+    +                        _noticeText = SituationChangedText;
+    +                        RaiseAll();
+    +                        return;
+    +                    }
+    +
+    +                    _keepWitness = outcome.KeepWitness;
+    +                    _keepLines = outcome.PresentationLines;
+    +                    RaiseAll();
+    +                    return;
+    +            OnPropertyChanged(nameof(KeepMinePresentationText));
+    +            OnPropertyChanged(nameof(ShowKeepMinePresentation));

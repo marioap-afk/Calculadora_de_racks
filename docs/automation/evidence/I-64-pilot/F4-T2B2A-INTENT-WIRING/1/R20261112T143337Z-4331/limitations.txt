@@ -1,0 +1,4 @@
+Nothing was run with AutoCAD: the real adapter, the nested reader, the lock, the Debug TopTransaction asserts, TryGetObjectId, the cost of the scan and the behaviour of the real drawing are verified only by text guards and the Release build; the logic is verified in Core with doubles.
+The two operations are dark code until F4-T3 exposes them, and ReadPreviewWitness has no caller until then; the accessors OpenDrafts and ClosePolicy are internal and used only by tests.
+The nested reader answers Failed (not Busy) if the document lock itself throws; the lock is taken right after the editor was seen at rest, so this is rare.
+Lifecycle (veto, retirement, discard, stale marking, reload) is not implemented here by design: it belongs to F4-T2B2B.

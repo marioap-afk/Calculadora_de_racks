@@ -21,7 +21,9 @@ namespace RackCad.Tests
         [InlineData("RackDinamicoCommands.cs")]
         [InlineData("RackPushBackCommands.cs")]
         [InlineData("RackCantileverCommands.cs")]
-        [InlineData("RackCabeceraCommands.cs")]
+        // T7 cab (review of 258c16b1, I-1): the «Insertar» of EditCabecera is ApplyCabeceraInsert now (RackCabeceraCommands.Door.cs), the one
+        // drawing half of RACKEDITAR «Insertar» and of RACKCABECERAINSERTAR; CabeceraDoorTests fixes that EditCabecera calls it.
+        [InlineData("RackCabeceraCommands.Door.cs")]
         public void Unsupported_comparators_enter_the_one_scan_fail_closed_edge(string command)
             => Assert.Contains("RackUnsupportedSiblingInsert.TryAuthorize(", Source("src", "RackCad.Plugin", command));
 

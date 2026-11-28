@@ -1,0 +1,8 @@
+Textos nuevos de F4-T4C1-HOST para PushBackPilotHostTexts (HOSTRUN), redaccion fijada por la sesion en la emision (D-T4C-05 del paquete v5: "Su redaccion se fija en la emision").
+Cada linea: <constante> = "<valor>"; copia el valor byte a byte (UTF-8, con sus tildes; los prefijos terminan en dos puntos y un espacio).
+UpdateInFlightReason = "Hay una actualización en curso: espera a que termine."
+HostNotRunReason = "La actualización no llegó a ejecutarse; no se escribió nada en el dibujo."
+HostRequestFailedPrefix = "No se pudo pedir el contexto de comando: "
+LockFailedPrefix = "No se pudo bloquear el documento: "
+HostUnavailableReason = "La actualización no está disponible en esta sesión."
+UpdateNotClosedReason = "El borrador no aceptó el cierre de la actualización."

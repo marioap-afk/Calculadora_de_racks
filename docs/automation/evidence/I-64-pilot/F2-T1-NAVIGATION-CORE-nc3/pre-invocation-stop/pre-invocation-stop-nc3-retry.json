@@ -1,0 +1,20 @@
+{
+  "Schema": "rackcad-i64-pre-invocation-stop/v1",
+  "TaskId": "F2-T1-NAVIGATION-CORE",
+  "Control": "nc3 retry (authorized by I-64 F2-T1 CLOSE REVIEW / nc3 DISPOSITION)",
+  "RunIdAssigned": null,
+  "Invoked": false,
+  "RetryConsumed": false,
+  "Blockers": [
+    {
+      "Id": "NC3R-01",
+      "Fact": "AUTOMATION_PLAN 16.9 check 5 (Identity) requires HEAD = refs/remotes/origin/<branch> = CurrentSha. The custody commit 82bbac8fb5837e53e057f95ba8715df31b5ec01b (step 8 of the A-4 disposition sequence) moved HEAD and origin/architecture/workspace-persistente-rackcad to 82bbac8f; the delivery CurrentSha is c726410f3ac764f4a80a08a2b810b5fdda276ecc. A retry in this worktree would fail Identity (STOP) and could not meet the required oracle (Identity = pass, Remote = pass).",
+      "Precedent": "F1-T1-MODEL DEV-F1T1-02: custody commit 747ead04 before the controls made nc2 R20261002T151201Z-abb1 fail Identity."
+    },
+    {
+      "Id": "NC3R-02",
+      "Fact": "The disposition requires the Controller not to reproduce the 16.10 term in its free text, while keeping the same normative verification criteria. The normative prompt does not carry that rule and the inputs are the verified ones; the disposition text itself names the injected mutation, so supplying it as an input would disclose the control to the Controller. The route for an oracle-neutral rule is a decision of the Coordinator."
+    }
+  ],
+  "State": "HEAD = origin = 82bbac8f; clean tree; origin/main a140eb3a; config.toml SNAPSHOT D; no model invoked after 46c1"
+}

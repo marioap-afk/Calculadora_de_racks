@@ -51,8 +51,113 @@ namespace RackCad.Tests
         /// <summary>Lo que I-65 F4 anade, EXACTAMENTE: el comando de linea del paquete de construccion (D-13), sin alias.</summary>
         internal static readonly string[] I65Commands = { "RACKRAMPAQUETE" };
 
-        /// <summary>El censo vigente: apertura, G7, G15 e I-65, cada nombre una vez.</summary>
-        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).ToArray();
+        /// <summary>Lo que I-64 F1-T3A anade, EXACTAMENTE: el comando del panel de trabajo, sin alias.</summary>
+        internal static readonly string[] F1PanelCommands = { "RACKPANEL" };
+
+        /// <summary>
+        /// Lo que I-64 F4-T3C2 anade, EXACTAMENTE: el comando de descarte explicito de los borradores del panel del documento activo
+        /// (D-T3C2-09), sin alias, en <c>src/RackCad.Plugin/Workspace/WorkspacePanelCommand.cs</c>.
+        /// </summary>
+        internal static readonly string[] F4PanelDiscardCommands = { "RACKPANELDESCARTAR" };
+
+        /// <summary>
+        /// Lo que I-64 A-14 (fase 1, la ventana RackCad) anade, EXACTAMENTE: el menu clasico, que deja RACKCAD a la ventana, y las dos puertas
+        /// de la ventana al editor de un sistema nuevo y a la biblioteca de disenos, sin alias, en <c>src/RackCad.Plugin/RackMenuCommands.cs</c>.
+        /// </summary>
+        internal static readonly string[] A14WindowCommands = { "RACKBIBLIOTECA", "RACKMENU", "RACKNUEVO" };
+
+        /// <summary>
+        /// Lo que I-64 A-14 (linea D, Dinamico) anade, EXACTAMENTE: la puerta de la ventana a un rack, que lee su diseno sin marca de Deshacer
+        /// y escribe su borrador, sin alias, en <c>src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs</c>.
+        /// </summary>
+        /// La segunda entrega de Dinámico (paso 4) añade «Insertar vista…» (RACKDINAMICOINSERTAR, decisión 10 del prototipo) y el Dinámico nuevo de la ventana (RACKDINAMICONUEVO), en el mismo archivo.
+        internal static readonly string[] A14DynamicDoorCommands = { "RACKDINAMICOABRIR", "RACKDINAMICOAPLICAR", "RACKDINAMICOINSERTAR", "RACKDINAMICONUEVO" };
+
+        /// <summary>
+        /// Lo que I-64 A-14 (linea D, Selectivo E1-A) anade, EXACTAMENTE: la puerta de la ventana a un Selectivo, que lee su diseno efectivo
+        /// sin marca de Deshacer y escribe su borrador con la mitad de dibujo de «Actualizar», sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadRackDoorCommands.cs</c>. La base se fija de nuevo con estos dos nombres.
+        /// </summary>
+        /// La entrega 2 de Selectivo (parte A) anade «Insertar vista…» de un Selectivo (RACKSELECTIVOINSERTAR), en el mismo archivo y sin alias.
+        /// La tercera tanda (A2) anade el Selectivo nuevo de la ventana (RACKSELECTIVONUEVO), en el mismo archivo y sin alias.
+        internal static readonly string[] A14SelectiveDoorCommands = { "RACKSELECTIVOABRIR", "RACKSELECTIVOAPLICAR", "RACKSELECTIVOINSERTAR", "RACKSELECTIVONUEVO" };
+
+        /// <summary>
+        /// Lo que la cuarta tanda de I-64 A-14 (parte «ut», UT-03) anade, EXACTAMENTE: la puerta de la ventana a un diseno de su biblioteca en su
+        /// editor clasico (RACKBIBLIOTECAABRIR), que toma la peticion numerada que guardo la ventana, sin alias, en
+        /// <c>src/RackCad.Plugin/RackBibliotecaCommands.cs</c>. La base se fija de nuevo con este nombre.
+        /// </summary>
+        internal static readonly string[] A14UtilityCommands = { "RACKBIBLIOTECAABRIR" };
+
+        /// <summary>
+        /// Lo que I-64 (cuarta tanda, parte cb) anade, EXACTAMENTE: la puerta de la ventana a una cabecera suelta, que la lee sin marca de
+        /// Deshacer y la escribe con la mitad de dibujo de «Actualizar» de RACKEDITAR, sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadCabeceraDoorCommands.cs</c>. La base se fija de nuevo con estos dos nombres.
+        /// La septima tanda (T7 cab) anade «Insertar vista…» de una cabecera (RACKCABECERAINSERTAR) y la cabecera nueva de la ventana
+        /// (RACKCABECERANUEVO), en el mismo archivo y sin alias. RACKCABECERA y RCB siguen en el censo de apertura: abren la ventana, no cambian de nombre.
+        /// </summary>
+        internal static readonly string[] A14CabeceraDoorCommands = { "RACKCABECERAABRIR", "RACKCABECERAAPLICAR", "RACKCABECERAINSERTAR", "RACKCABECERANUEVO" };
+
+        /// <summary>
+        /// Lo que la cuarta tanda de la ventana RackCad (va) anade, EXACTAMENTE: la puerta de la pagina «Variables», que lee el registro sin
+        /// marca de Deshacer y escribe todo su borrador en una orden, sin alias, en <c>src/RackCad.Plugin/VentanaRackCad/RackCadVariablesDoorCommands.cs</c>.
+        /// </summary>
+        internal static readonly string[] A14VariablesDoorCommands = { "RACKVARIABLESAPLICAR", "RACKVARIABLESLEER" };
+
+        /// <summary>
+        /// Lo que I-64 A-14 (linea D, cuarta tanda, parte «bom») anade, EXACTAMENTE: la lectura del BOM del dibujo para la pagina «BOM y lista
+        /// de racks», sin marca de Deshacer y sin alias, en <c>src/RackCad.Plugin/RackInventarioCommands.Ventana.cs</c>. RACKLISTA, RL,
+        /// RACKBOMTOTAL y RB siguen en el censo de apertura: cambian de archivo (abren la pagina, BM-11), no de nombre.
+        /// </summary>
+        internal static readonly string[] A14BomCommands = { "RACKBOMLEER" };
+
+        /// <summary>
+        /// T5 al (I-64, quinta tanda, «Almacén»): la puerta de la pagina «Almacén» de la ventana, que lee la planta y el sitio sin marca de
+        /// Deshacer y coloca la rejilla o el relleno en una orden, sin alias, en <c>src/RackCad.Plugin/RackLayoutCommands.Ventana.cs</c>.
+        /// RACKLAYOUT, RLY, RACKRELLENAR y RR siguen con sus ventanas clasicas (pregunta 10 del prototipo).
+        /// T6 rl (AL-S14): RLY y RR abren la pagina «Almacén» y se mudan a ese archivo; siguen en el censo de apertura (cambian de archivo,
+        /// no de nombre). RACKLAYOUT y RACKRELLENAR siguen con sus ventanas clasicas.
+        /// </summary>
+        internal static readonly string[] A14WarehouseCommands = { "RACKALMACENCOLOCAR", "RACKALMACENLEER" };
+
+        /// <summary>
+        /// T5 cm (I-64, quinta tanda): la puerta de la ventana a una cama de rodamiento, que la lee sin marca de Deshacer, la escribe con la
+        /// mitad de dibujo de «Actualizar» de RACKEDITAR e inserta una cama nueva de «Nuevo», sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadCamaDoorCommands.cs</c>. La base se fija de nuevo con estos tres nombres.
+        /// </summary>
+        internal static readonly string[] A14CamaDoorCommands = { "RACKCAMAABRIR", "RACKCAMAAPLICAR", "RACKCAMANUEVO" };
+
+        /// <summary>
+        /// Lo que la quinta tanda de I-64 (parte ct) anade, EXACTAMENTE: la puerta de la ventana a una linea Cantilever, que la lee sin marca de
+        /// Deshacer (RACKCANTILEVERABRIR), la redibuja con la mitad de dibujo de RACKEDITAR (RACKCANTILEVERAPLICAR), le inserta vistas
+        /// (RACKCANTILEVERINSERTAR) e inserta una linea nueva de la ventana (RACKCANTILEVERNUEVO), sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadCantileverDoorCommands.cs</c>. La base se fija de nuevo con estos cuatro nombres.
+        /// </summary>
+        internal static readonly string[] A14CantileverDoorCommands = { "RACKCANTILEVERABRIR", "RACKCANTILEVERAPLICAR", "RACKCANTILEVERINSERTAR", "RACKCANTILEVERNUEVO" };
+
+        /// <summary>
+        /// Lo que la quinta tanda de la ventana RackCad (parte «pb», T5 pb) anade, EXACTAMENTE: la puerta de un Push Back, que lee sin marca de
+        /// Deshacer y escribe, inserta vistas o inserta un rack nuevo en una orden cada una, sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadPushBackDoorCommands.cs</c>. La base se fija de nuevo con estos cuatro nombres.
+        /// </summary>
+        internal static readonly string[] A14PushBackDoorCommands = { "RACKPUSHBACKABRIR", "RACKPUSHBACKAPLICAR", "RACKPUSHBACKINSERTAR", "RACKPUSHBACKNUEVO" };
+
+        /// <summary>
+        /// Lo que la sexta tanda de la ventana RackCad (parte «at», T6 at) anade, EXACTAMENTE: «Actualizar todo», que escribe todos los borradores
+        /// con cambios del dibujo en una orden y una transaccion (un «U»), sin alias, en
+        /// <c>src/RackCad.Plugin/VentanaRackCad/RackCadUpdateAllCommands.cs</c>. La base se fija de nuevo con este nombre.
+        /// </summary>
+        internal static readonly string[] A14UpdateAllCommands = { "RACKACTUALIZARTODO" };
+
+        /// <summary>
+        /// Lo que la septima tanda de la ventana RackCad (parte «per», T7 per) anade, EXACTAMENTE: la puerta de la pagina «Perfil estructural», que
+        /// dibuja la seccion aprobada con la materializacion de RACKSECCION en una orden (un solo «U»), sin alias, en
+        /// <c>src/RackCad.Plugin/RackSeccionCommands.Ventana.cs</c>. RACKSECCION sigue en el censo de apertura: abre la pagina, no cambia de nombre.
+        /// </summary>
+        internal static readonly string[] A14StructuralSectionDoorCommands = { "RACKSECCIONINSERTAR" };
+
+        /// <summary>El censo vigente: apertura, G7, G15, I-65, el panel de F1 y el descarte de F4-T3C2, cada nombre una vez.</summary>
+        internal static readonly string[] Baseline = OpeningCommands.Concat(G7Commands).Concat(G15Commands).Concat(I65Commands).Concat(F1PanelCommands).Concat(F4PanelDiscardCommands).Concat(A14WindowCommands).Concat(A14DynamicDoorCommands).Concat(A14SelectiveDoorCommands).Concat(A14UtilityCommands).Concat(A14CabeceraDoorCommands).Concat(A14VariablesDoorCommands).Concat(A14BomCommands).Concat(A14WarehouseCommands).Concat(A14CamaDoorCommands).Concat(A14CantileverDoorCommands).Concat(A14PushBackDoorCommands).Concat(A14UpdateAllCommands).Concat(A14StructuralSectionDoorCommands).ToArray(); // T5 al: A14WarehouseCommands; T5 cm: A14CamaDoorCommands; T5 ct: A14CantileverDoorCommands; T5 pb: A14PushBackDoorCommands; T6 at: A14UpdateAllCommands; T7 per: A14StructuralSectionDoorCommands
 
         // ================================================================ censo
 
@@ -119,10 +224,10 @@ namespace RackCad.Tests
 
         public static TheoryData<string, string, string> CommandMutations() => new TheoryData<string, string, string>
         {
-            { "un alias de mas", "[CommandMethod(\"RPR\")]", "[CommandMethod(\"RPR\")] [CommandMethod(\"RPRO\")]" },
-            { "el alias con otra grafia", "[CommandMethod(\"RPR\")]", "[CommandMethod(\"rpr\")]" },
+            { "un alias de mas", "[CommandMethod(\"RPR\", RackCadWindowShortcuts.WindowFlags)]", "[CommandMethod(\"RPR\", RackCadWindowShortcuts.WindowFlags)] [CommandMethod(\"RPRO\")]" },
+            { "el alias con otra grafia", "[CommandMethod(\"RPR\", RackCadWindowShortcuts.WindowFlags)]", "[CommandMethod(\"rpr\", RackCadWindowShortcuts.WindowFlags)]" },
             { "el alias con su propio comportamiento", "=> RackPropiedades();", "=> RackPropiedadesProyecto();" },
-            { "un comando por alcance", "[CommandMethod(\"RACKPROPIEDADES\")]", "[CommandMethod(\"RACKPROPIEDADESPROYECTO\")]" },
+            { "un comando por alcance", "[CommandMethod(\"RACKPROPIEDADES\", RackCadWindowShortcuts.WindowFlags)]", "[CommandMethod(\"RACKPROPIEDADESPROYECTO\", RackCadWindowShortcuts.WindowFlags)]" },
             { "decide con la autoridad", "var read = CustomPropertiesExecutor.ReadRack(document, definitionId);", "var read = CustomPropertiesExecutor.ReadRack(document, definitionId); RackCustomPropertiesAuthority.Evaluate(null, null, null);" },
             { "confirma en Application sin el borde", "var preflight = CustomPropertiesPreflight.ForRack(read.Authority, intent);", "var preflight = CustomPropertiesPreflight.ForRack(read.Authority, intent); CustomPropertiesCommit.ForRack(null, null, null, null, null);" },
             { "escribe el bloque", "var result = CustomPropertiesExecutor.ExecuteRack(document, read.Selection, displayed, intent);", "var result = CustomPropertiesExecutor.ExecuteRack(document, read.Selection, displayed, intent); RackBlockData.Write(null, ObjectId.Null, null);" },
@@ -238,12 +343,17 @@ namespace RackCad.Tests
                 violations.Add("los registros no son exactamente RACKPROPIEDADES y RPR: " + string.Join(", ", registrations));
             }
 
-            if (!Regex.IsMatch(text, @"\[CommandMethod\(""RACKPROPIEDADES""\)\]\s*public\s+void\s+RackPropiedades\s*\(\s*\)\s*\{"))
+            // T6 rl (Owner, 2026-11-27, «La ventana, ya»): the two registrations carry the flags of the commands that open the window (no undo
+            // marker, the selection kept: it designates the rack); the loop of the classic window stays in this file, RackPropiedadesClassic.
+            // Correction 3 of the review: what this guard reads now is that classic loop (the one the classic menu runs) and the registration;
+            // the registered command opens the window, and its path (RackIdOf, SelectedRacks, the inline read of the door) is guarded by
+            // RackCadShortcutTests, which fixes that it only reads.
+            if (!Regex.IsMatch(text, @"\[CommandMethod\(""RACKPROPIEDADES"", RackCadWindowShortcuts\.WindowFlags\)\]\s*public\s+void\s+RackPropiedades\s*\(\s*\)\s*\{"))
             {
                 violations.Add("RACKPROPIEDADES no es el metodo publico RackPropiedades()");
             }
 
-            if (!Regex.IsMatch(text, @"\[CommandMethod\(""RPR""\)\]\s*public\s+void\s+\w+\s*\(\s*\)\s*=>\s*RackPropiedades\s*\(\s*\)\s*;"))
+            if (!Regex.IsMatch(text, @"\[CommandMethod\(""RPR"", RackCadWindowShortcuts\.WindowFlags\)\]\s*public\s+void\s+\w+\s*\(\s*\)\s*=>\s*RackPropiedades\s*\(\s*\)\s*;"))
             {
                 violations.Add("RPR no es una llamada al mismo RackPropiedades()");
             }

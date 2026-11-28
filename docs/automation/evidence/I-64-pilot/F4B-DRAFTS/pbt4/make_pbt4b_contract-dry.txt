@@ -1,0 +1,115 @@
+DRY (FASE 2) rev 78a7cef3 (objetos del checkout principal) TaskId F4B-PBT4-FULL-DRAFT-PANEL | contrato en seco: PENDIENTES 0 AVISOS 22
+anclaje: desciende de d8ccbcb8 (F4B-E29), 7f0d9aa3 (F4B-E48), 27c13fab y 5aaacce3 (PB-T4a, F4B-E50; X y BASE); src y tests == 78a7cef3; el cierre de PB-T4a: 78a7cef3
+numeracion prevista: F4B-E51 (cierre de PB-T4a) y F4B-E52 (la emision); la evidencia 279 (cierre), 280 (X) y 281 (BASE) | hoy: F4B-E51 y la 279
+contrato de PB-T4a (docs/automation/evidence/I-64-pilot/F4B-PBT4-FULL-READ-PATH/coordinator/gate-contract.json, AuthorityRevision 27c13fab): 17 paradas estandar, PBT4A-C11 -> PBT4B-C11 (PB-T4a -> PB-T4b, 3869 caracteres), EVID[0] en F4B_EXACT_EVIDENCES del v2, 38 filtros
+nc1 41440edc y nc2 v2 c033e96c con --task PBT4; la Snapshot K
+paquete leido: --package-file I-64-f4b-pbt4-gate-contract-package-v49.md -> v4.9 | sha256 043f196d84525885 | el Objective de 6.2.1 (ASCII, 1709 caracteres)
+la lista de 478: pbt4b-substitution-list-478.tsv junto a --package-file sha256 8b0fcd0c (la de 470 mas las de la decision del Owner); C-0 428, C-5 23, UI 27; 478 pruebas en su archivo, con su atributo sin Skip y su linea en el rango (573 resultados), con CT-PBT4A-06, CT_PBT4A_06_OnlyTheFolderOfTheModelThePlanTheRunAndTheAdapterOfThePluginNameItsTypes:98 | la de 470 (historia): sha256 44393b19, el filtrado de pbt4-substitution-lists.tsv f24c2dbc, byte a byte | anadidas: WorkspaceEditIntentGuardTests.cs:871, WorkspaceEditIntentGuardTests.cs:883, WorkspaceLifecycleGuardTests.cs:627, WorkspaceLifecycleGuardTests.cs:642, WorkspacePilotUpdateGuardTests.cs:823, PushBackFullReadPathTests.cs:153, PushBackFullReadGuardTests.cs:54, WorkspaceHostHardeningGuardTests.cs:492
+las 9 clases (C-0), enteras; el mapa de la copia (D-S1: pbt4b-copy-map-v5.tsv junto a --package-file, sha256 bda79bb7): 356 mecanicas y 72 a mano (R-C4 29; R-C9 8; R-D-S1-compila 8; R-D-S1 6; R-retirado 6; R-C3 5; R-C2,R-C9 2; R-D-S1-borra 2; R-D-S5 2; R-C2 1; R-D-S1,R-D-S5 1; R-estado 1; R-retirado,R-estado 1)
+  tests/RackCad.Tests/Workspace/WorkspaceAssociativeBookkeepingTests.cs  pruebas= 10 sha256=07573661e65b0a4658796a92bf90fd33e79c667a3ccf2f4615588519899bf3f1 LF
+  tests/RackCad.Tests/Workspace/WorkspaceCommandAdvisorTests.cs          pruebas= 54 sha256=27f26a28a760225bed676f8ca0d52fb1fd4b64d1d601f64bfdfb1b83f6786a66 LF
+  tests/RackCad.Tests/Workspace/WorkspaceEditIntentHostTests.cs          pruebas= 62 sha256=df1dd9e118ce78162b304052f64f356cfac30d8c7fd9e6a8ea1eb6f680887b0b LF
+  tests/RackCad.Tests/Workspace/WorkspaceLifecycleHostTests.cs           pruebas= 69 sha256=1808ac7a22c33938b575063e3b7a049450f187b493c5b09b4464ddc37acfc5f0 LF
+  tests/RackCad.Tests/Workspace/WorkspacePilotEditHostTests.cs           pruebas= 59 sha256=43afc8f34423a9ee00bc830c3b78473cebc71f08a3f3bdb4551f1e751148400b LF
+  tests/RackCad.Tests/Workspace/WorkspacePilotPrepareTests.cs            pruebas= 67 sha256=d85407d0961082f01066c61a6cd6e21e95038f001572660d00f7414737390ade LF
+  tests/RackCad.Tests/Workspace/WorkspacePilotReconciliationHostTests.cs pruebas= 28 sha256=e6557a8032ef69f37f6b4a91f1c918510a19d13f64d5bff61912b1b91f3a0aac LF
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateHostTests.cs         pruebas= 35 sha256=d602daf657aae175f9972052e1594034959c0706fd2466644f740d981bfa18fe LF
+  tests/RackCad.Tests/Workspace/WorkspacePilotUpdateRequestTests.cs      pruebas= 44 sha256=cabfb232768fe69e1e7b686722fa87d05efe97b44474c1b4b8a411db598b130e LF
+C-5 (23): PushBackFullReadGuardTests.cs 1; PushBackFullReadGuardTests.cs 1; PushBackFullReadPathTests.cs 1; PushBackWritePathGuardTests.cs 1; WorkspaceEditIntentGuardTests.cs 7; WorkspaceHostHardeningGuardTests.cs 1; WorkspaceLifecycleGuardTests.cs 2; WorkspacePilotEditGuardTests.cs 5; WorkspacePilotReconciliationGuardTests.cs 1; WorkspacePilotUpdateGuardTests.cs 1; WorkspacePilotUpdateIntegrationGuardTests.cs 2
+UI (27): WorkspacePilotReconciliationTests.cs 21; WorkspacePilotReconciliationViewTests.cs 6
+el alcance provisional (section 6.2, prosa): 8 de src existentes, 4 nuevos de src, 12 nuevos de tests (sin las clases de CT-01 a 18), 21 de los Skip = 45; ForbiddenWriteScope provisional: src 240, tests 824, raiz 17 (de PB-T4a) = 1081
+tamano: ForbiddenWriteScope provisional 1081 entradas y 63246 bytes en JSON, frente a 316 entradas y 18529 bytes del de PB-T4a (su contrato entero: 64560 bytes); tests por carpeta: tests/RackCad.Tests/Workspace/ 63, tests/RackCad.UI.Tests/Workspace/ 22, tests/RackCad.Tests/AgentExecutionProtocolTests.cs/ 1, tests/RackCad.Tests/AiscWorkbookVerificationTests.cs/ 1, tests/RackCad.Tests/AtomicFileTests.cs/ 1, tests/RackCad.Tests/BasePlatePeraltePersistenceTests.cs/ 1
+tamano con el precedente de tests/ (la lista de PB-T4a, 109, menos 29 rutas del alcance de PB-T4b: WorkspaceFullReadKit.cs, WorkspaceAssociativeBookkeepingFull.cs, WorkspaceCommandAdvisorFull.cs, WorkspaceEditIntentHostFull.cs, WorkspaceLifecycleHostFull.cs, WorkspacePilotEditHostFull.cs, WorkspacePilotPrepareFull.cs, WorkspacePilotReconciliationHostFull.cs, WorkspacePilotUpdateHostFull.cs, WorkspacePilotUpdateRequestFull.cs, PushBackWritePathGuardTests.cs, WorkspaceAssociativeBookkeepingTests.cs, WorkspaceCommandAdvisorTests.cs, WorkspaceEditIntentGuardTests.cs, WorkspaceEditIntentHostTests.cs, WorkspaceHostHardeningGuardTests.cs, WorkspaceLifecycleGuardTests.cs, WorkspaceLifecycleHostTests.cs, WorkspacePilotEditGuardTests.cs, WorkspacePilotEditHostTests.cs, WorkspacePilotPrepareTests.cs, WorkspacePilotReconciliationGuardTests.cs, WorkspacePilotReconciliationHostTests.cs, WorkspacePilotUpdateGuardTests.cs, WorkspacePilotUpdateHostTests.cs, WorkspacePilotUpdateIntegrationGuardTests.cs, WorkspacePilotUpdateRequestTests.cs, WorkspacePilotReconciliationTests.cs, WorkspacePilotReconciliationViewTests.cs; los prefijos partidos: tests/RackCad.Tests/Workspace/ en 63, tests/RackCad.UI.Tests/Workspace/ en 22; mas las clases de PB-T4a tras su cierre): ForbiddenWriteScope 450 entradas y 26707 bytes en JSON
+CONTRATO (en seco) allowed 59 forbidden 458 (src 248 tests 193 [prefijos partidos: tests/RackCad.Tests/Workspace/, tests/RackCad.UI.Tests/Workspace/] root 17) inv 14 stops 35 required 77 (de 88; las de las copias, de la precondicion 6: 31 con MinSelected, 11 con 0 salen) evidence 16 authorities 72 bytes 97365 sha256 7B95618AE46E0AC03C71A6400D45BD51F5F1DD3809DE9ADAD60A76EC992A9C99
+la CI prevista ([14]): GREEN Core 19605 = 19147 + 0 + 458 (los 458 Skipped: 7 de la base y 451 de la lista de Core) y UI 2481 = 2433 + 48 (21 y 27); el RED, con R_C y R_UI de la precondicion 6
+piezas por sha256: pbt4b-kit-WorkspaceFullReadKit-v45.cs b4ed29f9; make_copies_pbt4b_v49.py d0bdf62e; make_copies_pbt4b_v48.py 74f15dbd; make_copies_pbt4b_v47.py 2a96b2af; make_copies_pbt4b_v46.py 3cc8e56c; make_copies_pbt4b.py a6fd6c01; pbt4b_hand_edits_v49.py a10461f6; pbt4b_hand_edits_v48.py 7d98d007; pbt4b_hand_edits_v47.py d2e4429d; pbt4b_hand_edits_v46.py 46167c57; pbt4b_hand_edits_v45.py 7403c43f; pbt4b_hand_edits.py 68306474; pbt4b-equivalents-review-v49.txt 182b6aed
+la precondicion 6 (pbt4b-precondition6.json, sha256 8df3e566): R_C 291, R_UI 0; 42 clases de las copias, 31 con pruebas (las de 0 salen de la tabla); CopySha de 21 copias; particion e87e024c; campos que no lee: Cost
+BOUNDED_RESULT: EMITIBLE TRAS CORRECCIONES; B 0 / I 1 / M 8; las importantes corregidas en el paquete v4.9 (I-01, la autoprueba de la guarda de los textos del anfitrion pasa en vacio en el GREEN: el equivalente de NoneOfThe30 trae su autoprueba sobre la tabla nueva, como G-4); sin decisiones nuevas del Owner salvo el coste de la lectura (pb-20-ab x4, origen-es-Primary, primera corrida); precondicion 6 sobre 78a7cef3: pasos 1 a 6 cumplen; recomprobacion v4.9: EMITIBLE, B 0 / I 0 / M 3 | bounded_check: sin errores sobre --bounded-file independent-review-v1.md, secciones 20 y 21
+tamano del contrato: 97365 bytes con 77 filas de RequiredTests; con las 88 (las de las copias con un MinSelected de 3 cifras): 99789 bytes; RequiredTests 17961 bytes con todas; sin las ocho colecciones opacas (F4B-E21): 3581 bytes. Por coleccion: AllowedWriteScope 3914, ForbiddenWriteScope 27152, Invariants 4877, RequiredTests 15537, ExpectedEvidence 5712, StopConditions 15170, EligibleCells 1232, Authorities 17106
+RequiredTests heredados de PB-T4a, con los Skip de la lista (criterio de count_tests_git.py sobre los objetos de la revision):
+  Core PushBackFullReadPathTests                                      MinSelected    5 -> 4    (Skip de la lista   1) medido: clases=1 ejecutables=5 skip=0 memberdata=0  de PB-T4a (en su cierre)
+  Core PushBackFullReadGuardTests                                     MinSelected    3 -> 1    (Skip de la lista   2) medido: clases=1 ejecutables=3 skip=0 memberdata=0  de PB-T4a (en su cierre)
+  Core PushBackViewEraseGuardTests                                    MinSelected    4 -> 4    (Skip de la lista   0) medido: clases=1 ejecutables=4 skip=0 memberdata=0  heredado
+  Core PushBackWritePathPluginGuardTests                              MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  Core WorkspacePilotUpdateGuardTests                                 MinSelected   86 -> 85   (Skip de la lista   1) medido: clases=1 ejecutables=86 skip=1 memberdata=0  heredado
+  Core WorkspacePilotUpdateIntegrationGuardTests                      MinSelected  123 -> 121  (Skip de la lista   2) medido: clases=1 ejecutables=123 skip=2 memberdata=0  heredado
+  Core PushBackSharedReferenceGuardTests                              MinSelected    2 -> 2    (Skip de la lista   0) medido: clases=1 ejecutables=2 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackFullDraftWindowParityTests                       MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  Core PushBackFullWrite                                              MinSelected   13 -> 13   (Skip de la lista   0) medido: clases=2 ejecutables=13 skip=0 memberdata=0  heredado
+  Core PushBackPilotUpdateEquivalenceGuardTests                       MinSelected    6 -> 6    (Skip de la lista   0) medido: clases=1 ejecutables=6 skip=0 memberdata=0  heredado
+  Core PushBackWritePathGuardTests                                    MinSelected    2 -> 1    (Skip de la lista   1) medido: clases=1 ejecutables=2 skip=0 memberdata=0  heredado
+  Core Workspace                                                      MinSelected 3261 -> 2718 (Skip de la lista 543) medido: clases=74 ejecutables=3261 skip=10 memberdata=33  heredado
+  Core PushBackFullDraft                                              MinSelected   10 -> 10   (Skip de la lista   0) medido: clases=4 ejecutables=10 skip=0 memberdata=0  heredado
+  Core PushBackDraftWriteGuardTests                                   MinSelected    2 -> 2    (Skip de la lista   0) medido: clases=1 ejecutables=2 skip=1 memberdata=0  heredado
+  UI   Tests.Workspace                                                MinSelected  547 -> 521  (Skip de la lista  26) medido: clases=20 ejecutables=547 skip=0 memberdata=16  heredado
+  Core PushBackEditableState                                          MinSelected   13 -> 13   (Skip de la lista   0) medido: clases=3 ejecutables=13 skip=0 memberdata=0  heredado
+  Core PushBackEditorOutputGate                                       MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  Core PushBackWindowSharedReferenceGuardTests                        MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  Core PushBackWindowOnStateSourceGuardTests                          MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackWindowOnStateTests                               MinSelected    2 -> 2    (Skip de la lista   0) medido: clases=1 ejecutables=2 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackClassicCharacterization                          MinSelected   55 -> 55   (Skip de la lista   0) medido: clases=6 ejecutables=55 skip=0 memberdata=0  heredado
+  Core PushBackClassicCharacterization                                MinSelected   10 -> 10   (Skip de la lista   0) medido: clases=1 ejecutables=7 skip=0 memberdata=1  heredado
+  UI   Tests.PushBackFullEditorCharacterization                       MinSelected   16 -> 16   (Skip de la lista   0) medido: clases=6 ejecutables=16 skip=2 memberdata=0  heredado
+  Core PushBackFullEditorCharacterization                             MinSelected    3 -> 3    (Skip de la lista   0) medido: clases=3 ejecutables=3 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackStateNet                                         MinSelected   14 -> 14   (Skip de la lista   0) medido: clases=6 ejecutables=14 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackDeclaredCorrection                               MinSelected   14 -> 14   (Skip de la lista   0) medido: clases=7 ejecutables=14 skip=0 memberdata=0  heredado
+  UI   Tests.Cantilever                                               MinSelected   67 -> 67   (Skip de la lista   0) medido: clases=3 ejecutables=67 skip=0 memberdata=0  heredado
+  Core I58F1                                                          MinSelected   10 -> 10   (Skip de la lista   0) medido: clases=2 ejecutables=8 skip=0 memberdata=2  heredado
+  Core CustomPropertiesEnvelopeGuardTests                             MinSelected    9 -> 9    (Skip de la lista   0) medido: clases=1 ejecutables=18 skip=0 memberdata=1  heredado
+  Core NamespaceFolderGuardTests                                      MinSelected    7 -> 7    (Skip de la lista   0) medido: clases=1 ejecutables=7 skip=0 memberdata=0  heredado
+  Core PushBackDraftStatePortTests                                    MinSelected    3 -> 3    (Skip de la lista   0) medido: clases=1 ejecutables=3 skip=0 memberdata=0  heredado
+  Core PushBackDraftPortSharedReferenceGuardTests                     MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  Core PushBackWorkspaceModeSourceGuardTests                          MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  Core PushBackWorkspaceSharedReferenceGuardTests                     MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackWorkspaceModeTests                               MinSelected    3 -> 3    (Skip de la lista   0) medido: clases=1 ejecutables=3 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackWorkspaceApplyCloseTests                         MinSelected    4 -> 4    (Skip de la lista   0) medido: clases=1 ejecutables=4 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackFieldValidationConcordanceTests                  MinSelected    1 -> 1    (Skip de la lista   0) medido: clases=1 ejecutables=1 skip=0 memberdata=0  heredado
+  UI   Tests.PushBackWorkspaceCarryoverTests                          MinSelected    3 -> 3    (Skip de la lista   0) medido: clases=1 ejecutables=3 skip=0 memberdata=0  heredado
+  UI   NumericFieldValidationTests                                    nuevo de section 6.2, ya en la base: ejecutables=13 skip=0 memberdata=0 (count_static las atribuye a RackCad.UI.Tests.NumericFieldValidationTests)
+  UI   NumericFieldTests                                              nuevo de section 6.2, ya en la base: ejecutables=10 skip=0 memberdata=0 (count_static las atribuye a RackCad.UI.Tests.BorderBrushSource)
+PENDIENTES (0):
+autoridades que aun no estan en la revision (las custodia X de PB-T4b): 21
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-breaks-decision.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/session-pbt4b-design-decisions.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-substitution-list-478.tsv
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-copy-map-v5.tsv
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-kit-WorkspaceFullReadKit-v45.cs
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/make_copies_pbt4b_v49.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/make_copies_pbt4b_v48.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/make_copies_pbt4b_v47.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/make_copies_pbt4b_v46.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/make_copies_pbt4b.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b_hand_edits_v49.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b_hand_edits_v48.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b_hand_edits_v47.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b_hand_edits_v46.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b_hand_edits_v45.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b_hand_edits.py
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-equivalents-review-v49.txt
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-list-477-decision.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-list-478-decision.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-cost-decision.md
+  docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-precondition6.json
+AVISOS (22):
+  - emision: F4B-E52 (la emision de F4B-PBT4-FULL-DRAFT-PANEL) aun no esta en f4b-dispositions.md
+  - emision: la lista de PB-T4b de LIST_SHA aun no esta en la revision (la custodia X de PB-T4b): docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-substitution-list-478.tsv
+  - emision: el mapa de la copia de COPY_MAP_SHA aun no esta en la revision (lo custodia X de PB-T4b): docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/pbt4b-copy-map-v5.tsv
+  - emision: pbt4b-kit-WorkspaceFullReadKit-v45.cs (sha256 b4ed29f9) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: make_copies_pbt4b_v49.py (sha256 d0bdf62e) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: make_copies_pbt4b_v48.py (sha256 74f15dbd) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: make_copies_pbt4b_v47.py (sha256 2a96b2af) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: make_copies_pbt4b_v46.py (sha256 3cc8e56c) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: make_copies_pbt4b.py (sha256 a6fd6c01) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: pbt4b_hand_edits_v49.py (sha256 a10461f6) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: pbt4b_hand_edits_v48.py (sha256 7d98d007) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: pbt4b_hand_edits_v47.py (sha256 d2e4429d) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: pbt4b_hand_edits_v46.py (sha256 46167c57) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: pbt4b_hand_edits_v45.py (sha256 7403c43f) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: pbt4b_hand_edits.py (sha256 68306474) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: pbt4b-equivalents-review-v49.txt (sha256 182b6aed) aun no esta en la revision (la custodia X de PB-T4b)
+  - emision: el registro de las decisiones de diseno de la sesion (D-S1 a D-S6), a custodiar y declarar en F4B-E52: docs/automation/evidence/I-64-pilot/F4B-DRAFTS/pbt4/session-pbt4b-design-decisions.md
+  - emision: el registro declarado aun no tiene la entrada de PB-T4b (las 478, por clase y por causa, con su tabla al cerrar)
+  - emision: el registro de la decision del Owner sobre las cinco roturas (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-breaks-decision.md) aun no esta en la revision
+  - emision: el registro de la quinta tanda del Owner, la lista de 477 (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-list-477-decision.md), aun no esta en la revision
+  - emision: la septima tanda del Owner, la decision sobre el coste de PB-T4b (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-cost-decision.md), aun no esta en la revision
+  - emision: el registro de la sexta tanda del Owner, la lista de 478 (docs/automation/evidence/I-64-pilot/F4B-DRAFTS/coordinator/owner-pbt4b-list-478-decision.md), aun no esta en la revision

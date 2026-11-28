@@ -1,0 +1,2 @@
+green c4b5c6990c5623e53be607fdbb461db95103b957c96627e1d63300dabe3d643b src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+GREEN de PB-T4e escrito: 1 archivos de src/ cambiados; tests/ sin tocar

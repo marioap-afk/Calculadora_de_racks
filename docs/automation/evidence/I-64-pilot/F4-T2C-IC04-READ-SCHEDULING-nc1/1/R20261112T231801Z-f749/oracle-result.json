@@ -1,0 +1,56 @@
+{
+  "Control": "nc1",
+  "RunId": "R20261112T231801Z-f749",
+  "SchemaValid": true,
+  "Coherent": true,
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Handoff",
+  "MutatedCheck": {
+    "Identity": "fail"
+  },
+  "Results": {
+    "Termination": "pass",
+    "Handoff": "fail",
+    "Authority": "pass",
+    "Contract": "pass",
+    "Identity": "fail",
+    "Remote": "fail",
+    "Scope": "pass",
+    "CleanTree": "pass",
+    "Ci": "fail",
+    "Tests": "pass",
+    "Trailer": "pass",
+    "Routing": "pass",
+    "FreeText": "pass",
+    "Denials": "pass"
+  },
+  "DiffersFromReal": [
+    "Handoff",
+    "Identity",
+    "Remote",
+    "Ci"
+  ],
+  "PreviousSameAsReal": false,
+  "LaterSameAsReal": false,
+  "TriggeredStopConditions": [
+    "S-04"
+  ],
+  "VerifiedSha": null,
+  "OracleRelative": false,
+  "ExpectedOracle": {
+    "Check": "Identity",
+    "FailureClass": "Identity",
+    "Classification": "EXECUTION_BLOCKED",
+    "Disposition": "STOP",
+    "LaterChecksMustMatch": false
+  },
+  "KnownDefectSignature": null,
+  "Outcome": "COMPLETED",
+  "ControlResult": "CONTROL NOT PASSED",
+  "Evidence": {
+    "Identity": "git rev-parse HEAD returned 33e43f9f4246d63c0b1fdcdddb58f62b5c963c53, branch is architecture/workspace-persistente-rackcad, and git merge-base --is-ancestor BaseSha HEAD succeeded. RedSha 703bda9d65fc869d0ea2cde5283778b3f65a8fcf is in the history. Handoff CurrentSha is deadbeefdeadbeefdeadbeefdeadbeefdeadbeef, so it fails the required HEAD=CurrentSha identity."
+  },
+  "OutputSha256": "D8A3F963D1E3F455A82A1ECD35E1BE12840113E691F26233277D0BFD0B2AD275",
+  "ManualFreeText1610": []
+}

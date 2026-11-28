@@ -1,0 +1,820 @@
+diff --git a/src/RackCad.Application/Formatting/NumericTextRule.cs b/src/RackCad.Application/Formatting/NumericTextRule.cs
+index 0597a312..69445d47 100644
+--- a/src/RackCad.Application/Formatting/NumericTextRule.cs
++++ b/src/RackCad.Application/Formatting/NumericTextRule.cs
+@@ -60,7 +60,7 @@ namespace RackCad.Application.Formatting
+         public const string EmptyRequiredMessage = "Escribe un valor.";
+         public const string NotANumberMessage = "Valor no numérico.";
+ 
+-        /// <summary>Checks <paramref name="text"/> against the rules of one field. INERT in the RED of PB-T4b: the GREEN moves the rule here.</summary>
++        /// <summary>Checks <paramref name="text"/> against the rules of one field.</summary>
+         public static NumericTextCheck Check(
+             string text,
+             bool isOptional,
+@@ -68,6 +68,57 @@ namespace RackCad.Application.Formatting
+             double? minimum,
+             double? maximum,
+             bool minimumInclusive,
+-            bool maximumInclusive) => new NumericTextCheck(NumericTextStatus.NotANumber, null, null);
++            bool maximumInclusive)
++        {
++            if (string.IsNullOrWhiteSpace(text))
++            {
++                return isOptional
++                    ? new NumericTextCheck(NumericTextStatus.EmptyOptional, null, null)
++                    : new NumericTextCheck(NumericTextStatus.EmptyRequired, null, EmptyRequiredMessage);
++            }
++
++            double parsed;
++            if (integerOnly)
++            {
++                if (!LocalizedNumberParser.TryInteger(text, out var integer))
++                {
++                    return new NumericTextCheck(NumericTextStatus.NotANumber, null, NotANumberMessage);
++                }
++
++                parsed = integer;
++            }
++            else if (!LocalizedNumberParser.TryDouble(text, out parsed))
++            {
++                return new NumericTextCheck(NumericTextStatus.NotANumber, null, NotANumberMessage);
++            }
++
++            if (minimum.HasValue)
++            {
++                var below = minimumInclusive ? parsed < minimum.Value : parsed <= minimum.Value;
++                if (below)
++                {
++                    return new NumericTextCheck(NumericTextStatus.BelowMinimum, parsed, MinimumMessage(minimum.Value, minimumInclusive));
++                }
++            }
++
++            if (maximum.HasValue)
++            {
++                var above = maximumInclusive ? parsed > maximum.Value : parsed >= maximum.Value;
++                if (above)
++                {
++                    return new NumericTextCheck(NumericTextStatus.AboveMaximum, parsed, MaximumMessage(maximum.Value, maximumInclusive));
++                }
++            }
++
++            return new NumericTextCheck(NumericTextStatus.Valid, parsed, null);
++        }
++
++        private static string MinimumMessage(double minimum, bool inclusive)
++            => $"El valor debe ser {(inclusive ? "≥" : ">")} {Format(minimum)}.";
++
++        private static string MaximumMessage(double maximum, bool inclusive)
++            => $"El valor debe ser {(inclusive ? "≤" : "<")} {Format(maximum)}.";
++
++        private static string Format(double value) => value.ToString("0.###", CultureInfo.CurrentCulture);
+     }
+ }
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs
+index 3de1d988..9f0675e6 100644
+--- a/src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackAnnotationScaleRule.cs
+@@ -14,7 +14,10 @@ namespace RackCad.Application.Systems.PushBack.Draft
+ 
+         public const bool MinimumInclusive = false;
+ 
+-        // INERT in the RED of PB-T4b.
+-        public static DraftFieldValidation Validate(string text) => DraftFieldValidation.Invalid(string.Empty);
++        public static DraftFieldValidation Validate(string text)
++        {
++            var check = NumericTextRule.Check(text, false, false, Minimum, null, MinimumInclusive, true);
++            return check.IsValid ? DraftFieldValidation.Valid : DraftFieldValidation.Invalid(check.Message);
++        }
+     }
+ }
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs
+index 56886340..3d4c08d3 100644
+--- a/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackFullFieldAdapter.cs
+@@ -25,9 +25,30 @@ namespace RackCad.Application.Systems.PushBack.Draft
+ 
+         public const string UnknownFieldMessage = "Campo desconocido para el panel.";
+ 
+-        // INERT in the RED of PB-T4b.
+-        public DraftFieldValidation Validate(string fieldKey, string text) => DraftFieldValidation.Invalid(UnknownFieldMessage);
++        public DraftFieldValidation Validate(string fieldKey, string text)
++        {
++            if (!string.Equals(fieldKey, AnnotationScaleKey, StringComparison.Ordinal))
++            {
++                return DraftFieldValidation.Invalid(UnknownFieldMessage);
++            }
+ 
+-        public PushBackFullDraftState Apply(PushBackFullDraftState current, IReadOnlyDictionary<string, string> pendingText) => current;
++            return PushBackAnnotationScaleRule.Validate(text);
++        }
++
++        public PushBackFullDraftState Apply(PushBackFullDraftState current, IReadOnlyDictionary<string, string> pendingText)
++        {
++            if (current == null) throw new ArgumentNullException(nameof(current));
++            if (pendingText == null) throw new ArgumentNullException(nameof(pendingText));
++
++            // The core only calls Apply with text that already passed Validate; a value that does not, or another key, is left alone.
++            if (pendingText.TryGetValue(AnnotationScaleKey, out var text)
++                && Validate(AnnotationScaleKey, text).IsValid
++                && LocalizedNumberParser.TryDouble(text, out var scale))
++            {
++                current.Editable.AnnotationScale = scale;
++            }
++
++            return current;
++        }
+     }
+ }
+diff --git a/src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs b/src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs
+index da4b2a42..26ef3d81 100644
+--- a/src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs
++++ b/src/RackCad.Application/Systems/PushBack/Draft/PushBackKeepMinePresentation.cs
+@@ -40,12 +40,83 @@ namespace RackCad.Application.Systems.PushBack.Draft
+         /// <summary>True when the reread was admitted and classified.</summary>
+         public bool IsAdmitted => Diagnostic == null;
+ 
+-        /// <summary>INERT in the RED of PB-T4b: no line.</summary>
+-        public static PushBackKeepMinePresentation Of(PushBackConflictClassification classification) =>
+-            new PushBackKeepMinePresentation(Array.Empty<string>(), null, null);
++        /// <summary>The lines of a classification: each group once, in the order of <see cref="PushBackChangeGroup"/>, joined with commas and a last " y ".</summary>
++        public static PushBackKeepMinePresentation Of(PushBackConflictClassification classification)
++        {
++            if (classification == null) throw new ArgumentNullException(nameof(classification));
++
++            var lines = new List<string>();
++            AddGroups(lines, "Cambiado fuera: ", classification.ChangedExternally);
++            AddGroups(lines, "Cambiado por ti: ", classification.ChangedByUser);
++            AddGroups(lines, "Cambiado en los dos: ", classification.Overlapping);
++            AddGroups(lines, "Cambios estructurales: ", classification.Structural);
++
++            var erased = classification.ViewsToErase.Count;
++            if (erased == 1) lines.Add("Vistas: se borrará 1 lateral obsoleto.");
++            else if (erased > 1) lines.Add("Vistas: se borrarán " + erased.ToString(CultureInfo.InvariantCulture) + " laterales obsoletos.");
++
++            var rejected = classification.ViewsRejected.Count;
++            if (rejected == 1) lines.Add("Vistas: 1 no se puede conservar.");
++            else if (rejected > 1) lines.Add("Vistas: " + rejected.ToString(CultureInfo.InvariantCulture) + " no se pueden conservar.");
++
++            if (classification.AllViewsObsolete) lines.Add("Todas las vistas quedarían obsoletas.");
++            return new PushBackKeepMinePresentation(lines.AsReadOnly(), null, null);
++        }
++
++        /// <summary>
++        /// Classifies the draft against the reread of its rack: the base is the initial state of the draft, the current rack is the state of the
++        /// reread, the draft is its current state, and the members are the mutable envelopes of the base of the reread. A reread that is not
++        /// admitted is not classified: the presentation carries its diagnostic and no line. It changes neither the draft nor the reread.
++        /// </summary>
++        public static PushBackKeepMinePresentation Read(DraftSession<PushBackFullDraftState> draft, PushBackFullIntentResult read, RackCatalog catalog)
++        {
++            if (draft == null) throw new ArgumentNullException(nameof(draft));
++            if (read == null) throw new ArgumentNullException(nameof(read));
++            if (!read.Read.IsAdmitted)
++            {
++                return new PushBackKeepMinePresentation(
++                    Array.Empty<string>(), null, read.Read.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic);
++            }
++
++            var current = read.Read.InitialState;
++            var envelopes = new RackEmbedStore();
++            var members = new List<KeyValuePair<string, RackEmbedDocument>>();
++            foreach (var entry in read.StaleBase.Entries.Values
++                         .Where(e => e.Membership == DraftMembership.Mutable && e.EnvelopeText != null)
++                         .OrderBy(e => e.Key, StringComparer.Ordinal))
++            {
++                var embed = envelopes.Deserialize(entry.EnvelopeText);
++                if (embed != null) members.Add(new KeyValuePair<string, RackEmbedDocument>(entry.Key, embed));
++            }
+ 
+-        /// <summary>INERT in the RED of PB-T4b: no line.</summary>
+-        public static PushBackKeepMinePresentation Read(DraftSession<PushBackFullDraftState> draft, PushBackFullIntentResult read, RackCatalog catalog) =>
+-            new PushBackKeepMinePresentation(Array.Empty<string>(), null, null);
++            var classification = PushBackConflictClassifier.Classify(draft.InitialDraftState, current, draft.CurrentDraftState, members, catalog);
++            return new PushBackKeepMinePresentation(Of(classification).Lines, current.Origin, null);
++        }
++
++        private static void AddGroups(List<string> lines, string prefix, IReadOnlyList<PushBackChangeEntry> entries)
++        {
++            var groups = entries.Select(entry => entry.Group).Distinct().OrderBy(group => (int)group).Select(TextOf).ToList();
++            if (groups.Count == 0) return;
++            lines.Add(prefix + Join(groups) + ".");
++        }
++
++        private static string Join(IReadOnlyList<string> items)
++            => items.Count == 1 ? items[0] : string.Join(", ", items.Take(items.Count - 1)) + " y " + items[items.Count - 1];
++
++        private static string TextOf(PushBackChangeGroup group)
++        {
++            switch (group)
++            {
++                case PushBackChangeGroup.Name: return "el nombre";
++                case PushBackChangeGroup.Rack: return "el rack";
++                case PushBackChangeGroup.Annotations: return "las anotaciones";
++                case PushBackChangeGroup.Safety: return "la seguridad";
++                case PushBackChangeGroup.Fronts: return "los frentes";
++                case PushBackChangeGroup.Modules: return "los módulos";
++                case PushBackChangeGroup.SideB: return "el lado B";
++                case PushBackChangeGroup.Composite: return "la parte compuesta";
++                default: return "fuera del editor";
++            }
++        }
+     }
+ }
+diff --git a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+index 41a62336..dc4a0ea1 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@ -2,6 +2,7 @@
+ using System;
+ using System.Collections.Generic;
+ using System.Linq;
++using RackCad.Application.Systems.PushBack.Draft;
+ using RackCad.Application.Systems.PushBack.Pilot;
+ using RackCad.Application.Workspace.Drafts;
+ 
+@@ -37,14 +38,16 @@ namespace RackCad.Application.Workspace
+     /// </summary>
+     public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort
+     {
+-        // I-64 F4-T3A (D-T3-02): the one adapter of the pending text of the pilot. It keeps no state, so it is shared; it is never an
+-        // instance field of the host.
+-        private static readonly PushBackPilotFieldAdapter PilotFieldAdapter = new();
++        // I-64 F4-T3A (D-T3-02): the one adapter of the pending text of the field. It keeps no state, so it is shared; it is never an
++        // instance field of the host. Since I-64 F4B PB-T4b (D-PBT4-04, D-PBT4-06) it is the adapter of the full draft, with the one rule
++        // of the scale (PushBackAnnotationScaleRule), by default.
++        private static readonly PushBackFullFieldAdapter PilotFieldAdapter = new();
+ 
+         private const string PilotReadInProgressReason = "Hay una lectura del piloto en curso.";
+         private const string NotThisDocumentReason = "La petición no es del documento activo.";
+         private const string NoDraftReason = "No hay borrador para el rack.";
+         private const string NotCheckableReason = "El borrador no admite comprobación en su estado actual.";
++        private const string FullReadMissingReason = "No editable aquí: la lectura no trae el modelo completo.";
+         private const string NotKeepableReason ="Solo se conserva un borrador en conflicto o con cambios marcados como posiblemente obsoletos.";
+ 
+         /// <summary>Native identity used when no document is open: it matches no session.</summary>
+@@ -343,13 +346,18 @@ namespace RackCad.Application.Workspace
+                 if (pilot == null) return EditIntentOutcome.Failed("La lectura de la intención de edición no trajo resultado.");
+                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
+ 
+-                // 8: the base of the read only goes to Begin, with the comparer and the copier of the pilot.
++                // I-64 F4B PB-T4b (D-PBT4-04): the draft of the panel is the full one; a read without the full model begins no draft.
++                var full = read.FullRead;
++                if (full == null)
++                    return EditIntentOutcome.NotAdmitted(FullReadMissingReason, null, PushBackPilotIntentReader.ClassicEditorHint, witness);
++
++                // 8: the base of the read only goes to Begin, with the comparer and the copier of the full model.
+                 var begun = _drafts.Begin(
+                     request.Session,
+                     request.RackId,
+-                    pilot.Read,
+-                    PushBackPilotStateComparer.Instance,
+-                    PushBackPilotStateComparer.Copy);
++                    full.Read,
++                    PushBackFullDraftStateComparer.Instance,
++                    PushBackFullDraftStateComparer.Copy);
+                 switch (begun.Status)
+                 {
+                     case DraftBeginStatus.Created:
+@@ -360,8 +368,8 @@ namespace RackCad.Application.Workspace
+                     case DraftBeginStatus.NotAdmitted:
+                         return EditIntentOutcome.NotAdmitted(
+                             begun.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
+-                            pilot.Detail,
+-                            pilot.ClassicEditorHint,
++                            full.Detail,
++                            full.ClassicEditorHint,
+                             witness);
+                     default:
+                         return EditIntentOutcome.Rejected("La sesión se retiró.", witness);
+@@ -400,7 +408,7 @@ namespace RackCad.Application.Workspace
+                 if (gate == EditGate.Rejected) return EditCheckOutcome.Rejected(reason);
+ 
+                 // 6: only an Unknown draft after a commit that threw is checked; nothing is read for any other.
+-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
++                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
+                 if (draft == null) return EditCheckOutcome.NotFound("No hay borrador para el rack.");
+                 if (draft.Status != DraftStatus.Unknown || draft.UnknownOrigin != DraftUnknownOrigin.CommitThrew)
+                     return EditCheckOutcome.NotApplicable("El borrador no quedó desconocido tras una aplicación fallida.");
+@@ -422,8 +430,8 @@ namespace RackCad.Application.Workspace
+                         return EditCheckOutcome.Failed(read.Reason ?? "Falló la relectura.");
+                 }
+ 
+-                var pilot = read.PilotRead;
+-                if (pilot == null) return EditCheckOutcome.Failed("La relectura no trajo resultado.");
++                var full = read.FullRead;
++                if (full == null) return EditCheckOutcome.Failed(FullReadMissingReason);
+ 
+                 // 7, continued (I-64 F4-T4C2, D-T4C-12): the diagnostic of the admission comes from the SAME reread, before its base goes to CheckNow, and in its
+                 // own try. A failure of it gives null and never changes the answer: Recovered and Conflict only come from the comparison of the bases.
+@@ -431,8 +439,8 @@ namespace RackCad.Application.Workspace
+                 string? hint = null;
+                 try
+                 {
+-                    admission = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;
+-                    hint = admission == null ? null : pilot.ClassicEditorHint;
++                    admission = full.Read.IsAdmitted ? null : full.Read.Admission.Diagnostic;
++                    hint = admission == null ? null : full.ClassicEditorHint;
+                 }
+                 catch (Exception diagnosticFailure)
+                 {
+@@ -442,7 +450,7 @@ namespace RackCad.Application.Workspace
+                 }
+ 
+                 // 8: the base of the reread only goes to CheckNow.
+-                var check = draft.CheckNow(pilot.StaleBase);
++                var check = draft.CheckNow(full.StaleBase);
+                 switch (check.Status)
+                 {
+                     case DraftCheckStatus.Recovered:
+@@ -497,7 +505,7 @@ namespace RackCad.Application.Workspace
+                 if (gate == EditGate.Rejected) return EditIntentOutcome.Rejected(reason);
+ 
+                 // 6: only a clean draft marked as possibly stale is reloaded; nothing is read for any other.
+-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
++                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
+                 if (draft == null) return EditIntentOutcome.NotFound("No hay borrador para el rack.");
+                 if (!draft.NeedsLazyReload) return EditIntentOutcome.NotNeeded("El borrador no necesita recargarse.");
+ 
+@@ -521,9 +529,11 @@ namespace RackCad.Application.Workspace
+                 var pilot = read.PilotRead;
+                 if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
+                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
++                var full = read.FullRead;
++                if (full == null) return EditIntentOutcome.Failed(FullReadMissingReason);
+ 
+                 // 8: the read only goes to DiscardAndReload.
+-                var reloaded = draft.DiscardAndReload(pilot.Read);
++                var reloaded = draft.DiscardAndReload(full.Read);
+                 switch (reloaded.Status)
+                 {
+                     case DraftReloadStatus.Reloaded:
+@@ -532,8 +542,8 @@ namespace RackCad.Application.Workspace
+                     case DraftReloadStatus.NotAdmitted:
+                         return EditIntentOutcome.NotAdmitted(
+                             reloaded.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
+-                            pilot.Detail,
+-                            pilot.ClassicEditorHint,
++                            full.Detail,
++                            full.ClassicEditorHint,
+                             witness);
+                     case DraftReloadStatus.NotAllowed:
+                         return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+@@ -584,7 +594,7 @@ namespace RackCad.Application.Workspace
+                 if (UpdateInFlightForRequest(request)) return EditConfirmOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
+ 
+                 // 3 and 4: a missing draft, and a draft whose status is not clean, dirty or in conflict, read nothing.
+-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
++                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
+                 if (draft == null) return EditConfirmOutcome.NotFound(NoDraftReason);
+                 var before = draft.Status;
+                 if (before != DraftStatus.Clean && before != DraftStatus.Dirty && before != DraftStatus.Conflict)
+@@ -607,13 +617,13 @@ namespace RackCad.Application.Workspace
+                         return EditConfirmOutcome.Failed(read.Reason ?? "Falló la relectura.");
+                 }
+ 
+-                var pilot = read.PilotRead;
+-                if (pilot == null) return EditConfirmOutcome.Failed("La relectura no trajo resultado.");
++                var full = read.FullRead;
++                if (full == null) return EditConfirmOutcome.Failed(FullReadMissingReason);
+ 
+                 // 7: the base of the reread only goes to ConfirmBase.
+-                var confirm = draft.ConfirmBase(pilot.StaleBase);
+-                var admission = pilot.Read.IsAdmitted ? null : pilot.Read.Admission.Diagnostic;
+-                var hint = admission == null ? null : pilot.ClassicEditorHint;
++                var confirm = draft.ConfirmBase(full.StaleBase);
++                var admission = full.Read.IsAdmitted ? null : full.Read.Admission.Diagnostic;
++                var hint = admission == null ? null : full.ClassicEditorHint;
+                 switch (confirm.Status)
+                 {
+                     case DraftConfirmStatus.Confirmed:
+@@ -670,7 +680,7 @@ namespace RackCad.Application.Workspace
+ 
+                 // 3 and 4: a missing draft is NotFound, a draft that is being applied waits and one that does not need to be kept is not
+                 // needed; none of them reads anything.
+-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
++                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
+                 if (draft == null) return EditIntentOutcome.NotFound(NoDraftReason);
+                 var before = draft.Status;
+                 if (before == DraftStatus.Applying) return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+@@ -697,9 +707,25 @@ namespace RackCad.Application.Workspace
+                 var pilot = read.PilotRead;
+                 if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
+                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
++                var full = read.FullRead;
++                if (full == null) return EditIntentOutcome.Failed(FullReadMissingReason);
++
++                // 7 (I-64 F4B PB-T4b, D-PBT4-08): without a witness, or with one that no longer holds, the operation only presents what changed,
++                // by groups, with the witness of this read; the draft does not change. Only the witness that still holds reaches the keep.
++                if (request.Witness == null || witness != EditWitnessStatus.Unchanged)
++                {
++                    if (!draft.IsRegistered || (draft.Status != DraftStatus.Dirty && draft.Status != DraftStatus.Conflict))
++                        return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
++
++                    // The classification and its admission are of the pure function of Draft/: the host names the read only in its consumers.
++                    var presentation = PushBackKeepMinePresentation.Read(draft, full, read.Catalog!);
++                    if (!presentation.IsAdmitted)
++                        return EditIntentOutcome.NotAdmitted(presentation.Diagnostic, full.Detail, full.ClassicEditorHint, witness);
++                    return EditIntentOutcome.Presented(presentation.Lines, new EditIntentWitness(full.OriginKey, presentation.OriginText), witness);
++                }
+ 
+-                // 7: the read only goes to the atomic form of KeepMineOnCurrentVersion, which has been confirmed by the gesture itself.
+-                var kept = draft.KeepMineOnCurrentVersion(pilot.Read, PushBackPilotMaterializer.KeepPilotEditsOn, confirmed: true);
++                // 7, continued: the read only goes to the atomic form of KeepMineOnCurrentVersion, confirmed by the second "Si" with the witness.
++                var kept = draft.KeepMineOnCurrentVersion(full.Read, PushBackFullComposition.KeepOn, confirmed: true);
+                 switch (kept.Status)
+                 {
+                     case DraftReloadStatus.Reloaded:
+@@ -708,8 +734,8 @@ namespace RackCad.Application.Workspace
+                     case DraftReloadStatus.NotAdmitted:
+                         return EditIntentOutcome.NotAdmitted(
+                             kept.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
+-                            pilot.Detail,
+-                            pilot.ClassicEditorHint,
++                            full.Detail,
++                            full.ClassicEditorHint,
+                             witness);
+                     case DraftReloadStatus.NotAllowed:
+                         return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+@@ -759,7 +785,7 @@ namespace RackCad.Application.Workspace
+                 if (UpdateInFlightForRequest(request)) return EditIntentOutcome.Waiting(PushBackPilotHostTexts.UpdateInFlightReason);
+ 
+                 // 3 and 4: a missing draft is NotFound and a draft that is being applied waits; none of them reads anything.
+-                var draft = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
++                var draft = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
+                 if (draft == null) return EditIntentOutcome.NotFound(NoDraftReason);
+                 if (draft.Status == DraftStatus.Applying) return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+ 
+@@ -783,9 +809,11 @@ namespace RackCad.Application.Workspace
+                 var pilot = read.PilotRead;
+                 if (pilot == null) return EditIntentOutcome.Failed("La lectura para la recarga no trajo resultado.");
+                 var witness = WorkspaceEditIntent.WitnessStatusOf(pilot.PreviewWitness);
++                var full = read.FullRead;
++                if (full == null) return EditIntentOutcome.Failed(FullReadMissingReason);
+ 
+                 // 7: the read only goes to DiscardAndReload; the status is the one of the reload of the lazy kind.
+-                var reloaded = draft.DiscardAndReload(pilot.Read);
++                var reloaded = draft.DiscardAndReload(full.Read);
+                 switch (reloaded.Status)
+                 {
+                     case DraftReloadStatus.Reloaded:
+@@ -794,8 +822,8 @@ namespace RackCad.Application.Workspace
+                     case DraftReloadStatus.NotAdmitted:
+                         return EditIntentOutcome.NotAdmitted(
+                             reloaded.Admission.Diagnostic ?? PushBackPilotIntentReader.MaterializeDiagnostic,
+-                            pilot.Detail,
+-                            pilot.ClassicEditorHint,
++                            full.Detail,
++                            full.ClassicEditorHint,
+                             witness);
+                     case DraftReloadStatus.NotAllowed:
+                         return EditIntentOutcome.Waiting("El borrador se está aplicando o ya no está registrado.");
+@@ -853,7 +881,7 @@ namespace RackCad.Application.Workspace
+         /// </summary>
+         public EditUpdateOutcome TryUpdatePilot(EditIntentRequest request, IPushBackPilotUpdatePort port)
+         {
+-            DraftSession<PushBackPilotDraftState> draft;
++            DraftSession<PushBackFullDraftState> draft;
+             long documentId;
+             try
+             {
+@@ -866,7 +894,7 @@ namespace RackCad.Application.Workspace
+ 
+                 // 2: the draft. A rack without identity has none.
+                 if (string.IsNullOrWhiteSpace(request.RackId)) return EditUpdateOutcome.NoDraft(NoDraftReason);
+-                var found = _drafts.Find<PushBackPilotDraftState>(request.Session, request.RackId);
++                var found = _drafts.Find<PushBackFullDraftState>(request.Session, request.RackId);
+                 if (found == null) return EditUpdateOutcome.NoDraft(NoDraftReason);
+                 draft = found;
+ 
+@@ -898,16 +926,16 @@ namespace RackCad.Application.Workspace
+             }
+ 
+             // 5 and 6: the run is total, and the slot is closed exactly once, with the outcome of the run in every case.
+-            var outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason);
++            var outcome = DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason);
+             DraftApplyResult closed;
+             try
+             {
+-                outcome = PushBackPilotUpdateRun.Execute(draft, new PushBackPilotUpdateRequest(documentId, request.RackId), port);
++                outcome = PushBackPilotUpdateRun.ExecuteFull(draft, new PushBackPilotUpdateRequest(documentId, request.RackId), port);
+             }
+             catch (Exception ex)
+             {
+                 Report("WorkspaceHostCore.TryUpdatePilot", ex);
+-                outcome = DraftApplyOutcome<PushBackPilotDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason + " " + ex.Message);
++                outcome = DraftApplyOutcome<PushBackFullDraftState>.NotAppliedFailure(PushBackPilotUpdateRun.UpdateNotRunReason + " " + ex.Message);
+             }
+             finally
+             {
+@@ -971,7 +999,7 @@ namespace RackCad.Application.Workspace
+         }
+ 
+         // The draft did not accept the close of the update: the draft was not rebased, so the answer is built from what the run decided.
+-        private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOutcome<PushBackPilotDraftState> outcome, DraftApplyOutcomeKind kind)
++        private static EditUpdateOutcome AnswerOfAClosedThatWasNotAccepted(DraftApplyOutcome<PushBackFullDraftState> outcome, DraftApplyOutcomeKind kind)
+         {
+             switch (kind)
+             {
+@@ -1143,7 +1171,7 @@ namespace RackCad.Application.Workspace
+                 var before = ViewOfPilotDraft(draft);
+                 if (!before.CanEdit) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
+ 
+-                var edit = draft.SetPendingText(PushBackPilotFieldAdapter.AnnotationScaleKey, text);
++                var edit = draft.SetPendingText(PushBackFullFieldAdapter.AnnotationScaleKey, text);
+                 if (edit.Status != DraftEditStatus.Updated) return PilotFieldResult.NotEditable("El campo no se puede editar ahora.", before);
+ 
+                 NotePilotEdit(origin.Origin);
+@@ -1314,7 +1342,7 @@ namespace RackCad.Application.Workspace
+                 var uncertain = new List<string>();
+                 foreach (var rackId in _drafts.RackIdsOf(session))
+                 {
+-                    var draft = _drafts.Find<PushBackPilotDraftState>(session, rackId);
++                    var draft = _drafts.Find<PushBackFullDraftState>(session, rackId);
+                     if (draft == null)
+                     {
+                         uncertain.Add(rackId);
+@@ -1729,8 +1757,8 @@ namespace RackCad.Application.Workspace
+             }
+         }
+ 
+-        private DraftSession<PushBackPilotDraftState>? FindPilotDraft(SessionId session, string rackId) =>
+-            string.IsNullOrWhiteSpace(rackId) ? null : _drafts.Find<PushBackPilotDraftState>(session, rackId);
++        private DraftSession<PushBackFullDraftState>? FindPilotDraft(SessionId session, string rackId) =>
++            string.IsNullOrWhiteSpace(rackId) ? null : _drafts.Find<PushBackFullDraftState>(session, rackId);
+ 
+         // True when the session still has racks at risk, or when that cannot be decided (a comparer failed): then the notice stays.
+         private bool SessionStillAtRisk(SessionId session)
+@@ -1745,7 +1773,7 @@ namespace RackCad.Application.Workspace
+             }
+         }
+ 
+-        private static PilotFieldView ViewOfPilotDraft(DraftSession<PushBackPilotDraftState> draft)
++        private static PilotFieldView ViewOfPilotDraft(DraftSession<PushBackFullDraftState> draft)
+         {
+             PilotFieldState state;
+             try
+@@ -1777,18 +1805,14 @@ namespace RackCad.Application.Workspace
+             var canEdit = draft.IsRegistered
+                 && (state == PilotFieldState.Clean || state == PilotFieldState.Dirty || state == PilotFieldState.Conflict);
+ 
+-            string? committed = null;
+-            string? reason;
+-            var annotations = draft.CurrentDraftState.Inputs.Annotations;
+-            if (annotations == null) reason = "El rack no tiene escala de anotación.";
+-            else committed = WorkspacePilotValueText.Show(annotations.AnnotationScale, out reason);
++            var committed = WorkspacePilotValueText.Show(draft.CurrentDraftState.Editable.AnnotationScale, out var reason);
+ 
+             string? pending = null;
+             string? message = null;
+-            if (draft.PendingText.TryGetValue(PushBackPilotFieldAdapter.AnnotationScaleKey, out var typed))
++            if (draft.PendingText.TryGetValue(PushBackFullFieldAdapter.AnnotationScaleKey, out var typed))
+             {
+                 pending = typed;
+-                var verdict = PilotFieldAdapter.Validate(PushBackPilotFieldAdapter.AnnotationScaleKey, typed);
++                var verdict = PilotFieldAdapter.Validate(PushBackFullFieldAdapter.AnnotationScaleKey, typed);
+                 message = verdict.IsValid ? null : verdict.Message;
+             }
+ 
+@@ -1916,7 +1940,7 @@ namespace RackCad.Application.Workspace
+         private void MarkPilotDraftsPossiblyStale(SessionId session)
+         {
+             foreach (var rackId in _drafts.RackIdsOf(session))
+-                _drafts.Find<PushBackPilotDraftState>(session, rackId)?.MarkPossiblyStale();
++                _drafts.Find<PushBackFullDraftState>(session, rackId)?.MarkPossiblyStale();
+         }
+ 
+         // A witness that is present (not null) with a null, empty or blank key cannot be compared with anything (INV-27).
+diff --git a/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs b/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+index a09df293..988a3770 100644
+--- a/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
++++ b/src/RackCad.Plugin/Views/RackPilotIntentAdapter.cs
+@@ -39,16 +39,31 @@ namespace RackCad.Plugin.Views
+         internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, PushBackFullIntentResult full, PushBackPilotIntentScan input)
+         {
+             Pilot = pilot;
+-            Full = full;
++            _full = new System.Lazy<PushBackFullIntentResult>(full);
+             Input = input;
+             FailureReason = string.Empty;
+         }
+ 
++        /// <summary>
++        /// I-64 F4B PB-T4b (D-S4, OWNER-02): the read with the full model of its input still to be read. It is read the
++        /// first time <see cref="Full"/> is asked for, and only then, so that a reread at another origin, which brings the full
++        /// model of that origin, never materializes the one of the Primary: one materialization of the full model per read.
++        /// </summary>
++        internal RackPilotIntentReadResult(PushBackPilotIntentResult pilot, System.Lazy<PushBackFullIntentResult> full, PushBackPilotIntentScan input)
++        {
++            Pilot = pilot;
++            _full = full;
++            Input = input;
++            FailureReason = string.Empty;
++        }
++
++        private readonly System.Lazy<PushBackFullIntentResult>? _full;
++
+         internal bool Succeeded => Pilot != null;
+ 
+         internal PushBackPilotIntentResult? Pilot { get; }
+ 
+-        internal PushBackFullIntentResult? Full { get; }
++        internal PushBackFullIntentResult? Full => _full?.Value;
+ 
+         internal PushBackPilotIntentScan? Input { get; }
+ 
+@@ -133,7 +148,7 @@ namespace RackCad.Plugin.Views
+                 var input = new PushBackPilotIntentScan(rackId, originKey, scan.Facts, scan.RawEnvelopes, CompletenessEvidence, witness);
+                 var read = PushBackPilotIntentReader.Read(input, catalog);
+ 
+-                return new RackPilotIntentReadResult(read, PushBackFullDraftReader.Read(input, catalog), input);
++                return new RackPilotIntentReadResult(read, new System.Lazy<PushBackFullIntentResult>(() => PushBackFullDraftReader.Read(input, catalog)), input);
+             }
+             catch (Autodesk.AutoCAD.Runtime.Exception ex) when (ex.ErrorStatus == ErrorStatus.LockViolation)
+             {
+diff --git a/src/RackCad.UI/Controls/NumericFieldValidation.cs b/src/RackCad.UI/Controls/NumericFieldValidation.cs
+index 024a426a..07487b64 100644
+--- a/src/RackCad.UI/Controls/NumericFieldValidation.cs
++++ b/src/RackCad.UI/Controls/NumericFieldValidation.cs
+@@ -1,4 +1,3 @@
+-using System.Globalization;
+ using RackCad.Application.Formatting;
+ 
+ namespace RackCad.UI.Controls
+@@ -60,8 +59,8 @@ namespace RackCad.UI.Controls
+     /// </summary>
+     public static class NumericFieldValidation
+     {
+-        public const string EmptyRequiredMessage = "Escribe un valor.";
+-        public const string NotANumberMessage = "Valor no numérico.";
++        public const string EmptyRequiredMessage = NumericTextRule.EmptyRequiredMessage;
++        public const string NotANumberMessage = NumericTextRule.NotANumberMessage;
+ 
+         /// <summary>
+         /// Validates <paramref name="text"/> against the field's rules.
+@@ -82,57 +81,10 @@ namespace RackCad.UI.Controls
+             bool minimumInclusive = true,
+             bool maximumInclusive = true)
+         {
+-            if (string.IsNullOrWhiteSpace(text))
+-            {
+-                return isOptional
+-                    ? new NumericFieldValidationResult(NumericFieldStatus.EmptyOptional, null, null)
+-                    : new NumericFieldValidationResult(NumericFieldStatus.EmptyRequired, null, EmptyRequiredMessage);
+-            }
+-
+-            double parsed;
+-            if (integerOnly)
+-            {
+-                if (!LocalizedNumberParser.TryInteger(text, out var integer))
+-                {
+-                    return new NumericFieldValidationResult(NumericFieldStatus.NotANumber, null, NotANumberMessage);
+-                }
+-
+-                parsed = integer;
+-            }
+-            else if (!LocalizedNumberParser.TryDouble(text, out parsed))
+-            {
+-                return new NumericFieldValidationResult(NumericFieldStatus.NotANumber, null, NotANumberMessage);
+-            }
+-
+-            if (minimum.HasValue)
+-            {
+-                var below = minimumInclusive ? parsed < minimum.Value : parsed <= minimum.Value;
+-                if (below)
+-                {
+-                    return new NumericFieldValidationResult(
+-                        NumericFieldStatus.BelowMinimum, parsed, MinimumMessage(minimum.Value, minimumInclusive));
+-                }
+-            }
+-
+-            if (maximum.HasValue)
+-            {
+-                var above = maximumInclusive ? parsed > maximum.Value : parsed >= maximum.Value;
+-                if (above)
+-                {
+-                    return new NumericFieldValidationResult(
+-                        NumericFieldStatus.AboveMaximum, parsed, MaximumMessage(maximum.Value, maximumInclusive));
+-                }
+-            }
+-
+-            return new NumericFieldValidationResult(NumericFieldStatus.Valid, parsed, null);
++            // I-64 F4B PB-T4b (D-PBT4-06): the one rule lives in Application (NumericTextRule); this keeps its public surface and only
++            // translates the result. The two enumerations have the same members in the same order.
++            var check = NumericTextRule.Check(text, isOptional, integerOnly, minimum, maximum, minimumInclusive, maximumInclusive);
++            return new NumericFieldValidationResult((NumericFieldStatus)(int)check.Status, check.Value, check.Message);
+         }
+-
+-        private static string MinimumMessage(double minimum, bool inclusive)
+-            => $"El valor debe ser {(inclusive ? "≥" : ">")} {Format(minimum)}.";
+-
+-        private static string MaximumMessage(double maximum, bool inclusive)
+-            => $"El valor debe ser {(inclusive ? "≤" : "<")} {Format(maximum)}.";
+-
+-        private static string Format(double value) => value.ToString("0.###", CultureInfo.CurrentCulture);
+     }
+ }
+diff --git a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+index 804097b4..cfd4dc47 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
++++ b/src/RackCad.UI/Workspace/WorkspacePanelView.xaml
+@@ -259,6 +259,10 @@
+                             <StackPanel>
+                                 <TextBlock x:Name="BrowserFieldChoiceText" Text="{Binding Browser.Field.ChoiceText}" TextWrapping="Wrap"
+                                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
++                                <!-- I-64 F4B PB-T4b (D-PBT4-08, D-PBT4-09): what changed, by groups, above Si and No, after the first Si of "keep my draft". -->
++                                <TextBlock x:Name="BrowserFieldKeepMinePresentationText" Text="{Binding Browser.Field.KeepMinePresentationText}"
++                                           TextWrapping="Wrap" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextPrimaryBrush}"
++                                           Visibility="{Binding Browser.Field.ShowKeepMinePresentation, Converter={StaticResource FlagToVisibility}}" />
+                                 <WrapPanel Margin="0,6,0,0">
+                                     <Button x:Name="BrowserFieldChoiceYesButton" Content="Sí" Margin="0,0,6,0" Padding="10,3"
+                                             Style="{StaticResource SecondaryButtonStyle}"
+diff --git a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+index 119cafca..7e3cce74 100644
+--- a/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
++++ b/src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+@@ -158,6 +158,11 @@ namespace RackCad.UI.Workspace
+         private PilotUnknownOrigin _choiceOrigin;
+         private string _choiceText = string.Empty;
+ 
++        // I-64 F4B PB-T4b (D-PBT4-08, D-PBT4-09; D-S2): what the first "Si" of "keep my draft" presented, by groups, and the witness of that
++        // read, which the second "Si" hands back. They belong to the choice and go away with it.
++        private EditIntentWitness _keepWitness;
++        private IReadOnlyList<string> _keepLines = Array.Empty<string>();
++
+         /// <param name="port">The edit port of the pilot; null leaves the field inert and not available.</param>
+         /// <param name="changed">Called after an operation that changed the draft, so the browser rebuilds its strip. It is a method, not a subscription.</param>
+         public WorkspacePilotFieldViewModel(IWorkspacePilotEditPort port, Action changed = null)
+@@ -263,11 +268,11 @@ namespace RackCad.UI.Workspace
+         /// <summary>The question of the choice that waits; empty without one.</summary>
+         public string ChoiceText => HasChoice ? _choiceText : string.Empty;
+ 
+-        /// <summary>The lines of the presentation of "keep my draft". INERT in the RED of PB-T4b.</summary>
+-        public string KeepMinePresentationText => string.Empty;
++        /// <summary>The lines of the presentation of "keep my draft", one per line, while its choice waits for the second Yes; empty otherwise.</summary>
++        public string KeepMinePresentationText => HasChoice && _choice == ChoiceKind.KeepMine ? string.Join("\n", _keepLines) : string.Empty;
+ 
+-        /// <summary>Whether the presentation of "keep my draft" is shown above Yes and No. INERT in the RED of PB-T4b.</summary>
+-        public bool ShowKeepMinePresentation => false;
++        /// <summary>Whether the presentation of "keep my draft" is shown above Yes and No.</summary>
++        public bool ShowKeepMinePresentation => KeepMinePresentationText.Length > 0;
+ 
+         /// <summary>What the reconciliation of the draft needs the user to know: what changed and why, or that the outcome is unknown.</summary>
+         public string ReconcileText => ReconcileTextOf(_view);
+@@ -604,6 +609,7 @@ namespace RackCad.UI.Workspace
+             var pending = _choicePending;
+             var committed = _choiceCommitted;
+             var origin = _choiceOrigin;
++            var keepWitness = _keepWitness;
+             try
+             {
+                 ClearNotices();
+@@ -625,7 +631,8 @@ namespace RackCad.UI.Workspace
+                     return;
+                 }
+ 
+-                var request = new EditIntentRequest(session, rack, null, null);
++                // The first "Si" of "keep my draft" carries no witness and only gets the presentation; the second carries the witness of that read.
++                var request = new EditIntentRequest(session, rack, null, kind == ChoiceKind.KeepMine ? keepWitness : null);
+                 var outcome = kind == ChoiceKind.KeepMine ? _port.TryKeepMine(request) : _port.TryDiscardAndReload(request);
+                 if (!IsMine(session, rack))
+                 {
+@@ -692,6 +699,8 @@ namespace RackCad.UI.Workspace
+             _choiceCommitted = null;
+             _choiceOrigin = PilotUnknownOrigin.None;
+             _choiceText = string.Empty;
++            _keepWitness = null;
++            _keepLines = Array.Empty<string>();
+         }
+ 
+         // Reads the memory of the port for the surface and shows it. It never reads the drawing and keeps the notices.
+@@ -893,6 +902,22 @@ namespace RackCad.UI.Workspace
+                     _persistHint = null;
+                     notice = ReloadedText;
+                     break;
++                case EditIntentStatus.Presented when kind == ChoiceKind.KeepMine:
++                    // The first "Si", or a second one whose witness no longer held: the choice is asked again, with the lines and the witness of
++                    // the read that the host classified. Nothing was kept and the draft did not change.
++                    AskChoice(ChoiceKind.KeepMine);
++                    if (_choice != ChoiceKind.KeepMine)
++                    {
++                        if (_failure != null) return;
++                        _noticeText = SituationChangedText;
++                        RaiseAll();
++                        return;
++                    }
++
++                    _keepWitness = outcome.KeepWitness;
++                    _keepLines = outcome.PresentationLines;
++                    RaiseAll();
++                    return;
+                 case EditIntentStatus.Kept when kind == ChoiceKind.KeepMine:
+                     _persistDiagnostic = null;
+                     _persistHint = null;
+@@ -1187,6 +1212,8 @@ namespace RackCad.UI.Workspace
+             OnPropertyChanged(nameof(ShowKeepMineButton));
+             OnPropertyChanged(nameof(HasChoice));
+             OnPropertyChanged(nameof(ChoiceText));
++            OnPropertyChanged(nameof(KeepMinePresentationText));
++            OnPropertyChanged(nameof(ShowKeepMinePresentation));
+             OnPropertyChanged(nameof(ReconcileText));
+             OnPropertyChanged(nameof(StateText));
+             OnPropertyChanged(nameof(MessageText));

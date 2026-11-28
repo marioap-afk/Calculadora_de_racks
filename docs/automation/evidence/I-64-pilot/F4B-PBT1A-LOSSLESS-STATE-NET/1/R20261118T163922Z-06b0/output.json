@@ -1,0 +1,78 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4B-PBT1A-LOSSLESS-STATE-NET",
+  "RunId": "R20261118T163922Z-06b0",
+  "DelegationRunId": "R20261118T141628Z-d049",
+  "WorkRunId": "R20261118T142230Z-d31d",
+  "Attempt": 1,
+  "VerifiedSha": "73d30982b0c0ce2b8c9213e626df0ab0d50b0475",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true, OutputWrittenUtc=2026-11-18T16:06:40.810636+00:00. Cession StartUtc=14:22:36Z, EndUtc=16:06:53Z, SessionOperated=false."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json matches TaskId, Attempt=1, DelegationRunId, RunId=R20261118T142230Z-d31d; OutputWrittenUtc follows Cession.StartUtc. WorkerStatus=IMPLEMENTATION_COMPLETE."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "Read AUTOMATION_PLAN section 16 and agent-execution README section 8 from Git. merge-base(MainSha, AuthorityRevision)=MainSha; git diff --name-only MainSha AuthorityRevision over listed EXTERNAL paths is empty. git diff --name-only AuthorityRevision BaseSha has five docs paths only; no EXTERNAL or UNIT_CHANGE path."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "delegation.json and gate-contract.json agree on task, AuthorityRevision, MainSha, and scopes. Planning record A1-A8=pass (8/8), nc4 recorded; byte-fidelity-check.json Result=PASS, all eight compared collections byte-equal."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "Git reports branch architecture/workspace-persistente-rackcad, HEAD=73d30982, and refs/remotes/origin/architecture/workspace-persistente-rackcad=73d30982. BaseSha is an ancestor of CurrentSha; RedSha is an ancestor of CurrentSha. Worktree path matches delegation."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json RemoteFacts: LsRemoteSha=73d30982 and OriginMainSha=812baf87, matching CurrentSha and MainSha. Current push run ref/head match the exact branch/SHA; recorded main did not advance."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists exactly the seven new PushBackStateNet tests files in AllowedWriteScope; no ForbiddenWriteScope intersection. The diff under src is empty."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain is empty. git check-ignore -v on inputs/worker-handoff.json reports .gitignore:3 artifacts/."
+    },
+    "Ci": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts CurrentRun 44338475965: push, exact branch and CurrentSha; all four required jobs success. RedRun 44333116533: push of RedSha; UI job failure, Core tests and both builds success, as required for these UI-only mutants."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "Current TRX: StateNet 14/14 passed; UI Classic 55/55; FullEditor 16 passed (2 NotExecuted); rounding 3/3; dimension style 2/2; pilot parity 2/2; side-B notice 2/2; standard restore 1/1; correction2 4/4; Cantilever 67/67; CompositeWindow 52/52; lifecycle 7/7; load-existing 3/3; both-mode 10/10; module editor 13/13; advanced parameters 9/9. Core filters: 10/10, 3/3, 15/15. RED StateNet filter: 14 selected, 14 failed, 0 skipped/NotExecuted; messages and first stack lines meet INV-PBT1A-02. The 42 existing RED failures match the declared T-8 attribution; Core TRX has 19070 passed. RT and ChainRedFiles are the seven new tests paths listed by git diff BaseSha RedSha -- tests; git diff RedSha CurrentSha -- tests is empty."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git show --format=%B for RED and GREEN includes the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> trailer."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5, high effort, required routing. Work record has launch alias sonnet, effective model claude-sonnet-5-5, and effective effort high; alias transport is documented."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned WorkCompleted, Evidence, UnexpectedFindings, KnownLimitations, Deviations, OpenQuestions, and RecommendedNextAction against the AUTOMATION_PLAN 16.10 term list; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json notes zero permission denials, three tool errors with none pending, and no limit notice. TriggeredStopConditions is empty."
+    }
+  },
+  "Classification": "EXECUTION_VERIFIED",
+  "Disposition": "NONE",
+  "FailureClass": "NONE",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "The declared CT-PBT1A-02 deviation is limited to this attempt and case; coordinator-disposition.md records the Owner ratification. CT-PBT1A-03 adjustment is also described there as accepted by independent review.",
+    "The two NotExecuted results in the FullEditor prefix filter are CT_PB0_19 and CT_PB0_05; the required minimum is met by 16 passed results."
+  ],
+  "RecommendedNextAction": "Seguir con las revisiones directa e independiente y nc1-nc3 registradas por la sesion."
+}

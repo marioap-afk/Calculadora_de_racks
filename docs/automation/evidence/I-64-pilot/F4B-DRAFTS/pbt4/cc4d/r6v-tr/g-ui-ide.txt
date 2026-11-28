@@ -1,0 +1,4 @@
+src/RackCad.Application/RackCad.Application.csproj]
+src/RackCad.UI/RackCad.UI.csproj]
+src/RackCad.UI/RackCad.UI_3gjh50uo_wpftmp.csproj]
+tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj]

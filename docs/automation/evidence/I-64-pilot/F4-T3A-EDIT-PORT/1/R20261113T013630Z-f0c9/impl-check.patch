@@ -1,0 +1,1215 @@
+diff --git a/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs b/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+new file mode 100644
+index 00000000..db0cd636
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+@@ -0,0 +1,331 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++using System.Linq;
++
++namespace RackCad.Application.Workspace
++{
++    /// <summary>
++    /// I-64 F4-T3A (D-T3-02): the one port through which the panel edits the bounded field of the Push Back pilot without ever
++    /// writing the drawing. The host core implements it explicitly over the in-memory work of F4-T1 and F4-T2: the pending text of
++    /// the field, the gesture of the field itself, the boundaries that block and the ones that do not, the discard of one rack or of
++    /// the whole session, the racks at risk and the two queues of notices (loss and veto).
++    ///
++    /// Rules of the port:
++    /// - every result is an immutable value; its lists are never null, also for a default value;
++    /// - no type of the in-memory work and no type of the pilot crosses it, and the racks are plain strings;
++    /// - the session travels in the request (<see cref="WorkspaceRequest"/> or <see cref="EditIntentRequest"/>), except for
++    ///   <see cref="TakeLossNotices"/>, whose notices belong to sessions that no longer exist;
++    /// - only the three operations of the edit intention read the drawing, each in one action of the user; none of the operations
++    ///   writes anything;
++    /// - every exception is contained as a value with a reason and the session is not degraded;
++    /// - while one of the three reads is in progress, every operation that changes something answers Busy and a second read answers
++    ///   Waiting, all without effect, so a key pressed during a read is never lost in silence.
++    /// </summary>
++    public interface IWorkspacePilotEditPort
++    {
++        /// <summary>The edit intention of the user for one rack of the pilot. Same contract as the host operation it delegates to.</summary>
++        EditIntentOutcome TryBeginEdit(EditIntentRequest request);
++
++        /// <summary>"Check now" for one rack of the pilot. Same contract as the host operation it delegates to.</summary>
++        EditCheckOutcome TryCheckNow(EditIntentRequest request);
++
++        /// <summary>The lazy reload of one rack of the pilot. Same contract as the host operation it delegates to.</summary>
++        EditIntentOutcome TryReload(EditIntentRequest request);
++
++        /// <summary>The state of the field of one rack. Memory only: it authorizes nothing, reads nothing and never throws.</summary>
++        PilotFieldView GetField(WorkspaceRequest origin, string rackId);
++
++        /// <summary>
++        /// Keeps the text that the user typed in the field, exactly as typed (an empty text is kept too). Only an edit of the user calls
++        /// it; showing a value never does. It needs the authorization, an editable field and no read in progress.
++        /// </summary>
++        PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text);
++
++        /// <summary>
++        /// The gesture of the field itself (Enter, or leaving the field): the same two-phase step as a blocking boundary. Without
++        /// pending text nothing changes; a valid text is applied and the pending text is cleaned; an invalid text answers Invalid and
++        /// stays exactly as typed, with no repair.
++        /// </summary>
++        PilotFieldResult CommitField(WorkspaceRequest origin, string rackId);
++
++        /// <summary>
++        /// Crosses one boundary of the panel. A blocking one (a change of surface or of rack) needs the authorization: an invalid text
++        /// aborts it with nothing changed, a valid one proceeds and is applied. A non-blocking one needs no authorization and keeps
++        /// the pending text as it is.
++        /// </summary>
++        PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind);
++
++        /// <summary>The explicit discard of ONE rack: its work and its pending text go away, no comparison is made and nothing is written.</summary>
++        EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId);
++
++        /// <summary>The explicit discard of the work of every rack of the session, with the same contract as the host operation.</summary>
++        EditDiscardOutcome DiscardDocument(WorkspaceRequest origin);
++
++        /// <summary>The racks of the session whose work would be lost. Memory only: it authorizes nothing and never throws.</summary>
++        PilotRiskView GetRacksAtRisk(WorkspaceRequest origin);
++
++        /// <summary>Takes, oldest first, every notice of lost work that nobody consumed, and leaves the queue empty.</summary>
++        IReadOnlyList<PilotLossView> TakeLossNotices();
++
++        /// <summary>Takes, oldest first, every notice of a vetoed close that nobody consumed, and leaves the queue empty.</summary>
++        IReadOnlyList<PilotCloseView> TakeCloseNotices();
++    }
++
++    /// <summary>The state of the field of one rack, as the port reports it. The default value is NotOpen.</summary>
++    public enum PilotFieldState
++    {
++        /// <summary>There is no work for the rack.</summary>
++        NotOpen,
++
++        Clean,
++        Dirty,
++        Conflict,
++        Applying,
++
++        /// <summary>The outcome of a write is not known.</summary>
++        Unknown,
++
++        Error,
++
++        /// <summary>It cannot be decided whether the field is changed: the comparison failed. It counts as protected.</summary>
++        Undecidable,
++    }
++
++    /// <summary>How an operation on the field ended. The order is fixed and the default value is Rejected: it means that nothing was done.</summary>
++    public enum PilotFieldStatus
++    {
++        /// <summary>Nothing was done: the request does not belong to the active document, or the operation failed and was contained.</summary>
++        Rejected,
++
++        Applied,
++
++        /// <summary>The field cannot be edited now (no work for the rack, or a state that does not allow it): nothing was done.</summary>
++        NotEditable,
++
++        /// <summary>A read of the pilot is in progress: nothing was done.</summary>
++        Busy,
++
++        /// <summary>The text is not valid: nothing was applied and the text stays exactly as typed.</summary>
++        Invalid,
++    }
++
++    /// <summary>What happened when a boundary was crossed. The order is fixed.</summary>
++    public enum PilotBoundaryDecision
++    {
++        /// <summary>The transition may go on: there was nothing pending, or the pending text was valid and was applied.</summary>
++        Proceeded,
++
++        /// <summary>The transition must not go on: the pending text is invalid, the request is not authorized or the operation failed. Nothing changed.</summary>
++        Aborted,
++
++        /// <summary>The pending text was kept as it is.</summary>
++        Kept,
++
++        /// <summary>A read of the pilot is in progress: nothing changed and the transition must not go on.</summary>
++        Busy,
++    }
++
++    /// <summary>The boundaries of the panel, as an ordered prefix: later tasks may add values at the end.</summary>
++    public enum PilotBoundaryKind
++    {
++        TabChange,
++        RackChange,
++        DocumentChange,
++        PanelHide,
++        Dematerialize,
++        DocumentClose,
++    }
++
++    /// <summary>One field whose pending text is not valid, with the message of the validation.</summary>
++    public readonly record struct PilotFieldProblem(string FieldKey, string? Message);
++
++    /// <summary>
++    /// The state of the field of one rack. <see cref="CommittedText"/> is the committed value shown with the culture of the user, or
++    /// null with its <see cref="CommittedTextReason"/>; <see cref="PendingText"/> is what the user typed and was not applied yet.
++    /// </summary>
++    public readonly struct PilotFieldView
++    {
++        public PilotFieldView(
++            bool exists,
++            PilotFieldState state,
++            bool isPossiblyStale,
++            bool isProtected,
++            bool canEdit,
++            string? committedText,
++            string? committedTextReason,
++            string? pendingText,
++            string? pendingMessage)
++        {
++            Exists = exists;
++            State = state;
++            IsPossiblyStale = isPossiblyStale;
++            IsProtected = isProtected;
++            CanEdit = canEdit;
++            CommittedText = committedText;
++            CommittedTextReason = committedTextReason;
++            PendingText = pendingText;
++            PendingMessage = pendingMessage;
++        }
++
++        /// <summary>True when there is work for the rack.</summary>
++        public bool Exists { get; }
++
++        public PilotFieldState State { get; }
++
++        public bool IsPossiblyStale { get; }
++
++        /// <summary>True when closing the document would lose something of this rack; also when that could not be decided.</summary>
++        public bool IsProtected { get; }
++
++        public bool CanEdit { get; }
++
++        public string? CommittedText { get; }
++
++        /// <summary>Why <see cref="CommittedText"/> is null; null otherwise.</summary>
++        public string? CommittedTextReason { get; }
++
++        public string? PendingText { get; }
++
++        /// <summary>The message of the validation of <see cref="PendingText"/>; null when there is none or it is valid.</summary>
++        public string? PendingMessage { get; }
++    }
++
++    /// <summary>The answer to an operation on the field. The view is set for Applied and Invalid; the reason for the other statuses.</summary>
++    public readonly struct PilotFieldResult
++    {
++        private PilotFieldResult(PilotFieldStatus status, PilotFieldView view, string? reason, string? message)
++        {
++            Status = status;
++            View = view;
++            Reason = reason;
++            Message = message;
++        }
++
++        public PilotFieldStatus Status { get; }
++
++        public PilotFieldView View { get; }
++
++        /// <summary>Why nothing was done; null for Applied and Invalid.</summary>
++        public string? Reason { get; }
++
++        /// <summary>The message of the validation for Invalid; null otherwise.</summary>
++        public string? Message { get; }
++
++        public static PilotFieldResult Applied(PilotFieldView view) => new(PilotFieldStatus.Applied, view, null, null);
++
++        public static PilotFieldResult Rejected(string reason) => new(PilotFieldStatus.Rejected, default, reason, null);
++
++        public static PilotFieldResult NotEditable(string reason, PilotFieldView view) => new(PilotFieldStatus.NotEditable, view, reason, null);
++
++        public static PilotFieldResult Busy(string reason) => new(PilotFieldStatus.Busy, default, reason, null);
++
++        public static PilotFieldResult Invalid(PilotFieldView view, string? message) => new(PilotFieldStatus.Invalid, view, null, message);
++    }
++
++    /// <summary>The answer to the crossing of a boundary. <see cref="InvalidFields"/> is never null, also for a default value.</summary>
++    public readonly struct PilotBoundaryResult
++    {
++        private readonly IReadOnlyList<PilotFieldProblem>? _invalidFields;
++
++        public PilotBoundaryResult(
++            PilotBoundaryKind kind,
++            PilotBoundaryDecision decision,
++            bool stateChanged,
++            IReadOnlyList<PilotFieldProblem> invalidFields,
++            string? reason)
++        {
++            Kind = kind;
++            Decision = decision;
++            StateChanged = stateChanged;
++            _invalidFields = (invalidFields ?? throw new ArgumentNullException(nameof(invalidFields))).ToArray();
++            Reason = reason;
++        }
++
++        public PilotBoundaryKind Kind { get; }
++
++        public PilotBoundaryDecision Decision { get; }
++
++        /// <summary>True when the pending text was applied to the value of the field.</summary>
++        public bool StateChanged { get; }
++
++        /// <summary>The fields with their messages when the boundary was aborted by an invalid text; empty otherwise.</summary>
++        public IReadOnlyList<PilotFieldProblem> InvalidFields => _invalidFields ?? Array.Empty<PilotFieldProblem>();
++
++        /// <summary>Why the boundary was aborted or refused without a validation; null otherwise.</summary>
++        public string? Reason { get; }
++    }
++
++    /// <summary>The racks of a session whose work would be lost. Both lists are ordered (ordinal) and never null.</summary>
++    public readonly struct PilotRiskView
++    {
++        private readonly IReadOnlyList<string>? _rackIds;
++        private readonly IReadOnlyList<string>? _uncertainRackIds;
++
++        public PilotRiskView(IReadOnlyList<string> rackIds, IReadOnlyList<string> uncertainRackIds)
++        {
++            _rackIds = (rackIds ?? throw new ArgumentNullException(nameof(rackIds))).ToArray();
++            _uncertainRackIds = (uncertainRackIds ?? throw new ArgumentNullException(nameof(uncertainRackIds))).ToArray();
++        }
++
++        /// <summary>The racks whose work is known to be at risk.</summary>
++        public IReadOnlyList<string> RackIds => _rackIds ?? Array.Empty<string>();
++
++        /// <summary>The racks whose comparison failed: they count as at risk, apart from the ones above.</summary>
++        public IReadOnlyList<string> UncertainRackIds => _uncertainRackIds ?? Array.Empty<string>();
++    }
++
++    /// <summary>A notice of lost work: the session that disappeared, the racks lost and, apart, the uncertain ones with their reasons.</summary>
++    public readonly struct PilotLossView
++    {
++        private readonly IReadOnlyList<string>? _lostRackIds;
++        private readonly IReadOnlyList<string>? _uncertainRackIds;
++        private readonly IReadOnlyDictionary<string, string>? _uncertainReasons;
++
++        public PilotLossView(
++            SessionId session,
++            IReadOnlyList<string> lostRackIds,
++            IReadOnlyList<string> uncertainRackIds,
++            IReadOnlyDictionary<string, string> uncertainReasons)
++        {
++            Session = session;
++            _lostRackIds = (lostRackIds ?? throw new ArgumentNullException(nameof(lostRackIds))).ToArray();
++            _uncertainRackIds = (uncertainRackIds ?? throw new ArgumentNullException(nameof(uncertainRackIds))).ToArray();
++            _uncertainReasons = new Dictionary<string, string>(
++                uncertainReasons ?? throw new ArgumentNullException(nameof(uncertainReasons)),
++                StringComparer.Ordinal);
++        }
++
++        public SessionId Session { get; }
++
++        public IReadOnlyList<string> LostRackIds => _lostRackIds ?? Array.Empty<string>();
++
++        public IReadOnlyList<string> UncertainRackIds => _uncertainRackIds ?? Array.Empty<string>();
++
++        /// <summary>The reason by uncertain rack; never null.</summary>
++        public IReadOnlyDictionary<string, string> UncertainReasons =>
++            _uncertainReasons ?? new Dictionary<string, string>(StringComparer.Ordinal);
++    }
++
++    /// <summary>
++    /// A notice of a vetoed close: the session of the document and the racks at risk that caused the veto. When the evaluation
++    /// failed, <see cref="IsUncertain"/> is true and the list is empty: the notice does not know which racks are at risk.
++    /// </summary>
++    public readonly struct PilotCloseView
++    {
++        private readonly IReadOnlyList<string>? _rackIds;
++
++        public PilotCloseView(SessionId session, IReadOnlyList<string> rackIds, bool isUncertain)
++        {
++            Session = session;
++            _rackIds = (rackIds ?? throw new ArgumentNullException(nameof(rackIds))).ToArray();
++            IsUncertain = isUncertain;
++        }
++
++        public SessionId Session { get; }
++
++        public IReadOnlyList<string> RackIds => _rackIds ?? Array.Empty<string>();
++
++        public bool IsUncertain { get; }
++    }
++}
+diff --git a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+index 9f7bf44f..bd7466c3 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+@@ -79,7 +79,12 @@ namespace RackCad.Application.Workspace
+         /// <summary>No reader of the edit intention was assigned: nothing was read.</summary>
+         Unavailable,
+ 
+-        /// <summary>No active document, a RackCad modal, a command or no rest: the intention waits. Nothing was read.</summary>
++        /// <summary>
++        /// The intention waits: no active document, a RackCad modal, a command or no rest, or (through the edit port of the panel) a
++        /// read of the pilot already in progress or a notice of the panel being delivered. In all those cases nothing was read. In the
++        /// reload it can also arrive AFTER the read: the draft was being applied or was no longer registered when the read came back,
++        /// and then it was not replaced.
++        /// </summary>
+         Waiting,
+ 
+         /// <summary>
+@@ -94,7 +99,10 @@ namespace RackCad.Application.Workspace
+         /// <summary>There is already a draft for (session, rack): nothing was read.</summary>
+         AlreadyOpen,
+ 
+-        /// <summary>The read was not admitted: no draft exists, and the outcome carries the diagnostic.</summary>
++        /// <summary>
++        /// The read was not admitted and the outcome carries the diagnostic. In the intention no draft exists; in the reload the draft
++        /// that was there is kept as it was.
++        /// </summary>
+         NotAdmitted,
+ 
+         /// <summary>The draft was born from the one read.</summary>
+@@ -255,24 +263,27 @@ namespace RackCad.Application.Workspace
+     }
+ 
+     /// <summary>
+-    /// How the explicit discard of the drafts of a session ended (I-64 F4-T2B2B, D-T2B2-15). The order is fixed and the default value
+-    /// is Rejected: it is inert, it means that nothing was done.
++    /// How the explicit discard of the drafts of a session, or of one draft, ended (I-64 F4-T2B2B, D-T2B2-15; F4-T3A, D-T3-02). The
++    /// order is fixed and the default value is Rejected: it is inert, it means that nothing was done.
+     /// </summary>
+     public enum EditDiscardStatus
+     {
+         /// <summary>The request does not belong to the active document (INV-22): nothing was done. It is also the default value.</summary>
+         Rejected,
+ 
+-        /// <summary>Every draft of the session was removed (possibly none): nothing was read and nothing was written.</summary>
++        /// <summary>One draft, or every draft of the session, was removed (possibly none): nothing was read and nothing was written.</summary>
+         Discarded,
+ 
+         /// <summary>A failure of the host during the operation: contained, and the session is not degraded.</summary>
+         Failed,
++
++        /// <summary>A read of the pilot is in progress (edit port of the panel): nothing was done.</summary>
++        Busy,
+     }
+ 
+     /// <summary>
+-    /// I-64 F4-T2B2B (D-T2B2-15) — the answer of the host to the explicit discard of every draft of a session. A value: the racks are
+-    /// text, so it names no draft type. Both lists are never null, also for a default value of this struct.
++    /// I-64 F4-T2B2B (D-T2B2-15) — the answer of the host to the explicit discard of one draft or of every draft of a session. A value:
++    /// the racks are text, so it names no draft type. Both lists are never null, also for a default value of this struct.
+     /// </summary>
+     public readonly struct EditDiscardOutcome
+     {
+@@ -310,6 +321,9 @@ namespace RackCad.Application.Workspace
+ 
+         public static EditDiscardOutcome Failed(string reason) =>
+             new(EditDiscardStatus.Failed, reason, Array.Empty<string>(), Array.Empty<string>());
++
++        public static EditDiscardOutcome Busy(string reason) =>
++            new(EditDiscardStatus.Busy, reason, Array.Empty<string>(), Array.Empty<string>());
+     }
+ 
+     /// <summary>The pure decisions of the edit intention that do not depend on the host (I-64 F4-T2B2A).</summary>
+diff --git a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+index 9d108dd3..00e53754 100644
+--- a/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
++++ b/src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+@@ -35,8 +35,16 @@ namespace RackCad.Application.Workspace
+     /// that may hold unsaved drafts, and the retirement of the drafts of a destroyed session, with a notice when work was lost. It adds
+     /// the stale hint of the drain, the lazy reload, the explicit discard and the in-memory "known clean" mark of a session.
+     /// </summary>
+-    public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor
++    public sealed class WorkspaceHostCore : IWorkspaceLifecycleAdvisor, IWorkspacePilotEditPort
+     {
++        // I-64 F4-T3A (D-T3-02): the one adapter of the pending text of the pilot. It keeps no state, so it is shared; it is never an
++        // instance field of the host.
++        private static readonly PushBackPilotFieldAdapter PilotFieldAdapter = new();
++
++        private const string PilotReadInProgressReason = "A read of the pilot is in progress.";
++        private const string NotThisDocumentReason = "The request does not belong to the active document.";
++        private const string NoDraftReason = "There is no draft for the rack.";
++
+         /// <summary>Native identity used when no document is open: it matches no session.</summary>
+         private const long NoDocumentNativeId = -1;
+ 
+@@ -55,6 +63,11 @@ namespace RackCad.Application.Workspace
+         // clean" mark, in memory only), and the notices of loss that nobody consumed yet.
+         private readonly HashSet<SessionId> _knownClean = new();
+         private readonly Queue<DraftLossNotice> _lossNotices = new();
++
++        // I-64 F4-T3A (D-T3-02, D-T3-07): the notices of a vetoed close, at most one per session (the last), and the mark that a read of
++        // the pilot is in progress (set with try/finally around the three reads of the edit port).
++        private readonly List<PilotCloseView> _closeNotices = new();
++        private bool _pilotReadInProgress;
+         private IWorkspaceEditIntentReader? _editIntentReader;
+         private bool _started;
+         private bool _panelVisible;
+@@ -529,31 +542,412 @@ namespace RackCad.Application.Workspace
+         /// </summary>
+         public void NotePilotEdit(SessionId session) => _knownClean.Remove(session);
+ 
++        // ---------------------------------------------------------------- the edit port of the pilot (I-64 F4-T3A, D-T3-02)
++        //
++        // Every operation below is implemented explicitly, so the public surface of the host does not grow. None of them writes the
++        // drawing: the three that read go through the operations of F4-T2B2A and F4-T2B2B, the rest only touch memory. Every exception
++        // is contained as a value and the session is never degraded. NotePilotEdit is called by every operation that changes a draft.
++
++        // The three reads: the mark of "read in progress" is set with try/finally around each one, and a second read that arrives while
++        // it is set answers Waiting without reading.
++        EditIntentOutcome IWorkspacePilotEditPort.TryBeginEdit(EditIntentRequest request)
++        {
++            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
++            _pilotReadInProgress = true;
++            try
++            {
++                return TryBeginPilotEdit(request);
++            }
++            finally
++            {
++                _pilotReadInProgress = false;
++            }
++        }
++
++        EditCheckOutcome IWorkspacePilotEditPort.TryCheckNow(EditIntentRequest request)
++        {
++            if (_pilotReadInProgress) return EditCheckOutcome.Waiting(PilotReadInProgressReason);
++            _pilotReadInProgress = true;
++            try
++            {
++                return TryCheckPilotEdit(request);
++            }
++            finally
++            {
++                _pilotReadInProgress = false;
++            }
++        }
++
++        EditIntentOutcome IWorkspacePilotEditPort.TryReload(EditIntentRequest request)
++        {
++            if (_pilotReadInProgress) return EditIntentOutcome.Waiting(PilotReadInProgressReason);
++            _pilotReadInProgress = true;
++            try
++            {
++                return TryReloadPilotEdit(request);
++            }
++            finally
++            {
++                _pilotReadInProgress = false;
++            }
++        }
++
++        // Memory only: no authorization, no read, never throws.
++        PilotFieldView IWorkspacePilotEditPort.GetField(WorkspaceRequest origin, string rackId)
++        {
++            try
++            {
++                var draft = FindPilotDraft(origin.Origin, rackId);
++                return draft == null ? default : ViewOfPilotDraft(draft);
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.GetField", ex);
++                return new PilotFieldView(true, PilotFieldState.Error, false, true, false, null, "The state of the field could not be read.", null, null);
++            }
++        }
++
++        // Only an edit of the user calls it. It keeps the text exactly as typed, with the one key of the adapter of the pilot.
++        PilotFieldResult IWorkspacePilotEditPort.SetPendingText(WorkspaceRequest origin, string rackId, string text)
++        {
++            try
++            {
++                if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
++                if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
++                if (text == null) return PilotFieldResult.Rejected("The text is required.");
++
++                var draft = FindPilotDraft(origin.Origin, rackId);
++                if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
++                var before = ViewOfPilotDraft(draft);
++                if (!before.CanEdit) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
++
++                var edit = draft.SetPendingText(PushBackPilotFieldAdapter.AnnotationScaleKey, text);
++                if (edit.Status != DraftEditStatus.Updated) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
++
++                NotePilotEdit(origin.Origin);
++                return PilotFieldResult.Applied(ViewOfPilotDraft(draft));
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.SetPendingText", ex);
++                return PilotFieldResult.Rejected(ex.Message);
++            }
++        }
++
++        // The gesture of the field itself: the same two-phase step as a blocking boundary, run on the draft with the adapter of the pilot.
++        PilotFieldResult IWorkspacePilotEditPort.CommitField(WorkspaceRequest origin, string rackId)
++        {
++            try
++            {
++                if (Authorize(origin) != RequestDecision.Accepted) return PilotFieldResult.Rejected(NotThisDocumentReason);
++                if (_pilotReadInProgress) return PilotFieldResult.Busy(PilotReadInProgressReason);
++
++                var draft = FindPilotDraft(origin.Origin, rackId);
++                if (draft == null) return PilotFieldResult.NotEditable(NoDraftReason, default);
++                var before = ViewOfPilotDraft(draft);
++                if (!before.CanEdit) return PilotFieldResult.NotEditable("The field cannot be edited now.", before);
++
++                var crossed = draft.CrossBoundary(DraftBoundary.TabChange, PilotFieldAdapter);
++                switch (crossed.Decision)
++                {
++                    case DraftBoundaryDecision.Proceeded:
++                        if (crossed.CurrentStateChanged) NotePilotEdit(origin.Origin);
++                        return PilotFieldResult.Applied(ViewOfPilotDraft(draft));
++                    case DraftBoundaryDecision.Aborted:
++                        var view = ViewOfPilotDraft(draft);
++                        var message = crossed.InvalidFields.Count > 0 ? crossed.InvalidFields[0].Message : view.PendingMessage;
++                        return PilotFieldResult.Invalid(view, message);
++                    default:
++                        return PilotFieldResult.NotEditable("The field cannot be edited now.", ViewOfPilotDraft(draft));
++                }
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.CommitField", ex);
++                return PilotFieldResult.Rejected(ex.Message);
++            }
++        }
++
++        PilotBoundaryResult IWorkspacePilotEditPort.CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind)
++        {
++            var none = Array.Empty<PilotFieldProblem>();
++            try
++            {
++                switch (kind)
++                {
++                    case PilotBoundaryKind.TabChange:
++                    case PilotBoundaryKind.RackChange:
++                        break;
++                    case PilotBoundaryKind.DocumentChange:
++                    case PilotBoundaryKind.PanelHide:
++                    case PilotBoundaryKind.Dematerialize:
++                    case PilotBoundaryKind.DocumentClose:
++                        // Non-blocking: the session may no longer be the active one, so nothing is authorized, validated or applied.
++                        // The pending text of the draft stays exactly as it is.
++                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, none, null);
++                    default:
++                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, none, "The boundary is not known.");
++                }
++
++                if (Authorize(origin) != RequestDecision.Accepted)
++                    return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, none, NotThisDocumentReason);
++                if (_pilotReadInProgress)
++                    return new PilotBoundaryResult(kind, PilotBoundaryDecision.Busy, false, none, PilotReadInProgressReason);
++
++                var draft = FindPilotDraft(origin.Origin, rackId);
++                if (draft == null) return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, false, none, null);
++
++                var boundary = kind == PilotBoundaryKind.TabChange ? DraftBoundary.TabChange : DraftBoundary.RackChange;
++                var crossed = draft.CrossBoundary(boundary, PilotFieldAdapter);
++                switch (crossed.Decision)
++                {
++                    case DraftBoundaryDecision.Proceeded:
++                        if (crossed.CurrentStateChanged) NotePilotEdit(origin.Origin);
++                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Proceeded, crossed.CurrentStateChanged, none, null);
++                    case DraftBoundaryDecision.Aborted:
++                        var problems = crossed.InvalidFields.Select(f => new PilotFieldProblem(f.FieldKey, f.Message)).ToArray();
++                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, problems, null);
++                    default:
++                        return new PilotBoundaryResult(kind, PilotBoundaryDecision.Kept, false, none, null);
++                }
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.CrossBoundary", ex);
++                return new PilotBoundaryResult(kind, PilotBoundaryDecision.Aborted, false, none, ex.Message);
++            }
++        }
++
++        // The explicit discard of ONE draft: no comparer is called, nothing is written, the others are not touched.
++        EditDiscardOutcome IWorkspacePilotEditPort.DiscardRack(WorkspaceRequest origin, string rackId)
++        {
++            try
++            {
++                if (Authorize(origin) != RequestDecision.Accepted) return EditDiscardOutcome.Rejected(NotThisDocumentReason);
++                if (_pilotReadInProgress) return EditDiscardOutcome.Busy(PilotReadInProgressReason);
++
++                var session = origin.Origin;
++                if (string.IsNullOrWhiteSpace(rackId)) return EditDiscardOutcome.Discarded(Array.Empty<string>(), Array.Empty<string>());
++
++                var discarded = _drafts.DiscardByUser(session, rackId);
++                NotePilotEdit(session);
++                if (!SessionStillAtRisk(session)) DropCloseNotice(session);
++                return EditDiscardOutcome.Discarded(
++                    discarded.Removed ? new[] { rackId } : Array.Empty<string>(),
++                    discarded.HadPendingText ? new[] { rackId } : Array.Empty<string>());
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.DiscardRack", ex);
++                return EditDiscardOutcome.Failed(ex.Message);
++            }
++        }
++
++        EditDiscardOutcome IWorkspacePilotEditPort.DiscardDocument(WorkspaceRequest origin)
++        {
++            try
++            {
++                if (Authorize(origin) != RequestDecision.Accepted) return EditDiscardOutcome.Rejected(NotThisDocumentReason);
++                if (_pilotReadInProgress) return EditDiscardOutcome.Busy(PilotReadInProgressReason);
++
++                var outcome = DiscardPilotEdits(origin.Origin);
++                if (outcome.Status == EditDiscardStatus.Discarded) DropCloseNotice(origin.Origin);
++                return outcome;
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.DiscardDocument", ex);
++                return EditDiscardOutcome.Failed(ex.Message);
++            }
++        }
++
++        // Memory only: no authorization (the veto of a close can belong to a document that is not the active one), never throws.
++        PilotRiskView IWorkspacePilotEditPort.GetRacksAtRisk(WorkspaceRequest origin)
++        {
++            try
++            {
++                var session = origin.Origin;
++                try
++                {
++                    return new PilotRiskView(_drafts.RacksAtRiskOf(session), Array.Empty<string>());
++                }
++                catch (Exception)
++                {
++                    // A comparer failed: decide draft by draft, and let the ones that cannot be decided count as at risk, apart.
++                }
++
++                var atRisk = new List<string>();
++                var uncertain = new List<string>();
++                foreach (var rackId in _drafts.RackIdsOf(session))
++                {
++                    var draft = _drafts.Find<PushBackPilotDraftState>(session, rackId);
++                    if (draft == null)
++                    {
++                        uncertain.Add(rackId);
++                        continue;
++                    }
++
++                    try
++                    {
++                        if (draft.HasPendingText || draft.IsDirty) atRisk.Add(rackId);
++                    }
++                    catch (Exception)
++                    {
++                        uncertain.Add(rackId);
++                    }
++                }
++
++                return new PilotRiskView(atRisk, uncertain);
++            }
++            catch (Exception ex)
++            {
++                Report("WorkspaceHostCore.GetRacksAtRisk", ex);
++                return default;
++            }
++        }
++
++        IReadOnlyList<PilotLossView> IWorkspacePilotEditPort.TakeLossNotices()
++        {
++            var taken = new List<PilotLossView>();
++            while (_lossNotices.Count > 0)
++            {
++                var notice = _lossNotices.Dequeue();
++                taken.Add(new PilotLossView(notice.Session, notice.LostRackIds, notice.UncertainRackIds, notice.UncertainReasons));
++            }
++
++            return taken;
++        }
++
++        IReadOnlyList<PilotCloseView> IWorkspacePilotEditPort.TakeCloseNotices()
++        {
++            var taken = _closeNotices.ToArray();
++            _closeNotices.Clear();
++            return taken;
++        }
++
++        private DraftSession<PushBackPilotDraftState>? FindPilotDraft(SessionId session, string rackId) =>
++            string.IsNullOrWhiteSpace(rackId) ? null : _drafts.Find<PushBackPilotDraftState>(session, rackId);
++
++        // True when the session still has racks at risk, or when that cannot be decided (a comparer failed): then the notice stays.
++        private bool SessionStillAtRisk(SessionId session)
++        {
++            try
++            {
++                return _drafts.RacksAtRiskOf(session).Count > 0;
++            }
++            catch (Exception)
++            {
++                return true;
++            }
++        }
++
++        private static PilotFieldView ViewOfPilotDraft(DraftSession<PushBackPilotDraftState> draft)
++        {
++            PilotFieldState state;
++            try
++            {
++                state = StateOfDraft(draft.Status);
++            }
++            catch (Exception)
++            {
++                state = PilotFieldState.Undecidable;
++            }
++
++            bool isProtected;
++            if (state == PilotFieldState.Undecidable)
++            {
++                isProtected = true;
++            }
++            else
++            {
++                try
++                {
++                    isProtected = draft.IsDirty;
++                }
++                catch (Exception)
++                {
++                    isProtected = true;
++                }
++            }
++
++            var canEdit = draft.IsRegistered
++                && (state == PilotFieldState.Clean || state == PilotFieldState.Dirty || state == PilotFieldState.Conflict);
++
++            string? committed = null;
++            string? reason;
++            var annotations = draft.CurrentDraftState.Inputs.Annotations;
++            if (annotations == null) reason = "The rack has no annotation scale.";
++            else committed = WorkspacePilotValueText.Show(annotations.AnnotationScale, out reason);
++
++            string? pending = null;
++            string? message = null;
++            if (draft.PendingText.TryGetValue(PushBackPilotFieldAdapter.AnnotationScaleKey, out var typed))
++            {
++                pending = typed;
++                var verdict = PilotFieldAdapter.Validate(PushBackPilotFieldAdapter.AnnotationScaleKey, typed);
++                message = verdict.IsValid ? null : verdict.Message;
++            }
++
++            return new PilotFieldView(true, state, draft.IsPossiblyStale, isProtected, canEdit, committed, reason, pending, message);
++        }
++
++        private static PilotFieldState StateOfDraft(DraftStatus status)
++        {
++            switch (status)
++            {
++                case DraftStatus.Clean: return PilotFieldState.Clean;
++                case DraftStatus.Dirty: return PilotFieldState.Dirty;
++                case DraftStatus.Conflict: return PilotFieldState.Conflict;
++                case DraftStatus.Applying: return PilotFieldState.Applying;
++                case DraftStatus.Unknown: return PilotFieldState.Unknown;
++                default: return PilotFieldState.Error;
++            }
++        }
++
+         // The advice for one attempt to close the document of the session (D-T2B2-09, D-T2B2-10): the verdict of the close policy,
+         // and nothing else. It reads nothing, authorizes nothing, discards nothing and retires nothing. A Veto or a failure leaves the
+         // session without the mark; an Allow puts it as the very last action, only when the evaluation worked.
++        // Since F4-T3A (D-T3-07) every way to a Veto also queues, in memory, the notice of the veto for the panel: the racks at risk of the
++        // decision, or the uncertain flag without a list when the evaluation failed. An Allow takes the notice of the session away.
+         CloseDecision IWorkspaceLifecycleAdvisor.AdviseClose(SessionId session)
+         {
+             _knownClean.Remove(session);
+             try
+             {
+-                if (_closePolicy.EvaluateClose(session).IsVeto) return CloseDecision.Veto;
++                var decision = _closePolicy.EvaluateClose(session);
++                if (decision.IsVeto)
++                {
++                    QueueCloseNotice(session, decision.RackIds, false);
++                    return CloseDecision.Veto;
++                }
++
++                DropCloseNotice(session);
+                 _knownClean.Add(session);
+                 return CloseDecision.Allow;
+             }
+             catch (Exception ex)
+             {
+                 Report("WorkspaceHostCore.AdviseClose", ex);
++                QueueCloseNotice(session, Array.Empty<string>(), true);
+                 return CloseDecision.Veto;
+             }
+         }
+ 
++        private void QueueCloseNotice(SessionId session, IReadOnlyList<string> rackIds, bool uncertain)
++        {
++            DropCloseNotice(session);
++            _closeNotices.Add(new PilotCloseView(session, rackIds, uncertain));
++        }
++
++        private void DropCloseNotice(SessionId session) => _closeNotices.RemoveAll(notice => notice.Session == session);
++
+         // The session was destroyed (D-T2B2-10, D-T2B2-13). It always retires the drafts: without the comparer only when the mark of the
+         // host and the intact close sequence of the bridge both hold, conservatively in any other case. Afterwards, and only when work
+         // was lost, the notice is queued and logged on the spot. The retirement and the notice are contained apart.
+         void IWorkspaceLifecycleAdvisor.SessionDestroyed(SessionId session, bool closeSequenceIntact)
+         {
+             var marked = _knownClean.Remove(session);
++            DropCloseNotice(session);
+             DraftLossNotice? notice = null;
+             try
+             {
+diff --git a/src/RackCad.Application/Workspace/WorkspacePilotSupport.cs b/src/RackCad.Application/Workspace/WorkspacePilotSupport.cs
+new file mode 100644
+index 00000000..d395d9f6
+--- /dev/null
++++ b/src/RackCad.Application/Workspace/WorkspacePilotSupport.cs
+@@ -0,0 +1,196 @@
++#nullable enable
++using System;
++using System.Collections.Generic;
++using System.Globalization;
++using System.Text;
++
++namespace RackCad.Application.Workspace
++{
++    /// <summary>
++    /// I-64 F4-T3A (D-T3-03): the text that shows the committed value of the field. It is the same decimal number as the round-trip
++    /// text of the value, moved to plain digits (no exponent, no thousands separator) and written with the decimal separator of the
++    /// current culture, so that the number parser of the application reads back exactly the same value and the validation of the
++    /// field accepts it. Showing a value never creates pending text: this helper only builds a string.
++    /// </summary>
++    public static class WorkspacePilotValueText
++    {
++        /// <summary>
++        /// The text of <paramref name="value"/>, or null with the <paramref name="reason"/> when the value is not finite or not greater
++        /// than zero (the field accepts no other value).
++        /// </summary>
++        public static string? Show(double value, out string? reason)
++        {
++            reason = null;
++            if (double.IsNaN(value) || double.IsInfinity(value) || value <= 0.0)
++            {
++                reason = "The value is not a finite number greater than zero.";
++                return null;
++            }
++
++            var plain = ToPlainDigits(value.ToString("R", CultureInfo.InvariantCulture));
++            return plain.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, StringComparison.Ordinal);
++        }
++
++        // The invariant round-trip text is "digits", "digits.digits" or the same with an exponent ("E+20", "E-05"). The point moves by the
++        // exponent over the string of digits, padding with zeros, and the zeros that are not significant are removed.
++        private static string ToPlainDigits(string roundTrip)
++        {
++            var exponentAt = roundTrip.IndexOf('E');
++            var mantissa = exponentAt < 0 ? roundTrip : roundTrip.Substring(0, exponentAt);
++            var exponent = exponentAt < 0
++                ? 0
++                : int.Parse(roundTrip.Substring(exponentAt + 1), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture);
++
++            var pointAt = mantissa.IndexOf('.');
++            var digits = pointAt < 0 ? mantissa : mantissa.Remove(pointAt, 1);
++            var integerDigits = (pointAt < 0 ? mantissa.Length : pointAt) + exponent;
++
++            string integerPart;
++            string fractionPart;
++            if (integerDigits <= 0)
++            {
++                integerPart = "0";
++                fractionPart = new string('0', -integerDigits) + digits;
++            }
++            else if (integerDigits >= digits.Length)
++            {
++                integerPart = digits + new string('0', integerDigits - digits.Length);
++                fractionPart = string.Empty;
++            }
++            else
++            {
++                integerPart = digits.Substring(0, integerDigits);
++                fractionPart = digits.Substring(integerDigits);
++            }
++
++            integerPart = integerPart.TrimStart('0');
++            if (integerPart.Length == 0) integerPart = "0";
++            fractionPart = fractionPart.TrimEnd('0');
++
++            var text = new StringBuilder(integerPart);
++            if (fractionPart.Length > 0) text.Append('.').Append(fractionPart);
++            return text.ToString();
++        }
++    }
++
++    /// <summary>
++    /// I-64 F4-T3A (D-T3-05): the scope of a modal window of RackCad opened by the panel. It switches the "RackCad modal" flag of the
++    /// host on before it returns and off when the last scope that is open is disposed: scopes nest, and disposing a scope twice has
++    /// no further effect. It is pure: it only calls the action it receives.
++    /// </summary>
++    public sealed class WorkspacePanelModalScope
++    {
++        private readonly Action<bool> _setActive;
++        private int _depth;
++
++        public WorkspacePanelModalScope(Action<bool> setActive)
++        {
++            _setActive = setActive ?? throw new ArgumentNullException(nameof(setActive));
++        }
++
++        /// <summary>How many scopes are open now.</summary>
++        public int Depth => _depth;
++
++        /// <summary>Opens a scope. The flag is already on when this returns.</summary>
++        public IDisposable Enter()
++        {
++            if (_depth == 0) _setActive(true);
++            _depth++;
++            return new WorkspacePanelModalHold(this);
++        }
++
++        internal void Leave()
++        {
++            if (_depth == 0) return;
++            _depth--;
++            if (_depth == 0) _setActive(false);
++        }
++    }
++
++    /// <summary>The handle of one open <see cref="WorkspacePanelModalScope"/>; disposing it more than once is harmless.</summary>
++    internal sealed class WorkspacePanelModalHold : IDisposable
++    {
++        private WorkspacePanelModalScope? _scope;
++
++        public WorkspacePanelModalHold(WorkspacePanelModalScope scope)
++        {
++            _scope = scope;
++        }
++
++        public void Dispose()
++        {
++            var scope = _scope;
++            _scope = null;
++            scope?.Leave();
++        }
++    }
++
++    /// <summary>
++    /// I-64 F4-T3A (D-T3-06): how deep inside a notice of the panel the process is. It is a counter in memory and nothing more.
++    /// </summary>
++    public sealed class WorkspaceNoticeDepth
++    {
++        private int _depth;
++
++        public int Value => _depth;
++
++        /// <summary>True while some notice is being delivered.</summary>
++        public bool IsInside => _depth > 0;
++
++        public void Enter() => _depth++;
++
++        public void Leave()
++        {
++            if (_depth > 0) _depth--;
++        }
++    }
++
++    /// <summary>
++    /// I-64 F4-T3A (D-T3-06): the decorator of the port that the panel receives. Inside a notice of the panel the three operations that
++    /// read the drawing answer Waiting without delegating and without reading; everything else is delegated as it is. So a handler of
++    /// a state notice can never start a read, however it is written.
++    /// </summary>
++    public sealed class WorkspacePilotEditGate : IWorkspacePilotEditPort
++    {
++        /// <summary>The reason of the Waiting answers of the gate.</summary>
++        public const string InsideNoticeReason = "A notice of the panel is being delivered.";
++
++        private readonly IWorkspacePilotEditPort _inner;
++        private readonly WorkspaceNoticeDepth _depth;
++
++        public WorkspacePilotEditGate(IWorkspacePilotEditPort inner, WorkspaceNoticeDepth depth)
++        {
++            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
++            _depth = depth ?? throw new ArgumentNullException(nameof(depth));
++        }
++
++        public EditIntentOutcome TryBeginEdit(EditIntentRequest request) =>
++            _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryBeginEdit(request);
++
++        public EditCheckOutcome TryCheckNow(EditIntentRequest request) =>
++            _depth.IsInside ? EditCheckOutcome.Waiting(InsideNoticeReason) : _inner.TryCheckNow(request);
++
++        public EditIntentOutcome TryReload(EditIntentRequest request) =>
++            _depth.IsInside ? EditIntentOutcome.Waiting(InsideNoticeReason) : _inner.TryReload(request);
++
++        public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => _inner.GetField(origin, rackId);
++
++        public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
++            _inner.SetPendingText(origin, rackId, text);
++
++        public PilotFieldResult CommitField(WorkspaceRequest origin, string rackId) => _inner.CommitField(origin, rackId);
++
++        public PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind) =>
++            _inner.CrossBoundary(origin, rackId, kind);
++
++        public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId) => _inner.DiscardRack(origin, rackId);
++
++        public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin) => _inner.DiscardDocument(origin);
++
++        public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin) => _inner.GetRacksAtRisk(origin);
++
++        public IReadOnlyList<PilotLossView> TakeLossNotices() => _inner.TakeLossNotices();
++
++        public IReadOnlyList<PilotCloseView> TakeCloseNotices() => _inner.TakeCloseNotices();
++    }
++}
+diff --git a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+index 7b782235..1b385d19 100644
+--- a/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
++++ b/src/RackCad.Plugin/Workspace/AutoCadEventBridge.cs
+@@ -19,6 +19,9 @@ namespace RackCad.Plugin.Workspace
+     /// host of the panel calls when the panel is first opened. Ordinary handlers only forward the notification to the
+     /// core (which enqueues a hint on the right session); they open no transaction, lock no document, read no stored
+     /// data, ask for nothing, write no selection or view, and never let an exception reach AutoCAD.
++    /// The callback of the Idle event only asks the <see cref="WorkspaceIdleScheduler"/> to schedule the idle pass: the
++    /// scheduler posts the continuation once, with BeginInvoke at background priority, to the dispatcher of the main thread,
++    /// and the continuation (the idle pass, with every read of the drawing) runs after the callback has returned.
+     /// The class keeps no document, no transaction and no database object: a per-document hookup finds its document
+     /// only while attaching and keeps just the delegate that undoes the hookup.
+     /// </summary>
+@@ -276,7 +279,7 @@ namespace RackCad.Plugin.Workspace
+         // INV-14 (Debug only), once every subscriber of the drain, the summary read of the panel included, has finished.
+         private void RunIdleContinuation()
+         {
+-            Contain("IdleContinuation", OnIdle);
++            Contain("IdleContinuation.Pass", OnIdle);
+             CheckNoOpenTransactionAfterTheDrain();
+         }
+ 
+@@ -290,7 +293,7 @@ namespace RackCad.Plugin.Workspace
+                 var document = AcApplication.DocumentManager.MdiActiveDocument;
+                 var open = document?.TransactionManager.TopTransaction;
+                 if (open != null)
+-                    LogFault("AutoCadEventBridge.IdleContinuation", new InvalidOperationException("A transaction was still open when the drain of the panel ended; it may belong to another add-in running a nested loop."));
++                    LogFault("AutoCadEventBridge.IdleContinuation.OpenTransaction", new InvalidOperationException("A transaction was still open when the drain of the panel ended; it may belong to another add-in running a nested loop."));
+             }
+             catch (System.Exception ex)
+             {
+diff --git a/src/RackCad.Plugin/Workspace/WorkspaceController.cs b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+index d4fc30d0..1005ca2e 100644
+--- a/src/RackCad.Plugin/Workspace/WorkspaceController.cs
++++ b/src/RackCad.Plugin/Workspace/WorkspaceController.cs
+@@ -27,7 +27,10 @@ namespace RackCad.Plugin.Workspace
+         private readonly WorkspaceHostCore _host;
+         private readonly IWorkspaceHostPort _port;
+         private readonly NavigationEcho _echo;
++        private readonly WorkspaceNoticeDepth _noticeDepth = new WorkspaceNoticeDepth();
++        private readonly IWorkspacePilotEditPort _pilotEdit;
+         private WorkspaceNavigationHost _navigation;
++        private WorkspacePanelModalScope _modalScope;
+ 
+         private WorkspaceController()
+         {
+@@ -42,6 +45,9 @@ namespace RackCad.Plugin.Workspace
+                 _echo);
+             _port = new WorkspaceHostPort(_host);
+ 
++            // The edit port of the pilot (I-64 F4-T3A): the panel never receives the host core, only an adapter over the gate of notices.
++            _pilotEdit = new PilotEditAdapter(new WorkspacePilotEditGate(_host, _noticeDepth));
++
+             // The lifecycle of the drafts (I-64 F4-T2B2B): the bridge asks the host, as its advisor, about the close and the destruction of a
+             // document. It is wired by assignment, so the constructor of the core and the subscriptions of the bridge do not change.
+             _bridge.SetLifecycleAdvisor(_host);
+@@ -96,6 +102,30 @@ namespace RackCad.Plugin.Workspace
+         /// </summary>
+         public IWorkspaceBrowserSummaryPort BrowserSummary => (IWorkspaceBrowserSummaryPort)Navigation;
+ 
++        /// <summary>
++        /// The edit port of the bounded Push Back pilot (I-64 F4-T3A, D-T3-06). It is the gate of notices over the host: inside a notice
++        /// of the panel the operations that read the drawing answer Waiting. Reading it makes sure the navigation host exists, so the
++        /// reader of the edit intention is assigned. It writes nothing and subscribes to nothing.
++        /// </summary>
++        public IWorkspacePilotEditPort PilotEdit
++        {
++            get
++            {
++                _ = Navigation;
++                return _pilotEdit;
++            }
++        }
++
++        /// <summary>
++        /// Opens the scope of a modal window of RackCad opened by the panel (I-64 F4-T3A, D-T3-05): the host is told that a modal is
++        /// active before this returns, and the last scope that is disposed tells it that it ended, also when the body throws.
++        /// </summary>
++        public IDisposable EnterPanelModal()
++        {
++            _modalScope ??= new WorkspacePanelModalScope(active => _host.SetModalRackCadActive(active));
++            return _modalScope.Enter();
++        }
++
+         public bool PanelVisible => _host.PanelVisible;
+ 
+         /// <summary>First call: starts the bridge once. Always: shows the panel state and asks for a reconciliation at the next rest.</summary>
+@@ -171,8 +201,11 @@ namespace RackCad.Plugin.Workspace
+         }
+ 
+         // The one place that raises the notice; a failing subscriber is logged and never reaches the bridge or AutoCAD.
++        // While the notice is delivered the depth is above zero (I-64 F4-T3A, D-T3-06): the gate of the edit port makes every read of the
++        // pilot answer Waiting, so a handler of the notice can never start one.
+         private void NotifyStateChanged()
+         {
++            _noticeDepth.Enter();
+             try
+             {
+                 StateChanged?.Invoke();
+@@ -181,6 +214,10 @@ namespace RackCad.Plugin.Workspace
+             {
+                 LogFault("WorkspaceController.StateChanged", ex);
+             }
++            finally
++            {
++                _noticeDepth.Leave();
++            }
+         }
+ 
+         [Conditional("DEBUG")]
+@@ -193,6 +230,43 @@ namespace RackCad.Plugin.Workspace
+ 
+         private static void LogFault(string context, System.Exception exception) => RackLog.Exception(context, exception);
+ 
++        // The adapter that the panel receives as the edit port: it only forwards to the gate of notices.
++        private sealed class PilotEditAdapter : IWorkspacePilotEditPort
++        {
++            private readonly IWorkspacePilotEditPort _gate;
++
++            public PilotEditAdapter(IWorkspacePilotEditPort gate)
++            {
++                _gate = gate;
++            }
++
++            public EditIntentOutcome TryBeginEdit(EditIntentRequest request) => _gate.TryBeginEdit(request);
++
++            public EditCheckOutcome TryCheckNow(EditIntentRequest request) => _gate.TryCheckNow(request);
++
++            public EditIntentOutcome TryReload(EditIntentRequest request) => _gate.TryReload(request);
++
++            public PilotFieldView GetField(WorkspaceRequest origin, string rackId) => _gate.GetField(origin, rackId);
++
++            public PilotFieldResult SetPendingText(WorkspaceRequest origin, string rackId, string text) =>
++                _gate.SetPendingText(origin, rackId, text);
++
++            public PilotFieldResult CommitField(WorkspaceRequest origin, string rackId) => _gate.CommitField(origin, rackId);
++
++            public PilotBoundaryResult CrossBoundary(WorkspaceRequest origin, string rackId, PilotBoundaryKind kind) =>
++                _gate.CrossBoundary(origin, rackId, kind);
++
++            public EditDiscardOutcome DiscardRack(WorkspaceRequest origin, string rackId) => _gate.DiscardRack(origin, rackId);
++
++            public EditDiscardOutcome DiscardDocument(WorkspaceRequest origin) => _gate.DiscardDocument(origin);
++
++            public PilotRiskView GetRacksAtRisk(WorkspaceRequest origin) => _gate.GetRacksAtRisk(origin);
++
++            public System.Collections.Generic.IReadOnlyList<PilotLossView> TakeLossNotices() => _gate.TakeLossNotices();
++
++            public System.Collections.Generic.IReadOnlyList<PilotCloseView> TakeCloseNotices() => _gate.TakeCloseNotices();
++        }
++
+         // The link of the pure host core to the single bridge: forwards to its facades and nothing else.
+         private sealed class BridgeLink : IWorkspaceBridgeLink
+         {

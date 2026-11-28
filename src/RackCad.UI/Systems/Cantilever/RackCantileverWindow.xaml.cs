@@ -31,7 +31,7 @@ namespace RackCad.UI.Systems.Cantilever
     /// It still computes nothing: it reads controls into a <see cref="CantileverLineDesign"/> and hands it to
     /// <see cref="CantileverLineEditorAssembler"/>.
     /// </summary>
-    public partial class RackCantileverWindow : Window
+    public partial class RackCantileverWindow : Window, ICantileverEditOutcome // T5 ct: the outcome of the drawing half (ApplyCantileverEdit)
     {
         /// <summary>The ONE display format of every decimal box, so writing and reading a field agree.</summary>
         private const string NumberFormat = "0.###";
@@ -102,18 +102,18 @@ namespace RackCad.UI.Systems.Cantilever
             // FAIL CLOSED, like RACKSECCION: an invalid section catalogue means the dimensions are not
             // trustworthy, so the window opens read-only with the reason on screen rather than drawing from data
             // that failed validation.
-            try
+            //
+            // T7 per (I-64, review I-1): the read and the two failures are the ONE source of RACKSECCION
+            // (StructuralSectionCatalogSource); the window shows the same reason as before (the message of the
+            // provider), and any other exception still propagates.
+            var load = StructuralSectionCatalogSource.TryLoad();
+            if (load.Loaded)
             {
-                assembler = new CantileverLineEditorAssembler(
-                    new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load());
+                assembler = new CantileverLineEditorAssembler(load.Catalog);
             }
-            catch (StructuralSectionCatalogException ex)
+            else
             {
-                catalogueError = ex.Message;
-            }
-            catch (System.IO.IOException ex)
-            {
-                catalogueError = ex.Message;
+                catalogueError = load.Detail;
             }
 
             FaceModeBox.ItemsSource = FaceModes;

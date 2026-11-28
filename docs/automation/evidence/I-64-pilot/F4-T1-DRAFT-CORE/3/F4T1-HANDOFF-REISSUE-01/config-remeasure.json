@@ -1,0 +1,37 @@
+{
+  "Id": "CONFIG-REMEASURE-2026-11-11",
+  "MeasuredUtc": "2026-11-11T17:57:47Z",
+  "ConfigSha256": "7C1516A9135D59FA38F6004D56B71C7E1313502D6C6BFEA6FB5D8F97A62DD723",
+  "SnapshotF": "AAEB58D87D007AB9ABF53EEAEDCF582FD02401495C1B66E68022C10946F26E09",
+  "LastWriteUtc": "2026-11-11T16:31:28Z",
+  "NameCount": 104,
+  "OrderedNamesSha256": "EB8775C5F9B3CC5C15031ED064391FFE000AB4A7220360C04F2F89D83D49F820",
+  "NamesIdenticalToF": true,
+  "FlatValueCount": 68,
+  "KeysAdded": [],
+  "KeysRemoved": [],
+  "ChangedValuesVsE": [
+    "notify",
+    "mcp_servers.node_repl.command",
+    "mcp_servers.node_repl.env.BROWSER_USE_CODEX_APP_VERSION",
+    "mcp_servers.node_repl.env.CODEX_CLI_PATH",
+    "mcp_servers.node_repl.env.NODE_REPL_NODE_MODULE_DIRS",
+    "mcp_servers.node_repl.env.NODE_REPL_NODE_PATH",
+    "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_CODE_PATHS",
+    "mcp_servers.node_repl.env.NODE_REPL_TRUSTED_SERVICES"
+  ],
+  "Nature": "rutas e identificadores gestionados por la app de Codex: la app paso de 26.1103.60933 a 26.1106.51428 y sus recursos pasan a la instalacion de la app en la carpeta de aplicaciones de Windows (<app-install>); CODEX_CLI_PATH de node_repl apunta ahora al codex.exe de la app",
+  "UnchangedCore": {
+    "model": "sin cambio",
+    "model_reasoning_effort": "sin cambio",
+    "service_tier": "sin cambio",
+    "windows.sandbox": "sin cambio"
+  },
+  "AccreditedBinary": {
+    "Path": "<codex-local>/Codex/bin/5449c1f0f26f1f98/codex.exe",
+    "Exists": true,
+    "Sha256": "4F91AE86895FF124760D70ED1630E2354CA874765C9BB61AE524B600327EFC17"
+  },
+  "Accepted": false,
+  "Rule": "F4-E03: cualquier cambio de hash se vuelve a medir contra F y no se acepta por inferencia; sin invocacion de Codex hasta la decision del Owner"
+}

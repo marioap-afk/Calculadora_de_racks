@@ -1,0 +1,21 @@
+generacion del kit de R20261105T050250Z-785a UTC 2026-11-05T17:21:32.6599383Z
+  owner-preflight-baseline.ps1 : 1 x sustitucion [191 -> 273 caracteres] I-64 Smoke-1 SEGUNDO REINTENTO, RunId R20261104T194513Z-a578 (Candidato cc7503e3, producto C2 0e0d536b): preflight + capturas de host +
+  owner-preflight-baseline.ps1 : 1 x sustitucion [63 -> 200 caracteres] acad = 0 y RAM Elements = 0; arbol limpio y Candidato
+  owner-preflight-baseline.ps1 : 1 x sustitucion [33 -> 33 caracteres] $RunId = 'R20261104T194513Z-a578'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [76 -> 135 caracteres] $DllSha = '3C261B8F156E69192415E0084D0BC8774B3080ACE9D6CB4B9BB0C1760549B6A0'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [591 -> 1496 caracteres] # 2. arbol limpio y Candidato exacto
+  owner-preflight-baseline.ps1 : 1 x sustitucion [50 -> 49 caracteres] Say 'No se lanza AutoCAD. Avisa a la sesion I-64.'
+  owner-preflight-baseline.ps1 : 1 x sustitucion [125 -> 143 caracteres] Say "OK: preflight, HOST-EXTRAS BEFORE y BASELINE correctos. NO abras AutoCAD hasta que la sesion I-64 confirme la BASELINE."
+owner-preflight-baseline.ps1 origen D513C1C564E122CB57BB521DA305FDC1430E3A8D67CD392F45652A232AA7861E -> destino E16EE9495B0D632F7C6490BD8389AEBA28B86397B1A8DE2E757574CBBFC96A6E
+  owner-post.ps1 : 1 x sustitucion [158 -> 238 caracteres] I-64 Smoke-1 SEGUNDO REINTENTO, RunId R20261104T194513Z-a578: HOST-EXTRAS AFTER y POST (T3C seccion 4), ejecutado por el OWNER con AutoCAD
+  owner-post.ps1 : 1 x sustitucion [33 -> 33 caracteres] $RunId = 'R20261104T194513Z-a578'
+  owner-post.ps1 : 1 x sustitucion [115 -> 837 caracteres] if (Test-Path -LiteralPath $cons) { Write-Output 'STOP: el POST de este RunId ya se tomo (no se repite).'; exit 1 }
+owner-post.ps1 origen 76499D88B00E580DD898E970229B902DB2B2D6D9785FE5C11AB34DB682B927DD -> destino 64617EB319E4AD9E85DA55BC2CAF28778F66383DC2336244A1DFDC8B1587CA32
+  Capture-HostExtras.ps1 : 2 x sustitucion [22 -> 22 caracteres] R20261104T194513Z-a578
+  Capture-HostExtras.ps1 : 1 x sustitucion [48 -> 47 caracteres] (COORDINATOR SECOND SMOKE-1 RETRY AUTHORIZATION)
+Capture-HostExtras.ps1 origen 77493F1E7CFE956C2CA74384482AA874B25152DA604B87F7E2B81B5F5F0031A0 -> destino C8A9D4299514FD791DA5B2D059D452D85BA26A6C1099FDD5E3E1E0B61AF21BAE
+  compare_host_extras.py : 1 x sustitucion [22 -> 22 caracteres] R20261104T194513Z-a578
+compare_host_extras.py origen 156FFA0090C5B2D018069D6F826B3566FC6165B4D0B62B40CB9B521200457372 -> destino FF09B93C4082F6EF65647CBC76B54B015AE860701B7E5595A54ED0F339B34F96
+Inspect-LoadedRackCad.ps1 copia identica de process-guard/ 86985EC90F4591806391F70257DE2B2CCBD0CFC096EB34B33117DF63E413E5AB
+Test-AcadProcessGuard.ps1 copia identica de process-guard/ 736463BD3EF607A5C61530ACCBE385E9C799BD9A1FDF72107CEF1B76CB76E3A4
+Save-ScreenRegion.ps1 copia identica de process-guard/ 61983D32CE96DFFE54BF26629E63511BEC4A3C93E507B895AC9BB38AEB576CDF

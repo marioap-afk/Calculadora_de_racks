@@ -1,0 +1,40 @@
+{
+ "CheckedUtc": "2026-11-08T06:57:42Z",
+ "ConfigSha256": "377D0C3C2DA32B0F763501628CF4A4F054FF33C64C40C2D50399801539EAD1E8",
+ "Snapshot": null,
+ "EqualsLastSeen377D0C3C": true,
+ "LastWriteUtc": "2026-11-07T18:09:47Z",
+ "Bytes": 4887,
+ "NameCount": 104,
+ "NamesDiffVsA": [
+  {
+   "Op": "delete",
+   "InA": [
+    "followUpQueueMode"
+   ],
+   "Now": []
+  },
+  {
+   "Op": "insert",
+   "InA": [],
+   "Now": [
+    "migratedFollowUpQueueToSteer"
+   ]
+  },
+  {
+   "Op": "delete",
+   "InA": [
+    "enabled",
+    "[plugins.\"code-review@openai-bundled\"]"
+   ],
+   "Now": []
+  },
+  {
+   "Op": "insert",
+   "InA": [],
+   "Now": [
+    "NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE"
+   ]
+  }
+ ]
+}

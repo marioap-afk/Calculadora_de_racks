@@ -1,0 +1,44 @@
+# python -I count_rows.py <TRX del GREEN> <TRX del RED> (copias de la entrega en rv/) y <TRX de la linea base> (CI 44668584248, cierre de PB-T3a)
+rv/ci-core/core.trx {'Passed': 19118, 'NotExecuted': 6} 19124
+    ('PushBackFullWritePrepareTests', 'Passed') 9
+    ('PushBackFullWriteRunTests', 'Passed') 4
+    ('PushBackPilotUpdateEquivalenceGuardTests', 'Passed') 6
+    ('PushBackWritePathGuardTests', 'Passed') 2
+    ('WorkspacePilotPrepareGuardTests', 'NotExecuted') 3
+    ('WorkspacePilotPrepareGuardTests', 'Passed') 22
+    ('WorkspacePilotUpdateGuardTests', 'NotExecuted') 1
+    ('WorkspacePilotUpdateGuardTests', 'Passed') 86
+    ('WorkspacePilotUpdateIntegrationGuardTests', 'NotExecuted') 2
+    ('WorkspacePilotUpdateIntegrationGuardTests', 'Passed') 123
+    skip RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst
+    skip RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName
+    skip RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing
+    skip RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase
+    skip RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal
+    skip RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope
+rv/red-ci-core/core.trx {'Passed': 19099, 'NotExecuted': 6, 'Failed': 19} 19124
+    ('PushBackFullWritePrepareTests', 'Failed') 9
+    ('PushBackFullWriteRunTests', 'Failed') 4
+    ('PushBackPilotUpdateEquivalenceGuardTests', 'Failed') 6
+    ('PushBackWritePathGuardTests', 'Passed') 2
+    ('WorkspacePilotPrepareGuardTests', 'NotExecuted') 3
+    ('WorkspacePilotPrepareGuardTests', 'Passed') 22
+    ('WorkspacePilotUpdateGuardTests', 'NotExecuted') 1
+    ('WorkspacePilotUpdateGuardTests', 'Passed') 86
+    ('WorkspacePilotUpdateIntegrationGuardTests', 'NotExecuted') 2
+    ('WorkspacePilotUpdateIntegrationGuardTests', 'Passed') 123
+    skip RackCad.Tests.WorkspacePilotPrepareGuardTests.TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope
+    skip RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal
+    skip RackCad.Tests.WorkspacePilotUpdateIntegrationGuardTests.M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst
+    skip RackCad.Tests.WorkspacePilotPrepareGuardTests.TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase
+    skip RackCad.Tests.WorkspacePilotUpdateGuardTests.TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing
+    skip RackCad.Tests.WorkspacePilotPrepareGuardTests.TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName
+baseline-44668584248/core.trx {'Passed': 19107} 19107
+    ('WorkspacePilotPrepareGuardTests', 'Passed') 29
+    ('WorkspacePilotUpdateGuardTests', 'Passed') 87
+    ('WorkspacePilotUpdateIntegrationGuardTests', 'Passed') 125
+
+# SHA-256 de las tres TRX leidas (las de la CI van por SHA-256 en sus unidades)
+GREEN 44707482956 core.trx 74E86CBDF89A63C938AA8C7EB487F2EB3F8DC91FF45B49A6717F3200C386A187
+RED 44704503614 core.trx 2E8B3404E05E577F79FA6086E63A6897FB87653363B4AEDBEC140A7D12D620F7
+linea base 44668584248 core.trx 1FD743147ED8D4AAF8B772EDD534038ED3BC2DFABA50CE10FF7B888EBB50B7B1

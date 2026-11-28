@@ -1,0 +1,121 @@
+{
+  "RunId": "R20261109T054710Z-53af",
+  "MutatedCheck": "FreeText",
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "2026-11-08T18:46:05Z",
+          "Utc": "2026-11-08T18:46:05+00:00",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json: Outcome.Kind=COMPLETED, DeathConfirmed=true; Cession ended 2026-11-08T18:46:05Z."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Timestamps": [
+        {
+          "Quoted": "18:45:41Z",
+          "UtcTimeOfDay": "18:45:41",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        },
+        {
+          "Quoted": "18:28:11Z",
+          "UtcTimeOfDay": "18:28:11",
+          "Sources": [
+            "relay-record-work.json"
+          ]
+        }
+      ],
+      "RunIds": [
+        {
+          "Quoted": "R20261108T181429Z-adae",
+          "Sources": [
+            "contract-equivalence.json",
+            "delegation.json",
+            "relay-record-planning.json",
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        },
+        {
+          "Quoted": "R20261108T182756Z-ec7e",
+          "Sources": [
+            "relay-record-work.json",
+            "worker-handoff.json"
+          ]
+        }
+      ],
+      "Evidence": "worker-handoff.json is present and identifies TaskId F2-T1-NAVIGATION-CORE, Attempt 1, DelegationRunId R20261108T181429Z-adae, RunId R20261108T182756Z-ec7e; OutputWrittenUtc 18:45:41Z is after Cession.StartUtc 18:28:11Z."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git merge-base --is-ancestor 90f5872e89660655a93606e16d50f4bc19aa3c9c 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb exited 0. git diff --name-only for that range lists docs/automation UNIT_DOC paths only; no EXTERNAL or UNIT_CHANGE path. Authority sections and ASCII transliteration agree with the contract and delegation."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "gate-contract.json, delegation.json, and contract-equivalence.json agree on TaskId, AuthorityRevision, MainSha, scopes, RequiredTests and stop conditions. relay-record-planning.json records A1-A8 all pass; its notes record nc4's required rejection before the single Worker invocation."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git rev-parse HEAD and refs/remotes/origin/architecture/workspace-persistente-rackcad both return 7002678f46b3816aa06df4cb77a945cbf250af54. Supplied post-custody measurements identify that as the actual origin branch HEAD, with origin/main=a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60; c726410f3ac764f4a80a08a2b810b5fdda276ecc is its ancestor. git diff --name-only c726410f3ac764f4a80a08a2b810b5fdda276ecc..7002678f46b3816aa06df4cb77a945cbf250af54 lists 206 docs paths only, with no src, tests, project, deploy or assets paths. Supplied exact-SHA CI for control HEAD 7002678f run 42568842371 has push event and all four required jobs successful."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "The supplied pre-invocation remote measurements report origin/architecture/workspace-persistente-rackcad at control HEAD 7002678f46b3816aa06df4cb77a945cbf250af54 and origin/main at declared MainSha a140eb3a9f055518f0ffa5a3f927ff1c0e1c1e60. relay-record-work.json records product push run 42511528392 at c726410f3ac764f4a80a08a2b810b5fdda276ecc. Direct git ls-remote attempts in this invocation could not connect to github.com."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git diff --name-only 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb..c726410f3ac764f4a80a08a2b810b5fdda276ecc lists 10 paths: 4 under src/RackCad.Application/Workspace/ and 6 under tests/RackCad.Tests/Workspace/. All are within AllowedWriteScope; none intersects ForbiddenWriteScope. No F2-C01..F2-C08 condition is evidenced."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git status --short --branch reports a clean worktree at 7002678f. git check-ignore -v reports both the handoff package path and supplied inputs under the artifacts/ rule in .gitignore."
+    },
+    "Ci": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "relay-record-work.json identifies product run 42511528392 as push on refs/heads/architecture/workspace-persistente-rackcad at exact product SHA c726410f3ac764f4a80a08a2b810b5fdda276ecc; all four required jobs succeeded. Red run 42511103159 is push at exact RedSha f2761979b89e784ed16220815e250d21bc476aa1 and its Core job failed as expected. Current and red TRX files agree on 15048 total tests, respectively 15048 passed/0 failed and 14997 passed/51 failed."
+    },
+    "Tests": {
+      "Result": "fail",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "Contract requires tests/RackCad.Tests/RackCad.Tests.csproj with FullyQualifiedName~Workspace and MinSelected=645. From the supplied Core TRX definitions/results, Workspace FQNs select 723 tests: CurrentSha 723 passed/0 failed; RedSha 672 passed/51 failed. The 51 red failures are assertion failures in new WorkspaceNavigation tests, including target resolution/order, cache and invalidation, action/revalidation, and authority/privacy checks. git diff BaseSha..RedSha -- tests/ lists 6 Workspace test files; git diff RedSha..CurrentSha -- tests/ is empty, so GREEN leaves RT unchanged. The Worker handoff and relay report 724 selected and 673 passed on RED, and 724/724 on GREEN: each differs by one from the corresponding TRX-filtered counts. The required minimum is met, but the recorded counts are not coherent."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "git log --format=%H%n%B 9082bcbcefbf33ca1f9540c34e6f0e96e20cdcfb..c726410f3ac764f4a80a08a2b810b5fdda276ecc shows RED and GREEN commits each carry the declared Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com> trailer, matching the effective Worker model in relay-record-work.json."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Timestamps": [],
+      "RunIds": [],
+      "Evidence": "delegation.json requests anthropic/subagent/claude-sonnet-5-5 at high effort. relay-record-work.json reports 78 assistant entries with model claude-sonnet-5-5 and effort high; effective model and effort match the required routing."
+    }
+  },
+  "Findings": [],
+  "Pass": true
+}

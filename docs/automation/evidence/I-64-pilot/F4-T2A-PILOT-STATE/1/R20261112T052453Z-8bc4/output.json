@@ -1,0 +1,81 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T2A-PILOT-STATE",
+  "RunId": "R20261112T052453Z-8bc4",
+  "DelegationRunId": "R20261111T215420Z-981d",
+  "WorkRunId": "R20261111T221932Z-9353",
+  "Attempt": 1,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED; final output was written after Cession.StartUtc. Notes state the same Worker invocation resumed with its transcript and prompt after one transport interruption; no second Worker was launched."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json is present and schema rackcad-worker-handoff/v1; TaskId, Attempt, DelegationRunId and RunId match this task and delegation. Outcome.OutputWrittenUtc is later than Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor AuthorityRevision BaseSha exited 0. git diff --name-only AuthorityRevision BaseSha lists four docs paths: I-64-evidence.md, contract-rev2-check.json, gate-contract-rev2.json and I-64.yml; each is UNIT_DOC, with no EXTERNAL or UNIT_CHANGE path. Local origin/main is MainSha 812baf879612320653094a8aaf46aca0bac81383."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "Delegation and gate-contract match on Objective, all 15 Invariants, StopConditions, Authorities, RequiredTests, AllowedWriteScope (15 entries) and ForbiddenWriteScope (57 entries). contract-rev2-check.json reports Pass=true. byte-fidelity-check.json records only AcceptanceCriteria[17]; coordinator-waiver.json and the acceptance record authorize that exact criterion 18 wording difference."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "git rev-parse HEAD=77658968b7f25b6dba6397beb1ca609ad7c0128d; branch=architecture/workspace-persistente-rackcad; top-level path is the assigned worktree. BaseSha is an ancestor of RedSha, RedSha is an ancestor of CurrentSha, and CurrentSha is an ancestor of HEAD (all merge-base checks exited 0). Local origin branch ref and relay Entry HeadSha equal CurrentSha."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay Entry records LsRemoteSha=77658968b7f25b6dba6397beb1ca609ad7c0128d and OriginMainSha=812baf879612320653094a8aaf46aca0bac81383. RemoteFacts.CurrentRun is completed event=push, exact branch ref and CurrentSha; no network Git command was run."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha lists 30 changed paths; each is covered by the exact AllowedWriteScope entry or tests/RackCad.Tests/Fixtures/I64/ prefix. No changed path intersects ForbiddenWriteScope. AuthorityRevision-to-BaseSha diff is limited to the four UNIT_DOC paths recorded above."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain returned empty. git check-ignore reports the orchestration inputs path as ignored."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "RemoteFacts and ci TRX inputs identify push run 43160527925 for the exact branch ref and CurrentSha. UI Tests and Build UI succeeded, Tests (Domain + Application) failed, and Build Plugin without AutoCAD was skipped; therefore the required job set is not green. Red run 43158772266 has Core failure as required for RedPart."
+    },
+    "Tests": {
+      "Result": "fail",
+      "RedPart": "pass",
+      "Evidence": "Current CI TRX: Core filtered Workspace selected=1446 (min 1300), with 9 failures; UI selected=245 (min 222), with 0 failures. Handoff GREEN filtered results report 1446/1446 Core and 245/245 UI passed, so Core counts do not agree. Red CI TRX has 1446 Core selections with 164 failures and 245 UI selections with 21 failures, satisfying ExpectRed. RT=git diff --name-only ChainBaseSha RedSha -- tests/: 24 paths (16 I64 fixtures and 8 Workspace test files); git diff --name-only RedSha CurrentSha is empty, so ChainRedFiles=RT."
+    },
+    "Trailer": {
+      "Result": "pass",
+      "Evidence": "git log --format=%H%n%B BaseSha..CurrentSha shows both commits with Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>, consistent with Participant.ModelEffective=claude-sonnet-5-5."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "Delegation requests claude-sonnet-5-5 with provider effort high. Relay records ModelEffective=claude-sonnet-5-5 and EffortEffective=high. ModelRequested=sonnet is the transport launch alias; notes record 284 assistant turns with the effective model."
+    },
+    "FreeText": {
+      "Result": "pass",
+      "Evidence": "Scanned the handoff free-text fields listed by AUTOMATION_PLAN 16.10 for its prohibited terms; no matches."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "Relay notes record 0 permission denials and 2 tool errors, neither pending. Entry notes report 0 persistent participants and 0 persistent unattributable processes."
+    }
+  },
+  "Classification": "EXECUTION_BLOCKED",
+  "Disposition": "STOP",
+  "FailureClass": "Ci",
+  "TriggeredStopConditions": [
+    "F4T2A-C02"
+  ],
+  "Findings": [
+    "Current CI Core TRX has nine Workspace failures, including seven ACanonicalDesignComesBackAsTheIdenticalPersistedDocument cases; this triggers F4T2A-C02.",
+    "The CI Core filtered result conflicts with the handoff GREEN filtered result on the same CurrentSha: 9 failures versus 0.",
+    "The CurrentSha CI run failed its Core job and skipped the required Plugin job."
+  ],
+  "RecommendedNextAction": "Stop this execution and have the Coordinator review the canonical round-trip failures and the conflicting Core results before authorizing further work."
+}

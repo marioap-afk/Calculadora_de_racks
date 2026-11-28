@@ -1,0 +1,79 @@
+{
+  "Schema": "rackcad-controller-verification/v1",
+  "TaskId": "F4-T3B1-EDIT-SURFACE",
+  "RunId": "R20261113T071151Z-ad7c",
+  "DelegationRunId": "R20261113T062027Z-4b5e",
+  "WorkRunId": "R20261113T062519Z-a807",
+  "Attempt": 2,
+  "VerifiedSha": null,
+  "Checks": {
+    "Termination": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Outcome.Kind=COMPLETED, DeathConfirmed=true; terminó antes de OutputWrittenUtc."
+    },
+    "Handoff": {
+      "Result": "pass",
+      "Evidence": "worker-handoff.json coincide en TaskId, RunId R20261113T062519Z-a807, BaseSha y fecha posterior a Cession.StartUtc."
+    },
+    "Authority": {
+      "Result": "pass",
+      "Evidence": "git merge-base --is-ancestor 9a55236163b687251c8d98ea4fe8d742d96f226c 1c69fbc4ef7e63e68cd371445f5fd603104c62bf devolvió 0. git diff --name-only AuthorityRevision BaseSha listó tres rutas docs: I-64-evidence.md, gate-contract-attempt2.json e I-64.yml; son UNIT_DOC. Autoridades leídas en MainSha y AuthorityRevision según su clase."
+    },
+    "Contract": {
+      "Result": "pass",
+      "Evidence": "gate-contract.json y delegation.json conservan las ocho colecciones comparadas: byte-fidelity-check.json indica PASS y Utf8BytesEqual=true en las ocho; relay-record-planning.json registra A1-A8 8/8 y nc4."
+    },
+    "Identity": {
+      "Result": "pass",
+      "Evidence": "La rama es architecture/workspace-persistente-rackcad y el worktree corresponde al directorio actual. git merge-base --is-ancestor BaseSha RedSha y RedSha CurrentSha devolvió 0. git rev-parse HEAD y refs/remotes/origin/architecture/workspace-persistente-rackcad devolvieron ambos 1708e76428ba81012596b0c643074449a1db41f3."
+    },
+    "Remote": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Entry.LsRemoteSha=1708e76428ba81012596b0c643074449a1db41f3 y RemoteFacts.OriginMainSha=812baf879612320653094a8aaf46aca0bac81383, igual a MainSha."
+    },
+    "Scope": {
+      "Result": "pass",
+      "Evidence": "git diff --name-only BaseSha CurrentSha devolvió nueve rutas; las nueve pertenecen a AllowedWriteScope exacto. No hay rutas fuera de la lista blanca ni interseccion con ForbiddenWriteScope."
+    },
+    "CleanTree": {
+      "Result": "pass",
+      "Evidence": "git status --porcelain=v1 no devolvió cambios. git check-ignore -v sobre el worker-handoff.json de inputs confirmó la regla .gitignore:3 para artifacts/."
+    },
+    "Ci": {
+      "Result": "fail",
+      "RedPart": "fail",
+      "Evidence": "RemoteFacts.CurrentRun es push a la ref exacta y al CurrentSha; los cuatro jobs requeridos constan success. Para RedSha, RemoteFacts.RedRun terminó con UI Tests en failure pero Tests (Domain + Application) en success; 16.9 exige el job Core en failure para Ci.RedPart."
+    },
+    "Tests": {
+      "Result": "pass",
+      "RedPart": "pass",
+      "Evidence": "TRX: ci-core filtrado RackCad.Tests.Workspace seleccionó 2300, pasó 2300; ci-ui filtrado RackCad.UI.Tests.Workspace seleccionó 352, pasó 352. Ambos superan sus mínimos 2251 y 248. En los TRX RED, Core pasó 2300 y UI tuvo 20 fallos por aserción de 352. git diff --name-only RedSha CurrentSha solo contiene cuatro archivos src/RackCad.UI/Workspace, sin RT; ChainRedFiles se acredita con las 11 rutas del RED anterior más las cinco rutas RT: WorkspacePilotEditGuardTests.cs, WorkspacePilotSurfaceGuardTests.cs, WorkspacePilotEditPortDouble.cs, WorkspacePilotFieldViewModelTests.cs y WorkspacePilotFieldViewTests.cs."
+    },
+    "Trailer": {
+      "Result": "fail",
+      "Evidence": "git log --format=%B BaseSha..CurrentSha muestra Co-Authored-By: Claude Sonnet 5.5 en ambos commits, coherente con ModelEffective=claude-sonnet-5-5; worker-handoff.json Worker.Trailer es null, por lo que falta el trailer declarado requerido."
+    },
+    "Routing": {
+      "Result": "pass",
+      "Evidence": "delegation.json Model=claude-sonnet-5-5 y Effort=high; relay-record-work.json registra ModelEffective=claude-sonnet-5-5 y EffortEffective=high. ModelRequested=sonnet es el alias literal de lanzamiento permitido para transporte subagent."
+    },
+    "FreeText": {
+      "Result": "fail",
+      "Evidence": "worker-handoff.json WorkCompleted contiene una coincidencia con la lista de expresiones de AUTOMATION_PLAN 16.10."
+    },
+    "Denials": {
+      "Result": "pass",
+      "Evidence": "relay-record-work.json Denials es null; Notes registra cero denegaciones y cero resultados de herramienta con error pendientes."
+    }
+  },
+  "Classification": "EXECUTION_REWORK_REQUIRED",
+  "Disposition": "REWORK",
+  "FailureClass": "Ci",
+  "TriggeredStopConditions": [],
+  "Findings": [
+    "Ci.RedPart no satisface el criterio de 16.9: la corrida del RedSha tiene el job Core en success.",
+    "worker-handoff.json no declara Trailer.",
+    "WorkCompleted contiene una coincidencia prohibida por 16.10."
+  ],
+  "RecommendedNextAction": "Aclarar y corregir los registros de Ci.RedPart, Trailer y WorkCompleted antes de repetir la verificacion."
+}

@@ -1,0 +1,5 @@
+pbt4-substitution-lists.tsv f24c2dbc41bdd3d989796bee420b500fdf722d9f93bd408f5580c62019c8dfa5 137114
+pbt4b-substitution-list.tsv 44393b19d1f7490081c8ec9bac633ea4acbfe792103e5e5c3ca5e1f3fa1163e4 103000
+pbt4d-retire-list.tsv 1c9d67e8f2dac7eae3202d61a23ff5131e96123e5a6af275e5ce8a8bf71b8b71 55225
+regla: de pbt4-substitution-lists.tsv, las filas cuya columna lista es PB-T4b C-0, PB-T4b C-5 o PB-T4b UI, en su orden, con la cabecera: 470
+PB-T4d: 139 55 29

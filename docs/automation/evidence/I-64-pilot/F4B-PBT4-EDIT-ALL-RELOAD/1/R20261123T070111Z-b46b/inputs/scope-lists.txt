@@ -1,0 +1,16 @@
+RED (git diff --name-status BaseSha RedSha -- src tests: el estado y la ruta, exactamente estas):
+A tests/RackCad.Tests/PushBackEditAllReloadTests.cs
+A tests/RackCad.UI.Tests/PushBackEditAllReloadFieldTests.cs
+GREEN (git diff --name-only RedSha CurrentSha -- src tests: solo rutas de esta lista):
+src/RackCad.Application/Workspace/IWorkspacePilotEditPort.cs
+src/RackCad.Application/Workspace/WorkspaceEditIntent.cs
+src/RackCad.Application/Workspace/WorkspaceHostCore.cs
+src/RackCad.UI/Workspace/WorkspacePilotFieldViewModel.cs
+SKIPPED-BASE (los siete metodos de la base con su Skip, D-1 y CT-PBT3A-12: clave = archivo:metodo):
+S-1 = WorkspacePilotPrepareGuardTests.cs:TheFileOfThePlanComposesExactlyOnceInAMemberOfItsOwnWithAParameterSourceAndTheNameOfTheRereadEnvelope
+S-2 = WorkspacePilotPrepareGuardTests.cs:TheComposeGuardTripsOnAnotherCallAnUnsourcedCompositionANullableSourceOrAnotherName
+S-3 = WorkspacePilotPrepareGuardTests.cs:TheMemberPlansAreBuiltOnlyFromTheMutableMembersOfTheRereadInOrdinalOrderAndNeverErase
+S-4 = WorkspacePilotUpdateGuardTests.cs:TheRunReleasesBothScopesInFinallyBlocksOfItsOwnAndNeverWithAUsing
+S-5 = WorkspacePilotUpdateIntegrationGuardTests.cs:M01TheEscapeOfTheRunIsClassifiedByTheStateThatTheRunAlreadyHadAndNeverAsAPlainFailureAfterAWriteOrASeal
+S-6 = WorkspacePilotUpdateIntegrationGuardTests.cs:M01TheEscapeGuardTripsOnACatchThatDoesNotConsultTheStateAndOnAnEscapeThatAnswersAPlainFailureFirst
+CT-PBT3A-12 = PushBackDraftWriteGuardTests.cs:CT_PBT3A_12_NoSourceFileOutsideTheFolderOfTheModelNamesItsTypes
